@@ -1,7 +1,7 @@
 {
   "profiles": {
-    "EvolveOS_Optimizer (Package)": {
-      "commandName": "MsixPackage"
+    "EvolveOS_Optimizer (Unpackaged)": {
+      "commandName": "Project"
     }
   }
 }

@@ -13,6 +13,10 @@
     <ApplicationIcon>Assets\EvolveOS_Optimizer.ico</ApplicationIcon>
 	<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	
+	<WindowsPackageType>None</WindowsPackageType>
+	<PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
     </PropertyGroup>
 
   <ItemGroup>
