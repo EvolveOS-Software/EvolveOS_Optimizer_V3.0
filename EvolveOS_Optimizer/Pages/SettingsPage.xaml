@@ -6,25 +6,159 @@
     xmlns:local="using:EvolveOS_Optimizer.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
     mc:Ignorable="d">
 
-    <Grid>
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Page.Resources>
 
-        <StackPanel Spacing="10" Margin="20">
-            <TextBlock Text="Appearance" Style="{StaticResource TitleTextBlockStyle}"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="24" Margin="28,20,28,40">
 
-            <ComboBox x:Name="BackdropSelector" Header="System Backdrop" HorizontalAlignment="Left" Width="200" SelectedIndex="1" SelectionChanged="BackdropSelector_SelectionChanged">
-                <ComboBox.ItemContainerStyle>
-                    <Style TargetType="ComboBoxItem">
-                        <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                    </Style>
-                </ComboBox.ItemContainerStyle>
-                <ComboBoxItem Content="None (Solid)"/>
-                <ComboBoxItem Content="Mica"/>
-                <ComboBoxItem Content="Mica Alt"/>
-                <ComboBoxItem Content="Desktop Acrylic"/>
-            </ComboBox>
+            <StackPanel Spacing="4">
+                <TextBlock Text="Appearance" Style="{StaticResource TitleTextBlockStyle}" FontSize="28" FontWeight="Bold"/>
+                <TextBlock Text="Customize how EvolveOS Optimizer looks on your device" Style="{StaticResource BodyTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+            </StackPanel>
+
+            <StackPanel Spacing="12">
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="System Backdrop" FontWeight="SemiBold"/>
+                            <TextBlock Text="Choose the transparency effect for the window" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                        <ComboBox x:Name="BackdropSelector" Grid.Column="1" Width="200" VerticalAlignment="Center" SelectionChanged="BackdropSelector_SelectionChanged">
+                            <ComboBoxItem Content="None (Solid)"/>
+                            <ComboBoxItem Content="Mica"/>
+                            <ComboBoxItem Content="Mica Alt"/>
+                            <ComboBoxItem Content="Desktop Acrylic"/>
+                        </ComboBox>
+                    </Grid>
+                </Border>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="Accent Color" FontWeight="SemiBold"/>
+                            <TextBlock Text="Pick a color that matches your style" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+
+                        <StackPanel Width="412" HorizontalAlignment="Left" Spacing="8">
+
+                            <GridView x:Name="ColorPalette" 
+                                      SelectionMode="Single" 
+                                      SelectionChanged="ColorPalette_SelectionChanged"
+                                      HorizontalAlignment="Center"
+                                      Padding="6" 
+                                      IsItemClickEnabled="True">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Margin" Value="4"/>
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <Setter Property="MinHeight" Value="0"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="GridViewItem">
+                                                    <Grid x:Name="RootGrid" Background="Transparent" RenderTransformOrigin="0.5,0.5">
+                                                        <VisualStateManager.VisualStateGroups>
+                                                            <VisualStateGroup x:Name="CommonStates">
+                                                                <VisualState x:Name="Normal"/>
+                                                                <VisualState x:Name="PointerOver">
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" To="1.15" Duration="0:0:0.1"/>
+                                                                        <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" To="1.15" Duration="0:0:0.1"/>
+                                                                    </Storyboard>
+                                                                </VisualState>
+                                                            </VisualStateGroup>
+                                                        </VisualStateManager.VisualStateGroups>
+                                                        <Grid.RenderTransform>
+                                                            <CompositeTransform/>
+                                                        </Grid.RenderTransform>
+                                                        <ContentPresenter/>
+                                                        <Border x:Name="SelectionBorder" 
+                                                                BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}" 
+                                                                BorderThickness="2" 
+                                                                Margin="-5" 
+                                                                CornerRadius="6" 
+                                                                IsHitTestVisible="False"
+                                                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+
+                                <GridView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ItemsWrapGrid MaximumRowsOrColumns="10" Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </GridView.ItemsPanel>
+
+                                <GridView.Items>
+                                    <Rectangle Width="32" Height="32" Fill="#FF0078D4" Tag="#FF0078D4" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF0063B1" Tag="#FF0063B1" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF0099BC" Tag="#FF0099BC" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF004E8C" Tag="#FF004E8C" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF00B7C3" Tag="#FF00B7C3" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF107C10" Tag="#FF107C10" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF00CC6A" Tag="#FF00CC6A" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF00B294" Tag="#FF00B294" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF018574" Tag="#FF018574" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF10893E" Tag="#FF10893E" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFD13438" Tag="#FFD13438" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFE81123" Tag="#FFE81123" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFEA005E" Tag="#FFEA005E" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFE3008C" Tag="#FFE3008C" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFBF0077" Tag="#FFBF0077" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFB146C2" Tag="#FFB146C2" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF744DA9" Tag="#FF744DA9" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF8764B8" Tag="#FF8764B8" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF4010AD" Tag="#FF4010AD" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF881798" Tag="#FF881798" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFFF8C00" Tag="#FFFF8C00" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFF7630C" Tag="#FFF7630C" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFCA5010" Tag="#FFCA5010" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFFFB900" Tag="#FFFFB900" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FFFCE100" Tag="#FFFCE100" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF4C4A48" Tag="#FF4C4A48" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF68768A" Tag="#FF68768A" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF515C6B" Tag="#FF515C6B" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF486860" Tag="#FF486860" RadiusX="4" RadiusY="4"/>
+                                    <Rectangle Width="32" Height="32" Fill="#FF5D5D5D" Tag="#FF5D5D5D" RadiusX="4" RadiusY="4"/>
+                                </GridView.Items>
+                            </GridView>
+
+                            <Expander Header="Custom Color" HorizontalAlignment="Stretch">
+                                <Grid Padding="16" RowSpacing="16">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <ColorPicker x:Name="AdvancedColorPicker" 
+                                                 IsAlphaEnabled="False" 
+                                                 IsHexInputVisible="True" 
+                                                 IsColorSliderVisible="True" 
+                                                 IsMoreButtonVisible="True"
+                                                 ColorSpectrumShape="Ring"
+                                                 HorizontalAlignment="Center"
+                                                 ColorChanged="AdvancedColorPicker_ColorChanged"/>
+                                    <Button Grid.Row="1" Content="Apply Custom Color" 
+                                            HorizontalAlignment="Stretch"
+                                            Padding="10"
+                                            Style="{StaticResource AccentButtonStyle}"
+                                            Click="ApplyCustomColor_Click"/>
+                                </Grid>
+                            </Expander>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
         </StackPanel>
-
-    </Grid>
+    </ScrollViewer>
 </Page>

@@ -23,14 +23,15 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         private static readonly Dictionary<string, object> _defaultSettings = new Dictionary<string, object>
         {
-            ["Backdrop"] = "Mica"
+            ["Backdrop"] = "Mica",
+            ["AccentColor"] = "#FF0078D4"
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
 
         internal static string Backdrop { get => (string)_cachedSettings["Backdrop"]; set => ChangingParameters("Backdrop", value); }
-
-
+        internal static string AccentColor { get => (string)_cachedSettings["AccentColor"]; set => ChangingParameters("AccentColor", value);
+        }
 
         private static void ChangingParameters(string key, object value)
         {
@@ -38,7 +39,6 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             try
             {
-                // Use CreateSubKey to ensure the path exists
                 using (RegistryKey? regKey = Registry.CurrentUser.CreateSubKey(PathLocator.Registry.SubKey, true))
                 {
                     if (regKey != null)
@@ -50,7 +50,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         else
                             regKey.SetValue(key, value.ToString() ?? "", RegistryValueKind.String);
 
-                        regKey.Flush(); // <--- Force the OS to write now
+                        regKey.Flush();
                         Debug.WriteLine($"[Settings] SAVED TO: HKCU\\{PathLocator.Registry.SubKey}\\{key} = {value}");
                     }
                 }
@@ -65,25 +65,26 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         private static void ApplyLiveSettings(string key, object value)
         {
-            if (App.Current is not App currentApp || currentApp.MainWindow is not MainWindow targetWindow) return;
+            if (App.Current is not App currentApp || currentApp.MainWindow is not MainWindow mainWindow) return;
 
             if (key == "Backdrop")
             {
-                // Ensure this method in MainWindow handles "MicaAlt" and "Acrylic" strings
-                targetWindow.SetBackdropByName(value.ToString() ?? "None");
+                mainWindow.SetBackdropByName(value.ToString() ?? "None");
+            }
+            else if (key == "AccentColor")
+            {
+                mainWindow.ApplyAccentColor(value.ToString() ?? "#FF0078D4");
             }
         }
 
         internal static void CheckingParameters()
         {
-            // 1. Ensure the directory exists
             try
             {
                 using (RegistryKey? rootKey = Registry.CurrentUser.OpenSubKey(PathLocator.Registry.SubKey, false))
                 {
                     foreach (var kv in _defaultSettings)
                     {
-                        // 2. If the key is missing or the specific value is missing
                         if (rootKey == null || rootKey.GetValue(kv.Key) == null)
                         {
                             Debug.WriteLine($"[Settings] {kv.Key} not found. Saving default...");
@@ -115,7 +116,6 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         {
             if (App.Current is not App currentApp) return;
 
-            // Update Backdrop via MainWindow helper
             if (currentApp.MainWindow is MainWindow target)
             {
                 target.SetBackdropByName(Backdrop);

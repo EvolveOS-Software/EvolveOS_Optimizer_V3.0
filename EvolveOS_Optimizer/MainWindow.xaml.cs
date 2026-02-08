@@ -6,6 +6,9 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using System;
+using System.Diagnostics;
+using System.Globalization;
+using Windows.UI;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
@@ -86,6 +89,36 @@ namespace EvolveOS_Optimizer
 
                     appWindow.Move(centeredPos);
                 }
+            }
+        }
+
+        public void ApplyAccentColor(string hexColor)
+        {
+            try
+            {
+                hexColor = hexColor.Replace("#", string.Empty);
+                byte a = (byte)uint.Parse(hexColor.Substring(0, 2), NumberStyles.HexNumber);
+                byte r = (byte)uint.Parse(hexColor.Substring(2, 2), NumberStyles.HexNumber);
+                byte g = (byte)uint.Parse(hexColor.Substring(4, 2), NumberStyles.HexNumber);
+                byte b = (byte)uint.Parse(hexColor.Substring(6, 2), NumberStyles.HexNumber);
+
+                Windows.UI.Color color = Windows.UI.Color.FromArgb(a, r, g, b);
+
+                if (App.Current.Resources.TryGetValue("MyDynamicAccentBrush", out object brushObj)
+                    && brushObj is SolidColorBrush dynamicBrush)
+                {
+                    dynamicBrush.Color = color;
+                }
+                else
+                {
+                    App.Current.Resources["MyDynamicAccentBrush"] = new SolidColorBrush(color);
+                }
+
+                Debug.WriteLine($"[Accent] Successfully applied color: {hexColor}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Accent] Error parsing/applying color: {ex.Message}");
             }
         }
     }
