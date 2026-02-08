@@ -6,51 +6,49 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}"/>
         <Setter Property="Height" Value="48"/>
-        <Setter Property="Width" Value="Auto"/>
+        <Setter Property="Width" Value="Auto"/> 
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Grid x:Name="RootGrid" Background="Transparent" Height="48" HorizontalAlignment="Left">
+                    <Grid x:Name="RootGrid" Canvas.ZIndex="110" Background="Transparent" Height="48" HorizontalAlignment="Left" MinWidth="50" MaxWidth="300">
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">
                                     <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="MaxWidth" To="50" Duration="0:0:0.2"/>
                                         <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="-50" Duration="0:0:0.2"/>
                                         <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
                                         <DoubleAnimation Storyboard.TargetName="BackgroundPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="Collapsed"/>
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
 
                                 <VisualState x:Name="PointerOver">
                                     <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="MaxWidth" To="300" Duration="0:0:0.2"/>
                                         <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.3">
                                             <DoubleAnimation.EasingFunction>
                                                 <CubicEase EasingMode="EaseOut"/>
                                             </DoubleAnimation.EasingFunction>
                                         </DoubleAnimation>
+
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                                        </ObjectAnimationUsingKeyFrames>
+
                                         <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
                                         <DoubleAnimation Storyboard.TargetName="BackgroundPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
-
-                            <VisualStateGroup x:Name="CheckStates">
-                                <VisualState x:Name="Checked">
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicator" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Unchecked">
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicator" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
-                                    </Storyboard>
-                                </VisualState>
-                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
-                        <Grid>
+                        <Grid x:Name="InnerGrid">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -62,6 +60,7 @@
                                     Margin="4,2,4,2"
                                     CornerRadius="12" 
                                     Opacity="0"
+                                    IsHitTestVisible="False"
                                     Background="{ThemeResource SystemListLowColor}"/>
 
                             <Rectangle x:Name="SelectionIndicator" 
@@ -84,8 +83,10 @@
                                        Grid.Column="1" 
                                        Text="{TemplateBinding Tag}" 
                                        Opacity="0"
+                                       Visibility="Collapsed"
+                                       IsHitTestVisible="False" 
                                        VerticalAlignment="Center"
-                                       Margin="20,0,20,0"
+                                       Margin="10,0,20,0"
                                        FontSize="14" 
                                        FontWeight="SemiBold">
                                 <TextBlock.RenderTransform>
