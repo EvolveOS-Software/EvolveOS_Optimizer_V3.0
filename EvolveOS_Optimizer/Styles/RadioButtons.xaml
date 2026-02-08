@@ -20,7 +20,6 @@
                                         <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="MaxWidth" To="50" Duration="0:0:0.2"/>
                                         <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="-50" Duration="0:0:0.2"/>
                                         <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
-                                        <DoubleAnimation Storyboard.TargetName="BackgroundPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
 
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Visibility">
                                             <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="Collapsed"/>
@@ -45,6 +44,22 @@
                                         <DoubleAnimation Storyboard.TargetName="BackgroundPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
                                     </Storyboard>
                                 </VisualState>
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="CheckStates">
+                                <VisualState x:Name="Checked">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicator" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="BackgroundPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unchecked">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="SelectionIndicator" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="BackgroundPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Indeterminate"/>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
