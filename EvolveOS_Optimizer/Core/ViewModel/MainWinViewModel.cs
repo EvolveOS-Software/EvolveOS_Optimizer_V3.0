@@ -1,27 +1,34 @@
 ﻿using EvolveOS_Optimizer.Core.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    public class MainWinViewModel : ViewModelBase
+    public partial class MainWinViewModel : ViewModelBase
     {
         private object? _currentView;
         public object? CurrentView
         {
             get => _currentView;
-            set => SetProperty(ref _currentView, value);
+            set
+            {
+                if (_currentView != value)
+                {
+                    _currentView = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
-        public RelayCommand<string> NavigateCommand { get; }
+        public RelayCommand<string> ExecuteNavigateCommand { get; }
 
         public MainWinViewModel()
         {
-            NavigateCommand = new RelayCommand<string>(ExecuteNavigate);
+            ExecuteNavigateCommand = new RelayCommand<string>(ExecuteNavigate);
 
+            LocalizationService.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "Item[]") OnPropertyChanged(string.Empty);
+            };
 
             ExecuteNavigate("Settings");
         }

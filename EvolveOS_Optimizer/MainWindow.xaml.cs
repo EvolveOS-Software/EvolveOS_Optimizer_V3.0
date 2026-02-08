@@ -1,27 +1,41 @@
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using Windows.UI;
+using System.Runtime.CompilerServices;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace EvolveOS_Optimizer
 {
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         private AppWindow? _appWindow;
         private IntPtr _hWnd;
+
+        public string GetText(string key) => LocalizationService.Instance[key];
 
         public MainWindow()
         {
             this.InitializeComponent();
+
+            LocalizationService.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "Item[]")
+                {
+                    OnPropertyChanged(string.Empty);
+                }
+            };
 
             _hWnd = WindowNative.GetWindowHandle(this);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(_hWnd);
@@ -92,7 +106,7 @@ namespace EvolveOS_Optimizer
             }
         }
 
-        public void ApplyAccentColor(string hexColor)
+        public static void ApplyAccentColor(string hexColor)
         {
             try
             {
@@ -120,6 +134,11 @@ namespace EvolveOS_Optimizer
             {
                 Debug.WriteLine($"[Accent] Error parsing/applying color: {ex.Message}");
             }
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

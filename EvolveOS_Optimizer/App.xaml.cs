@@ -1,4 +1,5 @@
 ﻿using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml;
 using System;
 
@@ -15,14 +16,33 @@ namespace EvolveOS_Optimizer
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
+            SettingsEngine.CheckingParameters();
+            InitializeLocalization();
+
             MainWindow = new MainWindow();
 
-            SettingsEngine.CheckingParameters();
+            if (MainWindow is MainWindow main)
+            {
+                main.SetBackdropByName(SettingsEngine.Backdrop);
 
-            string savedColor = SettingsEngine.AccentColor;
-            UpdateGlobalAccentColor(savedColor);
+                UpdateGlobalAccentColor(SettingsEngine.AccentColor);
+            }
 
             MainWindow.Activate();
+        }
+
+        private void InitializeLocalization()
+        {
+            try
+            {
+                string lang = SettingsEngine.Language;
+                if (lang == "en") lang = "en-us";
+                LocalizationService.Instance.LoadLanguage(lang);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[App] Early Localizer Error: {ex.Message}");
+            }
         }
 
         private void UpdateGlobalAccentColor(string hexColor)

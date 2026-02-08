@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using EvolveOS_Optimizer.Utilities.Services;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,14 +25,15 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         private static readonly Dictionary<string, object> _defaultSettings = new Dictionary<string, object>
         {
             ["Backdrop"] = "Mica",
-            ["AccentColor"] = "#FF0078D4"
+            ["AccentColor"] = "#FF0078D4",
+            ["Language"] = "en-us"
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
 
         internal static string Backdrop { get => (string)_cachedSettings["Backdrop"]; set => ChangingParameters("Backdrop", value); }
-        internal static string AccentColor { get => (string)_cachedSettings["AccentColor"]; set => ChangingParameters("AccentColor", value);
-        }
+        internal static string AccentColor { get => (string)_cachedSettings["AccentColor"]; set => ChangingParameters("AccentColor", value); }
+        internal static string Language { get => (string)_cachedSettings["Language"]; set => ChangingParameters("Language", value); }
 
         private static void ChangingParameters(string key, object value)
         {
@@ -65,15 +67,23 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         private static void ApplyLiveSettings(string key, object value)
         {
-            if (App.Current is not App currentApp || currentApp.MainWindow is not MainWindow mainWindow) return;
+            if (App.Current is not App currentApp) return;
 
-            if (key == "Backdrop")
+            if (key == "Language")
             {
-                mainWindow.SetBackdropByName(value.ToString() ?? "None");
+                SetAppLanguage(value.ToString() ?? "en-us");
             }
-            else if (key == "AccentColor")
+
+            if (currentApp.MainWindow is MainWindow mainWindow)
             {
-                mainWindow.ApplyAccentColor(value.ToString() ?? "#FF0078D4");
+                if (key == "Backdrop")
+                {
+                    mainWindow.SetBackdropByName(value.ToString() ?? "None");
+                }
+                else if (key == "AccentColor")
+                {
+                    MainWindow.ApplyAccentColor(value.ToString() ?? "#FF0078D4");
+                }
             }
         }
 
@@ -85,12 +95,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 {
                     foreach (var kv in _defaultSettings)
                     {
-                        if (rootKey == null || rootKey.GetValue(kv.Key) == null)
-                        {
-                            Debug.WriteLine($"[Settings] {kv.Key} not found. Saving default...");
-                            ChangingParameters(kv.Key, kv.Value);
-                        }
-                        else
+                        if (rootKey != null && rootKey.GetValue(kv.Key) != null)
                         {
                             object rawVal = rootKey.GetValue(kv.Key)!;
                             _cachedSettings[kv.Key] = kv.Value switch
@@ -99,17 +104,27 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                                 int => Convert.ToInt32(rawVal),
                                 _ => rawVal.ToString() ?? kv.Value.ToString()!
                             };
-                            Debug.WriteLine($"[Settings] Loaded {kv.Key}: {_cachedSettings[kv.Key]}");
                         }
                     }
                 }
+
+                string startLang = Language;
+                SetAppLanguage(startLang);
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[Settings] CheckingParameters Error: {ex.Message}");
-            }
+            catch (Exception ex) { Debug.WriteLine($"[Settings] CheckingParameters Error: {ex.Message}"); }
 
             UpdateAppInstance();
+        }
+
+        public static void SetAppLanguage(string langCode)
+        {
+            string safeCode = langCode.ToLower().Trim();
+            if (safeCode == "en") safeCode = "en-us";
+            if (safeCode == "fr") safeCode = "fr-fr";
+
+            LocalizationService.Instance.LoadLanguage(safeCode);
+
+            Debug.WriteLine($"[Settings] Language logic completed via C# Cache for: {safeCode}");
         }
 
         private static void UpdateAppInstance()

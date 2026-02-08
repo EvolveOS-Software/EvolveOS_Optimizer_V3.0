@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="using:System">
+
+    <!-- region Main Window -->
+    <sys:String x:Key="Nav_Home">Accueil</sys:String>
+    <sys:String x:Key="Nav_Utilities">Utilitaires</sys:String>
+    <sys:String x:Key="Nav_Privacy">Confidentialité</sys:String>
+    <sys:String x:Key="Nav_Interface">Interface</sys:String>
+    <sys:String x:Key="Nav_Packages">Paquets</sys:String>
+    <sys:String x:Key="Nav_Services">Services</sys:String>
+    <sys:String x:Key="Nav_System">Système</sys:String>
+    <sys:String x:Key="Nav_Settings">Paramètres</sys:String>
+    <!-- endregion Main Window -->
+
+    <!-- region Settings -->
+    <sys:String x:Key="Settings_Appearance_Title">Apparence</sys:String>
+    <sys:String x:Key="Settings_Appearance_Subtitle">Personnalisez l'apparence d'EvolveOS Optimizer sur votre appareil</sys:String>
+
+    <sys:String x:Key="Settings_Backdrop_Title">Arrière-plan du système</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Subtitle">Choisissez l'effet de transparence pour la fenêtre</sys:String>
+
+    <sys:String x:Key="Settings_AccentColor_Title">Couleur d'accentuation</sys:String>
+    <sys:String x:Key="Settings_AccentColor_Subtitle">Choisissez une couleur qui correspond à votre style</sys:String>
+
+    <sys:String x:Key="Settings_CustomColor_Header">Couleur personnalisée</sys:String>
+    <sys:String x:Key="Settings_ApplyColor_Button">Appliquer la couleur</sys:String>
+
+    <sys:String x:Key="Settings_Language_Title">Langue</sys:String>
+    <sys:String x:Key="Settings_Language_Subtitle">Sélectionnez votre langue préférée</sys:String>
+
+    <sys:String x:Key="Settings_Backdrop_None">Aucun (Solide)</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
+    <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt (Alternatif)</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Acrylic">Acrylique de bureau</sys:String>
+    <!-- endregion Settings -->
+    
+</ResourceDictionary>

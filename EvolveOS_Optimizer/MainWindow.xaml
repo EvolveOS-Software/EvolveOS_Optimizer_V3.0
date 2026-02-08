@@ -61,51 +61,60 @@
                               Margin="0,15,0,50">
 
                     <StackPanel Orientation="Vertical" Spacing="4" Padding="10,10,0,0" HorizontalAlignment="Left">
-                        <RadioButton Style="{StaticResource BtnNavigation}" 
-                                     Command="{Binding NavigateCommand}" CommandParameter="Home"
-                                     Tag="Home" IsChecked="True">
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Home"
+                                     Tag="{x:Bind GetText('Nav_Home'), Mode=OneWay}"
+                                     IsChecked="True">
                             <FontIcon Glyph="&#xE80F;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}" 
-                                     Command="{Binding NavigateCommand}" CommandParameter="Utilities"
-                                     Tag="Utilities">
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Utilities"
+                                     Tag="{x:Bind GetText('Nav_Utilities'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE74C;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}" 
-                                     Command="{Binding NavigateCommand}" CommandParameter="Privacy"
-                                     Tag="Privacy">
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Privacy"
+                                     Tag="{x:Bind GetText('Nav_Privacy'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEE3F;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}" 
-                                     Command="{Binding NavigateCommand}" CommandParameter="Interface"
-                                     Tag="Interface">
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Interface"
+                                     Tag="{x:Bind GetText('Nav_Interface'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE790;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}" 
-                                     Command="{Binding NavigateCommand}" CommandParameter="Packages"
-                                     Tag="Packages">
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Packages"
+                                     Tag="{x:Bind GetText('Nav_Packages'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE74C;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}" 
-                                     Command="{Binding NavigateCommand}" CommandParameter="Services"
-                                     Tag="Services">
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Services"
+                                     Tag="{x:Bind GetText('Nav_Services'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEC05;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}" 
-                                     Command="{Binding NavigateCommand}" CommandParameter="System"
-                                     Tag="System">
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="System"
+                                     Tag="{x:Bind GetText('Nav_System'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEDA2;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}" 
-                                     Command="{Binding NavigateCommand}" CommandParameter="Settings"
-                                     Tag="Settings">
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Settings"
+                                     Tag="{x:Bind GetText('Nav_Settings'), Mode=OneWay}">
                             <SymbolIcon Symbol="Setting" />
                         </RadioButton>
                     </StackPanel>

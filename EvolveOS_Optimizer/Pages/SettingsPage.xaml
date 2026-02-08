@@ -17,9 +17,29 @@
         <StackPanel Spacing="24" Margin="28,20,28,40">
 
             <StackPanel Spacing="4">
-                <TextBlock Text="Appearance" Style="{StaticResource TitleTextBlockStyle}" FontSize="28" FontWeight="Bold"/>
-                <TextBlock Text="Customize how EvolveOS Optimizer looks on your device" Style="{StaticResource BodyTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                <TextBlock Text="{x:Bind GetText('Settings_Appearance_Title'), Mode=OneWay}" 
+                           Style="{StaticResource TitleTextBlockStyle}" FontSize="28" FontWeight="Bold"/>
+                <TextBlock Text="{x:Bind GetText('Settings_Appearance_Subtitle'), Mode=OneWay}" 
+                           Style="{StaticResource BodyTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
             </StackPanel>
+
+            <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="{x:Bind GetText('Settings_Language_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{x:Bind GetText('Settings_Language_Subtitle'), Mode=OneWay}" 
+                                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    </StackPanel>
+                    <ComboBox x:Name="LanguageSelector" Grid.Column="1" Width="200" SelectionChanged="LanguageSelector_SelectionChanged">
+                        <ComboBoxItem Content="English" Tag="en-us"/>
+                        <ComboBoxItem Content="Français" Tag="fr-fr"/>
+                    </ComboBox>
+                </Grid>
+            </Border>
 
             <StackPanel Spacing="12">
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
@@ -29,14 +49,15 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="System Backdrop" FontWeight="SemiBold"/>
-                            <TextBlock Text="Choose the transparency effect for the window" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Subtitle'), Mode=OneWay}" 
+                                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                         </StackPanel>
                         <ComboBox x:Name="BackdropSelector" Grid.Column="1" Width="200" VerticalAlignment="Center" SelectionChanged="BackdropSelector_SelectionChanged">
-                            <ComboBoxItem Content="None (Solid)"/>
-                            <ComboBoxItem Content="Mica"/>
-                            <ComboBoxItem Content="Mica Alt"/>
-                            <ComboBoxItem Content="Desktop Acrylic"/>
+                            <ComboBoxItem Tag="None"/>
+                            <ComboBoxItem Tag="Mica"/>
+                            <ComboBoxItem Tag="MicaAlt"/>
+                            <ComboBoxItem Tag="Acrylic"/>
                         </ComboBox>
                     </Grid>
                 </Border>
@@ -44,12 +65,12 @@
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
                         <StackPanel Spacing="2">
-                            <TextBlock Text="Accent Color" FontWeight="SemiBold"/>
-                            <TextBlock Text="Pick a color that matches your style" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_AccentColor_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_AccentColor_Subtitle'), Mode=OneWay}" 
+                                       Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                         </StackPanel>
 
                         <StackPanel Width="412" HorizontalAlignment="Left" Spacing="8">
-
                             <GridView x:Name="ColorPalette" 
                                       SelectionMode="Single" 
                                       SelectionChanged="ColorPalette_SelectionChanged"
@@ -134,7 +155,7 @@
                                 </GridView.Items>
                             </GridView>
 
-                            <Expander Header="Custom Color" HorizontalAlignment="Stretch">
+                            <Expander Header="{x:Bind GetText('Settings_CustomColor_Header'), Mode=OneWay}" HorizontalAlignment="Stretch">
                                 <Grid Padding="16" RowSpacing="16">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
@@ -148,7 +169,7 @@
                                                  ColorSpectrumShape="Ring"
                                                  HorizontalAlignment="Center"
                                                  ColorChanged="AdvancedColorPicker_ColorChanged"/>
-                                    <Button Grid.Row="1" Content="Apply Custom Color" 
+                                    <Button Grid.Row="1" Content="{x:Bind GetText('Settings_ApplyColor_Button'), Mode=OneWay}" 
                                             HorizontalAlignment="Stretch"
                                             Padding="10"
                                             Style="{StaticResource AccentButtonStyle}"

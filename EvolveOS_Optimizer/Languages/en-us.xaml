@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="using:System">
+
+    <!-- region Main Window -->
+    <sys:String x:Key="Nav_Home">Home</sys:String>
+    <sys:String x:Key="Nav_Utilities">Utilities</sys:String>
+    <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
+    <sys:String x:Key="Nav_Interface">Interface</sys:String>
+    <sys:String x:Key="Nav_Packages">Packages</sys:String>
+    <sys:String x:Key="Nav_Services">Services</sys:String>
+    <sys:String x:Key="Nav_System">System</sys:String>
+    <sys:String x:Key="Nav_Settings">Settings</sys:String>
+    <!-- endregion Main Window -->
+
+    <!-- region Settings -->
+    <sys:String x:Key="Settings_Appearance_Title">Appearance</sys:String>
+    <sys:String x:Key="Settings_Appearance_Subtitle">Customize how EvolveOS Optimizer looks on your device</sys:String>
+
+    <sys:String x:Key="Settings_Backdrop_Title">System Backdrop</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Subtitle">Choose the transparency effect for the window</sys:String>
+
+    <sys:String x:Key="Settings_AccentColor_Title">Accent Color</sys:String>
+    <sys:String x:Key="Settings_AccentColor_Subtitle">Pick a color that matches your style</sys:String>
+
+    <sys:String x:Key="Settings_CustomColor_Header">Custom Color</sys:String>
+    <sys:String x:Key="Settings_ApplyColor_Button">Apply Custom Color</sys:String>
+
+    <sys:String x:Key="Settings_Language_Title">Language</sys:String>
+    <sys:String x:Key="Settings_Language_Subtitle">Select your preferred language</sys:String>
+
+    <sys:String x:Key="Settings_Backdrop_None">None (Solid)</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
+    <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Acrylic">Desktop Acrylic</sys:String>
+    <!-- endregion Settings -->
+    
+</ResourceDictionary>
