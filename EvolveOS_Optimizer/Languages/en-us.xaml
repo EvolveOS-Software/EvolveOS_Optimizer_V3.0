@@ -4,6 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="using:System">
 
+    <sys:String x:Key="step1_load">Starting Trusted Installer Service...</sys:String>
+    <sys:String x:Key="step2_load">Checking Windows License status...</sys:String>
+    <sys:String x:Key="step3_load">Gathering Hardware Diagnostics...</sys:String>
+    <sys:String x:Key="step4_load">Validating Version Updates...</sys:String>
+    <sys:String x:Key="step5_load">Scanning Installed Packages...</sys:String>
+    <sys:String x:Key="step6_load">Checking Defender Exclusions...</sys:String>
+    <sys:String x:Key="step7_load">Verifying Local Account status...</sys:String>
+    <sys:String x:Key="step8_load">Analyzing Netsh Network state...</sys:String>
+    <sys:String x:Key="step9_load">Checking Bluetooth and Tick configuration...</sys:String>
+    <sys:String x:Key="step10_load">All systems ready!</sys:String>
+
     <!-- region Main Window -->
     <sys:String x:Key="Nav_Home">Home</sys:String>
     <sys:String x:Key="Nav_Utilities">Utilities</sys:String>

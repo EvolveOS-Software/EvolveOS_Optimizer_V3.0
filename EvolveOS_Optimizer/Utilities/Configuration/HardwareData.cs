@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml.Media;
+
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
     internal class HardwareData
@@ -35,7 +37,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal enum ConnectionStatus { Available, Lose, Block, Limited, }
 
         internal static OperatingSystemInfo OS { get; set; } = new OperatingSystemInfo();
-        //internal static ImageSource Wallpaper { get; set; } = default;
+        internal static ImageSource? Wallpaper { get; set; } = default;
         internal static string RunningProcessesCount { get; set; } = string.Empty;
         internal static string RunningServicesCount { get; set; } = string.Empty;
         internal static BiosInfo Bios { get; set; } = new BiosInfo();

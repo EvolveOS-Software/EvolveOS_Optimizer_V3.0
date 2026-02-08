@@ -57,7 +57,7 @@ namespace EvolveOS_Optimizer
                 var titleBar = _appWindow.TitleBar;
                 titleBar.ButtonBackgroundColor = Colors.Transparent;
                 titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                _appWindow.Resize(new Windows.Graphics.SizeInt32(1575, 870));
+                _appWindow.Resize(new global::Windows.Graphics.SizeInt32(1575, 870));
             }
 
             WindowHelper.RegisterMinWidthHeight(_hWnd, 700, 400);
@@ -116,7 +116,7 @@ namespace EvolveOS_Optimizer
                 byte g = (byte)uint.Parse(hexColor.Substring(4, 2), NumberStyles.HexNumber);
                 byte b = (byte)uint.Parse(hexColor.Substring(6, 2), NumberStyles.HexNumber);
 
-                Windows.UI.Color color = Windows.UI.Color.FromArgb(a, r, g, b);
+                global::Windows.UI.Color color = global::Windows.UI.Color.FromArgb(a, r, g, b);
 
                 if (App.Current.Resources.TryGetValue("MyDynamicAccentBrush", out object brushObj)
                     && brushObj is SolidColorBrush dynamicBrush)

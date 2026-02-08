@@ -3,6 +3,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+	<SupportedOSPlatform>Windows10.0.17763.0</SupportedOSPlatform>
     <RootNamespace>EvolveOS_Optimizer</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x86;x64;ARM64</Platforms>
@@ -23,10 +24,30 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7463" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.2" />
+    <PackageReference Include="System.Management" Version="10.0.2" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.2" />
+    <PackageReference Include="TaskScheduler" Version="2.12.2" />
+    <PackageReference Include="vocaluxe.dependencies.netfwtypelib" Version="1.0.1">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </PackageReference>
   </ItemGroup>
-
+  
   <ItemGroup>
     <Content Include="Assets\**" />
+    <None Remove="Resources\Blank.gz" />
+    <None Remove="Resources\DisablingWD.gz" />
+    <None Remove="Resources\EvolveOSLogo.png" />
+    <None Remove="Resources\EvolveOS_OptimizerDb.mdf.gz" />
+    <None Remove="Resources\EvolveOS_OptimizerDb_log.ldf.gz" />
+    <None Remove="Resources\hosts.gz" />
+    <None Remove="Resources\Logo.gz" />
+    <None Remove="Resources\NSudoLC.gz" />
+    <None Remove="Resources\Sound.wav" />
+    <None Remove="Resources\Tickets.xml" />
+    <None Remove="Resources\UltPower.gz" />
+    <Page Remove="Assets\Images.xaml" />
     <Page Remove="Languages\en-us.xaml" />
     <Page Remove="Languages\fr-fr.xaml" />
     <Page Remove="Languages\nl-nl.xaml" />
@@ -43,6 +64,20 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\Blank.gz" />
+    <EmbeddedResource Include="Resources\DisablingWD.gz" />
+    <EmbeddedResource Include="Resources\EvolveOSLogo.png" />
+    <EmbeddedResource Include="Resources\EvolveOS_OptimizerDb.mdf.gz" />
+    <EmbeddedResource Include="Resources\EvolveOS_OptimizerDb_log.ldf.gz" />
+    <EmbeddedResource Include="Resources\hosts.gz" />
+    <EmbeddedResource Include="Resources\Logo.gz" />
+    <EmbeddedResource Include="Resources\NSudoLC.gz" />
+    <EmbeddedResource Include="Resources\Sound.wav" />
+    <EmbeddedResource Include="Resources\Tickets.xml" />
+    <EmbeddedResource Include="Resources\UltPower.gz" />
+    <Content Update="Assets\Images.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Content>
     <Page Update="Pages\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -53,6 +88,16 @@
 
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Styles\Buttons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\Themes\Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">

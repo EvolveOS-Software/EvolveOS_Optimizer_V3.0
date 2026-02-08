@@ -26,5 +26,18 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
             gzipStream.CopyTo(fileStream);
         }
+
+        public static byte[] GetResourceBytes(string resourceName)
+        {
+            // The name is usually "ProjectNamespace.FolderName.FileName"
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            using (Stream? stream = assembly.GetManifestResourceStream($"EvolveOS_Optimizer.Resources.{resourceName}"))
+            {
+                if (stream == null) return Array.Empty<byte>();
+                byte[] ba = new byte[stream.Length];
+                stream.Read(ba, 0, ba.Length);
+                return ba;
+            }
+        }
     }
 }

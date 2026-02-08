@@ -60,9 +60,14 @@ namespace EvolveOS_Optimizer.Pages
                 var r = (byte)uint.Parse(hex[2..4], NumberStyles.HexNumber);
                 var g = (byte)uint.Parse(hex[4..6], NumberStyles.HexNumber);
                 var b = (byte)uint.Parse(hex[6..8], NumberStyles.HexNumber);
-                AdvancedColorPicker.Color = Windows.UI.Color.FromArgb(a, r, g, b);
+
+                // Use global:: to avoid the namespace collision
+                AdvancedColorPicker.Color = global::Windows.UI.Color.FromArgb(a, r, g, b);
             }
-            catch { AdvancedColorPicker.Color = Windows.UI.Color.FromArgb(255, 0, 120, 212); }
+            catch
+            {
+                AdvancedColorPicker.Color = global::Windows.UI.Color.FromArgb(255, 0, 120, 212);
+            }
         }
 
         private void UpdateComboBoxLocalization()

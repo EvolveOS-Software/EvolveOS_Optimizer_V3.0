@@ -1,0 +1,15 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="using:Windows.UI">
+    <ui:Color x:Key="Color_Accent">#7BFFB5</ui:Color>
+    <ui:Color x:Key="Color_Separator">#434544</ui:Color>
+    <ui:Color x:Key="Color_Background_Dark">#1A1A1A</ui:Color>
+
+    <SolidColorBrush x:Key="Brush_Background" Color="{StaticResource Color_Background_Dark}"/>
+    <SolidColorBrush x:Key="Brush_Accent" Color="{StaticResource Color_Accent}"/>
+    <SolidColorBrush x:Key="Brush_Inactive" Color="#808080"/>
+    <SolidColorBrush x:Key="Brush_Separator" Color="{StaticResource Color_Separator}"/>
+    <SolidColorBrush x:Key="Brush_TextBlock_Inactivity" Color="#DFDFDF"/>
+
+</ResourceDictionary>

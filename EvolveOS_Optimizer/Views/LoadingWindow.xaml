@@ -1,0 +1,113 @@
+<Window
+    x:Class="EvolveOS_Optimizer.Views.LoadingWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:EvolveOS_Optimizer.Core.ViewModel"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    mc:Ignorable="d"
+    Title="EvolveOS_Optimizer" xmlns:ui="using:Windows.UI">
+
+    <Grid x:Name="RootGrid" Width="350" Height="150" Background="Transparent">
+
+
+        <Grid.Resources>
+            <Storyboard x:Name="DotAnimation" RepeatBehavior="Forever">
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DotRun" Storyboard.TargetProperty="Text">
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.0" Value=""/>
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="."/>
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.4" Value=".."/>
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.6" Value="..."/>
+                </ObjectAnimationUsingKeyFrames>
+            </Storyboard>
+
+            <Storyboard x:Name="LoadingEllipses" RepeatBehavior="Forever">
+                <ColorAnimationUsingKeyFrames Storyboard.TargetName="Indicator1" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                    <DiscreteColorKeyFrame KeyTime="0:0:0.0" Value="{StaticResource Color_Accent}"/>
+                    <DiscreteColorKeyFrame KeyTime="0:0:0.6" Value="#001A1A1A"/>
+                </ColorAnimationUsingKeyFrames>
+                <ColorAnimationUsingKeyFrames Storyboard.TargetName="Indicator2" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                    <DiscreteColorKeyFrame KeyTime="0:0:0.6" Value="{StaticResource Color_Accent}"/>
+                    <DiscreteColorKeyFrame KeyTime="0:0:1.2" Value="#001A1A1A"/>
+                </ColorAnimationUsingKeyFrames>
+                <ColorAnimationUsingKeyFrames Storyboard.TargetName="Indicator3" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                    <DiscreteColorKeyFrame KeyTime="0:0:1.2" Value="{StaticResource Color_Accent}"/>
+                    <DiscreteColorKeyFrame KeyTime="0:0:1.8" Value="#001A1A1A"/>
+                </ColorAnimationUsingKeyFrames>
+            </Storyboard>
+        </Grid.Resources>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="140"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Image x:Name="DisplayProfileAvatar" Source="{Binding DisplayProfileAvatar}" Stretch="UniformToFill"/>
+            <Rectangle IsHitTestVisible="False">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Offset="0.8" Color="#001A1A1A"/>
+                        <GradientStop Offset="1" Color="{StaticResource Color_Background_Dark}"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Grid>
+
+        <Grid Grid.Column="1" Padding="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-4,0,0">
+                <StackPanel.Resources>
+                    <Style TargetType="Ellipse">
+                        <Setter Property="Width" Value="6"/>
+                        <Setter Property="Height" Value="6"/>
+                        <Setter Property="Margin" Value="2"/>
+                        <Setter Property="StrokeThickness" Value="1"/>
+                        <Setter Property="Stroke" Value="{StaticResource Brush_Separator}"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Ellipse x:Name="Indicator1" Fill="{StaticResource Brush_Accent}"/>
+                <Ellipse x:Name="Indicator2" Fill="{StaticResource Brush_Accent}"/>
+                <Ellipse x:Name="Indicator3" Fill="{StaticResource Brush_Accent}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" VerticalAlignment="Bottom">
+                <TextBlock Foreground="{StaticResource Brush_Inactive}" FontSize="12">
+                    <Run Text="Loading EvolveOS Optimizer"/><Run x:Name="DotRun" Text="..." />
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,5,0,0">
+                <TextBlock x:Name="StatusLoading" 
+                           FontSize="12" 
+                           Foreground="{StaticResource Brush_TextBlock_Inactivity}" 
+                           TextWrapping="Wrap"
+                           Text="{helpers:ResourceString Key=step1_load}"/>
+            </StackPanel>
+        </Grid>
+
+        <Border x:Name="AutoLoginBadge" 
+                Visibility="Collapsed" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Bottom" 
+                Margin="0,0,12,12" 
+                Background="#E6111111" 
+                BorderBrush="{StaticResource Brush_Separator}"
+                BorderThickness="1"
+                CornerRadius="8" 
+                Padding="10,6">
+            <StackPanel Orientation="Horizontal">
+                <FontIcon Glyph="&#xE77B;" Foreground="{StaticResource Brush_Accent}" FontSize="14" VerticalAlignment="Center"/>
+                <TextBlock Foreground="White" FontSize="12" Margin="8,0,2,0" VerticalAlignment="Center">
+                    <Run Text="Auto-Login:" Foreground="{StaticResource Brush_Inactive}"/>
+                    <Run x:Name="RunUsername" FontWeight="Bold" Foreground="{StaticResource Brush_Accent}"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

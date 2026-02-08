@@ -1,12 +1,9 @@
 ﻿using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Services;
-using Microsoft.UI.Xaml;
-using System;
-using System.Diagnostics;
+using EvolveOS_Optimizer.Views;
 using System.IO;
 using System.Security.Principal;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace EvolveOS_Optimizer
 {
@@ -14,6 +11,8 @@ namespace EvolveOS_Optimizer
     {
         public Window? MainWindow { get; private set; }
         private static Mutex? _mutex;
+
+        public static new App Current => (App)Application.Current;
 
         public App()
         {
@@ -59,14 +58,11 @@ namespace EvolveOS_Optimizer
             SettingsEngine.CheckingParameters();
             InitializeLocalization();
 
-            MainWindow = new MainWindow();
+            App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
 
-            if (MainWindow is MainWindow main)
-            {
-                main.SetBackdropByName(SettingsEngine.Backdrop);
+            var loadingWindow = new LoadingWindow();
 
-                UpdateGlobalAccentColor(SettingsEngine.AccentColor);
-            }
+            MainWindow = loadingWindow;
 
             MainWindow.Activate();
 
@@ -83,7 +79,7 @@ namespace EvolveOS_Optimizer
             });
         }
 
-        #region Ported Logic from WPF Project
+        #region System & Process Utilities
 
         public static void SetPriority(ProcessPriorityClass priorityClass)
         {
@@ -128,6 +124,8 @@ namespace EvolveOS_Optimizer
 
         #endregion
 
+        #region App Initialization & Styling
+
         private void InitializeLocalization()
         {
             try
@@ -138,18 +136,17 @@ namespace EvolveOS_Optimizer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[App] Early Localizer Error: {ex.Message}");
+                Debug.WriteLine($"[App] Early Localizer Error: {ex.Message}");
             }
         }
 
-        private void UpdateGlobalAccentColor(string hexColor)
+        public void UpdateGlobalAccentColor(string hexColor)
         {
             try
             {
                 if (string.IsNullOrEmpty(hexColor)) return;
 
                 string hex = hexColor.Replace("#", string.Empty);
-
                 if (hex.Length == 6) hex = "FF" + hex;
 
                 byte a = (byte)uint.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
@@ -157,18 +154,28 @@ namespace EvolveOS_Optimizer
                 byte g = (byte)uint.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
                 byte b = (byte)uint.Parse(hex.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
 
-                Windows.UI.Color color = Windows.UI.Color.FromArgb(a, r, g, b);
+                Color color = ColorHelper.FromArgb(a, r, g, b);
 
-                if (Application.Current.Resources.ContainsKey("MyDynamicAccentBrush"))
+                if (this.Resources.ContainsKey("MyDynamicAccentBrush"))
                 {
-                    var brush = (Microsoft.UI.Xaml.Media.SolidColorBrush)Application.Current.Resources["MyDynamicAccentBrush"];
-                    brush.Color = color;
+                    if (this.Resources["MyDynamicAccentBrush"] is SolidColorBrush brush)
+                    {
+                        brush.Color = color;
+                    }
                 }
+                else
+                {
+                    this.Resources.Add("MyDynamicAccentBrush", new SolidColorBrush(color));
+                }
+
+                Debug.WriteLine($"[App] Global accent color updated to: {hexColor}");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[App] Failed to load startup accent: {ex.Message}");
+                Debug.WriteLine($"[App] Failed to load startup accent: {ex.Message}");
             }
         }
+
+        #endregion
     }
 }

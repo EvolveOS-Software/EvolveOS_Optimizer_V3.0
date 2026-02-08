@@ -94,6 +94,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             public const int WmHotkey = 786; // 0x312
         }
 
+
+        public const int GWL_STYLE = -16;
+        public const int WS_BORDER = 0x00800000;
+        public const int WS_THICKFRAME = 0x00040000;
+
         #endregion
 
         #region Native Methods
@@ -197,8 +202,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool DeviceIoControl(SafeFileHandle hDevice, uint dwIoControlCode, IntPtr lpInBuffer, uint nInBufferSize, IntPtr lpOutBuffer, uint nOutBufferSize, out int lpBytesReturned, IntPtr lpOverlapped);
 
-
-
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
 
@@ -223,6 +226,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         [DllImport("kernel32.dll", EntryPoint = "SetProcessWorkingSetSize")]
         internal static extern bool SetProcessWorkingSetSize(IntPtr proc, int min, int max);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        internal static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        internal static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         #endregion
 
