@@ -69,6 +69,18 @@ namespace EvolveOS_Optimizer
             }
 
             MainWindow.Activate();
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await RunGuard.CheckingDefenderExclusions();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[App] Background Defender check failed: {ex.Message}");
+                }
+            });
         }
 
         #region Ported Logic from WPF Project
