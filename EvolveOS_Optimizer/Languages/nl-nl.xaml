@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="using:System">
+
+    <!-- region Main Window -->
+    <sys:String x:Key="Nav_Home">Startpagina</sys:String>
+    <sys:String x:Key="Nav_Utilities">Hulpprogramma's</sys:String>
+    <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
+    <sys:String x:Key="Nav_Interface">Interface</sys:String>
+    <sys:String x:Key="Nav_Packages">Pakketten</sys:String>
+    <sys:String x:Key="Nav_Services">Services</sys:String>
+    <sys:String x:Key="Nav_System">Systeem</sys:String>
+    <sys:String x:Key="Nav_Settings">Instellingen</sys:String>
+    <!-- endregion Main Window -->
+
+    <!-- region Settings -->
+    <sys:String x:Key="Settings_Appearance_Title">Vormgeving</sys:String>
+    <sys:String x:Key="Settings_Appearance_Subtitle">Pas de vormgeving van EvolveOS Optimizer aan op uw apparaat</sys:String>
+
+    <sys:String x:Key="Settings_Backdrop_Title">Systeemachtergrond</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Subtitle">Kies het transparantie-effect voor het venster</sys:String>
+
+    <sys:String x:Key="Settings_AccentColor_Title">Accentkleur</sys:String>
+    <sys:String x:Key="Settings_AccentColor_Subtitle">Kies een kleur die bij uw stijl past</sys:String>
+
+    <sys:String x:Key="Settings_CustomColor_Header">Aangepaste kleur</sys:String>
+    <sys:String x:Key="Settings_ApplyColor_Button">Kleur toepassen</sys:String>
+
+    <sys:String x:Key="Settings_Language_Title">Taal</sys:String>
+    <sys:String x:Key="Settings_Language_Subtitle">Selecteer uw voorkeurstaal</sys:String>
+
+    <sys:String x:Key="Settings_Backdrop_None">Geen (Effen)</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
+    <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt (Alternatief)</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Acrylic">Desktop Acrylic</sys:String>
+    <!-- endregion Settings -->
+    
+</ResourceDictionary>

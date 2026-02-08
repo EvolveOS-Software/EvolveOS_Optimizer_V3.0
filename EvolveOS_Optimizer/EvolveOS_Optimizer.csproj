@@ -29,9 +29,15 @@
     <Content Include="Assets\**" />
     <Page Remove="Languages\en-us.xaml" />
     <Page Remove="Languages\fr-fr.xaml" />
+    <Page Remove="Languages\nl-nl.xaml" />
     <Content Include="Languages\en-us.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Languages\nl-nl.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Content>
     <Content Include="Languages\fr-fr.xaml">
       <SubType>Designer</SubType>

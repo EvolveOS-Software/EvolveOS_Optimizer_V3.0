@@ -37,6 +37,7 @@
                     <ComboBox x:Name="LanguageSelector" Grid.Column="1" Width="200" SelectionChanged="LanguageSelector_SelectionChanged">
                         <ComboBoxItem Content="English" Tag="en-us"/>
                         <ComboBoxItem Content="Français" Tag="fr-fr"/>
+                        <ComboBoxItem Content="Nederlands" Tag="nl-nl"/>
                     </ComboBox>
                 </Grid>
             </Border>
