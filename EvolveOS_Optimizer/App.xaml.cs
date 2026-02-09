@@ -1,6 +1,7 @@
 ﻿using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Views;
+using Microsoft.UI.Xaml;
 using System.IO;
 using System.Security.Principal;
 using System.Threading;
@@ -41,8 +42,13 @@ namespace EvolveOS_Optimizer
             MainWindow = loadingWindow;
 
             SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
-            UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
             MainWindow.Activate();
+
+            MainWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, async () =>
+            {
+                await Task.Delay(200);
+                UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
+            });
 
             _ = StartBackgroundServices();
         }

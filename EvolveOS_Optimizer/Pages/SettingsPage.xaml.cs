@@ -1,5 +1,7 @@
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
 using System.ComponentModel;
 using System.Globalization;
@@ -37,7 +39,38 @@ namespace EvolveOS_Optimizer.Pages
             InitializeSelections();
             UpdateComboBoxLocalization();
             SetSelectedByTag(ThemeSelector, SettingsEngine.AppTheme);
+
+            this.Loaded += SettingsPage_Loaded;
+        }
+
+        private void SettingsPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            TintOpacitySlider.Value = SettingsEngine.AcrylicOpacity;
+            LuminositySlider.Value = SettingsEngine.AcrylicLuminosity;
+
+            var savedColor = UIHelper.ToColor(SettingsEngine.AcrylicTintColor);
+            AcrylicColorPicker.Color = savedColor;
+            ColorPreview.Background = new SolidColorBrush(savedColor);
+
+
             _isInitialized = true;
+
+            string currentBackdrop = SettingsEngine.Backdrop;
+            foreach (ComboBoxItem item in BackdropSelector.Items)
+            {
+                if (item.Tag?.ToString() == currentBackdrop)
+                {
+                    BackdropSelector.SelectedItem = item;
+                    break;
+                }
+            }
+
+            if (currentBackdrop == "AcrylicThin")
+            {
+                AcrylicOptionsPanel.Visibility = Visibility.Visible;
+                AcrylicOptionsPanel.Opacity = 1.0;
+                PanelTransform.Y = 0;
+            }
         }
 
         private void InitializeSelections()
@@ -91,10 +124,67 @@ namespace EvolveOS_Optimizer.Pages
 
         private void BackdropSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_isInitialized && BackdropSelector.SelectedItem is ComboBoxItem item)
+            if (!_isInitialized || BackdropSelector.SelectedItem is not ComboBoxItem item) return;
+
+            string selected = item.Tag?.ToString() ?? "None";
+            SettingsEngine.Backdrop = selected;
+
+            bool showOptions = (selected == "AcrylicThin");
+
+            if (showOptions)
             {
-                SettingsEngine.Backdrop = item.Tag?.ToString() ?? "None";
+                AcrylicOptionsPanel.Visibility = Visibility.Visible;
+                ShowPanelAnimation.Begin();
             }
+            else
+            {
+                AcrylicOptionsPanel.Visibility = Visibility.Collapsed;
+                AcrylicOptionsPanel.Opacity = 0;
+                PanelTransform.Y = -20;
+            }
+
+            if (App.Current.MainWindow is Window mainWindow)
+            {
+                UIHelper.ApplyBackdrop(mainWindow, selected);
+            }
+        }
+
+        private void AcrylicSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            if (!_isInitialized) return;
+
+            if (sender is Slider slider)
+            {
+                if (slider == TintOpacitySlider)
+                    SettingsEngine.AcrylicOpacity = e.NewValue;
+                else if (slider == LuminositySlider)
+                    SettingsEngine.AcrylicLuminosity = e.NewValue;
+
+                if (App.Current.MainWindow is Window window)
+                {
+                    UIHelper.ApplyBackdrop(window, "AcrylicThin");
+                }
+            }
+        }
+
+        private void AcrylicColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+        {
+            if (!_isInitialized) return;
+
+            string hex = args.NewColor.ToString();
+            SettingsEngine.AcrylicTintColor = hex;
+
+            ColorPreview.Background = new SolidColorBrush(args.NewColor);
+
+            if (App.Current.MainWindow is Window mainWindow)
+            {
+                UIHelper.ApplyBackdrop(mainWindow, SettingsEngine.Backdrop);
+            }
+        }
+
+        private void ResetAcrylicColor_Click(object sender, RoutedEventArgs e)
+        {
+            AcrylicColorPicker.Color = Colors.Black;
         }
 
         private void ThemeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)

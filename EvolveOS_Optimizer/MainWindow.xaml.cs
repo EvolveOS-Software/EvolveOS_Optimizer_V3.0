@@ -1,3 +1,4 @@
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
@@ -19,6 +20,8 @@ namespace EvolveOS_Optimizer
 
         public string GetText(string key) => LocalizationService.Instance[key];
 
+        private bool _isBackdropInitialized = false;
+
         public MainWindow()
         {
             this.InitializeComponent();
@@ -36,13 +39,30 @@ namespace EvolveOS_Optimizer
                 var titleBar = _appWindow.TitleBar;
                 titleBar.ButtonBackgroundColor = Colors.Transparent;
                 titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                _appWindow.Resize(new global::Windows.Graphics.SizeInt32(1575, 870));
+                _appWindow.Resize(new Windows.Graphics.SizeInt32(1575, 870));
             }
 
             WindowHelper.RegisterMinWidthHeight(_hWnd, 700, 400);
             UIHelper.RegisterPageTransition(RootContentControl, RootGrid);
-            SetBackdrop(new MicaBackdrop());
+
             CenterWindow();
+
+            this.Activated += (s, e) =>
+            {
+                if (!_isBackdropInitialized && e.WindowActivationState != WindowActivationState.Deactivated)
+                {
+                    _isBackdropInitialized = true;
+
+                    this.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
+                    {
+                        await Task.Delay(400);
+
+                        UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
+
+                        Debug.WriteLine("[Startup] Backdrop initialization complete.");
+                    });
+                }
+            };
 
             LocalizationService.Instance.PropertyChanged += (s, e) =>
             {

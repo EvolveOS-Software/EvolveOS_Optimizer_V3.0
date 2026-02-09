@@ -48,8 +48,9 @@
 
     <sys:String x:Key="Settings_Backdrop_None">Geen (Effen)</sys:String>
     <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
-    <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt (Alternatief)</sys:String>
-    <sys:String x:Key="Settings_Backdrop_Acrylic">Desktop Acrylic</sys:String>
+    <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Acrylic">Acrylic</sys:String>
+    <sys:String x:Key="Settings_Backdrop_AcrylicThin">Acryl (Dun)</sys:String>
 
     <sys:String x:Key="Settings_Theme_Title">Applicatiethema</sys:String>
     <sys:String x:Key="Settings_Theme_Subtitle">Kies tussen de visuele stijlen Licht, Donker of Systeem</sys:String>

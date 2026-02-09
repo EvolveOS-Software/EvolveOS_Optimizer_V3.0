@@ -7,6 +7,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Animation;
 using WinPoint = global::Windows.Graphics.PointInt32;
 using WinSize = global::Windows.Graphics.SizeInt32;

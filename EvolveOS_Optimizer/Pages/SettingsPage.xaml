@@ -43,25 +43,113 @@
             </Border>
 
             <StackPanel Spacing="12">
-                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Subtitle'), Mode=OneWay}" 
-                                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                <StackPanel Spacing="12">
+                    <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                        <StackPanel Spacing="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Title'), Mode=OneWay}"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Subtitle'), Mode=OneWay}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                </StackPanel>
+                                <ComboBox x:Name="BackdropSelector"
+                                          Grid.Column="1"
+                                          Width="200"
+                                          VerticalAlignment="Center"
+                                          SelectionChanged="BackdropSelector_SelectionChanged">
+                                    <ComboBoxItem Tag="None"/>
+                                    <ComboBoxItem Tag="Mica"/>
+                                    <ComboBoxItem Tag="MicaAlt"/>
+                                    <ComboBoxItem Tag="Acrylic"/>
+                                    <ComboBoxItem Tag="AcrylicThin"/>
+                                </ComboBox>
+                            </Grid>
+
+                            <StackPanel x:Name="AcrylicOptionsPanel" Spacing="16" Margin="0,12,0,0" Visibility="Collapsed" Opacity="0">
+                                <StackPanel.RenderTransform>
+                                    <TranslateTransform x:Name="PanelTransform" Y="-15"/>
+                                </StackPanel.RenderTransform>
+
+                                <StackPanel.Resources>
+                                    <Storyboard x:Name="ShowPanelAnimation">
+                                        <DoubleAnimation Storyboard.TargetName="AcrylicOptionsPanel" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:0.3"/>
+                                        <DoubleAnimation Storyboard.TargetName="PanelTransform" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.3">
+                                            <DoubleAnimation.EasingFunction>
+                                                <ExponentialEase Exponent="6" EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </StackPanel.Resources>
+                                
+                                <MenuFlyoutSeparator/>
+
+                                <StackPanel Spacing="4">
+                                    <Grid>
+                                        <TextBlock Text="Tint Opacity"
+                                                   Style="{StaticResource CaptionTextBlockStyle}"/>
+                                        <TextBlock Text="{x:Bind TintOpacitySlider.Value, Mode=OneWay}"
+                                                   HorizontalAlignment="Right"
+                                                   Style="{StaticResource CaptionTextBlockStyle}"/>
+                                    </Grid>
+                                    <Slider x:Name="TintOpacitySlider"
+                                            Minimum="0" Maximum="1"
+                                            StepFrequency="0.01"
+                                            ValueChanged="AcrylicSlider_ValueChanged"/>
+                                </StackPanel>
+
+                                <StackPanel Spacing="4">
+                                    <Grid>
+                                        <TextBlock Text="Luminosity Opacity"
+                                                   Style="{StaticResource CaptionTextBlockStyle}"/>
+                                        <TextBlock Text="{x:Bind LuminositySlider.Value, Mode=OneWay}"
+                                                   HorizontalAlignment="Right"
+                                                   Style="{StaticResource CaptionTextBlockStyle}"/>
+                                    </Grid>
+                                    <Slider x:Name="LuminositySlider"
+                                            Minimum="0"
+                                            Maximum="1"
+                                            StepFrequency="0.01"
+                                            ValueChanged="AcrylicSlider_ValueChanged"/>
+                                </StackPanel>
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Tint Color"
+                                               Style="{StaticResource CaptionTextBlockStyle}"/>
+                                    <DropDownButton x:Name="AcrylicColorButton" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Border x:Name="ColorPreview"
+                                                    Width="20" Height="20"
+                                                    CornerRadius="10"
+                                                    Background="{ThemeResource Brush_Accent}"
+                                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                    BorderThickness="1"/>
+                                            <TextBlock Text="Change Tint Color"/>
+                                        </StackPanel>
+                                        <DropDownButton.Flyout>
+                                            <Flyout Placement="Bottom">
+                                                <StackPanel Spacing="10">
+                                                    <ColorPicker x:Name="AcrylicColorPicker"
+                                                                 IsColorSliderVisible="True"
+                                                                 IsAlphaSliderVisible="False"
+                                                                 ColorChanged="AcrylicColorPicker_ColorChanged"/>
+                                                    <Button Content="Reset to Default"
+                                                            HorizontalAlignment="Stretch"
+                                                            Click="ResetAcrylicColor_Click"/>
+                                                </StackPanel>
+                                            </Flyout>
+                                        </DropDownButton.Flyout>
+                                    </DropDownButton>
+                                </StackPanel>
+                            </StackPanel>
                         </StackPanel>
-                        <ComboBox x:Name="BackdropSelector" Grid.Column="1" Width="200" VerticalAlignment="Center" SelectionChanged="BackdropSelector_SelectionChanged">
-                            <ComboBoxItem Tag="None"/>
-                            <ComboBoxItem Tag="Mica"/>
-                            <ComboBoxItem Tag="MicaAlt"/>
-                            <ComboBoxItem Tag="Acrylic"/>
-                        </ComboBox>
-                    </Grid>
-                </Border>
+                    </Border>
+                </StackPanel>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>

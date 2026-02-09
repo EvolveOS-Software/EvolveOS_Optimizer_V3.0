@@ -7,7 +7,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 {
     internal sealed class SettingsEngine
     {
-        public static readonly string[] AvailableBackdrops = { "None", "Mica", "MicaAlt", "Acrylic" };
+        public static readonly string[] AvailableBackdrops = { "None", "Mica", "MicaAlt", "Acrylic", "AcrylicThin" };
 
         internal static string currentRelease = (Assembly.GetEntryAssembly() ?? throw new InvalidOperationException())
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split(' ').Last().Trim() ?? "1.0.0";
@@ -24,6 +24,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Backdrop"] = "Mica",
             ["AppTheme"] = "Default",
             ["AccentColor"] = "#FF0078D4",
+            ["AcrylicOpacity"] = 0.5,
+            ["AcrylicLuminosity"] = 0.3,
+            ["AcrylicTintColor"] = "#000000",
             ["Language"] = "en-us"
         };
 
@@ -32,6 +35,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string Backdrop { get => (string)_cachedSettings["Backdrop"]; set => ChangingParameters("Backdrop", value); }
         internal static string AppTheme { get => (string)_cachedSettings["AppTheme"]; set => ChangingParameters("AppTheme", value); }
         internal static string AccentColor { get => (string)_cachedSettings["AccentColor"]; set => ChangingParameters("AccentColor", value); }
+        internal static string AcrylicTintColor { get => (string)_cachedSettings["AcrylicTintColor"]; set => ChangingParameters("AcrylicTintColor", value); }
+        internal static double AcrylicOpacity { get => Convert.ToDouble(_cachedSettings["AcrylicOpacity"]); set => ChangingParameters("AcrylicOpacity", value); }
+        internal static double AcrylicLuminosity { get => Convert.ToDouble(_cachedSettings["AcrylicLuminosity"]); set => ChangingParameters("AcrylicLuminosity", value); }
         internal static string Language { get => (string)_cachedSettings["Language"]; set => ChangingParameters("Language", value); }
 
         private static void ChangingParameters(string key, object value)
@@ -80,14 +86,17 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             if (currentApp.MainWindow is MainWindow mainWindow)
             {
-                if (key == "Backdrop")
+                mainWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
                 {
-                    UIHelper.ApplyBackdrop(mainWindow, value.ToString() ?? "None");
-                }
-                else if (key == "AccentColor")
-                {
-                    MainWindow.ApplyAccentColor(value.ToString() ?? "#FF0078D4");
-                }
+                    if (key == "Backdrop" || key == "AcrylicOpacity" || key == "AcrylicLuminosity" || key == "AcrylicTintColor")
+                    {
+                        UIHelper.ApplyBackdrop(mainWindow, Backdrop);
+                    }
+                    else if (key == "AccentColor")
+                    {
+                        MainWindow.ApplyAccentColor(value.ToString() ?? "#FF0078D4");
+                    }
+                });
             }
         }
 

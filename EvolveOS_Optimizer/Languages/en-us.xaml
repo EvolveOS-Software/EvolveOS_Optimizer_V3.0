@@ -49,7 +49,8 @@
     <sys:String x:Key="Settings_Backdrop_None">None (Solid)</sys:String>
     <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
     <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt</sys:String>
-    <sys:String x:Key="Settings_Backdrop_Acrylic">Desktop Acrylic</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Acrylic">Acrylic</sys:String>
+    <sys:String x:Key="Settings_Backdrop_AcrylicThin">Acrylic (Thin)</sys:String>
 
     <sys:String x:Key="Settings_Theme_Title">App Theme</sys:String>
     <sys:String x:Key="Settings_Theme_Subtitle">Choose between Light, Dark, or System visual styles</sys:String>
