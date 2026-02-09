@@ -8,6 +8,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
     {
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
 
+        #region Properties
         private object? _currentView;
         public object? CurrentView
         {
@@ -47,6 +48,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 return _displayProfileName;
             }
         }
+        #endregion
 
         public RelayCommand<string> ExecuteNavigateCommand { get; }
 
@@ -59,7 +61,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (e.PropertyName == "Item[]") OnPropertyChanged(string.Empty);
             };
 
-            ExecuteNavigate("Settings");
+            ExecuteNavigate("HomePage");
         }
 
         private void ExecuteNavigate(string? tag)
@@ -68,15 +70,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             CurrentView = tag switch
             {
-                /*"HomePage" => new Pages.HomePage(),
-                "Utils" => new Pages.UtilitiesPage(),
+                "HomePage" => new Pages.HomePage(),
+                /*"Utils" => new Pages.UtilitiesPage(),
                 "Confidentiality" => new Pages.PrivacyPage(),
                 "Interface" => new Pages.InterfacePage(),
                 "Packages" => new Pages.PackagesPage(),
                 "Services" => new Pages.ServicesPage(),
                 "System" => new Pages.SystemPage(),*/
                 "Settings" => new Pages.SettingsPage(),
-                _ => new Pages.SettingsPage()
+                _ => new Pages.HomePage()
             };
         }
     }

@@ -11,5 +11,9 @@
     <SolidColorBrush x:Key="Brush_Inactive" Color="#808080"/>
     <SolidColorBrush x:Key="Brush_Separator" Color="{StaticResource Color_Separator}"/>
     <SolidColorBrush x:Key="Brush_TextBlock_Inactivity" Color="#DFDFDF"/>
+    <SolidColorBrush x:Key="Brush_Highlighted" Color="#FFFFFF"/>
+
+    <SolidColorBrush x:Key="Brush_Error" Color="#E53935"/>
+    <SolidColorBrush x:Key="Brush_Success" Color="#43A047"/>
 
 </ResourceDictionary>

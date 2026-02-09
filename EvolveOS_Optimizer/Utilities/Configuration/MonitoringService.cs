@@ -1,15 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Management;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using EvolveOS_Optimizer.Utilities.Helpers; // Port your ErrorLogging here
-using EvolveOS_Optimizer.Utilities.Services; // Ensure HardwareData is accessible
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
@@ -21,7 +13,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal event Action<DeviceType>? HandleDevicesEvents;
         private readonly List<(ManagementEventWatcher watcher, EventArrivedEventHandler handler)> _watcherHandler = new();
 
-        // Note: GetServices requires the System.ServiceProcess.ServiceController NuGet package
         private readonly ServiceController[] _servicesList = ServiceController.GetServices();
 
         internal enum DeviceType
@@ -67,7 +58,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         public MonitoringService()
         {
-            // Initializing network counters on a separate thread to prevent splash screen freeze
             Task.Run(InitializeNetworkCounters);
         }
 
@@ -77,7 +67,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
 
-                // Select primary active interface
                 NetworkInterface? targetInterface = interfaces
                     .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
                     .FirstOrDefault(nic =>
@@ -88,7 +77,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 {
                     string instanceName = targetInterface.Description;
 
-                    // Performance counters require specific character sanitization
                     instanceName = instanceName.Replace('(', '[').Replace(')', ']')
                                                .Replace('/', '_').Replace('#', '_');
 
@@ -177,11 +165,9 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 MemoryStatus memStatus = new();
                 if (!GlobalMemoryStatusEx(memStatus)) return;
 
-                // Converting bytes to MB
                 ulong totalMemoryMb = memStatus.ullTotalPhys / 1048576;
                 ulong availMemoryMb = memStatus.ullAvailPhys / 1048576;
 
-                // HardwareData is the base class, Usage is an integer percentage
                 Memory.Usage = (int)((float)(totalMemoryMb - availMemoryMb) / totalMemoryMb * 100);
             });
         }
@@ -199,7 +185,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     ulong idleTicks = ConvertTimeToTicks(idleTime);
                     ulong totalTicks = ConvertTimeToTicks(kernelTime) + ConvertTimeToTicks(userTime);
 
-                    await Task.Delay(1000); // Sample window
+                    await Task.Delay(1000);
 
                     if (!GetSystemTimes(out idleTime, out kernelTime, out userTime)) return;
 
@@ -220,7 +206,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         internal void StartDeviceMonitoring()
         {
-            // Run WMI watchers in the background
             Task.Run(() =>
             {
                 var monitorTasks = new List<(string filter, DeviceType type, string? scope)>

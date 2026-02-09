@@ -36,6 +36,7 @@
   
   <ItemGroup>
     <Content Include="Assets\**" />
+    <None Remove="Pages\HomePage.xaml" />
     <None Remove="Resources\Blank.gz" />
     <None Remove="Resources\DisablingWD.gz" />
     <None Remove="Resources\EvolveOSLogo.png" />
@@ -92,6 +93,12 @@
 
   <ItemGroup>
     <Folder Include="Styles\Buttons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

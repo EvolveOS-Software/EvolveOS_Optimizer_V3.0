@@ -10,9 +10,14 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         protected override object ProvideValue()
         {
-            if (string.IsNullOrEmpty(Key)) return string.Empty;
+            return GetString(Key);
+        }
 
-            return LocalizationService.Instance[Key];
+        public static string GetString(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return string.Empty;
+
+            return LocalizationService.Instance[key] ?? key;
         }
     }
 }

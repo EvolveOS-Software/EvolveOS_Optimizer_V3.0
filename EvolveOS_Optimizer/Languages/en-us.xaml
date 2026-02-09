@@ -47,5 +47,21 @@
     <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt</sys:String>
     <sys:String x:Key="Settings_Backdrop_Acrylic">Desktop Acrylic</sys:String>
     <!-- endregion Settings -->
-    
+
+    <!-- region HomePage -->
+    <sys:String x:Key="label_proc_sysinfo">Running processes:</sys:String>
+    <sys:String x:Key="label_svc_sysinfo">services:</sys:String>
+
+    <!-- Elevation Mode -->
+    <sys:String x:Key="btn_restart_admin">Restart as Admin</sys:String>
+    <sys:String x:Key="label_admin_notice">Run as Admin for full optimization (Services &amp; Memory)</sys:String>
+    <sys:String x:Key="label_limited_mode">Limited Mode:</sys:String>
+    <sys:String x:Key="label_status_checking">Status: Checking...</sys:String>
+
+    <sys:String x:Key="status_elevated_active">System Elevated: All features active</sys:String>
+    <sys:String x:Key="status_limited_optimization">Limited Mode: Run as Admin for full optimization</sys:String>
+    <sys:String x:Key="msg_elevation_declined_title">Elevation Declined</sys:String>
+    <sys:String x:Key="msg_elevation_declined_body">The application must be elevated to apply system-wide optimizations.</sys:String>
+    <!-- endregion HomePage -->
+
 </ResourceDictionary>

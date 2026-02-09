@@ -64,8 +64,6 @@ namespace EvolveOS_Optimizer
 
             SetBackdrop(new MicaBackdrop());
             CenterWindow();
-
-            // ContentFrame.Navigate(typeof(Pages.HomePage));
         }
 
         public void SetBackdrop(SystemBackdrop backdrop)

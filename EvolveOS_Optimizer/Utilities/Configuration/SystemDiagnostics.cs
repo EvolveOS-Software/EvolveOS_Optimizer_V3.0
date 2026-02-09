@@ -1,14 +1,7 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Management;
 using System.Net;
 using System.Net.Http;
@@ -17,7 +10,6 @@ using System.Net.Sockets;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
@@ -125,6 +117,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 }
 
                 Parallel.Invoke(
+                    GetOperatingSystemInfo,
                     GetWallpaperImage,
                     GetBiosInfo,
                     GetMotherboardInfo,
@@ -149,7 +142,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 NetworkAdapter = GetNetworkAdapters();
         }
 
-        private void GetWallpaperImage()
+        public void GetWallpaperImage()
         {
             try
             {
@@ -169,6 +162,25 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 Debug.WriteLine($"[Diagnostics] Wallpaper Error: {ex.Message}");
                 WallpaperPath = null;
             }
+        }
+
+        public ImageSource? GetWallpaperSource()
+        {
+            try
+            {
+                string wallpaperPath = Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "WallPaper", string.Empty)?.ToString() ?? string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(wallpaperPath) && File.Exists(wallpaperPath))
+                {
+                    return new BitmapImage(new Uri(wallpaperPath));
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Diagnostics] Wallpaper Error: {ex.Message}");
+            }
+
+            return null;
         }
 
         internal string? GetProfileAvatarPath()
@@ -471,6 +483,29 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             int unitIndex = 0;
             while (bytes >= 1024 && unitIndex < units.Length - 1) { bytes /= 1024; unitIndex++; }
             return $"{Math.Round(bytes, 2)} {units[unitIndex]}";
+        }
+
+        internal new async Task<int> GetTotalProcessorUsage()
+        {
+            return await Task.Run(() =>
+            {
+                try { return Process.GetProcesses().Length; }
+                catch { return 0; }
+            });
+        }
+
+        internal new async Task<int> GetPhysicalAvailableMemory()
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_Service");
+                    using var results = searcher.Get();
+                    return results.Count;
+                }
+                catch { return 0; }
+            });
         }
     }
 
