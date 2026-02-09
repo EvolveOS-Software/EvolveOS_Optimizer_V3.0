@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
     <PackageReference Include="Microsoft.Win32.SystemEvents" Version="10.0.2" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7463" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
@@ -38,6 +39,7 @@
   <ItemGroup>
     <Content Include="Assets\**" />
     <None Remove="Pages\HomePage.xaml" />
+    <None Remove="Pages\SecurityPage.xaml" />
     <None Remove="Resources\Blank.gz" />
     <None Remove="Resources\DisablingWD.gz" />
     <None Remove="Resources\EvolveOSLogo.png" />
@@ -49,6 +51,8 @@
     <None Remove="Resources\Sound.wav" />
     <None Remove="Resources\Tickets.xml" />
     <None Remove="Resources\UltPower.gz" />
+    <None Remove="Styles\Display\Cards.xaml" />
+    <None Remove="Styles\Display\TextBlock.xaml" />
     <Page Remove="Assets\Images.xaml" />
     <Page Remove="Languages\en-us.xaml" />
     <Page Remove="Languages\fr-fr.xaml" />
@@ -94,6 +98,24 @@
 
   <ItemGroup>
     <Folder Include="Styles\Buttons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\Display\Cards.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\Display\TextBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\SecurityPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

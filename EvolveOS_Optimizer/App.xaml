@@ -8,10 +8,12 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                <ResourceDictionary Source="/Assets/Fonts/Fonts.xaml" />
-                <ResourceDictionary Source="/Assets/DrawingImages/SystemInfo.xaml" />
-                <ResourceDictionary Source="/Styles/Themes/Colors.xaml"/>
-                <ResourceDictionary Source="/Styles/Buttons/RadioButtons.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Assets/Fonts/Fonts.xaml" />
+                <ResourceDictionary Source="ms-appx:///Assets/DrawingImages/SystemInfo.xaml" />
+                <ResourceDictionary Source="ms-appx:///Styles/Themes/Colors.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Styles/Buttons/RadioButtons.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Styles/Display/Cards.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Styles/Display/TextBlock.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <SolidColorBrush x:Key="MyDynamicAccentBrush" Color="{ThemeResource SystemAccentColor}"/>

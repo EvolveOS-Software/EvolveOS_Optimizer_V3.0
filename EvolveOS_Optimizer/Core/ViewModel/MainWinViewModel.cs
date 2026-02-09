@@ -70,7 +70,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             var newPage = tag switch
             {
-                "HomePage" => (Page)new Pages.HomePage(),
+                "Home" => (Page)new Pages.HomePage(),
+                "Security" => new Pages.SecurityPage(),
                 /*"Utils" => new Pages.UtilitiesPage(),
                 "Confidentiality" => new Pages.PrivacyPage(),
                 "Interface" => new Pages.InterfacePage(),

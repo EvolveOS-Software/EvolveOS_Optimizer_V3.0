@@ -17,6 +17,7 @@
 
     <!-- region Main Window -->
     <sys:String x:Key="Nav_Home">Home</sys:String>
+    <sys:String x:Key="Nav_Security">Security</sys:String>
     <sys:String x:Key="Nav_Utilities">Utilities</sys:String>
     <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
@@ -63,5 +64,47 @@
     <sys:String x:Key="msg_elevation_declined_title">Elevation Declined</sys:String>
     <sys:String x:Key="msg_elevation_declined_body">The application must be elevated to apply system-wide optimizations.</sys:String>
     <!-- endregion HomePage -->
+
+    <sys:String x:Key="SecurityPage_RefreshButton">Refresh</sys:String>
+    <sys:String x:Key="SecurityPage_OpenWindowsSecurity">Open Windows Security</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScan">Quick scan</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanTitle">Quick scan</sys:String>
+    <sys:String x:Key="SecurityPage_UpdateDefinitions">Update definitions</sys:String>
+    <sys:String x:Key="SecurityPage_UpdateDefinitionsTitle">Update definitions</sys:String>
+    <sys:String x:Key="SecurityPage_Enable">Enable</sys:String>
+    <sys:String x:Key="btn_restart_admin">Restart as Admin</sys:String>
+
+    <sys:String x:Key="SecurityPage_Status">Security Status</sys:String>
+    <sys:String x:Key="SecurityPage_Details">Security Details</sys:String>
+    <sys:String x:Key="SecurityPage_VirusThreatProtection">Virus &amp; threat protection</sys:String>
+    <sys:String x:Key="SecurityPage_RealTimeProtection">Real-time protection</sys:String>
+    <sys:String x:Key="SecurityPage_FirewallNetworkProtection">Firewall &amp; network protection</sys:String>
+    <sys:String x:Key="SecurityPage_WindowsUpdate">Windows Update</sys:String>
+    <sys:String x:Key="SecurityPage_SmartScreen">Microsoft Defender SmartScreen</sys:String>
+    <sys:String x:Key="SecurityPage_UAC">User Account Control (UAC)</sys:String>
+    <sys:String x:Key="SecurityPage_TamperProtection">Tamper Protection</sys:String>
+    <sys:String x:Key="SecurityPage_ControlledFolderAccess">Controlled folder access</sys:String>
+    <sys:String x:Key="SecurityPage_BitLockerEncryption">BitLocker drive encryption</sys:String>
+    <sys:String x:Key="SecurityPage_WindowsDefenderService">Microsoft Defender service</sys:String>
+
+    <sys:String x:Key="SecurityPage_ActiveMalwareScanning">Active malware scanning</sys:String>
+    <sys:String x:Key="SecurityPage_BlocksUnauthorizedAccess">Blocks unauthorized network access</sys:String>
+    <sys:String x:Key="SecurityPage_SecurityPatchesAndUpdates">Security patches and feature updates</sys:String>
+    <sys:String x:Key="SecurityPage_WebAndAppProtection">Web and app protection</sys:String>
+    <sys:String x:Key="SecurityPage_AdministrativeAccessControl">Controls administrative access prompts</sys:String>
+    <sys:String x:Key="SecurityPage_PreventsUnauthorizedChanges">Prevents unauthorized changes to security settings</sys:String>
+    <sys:String x:Key="SecurityPage_RansomwareProtection">Protect folders from unauthorized changes (ransomware protection)</sys:String>
+    <sys:String x:Key="SecurityPage_DriveEncryptionStatus">Drive encryption status</sys:String>
+    <sys:String x:Key="SecurityPage_CoreSecurityService">Core security service status</sys:String>
+
+    <sys:String x:Key="SecurityPage_LastUpdated">Last updated</sys:String>
+    <sys:String x:Key="SecurityPage_LastRefreshed">Last refreshed</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanCompleted">Quick scan completed</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanFailed">Quick scan failed</sys:String>
+    <sys:String x:Key="SecurityPage_DefinitionsUpdated">Definitions updated</sys:String>
+    <sys:String x:Key="SecurityPage_DefinitionsUpdateFailed">Definitions update failed</sys:String>
+    <sys:String x:Key="None">None</sys:String>
+    <sys:String x:Key="Enabled">Enabled</sys:String>
+    <sys:String x:Key="Disabled">Disabled</sys:String>
 
 </ResourceDictionary>

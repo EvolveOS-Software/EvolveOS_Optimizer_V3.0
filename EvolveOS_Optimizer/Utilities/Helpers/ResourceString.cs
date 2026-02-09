@@ -10,6 +10,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         protected override object ProvideValue()
         {
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                return Key;
+            }
+
             return GetString(Key);
         }
 
@@ -17,7 +22,34 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             if (string.IsNullOrEmpty(key)) return string.Empty;
 
-            return LocalizationService.Instance[key] ?? key;
+            var result = LocalizationService.Instance[key];
+
+            if (!string.IsNullOrEmpty(result))
+            {
+                return result;
+            }
+
+            try
+            {
+                string altKey = string.Empty;
+
+                if (key.Contains('.'))
+                    altKey = key.Replace('.', '_');
+                else if (key.Contains('/'))
+                    altKey = key.Replace('/', '_');
+
+                if (!string.IsNullOrEmpty(altKey))
+                {
+                    var altResult = LocalizationService.Instance[altKey];
+                    if (!string.IsNullOrEmpty(altResult)) return altResult;
+                }
+            }
+            catch
+            {
+                // Fallback to key if logic fails
+            }
+
+            return $"[{key}]";
         }
     }
 }

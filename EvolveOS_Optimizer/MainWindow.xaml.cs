@@ -1,20 +1,12 @@
-using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
-using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
-using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
-using System.Numerics;
 
 namespace EvolveOS_Optimizer
 {
