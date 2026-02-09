@@ -12,72 +12,66 @@
     Background="Transparent">
 
     <Grid>
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,80,0">
-            <StackPanel x:Name="WallInfoBanner" Orientation="Horizontal">
+        <StackPanel HorizontalAlignment="Center" 
+                VerticalAlignment="Top" 
+                Margin="0,20,0,0" 
+                Spacing="20">
 
+            <StackPanel x:Name="WallInfoBanner" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Grid x:Name="LogoGrid" Width="80" Height="80" VerticalAlignment="Center" Margin="0,5,0,0" Background="Transparent">
                     <Grid.Shadow>
                         <ThemeShadow />
                     </Grid.Shadow>
-
                     <Viewbox Width="75" Height="75" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Path Data="M0,0 H45 V45 H0 Z M50,0 H95 V45 H50 Z M0,50 H45 V95 H0 Z M50,50 H95 V95 H50 Z" Stretch="Uniform">
                             <Path.Fill>
-                                <ImageBrush ImageSource="{Binding DisplayWallpaper, Mode=OneWay}" 
-                            Stretch="UniformToFill" />
+                                <ImageBrush ImageSource="{Binding DisplayWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
                             </Path.Fill>
                         </Path>
                     </Viewbox>
                 </Grid>
 
                 <StackPanel Margin="15,0,0,0" Orientation="Vertical" VerticalAlignment="Center">
-                    <TextBlock FontSize="16" 
-                               TextWrapping="Wrap" 
-                               PointerPressed="HandleCopyingData_PointerPressed">
-                        <Run Foreground="{StaticResource Brush_Highlighted}" 
-                             Text="{Binding OSInfo[OSName].Data}"/>
-                        <LineBreak/>
-                        <Run Foreground="{StaticResource Brush_Inactive}" 
-                             Text="{Binding OSInfo[OSVersion].Data}"/>
+                    <TextBlock FontSize="16" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed">
+                    <Run Foreground="{StaticResource Brush_Highlighted}" Text="{Binding OSInfo[OSName].Data}"/>
+                    <LineBreak/>
+                    <Run Foreground="{StaticResource Brush_Inactive}" Text="{Binding OSInfo[OSVersion].Data}"/>
                     </TextBlock>
 
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <TextBlock Text="{helpers:ResourceString Key=label_proc_sysinfo}" 
-                                   FontFamily="{StaticResource Jura}" 
-                                   FontSize="14" 
-                                   Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
-
-                        <TextBlock anim:NumberAnimation.Value="{Binding SystemStats[Processes].Data}" 
-                                   Text="0" 
-                                   FontFamily="{StaticResource Play}" 
-                                   FontSize="13.5" 
-                                   Margin="5,0.5,5,0" 
-                                   Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
-
-                        <TextBlock Text=" • " 
-                                   FontFamily="{StaticResource Jura}" 
-                                   FontSize="14" 
-                                   Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
-
-                        <TextBlock Text="{helpers:ResourceString Key=label_svc_sysinfo}" 
-                                   FontFamily="{StaticResource Jura}" 
-                                   FontSize="14" 
-                                   Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
-
-                        <TextBlock anim:NumberAnimation.Value="{Binding SystemStats[Services].Data}" 
-                                   Text="0" 
-                                   FontFamily="{StaticResource Play}" 
-                                   FontSize="13.5" 
-                                   Margin="5,0.5,0,0" 
-                                   Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
+                        <TextBlock Text="{helpers:ResourceString Key=label_proc_sysinfo}" FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
+                        <TextBlock anim:NumberAnimation.Value="{Binding SystemStats[Processes].Data}" Text="0" FontFamily="{StaticResource Play}" FontSize="13.5" Margin="5,0.5,5,0" Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
+                        <TextBlock Text=" • " FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
+                        <TextBlock Text="{helpers:ResourceString Key=label_svc_sysinfo}" FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
+                        <TextBlock anim:NumberAnimation.Value="{Binding SystemStats[Services].Data}" Text="0" FontFamily="{StaticResource Play}" FontSize="13.5" Margin="5,0.5,0,0" Foreground="{StaticResource Brush_TextBlock_Inactivity}"/>
                     </StackPanel>
-
-                    <TextBlock x:Name="StatusLabel" 
-                               FontFamily="{StaticResource Jura}" 
-                               FontSize="12" 
-                               Text="{helpers:ResourceString Key=label_status_checking}"/>
+                    <TextBlock x:Name="StatusLabel" FontFamily="{StaticResource Jura}" FontSize="12" Text="{helpers:ResourceString Key=label_status_checking}"/>
                 </StackPanel>
             </StackPanel>
-        </Grid>
+
+            <Border x:Name="AdminWarningBanner"
+                Visibility="Visible"
+                HorizontalAlignment="Center"
+                Background="#20FF0000"
+                BorderBrush="{ThemeResource SystemFillColorCriticalBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <SymbolIcon Symbol="Admin" Foreground="{StaticResource Brush_Error}" VerticalAlignment="Center"/>
+                    <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Error}" FontWeight="SemiBold">
+                    <Run Text="{helpers:ResourceString Key=label_limited_mode}"/>
+                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" Text="{helpers:ResourceString Key=label_admin_notice}"/>
+                    </TextBlock>
+                    <Button Margin="15,0,0,0" Padding="12,4" Click="RestartAsAdmin_Click" Style="{StaticResource AccentButtonStyle}" Background="DarkRed">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <SymbolIcon Symbol="Permissions" Scale="0.9,0.9,1"/>
+                            <TextBlock Text="{helpers:ResourceString Key=btn_restart_admin}" FontSize="12" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
     </Grid>
 </Page>

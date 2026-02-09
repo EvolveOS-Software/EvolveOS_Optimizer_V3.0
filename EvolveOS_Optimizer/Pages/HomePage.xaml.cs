@@ -12,8 +12,6 @@ public sealed partial class HomePage : Page
     private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
     private readonly DispatcherQueue _dispatcherQueue;
     private DispatcherTimer? _monitoringTimer;
-    //private bool _isGameModeActive = false;
-
 
     public HomePage()
     {
@@ -60,7 +58,7 @@ public sealed partial class HomePage : Page
 
         if (!isElevated)
         {
-            //AdminWarningBanner.Visibility = Visibility.Visible;
+            AdminWarningBanner.Visibility = Visibility.Visible;
             WallInfoBanner.Visibility = Visibility.Collapsed;
 
             StatusLabel.Text = ResourceString.GetString("status_limited_optimization");
@@ -68,7 +66,7 @@ public sealed partial class HomePage : Page
         }
         else
         {
-            //AdminWarningBanner.Visibility = Visibility.Collapsed;
+            AdminWarningBanner.Visibility = Visibility.Collapsed;
             WallInfoBanner.Visibility = Visibility.Visible;
 
             StatusLabel.Text = ResourceString.GetString("status_elevated_active");
@@ -80,24 +78,41 @@ public sealed partial class HomePage : Page
         }
     }
 
-    /*private void RestartAsAdmin_Click(object sender, RoutedEventArgs e)
+    private void RestartAsAdmin_Click(object sender, RoutedEventArgs e)
     {
+        if (sender is Button btn) btn.IsEnabled = false;
+        AdminWarningBanner.Visibility = Visibility.Collapsed;
+
         try
         {
-            string exePath = Process.GetCurrentProcess().MainModule.FileName;
-            Process.Start(new ProcessStartInfo
+            string? exePath = Environment.ProcessPath;
+
+            if (string.IsNullOrEmpty(exePath))
             {
-                FileName = exePath,
-                UseShellExecute = true,
-                Verb = "runas"
-            });
-            Application.Current.Exit();
+                exePath = Process.GetCurrentProcess().MainModule?.FileName;
+            }
+
+            if (!string.IsNullOrEmpty(exePath))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    UseShellExecute = true,
+                    Verb = "runas"
+                });
+
+                Application.Current.Exit();
+            }
+            else
+            {
+                Debug.WriteLine("[Elevation] Could not determine executable path.");
+            }
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"[Elevation] Failed: {ex.Message}");
         }
-    }*/
+    }
     #endregion
 
     #region Real-time Monitoring
@@ -107,21 +122,34 @@ public sealed partial class HomePage : Page
         _monitoringTimer.Interval = TimeSpan.FromSeconds(2);
         _monitoringTimer.Tick += async (s, e) =>
         {
+            if (this.Parent == null)
+            {
+                _monitoringTimer?.Stop();
+                return;
+            }
+
             string pCount = await _systemDiagnostics.GetProcessCount();
             string sCount = await _systemDiagnostics.GetServicesCount();
 
             HardwareData.RunningProcessesCount = pCount;
             HardwareData.RunningServicesCount = sCount;
 
-            if (this.DataContext is HomePageViewModel vm)
+            try
             {
-                vm.RefreshStats();
-                vm.UpdateDateTime();
+                if (this.DataContext is HomePageViewModel vm)
+                {
+                    vm.RefreshStats();
+                    vm.UpdateDateTime();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Monitoring] DataContext access failed: {ex.Message}");
+                _monitoringTimer?.Stop();
             }
         };
         _monitoringTimer.Start();
     }
-
     #endregion
 
     #region UI Interactions
@@ -141,15 +169,6 @@ public sealed partial class HomePage : Page
             //ShowCopyToast();
         }
     }
-
-    /*private void ShowCopyToast()
-    {
-        if (PopupCopy != null)
-        {
-            PopupCopy.IsOpen = true;
-            Task.Delay(2000).ContinueWith(_ => _dispatcherQueue.TryEnqueue(() => PopupCopy.IsOpen = false));
-        }
-    }*/
 
     /*private void BtnVision_Toggled(object sender, RoutedEventArgs e)
     {
