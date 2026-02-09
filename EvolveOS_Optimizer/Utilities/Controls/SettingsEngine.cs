@@ -1,9 +1,6 @@
-﻿using EvolveOS_Optimizer.Utilities.Services;
+﻿using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 
 namespace EvolveOS_Optimizer.Utilities.Controls
@@ -78,7 +75,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             {
                 if (key == "Backdrop")
                 {
-                    mainWindow.SetBackdropByName(value.ToString() ?? "None");
+                    UIHelper.ApplyBackdrop(mainWindow, value.ToString() ?? "None");
                 }
                 else if (key == "AccentColor")
                 {

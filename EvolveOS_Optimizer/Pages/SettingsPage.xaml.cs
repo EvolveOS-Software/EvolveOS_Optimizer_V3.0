@@ -1,13 +1,9 @@
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Shapes;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -61,7 +57,6 @@ namespace EvolveOS_Optimizer.Pages
                 var g = (byte)uint.Parse(hex[4..6], NumberStyles.HexNumber);
                 var b = (byte)uint.Parse(hex[6..8], NumberStyles.HexNumber);
 
-                // Use global:: to avoid the namespace collision
                 AdvancedColorPicker.Color = global::Windows.UI.Color.FromArgb(a, r, g, b);
             }
             catch
@@ -91,13 +86,20 @@ namespace EvolveOS_Optimizer.Pages
         private void BackdropSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_isInitialized && BackdropSelector.SelectedItem is ComboBoxItem item)
+            {
                 SettingsEngine.Backdrop = item.Tag?.ToString() ?? "None";
+            }
         }
 
         private void ColorPalette_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_isInitialized && ColorPalette.SelectedItem is Rectangle rect && rect.Tag != null)
-                SettingsEngine.AccentColor = rect.Tag.ToString()!;
+            {
+                string newColor = rect.Tag.ToString()!;
+                SettingsEngine.AccentColor = newColor;
+
+                ((App)Application.Current).UpdateGlobalAccentColor(newColor);
+            }
         }
 
         private void AdvancedColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args) =>
@@ -107,6 +109,8 @@ namespace EvolveOS_Optimizer.Pages
         {
             ColorPalette.SelectedItem = null;
             SettingsEngine.AccentColor = _pendingHexColor;
+
+            ((App)Application.Current).UpdateGlobalAccentColor(_pendingHexColor);
         }
 
         private void OnPropertyChanged([CallerMemberName] string? name = null) =>

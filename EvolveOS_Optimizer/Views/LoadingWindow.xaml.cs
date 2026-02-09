@@ -32,7 +32,7 @@ namespace EvolveOS_Optimizer.Views
 
             if (RootGrid != null) RootGrid.Opacity = 0;
 
-            ApplyBackdrop();
+            UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
             ConfigureWindow();
             LoadUserDisplayData();
 
@@ -60,26 +60,6 @@ namespace EvolveOS_Optimizer.Views
             {
                 AutoLoginBadge.Visibility = Visibility.Visible;
                 AutoLoginBadge.Opacity = 1;
-            }
-        }
-
-        private void ApplyBackdrop()
-        {
-            string backdrop = SettingsEngine.Backdrop;
-            switch (backdrop)
-            {
-                case "Mica":
-                    this.SystemBackdrop = new MicaBackdrop() { Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base };
-                    break;
-                case "MicaAlt":
-                    this.SystemBackdrop = new MicaBackdrop() { Kind = Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt };
-                    break;
-                case "Acrylic":
-                    this.SystemBackdrop = new DesktopAcrylicBackdrop();
-                    break;
-                default:
-                    this.SystemBackdrop = null;
-                    break;
             }
         }
 
@@ -237,21 +217,25 @@ namespace EvolveOS_Optimizer.Views
             try
             {
                 var mainDash = new global::EvolveOS_Optimizer.MainWindow();
-                mainDash.SetBackdropByName(SettingsEngine.Backdrop);
 
                 if (Application.Current is App myApp)
                 {
+                    myApp.MainWindow = mainDash;
                     myApp.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
                 }
 
+                UIHelper.ApplyBackdrop(mainDash, SettingsEngine.Backdrop);
+
                 mainDash.Activate();
-                await Task.Delay(200);
+
+                await Task.Delay(500);
                 this.Close();
             }
             catch (Exception ex)
             {
                 ErrorLogging.LogWritingFile(ex, "Transition_Fail");
                 var fallback = new global::EvolveOS_Optimizer.MainWindow();
+                if (Application.Current is App a) a.MainWindow = fallback;
                 fallback.Activate();
                 this.Close();
             }

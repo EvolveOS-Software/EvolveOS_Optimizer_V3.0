@@ -1,10 +1,13 @@
 ﻿using EvolveOS_Optimizer.Core.Base;
+using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
     public partial class MainWinViewModel : ViewModelBase
     {
+        private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
+
         private object? _currentView;
         public object? CurrentView
         {
@@ -16,6 +19,32 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _currentView = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        private ImageSource? _displayProfileAvatar;
+        public ImageSource? DisplayProfileAvatar
+        {
+            get
+            {
+                if (_displayProfileAvatar == null)
+                {
+                    _displayProfileAvatar = _systemDiagnostics.GetProfileImage();
+                }
+                return _displayProfileAvatar;
+            }
+        }
+
+        private string? _displayProfileName;
+        public string DisplayProfileName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_displayProfileName))
+                {
+                    _displayProfileName = _systemDiagnostics.GetProfileName();
+                }
+                return _displayProfileName;
             }
         }
 

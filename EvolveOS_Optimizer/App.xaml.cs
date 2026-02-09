@@ -1,4 +1,5 @@
 ﻿using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Views;
 using System.IO;
@@ -9,7 +10,7 @@ namespace EvolveOS_Optimizer
 {
     public partial class App : Application
     {
-        public Window? MainWindow { get; private set; }
+        public Window? MainWindow { get; set; }
         private static Mutex? _mutex;
 
         public static new App Current => (App)Application.Current;
@@ -65,6 +66,8 @@ namespace EvolveOS_Optimizer
             MainWindow = loadingWindow;
 
             MainWindow.Activate();
+
+            UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
 
             _ = Task.Run(async () =>
             {

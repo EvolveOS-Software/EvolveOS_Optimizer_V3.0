@@ -16,22 +16,54 @@
         <Grid.DataContext>
             <vm:MainWinViewModel/>
         </Grid.DataContext>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid x:Name="AppTitleBar" Height="45" VerticalAlignment="Top">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0">
                 <Image Source="/Assets/EvolveOS_Optimizer.ico" Width="18" Height="18" />
-                <TextBlock Text="EvolveOS Optimizer" 
+                <TextBlock Text="EvolveOS Optimizer"
+                           FontFamily="{StaticResource Jura}"
                            VerticalAlignment="Center" 
-                           Margin="12,0,0,0" 
+                           Margin="12,0,0,0"
                            FontSize="12"
                            FontWeight="SemiBold"
                            Foreground="{StaticResource MyDynamicAccentBrush}"/>
             </StackPanel>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid Width="30" Height="30">
+                    <Border CornerRadius="15"
+                            Width="30"
+                            Height="30"
+                            BorderBrush="{StaticResource MyDynamicAccentBrush}"
+                            BorderThickness="1">
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding DisplayProfileAvatar, Mode=OneWay}"
+                                        Stretch="UniformToFill"/>
+                        </Border.Background>
+                    </Border>
+
+                    <Ellipse Stroke="{StaticResource MyDynamicAccentBrush}" 
+                             StrokeThickness="0.5"
+                             Opacity="0.5"
+                             Margin="-2"/>
+                </Grid>
+
+                <TextBlock x:Name="DisplayProfileName"
+                           Text="{Binding DisplayProfileName}"
+                           FontFamily="{StaticResource Jura}"
+                           FontSize="14"
+                           FontWeight="Medium"
+                           Foreground="{StaticResource MyDynamicAccentBrush}"
+                           VerticalAlignment="Center"
+                           Margin="10,0,0,0"/>
+            </StackPanel>
+
         </Grid>
 
         <Grid Grid.Row="1">
@@ -40,23 +72,26 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ContentControl Grid.Column="1" 
-                            Content="{Binding CurrentView}" 
+            <ContentControl Grid.Column="1"
+                            Content="{Binding CurrentView}"
                             Margin="5,2,0,13"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"/>
 
             <Grid Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Canvas.ZIndex="100">
-
                 <Border Width="55" 
                         Background="{ThemeResource LayerFillColorDefaultBrush}" 
-                        CornerRadius="10" 
-                        Margin="10,15,0,50" 
+                        CornerRadius="10"
+                        Margin="10,15,0,50"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Stretch"
-                        Translation="0,0,8"/>
+                        Translation="0,0,8">
+                    <Border.Shadow>
+                        <ThemeShadow />
+                    </Border.Shadow>
+                </Border>
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
                               Margin="0,15,0,50">
 
