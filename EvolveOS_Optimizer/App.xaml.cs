@@ -1,6 +1,5 @@
 ﻿using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Views;
 using System.IO;
 using System.Security.Principal;
@@ -29,57 +28,22 @@ namespace EvolveOS_Optimizer
 
             if (!IsRunningAsAdmin())
             {
-                string? exePath = Environment.ProcessPath;
-
-                if (exePath != null)
-                {
-                    ProcessStartInfo proc = new ProcessStartInfo
-                    {
-                        FileName = exePath,
-                        UseShellExecute = true,
-                        Verb = "runas"
-                    };
-
-                    try
-                    {
-                        Process.Start(proc);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"[App] Failed to restart as admin: {ex.Message}");
-                    }
-                }
-
-                Environment.Exit(0);
+                ElevateToAdmin();
                 return;
             }
 
             SetPriority(ProcessPriorityClass.High);
 
             SettingsEngine.CheckingParameters();
-            InitializeLocalization();
-
             App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
 
             var loadingWindow = new LoadingWindow();
-
             MainWindow = loadingWindow;
 
+            UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
             MainWindow.Activate();
 
-            UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await RunGuard.CheckingDefenderExclusions();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[App] Background Defender check failed: {ex.Message}");
-                }
-            });
+            _ = StartBackgroundServices();
         }
 
         #region System & Process Utilities
@@ -129,17 +93,38 @@ namespace EvolveOS_Optimizer
 
         #region App Initialization & Styling
 
-        private void InitializeLocalization()
+        private void ElevateToAdmin()
+        {
+            string? exePath = Environment.ProcessPath;
+            if (exePath != null)
+            {
+                ProcessStartInfo proc = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
+
+                try { Process.Start(proc); }
+                catch (Exception ex) { Debug.WriteLine($"[App] Elevation failed: {ex.Message}"); }
+            }
+            Environment.Exit(0);
+        }
+
+        private async Task StartBackgroundServices()
         {
             try
             {
-                string lang = SettingsEngine.Language;
-                if (lang == "en") lang = "en-us";
-                LocalizationService.Instance.LoadLanguage(lang);
+                await RunGuard.CheckingDefenderExclusions();
+
+                Debug.WriteLine("[App] Background services completed successfully.");
+            }
+            catch (OperationCanceledException)
+            {
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[App] Early Localizer Error: {ex.Message}");
+                Debug.WriteLine($"[App] Background service error: {ex.Message}");
             }
         }
 

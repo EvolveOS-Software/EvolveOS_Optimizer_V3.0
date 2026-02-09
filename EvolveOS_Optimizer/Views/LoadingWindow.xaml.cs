@@ -21,13 +21,15 @@ namespace EvolveOS_Optimizer.Views
         private readonly DispatcherQueue _dispatcherQueue;
         private int _lastReportedStep = -1;
 
+        public LocalizationService Localizer => LocalizationService.Instance;
+        public string GetText(string key) => Localizer[key];
+
         public LoadingWindow(bool autoLoginSuccessful = false)
         {
             this.InitializeComponent();
             _isAutoLoginSuccessful = autoLoginSuccessful;
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
-            LocalizationService.Instance.LoadLanguage("en-us");
             ApplyUserAccentColor();
 
             if (RootGrid != null) RootGrid.Opacity = 0;

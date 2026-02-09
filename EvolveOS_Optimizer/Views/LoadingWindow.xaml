@@ -78,7 +78,8 @@
 
             <StackPanel Grid.Row="0" VerticalAlignment="Bottom">
                 <TextBlock Foreground="{StaticResource Brush_Inactive}" FontFamily="{StaticResource Jura-Bold}" FontSize="12">
-                    <Run Text="Loading EvolveOS Optimizer"/><Run x:Name="DotRun" Text="..." />
+                    <Run Text="{helpers:ResourceString Key=loading_message}" />
+                    <Run x:Name="DotRun" Text="..." />
                 </TextBlock>
             </StackPanel>
 

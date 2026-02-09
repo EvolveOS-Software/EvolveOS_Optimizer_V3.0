@@ -4,8 +4,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="using:System">
 
+    <!-- region Loading Window -->
+    <sys:String x:Key="step1_load">Trusted Installer-service starten...</sys:String>
+    <sys:String x:Key="step2_load">Windows-licentiestatus controleren...</sys:String>
+    <sys:String x:Key="step3_load">Hardware-diagnostiek verzamelen...</sys:String>
+    <sys:String x:Key="step4_load">Versie-updates valideren...</sys:String>
+    <sys:String x:Key="step5_load">Geïnstalleerde pakketten scannen...</sys:String>
+    <sys:String x:Key="step6_load">Defender-uitsluitingen controleren...</sys:String>
+    <sys:String x:Key="step7_load">Status van lokaal account verifiëren...</sys:String>
+    <sys:String x:Key="step8_load">Netsh-netwerkstatus analyseren...</sys:String>
+    <sys:String x:Key="step9_load">Bluetooth- en Tick-configuratie controleren...</sys:String>
+    <sys:String x:Key="step10_load">Alle systemen gereed!</sys:String>
+    <!-- endregion Loading Window -->
+
     <!-- region Main Window -->
+    <sys:String x:Key="loading_message">EvolveOS Optimizer laden</sys:String>
     <sys:String x:Key="Nav_Home">Startpagina</sys:String>
+    <sys:String x:Key="Nav_Security">Beveiliging</sys:String>
     <sys:String x:Key="Nav_Utilities">Hulpprogramma's</sys:String>
     <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
@@ -36,5 +51,65 @@
     <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt (Alternatief)</sys:String>
     <sys:String x:Key="Settings_Backdrop_Acrylic">Desktop Acrylic</sys:String>
     <!-- endregion Settings -->
-    
+
+    <!-- region HomePage -->
+    <sys:String x:Key="label_proc_sysinfo">Actieve processen:</sys:String>
+    <sys:String x:Key="label_svc_sysinfo">services:</sys:String>
+
+    <!-- Elevation Mode -->
+    <sys:String x:Key="btn_restart_admin">Opnieuw opstarten als Admin</sys:String>
+    <sys:String x:Key="label_admin_notice">Voer uit als Admin voor volledige optimalisatie (Services &amp; Geheugen)</sys:String>
+    <sys:String x:Key="label_limited_mode">Beperkte modus:</sys:String>
+    <sys:String x:Key="label_status_checking">Status: Controleren...</sys:String>
+
+    <sys:String x:Key="status_elevated_active">Systeem verhoogd: Alle functies actief</sys:String>
+    <sys:String x:Key="status_limited_optimization">Beperkte modus: Voer uit als Admin voor volledige optimalisatie</sys:String>
+    <sys:String x:Key="msg_elevation_declined_title">Verhoging geweigerd</sys:String>
+    <sys:String x:Key="msg_elevation_declined_body">De applicatie moet worden uitgevoerd met administratorrechten om systeembrede optimalisaties toe te passen.</sys:String>
+    <!-- endregion HomePage -->
+
+    <!-- region SecurityPage -->
+    <sys:String x:Key="SecurityPage_RefreshButton">Vernieuwen</sys:String>
+    <sys:String x:Key="SecurityPage_OpenWindowsSecurity">Windows-beveiliging openen</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScan">Snelle scan</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanTitle">Snelle scan</sys:String>
+    <sys:String x:Key="SecurityPage_UpdateDefinitions">Definities bijwerken</sys:String>
+    <sys:String x:Key="SecurityPage_UpdateDefinitionsTitle">Definities bijwerken</sys:String>
+    <sys:String x:Key="SecurityPage_Enable">Inschakelen</sys:String>
+    <sys:String x:Key="btn_restart_admin">Opnieuw opstarten als Admin</sys:String>
+
+    <sys:String x:Key="SecurityPage_Status">Beveiligingsstatus</sys:String>
+    <sys:String x:Key="SecurityPage_Details">Beveiligingsdetails</sys:String>
+    <sys:String x:Key="SecurityPage_VirusThreatProtection">Virus- en bedreigingsbeveiliging</sys:String>
+    <sys:String x:Key="SecurityPage_RealTimeProtection">Realtime-beveiliging</sys:String>
+    <sys:String x:Key="SecurityPage_FirewallNetworkProtection">Firewall- en netwerkbeveiliging</sys:String>
+    <sys:String x:Key="SecurityPage_WindowsUpdate">Windows Update</sys:String>
+    <sys:String x:Key="SecurityPage_SmartScreen">Microsoft Defender SmartScreen</sys:String>
+    <sys:String x:Key="SecurityPage_UAC">Gebruikersaccountbeheer (UAC)</sys:String>
+    <sys:String x:Key="SecurityPage_TamperProtection">Manipulatiebescherming</sys:String>
+    <sys:String x:Key="SecurityPage_ControlledFolderAccess">Gecontroleerde toegang tot mappen</sys:String>
+    <sys:String x:Key="SecurityPage_BitLockerEncryption">BitLocker-stationsversleuteling</sys:String>
+    <sys:String x:Key="SecurityPage_WindowsDefenderService">Microsoft Defender-service</sys:String>
+
+    <sys:String x:Key="SecurityPage_ActiveMalwareScanning">Actief scannen op malware</sys:String>
+    <sys:String x:Key="SecurityPage_BlocksUnauthorizedAccess">Blokkeert ongeautoriseerde netwerktoegang</sys:String>
+    <sys:String x:Key="SecurityPage_SecurityPatchesAndUpdates">Beveiligingspatches en functie-updates</sys:String>
+    <sys:String x:Key="SecurityPage_WebAndAppProtection">Web- en app-beveiliging</sys:String>
+    <sys:String x:Key="SecurityPage_AdministrativeAccessControl">Beheert prompts voor administratieve toegang</sys:String>
+    <sys:String x:Key="SecurityPage_PreventsUnauthorizedChanges">Voorkomt ongeautoriseerde wijzigingen in beveiligingsinstellingen</sys:String>
+    <sys:String x:Key="SecurityPage_RansomwareProtection">Mappen beschermen tegen ongeautoriseerde wijzigingen (ransomware-beveiliging)</sys:String>
+    <sys:String x:Key="SecurityPage_DriveEncryptionStatus">Status van stationsversleuteling</sys:String>
+    <sys:String x:Key="SecurityPage_CoreSecurityService">Status van kernbeveiligingsservice</sys:String>
+
+    <sys:String x:Key="SecurityPage_LastUpdated">Laatst bijgewerkt</sys:String>
+    <sys:String x:Key="SecurityPage_LastRefreshed">Laatst vernieuwd</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanCompleted">Snelle scan voltooid</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanFailed">Snelle scan mislukt</sys:String>
+    <sys:String x:Key="SecurityPage_DefinitionsUpdated">Definities bijgewerkt</sys:String>
+    <sys:String x:Key="SecurityPage_DefinitionsUpdateFailed">Bijwerken van definities mislukt</sys:String>
+    <sys:String x:Key="None">Geen</sys:String>
+    <sys:String x:Key="Enabled">Ingeschakeld</sys:String>
+    <sys:String x:Key="Disabled">Uitgeschakeld</sys:String>
+    <!-- endregion SecurityPage -->
+
 </ResourceDictionary>

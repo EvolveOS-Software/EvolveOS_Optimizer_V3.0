@@ -4,8 +4,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="using:System">
 
+    <!-- region Loading Window -->
+    <sys:String x:Key="loading_message">Chargement de EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="step1_load">Démarrage du service Trusted Installer...</sys:String>
+    <sys:String x:Key="step2_load">Vérification de l'état de la licence Windows...</sys:String>
+    <sys:String x:Key="step3_load">Collecte des diagnostics matériels...</sys:String>
+    <sys:String x:Key="step4_load">Validation des mises à jour de version...</sys:String>
+    <sys:String x:Key="step5_load">Analyse des packages installés...</sys:String>
+    <sys:String x:Key="step6_load">Vérification des exclusions Defender...</sys:String>
+    <sys:String x:Key="step7_load">Vérification de l'état du compte local...</sys:String>
+    <sys:String x:Key="step8_load">Analyse de l'état du réseau Netsh...</sys:String>
+    <sys:String x:Key="step9_load">Vérification de la configuration Bluetooth et Tick...</sys:String>
+    <sys:String x:Key="step10_load">Tous les systèmes sont prêts !</sys:String>
+    <!-- endregion Loading Window -->
+
     <!-- region Main Window -->
     <sys:String x:Key="Nav_Home">Accueil</sys:String>
+    <sys:String x:Key="Nav_Security">Sécurité</sys:String>
     <sys:String x:Key="Nav_Utilities">Utilitaires</sys:String>
     <sys:String x:Key="Nav_Privacy">Confidentialité</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
@@ -36,5 +51,64 @@
     <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt (Alternatif)</sys:String>
     <sys:String x:Key="Settings_Backdrop_Acrylic">Acrylique de bureau</sys:String>
     <!-- endregion Settings -->
-    
+
+    <!-- region HomePage -->
+    <sys:String x:Key="label_proc_sysinfo">Processus en cours :</sys:String>
+    <sys:String x:Key="label_svc_sysinfo">services :</sys:String>
+
+    <!-- Elevation Mode -->
+    <sys:String x:Key="label_admin_notice">Exécuter en tant qu'administrateur pour une optimisation complète (Services et Mémoire)</sys:String>
+    <sys:String x:Key="label_limited_mode">Mode limité :</sys:String>
+    <sys:String x:Key="label_status_checking">Statut : Vérification en cours...</sys:String>
+
+    <sys:String x:Key="status_elevated_active">Système élevé : Toutes les fonctionnalités sont actives</sys:String>
+    <sys:String x:Key="status_limited_optimization">Mode limité : Exécuter en tant qu'admin pour une optimisation complète</sys:String>
+    <sys:String x:Key="msg_elevation_declined_title">Élévation refusée</sys:String>
+    <sys:String x:Key="msg_elevation_declined_body">L'application doit être exécutée avec des privilèges élevés pour appliquer les optimisations système.</sys:String>
+    <!-- endregion HomePage -->
+
+    <!-- region SecurityPage -->
+    <sys:String x:Key="SecurityPage_RefreshButton">Actualiser</sys:String>
+    <sys:String x:Key="SecurityPage_OpenWindowsSecurity">Ouvrir Sécurité Windows</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScan">Analyse rapide</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanTitle">Analyse rapide</sys:String>
+    <sys:String x:Key="SecurityPage_UpdateDefinitions">Mettre à jour les définitions</sys:String>
+    <sys:String x:Key="SecurityPage_UpdateDefinitionsTitle">Mise à jour des définitions</sys:String>
+    <sys:String x:Key="SecurityPage_Enable">Activer</sys:String>
+    <sys:String x:Key="btn_restart_admin">Redémarrer en tant qu'Admin</sys:String>
+
+    <sys:String x:Key="SecurityPage_Status">État de la sécurité</sys:String>
+    <sys:String x:Key="SecurityPage_Details">Détails de sécurité</sys:String>
+    <sys:String x:Key="SecurityPage_VirusThreatProtection">Protection contre les virus et menaces</sys:String>
+    <sys:String x:Key="SecurityPage_RealTimeProtection">Protection en temps réel</sys:String>
+    <sys:String x:Key="SecurityPage_FirewallNetworkProtection">Pare-feu et protection réseau</sys:String>
+    <sys:String x:Key="SecurityPage_WindowsUpdate">Windows Update</sys:String>
+    <sys:String x:Key="SecurityPage_SmartScreen">Microsoft Defender SmartScreen</sys:String>
+    <sys:String x:Key="SecurityPage_UAC">Contrôle de compte d'utilisateur (UAC)</sys:String>
+    <sys:String x:Key="SecurityPage_TamperProtection">Protection contre les falsifications</sys:String>
+    <sys:String x:Key="SecurityPage_ControlledFolderAccess">Dispositif d'accès contrôlé aux dossiers</sys:String>
+    <sys:String x:Key="SecurityPage_BitLockerEncryption">Chiffrement de lecteur BitLocker</sys:String>
+    <sys:String x:Key="SecurityPage_WindowsDefenderService">Service Microsoft Defender</sys:String>
+
+    <sys:String x:Key="SecurityPage_ActiveMalwareScanning">Analyse active des logiciels malveillants</sys:String>
+    <sys:String x:Key="SecurityPage_BlocksUnauthorizedAccess">Bloque les accès réseau non autorisés</sys:String>
+    <sys:String x:Key="SecurityPage_SecurityPatchesAndUpdates">Correctifs de sécurité et mises à jour de fonctionnalités</sys:String>
+    <sys:String x:Key="SecurityPage_WebAndAppProtection">Protection du Web et des applications</sys:String>
+    <sys:String x:Key="SecurityPage_AdministrativeAccessControl">Contrôle les demandes d'accès administratif</sys:String>
+    <sys:String x:Key="SecurityPage_PreventsUnauthorizedChanges">Empêche les modifications non autorisées des paramètres de sécurité</sys:String>
+    <sys:String x:Key="SecurityPage_RansomwareProtection">Protéger les dossiers contre les modifications non autorisées (protection ransomware)</sys:String>
+    <sys:String x:Key="SecurityPage_DriveEncryptionStatus">État du chiffrement de lecteur</sys:String>
+    <sys:String x:Key="SecurityPage_CoreSecurityService">État du service de sécurité principal</sys:String>
+
+    <sys:String x:Key="SecurityPage_LastUpdated">Dernière mise à jour</sys:String>
+    <sys:String x:Key="SecurityPage_LastRefreshed">Dernière actualisation</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanCompleted">Analyse rapide terminée</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanFailed">Échec de l'analyse rapide</sys:String>
+    <sys:String x:Key="SecurityPage_DefinitionsUpdated">Définitions mises à jour</sys:String>
+    <sys:String x:Key="SecurityPage_DefinitionsUpdateFailed">Échec de la mise à jour des définitions</sys:String>
+    <sys:String x:Key="None">Aucun</sys:String>
+    <sys:String x:Key="Enabled">Activé</sys:String>
+    <sys:String x:Key="Disabled">Désactivé</sys:String>
+    <!-- endregion SecurityPage -->
+
 </ResourceDictionary>
