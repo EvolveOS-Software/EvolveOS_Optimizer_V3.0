@@ -50,6 +50,12 @@
     <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
     <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt (Alternatif)</sys:String>
     <sys:String x:Key="Settings_Backdrop_Acrylic">Acrylique de bureau</sys:String>
+
+    <sys:String x:Key="Settings_Theme_Title">Thème de l'application</sys:String>
+    <sys:String x:Key="Settings_Theme_Subtitle">Choisissez entre les styles visuels Clair, Sombre ou Système</sys:String>
+    <sys:String x:Key="Settings_Theme_Default">Par défaut du système</sys:String>
+    <sys:String x:Key="Settings_Theme_Light">Clair</sys:String>
+    <sys:String x:Key="Settings_Theme_Dark">Sombre</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

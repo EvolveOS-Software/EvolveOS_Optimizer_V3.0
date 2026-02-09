@@ -40,6 +40,7 @@ namespace EvolveOS_Optimizer
             var loadingWindow = new LoadingWindow();
             MainWindow = loadingWindow;
 
+            SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
             UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
             MainWindow.Activate();
 

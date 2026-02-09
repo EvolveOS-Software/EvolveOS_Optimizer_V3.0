@@ -64,6 +64,25 @@
                 </Border>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="{x:Bind GetText('Settings_Theme_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_Theme_Subtitle'), Mode=OneWay}" 
+                           Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                        <ComboBox x:Name="ThemeSelector" Grid.Column="1" Width="200" VerticalAlignment="Center" SelectionChanged="ThemeSelector_SelectionChanged">
+                            <ComboBoxItem Content="{x:Bind GetText('Settings_Theme_Default'), Mode=OneWay}" Tag="Default"/>
+                            <ComboBoxItem Content="{x:Bind GetText('Settings_Theme_Light'), Mode=OneWay}" Tag="Light"/>
+                            <ComboBoxItem Content="{x:Bind GetText('Settings_Theme_Dark'), Mode=OneWay}" Tag="Dark"/>
+                        </ComboBox>
+                    </Grid>
+                </Border>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
                         <StackPanel Spacing="2">
                             <TextBlock Text="{x:Bind GetText('Settings_AccentColor_Title'), Mode=OneWay}" FontWeight="SemiBold"/>

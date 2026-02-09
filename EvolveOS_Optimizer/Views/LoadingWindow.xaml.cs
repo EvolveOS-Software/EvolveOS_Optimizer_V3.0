@@ -223,6 +223,9 @@ namespace EvolveOS_Optimizer.Views
                 if (Application.Current is App myApp)
                 {
                     myApp.MainWindow = mainDash;
+
+                    SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
+
                     myApp.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
                 }
 
@@ -237,7 +240,11 @@ namespace EvolveOS_Optimizer.Views
             {
                 ErrorLogging.LogWritingFile(ex, "Transition_Fail");
                 var fallback = new global::EvolveOS_Optimizer.MainWindow();
-                if (Application.Current is App a) a.MainWindow = fallback;
+                if (Application.Current is App a)
+                {
+                    a.MainWindow = fallback;
+                    SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
+                }
                 fallback.Activate();
                 this.Close();
             }

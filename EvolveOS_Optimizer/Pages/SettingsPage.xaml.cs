@@ -36,6 +36,7 @@ namespace EvolveOS_Optimizer.Pages
 
             InitializeSelections();
             UpdateComboBoxLocalization();
+            SetSelectedByTag(ThemeSelector, SettingsEngine.AppTheme);
             _isInitialized = true;
         }
 
@@ -72,6 +73,11 @@ namespace EvolveOS_Optimizer.Pages
                 var tag = item.Tag?.ToString() ?? "";
                 item.Content = Localizer[$"Settings_Backdrop_{tag}"];
             }
+            foreach (var item in ThemeSelector.Items.Cast<ComboBoxItem>())
+            {
+                var tag = item.Tag?.ToString() ?? "";
+                item.Content = Localizer[$"Settings_Theme_{tag}"];
+            }
         }
 
         private void SetSelectedByTag(ComboBox comboBox, string tag) =>
@@ -88,6 +94,14 @@ namespace EvolveOS_Optimizer.Pages
             if (_isInitialized && BackdropSelector.SelectedItem is ComboBoxItem item)
             {
                 SettingsEngine.Backdrop = item.Tag?.ToString() ?? "None";
+            }
+        }
+
+        private void ThemeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isInitialized && ThemeSelector.SelectedItem is ComboBoxItem item)
+            {
+                SettingsEngine.AppTheme = item.Tag?.ToString() ?? "Default";
             }
         }
 

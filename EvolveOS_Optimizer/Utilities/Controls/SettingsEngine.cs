@@ -22,6 +22,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         private static readonly Dictionary<string, object> _defaultSettings = new Dictionary<string, object>
         {
             ["Backdrop"] = "Mica",
+            ["AppTheme"] = "Default",
             ["AccentColor"] = "#FF0078D4",
             ["Language"] = "en-us"
         };
@@ -29,6 +30,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
 
         internal static string Backdrop { get => (string)_cachedSettings["Backdrop"]; set => ChangingParameters("Backdrop", value); }
+        internal static string AppTheme { get => (string)_cachedSettings["AppTheme"]; set => ChangingParameters("AppTheme", value); }
         internal static string AccentColor { get => (string)_cachedSettings["AccentColor"]; set => ChangingParameters("AccentColor", value); }
         internal static string Language { get => (string)_cachedSettings["Language"]; set => ChangingParameters("Language", value); }
 
@@ -69,6 +71,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             if (key == "Language")
             {
                 SetAppLanguage(value.ToString() ?? "en-us");
+            }
+
+            if (key == "AppTheme")
+            {
+                UpdateTheme((string)value);
             }
 
             if (currentApp.MainWindow is MainWindow mainWindow)
@@ -123,6 +130,21 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             LocalizationService.Instance.LoadLanguage(safeCode);
 
             Debug.WriteLine($"[Settings] Language logic completed via C# Cache for: {safeCode}");
+        }
+
+        public static void UpdateTheme(string themeStr, Window? targetWindow = null)
+        {
+            var window = targetWindow ?? App.Current.MainWindow;
+
+            if (window?.Content is FrameworkElement rootElement)
+            {
+                rootElement.RequestedTheme = themeStr switch
+                {
+                    "Light" => ElementTheme.Light,
+                    "Dark" => ElementTheme.Dark,
+                    _ => ElementTheme.Default
+                };
+            }
         }
 
         private static void UpdateAppInstance()

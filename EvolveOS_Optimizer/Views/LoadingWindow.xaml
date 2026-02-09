@@ -24,15 +24,15 @@
 
             <Storyboard x:Name="LoadingEllipses" RepeatBehavior="Forever">
                 <ColorAnimationUsingKeyFrames Storyboard.TargetName="Indicator1" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
-                    <DiscreteColorKeyFrame KeyTime="0:0:0.0" Value="{StaticResource Color_Accent}"/>
+                    <DiscreteColorKeyFrame KeyTime="0:0:0.0" Value="{ThemeResource Color_Accent}"/>
                     <DiscreteColorKeyFrame KeyTime="0:0:0.6" Value="#001A1A1A"/>
                 </ColorAnimationUsingKeyFrames>
                 <ColorAnimationUsingKeyFrames Storyboard.TargetName="Indicator2" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
-                    <DiscreteColorKeyFrame KeyTime="0:0:0.6" Value="{StaticResource Color_Accent}"/>
+                    <DiscreteColorKeyFrame KeyTime="0:0:0.6" Value="{ThemeResource Color_Accent}"/>
                     <DiscreteColorKeyFrame KeyTime="0:0:1.2" Value="#001A1A1A"/>
                 </ColorAnimationUsingKeyFrames>
                 <ColorAnimationUsingKeyFrames Storyboard.TargetName="Indicator3" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
-                    <DiscreteColorKeyFrame KeyTime="0:0:1.2" Value="{StaticResource Color_Accent}"/>
+                    <DiscreteColorKeyFrame KeyTime="0:0:1.2" Value="{ThemeResource Color_Accent}"/>
                     <DiscreteColorKeyFrame KeyTime="0:0:1.8" Value="#001A1A1A"/>
                 </ColorAnimationUsingKeyFrames>
             </Storyboard>
@@ -49,7 +49,7 @@
                 <Rectangle.Fill>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                         <GradientStop Offset="0.8" Color="#001A1A1A"/>
-                        <GradientStop Offset="1" Color="{StaticResource Color_Background_Dark}"/>
+                        <GradientStop Offset="1" Color="{ThemeResource Color_Background}"/>
                     </LinearGradientBrush>
                 </Rectangle.Fill>
             </Rectangle>
@@ -68,16 +68,16 @@
                         <Setter Property="Height" Value="6"/>
                         <Setter Property="Margin" Value="2"/>
                         <Setter Property="StrokeThickness" Value="1"/>
-                        <Setter Property="Stroke" Value="{StaticResource Brush_Separator}"/>
+                        <Setter Property="Stroke" Value="{ThemeResource Brush_Separator}"/>
                     </Style>
                 </StackPanel.Resources>
-                <Ellipse x:Name="Indicator1" Fill="{StaticResource Brush_Accent}"/>
-                <Ellipse x:Name="Indicator2" Fill="{StaticResource Brush_Accent}"/>
-                <Ellipse x:Name="Indicator3" Fill="{StaticResource Brush_Accent}"/>
+                <Ellipse x:Name="Indicator1" Fill="{ThemeResource Brush_Accent}"/>
+                <Ellipse x:Name="Indicator2" Fill="{ThemeResource Brush_Accent}"/>
+                <Ellipse x:Name="Indicator3" Fill="{ThemeResource Brush_Accent}"/>
             </StackPanel>
 
             <StackPanel Grid.Row="0" VerticalAlignment="Bottom">
-                <TextBlock Foreground="{StaticResource Brush_Inactive}" FontFamily="{StaticResource Jura-Bold}" FontSize="12">
+                <TextBlock Foreground="{ThemeResource Brush_Inactive}" FontFamily="{StaticResource Jura-Bold}" FontSize="12">
                     <Run Text="{helpers:ResourceString Key=loading_message}" />
                     <Run x:Name="DotRun" Text="..." />
                 </TextBlock>
@@ -87,7 +87,7 @@
                 <TextBlock x:Name="StatusLoading"
                            FontFamily="{StaticResource Jura-Regular}"
                            FontSize="12" 
-                           Foreground="{StaticResource Brush_TextBlock_Inactivity}" 
+                           Foreground="{ThemeResource Brush_TextBlock_Inactivity}" 
                            TextWrapping="Wrap"
                            Text="{helpers:ResourceString Key=step1_load}"/>
             </StackPanel>
@@ -99,12 +99,12 @@
                 VerticalAlignment="Bottom" 
                 Margin="0,0,12,12" 
                 Background="#E6111111" 
-                BorderBrush="{StaticResource Brush_Separator}"
+                BorderBrush="{ThemeResource Brush_Separator}"
                 BorderThickness="1"
                 CornerRadius="8" 
                 Padding="10,6">
             <StackPanel Orientation="Horizontal">
-                <FontIcon Glyph="&#xE77B;" Foreground="{StaticResource Brush_Accent}" FontSize="14" VerticalAlignment="Center"/>
+                <FontIcon Glyph="&#xE77B;" Foreground="{ThemeResource Brush_Accent}" FontSize="14" VerticalAlignment="Center"/>
                 <TextBlock Foreground="White" FontSize="12" Margin="8,0,2,0" VerticalAlignment="Center">
                     <Run Text="Auto-Login:" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}"/>
                     <Run x:Name="RunUsername" FontFamily="{StaticResource Jura-Bold}" FontWeight="Bold" Foreground="{StaticResource Brush_Accent}"/>
