@@ -68,9 +68,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (string.IsNullOrEmpty(tag)) return;
 
-            CurrentView = tag switch
+            var newPage = tag switch
             {
-                "HomePage" => new Pages.HomePage(),
+                "HomePage" => (Page)new Pages.HomePage(),
                 /*"Utils" => new Pages.UtilitiesPage(),
                 "Confidentiality" => new Pages.PrivacyPage(),
                 "Interface" => new Pages.InterfacePage(),
@@ -80,6 +80,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 "Settings" => new Pages.SettingsPage(),
                 _ => new Pages.HomePage()
             };
+            CurrentView = newPage;
         }
     }
 }

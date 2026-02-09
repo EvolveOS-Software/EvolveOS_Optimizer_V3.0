@@ -5,6 +5,7 @@ using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.ComponentModel;
@@ -13,6 +14,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
+using System.Numerics;
 
 namespace EvolveOS_Optimizer
 {
@@ -29,14 +31,6 @@ namespace EvolveOS_Optimizer
         {
             this.InitializeComponent();
 
-            LocalizationService.Instance.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "Item[]")
-                {
-                    OnPropertyChanged(string.Empty);
-                }
-            };
-
             _hWnd = WindowNative.GetWindowHandle(this);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(_hWnd);
             _appWindow = AppWindow.GetFromWindowId(windowId);
@@ -44,16 +38,9 @@ namespace EvolveOS_Optimizer
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
 
-            var viewModel = RootGrid.DataContext as MainWinViewModel;
-            if (viewModel != null)
-            {
-                // future use
-            }
-
             if (_appWindow != null)
             {
                 _appWindow.SetIcon("Assets/EvolveOS_Optimizer.ico");
-
                 var titleBar = _appWindow.TitleBar;
                 titleBar.ButtonBackgroundColor = Colors.Transparent;
                 titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
@@ -61,9 +48,17 @@ namespace EvolveOS_Optimizer
             }
 
             WindowHelper.RegisterMinWidthHeight(_hWnd, 700, 400);
-
+            UIHelper.RegisterPageTransition(RootContentControl, RootGrid);
             SetBackdrop(new MicaBackdrop());
             CenterWindow();
+
+            LocalizationService.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "Item[]")
+                {
+                    OnPropertyChanged(string.Empty); 
+                }
+            };
         }
 
         public void SetBackdrop(SystemBackdrop backdrop)
