@@ -1,7 +1,11 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <FontFamily x:Key="Jura-Light">/Assets/Fonts/Jura-Light.ttf#Jura-Light</FontFamily>
     <FontFamily x:Key="Jura">/Assets/Fonts/Jura-Medium.ttf#Jura</FontFamily>
+    <FontFamily x:Key="Jura-Regular">/Assets/Fonts/Jura-Regular.ttf#Jura-Regular</FontFamily>
+    <FontFamily x:Key="Jura-Bold">/Assets/Fonts/Jura-Bold.ttf#Jura-Bold</FontFamily>
+    <FontFamily x:Key="Jura-SemiBold">/Assets/Fonts/Jura-SemiBold.ttf#Jura-SemiBold</FontFamily>
     <FontFamily x:Key="Play">/Assets/Fonts/Play-Regular.ttf#Play</FontFamily>
     <FontFamily x:Key="password">/Assets/Fonts/password.ttf#password</FontFamily>
     

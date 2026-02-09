@@ -27,11 +27,10 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0">
                 <Image Source="/Assets/EvolveOS_Optimizer.ico" Width="18" Height="18" />
                 <TextBlock Text="EvolveOS Optimizer"
-                           FontFamily="{StaticResource Jura}"
+                           FontFamily="{StaticResource Jura-SemiBold}"
                            VerticalAlignment="Center" 
                            Margin="12,0,0,0"
-                           FontSize="12"
-                           FontWeight="SemiBold"
+                           FontSize="14"
                            Foreground="{StaticResource MyDynamicAccentBrush}"/>
             </StackPanel>
 
@@ -56,7 +55,7 @@
 
                 <TextBlock x:Name="DisplayProfileName"
                            Text="{Binding DisplayProfileName}"
-                           FontFamily="{StaticResource Jura}"
+                           FontFamily="{StaticResource Jura-Regular}"
                            FontSize="14"
                            FontWeight="Medium"
                            Foreground="{StaticResource MyDynamicAccentBrush}"

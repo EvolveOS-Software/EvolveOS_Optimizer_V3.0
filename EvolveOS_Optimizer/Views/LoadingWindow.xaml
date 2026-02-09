@@ -77,13 +77,14 @@
             </StackPanel>
 
             <StackPanel Grid.Row="0" VerticalAlignment="Bottom">
-                <TextBlock Foreground="{StaticResource Brush_Inactive}" FontSize="12">
+                <TextBlock Foreground="{StaticResource Brush_Inactive}" FontFamily="{StaticResource Jura-Bold}" FontSize="12">
                     <Run Text="Loading EvolveOS Optimizer"/><Run x:Name="DotRun" Text="..." />
                 </TextBlock>
             </StackPanel>
 
             <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,5,0,0">
-                <TextBlock x:Name="StatusLoading" 
+                <TextBlock x:Name="StatusLoading"
+                           FontFamily="{StaticResource Jura-Regular}"
                            FontSize="12" 
                            Foreground="{StaticResource Brush_TextBlock_Inactivity}" 
                            TextWrapping="Wrap"
@@ -104,8 +105,8 @@
             <StackPanel Orientation="Horizontal">
                 <FontIcon Glyph="&#xE77B;" Foreground="{StaticResource Brush_Accent}" FontSize="14" VerticalAlignment="Center"/>
                 <TextBlock Foreground="White" FontSize="12" Margin="8,0,2,0" VerticalAlignment="Center">
-                    <Run Text="Auto-Login:" Foreground="{StaticResource Brush_Inactive}"/>
-                    <Run x:Name="RunUsername" FontWeight="Bold" Foreground="{StaticResource Brush_Accent}"/>
+                    <Run Text="Auto-Login:" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}"/>
+                    <Run x:Name="RunUsername" FontFamily="{StaticResource Jura-Bold}" FontWeight="Bold" Foreground="{StaticResource Brush_Accent}"/>
                 </TextBlock>
             </StackPanel>
         </Border>
