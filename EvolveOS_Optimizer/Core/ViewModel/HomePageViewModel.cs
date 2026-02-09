@@ -96,7 +96,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             set { _uploadSpeed = value; OnPropertyChanged(); }
         }
 
-        public ImageSource? DisplayWallpaper => _monitoringService.GetWallpaperSource();
+        private ImageSource? _displayWallpaper;
+        public ImageSource? DisplayWallpaper
+        {
+            get
+            {
+                if (_displayWallpaper == null)
+                    _displayWallpaper = _monitoringService.GetWallpaperSource();
+                return _displayWallpaper;
+            }
+            set
+            {
+                _displayWallpaper = value;
+                OnPropertyChanged();
+            }
+        }
 
         public Visibility IpVisibility => SystemDiagnostics.isIPAddressFormatValid ? Visibility.Visible : Visibility.Collapsed;
 
@@ -207,6 +221,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             // Assuming DiskInfoService is accessible
             // var driveData = DiskInfoService.GetDrivesData();
             // DiskDrives = new ObservableCollection<DriveSpaceInfo>(driveData);
+        }
+
+        public void RefreshWallpaper()
+        {
+            var wallpaperPath = _monitoringService.GetWallpaperPath();
+            if (string.IsNullOrEmpty(wallpaperPath)) return;
+
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                var bitmap = new BitmapImage();
+                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                bitmap.UriSource = new Uri(wallpaperPath);
+
+                DisplayWallpaper = bitmap;
+            });
         }
     }
 }

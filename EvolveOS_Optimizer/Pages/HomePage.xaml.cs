@@ -4,6 +4,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -12,6 +13,7 @@ public sealed partial class HomePage : Page
     private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
     private readonly DispatcherQueue _dispatcherQueue;
     private DispatcherTimer? _monitoringTimer;
+    private string _lastWallpaperPath = string.Empty;
 
     public HomePage()
     {
@@ -44,11 +46,15 @@ public sealed partial class HomePage : Page
     {
         ApplyElevationUI();
         StartMonitoring();
+
+        SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
     }
 
     private void HomePage_Unloaded(object sender, RoutedEventArgs e)
     {
         _monitoringTimer?.Stop();
+
+        SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
     }
 
     #region Elevation & Admin Logic
@@ -140,6 +146,28 @@ public sealed partial class HomePage : Page
                 {
                     vm.RefreshStats();
                     vm.UpdateDateTime();
+
+                    string currentPath = _systemDiagnostics.GetWallpaperPath();
+                    if (currentPath != _lastWallpaperPath)
+                    {
+                        _lastWallpaperPath = currentPath;
+
+                        // Get the compositor from the LogoPath
+                        var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(LogoPath);
+                        var compositor = visual.Compositor;
+
+                        // 1. Create the Fade Animation via the Compositor
+                        var fadeAnimation = compositor.CreateScalarKeyFrameAnimation();
+                        fadeAnimation.InsertKeyFrame(0.0f, 0.0f); // Start at 0% opacity
+                        fadeAnimation.InsertKeyFrame(1.0f, 1.0f); // End at 100% opacity
+                        fadeAnimation.Duration = TimeSpan.FromMilliseconds(500);
+
+                        // 2. Update the image
+                        vm.RefreshWallpaper();
+
+                        // 3. Start the animation on the "Opacity" property
+                        visual.StartAnimation("Opacity", fadeAnimation);
+                    }
                 }
             }
             catch (Exception ex)
@@ -165,8 +193,21 @@ public sealed partial class HomePage : Page
             var dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
             dataPackage.SetText(textToCopy);
             Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
+        }
+    }
 
-            //ShowCopyToast();
+    private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+    {
+        if (e.Category == UserPreferenceCategory.Desktop || e.Category == UserPreferenceCategory.General)
+        {
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                if (this.DataContext is HomePageViewModel vm)
+                {
+                    // This now triggers the OnPropertyChanged we just added!
+                    vm.RefreshWallpaper();
+                }
+            });
         }
     }
 
@@ -182,9 +223,9 @@ public sealed partial class HomePage : Page
     }*/
     #endregion
 
-    //private static readonly List<string> AvailableWeatherLocations = new List<string>
-    //{
+    // private static readonly List<string> AvailableWeatherLocations = new List<string>
+    // {
     //    "New York", "London", "Paris", "Berlin", "Tokyo", "Singapore", "Sydney" 
-    // ... (Keep your full list here)
-    //};
+    //  ... (Keep your full list here)
+    // };
 }

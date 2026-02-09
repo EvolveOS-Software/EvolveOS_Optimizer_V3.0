@@ -164,25 +164,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }
         }
 
-        public ImageSource? GetWallpaperSource()
-        {
-            try
-            {
-                string wallpaperPath = Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "WallPaper", string.Empty)?.ToString() ?? string.Empty;
-
-                if (!string.IsNullOrWhiteSpace(wallpaperPath) && File.Exists(wallpaperPath))
-                {
-                    return new BitmapImage(new Uri(wallpaperPath));
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[Diagnostics] Wallpaper Error: {ex.Message}");
-            }
-
-            return null;
-        }
-
         internal string? GetProfileAvatarPath()
         {
             try

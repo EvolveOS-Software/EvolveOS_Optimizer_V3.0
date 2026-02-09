@@ -1,3 +1,5 @@
+using Microsoft.Win32;
+using System.IO;
 using System.Management;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -95,7 +97,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         _downloadCounter = new PerformanceCounter("Network Interface", "Bytes Received/sec", instanceName, true);
                         _uploadCounter = new PerformanceCounter("Network Interface", "Bytes Sent/sec", instanceName, true);
 
-                        // Initial sample
                         _downloadCounter.NextValue();
                         _uploadCounter.NextValue();
                     }
@@ -265,6 +266,40 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             _uploadCounter?.Dispose();
             foreach (var svc in _servicesList) svc.Dispose();
             GC.SuppressFinalize(this);
+        }
+
+        internal string GetWallpaperPath()
+        {
+            try
+            {
+                using var key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop");
+                return key?.GetValue("Wallpaper")?.ToString() ?? string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        public ImageSource? GetWallpaperSource()
+        {
+            try
+            {
+                string wallpaperPath = Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "WallPaper", string.Empty)?.ToString() ?? string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(wallpaperPath) && File.Exists(wallpaperPath))
+                {
+                    var bitmap = new BitmapImage();
+                    bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                    bitmap.UriSource = new Uri(wallpaperPath);
+                    return bitmap;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[MonitoringService] Wallpaper Refresh Error: {ex.Message}");
+            }
+            return null;
         }
     }
 }

@@ -22,10 +22,19 @@
                     <Grid.Shadow>
                         <ThemeShadow />
                     </Grid.Shadow>
+
                     <Viewbox Width="75" Height="75" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Path Data="M0,0 H45 V45 H0 Z M50,0 H95 V45 H50 Z M0,50 H45 V95 H0 Z M50,50 H95 V95 H50 Z" Stretch="Uniform">
+                        <Path x:Name="LogoPath" Data="M0,0 H45 V45 H0 Z M50,0 H95 V45 H50 Z M0,50 H45 V95 H0 Z M50,50 H95 V95 H50 Z" Stretch="Uniform">
+
+                            <Path.Transitions>
+                                <TransitionCollection>
+                                    <ContentThemeTransition />
+                                </TransitionCollection>
+                            </Path.Transitions>
+
                             <Path.Fill>
-                                <ImageBrush ImageSource="{Binding DisplayWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
+                                <ImageBrush ImageSource="{Binding DisplayWallpaper, Mode=OneWay}" 
+                            Stretch="UniformToFill" />
                             </Path.Fill>
                         </Path>
                     </Viewbox>
@@ -33,9 +42,9 @@
 
                 <StackPanel Margin="15,0,0,0" Orientation="Vertical" VerticalAlignment="Center">
                     <TextBlock FontSize="16" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed">
-                    <Run Foreground="{StaticResource Brush_Highlighted}" Text="{Binding OSInfo[OSName].Data}"/>
+                        <Run Foreground="{StaticResource Brush_Highlighted}" Text="{Binding OSInfo[OSName].Data}"/>
                     <LineBreak/>
-                    <Run Foreground="{StaticResource Brush_Inactive}" Text="{Binding OSInfo[OSVersion].Data}"/>
+                        <Run Foreground="{StaticResource Brush_Inactive}" Text="{Binding OSInfo[OSVersion].Data}"/>
                     </TextBlock>
 
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
@@ -50,18 +59,18 @@
             </StackPanel>
 
             <Border x:Name="AdminWarningBanner"
-                Visibility="Visible"
-                HorizontalAlignment="Center"
-                Background="#20FF0000"
-                BorderBrush="{ThemeResource SystemFillColorCriticalBrush}"
-                BorderThickness="1"
-                CornerRadius="8"
-                Padding="10">
+                    Visibility="Visible"
+                    HorizontalAlignment="Center"
+                    Background="#20FF0000"
+                    BorderBrush="{ThemeResource SystemFillColorCriticalBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <SymbolIcon Symbol="Admin" Foreground="{StaticResource Brush_Error}" VerticalAlignment="Center"/>
                     <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Error}" FontWeight="SemiBold">
-                    <Run Text="{helpers:ResourceString Key=label_limited_mode}"/>
-                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" Text="{helpers:ResourceString Key=label_admin_notice}"/>
+                        <Run Text="{helpers:ResourceString Key=label_limited_mode}"/>
+                        <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" Text="{helpers:ResourceString Key=label_admin_notice}"/>
                     </TextBlock>
                     <Button Margin="15,0,0,0" Padding="12,4" Click="RestartAsAdmin_Click" Style="{StaticResource AccentButtonStyle}" Background="DarkRed">
                         <StackPanel Orientation="Horizontal" Spacing="8">
