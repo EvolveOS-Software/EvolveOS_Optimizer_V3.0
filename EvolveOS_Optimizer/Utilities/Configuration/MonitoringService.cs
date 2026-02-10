@@ -4,6 +4,7 @@ using System.Management;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
+using System.Threading;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
@@ -112,13 +113,28 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         internal double GetDownloadSpeed()
         {
-            try { return _downloadCounter != null ? ((_downloadCounter.NextValue() / 1024f) / 1024f) * 8.0 : 0.0; }
+            try
+            {
+                if (_downloadCounter == null) return 0.0;
+                // Performance counter returns Bytes/sec. 
+                // Formula: Bytes / 1024 / 1024 = Megabytes
+                float bytesPerSec = _downloadCounter.NextValue();
+                return Math.Max(0.0, (double)bytesPerSec / 1024.0 / 1024.0);
+            }
             catch { return 0.0; }
         }
 
+        /// <summary>
+        /// Returns Upload speed in MB/s (Megabytes per second)
+        /// </summary>
         internal double GetUploadSpeed()
         {
-            try { return _uploadCounter != null ? ((_uploadCounter.NextValue() / 1024f) / 1024f) * 8.0 : 0.0; }
+            try
+            {
+                if (_uploadCounter == null) return 0.0;
+                float bytesPerSec = _uploadCounter.NextValue();
+                return Math.Max(0.0, (double)bytesPerSec / 1024.0 / 1024.0);
+            }
             catch { return 0.0; }
         }
 
@@ -127,16 +143,18 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             return await Task.Run(() =>
             {
                 uint capacity = 1024;
-                for (int attempt = 0; attempt < 3; attempt++)
+                uint[] buffer = new uint[capacity];
+
+                if (EnumProcesses(buffer, (uint)(buffer.Length * sizeof(uint)), out uint bytesNeeded))
                 {
-                    uint[] buffer = new uint[capacity];
-                    if (!EnumProcesses(buffer, capacity * sizeof(uint), out uint bytesNeeded))
+                    uint count = bytesNeeded / sizeof(uint);
+
+                    if (count < capacity)
                     {
-                        capacity = (bytesNeeded / sizeof(uint)) + 1;
-                        continue;
+                        return count.ToString();
                     }
-                    return (bytesNeeded / sizeof(uint)).ToString();
                 }
+
                 return Process.GetProcesses().Length.ToString();
             });
         }
@@ -145,17 +163,28 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             return await Task.Run(() =>
             {
-                int running = 0;
-                Parallel.ForEach(_servicesList, svc =>
+                try
                 {
-                    try
+                    var allServices = ServiceController.GetServices();
+
+                    int runningCount = allServices
+                        .Where(s => s.Status == ServiceControllerStatus.Running)
+                        .Where(s => s.ServiceType.HasFlag(ServiceType.Win32OwnProcess) ||
+                                    s.ServiceType.HasFlag(ServiceType.Win32ShareProcess))
+                        .Count();
+
+                    foreach (var svc in allServices)
                     {
-                        svc.Refresh();
-                        if (svc.Status == ServiceControllerStatus.Running) running++;
+                        svc.Dispose();
                     }
-                    catch { /* Service access denied or busy */ }
-                });
-                return running.ToString();
+
+                    return runningCount.ToString();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Service Monitor] Error: {ex.Message}");
+                    return "0";
+                }
             });
         }
 

@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,6 +19,9 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         private static readonly object _wmiLock = new object();
         private static readonly HttpClient _updateClient = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
 
+        // ADDED: Persistent counter to fix the 100% CPU bug
+        private static readonly PerformanceCounter _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+
         internal static bool IsElevated => IsRunningAsAdmin();
         internal static bool IsNeedUpdate { get; private set; } = false;
         internal static string DownloadVersion { get; private set; } = string.Empty;
@@ -25,6 +29,26 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         internal string? WallpaperPath { get; private set; }
         internal string? AvatarPath { get; private set; }
+
+        // ADDED: Native Win32 structs for real RAM monitoring
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private class MEMORYSTATUSEX
+        {
+            public uint dwLength;
+            public uint dwMemoryLoad;
+            public ulong ullTotalPhys;
+            public ulong ullAvailPhys;
+            public ulong ullTotalPageFile;
+            public ulong ullAvailPageFile;
+            public ulong ullTotalVirtual;
+            public ulong ullAvailVirtual;
+            public ulong ullAvailExtendedVirtual;
+            public MEMORYSTATUSEX() { this.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX)); }
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
 
         private static readonly (object[] Keys, string Type)[] MediaTypeMap = new (object[] Keys, string Type)[]
         {
@@ -338,15 +362,20 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Manufacturer, Capacity, Speed, SMBIOSMemoryType from Win32_PhysicalMemory", new System.Management.EnumerationOptions { ReturnImmediately = true });
                     using var results = searcher.Get();
                     var entries = new List<string>();
+                    ulong totalCapacity = 0;
 
                     foreach (ManagementObject managementObj in results)
                     {
+                        ulong cap = Convert.ToUInt64(managementObj["Capacity"]);
+                        totalCapacity += cap;
                         string data = managementObj["Manufacturer"]?.ToString() ?? "Unknown RAM";
-                        string capacity = SizeCalculationHelper(Convert.ToUInt64(managementObj["Capacity"]));
+                        string capacity = SizeCalculationHelper(cap);
                         string speed = managementObj["Speed"]?.ToString() ?? "";
                         entries.Add($"{data}, {capacity} @ {speed}MHz");
                     }
                     Memory.Data = string.Join(Environment.NewLine, entries);
+
+                    HardwareData.Memory.Total = totalCapacity / (1024.0 * 1024.0);
                 }
                 catch { Memory.Data = "Unavailable"; }
             }
@@ -466,28 +495,63 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             return $"{Math.Round(bytes, 2)} {units[unitIndex]}";
         }
 
-        internal new async Task<int> GetTotalProcessorUsage()
+        internal new async Task<string> GetProcessCount()
         {
-            return await Task.Run(() =>
-            {
-                try { return Process.GetProcesses().Length; }
-                catch { return 0; }
-            });
+            return await Task.Run(() => Process.GetProcesses().Length.ToString());
         }
 
-        internal new async Task<int> GetPhysicalAvailableMemory()
+        internal new async Task<string> GetServicesCount()
         {
             return await Task.Run(() =>
             {
                 try
                 {
-                    using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_Service");
-                    using var results = searcher.Get();
-                    return results.Count;
+                    var allServices = System.ServiceProcess.ServiceController.GetServices();
+
+                    int runningCount = allServices
+                        .Where(s => s.Status == System.ServiceProcess.ServiceControllerStatus.Running)
+                        .Where(s => s.ServiceType.HasFlag(System.ServiceProcess.ServiceType.Win32OwnProcess) ||
+                                    s.ServiceType.HasFlag(System.ServiceProcess.ServiceType.Win32ShareProcess))
+                        .Count();
+
+                    foreach (var svc in allServices)
+                    {
+                        svc.Dispose();
+                    }
+
+                    return runningCount.ToString();
                 }
-                catch { return 0; }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Service Monitor] Error: {ex.Message}");
+                    return "0";
+                }
             });
         }
+
+        internal new async Task<double> GetTotalProcessorUsage()
+        {
+            return await Task.Run(() =>
+            {
+                try { return Math.Round((double)_cpuCounter.NextValue(), 1); }
+                catch { return 0.0; }
+            });
+        }
+
+        internal new async Task<double> GetPhysicalAvailableMemory()
+        {
+            return await Task.Run(() =>
+            {
+                MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
+                if (GlobalMemoryStatusEx(memStatus))
+                {
+                    return (double)memStatus.ullAvailPhys;
+                }
+                return 0.0;
+            });
+        }
+
+        internal new string GetWallpaperPath() => WallpaperPath ?? string.Empty;
     }
 
     public sealed class GitMetadata

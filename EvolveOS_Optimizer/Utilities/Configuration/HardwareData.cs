@@ -22,7 +22,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal sealed class ProcessorInfo
         {
             internal string Data { get; set; } = string.Empty;
-            internal int Usage { get; set; } = default;
+            internal double Usage { get; set; } = default;
             internal string Cores { get; set; } = string.Empty;
             internal string Threads { get; set; } = string.Empty;
         }
@@ -30,7 +30,8 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal sealed class MemoryInfo
         {
             internal string Data { get; set; } = string.Empty;
-            internal int Usage { get; set; } = default;
+            internal double Usage { get; set; } = default;
+            internal double Total { get; set; } = default;
             internal string Type { get; set; } = string.Empty;
         }
 

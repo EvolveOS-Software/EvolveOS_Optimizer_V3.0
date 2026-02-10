@@ -12,74 +12,155 @@
     Background="Transparent">
 
     <Grid>
-        <StackPanel HorizontalAlignment="Center" 
+        <StackPanel HorizontalAlignment="Stretch" 
                 VerticalAlignment="Top" 
                 Margin="0,20,0,0" 
                 Spacing="20">
 
-            <StackPanel x:Name="WallInfoBanner" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Grid x:Name="LogoGrid" Width="80" Height="80" VerticalAlignment="Center" Margin="0,5,0,0" Background="Transparent">
-                    <Grid.Shadow>
-                        <ThemeShadow />
-                    </Grid.Shadow>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                    <Viewbox Width="75" Height="75" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Path x:Name="LogoPath" Data="M0,0 H45 V45 H0 Z M50,0 H95 V45 H50 Z M0,50 H45 V95 H0 Z M50,50 H95 V95 H50 Z" Stretch="Uniform">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0">
 
-                            <Path.Transitions>
-                                <TransitionCollection>
-                                    <ContentThemeTransition />
-                                </TransitionCollection>
-                            </Path.Transitions>
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,10,0">
+                        <Ellipse Height="90" Width="90" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5"  VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>
 
-                            <Path.Fill>
-                                <ImageBrush ImageSource="{Binding DisplayWallpaper, Mode=OneWay}" 
-                            Stretch="UniformToFill" />
-                            </Path.Fill>
-                        </Path>
-                    </Viewbox>
+                        <Viewbox Width="100" Height="100">
+                            <ProgressRing x:Name="CPULoad" Value="0" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                        </Viewbox>
+
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="CPU" FontSize="10" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-2,0,0">
+                                <TextBlock x:Name="CPUText" Text="0" FontSize="16" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}"/>
+                                <TextBlock Text="%" FontSize="12" Style="{StaticResource BodyTextBlockStyle}" 
+                               Foreground="{StaticResource Brush_Inactive}" Margin="1,2,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid VerticalAlignment="Top" Margin="10,2,10,0">
+                        <Ellipse Height="90" Width="90" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>
+
+                        <Viewbox Width="100" Height="100">
+                            <ProgressRing x:Name="RAMLoad" Value="0" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                        </Viewbox>
+
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="RAM" FontSize="10" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-2,0,0">
+                                <TextBlock x:Name="RAMText" Text="0" FontSize="16" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}"/>
+                                <TextBlock Text="%" FontSize="12" Style="{StaticResource BodyTextBlockStyle}" 
+                               Foreground="{StaticResource Brush_Inactive}" Margin="1,2,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+
+                <Grid Grid.Column="2" Margin="0,0,0,0" VerticalAlignment="Center">
+                    <StackPanel x:Name="WallInfoBanner" Orientation="Horizontal">
+                        <Grid x:Name="LogoGrid" Width="80" Height="80" VerticalAlignment="Center" Margin="0,5,0,0" Background="Transparent">
+                            <Grid.Shadow>
+                                <ThemeShadow />
+                            </Grid.Shadow>
+                            <Viewbox Width="75" Height="75" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Path x:Name="LogoPath" Data="M0,0 H45 V45 H0 Z M50,0 H95 V45 H50 Z M0,50 H45 V95 H0 Z M50,50 H95 V95 H50 Z" Stretch="Uniform">
+                                    <Path.Fill>
+                                        <ImageBrush ImageSource="{Binding DisplayWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
+                                    </Path.Fill>
+                                </Path>
+                            </Viewbox>
+                        </Grid>
+
+                        <StackPanel Margin="15,0,0,0" Orientation="Vertical" VerticalAlignment="Center">
+                            <TextBlock FontSize="16" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed">
+                                <Run Foreground="{ThemeResource Brush_Highlighted}" Text="{Binding OSInfo[OSName].Data}"/>
+                                    <LineBreak/>
+                                <Run Foreground="{ThemeResource Brush_Inactive}" Text="{Binding OSInfo[OSVersion].Data}"/>
+                            </TextBlock>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock Text="{helpers:ResourceString Key=label_proc_sysinfo}" FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                                <TextBlock x:Name="ProcCountText" Text="0" FontFamily="{StaticResource Play}" FontSize="13.5" Margin="5,0.5,5,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                                <TextBlock Text=" • " FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                                <TextBlock Text="{helpers:ResourceString Key=label_svc_sysinfo}" FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                                <TextBlock x:Name="SvcCountText" Text="0" FontFamily="{StaticResource Play}" FontSize="13.5" Margin="5,0.5,0,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                            </StackPanel>
+                            <TextBlock x:Name="StatusLabel" FontFamily="{StaticResource Jura}" FontSize="12" Text="{helpers:ResourceString Key=label_status_checking}"/>
+                        </StackPanel>
+                    </StackPanel>
                 </Grid>
 
-                <StackPanel Margin="15,0,0,0" Orientation="Vertical" VerticalAlignment="Center">
-                    <TextBlock FontSize="16" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed">
-                        <Run Foreground="{ThemeResource Brush_Highlighted}" Text="{Binding OSInfo[OSName].Data}"/>
-                    <LineBreak/>
-                        <Run Foreground="{ThemeResource Brush_Inactive}" Text="{Binding OSInfo[OSVersion].Data}"/>
-                    </TextBlock>
+                <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0">
 
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <TextBlock Text="{helpers:ResourceString Key=label_proc_sysinfo}" FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                        <TextBlock anim:NumberAnimation.Value="{Binding SystemStats[Processes].Data}" Text="0" FontFamily="{StaticResource Play}" FontSize="13.5" Margin="5,0.5,5,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                        <TextBlock Text=" • " FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                        <TextBlock Text="{helpers:ResourceString Key=label_svc_sysinfo}" FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                        <TextBlock anim:NumberAnimation.Value="{Binding SystemStats[Services].Data}" Text="0" FontFamily="{StaticResource Play}" FontSize="13.5" Margin="5,0.5,0,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                    </StackPanel>
-                    <TextBlock x:Name="StatusLabel" FontFamily="{StaticResource Jura}" FontSize="12" Text="{helpers:ResourceString Key=label_status_checking}"/>
+                    <Grid VerticalAlignment="Top" Margin="10,2,10,0">
+                        <Ellipse Height="90" Width="90" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>
+
+                        <Viewbox Width="100" Height="100">
+                            <ProgressRing x:Name="DownLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" 
+                              Foreground="#00bfff"/>
+                        </Viewbox>
+
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="DOWNLOAD" FontSize="10" FontFamily="{StaticResource Jura}" 
+                           Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Mbps" FontSize="9" FontFamily="{StaticResource Jura}" 
+                           Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
+                            <TextBlock x:Name="DownLoadText" Text="0.00" FontSize="16" FontWeight="Bold" 
+                           Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid VerticalAlignment="Top" Margin="10,2,10,0">
+                        <Ellipse Height="90" Width="90" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5" 
+                     VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>
+
+                        <Viewbox Width="100" Height="100">
+                            <ProgressRing x:Name="UpLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" 
+                              Foreground="#ff9f1c"/>
+                        </Viewbox>
+
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="UPLOAD" FontSize="10" FontFamily="{StaticResource Jura}" 
+                           Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Mbps" FontSize="9" FontFamily="{StaticResource Jura}" 
+                           Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
+                            <TextBlock x:Name="UpLoadText" Text="0.00" FontSize="16" FontWeight="Bold" 
+                           Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
 
-            <Border x:Name="AdminWarningBanner"
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                <Border x:Name="AdminWarningBanner"
                     Visibility="Visible"
-                    HorizontalAlignment="Center"
                     Background="#20FF0000"
                     BorderBrush="{ThemeResource SystemFillColorCriticalBrush}"
                     BorderThickness="1"
                     CornerRadius="8"
                     Padding="10">
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <SymbolIcon Symbol="Admin" Foreground="{StaticResource Brush_Error}" VerticalAlignment="Center"/>
-                    <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Error}" FontWeight="SemiBold">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <SymbolIcon Symbol="Admin" Foreground="{StaticResource Brush_Error}" VerticalAlignment="Center"/>
+                        <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Error}" FontWeight="SemiBold">
                         <Run Text="{helpers:ResourceString Key=label_limited_mode}"/>
                         <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" Text="{helpers:ResourceString Key=label_admin_notice}"/>
-                    </TextBlock>
-                    <Button Margin="15,0,0,0" Padding="12,4" Click="RestartAsAdmin_Click" Style="{StaticResource AccentButtonStyle}" Background="DarkRed">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <SymbolIcon Symbol="Permissions" Scale="0.9,0.9,1"/>
-                            <TextBlock Text="{helpers:ResourceString Key=btn_restart_admin}" FontSize="12" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-            </Border>
+                        </TextBlock>
+                        <Button Margin="15,0,0,0" Padding="12,4" Click="RestartAsAdmin_Click" Style="{StaticResource AccentButtonStyle}" Background="DarkRed">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <SymbolIcon Symbol="Permissions" Scale="0.9,0.9,1"/>
+                                <TextBlock Text="{helpers:ResourceString Key=btn_restart_admin}" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
 
         </StackPanel>
     </Grid>
