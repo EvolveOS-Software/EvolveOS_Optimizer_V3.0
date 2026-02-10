@@ -1,0 +1,79 @@
+<Window
+    x:Class="EvolveOS_Optimizer.Views.NotificationWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    mc:Ignorable="d">
+
+    <Grid x:Name="RootGrid" Background="#01000000" 
+          BorderBrush="{ThemeResource MyDynamicAccentBrush}" 
+          BorderThickness="1" CornerRadius="8"
+          PointerEntered="RootGrid_PointerEntered"
+          PointerExited="RootGrid_PointerExited"
+          Tapped="RootGrid_Tapped">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="12,8,8,0">
+            <TextBlock Text="EvolveOS Optimizer"
+                       FontFamily="{StaticResource Jura-Bold}"
+                       Style="{StaticResource CaptionTextBlockStyle}" 
+                       Foreground="{ThemeResource MyDynamicAccentBrush}"
+                       VerticalAlignment="Center"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                <Button x:Name="CopyButton"
+                        Click="CopyButton_Click"
+                        ToolTipService.ToolTip="{helpers:ResourceString Key=click_to_copy_noty}"
+                        Style="{StaticResource SubtleButtonStyle}"
+                        Padding="4">
+                    <FontIcon x:Name="CopyIcon" Glyph="&#xE8C8;" FontSize="12"/>
+                </Button>
+                <Button x:Name="ButtonClose"
+                        Click="ButtonClose_Click"
+                        Padding="4"
+                        Style="{StaticResource SubtleButtonStyle}">
+                    <FontIcon Glyph="&#xE8BB;" FontSize="12"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="15,5,15,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <FontIcon x:Name="SeverityIcon" Grid.Column="0" FontSize="34" VerticalAlignment="Center" Margin="5,0,18,0"/>
+
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                <TextBlock x:Name="HeaderLabel"
+                           Text="Title"
+                           FontWeight="Bold"
+                           FontSize="15"
+                           TextTrimming="CharacterEllipsis"/>
+                <TextBlock x:Name="MessageLabel"
+                           Text="Message body"
+                           Style="{StaticResource BodyTextBlockStyle}" 
+                           Opacity="0.8"
+                           TextWrapping="Wrap"
+                           MaxHeight="60"/>
+            </StackPanel>
+        </Grid>
+
+        <ProgressBar x:Name="ProgressTimer"
+                     Grid.Row="1"
+                     VerticalAlignment="Bottom" 
+                     Height="3"
+                     Minimum="0"
+                     Maximum="100"
+                     Value="0" 
+                     Foreground="{ThemeResource MyDynamicAccentBrush}"
+                     Background="Transparent"/>
+    </Grid>
+</Window>

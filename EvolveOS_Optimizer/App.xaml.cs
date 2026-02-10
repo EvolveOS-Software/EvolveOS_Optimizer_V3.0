@@ -1,5 +1,6 @@
 ﻿using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Views;
 using Microsoft.UI.Xaml;
 using System.IO;
@@ -94,6 +95,14 @@ namespace EvolveOS_Optimizer
         {
             Debug.WriteLine($"[CRASH] {e.Message}");
             e.Handled = true;
+        }
+
+        public static void ShowNotification(string title, string message, Microsoft.UI.Xaml.Controls.InfoBarSeverity severity, int duration)
+        {
+            NotificationManager.Show(title, message)
+                .WithSeverity(severity)
+                .WithDuration(duration)
+                .Perform();
         }
 
         #endregion

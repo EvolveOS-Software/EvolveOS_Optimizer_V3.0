@@ -7,7 +7,6 @@ using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Animation;
 using WinPoint = global::Windows.Graphics.PointInt32;
 using WinSize = global::Windows.Graphics.SizeInt32;
@@ -109,7 +108,7 @@ namespace EvolveOS_Optimizer.Views
         private void ConfigureWindow()
         {
             IntPtr hWnd = global::WinRT.Interop.WindowNative.GetWindowHandle(this);
-            global::Microsoft.UI.WindowId windowId;
+            WindowId windowId;
             windowId.Value = (ulong)hWnd;
 
             int style = Win32Helper.GetWindowLong(hWnd, Win32Helper.GWL_STYLE);
@@ -137,8 +136,8 @@ namespace EvolveOS_Optimizer.Views
                     if (appWindow.TitleBar != null)
                     {
                         appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-                        appWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
-                        appWindow.TitleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
+                        appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
+                        appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                     }
                 }
             }

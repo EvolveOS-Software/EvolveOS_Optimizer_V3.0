@@ -94,10 +94,16 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             public const int WmHotkey = 786; // 0x312
         }
 
-
         public const int GWL_STYLE = -16;
         public const int WS_BORDER = 0x00800000;
         public const int WS_THICKFRAME = 0x00040000;
+
+        public const int WS_CAPTION = 0x00C00000;
+        public const uint SWP_NOSIZE = 0x0001;
+        public const uint SWP_NOMOVE = 0x0002;
+        public const uint SWP_NOZORDER = 0x0004;
+        public const uint SWP_FRAMECHANGED = 0x0020; // This is the magic flag
+        public const uint SWP_SHOWWINDOW = 0x0040;
 
         #endregion
 
@@ -227,11 +233,14 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [DllImport("kernel32.dll", EntryPoint = "SetProcessWorkingSetSize")]
         internal static extern bool SetProcessWorkingSetSize(IntPtr proc, int min, int max);
 
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [DllImport("user32.dll")]
         internal static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [DllImport("user32.dll")]
         internal static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll")]
+        internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
         #endregion
 

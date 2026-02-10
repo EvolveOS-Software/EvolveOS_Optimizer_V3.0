@@ -17,6 +17,11 @@
     <sys:String x:Key="step10_load">Alle systemen gereed!</sys:String>
     <!-- endregion Loading Window -->
 
+    <!-- region Notification Manager -->
+    <sys:String x:Key="click_to_copy_noty">Klik om te kopiëren</sys:String>
+    <sys:String x:Key="copied_to_clipboard_noty">Gekopieerd naar klembord!</sys:String>
+    <!-- endregion Notification Manager -->
+
     <!-- region Main Window -->
     <sys:String x:Key="loading_message">EvolveOS Optimizer laden</sys:String>
     <sys:String x:Key="Nav_Home">Startpagina</sys:String>

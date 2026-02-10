@@ -74,8 +74,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 controller.FallbackColor = color;
                 controller.TintOpacity = opacity;
 
-                controller.LuminosityOpacity = luminosity;
-
                 controller.LuminosityOpacity = luminosity + 0.001f;
                 controller.LuminosityOpacity = luminosity;
 

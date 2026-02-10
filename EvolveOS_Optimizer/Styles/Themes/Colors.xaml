@@ -30,9 +30,13 @@
     <ui:Color x:Key="Color_Accent">#7BFFB5</ui:Color>
     <ui:Color x:Key="Color_Error">#E53935</ui:Color>
     <ui:Color x:Key="Color_Success">#43A047</ui:Color>
+    <ui:Color x:Key="Color_Warning">#FFB900</ui:Color>
+    <ui:Color x:Key="Color_Info">#2196F3</ui:Color>
 
     <SolidColorBrush x:Key="Brush_Accent" Color="{StaticResource Color_Accent}"/>
     <SolidColorBrush x:Key="Brush_Error" Color="{StaticResource Color_Error}"/>
     <SolidColorBrush x:Key="Brush_Success" Color="{StaticResource Color_Success}"/>
+    <SolidColorBrush x:Key="Brush_Warning" Color="{StaticResource Color_Warning}"/>
+    <SolidColorBrush x:Key="Brush_Info" Color="{StaticResource Color_Info}"/>
 
 </ResourceDictionary>

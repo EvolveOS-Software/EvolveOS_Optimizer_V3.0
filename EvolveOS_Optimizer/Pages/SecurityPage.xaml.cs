@@ -1,11 +1,11 @@
-﻿using System.IO;
-using System.Management;
-using System.Threading;
+﻿using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Win32;
 using NetFwTypeLib;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Controls;
+using System.IO;
+using System.Management;
+using System.Threading;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -559,7 +559,7 @@ public sealed partial class SecurityPage : Page
                 process.WaitForExit();
             }).ConfigureAwait(true);
 
-            // App.ShowNotification(ResourceString.GetString("SecurityPage_QuickScanTitle"), ResourceString.GetString("SecurityPage_QuickScanCompleted"), Microsoft.UI.Xaml.Controls.InfoBarSeverity.Success, 5000);
+            App.ShowNotification(ResourceString.GetString("SecurityPage_QuickScanTitle"), ResourceString.GetString("SecurityPage_QuickScanCompleted"), InfoBarSeverity.Success, 5000);
 
             await Task.Delay(1000);
             await CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
@@ -567,7 +567,7 @@ public sealed partial class SecurityPage : Page
         catch (Exception ex)
         {
             ErrorLogging.LogDebug(ex);
-            // App.ShowNotification(ResourceString.GetString("SecurityPage_QuickScanTitle"), ResourceString.GetString("SecurityPage_QuickScanFailed"), Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error, 5000);
+            App.ShowNotification(ResourceString.GetString("SecurityPage_QuickScanTitle"), ResourceString.GetString("SecurityPage_QuickScanFailed"), InfoBarSeverity.Error, 5000);
         }
         finally
         {
@@ -598,7 +598,7 @@ public sealed partial class SecurityPage : Page
                 process.WaitForExit();
             }).ConfigureAwait(true);
 
-            // App.ShowNotification(ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle"), ResourceString.GetString("SecurityPage_DefinitionsUpdated"), Microsoft.UI.Xaml.Controls.InfoBarSeverity.Success, 5000);
+            App.ShowNotification(ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle"), ResourceString.GetString("SecurityPage_DefinitionsUpdated"), InfoBarSeverity.Success, 5000);
 
             await Task.Delay(2000);
             await CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
@@ -606,7 +606,7 @@ public sealed partial class SecurityPage : Page
         catch (Exception ex)
         {
             ErrorLogging.LogDebug(ex);
-            // App.ShowNotification(ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle"), ResourceString.GetString("SecurityPage_DefinitionsUpdateFailed"), Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error, 5000);
+            App.ShowNotification(ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle"), ResourceString.GetString("SecurityPage_DefinitionsUpdateFailed"), InfoBarSeverity.Error, 5000);
         }
     }
 

@@ -103,6 +103,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Views\NotificationWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Pages\GroupPolicyPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

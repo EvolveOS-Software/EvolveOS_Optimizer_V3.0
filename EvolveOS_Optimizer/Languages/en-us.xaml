@@ -18,6 +18,11 @@
     <sys:String x:Key="step10_load">All systems ready!</sys:String>
     <!-- endregion Loading Window -->
 
+    <!-- region Notification Manager -->
+    <sys:String x:Key="click_to_copy_noty">Click to copy</sys:String>
+    <sys:String x:Key="copied_to_clipboard_noty">Copied to clipboard!</sys:String>
+    <!-- endregion Notification Manager -->
+
     <!-- region Main Window -->
     <sys:String x:Key="Nav_Home">Home</sys:String>
     <sys:String x:Key="Nav_Security">Security</sys:String>
