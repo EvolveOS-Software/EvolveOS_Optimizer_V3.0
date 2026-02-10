@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -288,6 +289,56 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
+
+            <StackPanel Spacing="12">
+                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_SectionTitle}" 
+               FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_AutoTitle}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_AutoSubtitle}" 
+                               Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" 
+                              IsOn="{x:Bind IsUpdateCheckRequired, Mode=TwoWay}" 
+                              OnContent="{helpers:ResourceString Key=Settings_Update_ToggleOn}" 
+                              OffContent="{helpers:ResourceString Key=Settings_Update_ToggleOff}"/>
+                        </Grid>
+
+                        <MenuFlyoutSeparator/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_ManualTitle}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_ManualSubtitle}" 
+                               Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" 
+                        Content="{helpers:ResourceString Key=Settings_Update_CheckButton}" 
+                        Width="200" 
+                        Click="ManualUpdateCheck_Click" 
+                        Style="{StaticResource AccentButtonStyle}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Right" Margin="0,10,5,0" Opacity="0.6">
+                <TextBlock Text="EvolveOS Optimizer" FontFamily="{StaticResource Jura-Bold}" HorizontalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}"/>
+                <TextBlock Text="{Binding DisplayTweakVersion}" FontFamily="{StaticResource Jura}" HorizontalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}"/>
+            </StackPanel>
+
         </StackPanel>
     </ScrollViewer>
 </Page>

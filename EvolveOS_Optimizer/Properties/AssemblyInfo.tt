@@ -1,0 +1,42 @@
+<#@ template hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+<#
+    string displayVersion = "Build: 1.0.2"; 
+    string cleanVersion = displayVersion.Replace("Build:", "").Trim(); 
+    string[] versionParts = cleanVersion.Split('.');
+    string majorMinor = $"{versionParts[0]}.{versionParts[1]}";
+    string build = GetBuildNumber();
+    string revision = GetRevisionNumber();
+
+    string numericVersion = $"{majorMinor}.{build}.{revision}";
+#>
+
+[assembly: AssemblyTitle("EvolveOS_Optimizer")]
+[assembly: AssemblyDescription("Portable Tool for an Ideal Windows Setup")]
+[assembly: AssemblyProduct("EvolveOS_Optimizer")]
+[assembly: AssemblyCopyright("© 2024-<#= DateTime.Now.Year #> EvolveOS")]
+[assembly: AssemblyTrademark("EvolveOS")]
+
+// This attribute allows custom text e.g "Build: 2.0.2"
+[assembly: AssemblyInformationalVersion("<#= displayVersion #>.<#= build #>")]
+
+[assembly: AssemblyVersion("<#= numericVersion #>")]
+[assembly: AssemblyFileVersion("<#= numericVersion #>")]
+
+[assembly: ComVisible(false)]
+
+<#+
+    private string GetBuildNumber()
+    {
+        DateTime start = new DateTime(2025, 7, 7);
+        return ((int)(DateTime.UtcNow - start).TotalDays).ToString();
+    }
+    
+    private string GetRevisionNumber()
+    {
+        return ((int)DateTime.UtcNow.TimeOfDay.TotalMinutes).ToString();
+    }
+#>

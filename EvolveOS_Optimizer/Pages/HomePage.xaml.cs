@@ -16,7 +16,6 @@ public sealed partial class HomePage : Page
     private DispatcherTimer? _monitoringTimer;
     private string _lastWallpaperPath = string.Empty;
 
-    // Track network delta
     private long _lastDownloadBytes = 0;
     private long _lastUploadBytes = 0;
     private DateTime _lastUpdateTime = DateTime.Now;
@@ -38,7 +37,6 @@ public sealed partial class HomePage : Page
     {
         ApplyElevationUI();
 
-        // PRIME the network bytes before monitoring starts so the first delta isn't huge
         var stats = GetCurrentNetworkBytes();
         _lastDownloadBytes = stats.Down;
         _lastUploadBytes = stats.Up;
@@ -111,7 +109,6 @@ public sealed partial class HomePage : Page
     {
         try
         {
-            // 1. System Info (CPU/RAM)
             string pCount = await _systemDiagnostics.GetProcessCount();
             string sCount = await _systemDiagnostics.GetServicesCount();
             double cpuPercentage = await _systemDiagnostics.GetTotalProcessorUsage();
@@ -120,7 +117,6 @@ public sealed partial class HomePage : Page
             double availBytes = await _systemDiagnostics.GetPhysicalAvailableMemory();
             double ramPercentage = (totalBytes > 0) ? ((totalBytes - availBytes) / totalBytes) * 100.0 : 0;
 
-            // 2. Network Speed Logic
             var currentStats = GetCurrentNetworkBytes();
             DateTime now = DateTime.Now;
             double timeDiff = (now - _lastUpdateTime).TotalSeconds;
@@ -129,8 +125,6 @@ public sealed partial class HomePage : Page
 
             if (timeDiff > 0 && !_isFirstTick)
             {
-                // Calculation: (Bytes / Time) / 1024 / 1024 = MB/s. 
-                // Then multiply by 8 to get Mbps (Megabits per second)
                 dlMbps = ((currentStats.Down - _lastDownloadBytes) / timeDiff / (1024.0 * 1024.0)) * 8.0;
                 ulMbps = ((currentStats.Up - _lastUploadBytes) / timeDiff / (1024.0 * 1024.0)) * 8.0;
             }
@@ -142,12 +136,13 @@ public sealed partial class HomePage : Page
 
             _dispatcherQueue.TryEnqueue(() =>
             {
+                if (this.XamlRoot == null) return;
+
                 if (this.DataContext is HomePageViewModel vm)
                 {
                     vm.RefreshStats();
                     vm.UpdateDateTime();
 
-                    // UI Updates for CPU/RAM
                     CPULoad.Value = Math.Clamp(cpuPercentage, 0, 100);
                     RAMLoad.Value = Math.Clamp(ramPercentage, 0, 100);
                     CPUText.Text = ((int)CPULoad.Value).ToString();
@@ -155,8 +150,6 @@ public sealed partial class HomePage : Page
                     ProcCountText.Text = pCount;
                     SvcCountText.Text = sCount;
 
-                    // UI Updates for Network (Mbps)
-                    // We use 1000 as max for the ring visual for gigabit support
                     DownLoadRing.Value = Math.Clamp(dlMbps, 0, 1000);
                     UpLoadRing.Value = Math.Clamp(ulMbps, 0, 1000);
 

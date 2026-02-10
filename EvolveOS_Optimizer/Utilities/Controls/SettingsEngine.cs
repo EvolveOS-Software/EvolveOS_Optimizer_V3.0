@@ -21,6 +21,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         private static readonly Dictionary<string, object> _defaultSettings = new Dictionary<string, object>
         {
+            ["EnableAutoUpdate"] = true,
             ["Backdrop"] = "Mica",
             ["AppTheme"] = "Default",
             ["AccentColor"] = "#FF0078D4",
@@ -32,6 +33,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
 
+        internal static bool IsUpdateCheckRequired { get => (bool)_cachedSettings["EnableAutoUpdate"]; set => ChangingParameters("EnableAutoUpdate", value); }
         internal static string Backdrop { get => (string)_cachedSettings["Backdrop"]; set => ChangingParameters("Backdrop", value); }
         internal static string AppTheme { get => (string)_cachedSettings["AppTheme"]; set => ChangingParameters("AppTheme", value); }
         internal static string AccentColor { get => (string)_cachedSettings["AccentColor"]; set => ChangingParameters("AccentColor", value); }

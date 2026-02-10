@@ -205,7 +205,22 @@ namespace EvolveOS_Optimizer.Views
                     Report(100);
                     await Task.Delay(1000);
 
-                    _dispatcherQueue.TryEnqueue(() => FinalizeTransition());
+                    _dispatcherQueue.TryEnqueue(() =>
+                    {
+                        FinalizeTransition();
+
+                        if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
+                        {
+                            if (App.Current.MainWindow is MainWindow mainWin)
+                            {
+                                mainWin.DispatcherQueue.TryEnqueue(async () =>
+                                {
+                                    await Task.Delay(200);
+                                    mainWin.AnimateUpdateBanner(true);
+                                });
+                            }
+                        }
+                    });
                 }
                 catch (Exception ex)
                 {

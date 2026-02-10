@@ -1,3 +1,4 @@
+using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
@@ -16,6 +17,12 @@ namespace EvolveOS_Optimizer.Pages
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public LocalizationService Localizer => LocalizationService.Instance;
+
+        public bool IsUpdateCheckRequired
+        {
+            get => SettingsEngine.IsUpdateCheckRequired;
+            set => SettingsEngine.IsUpdateCheckRequired = value;
+        }
 
         public string GetText(string key) => Localizer[key];
 
@@ -215,6 +222,34 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.AccentColor = _pendingHexColor;
 
             ((App)Application.Current).UpdateGlobalAccentColor(_pendingHexColor);
+        }
+
+        private async void ManualUpdateCheck_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn == null) return;
+
+            btn.IsEnabled = false;
+            // Calling your static helper method
+            btn.Content = ResourceString.GetString("Settings_Update_Checking");
+
+            bool updateFound = SystemDiagnostics.IsNeedUpdate;
+
+            if (updateFound)
+            {
+                if (App.Current.MainWindow is MainWindow mainWin)
+                {
+                    mainWin.AnimateUpdateBanner(true);
+                }
+            }
+            else
+            {
+                btn.Content = ResourceString.GetString("Settings_Update_UpToDate");
+                await Task.Delay(2000);
+            }
+
+            btn.IsEnabled = true;
+            btn.Content = ResourceString.GetString("Settings_Update_CheckButton");
         }
 
         private void OnPropertyChanged([CallerMemberName] string? name = null) =>

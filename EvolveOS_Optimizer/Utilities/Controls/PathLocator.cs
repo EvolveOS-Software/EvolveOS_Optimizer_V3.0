@@ -351,9 +351,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             internal const string Steam = "https://steamcommunity.com/id/K-Davos/";
 
-            internal const string GitHubLatest = "https://github.com/EvolveOS-Software/EvolveOS_Optimizer_v2.0/releases/latest/download/EvolveOS_Optimizer.exe";
+            internal const string GitHubLatest = "https://github.com/EvolveOS-Software/EvolveOS_Optimizer_v3.0/releases/latest/download/EvolveOS_Optimizer.exe";
 
-            internal const string GitHubApi = "https://api.github.com/repos/EvolveOS-Software/EvolveOS_Optimizer_v2.0/releases/latest";
+            internal const string GitHubApi = "https://api.github.com/repos/EvolveOS-Software/EvolveOS_Optimizer_v3.0/releases/latest";
 
             internal static readonly IReadOnlyList<string> IpServices = Array.AsReadOnly(new[]
             {

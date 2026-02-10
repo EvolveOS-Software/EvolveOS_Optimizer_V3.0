@@ -1,10 +1,14 @@
+using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Hosting;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
@@ -44,8 +48,9 @@ namespace EvolveOS_Optimizer
 
             WindowHelper.RegisterMinWidthHeight(_hWnd, 700, 400);
             UIHelper.RegisterPageTransition(RootContentControl, RootGrid);
-
             CenterWindow();
+
+            ElementCompositionPreview.SetIsTranslationEnabled(UpdateBanner, true);
 
             this.Activated += (s, e) =>
             {
@@ -71,6 +76,8 @@ namespace EvolveOS_Optimizer
                     OnPropertyChanged(string.Empty); 
                 }
             };
+
+            this.RootGrid.Loaded += MainWindow_Loaded;
         }
 
         public void SetBackdrop(SystemBackdrop backdrop)
@@ -138,6 +145,128 @@ namespace EvolveOS_Optimizer
             catch (Exception ex)
             {
                 Debug.WriteLine($"[Accent] Error parsing/applying color: {ex.Message}");
+            }
+        }
+
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            await Task.Delay(100);
+
+            if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
+            {
+                AnimateUpdateBanner(true);
+            }
+        }
+
+        public void AnimateUpdateBanner(bool show)
+        {
+            if (show) UpdateBanner.Visibility = Visibility.Visible;
+
+            var visual = ElementCompositionPreview.GetElementVisual(UpdateBanner);
+            var compositor = visual.Compositor;
+
+            var easeOut = compositor.CreateCubicBezierEasingFunction(new System.Numerics.Vector2(0.3f, 0.3f), new System.Numerics.Vector2(0.0f, 1.0f));
+
+            var moveAnim = compositor.CreateScalarKeyFrameAnimation();
+            moveAnim.InsertKeyFrame(0.0f, show ? 100f : 0f);
+            moveAnim.InsertKeyFrame(1.0f, show ? 0f : 100f, easeOut);
+            moveAnim.Duration = TimeSpan.FromMilliseconds(500);
+
+            var fadeAnim = compositor.CreateScalarKeyFrameAnimation();
+            fadeAnim.InsertKeyFrame(1.0f, show ? 1.0f : 0.0f);
+            fadeAnim.Duration = TimeSpan.FromMilliseconds(400);
+
+            visual.StartAnimation("Translation.Y", moveAnim);
+            visual.StartAnimation("Opacity", fadeAnim);
+
+            if (!show)
+            {
+                Task.Delay(500).ContinueWith(_ =>
+                    this.DispatcherQueue.TryEnqueue(() => UpdateBanner.Visibility = Visibility.Collapsed));
+            }
+        }
+
+        private void DismissBanner_Click(object sender, RoutedEventArgs e) => AnimateUpdateBanner(false);
+
+        private async void UpdateNow_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is Button btn) btn.IsEnabled = false;
+
+
+                DownloadProgressArea.Visibility = Visibility.Visible;
+
+                string downloadUrl = PathLocator.Links.GitHubLatest;
+                string tempPath = Path.Combine(Path.GetTempPath(), $"EvolveOS_Update_{Guid.NewGuid().ToString("N").Substring(0, 8)}.exe");
+
+                PulseAnimation.Begin();
+
+                await DownloadUpdateAsync(downloadUrl, tempPath);
+
+                PulseAnimation.Stop();
+
+                string currentExe = Environment.ProcessPath ?? AppContext.BaseDirectory;
+                string exeName = Path.GetFileName(currentExe) ?? "EvolveOS_Optimizer.exe";
+                string cmdScript = $"/c timeout /t 1 & taskkill /f /im \"{exeName}\" & timeout /t 2 & del /f /q \"{currentExe}\" & move /y \"{tempPath}\" \"{currentExe}\" & start \"\" \"{currentExe}\"";
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = cmdScript,
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                });
+
+                Application.Current.Exit();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Update Error] {ex.Message}");
+                DownloadProgressArea.Visibility = Visibility.Collapsed;
+                if (sender is Button btn) btn.IsEnabled = true;
+            }
+        }
+
+        private async Task DownloadUpdateAsync(string url, string destinationPath)
+        {
+            using HttpClient client = new HttpClient();
+            using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var totalBytes = response.Content.Headers.ContentLength;
+            using var contentStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            using var fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+
+            var buffer = new byte[8192];
+            long totalRead = 0;
+            int read;
+
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+            while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
+            {
+                await fileStream.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+                totalRead += read;
+
+                if (totalBytes.HasValue)
+                {
+                    if (sw.ElapsedMilliseconds > 100 || totalRead == totalBytes.Value)
+                    {
+                        double progress = (double)totalRead / totalBytes.Value * 100;
+                        string sizeText = $"{Math.Round(totalRead / 1024.0 / 1024.0, 2)} MB / {Math.Round(totalBytes.Value / 1024.0 / 1024.0, 2)} MB";
+
+                        this.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            if (ProgressDownload != null)
+                            {
+                                ProgressDownload.Value = progress;
+                                SizeByte.Text = sizeText;
+                            }
+                        });
+                        sw.Restart();
+                    }
+                }
             }
         }
 
