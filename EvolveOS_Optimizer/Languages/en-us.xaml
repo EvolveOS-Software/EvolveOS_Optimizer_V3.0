@@ -23,6 +23,22 @@
     <sys:String x:Key="copied_to_clipboard_noty">Copied to clipboard!</sys:String>
     <!-- endregion Notification Manager -->
 
+    <!-- region App Updates -->
+    <sys:String x:Key="Update_Banner_Message">A new update is available for EvolveOS Optimizer!</sys:String>
+    <sys:String x:Key="Update_Banner_ConfirmButton">Update Now</sys:String>
+
+    <sys:String x:Key="Settings_Update_SectionTitle">Software Updates</sys:String>
+    <sys:String x:Key="Settings_Update_AutoTitle">Check for updates automatically</sys:String>
+    <sys:String x:Key="Settings_Update_AutoSubtitle">Enable or disable update checks on application startup</sys:String>
+    <sys:String x:Key="Settings_Update_ToggleOn">On</sys:String>
+    <sys:String x:Key="Settings_Update_ToggleOff">Off</sys:String>
+    <sys:String x:Key="Settings_Update_ManualTitle">Check for updates manually</sys:String>
+    <sys:String x:Key="Settings_Update_ManualSubtitle">Query the latest version from EvolveOS GitHub</sys:String>
+    <sys:String x:Key="Settings_Update_CheckButton">Check Now</sys:String>
+    <sys:String x:Key="Settings_Update_Checking">Checking...</sys:String>
+    <sys:String x:Key="Settings_Update_UpToDate">Up to date!</sys:String>
+    <!-- endregion App Updates -->
+
     <!-- region Main Window -->
     <sys:String x:Key="Nav_Home">Home</sys:String>
     <sys:String x:Key="Nav_Security">Security</sys:String>

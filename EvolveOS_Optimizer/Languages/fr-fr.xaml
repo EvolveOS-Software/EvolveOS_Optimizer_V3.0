@@ -23,6 +23,22 @@
     <sys:String x:Key="copied_to_clipboard_noty">Copié dans le presse-papiers !</sys:String>
     <!-- endregion Notification Manager -->
 
+    <!-- region App Updates -->
+    <sys:String x:Key="Update_Banner_Message">Une nouvelle mise à jour est disponible pour EvolveOS Optimizer !</sys:String>
+    <sys:String x:Key="Update_Banner_ConfirmButton">Mettre à jour</sys:String>
+
+    <sys:String x:Key="Settings_Update_SectionTitle">Mises à jour logicielles</sys:String>
+    <sys:String x:Key="Settings_Update_AutoTitle">Vérifier les mises à jour automatiquement</sys:String>
+    <sys:String x:Key="Settings_Update_AutoSubtitle">Activer ou désactiver la recherche de mises à jour au démarrage</sys:String>
+    <sys:String x:Key="Settings_Update_ToggleOn">Activé</sys:String>
+    <sys:String x:Key="Settings_Update_ToggleOff">Désactivé</sys:String>
+    <sys:String x:Key="Settings_Update_ManualTitle">Vérifier les mises à jour manuellement</sys:String>
+    <sys:String x:Key="Settings_Update_ManualSubtitle">Interroger GitHub pour la dernière version d'EvolveOS</sys:String>
+    <sys:String x:Key="Settings_Update_CheckButton">Vérifier maintenant</sys:String>
+    <sys:String x:Key="Settings_Update_Checking">Vérification...</sys:String>
+    <sys:String x:Key="Settings_Update_UpToDate">À jour !</sys:String>
+    <!-- endregion App Updates -->
+
     <!-- region Main Window -->
     <sys:String x:Key="Nav_Home">Accueil</sys:String>
     <sys:String x:Key="Nav_Security">Sécurité</sys:String>

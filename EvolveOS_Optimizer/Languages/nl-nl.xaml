@@ -22,6 +22,22 @@
     <sys:String x:Key="copied_to_clipboard_noty">Gekopieerd naar klembord!</sys:String>
     <!-- endregion Notification Manager -->
 
+    <!-- region App Updates -->
+    <sys:String x:Key="Update_Banner_Message">Er is een nieuwe update beschikbaar voor EvolveOS Optimizer!</sys:String>
+    <sys:String x:Key="Update_Banner_ConfirmButton">Nu bijwerken</sys:String>
+
+    <sys:String x:Key="Settings_Update_SectionTitle">Software-updates</sys:String>
+    <sys:String x:Key="Settings_Update_AutoTitle">Automatisch controleren op updates</sys:String>
+    <sys:String x:Key="Settings_Update_AutoSubtitle">Update-controles in- of uitschakelen bij het opstarten van de applicatie</sys:String>
+    <sys:String x:Key="Settings_Update_ToggleOn">Aan</sys:String>
+    <sys:String x:Key="Settings_Update_ToggleOff">Uit</sys:String>
+    <sys:String x:Key="Settings_Update_ManualTitle">Handmatig controleren op updates</sys:String>
+    <sys:String x:Key="Settings_Update_ManualSubtitle">Vraag de nieuwste versie op van EvolveOS GitHub</sys:String>
+    <sys:String x:Key="Settings_Update_CheckButton">Nu controleren</sys:String>
+    <sys:String x:Key="Settings_Update_Checking">Controleren...</sys:String>
+    <sys:String x:Key="Settings_Update_UpToDate">Up-to-date!</sys:String>
+    <!-- endregion App Updates -->
+
     <!-- region Main Window -->
     <sys:String x:Key="loading_message">EvolveOS Optimizer laden</sys:String>
     <sys:String x:Key="Nav_Home">Startpagina</sys:String>

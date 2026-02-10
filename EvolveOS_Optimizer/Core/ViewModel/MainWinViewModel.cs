@@ -1,6 +1,7 @@
 ﻿using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Services;
+using System.Reflection;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -48,6 +49,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 return _displayProfileName;
             }
         }
+
+        public string DisplayTweakVersion =>
+            (Assembly.GetEntryAssembly() ?? throw new InvalidOperationException())
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "Unknown Version";
         #endregion
 
         public RelayCommand<string> ExecuteNavigateCommand { get; }

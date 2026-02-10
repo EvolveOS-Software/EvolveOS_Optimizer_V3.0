@@ -1,3 +1,4 @@
+using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Globalization;
@@ -11,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
@@ -471,19 +473,28 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         internal async Task ValidateVersionUpdatesAsync()
         {
+            if (!SettingsEngine.IsUpdateCheckRequired || !IsNetworkAvailable())
+            {
+                return;
+            }
+
             try
             {
-                using var request = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/repos/YourRepo/Releases/latest");
-                request.Headers.Add("User-Agent", "EvolveOS-Optimizer");
-                var response = await _updateClient.SendAsync(request);
+                using var request = new HttpRequestMessage(HttpMethod.Get, PathLocator.Links.GitHubApi);
+                request.Headers.Add("User-Agent", "EvolveOS-Optimizer-Updater");
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                using var response = await _updateClient.SendAsync(request, cts.Token).ConfigureAwait(false);
                 if (response.IsSuccessStatusCode)
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var git = JsonConvert.DeserializeObject<GitMetadata>(content);
-                    DownloadVersion = git?.СurrentVersion ?? "";
+                    var git = JsonConvert.DeserializeObject<GitMetadata>(await response.Content.ReadAsStringAsync());
+                    if (git?.СurrentVersion != null && git.СurrentVersion.CompareTo(SettingsEngine.currentRelease) > 0)
+                    {
+                        IsNeedUpdate = true;
+                        DownloadVersion = git.СurrentVersion;
+                    }
                 }
             }
-            catch { }
+            catch { IsNeedUpdate = false; }
         }
 
         private static string SizeCalculationHelper<T>(T sizeInBytes) where T : struct, IConvertible
