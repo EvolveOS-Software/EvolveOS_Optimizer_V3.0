@@ -25,6 +25,7 @@
     <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
     <sys:String x:Key="Nav_Packages">Packages</sys:String>
+    <sys:String x:Key="Nav_GroupPolicy">Policies</sys:String>
     <sys:String x:Key="Nav_Services">Services</sys:String>
     <sys:String x:Key="Nav_System">System</sys:String>
     <sys:String x:Key="Nav_Settings">Settings</sys:String>
@@ -83,7 +84,6 @@
     <sys:String x:Key="SecurityPage_UpdateDefinitions">Update definitions</sys:String>
     <sys:String x:Key="SecurityPage_UpdateDefinitionsTitle">Update definitions</sys:String>
     <sys:String x:Key="SecurityPage_Enable">Enable</sys:String>
-    <sys:String x:Key="btn_restart_admin">Restart as Admin</sys:String>
 
     <sys:String x:Key="SecurityPage_Status">Security Status</sys:String>
     <sys:String x:Key="SecurityPage_Details">Security Details</sys:String>
@@ -118,5 +118,57 @@
     <sys:String x:Key="Enabled">Enabled</sys:String>
     <sys:String x:Key="Disabled">Disabled</sys:String>
     <!-- endregion SecurityPage -->
+
+    <!-- region GroupPolicy Page -->
+    <sys:String x:Key="GroupPolicyPage_Warning">This feature only detects policy-backed registry entries. It does not detect service changes or non-policy registry tweaks.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoMessage">This page detects and allows you to remove Local Group Policy overrides. Removing a policy override returns it to Not Configured state.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummary">Policy Summary</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPolicies">Configured Policies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Categories">Categories</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSelected">Remove Selected</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyList">Detailed Policy List</sys:String>
+    <sys:String x:Key="GroupPolicyPage_GroupPolicy_Content">Policies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveOverrides">Remove Overrides</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NoPoliciesDetected">No policy overrides detected.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveAllOverrides">Remove All Overrides</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Title">Group Policy Override Detection</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanningPolicies">Scanning policies...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Refresh">Refresh</sys:String>
+    <sys:String x:Key="GroupPolicyPage_CategoriesHeader">Categories</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSelectedText">Remove Selected</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanningText">Scanning policies...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NoPoliciesText">No policy overrides detected.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Header">Policy Summary</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoBanner_Title">Information</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RefreshText">Refresh</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesHeader">Configured Policies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Description">View and manage individual policy overrides</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveAllOverrides">Remove All Overrides</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoBanner_Message">This page detects and allows you to remove Local Group Policy overrides. Removing a policy override returns it to Default state.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Description">Overview of detected policy overrides</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Header">Detailed Policy List</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredCount">{0} Configured</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanError">Error scanning policies: {0}</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveErrorTitle">Removal Failed</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSuccessContent">Successfully removed {0} policy overrides.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveCategoryTitle">Remove Category Policies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NotConfigured">Not Configured</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSuccessTitle">Policies Removed</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} configured policies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartNow">Restart Now</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Later">Later</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedContent">Are you sure you want to remove the {0} selected policy overrides?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveErrorContent">An error occurred while removing policy overrides: {0}</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveCategoryContent">Are you sure you want to remove all {0} policy overrides in the '{1}' category?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllContent">Are you sure you want to remove all {0} policy overrides? This action cannot be undone.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovePartialTitle">Partial Removal</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Remove">Remove</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovingPolicies">Removing policies...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovePartialContent">Removed {0} of {1} policy overrides. Some policies could not be removed.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartExplorerTitle">Restart Explorer</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartExplorerContent">Some policy changes require restarting Windows Explorer to take effect. Would you like to restart Explorer now?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Remove All Policy Overrides</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Remove Selected Policies</sys:String>
+    <!-- endregion GroupPolicy Page -->
 
 </ResourceDictionary>

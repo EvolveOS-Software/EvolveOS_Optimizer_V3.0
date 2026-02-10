@@ -143,6 +143,13 @@
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="GroupPolicy"
+                                     Tag="{x:Bind GetText('Nav_GroupPolicy'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xE9D5;" FontSize="18"/>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Services"
                                      Tag="{x:Bind GetText('Nav_Services'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEC05;" FontSize="18"/>

@@ -61,7 +61,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (e.PropertyName == "Item[]") OnPropertyChanged(string.Empty);
             };
 
-            ExecuteNavigate("HomePage");
+            ExecuteNavigate("Home");
         }
 
         private void ExecuteNavigate(string? tag)
@@ -75,9 +75,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 /*"Utils" => new Pages.UtilitiesPage(),
                 "Confidentiality" => new Pages.PrivacyPage(),
                 "Interface" => new Pages.InterfacePage(),
-                "Packages" => new Pages.PackagesPage(),
-                "Services" => new Pages.ServicesPage(),
-                "System" => new Pages.SystemPage(),*/
+                "Packages" => new Pages.PackagesPage(),*/
+                "GroupPolicy" => new Pages.GroupPolicyPage(),
+                //"Services" => new Pages.ServicesPage(),
+                //"System" => new Pages.SystemPage(),
                 "Settings" => new Pages.SettingsPage(),
                 _ => new Pages.HomePage()
             };

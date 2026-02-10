@@ -25,6 +25,7 @@
     <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
     <sys:String x:Key="Nav_Packages">Pakketten</sys:String>
+    <sys:String x:Key="Nav_GroupPolicy">Beleid</sys:String>
     <sys:String x:Key="Nav_Services">Services</sys:String>
     <sys:String x:Key="Nav_System">Systeem</sys:String>
     <sys:String x:Key="Nav_Settings">Instellingen</sys:String>
@@ -83,7 +84,6 @@
     <sys:String x:Key="SecurityPage_UpdateDefinitions">Definities bijwerken</sys:String>
     <sys:String x:Key="SecurityPage_UpdateDefinitionsTitle">Definities bijwerken</sys:String>
     <sys:String x:Key="SecurityPage_Enable">Inschakelen</sys:String>
-    <sys:String x:Key="btn_restart_admin">Opnieuw opstarten als Admin</sys:String>
 
     <sys:String x:Key="SecurityPage_Status">Beveiligingsstatus</sys:String>
     <sys:String x:Key="SecurityPage_Details">Beveiligingsdetails</sys:String>
@@ -118,5 +118,57 @@
     <sys:String x:Key="Enabled">Ingeschakeld</sys:String>
     <sys:String x:Key="Disabled">Uitgeschakeld</sys:String>
     <!-- endregion SecurityPage -->
+
+    <!-- region GroupPolicy Page -->
+    <sys:String x:Key="GroupPolicyPage_Warning">Deze functie detecteert alleen registervermeldingen die door beleid worden ondersteund. Het detecteert geen servicewijzigingen of registeraanpassingen die niet aan beleid zijn gekoppeld.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoMessage">Deze pagina detecteert lokale groepsbeleid-overschrijvingen en stelt u in staat deze te verwijderen. Het verwijderen van een overschrijving herstelt de status naar Niet Geconfigureerd.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummary">Beleidsoverzicht</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPolicies">Geconfigureerd Beleid</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Categories">Categorieën</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSelected">Geselecteerde Verwijderen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyList">Gedetailleerde Beleidslijst</sys:String>
+    <sys:String x:Key="GroupPolicyPage_GroupPolicy_Content">Beleid</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveOverrides">Overschrijvingen Verwijderen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NoPoliciesDetected">Geen beleidsoverschrijvingen gedetecteerd.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveAllOverrides">Alle Overschrijvingen Verwijderen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Title">Detectie van Groepsbeleid-overschrijvingen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanningPolicies">Beleid scannen...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Refresh">Vernieuwen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_CategoriesHeader">Categorieën</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSelectedText">Geselecteerde Verwijderen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanningText">Beleid scannen...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NoPoliciesText">Geen beleidsoverschrijvingen gedetecteerd.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Header">Beleidsoverzicht</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoBanner_Title">Informatie</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RefreshText">Vernieuwen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesHeader">Geconfigureerd Beleid</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Description">Individuele beleidsoverschrijvingen bekijken en beheren</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveAllOverrides">Alle Overschrijvingen Verwijderen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoBanner_Message">Deze pagina detecteert lokale groepsbeleid-overschrijvingen en stelt u in staat deze te verwijderen. Het verwijderen van een overschrijving herstelt de status naar de standaardwaarde.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Description">Overzicht van gedetecteerde beleidsoverschrijvingen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Header">Gedetailleerde Beleidslijst</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredCount">{0} Geconfigureerd</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanError">Fout bij scannen van beleid: {0}</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveErrorTitle">Verwijderen Mislukt</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSuccessContent">{0} beleidsoverschrijvingen succesvol verwijderd.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveCategoryTitle">Categoriebeleid Verwijderen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NotConfigured">Niet Geconfigureerd</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSuccessTitle">Beleid Verwijderd</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} geconfigureerde beleidsregels</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartNow">Nu Herstarten</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Later">Later</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedContent">Weet u zeker dat u de {0} geselecteerde beleidsoverschrijvingen wilt verwijderen?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveErrorContent">Er is een fout opgetreden bij het verwijderen van beleidsoverschrijvingen: {0}</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveCategoryContent">Weet u zeker dat u alle {0} beleidsoverschrijvingen in de categorie '{1}' wilt verwijderen?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllContent">Weet u zeker dat u alle {0} beleidsoverschrijvingen wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovePartialTitle">Gedeeltelijke Verwijdering</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Remove">Verwijderen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovingPolicies">Beleid verwijderen...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovePartialContent">{0} van de {1} beleidsoverschrijvingen verwijderd. Sommige regels konden niet worden verwijderd.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartExplorerTitle">Explorer Herstarten</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartExplorerContent">Sommige beleidswijzigingen vereisen een herstart van Windows Explorer om effect te hebben. Wilt u Explorer nu herstarten?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Alle Beleidsoverschrijvingen Verwijderen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Geselecteerd Beleid Verwijderen</sys:String>
+    <!-- endregion GroupPolicy Page -->
 
 </ResourceDictionary>

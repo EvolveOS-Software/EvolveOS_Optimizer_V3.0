@@ -25,6 +25,7 @@
     <sys:String x:Key="Nav_Privacy">Confidentialité</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
     <sys:String x:Key="Nav_Packages">Paquets</sys:String>
+    <sys:String x:Key="Nav_GroupPolicy">Stratégies</sys:String>
     <sys:String x:Key="Nav_Services">Services</sys:String>
     <sys:String x:Key="Nav_System">Système</sys:String>
     <sys:String x:Key="Nav_Settings">Paramètres</sys:String>
@@ -64,6 +65,7 @@
     <sys:String x:Key="label_svc_sysinfo">services :</sys:String>
 
     <!-- Elevation Mode -->
+    <sys:String x:Key="btn_restart_admin">Redémarrer en tant qu'Admin</sys:String>
     <sys:String x:Key="label_admin_notice">Exécuter en tant qu'administrateur pour une optimisation complète (Services et Mémoire)</sys:String>
     <sys:String x:Key="label_limited_mode">Mode limité :</sys:String>
     <sys:String x:Key="label_status_checking">Statut : Vérification en cours...</sys:String>
@@ -82,7 +84,6 @@
     <sys:String x:Key="SecurityPage_UpdateDefinitions">Mettre à jour les définitions</sys:String>
     <sys:String x:Key="SecurityPage_UpdateDefinitionsTitle">Mise à jour des définitions</sys:String>
     <sys:String x:Key="SecurityPage_Enable">Activer</sys:String>
-    <sys:String x:Key="btn_restart_admin">Redémarrer en tant qu'Admin</sys:String>
 
     <sys:String x:Key="SecurityPage_Status">État de la sécurité</sys:String>
     <sys:String x:Key="SecurityPage_Details">Détails de sécurité</sys:String>
@@ -117,5 +118,58 @@
     <sys:String x:Key="Enabled">Activé</sys:String>
     <sys:String x:Key="Disabled">Désactivé</sys:String>
     <!-- endregion SecurityPage -->
+
+    <!-- region GroupPolicy Page -->
+    <sys:String x:Key="GroupPolicyPage_Warning">Cette fonctionnalité ne détecte que les entrées de registre liées aux stratégies. Elle ne détecte pas les modifications de services ou les ajustements de registre hors stratégie.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoMessage">Cette page détecte et vous permet de supprimer les remplacements de stratégie de groupe locale. La suppression d'un remplacement rétablit l'état "Non configuré".</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummary">Résumé des stratégies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPolicies">Stratégies configurées</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Categories">Catégories</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSelected">Supprimer la sélection</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyList">Liste détaillée des stratégies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_GroupPolicy_Content">Stratégies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveOverrides">Supprimer les remplacements</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NoPoliciesDetected">Aucun remplacement de stratégie détecté.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveAllOverrides">Supprimer tous les remplacements</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Title">Détection des remplacements de stratégie de groupe</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanningPolicies">Analyse des stratégies en cours...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Refresh">Actualiser</sys:String>
+    <sys:String x:Key="GroupPolicyPage_CategoriesHeader">Catégories</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSelectedText">Supprimer la sélection</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanningText">Analyse des stratégies en cours...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NoPoliciesText">Aucun remplacement de stratégie détecté.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Header">Résumé des stratégies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoBanner_Title">Informations</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RefreshText">Actualiser</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesHeader">Stratégies configurées</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Description">Afficher et gérer les remplacements de stratégies individuels</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveAllOverrides">Supprimer tous les remplacements</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoBanner_Message">Cette page détecte et vous permet de supprimer les remplacements de stratégie de groupe locale. La suppression d'un remplacement rétablit l'état par défaut.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Description">Aperçu des remplacements de stratégies détectés</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Header">Liste détaillée des stratégies</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredCount">{0} configuré(s)</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanError">Erreur lors de l'analyse des stratégies : {0}</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveErrorTitle">Échec de la suppression</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSuccessContent">Réussite de la suppression de {0} remplacements de stratégie.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveCategoryTitle">Supprimer les stratégies de la catégorie</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NotConfigured">Non configuré</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSuccessTitle">Stratégies supprimées</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} stratégies configurées</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartNow">Redémarrer maintenant</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Later">Plus tard</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedContent">Êtes-vous sûr de vouloir supprimer les {0} remplacements de stratégie sélectionnés ?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveErrorContent">Une erreur est survenue lors de la suppression des remplacements : {0}</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveCategoryContent">Êtes-vous sûr de vouloir supprimer les {0} remplacements de stratégie dans la catégorie '{1}' ?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllContent">Êtes-vous sûr de vouloir supprimer les {0} remplacements de stratégie ? Cette action est irréversible.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovePartialTitle">Suppression partielle</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Remove">Supprimer</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovingPolicies">Suppression des stratégies en cours...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovePartialContent">{0} remplacements sur {1} ont été supprimés. Certaines stratégies n'ont pas pu être retirées.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartExplorerTitle">Redémarrer l'Explorateur</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartExplorerContent">Certains changements nécessitent un redémarrage de l'Explorateur Windows pour être effectifs. Voulez-vous le redémarrer maintenant ?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Supprimer tous les remplacements de stratégie</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Supprimer les stratégies sélectionnées</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoBanner_Title">Informations</sys:String>
+    <!-- endregion GroupPolicy Page -->
 
 </ResourceDictionary>
