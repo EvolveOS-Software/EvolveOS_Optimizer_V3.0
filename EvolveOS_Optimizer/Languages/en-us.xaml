@@ -50,7 +50,7 @@
     <sys:String x:Key="Nav_Utilities">Utilities</sys:String>
     <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
-    <sys:String x:Key="Nav_Packages">Packages</sys:String>
+    <sys:String x:Key="Nav_Software_Center">Software Center</sys:String>
     <sys:String x:Key="Nav_GroupPolicy">Policies</sys:String>
     <sys:String x:Key="Nav_Services">Services</sys:String>
     <sys:String x:Key="Nav_System">System</sys:String>
@@ -72,6 +72,9 @@
 
     <sys:String x:Key="Settings_Language_Title">Language</sys:String>
     <sys:String x:Key="Settings_Language_Subtitle">Select your preferred language</sys:String>
+
+    <sys:String x:Key="Settings_Animations_Title">UI Animations</sys:String>
+    <sys:String x:Key="Settings_Animations_Subtitle">Enable or disable panel transitions and Honeycomb effects.</sys:String>
 
     <sys:String x:Key="Settings_Backdrop_None">None (Solid)</sys:String>
     <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
@@ -196,10 +199,16 @@
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Remove Selected Policies</sys:String>
     <!-- endregion GroupPolicy Page -->
 
-    <!-- region Windows Packages -->
+    <!-- region Software Center Page (Tabbed) -->
+    <sys:String x:Key="Tab_Recommended">Recommended Debloat</sys:String>
+    <sys:String x:Key="Tab_Installed">Installed Apps</sys:String>
+    <sys:String x:Key="Tab_WinGet">App Store (WinGet)</sys:String>
+    <!-- endregion Software Center Page (Tabbed) -->
+
+    <!-- region Windows Packages (Tab 1) -->
     <sys:String x:Key="warn_part1_pkg">Apps will be deleted</sys:String>
     <sys:String x:Key="warn_part2_pkg">forever,</sys:String>
-    <sys:String x:Key="warn_part3_pkg">but OneDrive can be restored by clicking its icon</sys:String>
+    <sys:String x:Key="warn_part3_pkg">double-click an icon to remove it, or use multi-select for bulk removal.</sys:String>
 
     <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
     <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
@@ -324,5 +333,33 @@
     <sys:String x:Key="text_status_active">Active</sys:String>
     <sys:String x:Key="title_uninstall">Confirm Uninstallation</sys:String>
     <!-- endregion Windows Packages -->
+
+    <!-- region Installed Apps (Tab 2) -->
+    <sys:String x:Key="Debloat">Debloat</sys:String>
+    <sys:String x:Key="SystemAppsPage_NotificationBody">Uninstalling some of these apps may not remove them completely.</sys:String>
+    <sys:String x:Key="SystemAppsPage_TempButton">Clear System Temp</sys:String>
+    <sys:String x:Key="SystemAppsPage_FetchingInstalledApps">Fetching Installed Apps Data...</sys:String>
+    <sys:String x:Key="SystemAppsPage_AppsFilter">Filter by:</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallButton">Uninstall Selected App(s)</sys:String>
+    <sys:String x:Key="Done">Done</sys:String>
+    <sys:String x:Key="SystemAppsPage_Close">Close</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallTip">Select apps that you want to remove and hit uninstall</sys:String>
+    <sys:String x:Key="SystemAppsPage_NoAppFound">No apps match your search</sys:String>
+    <sys:String x:Key="SystemAppsPage_SearchBar">Search apps...</sys:String>
+    <sys:String x:Key="SystemAppsPage_StandardApps">Standard Apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_AllApps">All Apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_Win32Apps">Win32 Apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_TotalApps">Total: {0} App(s)</sys:String>
+    <sys:String x:Key="SystemAppsPage_UnInstall">Uninstall</sys:String>
+    <sys:String x:Key="SystemAppsPage_Uninstalling">Uninstalling</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallationError">Error uninstalling the following app(s)</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallationSuccess">Successfully uninstalled the following app(s)</sys:String>
+    <sys:String x:Key="SystemAppsPage_DeletingTemp">Deleting Temp Files</sys:String>
+    <sys:String x:Key="SystemAppsPage_TempDelSucc">Temp Files Deleted Successfully!</sys:String>
+    <sys:String x:Key="SystemAppsPage_ErrTempDel">Error Deleting Temp Files</sys:String>
+    <sys:String x:Key="SystemAppsPage_ConfirmRemoveApps">You’re about to completely remove the following apps from your system:</sys:String>
+    <sys:String x:Key="SystemAppsPage_ConfirmContinue">Are you sure you want to continue?</sys:String>
+    <sys:String x:Key="SystemAppsPage_Continue">Continue</sys:String>
+    <!-- endregion Installed Apps -->
 
 </ResourceDictionary>

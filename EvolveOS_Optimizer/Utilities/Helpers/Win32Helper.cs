@@ -242,6 +242,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [DllImport("user32.dll")]
         internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+        internal static extern uint ExtractIconEx(string szFileName, int nIconIndex, IntPtr[] phiconLarge, IntPtr[] phiconSmall, uint nIcons);
+
         #endregion
 
         #region Backup

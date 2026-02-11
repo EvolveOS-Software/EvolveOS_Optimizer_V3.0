@@ -139,8 +139,8 @@
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
-                                     CommandParameter="Packages"
-                                     Tag="{x:Bind GetText('Nav_Packages'), Mode=OneWay}">
+                                     CommandParameter="Software"
+                                     Tag="{x:Bind GetText('Nav_Software_Center'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE74C;" FontSize="18"/>
                         </RadioButton>
 

@@ -50,7 +50,7 @@
     <sys:String x:Key="Nav_Utilities">Utilitaires</sys:String>
     <sys:String x:Key="Nav_Privacy">Confidentialité</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
-    <sys:String x:Key="Nav_Packages">Paquets</sys:String>
+    <sys:String x:Key="Nav_Software_Center">Centre de logiciels</sys:String>
     <sys:String x:Key="Nav_GroupPolicy">Stratégies</sys:String>
     <sys:String x:Key="Nav_Services">Services</sys:String>
     <sys:String x:Key="Nav_System">Système</sys:String>
@@ -72,6 +72,9 @@
 
     <sys:String x:Key="Settings_Language_Title">Langue</sys:String>
     <sys:String x:Key="Settings_Language_Subtitle">Sélectionnez votre langue préférée</sys:String>
+
+    <sys:String x:Key="Settings_Animations_Title">Animations de l'interface</sys:String>
+    <sys:String x:Key="Settings_Animations_Subtitle">Activer ou désactiver les transitions et les effets Honeycomb.</sys:String>
 
     <sys:String x:Key="Settings_Backdrop_None">Aucun (Solide)</sys:String>
     <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
@@ -196,10 +199,16 @@
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Supprimer les stratégies sélectionnées</sys:String>
     <!-- endregion GroupPolicy Page -->
 
-    <!-- region Windows Packages -->
+    <!-- region Software Center Page (Tabbed) -->
+    <sys:String x:Key="Tab_Recommended">Nettoyage recommandé</sys:String>
+    <sys:String x:Key="Tab_Installed">Applications installées</sys:String>
+    <sys:String x:Key="Tab_WinGet">Boutique d'applications (WinGet)</sys:String>
+    <!-- endregion Software Center Page (Tabbed) -->
+
+    <!-- region Windows Packages (Tab 1) -->
     <sys:String x:Key="warn_part1_pkg">Les applications seront supprimées</sys:String>
     <sys:String x:Key="warn_part2_pkg">définitivement,</sys:String>
-    <sys:String x:Key="warn_part3_pkg">mais OneDrive peut être restauré en cliquant sur son icône</sys:String>
+    <sys:String x:Key="warn_part3_pkg">double-cliquez pour supprimer, ou utilisez la sélection multiple pour un retrait groupé.</sys:String>
 
     <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
     <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
@@ -324,5 +333,33 @@
     <sys:String x:Key="text_status_active">Actif</sys:String>
     <sys:String x:Key="title_uninstall">Confirmer la désinstallation</sys:String>
     <!-- endregion Windows Packages -->
+
+    <!-- region Installed Apps (Tab 2) -->
+    <sys:String x:Key="Debloat">Nettoyage</sys:String>
+    <sys:String x:Key="SystemAppsPage_NotificationBody">La désinstallation de certaines de ces applications peut ne pas les supprimer complètement.</sys:String>
+    <sys:String x:Key="SystemAppsPage_TempButton">Effacer les fichiers temporaires</sys:String>
+    <sys:String x:Key="SystemAppsPage_FetchingInstalledApps">Récupération des données des applications installées...</sys:String>
+    <sys:String x:Key="SystemAppsPage_AppsFilter">Filtrer par :</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallButton">Désinstaller les applications sélectionnées</sys:String>
+    <sys:String x:Key="Done">Terminé</sys:String>
+    <sys:String x:Key="SystemAppsPage_Close">Fermer</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallTip">Sélectionnez les applications à supprimer et cliquez sur désinstaller</sys:String>
+    <sys:String x:Key="SystemAppsPage_NoAppFound">Aucune application ne correspond à votre recherche</sys:String>
+    <sys:String x:Key="SystemAppsPage_SearchBar">Rechercher des applications...</sys:String>
+    <sys:String x:Key="SystemAppsPage_StandardApps">Applications standards</sys:String>
+    <sys:String x:Key="SystemAppsPage_AllApps">Toutes les applications</sys:String>
+    <sys:String x:Key="SystemAppsPage_Win32Apps">Applications Win32</sys:String>
+    <sys:String x:Key="SystemAppsPage_TotalApps">Total : {0} application(s)</sys:String>
+    <sys:String x:Key="SystemAppsPage_UnInstall">Désinstaller</sys:String>
+    <sys:String x:Key="SystemAppsPage_Uninstalling">Désinstallation en cours</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallationError">Erreur lors de la désinstallation des applications suivantes</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallationSuccess">Désinstallation réussie des applications suivantes</sys:String>
+    <sys:String x:Key="SystemAppsPage_DeletingTemp">Suppression des fichiers temporaires</sys:String>
+    <sys:String x:Key="SystemAppsPage_TempDelSucc">Fichiers temporaires supprimés avec succès !</sys:String>
+    <sys:String x:Key="SystemAppsPage_ErrTempDel">Erreur lors de la suppression des fichiers temporaires</sys:String>
+    <sys:String x:Key="SystemAppsPage_ConfirmRemoveApps">Vous êtes sur le point de supprimer complètement les applications suivantes de votre système :</sys:String>
+    <sys:String x:Key="SystemAppsPage_ConfirmContinue">Êtes-vous sûr de vouloir continuer ?</sys:String>
+    <sys:String x:Key="SystemAppsPage_Continue">Continuer</sys:String>
+    <!-- endregion Installed Apps -->
 
 </ResourceDictionary>
