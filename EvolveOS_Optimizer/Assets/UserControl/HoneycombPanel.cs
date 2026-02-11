@@ -9,6 +9,8 @@ namespace EvolveOS_Optimizer.Assets.UserControl
 {
     public class HoneycombPanel : Panel
     {
+        private bool _isLayoutActive = false;
+
         private static readonly ConditionalWeakTable<FrameworkElement, FrameworkElement> _contentCache =
             new ConditionalWeakTable<FrameworkElement, FrameworkElement>();
 
@@ -114,86 +116,88 @@ namespace EvolveOS_Optimizer.Assets.UserControl
 
         protected override Size ArrangeOverride(Size finalSize)
         {
+            if (_isLayoutActive) return finalSize;
+
             var visibleItems = Children.Where(c => c.Visibility != Visibility.Collapsed).ToList();
             int visibleCount = visibleItems.Count;
             if (visibleCount == 0) return finalSize;
 
-            double xStepBase = HexWidth * XSpacingFactor;
-            double yStepBase = HexHeight * YSpacingFactor;
-
-            int maxFitColumns = (int)Math.Max(1, Math.Floor((finalSize.Width - HexWidth) / xStepBase) + 1);
-            int columnsToUse = Math.Min(FixedColumns, maxFitColumns);
-
-            bool isReflowing = (Math.Abs(finalSize.Width - _lastSize.Width) > 50 ||
-                               (_lastColumnCount != -1 && _lastColumnCount != columnsToUse) ||
-                               _isTimerTriggered) && IsAnimationEnabled;
-
-            bool triggerEntrance = _isInitialLoad && EnableEntranceAnimation;
-
-            _lastColumnCount = columnsToUse;
-            _lastSize = finalSize;
-            _isTimerTriggered = false;
-            _isInitialLoad = false;
-
-            int actualCols = Math.Min(visibleCount, columnsToUse);
-            int actualRows = (int)Math.Ceiling((double)visibleCount / columnsToUse);
-
-            double baseGroupWidth = ((actualCols - 1) * xStepBase) + HexWidth;
-            double baseGroupHeight = ((actualRows - 1) * yStepBase) + HexHeight + (actualCols > 1 ? yStepBase / 2.0 : 0);
-
-            double scaleX = (finalSize.Width * 0.9) / baseGroupWidth;
-            double scaleY = (finalSize.Height * 0.9) / baseGroupHeight;
-            float uniformScale = (float)Math.Max(1.0, Math.Min(scaleX, scaleY));
-
-            double xStep = xStepBase * uniformScale;
-            double yStep = yStepBase * uniformScale;
-            double scaledHexWidth = HexWidth * uniformScale;
-            double scaledHexHeight = HexHeight * uniformScale;
-
-            double groupWidth = ((actualCols - 1) * xStep) + scaledHexWidth;
-            double groupHeight = ((actualRows - 1) * yStep) + scaledHexHeight + (actualCols > 1 ? (yStep / 2.0) : 0);
-
-            double xOffsetStart = (finalSize.Width - groupWidth) / 4.0 + ManualHorizontalPush;
-            double yOffsetStart = (finalSize.Height - groupHeight) / 2.0 + ManualVerticalPush;
-
-            for (int i = 0; i < visibleCount; i++)
+            _isLayoutActive = true;
+            try
             {
-                var fe = visibleItems[i] as FrameworkElement;
-                if (fe == null) continue;
+                double xStepBase = HexWidth * XSpacingFactor;
+                double yStepBase = HexHeight * YSpacingFactor;
 
-                int col = i % columnsToUse;
-                int row = i / columnsToUse;
+                int maxFitColumns = (int)Math.Max(1, Math.Floor((finalSize.Width - HexWidth) / xStepBase) + 1);
+                int columnsToUse = Math.Min(FixedColumns, maxFitColumns);
 
-                double slotCenterX = xOffsetStart + (col * xStep) + (scaledHexWidth / 2.0);
-                double slotCenterY = yOffsetStart + (row * yStep) + (scaledHexHeight / 2.0);
+                bool isReflowing = (Math.Abs(finalSize.Width - _lastSize.Width) > 50 ||
+                                   (_lastColumnCount != -1 && _lastColumnCount != columnsToUse) ||
+                                   _isTimerTriggered) && IsAnimationEnabled;
 
-                if (col % 2 != 0) slotCenterY += yStep / 2.0;
+                bool triggerEntrance = _isInitialLoad && EnableEntranceAnimation;
 
-                fe.Arrange(new Rect(0, 0, HexWidth, HexHeight));
+                _lastColumnCount = columnsToUse;
+                _lastSize = finalSize;
+                _isTimerTriggered = false;
+                _isInitialLoad = false;
 
-                var visual = ElementCompositionPreview.GetElementVisual(fe);
-                visual.Size = new Vector2((float)HexWidth, (float)HexHeight);
-                visual.AnchorPoint = new Vector2(0.5f, 0.5f);
+                int actualCols = Math.Min(visibleCount, columnsToUse);
+                int actualRows = (int)Math.Ceiling((double)visibleCount / columnsToUse);
 
-                visual.CenterPoint = new Vector3((float)HexWidth / 2, (float)HexHeight / 2, 0);
-                visual.RotationAngleInDegrees = (float)RotationAngle;
+                double baseGroupWidth = ((actualCols - 1) * xStepBase) + HexWidth;
+                double baseGroupHeight = ((actualRows - 1) * yStepBase) + HexHeight + (actualCols > 1 ? yStepBase / 2.0 : 0);
 
-                CounterRotateContent(fe);
+                double scaleX = (finalSize.Width * 0.9) / baseGroupWidth;
+                double scaleY = (finalSize.Height * 0.9) / baseGroupHeight;
+                float uniformScale = (float)Math.Max(1.0, Math.Min(scaleX, scaleY));
 
-                float finalX = (float)slotCenterX;
-                float finalY = (float)slotCenterY;
+                double xStep = xStepBase * uniformScale;
+                double yStep = yStepBase * uniformScale;
+                double scaledHexWidth = HexWidth * uniformScale;
+                double scaledHexHeight = HexHeight * uniformScale;
 
-                /*if (IsAnimationEnabled && (isReflowing || triggerEntrance))
-                {*/
-                    ApplyCompositionMove(fe, finalX, finalY, uniformScale, i, triggerEntrance, isReflowing);
-                /*}
-                else
+                double groupWidth = ((actualCols - 1) * xStep) + scaledHexWidth;
+                double groupHeight = ((actualRows - 1) * yStep) + scaledHexHeight + (actualCols > 1 ? (yStep / 2.0) : 0);
+
+                double xOffsetStart = (finalSize.Width - groupWidth) / 4.0 + ManualHorizontalPush;
+                double yOffsetStart = (finalSize.Height - groupHeight) / 2.0 + ManualVerticalPush;
+
+                for (int i = 0; i < visibleCount; i++)
                 {
-                    visual.Offset = new Vector3(finalX, finalY, 0);
-                    visual.Scale = new Vector3(uniformScale, uniformScale, 1.0f);
-                    visual.Opacity = 1.0f;
-                }*/
+                    var fe = visibleItems[i] as FrameworkElement;
+                    if (fe == null) continue;
+
+                    int col = i % columnsToUse;
+                    int row = i / columnsToUse;
+
+                    double slotCenterX = xOffsetStart + (col * xStep) + (scaledHexWidth / 2.0);
+                    double slotCenterY = yOffsetStart + (row * yStep) + (scaledHexHeight / 2.0);
+
+                    if (col % 2 != 0) slotCenterY += yStep / 2.0;
+
+                    fe.Arrange(new Rect(0, 0, HexWidth, HexHeight));
+
+                    var visual = ElementCompositionPreview.GetElementVisual(fe);
+                    visual.Size = new Vector2((float)HexWidth, (float)HexHeight);
+                    visual.AnchorPoint = new Vector2(0.5f, 0.5f);
+
+                    visual.CenterPoint = new Vector3((float)HexWidth / 2, (float)HexHeight / 2, 0);
+                    visual.RotationAngleInDegrees = (float)RotationAngle;
+
+                    CounterRotateContent(fe);
+
+                    float finalX = (float)slotCenterX;
+                    float finalY = (float)slotCenterY;
+
+                    ApplyCompositionMove(fe, finalX, finalY, uniformScale, i, triggerEntrance, isReflowing);
+                }
             }
+            finally
+            {
+                _isLayoutActive = false;
+            }
+
             return finalSize;
         }
 
@@ -242,37 +246,16 @@ namespace EvolveOS_Optimizer.Assets.UserControl
 
                 visual.AnchorPoint = new Vector2(0.5f, 0.5f);
 
-                // Use a Try/Catch or check if visual is valid to prevent AccessViolation
                 try
                 {
                     var bindAnim = compositor.CreateExpressionAnimation("Vector3(parent.Size.X / 2, parent.Size.Y / 2, 0)");
                     bindAnim.SetReferenceParameter("parent", parentVisual);
 
-                    // Important: Use a specific name for the animation so it overwrites rather than stacks
                     visual.StartAnimation("Offset", bindAnim);
                     visual.RotationAngleInDegrees = (float)-RotationAngle;
                 }
-                catch { /* Visual might be disconnected during TglPackage state change */ }
+                catch { }
             }
         }
-
-        /*private void CounterRotateContent(FrameworkElement fe)
-        {
-            if (fe is ContentControl contentControl && contentControl.Content is FrameworkElement content)
-            {
-                var visual = ElementCompositionPreview.GetElementVisual(content);
-                var parentVisual = ElementCompositionPreview.GetElementVisual(fe);
-                var compositor = visual.Compositor;
-
-                visual.AnchorPoint = new Vector2(0.5f, 0.5f);
-
-                var bindAnim = compositor.CreateExpressionAnimation("Vector3(parent.Size.X / 2, parent.Size.Y / 2, 0)");
-                bindAnim.SetReferenceParameter("parent", parentVisual);
-                bindAnim.SetScalarParameter("nudge", 2.0f);
-
-                visual.StartAnimation("Offset", bindAnim);
-                visual.RotationAngleInDegrees = (float)-RotationAngle;
-            }
-        }*/
     }
 }

@@ -50,7 +50,7 @@
     <sys:String x:Key="Nav_Utilities">Hulpprogramma's</sys:String>
     <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
-    <sys:String x:Key="Nav_Packages">Pakketten</sys:String>
+    <sys:String x:Key="Nav_Software_Center">Software Centrum</sys:String>
     <sys:String x:Key="Nav_GroupPolicy">Beleid</sys:String>
     <sys:String x:Key="Nav_Services">Services</sys:String>
     <sys:String x:Key="Nav_System">Systeem</sys:String>
@@ -72,6 +72,9 @@
 
     <sys:String x:Key="Settings_Language_Title">Taal</sys:String>
     <sys:String x:Key="Settings_Language_Subtitle">Selecteer uw voorkeurstaal</sys:String>
+
+    <sys:String x:Key="Settings_Animations_Title">UI-animaties</sys:String>
+    <sys:String x:Key="Settings_Animations_Subtitle">Schakel paneelovergangen en Honeycomb-effecten in of uit.</sys:String>
 
     <sys:String x:Key="Settings_Backdrop_None">Geen (Effen)</sys:String>
     <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
@@ -197,10 +200,16 @@
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Geselecteerd Beleid Verwijderen</sys:String>
     <!-- endregion GroupPolicy Page -->
 
-    <!-- region Windows Packages -->
+    <!-- region Software Center Page (Tabbed) -->
+    <sys:String x:Key="Tab_Recommended">Aanbevolen opschoning</sys:String>
+    <sys:String x:Key="Tab_Installed">Geïnstalleerde apps</sys:String>
+    <sys:String x:Key="Tab_WinGet">App-winkel (WinGet)</sys:String>
+    <!-- endregion Software Center Page (Tabbed) -->
+
+    <!-- region Windows Packages (Tab 1) -->
     <sys:String x:Key="warn_part1_pkg">Apps worden verwijderd</sys:String>
     <sys:String x:Key="warn_part2_pkg">voor altijd,</sys:String>
-    <sys:String x:Key="warn_part3_pkg">maar OneDrive kan worden hersteld door op het icoon te klikken</sys:String>
+    <sys:String x:Key="warn_part3_pkg">dubbelklik om te verwijderen, of gebruik multiselectie voor bulkverwijdering.</sys:String>
 
     <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
     <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
@@ -325,5 +334,33 @@
     <sys:String x:Key="text_status_active">Actief</sys:String>
     <sys:String x:Key="title_uninstall">Verwijdering bevestigen</sys:String>
     <!-- endregion Windows Packages -->
+
+    <!-- region Installed Apps (Tab 2) -->
+    <sys:String x:Key="Debloat">Opschonen</sys:String>
+    <sys:String x:Key="SystemAppsPage_NotificationBody">Het verwijderen van sommige van deze apps zal ze mogelijk niet volledig verwijderen.</sys:String>
+    <sys:String x:Key="SystemAppsPage_TempButton">Systeemtemp wissen</sys:String>
+    <sys:String x:Key="SystemAppsPage_FetchingInstalledApps">Gegevens van geïnstalleerde apps ophalen...</sys:String>
+    <sys:String x:Key="SystemAppsPage_AppsFilter">Filteren op:</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallButton">Geselecteerde app(s) verwijderen</sys:String>
+    <sys:String x:Key="Done">Klaar</sys:String>
+    <sys:String x:Key="SystemAppsPage_Close">Sluiten</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallTip">Selecteer apps die u wilt verwijderen en klik op verwijderen</sys:String>
+    <sys:String x:Key="SystemAppsPage_NoAppFound">Geen apps gevonden die voldoen aan uw zoekopdracht</sys:String>
+    <sys:String x:Key="SystemAppsPage_SearchBar">Apps zoeken...</sys:String>
+    <sys:String x:Key="SystemAppsPage_StandardApps">Standaard apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_AllApps">Alle apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_Win32Apps">Win32-apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_TotalApps">Totaal: {0} app(s)</sys:String>
+    <sys:String x:Key="SystemAppsPage_UnInstall">Verwijderen</sys:String>
+    <sys:String x:Key="SystemAppsPage_Uninstalling">Verwijderen...</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallationError">Fout bij het verwijderen van de volgende app(s)</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallationSuccess">De volgende app(s) zijn succesvol verwijderd</sys:String>
+    <sys:String x:Key="SystemAppsPage_DeletingTemp">Tijdelijke bestanden verwijderen</sys:String>
+    <sys:String x:Key="SystemAppsPage_TempDelSucc">Tijdelijke bestanden succesvol verwijderd!</sys:String>
+    <sys:String x:Key="SystemAppsPage_ErrTempDel">Fout bij het verwijderen van tijdelijke bestanden</sys:String>
+    <sys:String x:Key="SystemAppsPage_ConfirmRemoveApps">U staat op het punt de volgende apps volledig van uw systeem te verwijderen:</sys:String>
+    <sys:String x:Key="SystemAppsPage_ConfirmContinue">Weet u zeker dat u wilt doorgaan?</sys:String>
+    <sys:String x:Key="SystemAppsPage_Continue">Doorgaan</sys:String>
+    <!-- endregion Installed Apps -->
 
 </ResourceDictionary>

@@ -230,7 +230,6 @@ namespace EvolveOS_Optimizer.Pages
             if (btn == null) return;
 
             btn.IsEnabled = false;
-            // Calling your static helper method
             btn.Content = ResourceString.GetString("Settings_Update_Checking");
 
             bool updateFound = SystemDiagnostics.IsNeedUpdate;

@@ -1,0 +1,49 @@
+<Page
+    x:Class="EvolveOS_Optimizer.Pages.SoftwareCenterPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:ui="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <Grid>
+        <ui:NavigationView x:Name="SoftwareNav"
+                           PaneDisplayMode="Top"
+                           IsBackButtonVisible="Collapsed"
+                           IsSettingsVisible="False" 
+                           Background="Transparent"
+                           SelectionChanged="SoftwareNav_SelectionChanged">
+
+            <ui:NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+            </ui:NavigationView.Resources>
+            
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_Recommended}" Tag="PackagesPage">
+                    <ui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE735;"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_Installed}" Tag="SystemAppsPage">
+                    <ui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE71D;"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_WinGet}" Tag="WinGetPage" IsEnabled="False">
+                    <ui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE896;"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.MenuItems>
+
+            <Frame x:Name="ContentFrame" Background="Transparent" Margin="0,10,0,0"/>
+        </ui:NavigationView>
+    </Grid>
+</Page>

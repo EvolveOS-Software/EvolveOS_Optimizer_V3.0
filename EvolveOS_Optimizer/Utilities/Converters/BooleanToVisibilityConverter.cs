@@ -1,5 +1,3 @@
-using System;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
 namespace EvolveOS_Optimizer.Utilities.Converters
@@ -8,23 +6,43 @@ namespace EvolveOS_Optimizer.Utilities.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+            bool isVisible = false;
+            bool invert = parameter?.ToString()?.Equals("invert", StringComparison.OrdinalIgnoreCase) == true;
+
             if (value is bool b)
             {
-                bool invert = parameter?.ToString()?.Equals("invert", StringComparison.OrdinalIgnoreCase) == true;
+                isVisible = b;
+            }
+            else
+            {
+                isVisible = value != null;
 
-                if (invert)
+                if (value is string s && string.IsNullOrWhiteSpace(s))
                 {
-                    b = !b;
+                    isVisible = false;
                 }
 
-                return b ? Visibility.Visible : Visibility.Collapsed;
+                if (value is System.Collections.IEnumerable enumerable)
+                {
+                    var enumerator = enumerable.GetEnumerator();
+                    isVisible = enumerator.MoveNext();
+                }
             }
-            return Visibility.Collapsed;
+
+            if (invert)
+            {
+                isVisible = !isVisible;
+            }
+
+            return isVisible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            return value is Visibility v && v == Visibility.Visible;
+            bool isVisible = value is Visibility v && v == Visibility.Visible;
+            bool invert = parameter?.ToString()?.Equals("invert", StringComparison.OrdinalIgnoreCase) == true;
+
+            return invert ? !isVisible : isVisible;
         }
     }
 }

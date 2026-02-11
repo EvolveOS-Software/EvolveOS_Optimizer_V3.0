@@ -30,6 +30,7 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.24" />
     <PackageReference Include="System.Management" Version="10.0.2" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.2" />
     <PackageReference Include="TaskScheduler" Version="2.12.2" />
@@ -45,6 +46,7 @@
     <None Remove="Pages\GroupPolicyPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\SecurityPage.xaml" />
+    <None Remove="Pages\SystemAppsPage.xaml" />
     <None Remove="Resources\Blank.gz" />
     <None Remove="Resources\DisablingWD.gz" />
     <None Remove="Resources\EvolveOSLogo.png" />
@@ -172,6 +174,12 @@
 
   <ItemGroup>
     <Page Update="Pages\PackagesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\SystemAppsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\SoftwareCenterPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Properties\AssemblyInfo.tt">

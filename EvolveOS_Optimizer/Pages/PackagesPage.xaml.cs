@@ -12,6 +12,8 @@ namespace EvolveOS_Optimizer.Pages
 {
     public partial class PackagesPage : Page
     {
+        private readonly Dictionary<string, string> _currentCardStates = new();
+
         private TimerControlManager? _timer = default;
         private readonly BackgroundQueue _backgroundQueue = new BackgroundQueue();
         private readonly UninstallingPakages _uninstalling = new UninstallingPakages();
@@ -62,11 +64,11 @@ namespace EvolveOS_Optimizer.Pages
 
                         this.DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
                         {
-                            if (this.IsLoaded && HcPanel != null)
-                            {
-                                UninstallingPakages.OnPackagesChanged();
-                                SyncVisualStates();
-                            }
+                            if (!this.IsLoaded || HcPanel == null) return;
+
+                            UninstallingPakages.OnPackagesChanged();
+
+                            SyncVisualStates();
                         });
                     });
                 });
@@ -122,7 +124,6 @@ namespace EvolveOS_Optimizer.Pages
                                 mainWindow.TxtGlobalMessage.Text = ResourceString.GetString("text_over_pkg") ?? "Edge Removal Warning...";
                                 mainWindow.TxtGlobalQuestion.Text = ResourceString.GetString("question_over_pkg") ?? "Continue deleting Edge + WebView?";
 
-                                // 3. Initialize the manager with GLOBAL controls
                                 OverlayDialogManager dialogManager = new OverlayDialogManager(
                                     mainWindow.GlobalOverlay,
                                     mainWindow.BtnGlobalDelete,
@@ -362,15 +363,21 @@ namespace EvolveOS_Optimizer.Pages
 
         private void SyncVisualStates()
         {
-            if (HcPanel == null) return;
+            if (HcPanel == null || !this.IsLoaded) return;
 
             foreach (var child in HcPanel.Children)
             {
                 if (child is ContentControl card && card.DataContext is PackagesModel model)
                 {
-                    string state = model.IsSelected ? "Selected" : "Unselected";
-                    bool success = VisualStateManager.GoToState(card, state, true);
-                    Debug.WriteLine($"State {state} for {model.Name}: {success}");
+                    string targetState = model.IsSelected ? "Selected" : "Unselected";
+
+                    if (_currentCardStates.TryGetValue(model.Name, out string? currentState) && currentState == targetState)
+                    {
+                        continue;
+                    }
+
+                    _currentCardStates[model.Name] = targetState;
+                    VisualStateManager.GoToState(card, targetState, true);
                 }
             }
         }

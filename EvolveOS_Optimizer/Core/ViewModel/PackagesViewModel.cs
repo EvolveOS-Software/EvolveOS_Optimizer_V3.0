@@ -4,12 +4,15 @@ using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Tweaks;
+using EvolveOS_Optimizer.Utilities.Managers;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
     internal class PackagesViewModel : ViewModelBase
     {
         public ObservableCollection<PackagesModel> DisplayState { get; set; }
+
+        public ObservableCollection<Tuple<string, string, bool>> SystemAppList { get; } = new();
 
         public Visibility Win11FeatureOnly => HardwareData.OS.IsWin11 ? Visibility.Visible : Visibility.Collapsed;
 
@@ -33,6 +36,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
+        private bool _IsRefreshing;
+        public bool IsRefreshing
+        {
+            get => _IsRefreshing;
+            set
+            {
+                _IsRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
+
         public PackagesViewModel()
         {
             DisplayState = new ObservableCollection<PackagesModel>();
@@ -53,6 +67,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             };
         }
 
+        public async Task RefreshAllDataAsync()
+        {
+            IsRefreshing = true;
+
+            var pkgManager = new UninstallingPakages();
+            await Task.Run(() => pkgManager.GetInstalledPackages());
+
+            var installedApps = await AppManager.GetInstalledApps(uninstallableOnly: true);
+
+            SystemAppList.Clear();
+            foreach (var app in installedApps)
+            {
+                SystemAppList.Add(app);
+            }
+
+            IsRefreshing = false;
+        }
+
         private void BuildCollection()
         {
             DisplayState.Clear();
@@ -60,7 +92,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             foreach (var kv in UninstallingPakages.PackagesDetails)
             {
                 string name = kv.Key;
-
                 bool unavailableStatus = kv.Value.IsUnavailable;
 
                 PackagesModel pkg = new PackagesModel
