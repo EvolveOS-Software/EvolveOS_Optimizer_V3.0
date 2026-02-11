@@ -1,35 +1,25 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace EvolveOS_Optimizer.Utilities.Animation
 {
     internal sealed class TypewriterAnimation
     {
-        // Keep track of active tasks to allow cancellation/replacement
         private static readonly Dictionary<TextBlock, CancellationTokenSource> ActiveCancellations = new();
 
         internal static void Create(string textToAnimate, TextBlock textBlock, TimeSpan duration)
         {
-            if (textBlock == null || string.IsNullOrEmpty(textToAnimate)) return;
 
-            // 1. Stop any existing animation on this TextBlock
             if (ActiveCancellations.TryGetValue(textBlock, out var oldCts))
             {
                 oldCts.Cancel();
                 ActiveCancellations.Remove(textBlock);
             }
 
-            // 2. Create new cancellation token for this run
             var cts = new CancellationTokenSource();
             ActiveCancellations[textBlock] = cts;
 
-            // 3. Handle Opacity Animation (Native WinUI 3 Storyboard)
             Storyboard storyboard = new Storyboard();
             DoubleAnimation opacityAnim = new DoubleAnimation
             {
@@ -42,38 +32,59 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             storyboard.Children.Add(opacityAnim);
             storyboard.Begin();
 
-            // 4. Handle Typewriter effect via Async Loop (Replacement for StringKeyFrames)
             _ = RunTypewriterAsync(textToAnimate, textBlock, duration, cts.Token);
         }
 
-        private static async Task RunTypewriterAsync(string text, TextBlock target, TimeSpan totalDuration, System.Threading.CancellationToken token)
+        private static async Task RunTypewriterAsync(string text, TextBlock target, TimeSpan totalDuration, CancellationToken token)
         {
+            if (token.IsCancellationRequested) return;
+
             int charCount = text.Length;
-            int intervalMs = (int)(totalDuration.TotalMilliseconds / charCount);
+            if (charCount == 0) return;
+
+            double targetMs = totalDuration.TotalMilliseconds;
+            double charPerMs = charCount / targetMs;
+            int intervalMs = 10;
+            int charsToAppend = (int)Math.Max(1, Math.Round(charPerMs * intervalMs));
+
             StringBuilder sb = new StringBuilder();
 
             try
             {
-                for (int i = 0; i < charCount; i++)
+                for (int i = 0; i < charCount; i += charsToAppend)
                 {
-                    // Check if we were cancelled by a newer animation request
+
                     if (token.IsCancellationRequested) return;
 
-                    sb.Append(text[i]);
-                    target.Text = sb.ToString();
+                    int remaining = charCount - i;
+                    int currentChunkSize = Math.Min(charsToAppend, remaining);
+                    sb.Append(text.Substring(i, currentChunkSize));
 
-                    // Delay between characters
+                    target.Text = sb.ToString() + "|";
+
                     await Task.Delay(intervalMs);
                 }
+
+                for (int blink = 0; blink < 3; blink++)
+                {
+                    if (token.IsCancellationRequested) return;
+                    target.Text = text + " ";
+                    await Task.Delay(400);
+
+                    if (token.IsCancellationRequested) return;
+                    target.Text = text + "|";
+                    await Task.Delay(400);
+                }
+
+                target.Text = text;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Silently handle task disposal
+                Debug.WriteLine($"Typewriter Error: {ex.Message}");
             }
             finally
             {
-                // Clean up dictionary if we finished naturally
-                if (!token.IsCancellationRequested && ActiveCancellations.ContainsKey(target))
+                if (!token.IsCancellationRequested)
                 {
                     ActiveCancellations.Remove(target);
                 }

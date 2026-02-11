@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
@@ -40,6 +40,8 @@
   
   <ItemGroup>
     <Content Include="Assets\**" />
+    <Compile Remove="Assets\UserControl\DescriptionBlock.xaml.cs" />
+    <Content Remove="Assets\UserControl\DescriptionBlock.xaml" />
     <None Remove="Pages\GroupPolicyPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\SecurityPage.xaml" />
@@ -56,6 +58,7 @@
     <None Remove="Resources\UltPower.gz" />
     <None Remove="Styles\Display\Cards.xaml" />
     <None Remove="Styles\Display\TextBlock.xaml" />
+    <None Remove="Views\OverlayWindow.xaml" />
     <Page Remove="Assets\Images.xaml" />
     <Page Remove="Languages\en-us.xaml" />
     <Page Remove="Languages\fr-fr.xaml" />
@@ -87,6 +90,16 @@
     <Content Update="Assets\Images.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Content>
+    <Page Update="Assets\UserControl\DescriptionBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Languages\en-us.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Languages\fr-fr.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Update="Pages\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -158,10 +171,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Pages\PackagesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Properties\AssemblyInfo.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfo.cs</LastGenOutput>
     </None>
+    <Page Update="Views\OverlayWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">

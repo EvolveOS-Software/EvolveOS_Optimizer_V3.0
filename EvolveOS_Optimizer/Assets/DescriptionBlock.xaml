@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="EvolveOS_Optimizer.Assets.UserControl.DescriptionBlock"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:EvolveOS_Optimizer.Assets.UserControl"
+    x:Name="Root"
+    mc:Ignorable="d">
+
+    <Grid Margin="10">
+        <ScrollViewer x:Name="Scroller"
+                      Margin="6"
+                      VerticalScrollBarVisibility="Hidden"
+                      HorizontalScrollBarVisibility="Disabled">
+            <TextBlock x:Name="FunctionDescription"
+                       Style="{ThemeResource Description}"
+                       Text="{x:Bind DefaultText, Mode=OneWay}" 
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
+                       MaxWidth="{Binding ActualWidth, ElementName=Scroller}" />
+        </ScrollViewer>
+
+        <Border Background="{ThemeResource Brush_Separator}" Height="30" Width="1" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="0,0,15,15" />
+        <Border Background="{ThemeResource Brush_Separator}" Height="1" Width="30" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="0,15,15,0" />
+
+        <Border Background="{ThemeResource Brush_Separator}" Height="30" Width="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" CornerRadius="15,15,0,0" />
+        <Border Background="{ThemeResource Brush_Separator}" Height="1" Width="30" HorizontalAlignment="Right" VerticalAlignment="Bottom" CornerRadius="15,0,0,15" />
+    </Grid>
+</UserControl>

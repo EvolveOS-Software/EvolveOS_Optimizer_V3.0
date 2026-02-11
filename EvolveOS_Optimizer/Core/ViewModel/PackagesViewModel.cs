@@ -1,0 +1,138 @@
+using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
+using EvolveOS_Optimizer.Core.Base;
+using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Utilities.Configuration;
+using EvolveOS_Optimizer.Utilities.Tweaks;
+
+namespace EvolveOS_Optimizer.Core.ViewModel
+{
+    internal class PackagesViewModel : ViewModelBase
+    {
+        public ObservableCollection<PackagesModel> DisplayState { get; set; }
+
+        public Visibility Win11FeatureOnly => HardwareData.OS.IsWin11 ? Visibility.Visible : Visibility.Collapsed;
+
+        public PackagesModel? this[string name] => DisplayState.FirstOrDefault(d => d.Name == name);
+
+        public ObservableCollection<PackagesModel> SelectedPackages { get; } = new ObservableCollection<PackagesModel>();
+
+        private bool _IsMultiSelectMode;
+        public bool IsMultiSelectMode
+        {
+            get => _IsMultiSelectMode;
+            set
+            {
+                _IsMultiSelectMode = value;
+                OnPropertyChanged();
+                if (!value)
+                {
+                    ClearSelection();
+                }
+                OnPropertyChanged(nameof(RemoveButtonVisibility));
+            }
+        }
+
+        public PackagesViewModel()
+        {
+            DisplayState = new ObservableCollection<PackagesModel>();
+
+            BuildCollection();
+
+            var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+            UninstallingPakages.DataChanged += delegate
+            {
+                dispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+                {
+                    foreach (PackagesModel item in DisplayState)
+                    {
+                        UpdatePackageState(item);
+                    }
+                });
+            };
+        }
+
+        private void BuildCollection()
+        {
+            DisplayState.Clear();
+
+            foreach (var kv in UninstallingPakages.PackagesDetails)
+            {
+                string name = kv.Key;
+
+                bool unavailableStatus = kv.Value.IsUnavailable;
+
+                PackagesModel pkg = new PackagesModel
+                {
+                    Name = name,
+                    IsUnavailable = !unavailableStatus
+                };
+
+                UpdatePackageState(pkg);
+                DisplayState.Add(pkg);
+            }
+        }
+
+        public Visibility RemoveButtonVisibility => (IsMultiSelectMode && SelectedPackages.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
+
+        public void ToggleSelection(PackagesModel model)
+        {
+            model.IsSelected = !model.IsSelected;
+            if (model.IsSelected)
+            {
+                SelectedPackages.Add(model);
+            }
+            else
+            {
+                SelectedPackages.Remove(model);
+            }
+
+            OnPropertyChanged(nameof(RemoveButtonVisibility));
+        }
+
+        private void ClearSelection()
+        {
+            foreach (var pkg in DisplayState)
+            {
+                pkg.IsSelected = false;
+            }
+
+            SelectedPackages.Clear();
+            OnPropertyChanged(nameof(RemoveButtonVisibility));
+        }
+
+        private void UpdatePackageState(PackagesModel item)
+        {
+            if (item == null || string.IsNullOrEmpty(item.Name)) return;
+
+            var details = UninstallingPakages.PackagesDetails;
+            if (details != null && details.TryGetValue(item.Name, out var val) && val != null)
+            {
+                item.IsUnavailable = !val.IsUnavailable;
+
+                if (!string.Equals(item.Name, "OneDrive", StringComparison.OrdinalIgnoreCase))
+                {
+                    var scripts = val.Scripts;
+                    var cache = UninstallingPakages.InstalledPackagesCache;
+
+                    if (scripts != null && scripts.Count > 0 && cache != null)
+                    {
+                        item.Installed = scripts.Any(pattern =>
+                            cache.Any(pkg =>
+                                !string.IsNullOrEmpty(pkg) &&
+                                Regex.IsMatch(pkg, $"^{Regex.Escape(pattern)}", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)));
+                    }
+                    else
+                    {
+                        item.Installed = false;
+                    }
+                }
+                else
+                {
+                    item.Installed = UninstallingPakages.IsOneDriveInstalled;
+                }
+            }
+        }
+    }
+}

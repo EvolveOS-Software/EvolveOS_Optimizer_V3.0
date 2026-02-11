@@ -9,6 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <ResourceDictionary Source="ms-appx:///Assets/Fonts/Fonts.xaml" />
+                <ResourceDictionary Source="ms-appx:///Assets/Images.xaml" />
                 <ResourceDictionary Source="ms-appx:///Assets/DrawingImages/SystemInfo.xaml" />
                 <ResourceDictionary Source="ms-appx:///Styles/Themes/Colors.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Buttons/RadioButtons.xaml"/>

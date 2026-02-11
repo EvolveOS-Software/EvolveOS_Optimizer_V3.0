@@ -4,6 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="using:System">
 
+    <!-- region Default Description Block String(s) -->
+    <sys:String x:Key="defaultDescriptionApp">Beweeg de muis over een app om de beschrijving te zien.</sys:String>
+    <sys:String x:Key="defaultDescription">Beweeg de muis over een tweak voor de beschrijving.</sys:String>
+    <!-- endregion Description Block -->
+
     <!-- region Loading Window -->
     <sys:String x:Key="step1_load">Trusted Installer-service starten...</sys:String>
     <sys:String x:Key="step2_load">Windows-licentiestatus controleren...</sys:String>
@@ -191,5 +196,134 @@
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Alle Beleidsoverschrijvingen Verwijderen</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Geselecteerd Beleid Verwijderen</sys:String>
     <!-- endregion GroupPolicy Page -->
+
+    <!-- region Windows Packages -->
+    <sys:String x:Key="warn_part1_pkg">Apps worden verwijderd</sys:String>
+    <sys:String x:Key="warn_part2_pkg">voor altijd,</sys:String>
+    <sys:String x:Key="warn_part3_pkg">maar OneDrive kan worden hersteld door op het icoon te klikken</sys:String>
+
+    <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
+    <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
+    <sys:String x:Key="OneNote_pkg">Microsoft Office OneNote</sys:String>
+    <sys:String x:Key="MicrosoftOfficeHub_pkg">Microsoft Office Hub</sys:String>
+    <sys:String x:Key="MicrosoftSolitaireCollection_pkg">Microsoft Solitaire Collection</sys:String>
+    <sys:String x:Key="MixedReality_pkg">Mixed Reality</sys:String>
+    <sys:String x:Key="BingWeather_pkg">Bing Weer</sys:String>
+    <sys:String x:Key="Microsoft3D_pkg">Microsoft 3D Viewer</sys:String>
+    <sys:String x:Key="SkypeApp_pkg">Microsoft Skype</sys:String>
+    <sys:String x:Key="OneDrive_pkg">OneDrive</sys:String>
+    <sys:String x:Key="Cortana_pkg">Cortana</sys:String>
+    <sys:String x:Key="MicrosoftTeams_pkg">Microsoft Teams</sys:String>
+    <sys:String x:Key="Music_pkg">Windows Media Player</sys:String>
+    <sys:String x:Key="Video_pkg">Films en tv</sys:String>
+    <sys:String x:Key="SoundRecorder_pkg">Geluidsrecorder</sys:String>
+    <sys:String x:Key="FeedbackHub_pkg">Feedback-hub</sys:String>
+    <sys:String x:Key="Mail_pkg">Mail</sys:String>
+    <sys:String x:Key="Widgets_pkg">Widgets</sys:String>
+    <sys:String x:Key="Photos_pkg">Windows Foto's</sys:String>
+    <sys:String x:Key="ScreenSketch_pkg">Schermschets</sys:String>
+    <sys:String x:Key="ClipChamp_pkg">Microsoft Clipchamp</sys:String>
+    <sys:String x:Key="GetStarted_pkg">Aan de slag</sys:String>
+    <sys:String x:Key="GetHelp_pkg">Hulp vragen</sys:String>
+    <sys:String x:Key="MicrosoftStickyNotes_pkg">Microsoft Plaknotities</sys:String>
+    <sys:String x:Key="Maps_pkg">Windows Kaarten</sys:String>
+    <sys:String x:Key="Camera_pkg">Windows Camera</sys:String>
+    <sys:String x:Key="Paint3D_pkg">Paint 3D</sys:String>
+    <sys:String x:Key="PowerAutomateDesktop_pkg">Power Automate</sys:String>
+    <sys:String x:Key="People_pkg">Personen</sys:String>
+    <sys:String x:Key="BingNews_pkg">Microsoft Nieuws</sys:String>
+    <sys:String x:Key="Todos_pkg">Microsoft To Do</sys:String>
+    <sys:String x:Key="Alarms_pkg">Windows Klok</sys:String>
+    <sys:String x:Key="Phone_pkg">Jouw telefoon</sys:String>
+    <sys:String x:Key="Outlook_pkg">Outlook voor Windows</sys:String>
+    <sys:String x:Key="BingSports_pkg">Bing Sport</sys:String>
+    <sys:String x:Key="BingFinance_pkg">Bing Finance</sys:String>
+    <sys:String x:Key="MicrosoftFamily_pkg">Microsoft Family Safety</sys:String>
+    <sys:String x:Key="BingSearch_pkg">Bing Zoeken</sys:String>
+    <sys:String x:Key="QuickAssist_pkg">Snelhulp</sys:String>
+    <sys:String x:Key="DevHome_pkg">Dev Home</sys:String>
+    <sys:String x:Key="WindowsTerminal_pkg">Terminal</sys:String>
+    <sys:String x:Key="LinkedIn_pkg">LinkedIn</sys:String>
+    <sys:String x:Key="WebMediaExtensions_pkg">Web Media Extensions</sys:String>
+    <sys:String x:Key="OneConnect_pkg">Mobiele abonnementen</sys:String>
+    <sys:String x:Key="Edge_pkg">Microsoft Edge</sys:String>
+    <sys:String x:Key="Notepad_pkg">Kladblok</sys:String>
+    <sys:String x:Key="Calculator_pkg">Rekenmachine</sys:String>
+    <sys:String x:Key="Copilot_pkg">Copilot</sys:String>
+    <sys:String x:Key="Whiteboard_pkg">Microsoft Whiteboard</sys:String>
+    <sys:String x:Key="Wallet_pkg">Microsoft Portemonnee</sys:String>
+    <sys:String x:Key="Spotify_pkg">Spotify</sys:String>
+    <sys:String x:Key="WhatsApp_pkg">WhatsApp</sys:String>
+
+    <sys:String x:Key="MicrosoftStore_desc">Het primaire digitale distributieplatform voor Windows-apps en games.</sys:String>
+    <sys:String x:Key="Xbox_desc">Toegang tot het Xbox-ecosysteem, inclusief Game Pass, sociale functies en Remote Play.</sys:String>
+    <sys:String x:Key="OneNote_desc">Een digitaal notitieblok voor het vastleggen en organiseren van notities op al je apparaten.</sys:String>
+    <sys:String x:Key="MicrosoftOfficeHub_desc">Een centraal portaal voor toegang tot je Office-documenten, apps en abonnementsgegevens.</sys:String>
+    <sys:String x:Key="MicrosoftSolitaireCollection_desc">De klassieke suite met kaartspellen, waaronder Klondike, Spider en FreeCell.</sys:String>
+    <sys:String x:Key="MixedReality_desc">Schakelt ondersteuning in voor hardware en ervaringen op het gebied van virtuele en aangevulde realiteit.</sys:String>
+    <sys:String x:Key="BingWeather_desc">Biedt realtime lokale weersverwachtingen, radarkaarten en waarschuwingen voor noodweer.</sys:String>
+    <sys:String x:Key="Microsoft3D_desc">Een lichtgewicht viewer voor 3D-modellen en Mixed Reality-objecten.</sys:String>
+    <sys:String x:Key="SkypeApp_desc">App voor instant messaging, spraak- en videogesprekken voor persoonlijk gebruik.</sys:String>
+    <sys:String x:Key="OneDrive_desc">Cloudopslagservice voor het maken van back-ups van bestanden en het synchroniseren van documenten.</sys:String>
+    <sys:String x:Key="Cortana_desc">De legacy spraakassistent en productiviteitshulp van Microsoft.</sys:String>
+    <sys:String x:Key="MicrosoftTeams_desc">Unified communicatie- en samenwerkingsplatform voor chat, vergaderingen en het delen van bestanden.</sys:String>
+    <sys:String x:Key="Music_desc">Moderne mediaspeler voor het beheren en afspelen van je lokale audiocollectie.</sys:String>
+    <sys:String x:Key="Video_desc">App voor het afspelen van lokale videobestanden en het kopen/huren van films en tv-programma's.</sys:String>
+    <sys:String x:Key="SoundRecorder_desc">Eenvoudig hulpprogramma voor het opnemen van audio via je microfoon of systeemoutput.</sys:String>
+    <sys:String x:Key="FeedbackHub_desc">Stelt gebruikers in staat om bugs te melden en nieuwe functies rechtstreeks aan Microsoft voor te stellen.</sys:String>
+    <sys:String x:Key="Mail_desc">E-mailclient die Outlook, Gmail en andere IMAP/POP-accounts ondersteunt.</sys:String>
+    <sys:String x:Key="Widgets_desc">Gepersonaliseerde feed met nieuws, weer en agenda-informatie op de taakbalk.</sys:String>
+    <sys:String x:Key="Photos_desc">Viewer en editor voor het organiseren en verbeteren van je persoonlijke fotobibliotheek.</sys:String>
+    <sys:String x:Key="ScreenSketch_desc">Hulpprogramma voor het vastleggen, bijsnijden en annoteren van schermafbeeldingen van je bureaublad.</sys:String>
+    <sys:String x:Key="ClipChamp_desc">Cloud-gebaseerde video-editor met professionele functies en sjablonen.</sys:String>
+    <sys:String x:Key="GetStarted_desc">Interactieve gids voor nieuwe gebruikers om Windows-functies en -instellingen te leren kennen.</sys:String>
+    <sys:String x:Key="GetHelp_desc">Zelfhulpportaal voor het oplossen van Windows-problemen en het opnemen van contact met ondersteuning.</sys:String>
+    <sys:String x:Key="MicrosoftStickyNotes_desc">Snelle digitale notities op je bureaublad voor herinneringen en lijsten.</sys:String>
+    <sys:String x:Key="Maps_desc">Gedetailleerde navigatie, straatweergaven en 3D-kaarten met offline ondersteuning.</sys:String>
+    <sys:String x:Key="Camera_desc">De officiële applicatie voor het maken van foto's en video's met je webcam.</sys:String>
+    <sys:String x:Key="Paint3D_desc">Evolutie van Paint met tools voor 3D-modellering en creatieve effecten.</sys:String>
+    <sys:String x:Key="PowerAutomateDesktop_desc">Automatiseert herhalende taken in je desktop- en webapplicaties.</sys:String>
+    <sys:String x:Key="People_desc">Lichtgewicht app voor contactbeheer om vrienden en collega's te organiseren.</sys:String>
+    <sys:String x:Key="BingNews_desc">Gecureerde nieuwsaggregator uit wereldwijde en lokale bronnen.</sys:String>
+    <sys:String x:Key="Todos_desc">App voor taakbeheer om dagelijkse lijsten te maken en prestaties bij te houden.</sys:String>
+    <sys:String x:Key="Alarms_desc">Beheer wereldklokken, timers, stopwatches en dagelijkse alarmen.</sys:String>
+    <sys:String x:Key="Phone_desc">Synchroniseert je smartphone met je pc om meldingen te zien en sms-berichten te verzenden.</sys:String>
+    <sys:String x:Key="Outlook_desc">Moderne vervanger voor Mail, met een uniforme inbox voor alle accounts.</sys:String>
+    <sys:String x:Key="BingSports_desc">Volg je favoriete teams, scores en sportnieuws.</sys:String>
+    <sys:String x:Key="BingFinance_desc">Houd aandelenmarkten, wisselkoersen en zakelijk nieuws in de gaten.</sys:String>
+    <sys:String x:Key="MicrosoftFamily_desc">Ouderlijk toezicht voor het beheren van schermtijd en app-gebruik voor gezinsleden.</sys:String>
+    <sys:String x:Key="BingSearch_desc">Geïntegreerde webzoekfunctionaliteit binnen de Windows-interface.</sys:String>
+    <sys:String x:Key="QuickAssist_desc">Stelt gebruikers in staat hun scherm te delen voor hulp op afstand.</sys:String>
+    <sys:String x:Key="DevHome_desc">Controlecentrum voor ontwikkelaars om omgevingen in te stellen en GitHub-taken bij te houden.</sys:String>
+    <sys:String x:Key="WindowsTerminal_desc">Een moderne host voor opdrachtregelprogramma's zoals Opdrachtprompt, PowerShell en WSL.</sys:String>
+    <sys:String x:Key="LinkedIn_desc">Snelkoppeling voor professioneel netwerken om je profiel en vacatures te beheren.</sys:String>
+    <sys:String x:Key="WebMediaExtensions_desc">Voegt ondersteuning toe voor moderne webformaten zoals OGG, Vorbis en Theora.</sys:String>
+    <sys:String x:Key="OneConnect_desc">Hulpprogramma voor het vinden en verbinden met mobiele databonnementen vanaf je apparaat.</sys:String>
+    <sys:String x:Key="Edge_desc">De standaard op Chromium gebaseerde webbrowser voor snel en veilig browsen.</sys:String>
+    <sys:String x:Key="Notepad_desc">De klassieke lichtgewicht teksteditor voor eenvoudige codering en notities.</sys:String>
+    <sys:String x:Key="Calculator_desc">Geavanceerd hulpmiddel voor basis-, wetenschappelijke en programmeerberekeningen.</sys:String>
+    <sys:String x:Key="Copilot_desc">Door AI aangedreven assistent voor het beantwoorden van vragen en het automatiseren van systeemtaken.</sys:String>
+    <sys:String x:Key="Whiteboard_desc">Oneindig digitaal canvas voor gezamenlijke brainstormsessies en ideevorming.</sys:String>
+    <sys:String x:Key="Wallet_desc">Sla digitale passen, klantenkaarten en betalingsinformatie veilig op.</sys:String>
+    <sys:String x:Key="Spotify_desc">Stream miljoenen nummers en podcasts vanaf je desktop.</sys:String>
+    <sys:String x:Key="WhatsApp_desc">Desktopversie van de populaire berichten-app voor versleutelde chats en oproepen.</sys:String>
+
+    <sys:String x:Key="title_over_pkg">Bevestiging van verwijdering</sys:String>
+    <sys:String x:Key="text_over_pkg" xml:space="preserve">U staat op het punt de Microsoft Edge-browser te verwijderen. Hiermee wordt ook de EdgeWebView-component verwijderd, die wordt gebruikt om webinhoud weer te geven in verschillende toepassingen — zoals Microsoft Office (bijv. Meeting Insights, Room Finder), de Foto's-app (de nieuwe versie gebruikt WebView2), sommige Telegram-bots en andere programma's die afhankelijk zijn van embedded WebView. Voordat u verdergaat, moet u er zeker van zijn dat u deze component niet nodig hebt.
+    In recente builds van Windows 11 is Copilot geïmplementeerd via EdgeWebView als een PWA of systeemwrapper. Wanneer Edge wordt verwijderd, wordt Copilot ook verwijderd, omdat het functioneert als een webwrapper.</sys:String>
+    <sys:String x:Key="question_over_pkg">Wilt u doorgaan met verwijderen samen met EdgeWebView?</sys:String>
+    <sys:String x:Key="msg_uninstall_bulk">U staat op het punt om {0} geselecteerde pakketten te verwijderen. Deze actie kan niet ongedaan worden gemaakt.</sys:String>
+    <sys:String x:Key="question_uninstall">Wilt u doorgaan met de verwijdering?</sys:String>
+    <sys:String x:Key="notif_bulk_completed">Batchgewijze verwijdering voltooid</sys:String>
+    <sys:String x:Key="btn_сancel">Annuleren</sys:String>
+    <sys:String x:Key="btn_delete">Verwijderen</sys:String>
+    <sys:String x:Key="text_settings">Instellingen</sys:String>
+    <sys:String x:Key="text_multi_select">Meervoudige selectie</sys:String>
+    <sys:String x:Key="text_select_all_packages">Alle pakketten selecteren</sys:String>
+    <sys:String x:Key="text_deselect_all">Alles deselecteren</sys:String>
+    <sys:String x:Key="tt_remove_selected">Geselecteerde pakketten verwijderen</sys:String>
+    <sys:String x:Key="text_status_active">Actief</sys:String>
+    <sys:String x:Key="title_uninstall">Verwijdering bevestigen</sys:String>
+    <!-- endregion Windows Packages -->
 
 </ResourceDictionary>

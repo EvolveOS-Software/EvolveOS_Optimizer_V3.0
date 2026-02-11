@@ -4,6 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="using:System">
 
+    <!-- region Default Description Block String(s) -->
+    <sys:String x:Key="defaultDescriptionApp">Hover over an app to see its description.</sys:String>
+    <sys:String x:Key="defaultDescription">Hover your mouse over any tweak to get its description</sys:String>
+    <!-- endregion Description Block -->
+
     <!-- region Loading Window -->
     <sys:String x:Key="loading_message">Loading EvolveOS Optimizer</sys:String>
     <sys:String x:Key="step1_load">Starting Trusted Installer Service...</sys:String>
@@ -164,7 +169,6 @@
     <sys:String x:Key="GroupPolicyPage_RefreshText">Refresh</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesHeader">Configured Policies</sys:String>
     <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Description">View and manage individual policy overrides</sys:String>
-    <sys:String x:Key="GroupPolicyPage_RemoveAllOverrides">Remove All Overrides</sys:String>
     <sys:String x:Key="GroupPolicyPage_InfoBanner_Message">This page detects and allows you to remove Local Group Policy overrides. Removing a policy override returns it to Default state.</sys:String>
     <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Description">Overview of detected policy overrides</sys:String>
     <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Header">Detailed Policy List</sys:String>
@@ -191,5 +195,134 @@
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Remove All Policy Overrides</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Remove Selected Policies</sys:String>
     <!-- endregion GroupPolicy Page -->
+
+    <!-- region Windows Packages -->
+    <sys:String x:Key="warn_part1_pkg">Apps will be deleted</sys:String>
+    <sys:String x:Key="warn_part2_pkg">forever,</sys:String>
+    <sys:String x:Key="warn_part3_pkg">but OneDrive can be restored by clicking its icon</sys:String>
+
+    <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
+    <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
+    <sys:String x:Key="OneNote_pkg">Microsoft Office OneNote</sys:String>
+    <sys:String x:Key="MicrosoftOfficeHub_pkg">Microsoft Office Hub</sys:String>
+    <sys:String x:Key="MicrosoftSolitaireCollection_pkg">Microsoft Solitaire Collection</sys:String>
+    <sys:String x:Key="MixedReality_pkg">Mixed Reality</sys:String>
+    <sys:String x:Key="BingWeather_pkg">Bing Weather</sys:String>
+    <sys:String x:Key="Microsoft3D_pkg">Microsoft 3D Viewer</sys:String>
+    <sys:String x:Key="SkypeApp_pkg">Microsoft Skype</sys:String>
+    <sys:String x:Key="OneDrive_pkg">OneDrive</sys:String>
+    <sys:String x:Key="Cortana_pkg">Cortana</sys:String>
+    <sys:String x:Key="MicrosoftTeams_pkg">Microsoft Teams</sys:String>
+    <sys:String x:Key="Music_pkg">Windows Media Player</sys:String>
+    <sys:String x:Key="Video_pkg">Movies &amp; TV</sys:String>
+    <sys:String x:Key="SoundRecorder_pkg">Sound Recorder</sys:String>
+    <sys:String x:Key="FeedbackHub_pkg">Feedback Hub</sys:String>
+    <sys:String x:Key="Mail_pkg">Mail</sys:String>
+    <sys:String x:Key="Widgets_pkg">Widgets</sys:String>
+    <sys:String x:Key="Photos_pkg">Windows Photos</sys:String>
+    <sys:String x:Key="ScreenSketch_pkg">Screen Sketch</sys:String>
+    <sys:String x:Key="ClipChamp_pkg">Microsoft Clipchamp</sys:String>
+    <sys:String x:Key="GetStarted_pkg">Get Started</sys:String>
+    <sys:String x:Key="GetHelp_pkg">Get Help</sys:String>
+    <sys:String x:Key="MicrosoftStickyNotes_pkg">Microsoft Sticky Notes</sys:String>
+    <sys:String x:Key="Maps_pkg">Windows Maps</sys:String>
+    <sys:String x:Key="Camera_pkg">Windows Camera</sys:String>
+    <sys:String x:Key="Paint3D_pkg">Paint3D</sys:String>
+    <sys:String x:Key="PowerAutomateDesktop_pkg">Power Automate</sys:String>
+    <sys:String x:Key="People_pkg">People</sys:String>
+    <sys:String x:Key="BingNews_pkg">Microsoft News</sys:String>
+    <sys:String x:Key="Todos_pkg">Microsoft To Do</sys:String>
+    <sys:String x:Key="Alarms_pkg">Windows Clock</sys:String>
+    <sys:String x:Key="Phone_pkg">Your Phone</sys:String>
+    <sys:String x:Key="Outlook_pkg">Outlook for Windows</sys:String>
+    <sys:String x:Key="BingSports_pkg">Bing Sports</sys:String>
+    <sys:String x:Key="BingFinance_pkg">Bing Finance</sys:String>
+    <sys:String x:Key="MicrosoftFamily_pkg">Microsoft Family Safety</sys:String>
+    <sys:String x:Key="BingSearch_pkg">Bing Search</sys:String>
+    <sys:String x:Key="QuickAssist_pkg">Quick Assist</sys:String>
+    <sys:String x:Key="DevHome_pkg">Dev Home</sys:String>
+    <sys:String x:Key="WindowsTerminal_pkg">Terminal</sys:String>
+    <sys:String x:Key="LinkedIn_pkg">LinkedIn</sys:String>
+    <sys:String x:Key="WebMediaExtensions_pkg">Web Media Extensions</sys:String>
+    <sys:String x:Key="OneConnect_pkg">Mobile Plans</sys:String>
+    <sys:String x:Key="Edge_pkg">Microsoft Edge</sys:String>
+    <sys:String x:Key="Notepad_pkg">Notepad</sys:String>
+    <sys:String x:Key="Calculator_pkg">Calculator</sys:String>
+    <sys:String x:Key="Copilot_pkg">Copilot</sys:String>
+    <sys:String x:Key="Whiteboard_pkg">Microsoft Whiteboard</sys:String>
+    <sys:String x:Key="Wallet_pkg">Microsoft Wallet</sys:String>
+    <sys:String x:Key="Spotify_pkg">Spotify</sys:String>
+    <sys:String x:Key="WhatsApp_pkg">WhatsApp</sys:String>
+
+    <sys:String x:Key="MicrosoftStore_desc">The primary digital distribution platform for Windows apps and games.</sys:String>
+    <sys:String x:Key="Xbox_desc">Access the Xbox ecosystem, including game pass, social features, and remote play.</sys:String>
+    <sys:String x:Key="OneNote_desc">A digital notebook for capturing and organizing notes across all your devices.</sys:String>
+    <sys:String x:Key="MicrosoftOfficeHub_desc">A central portal to access your Office documents, apps, and subscription details.</sys:String>
+    <sys:String x:Key="MicrosoftSolitaireCollection_desc">The classic suite of card games including Klondike, Spider, and FreeCell.</sys:String>
+    <sys:String x:Key="MixedReality_desc">Enables support for virtual and augmented reality hardware and experiences.</sys:String>
+    <sys:String x:Key="BingWeather_desc">Provides real-time local weather forecasts, radar maps, and severe weather alerts.</sys:String>
+    <sys:String x:Key="Microsoft3D_desc">A lightweight viewer for 3D models and mixed reality objects.</sys:String>
+    <sys:String x:Key="SkypeApp_desc">Instant messaging, voice, and video call application for personal use.</sys:String>
+    <sys:String x:Key="OneDrive_desc">Cloud storage service for backing up files and syncing documents across devices.</sys:String>
+    <sys:String x:Key="Cortana_desc">Microsoft's legacy voice assistant and productivity aide.</sys:String>
+    <sys:String x:Key="MicrosoftTeams_desc">Unified communication and collaboration platform for chat, meetings, and file sharing.</sys:String>
+    <sys:String x:Key="Music_desc">Modern media player for managing and playing your local audio collection.</sys:String>
+    <sys:String x:Key="Video_desc">App for playing local video files and purchasing/renting movies and TV shows.</sys:String>
+    <sys:String x:Key="SoundRecorder_desc">Simple tool for recording audio from your microphone or system output.</sys:String>
+    <sys:String x:Key="FeedbackHub_desc">Allows users to report bugs and suggest new features directly to Microsoft.</sys:String>
+    <sys:String x:Key="Mail_desc">Email client that supports Outlook, Gmail, and other IMAP/POP accounts.</sys:String>
+    <sys:String x:Key="Widgets_desc">Personalized feed providing news, weather, and calendar info on the taskbar.</sys:String>
+    <sys:String x:Key="Photos_desc">Viewer and editor for organizing and enhancing your personal photo library.</sys:String>
+    <sys:String x:Key="ScreenSketch_desc">Utility for capturing, cropping, and annotating screenshots of your desktop.</sys:String>
+    <sys:String x:Key="ClipChamp_desc">Cloud-based video editor with professional features and templates.</sys:String>
+    <sys:String x:Key="GetStarted_desc">Interactive guide for new users to learn Windows features and settings.</sys:String>
+    <sys:String x:Key="GetHelp_desc">Self-help portal for troubleshooting Windows issues and contacting support.</sys:String>
+    <sys:String x:Key="MicrosoftStickyNotes_desc">Quick digital notes that float on your desktop for reminders and lists.</sys:String>
+    <sys:String x:Key="Maps_desc">Detailed navigation, street views, and 3D maps with offline support.</sys:String>
+    <sys:String x:Key="Camera_desc">The official application for taking photos and videos with your webcam.</sys:String>
+    <sys:String x:Key="Paint3D_desc">Evolution of Paint with 3D modeling tools and creative effects.</sys:String>
+    <sys:String x:Key="PowerAutomateDesktop_desc">Automates repetitive tasks across your desktop and web applications.</sys:String>
+    <sys:String x:Key="People_desc">Lightweight contact management app for organizing friends and colleagues.</sys:String>
+    <sys:String x:Key="BingNews_desc">Curated news aggregator from global and local sources.</sys:String>
+    <sys:String x:Key="Todos_desc">Task management app for creating daily lists and tracking accomplishments.</sys:String>
+    <sys:String x:Key="Alarms_desc">Manage world clocks, timers, stopwatches, and daily alarms.</sys:String>
+    <sys:String x:Key="Phone_desc">Syncs your smartphone with your PC to see notifications and send texts.</sys:String>
+    <sys:String x:Key="Outlook_desc">Modern replacement for Mail, offering a unified inbox for all accounts.</sys:String>
+    <sys:String x:Key="BingSports_desc">Track your favorite teams, scores, and sports news headlines.</sys:String>
+    <sys:String x:Key="BingFinance_desc">Monitor stock markets, currency exchange rates, and business news.</sys:String>
+    <sys:String x:Key="MicrosoftFamily_desc">Parental controls for managing screen time and app usage for family members.</sys:String>
+    <sys:String x:Key="BingSearch_desc">Integrated web search functionality across the Windows interface.</sys:String>
+    <sys:String x:Key="QuickAssist_desc">Allows users to share their screen with support to receive remote assistance.</sys:String>
+    <sys:String x:Key="DevHome_desc">Control center for developers to set up environments and track GitHub tasks.</sys:String>
+    <sys:String x:Key="WindowsTerminal_desc">A modern host for command-line tools like Command Prompt, PowerShell, and WSL.</sys:String>
+    <sys:String x:Key="LinkedIn_desc">Professional networking shortcut to manage your profile and job searches.</sys:String>
+    <sys:String x:Key="WebMediaExtensions_desc">Adds support for modern web formats like OGG, Vorbis, and Theora.</sys:String>
+    <sys:String x:Key="OneConnect_desc">Tool for finding and connecting to cellular data plans from your device.</sys:String>
+    <sys:String x:Key="Edge_desc">The default Chromium-based web browser for fast and secure browsing.</sys:String>
+    <sys:String x:Key="Notepad_desc">The classic lightweight text editor for simple coding and note-taking.</sys:String>
+    <sys:String x:Key="Calculator_desc">Advanced tool for basic, scientific, and programming calculations.</sys:String>
+    <sys:String x:Key="Copilot_desc">AI-powered assistant for answering questions and automating system tasks.</sys:String>
+    <sys:String x:Key="Whiteboard_desc">Infinite digital canvas for collaborative brainstorming and ideation.</sys:String>
+    <sys:String x:Key="Wallet_desc">Store digital passes, loyalty cards, and payment information securely.</sys:String>
+    <sys:String x:Key="Spotify_desc">Stream millions of songs and podcasts from your desktop.</sys:String>
+    <sys:String x:Key="WhatsApp_desc">Desktop version of the popular messaging app for encrypted chats and calls.</sys:String>
+
+    <sys:String x:Key="title_over_pkg">Uninstallation confirmation</sys:String>
+    <sys:String x:Key="text_over_pkg" xml:space="preserve">You are about to uninstall the Microsoft Edge browser. This will also remove the EdgeWebView component, which is used to display web content in various applications — such as Microsoft Office (e.g., Meeting Insights, Room Finder), the Photos app (the new version uses WebView2), some Telegram bots, and other programs that rely on embedded WebView. Before proceeding, make sure you do not need this component. 
+       In recent builds of Windows 11, Copilot is implemented via EdgeWebView as a PWA or system wrapper. When Edge is uninstalled, Copilot is also removed, since it functions as a web wrapper.</sys:String>
+    <sys:String x:Key="question_over_pkg">Would you like to continue deleting along with EdgeWebView?</sys:String>
+    <sys:String x:Key="msg_uninstall_bulk">You are about to remove {0} selected packages. This action cannot be undone.</sys:String>
+    <sys:String x:Key="question_uninstall">Do you want to proceed with the deletion?</sys:String>
+    <sys:String x:Key="notif_bulk_completed">Bulk uninstall Completed</sys:String>
+    <sys:String x:Key="btn_сancel">Cancel</sys:String>
+    <sys:String x:Key="btn_delete">Delete</sys:String>
+    <sys:String x:Key="text_settings">Settings</sys:String>
+    <sys:String x:Key="text_multi_select">Multi-Select</sys:String>
+    <sys:String x:Key="text_select_all_packages">Select All Packages</sys:String>
+    <sys:String x:Key="text_deselect_all">Deselect All</sys:String>
+    <sys:String x:Key="tt_remove_selected">Remove Selected Packages</sys:String>
+    <sys:String x:Key="text_status_active">Active</sys:String>
+    <sys:String x:Key="title_uninstall">Confirm Uninstallation</sys:String>
+    <!-- endregion Windows Packages -->
 
 </ResourceDictionary>

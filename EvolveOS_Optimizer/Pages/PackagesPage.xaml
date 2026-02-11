@@ -1,0 +1,552 @@
+<Page x:Class="EvolveOS_Optimizer.Pages.PackagesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:vm="using:EvolveOS_Optimizer.Core.ViewModel"
+      xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
+      xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
+      xmlns:anim="using:EvolveOS_Optimizer.Utilities.Animation"
+      xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+      xmlns:ui="using:Microsoft.UI.Xaml.Controls"
+      mc:Ignorable="d">
+
+    <Page.DataContext>
+        <vm:PackagesViewModel />
+    </Page.DataContext>
+
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToOpacityConverter x:Key="InverseBoolToOpacity" />
+        
+        <x:String x:Key="HexagonPathData">M 50,0 L 93.3,25 L 93.3,75 L 50,100 L 6.7,75 L 6.7,25 Z</x:String>
+
+        <Style x:Key="HexagonCardStyle" TargetType="ContentControl">
+            <Setter Property="Width" Value="85"/>
+            <Setter Property="Height" Value="95"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContentControl">
+                        <Grid x:Name="CardGrid" Width="85" Height="95" Background="Transparent" Loaded="PackageView_Loaded">
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Unselected">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="SelectedGlowPath" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderPath" Storyboard.TargetProperty="Stroke">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemAccentColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="SelectedGlowPath" Storyboard.TargetProperty="Opacity" To="0.7" Duration="0:0:0.0"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderPath" Storyboard.TargetProperty="Stroke">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Red"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <Grid x:Name="AnimationContainer" Background="Transparent" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited" RenderTransformOrigin="0.5,0.5">
+                                <Grid.RenderTransform>
+                                    <CompositeTransform x:Name="MainTransform"/>
+                                </Grid.RenderTransform>
+
+                                <Path x:Name="ShadowPath"
+                                      Data="{StaticResource HexagonPathData}"
+                                      Stretch="Fill"
+                                      Fill="{ThemeResource SystemAccentColor}"
+                                      Opacity="0.1" Margin="-4"/>
+
+                                <Path x:Name="RemovedGlowPath"
+                                      Data="{StaticResource HexagonPathData}"
+                                      Stretch="Fill" 
+                                      Fill="Red"
+                                      Margin="-3"
+                                      Opacity="{Binding Installed, Converter={StaticResource InverseBoolToOpacity}, FallbackValue=0}"/>
+
+                                <Path x:Name="SelectedGlowPath" Data="{StaticResource HexagonPathData}"
+                                      Stretch="Fill"
+                                      Fill="Red"
+                                      Margin="-7"
+                                      Opacity="0"/>
+
+                                <Path x:Name="BorderPath"
+                                      Data="{StaticResource HexagonPathData}"
+                                      Stretch="Fill"
+                                      Stroke="{ThemeResource SystemAccentColor}"
+                                      StrokeThickness="2"/>
+
+                                <Path Data="{StaticResource HexagonPathData}"
+                                      Fill="{ThemeResource LayerFillColorDefaultBrush}"
+                                      Stretch="Fill"
+                                      Opacity="0.9"/>
+
+                                <ContentPresenter HorizontalAlignment="Stretch" 
+                                          VerticalAlignment="Stretch"/>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TglPackages" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid x:Name="RootGrid" Background="Transparent">
+                            <Image x:Name="Icon" 
+                           Width="56" 
+                           Height="56" 
+                           Source="{TemplateBinding Tag}" 
+                           Stretch="Uniform" 
+                           Opacity="0.4"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center">
+                                <Image.OpacityTransition>
+                                    <ScalarTransition Duration="0:0:0.2"/>
+                                </Image.OpacityTransition>
+                            </Image>
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Checked">
+                                        <VisualState.Setters>
+                                            <Setter Target="Icon.Opacity" Value="1.0"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Unchecked"/>
+                                </VisualStateGroup>
+
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="Icon.Opacity" Value="0.7"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="Icon.Scale" Value="0.9,0.9,1.0"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="{helpers:ResourceString Key=text_multi_select}"
+                           VerticalAlignment="Center"
+                           Opacity="0.6"/>
+
+                <CheckBox x:Name="TglMultiSelect"
+                          IsChecked="{Binding IsMultiSelectMode, Mode=TwoWay}"
+                          VerticalAlignment="Center"
+                          MinWidth="32" />
+                
+                <Rectangle Width="1"
+                           Height="12"
+                           Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                           VerticalAlignment="Center"
+                           Margin="4,0,10,0"
+                           Visibility="{Binding IsMultiSelectMode, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <Border Padding="10,1"
+                        CornerRadius="8"
+                        Height="20"
+                        MinWidth="60"
+                        Background="{ThemeResource Brush_Success}"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding IsMultiSelectMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    
+                    <TextBlock Text="{helpers:ResourceString Key=text_status_active}"
+                               FontSize="12"
+                               FontFamily="{ThemeResource Jura}"
+                               Foreground="White"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Spacing="4" Opacity="0.6">
+                <TextBlock Text="{helpers:ResourceString Key=warn_part1_pkg}"/>
+                <TextBlock Text="{helpers:ResourceString Key=warn_part2_pkg}" Foreground="{ThemeResource SystemAccentColor}"/>
+                <TextBlock Text="{helpers:ResourceString Key=warn_part3_pkg}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                <Button x:Name="BtnDeleteSelected" Click="BtnRemoveSelected_Click" 
+                Visibility="{Binding RemoveButtonVisibility}" Background="Transparent">
+                    <SymbolIcon Symbol="Delete" Foreground="Red" />
+                </Button>
+
+                <Button x:Name="BtnSettings" Click="BtnSettings_Click" Background="Transparent">
+                    <SymbolIcon Symbol="Setting" />
+                    <Button.Flyout>
+                        <MenuFlyout x:Name="PopupSettings">
+                            <MenuFlyoutItem Text="{helpers:ResourceString Key=text_select_all_packages}" Click="SelectAll_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <SymbolIcon Symbol="SelectAll"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem Text="{helpers:ResourceString Key=text_deselect_all}" Click="DeselectAll_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <SymbolIcon Symbol="ClearSelection"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <uc:HoneycombPanel x:Name="HcPanel" Margin="40,20" HorizontalAlignment="Center" 
+               PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [MicrosoftStore]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="MicrosoftStore" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_MicrosoftStore}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Xbox]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Xbox" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Xbox}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [OneDrive]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="OneDrive" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_OneDrive}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Photos]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Photos" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Photos}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Music]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Music" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Music}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [ScreenSketch]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="ScreenSketch" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_ScreenSketch}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [WindowsTerminal]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="WindowsTerminal" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Terminal}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [ClipChamp]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="ClipChamp" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Clipchamp}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [BingNews]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="BingNews" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_BingNews}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Edge]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Edge" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Edge}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Cortana]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Cortana" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Cortana}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [FeedbackHub]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="FeedbackHub" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_FeedbackHub}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [GetHelp]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="GetHelp" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_GetHelp}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [GetStarted]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="GetStarted" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_GetStarted}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [LinkedIn]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="LinkedIn" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Linkedin}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Mail]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Mail" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Mail}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Maps]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Maps" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Maps}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Microsoft3D]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Microsoft3D" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Microsoft3DViewer}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [MicrosoftFamily]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="MicrosoftFamily" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_MicrosoftFamilySafety}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [MicrosoftOfficeHub]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="MicrosoftOfficeHub" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_MicrosoftOfficeHub}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [PowerAutomateDesktop]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="PowerAutomateDesktop" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_MicrosoftPowerAutomate}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [MicrosoftSolitaireCollection]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="MicrosoftSolitaireCollection" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_MicrosoftSolitaireCollection}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [MicrosoftStickyNotes]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="MicrosoftStickyNotes" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_MicrosoftStickyNotes}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Alarms]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Alarms" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Alarms}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [MicrosoftTeams]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="MicrosoftTeams" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_MicrosoftTeams}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [SkypeApp]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="SkypeApp" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_SkypeApp}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Camera]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Camera" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Camera}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [BingSports]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="BingSports" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_BingSports}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [BingFinance]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="BingFinance" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_BingFinance}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [OneNote]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="OneNote" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_OneNote}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Outlook]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Outlook" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Outlook}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Paint3D]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Paint3D" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Paint3D}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [People]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="People" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_People}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Phone]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Phone" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Phone}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [BingSearch]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="BingSearch" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_BingSearch}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [QuickAssist]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="QuickAssist" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_QuickAssist}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [BingWeather]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="BingWeather" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_BingWeather}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [MixedReality]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="MixedReality" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_MixedReality}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [SoundRecorder]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="SoundRecorder" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_SoundRecorder}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [WebMediaExtensions]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="WebMediaExtensions" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_WebMediaExtensions}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Todos]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Todos" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Todos}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Video]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Video" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Video}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [OneConnect]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="OneConnect" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_MobilePlanOneConnect}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Widgets]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Widgets" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Widgets}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [DevHome]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="DevHome" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_DevHome}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Calculator]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Calculator" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Calculator}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Notepad]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Notepad" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Notepad}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Copilot]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Copilot" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Copilot}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [WhiteBoard]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="WhiteBoard" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_WhiteBoard}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Wallet]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Wallet" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Wallet}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Spotify]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="Spotify" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Spotify}" />
+                </ContentControl>
+
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [WhatsApp]}" 
+                PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
+                    <ToggleButton x:Name="WhatsApp" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"  
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_WhatsApp}" />
+                </ContentControl>
+
+            </uc:HoneycombPanel>
+        </ScrollViewer>
+        <Grid Grid.Row="2">
+            <uc:DescriptionBlock VerticalAlignment="Stretch" x:Name="DescBlock" DefaultText="{helpers:ResourceString Key=defaultDescriptionApp}"/>
+        </Grid>
+    </Grid>
+</Page>

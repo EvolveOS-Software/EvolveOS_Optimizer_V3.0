@@ -46,10 +46,11 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
         internal void Stop()
         {
+            _timer.Tick -= TimerTick;
+
             if (_timer.IsEnabled)
             {
                 _timer.Stop();
-                _timer.Tick -= TimerTick;
             }
         }
 

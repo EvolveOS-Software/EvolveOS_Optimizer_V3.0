@@ -197,5 +197,39 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 }
             };
         }
+
+        public static T? FindParent<T>(DependencyObject? child) where T : DependencyObject
+        {
+            if (child == null) return null;
+
+            DependencyObject? parentObject = VisualTreeHelper.GetParent(child);
+
+            if (parentObject == null) return null;
+
+            if (parentObject is T parent)
+            {
+                return parent;
+            }
+            else
+            {
+                return FindParent<T>(parentObject);
+            }
+        }
+
+        public static T? FindVisualChildByName<T>(DependencyObject parent, string name) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T typedChild && child is FrameworkElement fe && fe.Name == name)
+                {
+                    return typedChild;
+                }
+
+                var result = FindVisualChildByName<T>(child, name);
+                if (result != null) return result;
+            }
+            return null;
+        }
     }
 }

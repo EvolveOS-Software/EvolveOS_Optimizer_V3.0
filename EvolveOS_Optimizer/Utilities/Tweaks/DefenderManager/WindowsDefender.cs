@@ -54,7 +54,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
            (Path.Combine(Environment.SystemDirectory, "HealthAttestationClient"), "HealthAttestationClientAgent.exe", "BlockHACA.exe")
         };
 
-        internal static void SetProtectionState(bool isDisabled)
+        internal static async Task SetProtectionStateAsync(bool isDisabled)
         {
             if (isDisabled)
             {
@@ -62,11 +62,11 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
             }
             else
             {
-                Activate();
+                await Activate();
             }
         }
 
-        private static async void Activate()
+        private static async Task Activate()
         {
             TerminateProcess();
 

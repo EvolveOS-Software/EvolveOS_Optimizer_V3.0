@@ -254,5 +254,31 @@
                 </StackPanel>
             </StackPanel>
         </Border>
+
+        <Grid x:Name="GlobalOverlay" 
+              x:FieldModifier="public"
+              Grid.RowSpan="2" 
+              Visibility="Collapsed" 
+              Background="#AA000000" 
+              Canvas.ZIndex="99999">
+
+            <Border Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="30"
+                    MinWidth="450" MaxWidth="600" 
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel x:Name="OverlayContent">
+                    <TextBlock x:Name="TxtGlobalTitle" x:FieldModifier="public" FontSize="22" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="TxtGlobalMessage" x:FieldModifier="public" TextWrapping="Wrap" TextAlignment="Center" Margin="0,15" Opacity="0.8"/>
+                    <TextBlock x:Name="TxtGlobalQuestion" x:FieldModifier="public" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{ThemeResource SystemAccentColor}"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" Margin="0,20,0,0">
+                        <Button x:Name="BtnGlobalDelete" x:FieldModifier="public" Content="Delete" Style="{StaticResource AccentButtonStyle}" MinWidth="130"/>
+                        <Button x:Name="BtnGlobalCancel" x:FieldModifier="public" Content="Cancel" MinWidth="130"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
     </Grid>
 </Window>

@@ -4,121 +4,128 @@ namespace EvolveOS_Optimizer.Utilities.Storage
 {
     internal class TaskStorage
     {
-        // Data Collection Tasks
-        internal static readonly string[] dataCollectTasks = {
-            @"\Microsoft\Windows\Maintenance\WinSAT",
-            @"\Microsoft\Windows\Autochk\Proxy",
-            @"\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser",
-            @"\Microsoft\Windows\Application Experience\ProgramDataUpdater",
-            @"\Microsoft\Windows\Application Experience\StartupAppTask",
-            @"\Microsoft\Windows\PI\Sqm-Tasks",
-            @"\Microsoft\Windows\NetTrace\GatherNetworkInfo",
-            @"\Microsoft\Windows\Customer Experience Improvement Program\Consolidator",
-            @"\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask",
-            @"\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip",
-            @"\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver",
-            @"\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
-        };
+        protected static readonly string[] dataCollectTasks = {
+        @"\Microsoft\Windows\Maintenance\WinSAT",
+        @"\Microsoft\Windows\Autochk\Proxy",
+        @"\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser",
+        @"\Microsoft\Windows\Application Experience\ProgramDataUpdater",
+        @"\Microsoft\Windows\Application Experience\StartupAppTask",
+        @"\Microsoft\Windows\PI\Sqm-Tasks",
+        @"\Microsoft\Windows\NetTrace\GatherNetworkInfo",
+        @"\Microsoft\Windows\Customer Experience Improvement Program\Consolidator",
+        @"\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask",
+        @"\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip",
+        @"\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver",
+        @"\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" };
 
-        // Telemetry Tasks
-        internal static readonly string[] telemetryTasks = {
-            @"\Microsoft\Office\Office ClickToRun Service Monitor",
-            @"\Microsoft\Office\OfficeTelemetry\AgentFallBack2016",
-            @"\Microsoft\Office\OfficeTelemetry\OfficeTelemetryAgentLogOn2016",
-            @"\Microsoft\Office\OfficeTelemetryAgentFallBack2016",
-            @"\Microsoft\Office\OfficeTelemetryAgentLogOn2016",
-            @"\Microsoft\Office\OfficeTelemetryAgentFallBack",
-            @"\Microsoft\Office\OfficeTelemetryAgentLogOn",
-            @"\Microsoft\Office\Office 15 Subscription Heartbeat"
-        };
+        protected static readonly string[] telemetryTasks = {
+        @"\Microsoft\Windows\Application Experience\CompatibilityAssistant",
+        @"\Microsoft\Office\Office ClickToRun Service Monitor",
+        @"\Microsoft\Office\OfficeTelemetry\AgentFallBack2016",
+        @"\Microsoft\Office\OfficeTelemetry\OfficeTelemetryAgentLogOn2016",
+        @"\Microsoft\Office\OfficeTelemetryAgentFallBack2016",
+        @"\Microsoft\Office\OfficeTelemetryAgentLogOn2016",
+        @"\Microsoft\Office\OfficeTelemetryAgentFallBack",
+        @"\Microsoft\Office\OfficeTelemetryAgentLogOn",
+        @"\Microsoft\Office\Office 15 Subscription Heartbeat" };
 
-        // NVIDIA Specific Tasks
-        internal static readonly string[] nvidiaTasks = {
-            @"\NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}",
-            @"\NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}",
-            @"\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-        };
+        protected static readonly string[] appExpInventoryTasks = {
+        @"\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser Exp",
+        @"\Microsoft\Windows\Application Experience\SdbinstMergeDbTask",
+        @"\Microsoft\Windows\Application Experience\MareBackup" };
 
-        // Windows Update Orchestration Tasks
-        internal static readonly string[] winUpdatesTasks = {
-            @"\Microsoft\Windows\UpdateOrchestrator\Report policies",
-            @"\Microsoft\Windows\UpdateOrchestrator\Schedule Maintenance Work",
-            @"\Microsoft\Windows\UpdateOrchestrator\Schedule Scan",
-            @"\Microsoft\Windows\UpdateOrchestrator\Schedule Scan Static Task",
-            @"\Microsoft\Windows\UpdateOrchestrator\Schedule Wake To Work",
-            @"\Microsoft\Windows\UpdateOrchestrator\Schedule Work",
-            @"\Microsoft\Windows\UpdateOrchestrator\Start Oobe Expedite Work",
-            @"\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScanAfterUpdate",
-            @"\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScan_LicenseAccepted",
-            @"\Microsoft\Windows\UpdateOrchestrator\UIEOrchestrator",
-            @"\Microsoft\Windows\UpdateOrchestrator\USO_UxBroker",
-            @"\Microsoft\Windows\UpdateOrchestrator\UUS Failover Task",
-            @"\Microsoft\Windows\WindowsUpdate\Refresh Group Policy Cache",
-            @"\Microsoft\Windows\WindowsUpdate\Scheduled Start"
-        };
+        protected static readonly string appExpUsageTasks = @"\Microsoft\Windows\Application Experience\AitAgent";
 
-        // Xbox and Gaming Tasks
-        internal static readonly string[] xboxTasks = {
-            @"\Microsoft\XblGameSave\XblGameSaveTask",
-            @"\Microsoft\XblGameSave\XblGameSaveTaskLogon",
-            @"\Microsoft\Xbox\XblGameSaveTask",
-            @"\Microsoft\Xbox\Maintenance\MaintenanceTask",
-            @"\Microsoft\Xbox\XGamingServices\GameServicesTask"
-        };
+        protected static readonly string[] ceipTasks = {
+        @"\Microsoft\Windows\Customer Experience Improvement Program\BthSQM",
+        @"\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask",
+        @"\Microsoft\Windows\Customer Experience Improvement Program\Consolidator",
+        @"\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" };
 
-        internal static readonly string bluetoothTask = @"\Microsoft\Windows\Bluetooth\UninstallDeviceTask";
+        protected static readonly string[] feedbackTasks = {
+        @"\Microsoft\Windows\Feedback\Siuf\DmClient",
+        @"\Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" };
 
-        // Maps Tasks (Referenced in UninstallingPakages)
-        internal static readonly string[] mapsTasks = {
-            @"\Microsoft\Windows\Maps\MapsToastTask",
-            @"\Microsoft\Windows\Maps\MapsUpdateTask"
-        };
+        protected static readonly string[] speechTasks = TaskSchedulerManager.GetAllTasksInPaths(@"\Microsoft\Windows\Speech\");
 
-        // OneDrive Tasks (Referenced in UninstallingPakages)
-        internal static readonly string[] oneDriveTask = {
-            @"\Microsoft\Windows\OneDrive\OneDrive Standalone Update Task",
-            TaskSchedulerManager.GetTaskFullPath("OneDrive Startup")
-        };
+        protected static readonly string[] nvidiaTasks = {
+        @"\NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}",
+        @"\NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}",
+        @"\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}" };
 
-        // Edge Tasks (Referenced in UninstallingPakages)
-        internal static readonly string[] edgeTasks = {
-            TaskSchedulerManager.GetTaskFullPath("MicrosoftEdgeUpdateTaskMachineUA"),
-            TaskSchedulerManager.GetTaskFullPath("MicrosoftEdgeUpdateTaskMachineCore"),
-            TaskSchedulerManager.GetTaskFullPath("MicrosoftEdgeUpdateTaskUser")
-        };
+        protected static readonly string[] mapsTasks = {
+        @"\Microsoft\Windows\Maps\MapsToastTask",
+        @"\Microsoft\Windows\Maps\MapsUpdateTask" };
 
-        // Windows Defender Tasks
-        internal static readonly string[] winDefenderTasks = {
-            @"\Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh",
-            @"\Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance",
-            @"\Microsoft\Windows\Windows Defender\Windows Defender Cleanup",
-            @"\Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan",
-            @"\Microsoft\Windows\Windows Defender\Windows Defender Verification",
-        };
+        protected static readonly string[] winUpdatesTasks = {
+        @"\Microsoft\Windows\UpdateOrchestrator\Report policies",
+        @"\Microsoft\Windows\UpdateOrchestrator\Schedule Maintenance Work",
+        @"\Microsoft\Windows\UpdateOrchestrator\Schedule Scan",
+        @"\Microsoft\Windows\UpdateOrchestrator\Schedule Scan Static Task",
+        @"\Microsoft\Windows\UpdateOrchestrator\Schedule Wake To Work",
+        @"\Microsoft\Windows\UpdateOrchestrator\Schedule Work",
+        @"\Microsoft\Windows\UpdateOrchestrator\Start Oobe Expedite Work",
+        @"\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScanAfterUpdate",
+        @"\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScan_LicenseAccepted",
+        @"\Microsoft\Windows\UpdateOrchestrator\UIEOrchestrator",
+        @"\Microsoft\Windows\UpdateOrchestrator\USO_UxBroker",
+        @"\Microsoft\Windows\UpdateOrchestrator\UUS Failover Task",
+        @"\Microsoft\Windows\WindowsUpdate\Refresh Group Policy Cache",
+        @"\Microsoft\Windows\WindowsUpdate\Scheduled Start" };
 
-        // Memory Diagnostics
-        internal static readonly string[] memoryDiagTasks = {
-            @"\Microsoft\Windows\MemoryDiagnostic\ProcessMemoryDiagnosticEvents",
-            @"\Microsoft\Windows\MemoryDiagnostic\RunFullMemoryDiagnostic"
-        };
+        protected static readonly string[] xboxTasks = {
+        @"\Microsoft\XblGameSave\XblGameSaveTask",
+        @"\Microsoft\XblGameSave\XblGameSaveTaskLogon",
+        @"\Microsoft\Xbox\XblGameSaveTask",
+        @"\Microsoft\Xbox\Maintenance\MaintenanceTask",
+        @"\Microsoft\Xbox\XGamingServices\GameServicesTask" };
 
-        // Windows Insider / Flighting Tasks
-        internal static readonly string[] winInsiderTasks = {
-            @"\Microsoft\Windows\Flighting\FeatureConfig\BootstrapUsageDataReporting",
-            @"\Microsoft\Windows\Flighting\FeatureConfig\GovernedFeatureUsageProcessing",
-            @"\Microsoft\Windows\Flighting\FeatureConfig\ReconcileConfigs",
-            @"\Microsoft\Windows\Flighting\FeatureConfig\ReconcileFeatures",
-            @"\Microsoft\Windows\Flighting\FeatureConfig\UsageDataFlushing",
-            @"\Microsoft\Windows\Flighting\FeatureConfig\UsageDataReceiver",
-            @"\Microsoft\Windows\Flighting\FeatureConfig\UsageDataReporting",
-            @"\Microsoft\Windows\Flighting\OneSettings\RefreshCache",
-            @"\Microsoft\Windows\Flighting\OneSettings\CollectUsageData",
-            @"\Microsoft\Windows\Flighting\OneSettings\SyncConfigs",
-            @"\Microsoft\Windows\Flighting\OneSettings\TrackFlighting"
-        };
+        protected static readonly string[] printTasks = {
+        @"\Microsoft\Windows\Printing\EduPrintProv",
+        @"\Microsoft\Windows\Printing\PrinterCleanupTask",
+        @"\Microsoft\Windows\Printing\PrintJobCleanupTask" };
 
-        internal static readonly string restoreTask = @"\Microsoft\Windows\SystemRestore\SR";
+        protected static readonly string bluetoothTask = @"\Microsoft\Windows\Bluetooth\UninstallDeviceTask";
 
-        internal static readonly string defragTask = @"\Microsoft\Windows\Defrag\ScheduledDefrag";
+        protected static readonly string[] oneDriveTask = new[] {
+        TaskSchedulerManager.GetTaskFullPath("OneDrive Reporting"),
+        TaskSchedulerManager.GetTaskFullPath("OneDrive Standalone Update"),
+        TaskSchedulerManager.GetTaskFullPath("OneDrive Startup")}
+        .Concat(TaskSchedulerManager.GetAllTasksInPaths(@"\Microsoft\Windows\OneDrive\")).ToArray();
+
+        protected static readonly string[] retailTasks = TaskSchedulerManager.GetAllTasksInPaths(@"\Microsoft\Windows\RetailDemo\", @"\Microsoft\Windows\Retail Demo\");
+
+        public static readonly string[] edgeTasks = {
+        TaskSchedulerManager.GetTaskFullPath("MicrosoftEdgeUpdateTaskMachineUA"),
+        TaskSchedulerManager.GetTaskFullPath("MicrosoftEdgeUpdateTaskMachineCore"),
+        TaskSchedulerManager.GetTaskFullPath("MicrosoftEdgeUpdateTaskUser")};
+
+        protected static readonly string[] winDefenderTasks = {
+        @"\Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Cleanup",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan",
+        @"\Microsoft\Windows\Windows Defender\Windows Defender Verification", };
+
+        protected static readonly string[] memoryDiagTasks = {
+        @"\Microsoft\Windows\MemoryDiagnostic\ProcessMemoryDiagnosticEvents",
+        @"\Microsoft\Windows\MemoryDiagnostic\RunFullMemoryDiagnostic" };
+
+        protected static readonly string[] winInsiderTasks = {
+        @"\Microsoft\Windows\Flighting\FeatureConfig\BootstrapUsageDataReporting",
+        @"\Microsoft\Windows\Flighting\FeatureConfig\GovernedFeatureUsageProcessing",
+        @"\Microsoft\Windows\Flighting\FeatureConfig\ReconcileConfigs",
+        @"\Microsoft\Windows\Flighting\FeatureConfig\ReconcileFeatures",
+        @"\Microsoft\Windows\Flighting\FeatureConfig\UsageDataFlushing",
+        @"\Microsoft\Windows\Flighting\FeatureConfig\UsageDataReceiver",
+        @"\Microsoft\Windows\Flighting\FeatureConfig\UsageDataReporting",
+        @"\Microsoft\Windows\Flighting\OneSettings\RefreshCache",
+        @"\Microsoft\Windows\Flighting\OneSettings\CollectUsageData",
+        @"\Microsoft\Windows\Flighting\OneSettings\SyncConfigs",
+        @"\Microsoft\Windows\Flighting\OneSettings\TrackFlighting" };
+
+        protected static readonly string restoreTask = @"\Microsoft\Windows\SystemRestore\SR";
+
+        protected static readonly string defragTask = @"\Microsoft\Windows\Defrag\ScheduledDefrag";
     }
 }
