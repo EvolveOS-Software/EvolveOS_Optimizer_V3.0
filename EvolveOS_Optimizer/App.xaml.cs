@@ -2,7 +2,6 @@
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Views;
-using Microsoft.UI.Xaml;
 using System.IO;
 using System.Security.Principal;
 using System.Threading;
@@ -45,13 +44,13 @@ namespace EvolveOS_Optimizer
             SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
             MainWindow.Activate();
 
-            MainWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, async () =>
+            MainWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
             {
-                await Task.Delay(200);
+                await Task.Delay(500);
                 UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
-            });
 
-            _ = StartBackgroundServices();
+                _ = StartBackgroundServices();
+            });
         }
 
         #region System & Process Utilities

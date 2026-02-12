@@ -1,5 +1,4 @@
 using EvolveOS_Optimizer.Views;
-using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Threading;
@@ -108,7 +107,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
                 if (isMinimized)
                 {
-                    // ShowSystemToast(_title, _text); || Windows own native System Toast ||
+                    // ShowSystemToast(_title, _text); || Windows own native System Toast ||   Nuget: Microsoft.Toolkit.Uwp.Notifications;
 
                     if (Interlocked.CompareExchange(ref _isNotificationOpen, 1, 0) == 0)
                     {
@@ -200,14 +199,14 @@ namespace EvolveOS_Optimizer.Utilities.Managers
             }
         }
 
-        private static void ShowSystemToast(string title, string text)
+        /*private static void ShowSystemToast(string title, string text)
         {
             new ToastContentBuilder()
                 .AddHeader("EvolveOS", "EvolveOS Optimizer", "")
                 .AddText(title)
                 .AddText(text)
                 .Show();
-        }
+        }*/
 
         private static void ShowInAppBanner(string title, string message, NoticeSeverity severity, int duration)
         {

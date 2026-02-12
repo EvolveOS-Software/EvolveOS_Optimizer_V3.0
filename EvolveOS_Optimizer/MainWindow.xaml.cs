@@ -150,13 +150,14 @@ namespace EvolveOS_Optimizer
             }
         }
 
-        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            await Task.Delay(800);
-
             if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
             {
-                AnimateUpdateBanner(true);
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    AnimateUpdateBanner(true);
+                });
             }
         }
 
@@ -262,7 +263,7 @@ namespace EvolveOS_Optimizer
             long totalRead = 0;
             int read;
 
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
 
             while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
             {

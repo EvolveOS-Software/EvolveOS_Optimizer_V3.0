@@ -37,14 +37,14 @@ namespace EvolveOS_Optimizer.Utilities.Animation
 
         private static async Task RunTypewriterAsync(string text, TextBlock target, TimeSpan totalDuration, CancellationToken token)
         {
-            if (token.IsCancellationRequested) return;
+            if (token.IsCancellationRequested || target == null) return;
+
+            var dispatcher = target.DispatcherQueue;
+            if (dispatcher == null) return;
 
             int charCount = text.Length;
-            if (charCount == 0) return;
-
-            double targetMs = totalDuration.TotalMilliseconds;
-            double charPerMs = charCount / targetMs;
-            int intervalMs = 10;
+            double charPerMs = charCount / totalDuration.TotalMilliseconds;
+            int intervalMs = 15;
             int charsToAppend = (int)Math.Max(1, Math.Round(charPerMs * intervalMs));
 
             StringBuilder sb = new StringBuilder();
@@ -53,6 +53,9 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             {
                 for (int i = 0; i < charCount; i += charsToAppend)
                 {
+                    if (token.IsCancellationRequested) return;
+
+                    await Task.Delay(intervalMs);
 
                     if (token.IsCancellationRequested) return;
 
@@ -60,34 +63,27 @@ namespace EvolveOS_Optimizer.Utilities.Animation
                     int currentChunkSize = Math.Min(charsToAppend, remaining);
                     sb.Append(text.Substring(i, currentChunkSize));
 
-                    target.Text = sb.ToString() + "|";
+                    string currentText = sb.ToString() + "|";
 
-                    await Task.Delay(intervalMs);
+                    dispatcher.TryEnqueue(() =>
+                    {
+                        if (!token.IsCancellationRequested && target.IsLoaded)
+                        {
+                            target.Text = currentText;
+                        }
+                    });
                 }
 
-                for (int blink = 0; blink < 3; blink++)
-                {
-                    if (token.IsCancellationRequested) return;
-                    target.Text = text + " ";
-                    await Task.Delay(400);
-
-                    if (token.IsCancellationRequested) return;
-                    target.Text = text + "|";
-                    await Task.Delay(400);
-                }
-
-                target.Text = text;
+                dispatcher.TryEnqueue(() => { if (target.IsLoaded) target.Text = text; });
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Typewriter Error: {ex.Message}");
+                Debug.WriteLine($"[Typewriter] Unexpected error: {ex.Message}");
             }
             finally
             {
                 if (!token.IsCancellationRequested)
-                {
                     ActiveCancellations.Remove(target);
-                }
             }
         }
     }
