@@ -1,6 +1,7 @@
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
@@ -30,6 +31,10 @@ namespace EvolveOS_Optimizer
         {
             this.InitializeComponent();
 
+            NotificationManager.Initialize(this);
+            ElementCompositionPreview.SetIsTranslationEnabled(GlobalNotificationBanner, true);
+            ElementCompositionPreview.SetIsTranslationEnabled(UpdateBanner, true);
+
             _hWnd = WindowNative.GetWindowHandle(this);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(_hWnd);
             _appWindow = AppWindow.GetFromWindowId(windowId);
@@ -49,9 +54,6 @@ namespace EvolveOS_Optimizer
             WindowHelper.RegisterMinWidthHeight(_hWnd, 700, 400);
             UIHelper.RegisterPageTransition(RootContentControl, RootGrid);
             CenterWindow();
-
-            ElementCompositionPreview.SetIsTranslationEnabled(UpdateBanner, true);
-
             this.Activated += (s, e) =>
             {
                 if (!_isBackdropInitialized && e.WindowActivationState != WindowActivationState.Deactivated)
@@ -128,7 +130,7 @@ namespace EvolveOS_Optimizer
                 byte g = (byte)uint.Parse(hexColor.Substring(4, 2), NumberStyles.HexNumber);
                 byte b = (byte)uint.Parse(hexColor.Substring(6, 2), NumberStyles.HexNumber);
 
-                global::Windows.UI.Color color = global::Windows.UI.Color.FromArgb(a, r, g, b);
+                Color color = Color.FromArgb(a, r, g, b);
 
                 if (App.Current.Resources.TryGetValue("MyDynamicAccentBrush", out object brushObj)
                     && brushObj is SolidColorBrush dynamicBrush)
@@ -150,7 +152,7 @@ namespace EvolveOS_Optimizer
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            await Task.Delay(100);
+            await Task.Delay(800);
 
             if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
             {
@@ -160,16 +162,27 @@ namespace EvolveOS_Optimizer
 
         public void AnimateUpdateBanner(bool show)
         {
-            if (show) UpdateBanner.Visibility = Visibility.Visible;
+            if (show)
+            {
+                UpdateBanner.Visibility = Visibility.Visible;
+                UpdateBanner.UpdateLayout();
+            }
 
             var visual = ElementCompositionPreview.GetElementVisual(UpdateBanner);
             var compositor = visual.Compositor;
 
+            if (show)
+            {
+                visual.Opacity = 0f;
+                visual.Properties.InsertVector3("Translation", new System.Numerics.Vector3(0, 250f, 0));
+            }
+
             var easeOut = compositor.CreateCubicBezierEasingFunction(new System.Numerics.Vector2(0.3f, 0.3f), new System.Numerics.Vector2(0.0f, 1.0f));
+            var batch = compositor.CreateScopedBatch(Microsoft.UI.Composition.CompositionBatchTypes.Animation);
 
             var moveAnim = compositor.CreateScalarKeyFrameAnimation();
-            moveAnim.InsertKeyFrame(0.0f, show ? 100f : 0f);
-            moveAnim.InsertKeyFrame(1.0f, show ? 0f : 100f, easeOut);
+            moveAnim.InsertKeyFrame(0.0f, show ? 200f : 0f);
+            moveAnim.InsertKeyFrame(1.0f, show ? 0f : 200f, easeOut);
             moveAnim.Duration = TimeSpan.FromMilliseconds(500);
 
             var fadeAnim = compositor.CreateScalarKeyFrameAnimation();
@@ -179,11 +192,18 @@ namespace EvolveOS_Optimizer
             visual.StartAnimation("Translation.Y", moveAnim);
             visual.StartAnimation("Opacity", fadeAnim);
 
-            if (!show)
+            batch.Completed += (s, e) =>
             {
-                Task.Delay(500).ContinueWith(_ =>
-                    this.DispatcherQueue.TryEnqueue(() => UpdateBanner.Visibility = Visibility.Collapsed));
-            }
+                if (!show)
+                {
+                    UpdateBanner.Visibility = Visibility.Collapsed;
+                    Task.Delay(50).ContinueWith(_ => {
+                        this.DispatcherQueue.TryEnqueue(() => NotificationManager.ProcessQueue());
+                    });
+                }
+            };
+
+            batch.End();
         }
 
         private void DismissBanner_Click(object sender, RoutedEventArgs e) => AnimateUpdateBanner(false);
@@ -268,6 +288,21 @@ namespace EvolveOS_Optimizer
                     }
                 }
             }
+        }
+
+        private void Banner_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            NotificationManager.SetPaused(true);
+        }
+
+        private void Banner_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            NotificationManager.SetPaused(false);
+        }
+
+        private void DismissNotification_Click(object sender, RoutedEventArgs e)
+        {
+            NotificationManager.HideBanner();
         }
 
         private void OnPropertyChanged([CallerMemberName] string? name = null)
