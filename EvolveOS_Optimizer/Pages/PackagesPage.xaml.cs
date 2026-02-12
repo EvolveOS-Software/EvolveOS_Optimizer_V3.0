@@ -345,12 +345,15 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void ReleaseTypewriter()
         {
-            await Task.Delay(200);
+            if (this.DispatcherQueue == null || !this.IsLoaded) return;
+
+            await Task.Delay(100);
 
             _isEntranceAnimationActive = false;
-            this.DispatcherQueue.TryEnqueue(() =>
+
+            this.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
             {
-                if (!_isHoveringItem)
+                if (DescBlock != null && !_isHoveringItem)
                 {
                     DescBlock.Text = DescBlock.DefaultText;
                 }

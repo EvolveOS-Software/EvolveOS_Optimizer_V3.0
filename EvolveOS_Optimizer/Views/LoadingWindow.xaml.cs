@@ -53,7 +53,7 @@ namespace EvolveOS_Optimizer.Views
                     _dispatcherQueue.TryEnqueue(() =>
                     {
                         try { DisplayProfileAvatar.Source = new BitmapImage(new Uri(avatarPath)); }
-                        catch { /* Fallback handled in XAML */ }
+                        catch { }
                     });
                 }
             });
@@ -215,7 +215,7 @@ namespace EvolveOS_Optimizer.Views
                             {
                                 mainWin.DispatcherQueue.TryEnqueue(async () =>
                                 {
-                                    await Task.Delay(200);
+                                    await Task.Delay(500);
                                     mainWin.AnimateUpdateBanner(true);
                                 });
                             }
@@ -229,7 +229,7 @@ namespace EvolveOS_Optimizer.Views
             });
         }
 
-        private async void FinalizeTransition()
+        private void FinalizeTransition()
         {
             try
             {
@@ -248,7 +248,6 @@ namespace EvolveOS_Optimizer.Views
 
                 mainDash.Activate();
 
-                await Task.Delay(500);
                 this.Close();
             }
             catch (Exception ex)
