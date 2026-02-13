@@ -227,6 +227,11 @@ public sealed partial class SecurityPage : Page
     {
         return await Task.Run(() =>
         {
+            if (IsFirewallServiceDisabled())
+            {
+                return false;
+            }
+
             try
             {
                 var type = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
@@ -236,6 +241,18 @@ public sealed partial class SecurityPage : Page
                            firewallPolicy.FirewallEnabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE] ||
                            firewallPolicy.FirewallEnabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC];
                 }
+            }
+            catch (System.Runtime.InteropServices.COMException comEx) when ((uint)comEx.HResult == 0x800706D9)
+            {
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile");
+                    if (key?.GetValue("EnableFirewall") is int val)
+                    {
+                        return val == 1;
+                    }
+                }
+                catch { }
             }
             catch (Exception ex)
             {
@@ -708,6 +725,19 @@ public sealed partial class SecurityPage : Page
             {
                 ErrorLogging.LogDebug(fallbackEx);
             }
+        }
+    }
+
+    private bool IsFirewallServiceDisabled()
+    {
+        try
+        {
+            using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\MpsSvc");
+            return (int?)key?.GetValue("Start") == 4;
+        }
+        catch
+        {
+            return false;
         }
     }
 }
