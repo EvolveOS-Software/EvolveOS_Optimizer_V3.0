@@ -362,4 +362,76 @@
     <sys:String x:Key="SystemAppsPage_Continue">Continue</sys:String>
     <!-- endregion Installed Apps -->
 
+    <!--#region System Page -->
+    <sys:String x:Key="slider1_sys">Mouse pointer speed:</sys:String>
+    <sys:String x:Key="slider2_sys">Keyboard repeat delay:</sys:String>
+    <sys:String x:Key="slider3_sys">Keyboard repetition rate:</sys:String>
+    <sys:String x:Key="text_sys">Type here to test your keyboard settings</sys:String>
+    <sys:String x:Key="tgl1_sys">Enhance pointer precision</sys:String>
+    <sys:String x:Key="tgl2_sys">Sticky Keys and Filter Keys</sys:String>
+    <sys:String x:Key="tgl3_sys">Defender, Antimalware, SmartScreen and VBS</sys:String>
+    <sys:String x:Key="tgl4_sys">UAC (User Account Control)</sys:String>
+    <sys:String x:Key="tgl5_sys">Security alerts from the Notification Center</sys:String>
+    <sys:String x:Key="tgl6_sys">Auto updates apps from the Microsoft Store</sys:String>
+    <sys:String x:Key="tgl7_sys">Sound delay in the Realtek Sound driver</sys:String>
+    <sys:String x:Key="tgl8_sys">Console lock display off timeout</sys:String>
+    <sys:String x:Key="tgl9_sys">«Hibernation» and «Fast Startup» technology</sys:String>
+    <sys:String x:Key="tgl10_sys">Shutdown warning dialog</sys:String>
+    <sys:String x:Key="tgl11_sys">Warnings when running any exe</sys:String>
+    <sys:String x:Key="tgl12_sys">Automatic Memory Diagnostics</sys:String>
+    <sys:String x:Key="tgl13_sys">Teredo, ISATAP and IPv6 protocols</sys:String>
+    <sys:String x:Key="tgl14_sys">File system cache standard size</sys:String>
+    <sys:String x:Key="tgl15_sys">Slowing down Windows and program startup</sys:String>
+    <sys:String x:Key="tgl16_sys">Usage history for the Quick Access Toolbar</sys:String>
+    <sys:String x:Key="tgl17_sys">Autorun removable media</sys:String>
+    <sys:String x:Key="tgl18_sys">Use the default power plan</sys:String>
+    <sys:String x:Key="tgl19_sys">Use the function «Bluetooth and devices»</sys:String>
+    <sys:String x:Key="tgl20_sys">Windows Defender Firewall</sys:String>
+    <sys:String x:Key="tgl21_sys">Use the function «Game mode»</sys:String>
+    <sys:String x:Key="tgl22_sys">Use the function «Game bar»</sys:String>
+    <sys:String x:Key="tgl23_sys">Applications run in the background</sys:String>
+    <sys:String x:Key="tgl24_sys">Reserved storage in Windows</sys:String>
+    <sys:String x:Key="tgl25_sys">Dynamic and High Precision Event Timer</sys:String>
+    <sys:String x:Key="tgl26_sys">Hide «PC Health Check» from update system</sys:String>
+    <sys:String x:Key="tgl27_sys">Windows Insider’s Background Tasks</sys:String>
+    <sys:String x:Key="tgl28_sys">System Disk Defragmentation</sys:String>
+
+    <sys:String x:Key="settings_card_effects">Card Effects</sys:String>
+    <sys:String x:Key="settings_hover_glow">Hover Highlight Glow</sys:String>
+    <sys:String x:Key="settings_selection_glow">Toggle Selection Glow</sys:String>
+
+    <sys:String x:Key="slider_desc_sys">Adjust mouse pointer sensitivity and keyboard responsiveness, including repeat delay and repetition rates</sys:String>
+    <sys:String x:Key="slider1_desc_sys">Changes the speed of the mouse pointer, saving you time to search for mouse parameters.</sys:String>
+    <sys:String x:Key="slider2_desc_sys">Will change the delay before starting to repeat the entered character, the recommended value is 0.</sys:String>
+    <sys:String x:Key="slider3_desc_sys">Changes the repetition rate of the entered character, the recommended value is 31.</sys:String>
+    <sys:String x:Key="tgl1_desc_sys">By default, mouse acceleration accelerates mouse movement. It is recommended to turn it off, since with acceleration turned on, uniform movement and directional accuracy want to be better.</sys:String>
+    <sys:String x:Key="tgl2_desc_sys">If you do not want a window to appear every now and then when performing tasks, telling you to enable key sticking or input filtering, and after answering «No» it appears again after a while, then disable this function. In addition, input filtering affects the speed of keyboard repetition and skipping repeated keys.</sys:String>
+    <sys:String x:Key="tgl3_desc_sys">This tweak will disable and stop Windows Defender, SmartScreen, disproportionately heavy loads on the Antimalware processor and Virtualization-Based Security (VBS). For the changes to be fully applied, the system will automatically reboot into Safe Mode. No actions are required - the utility will handle everything automatically.</sys:String>
+    <sys:String x:Key="tgl4_desc_sys">The tweak will completely disable UAС (User Account Control), get rid of shield icons, security notifications and other things. UAC is not a full-fledged protection program.</sys:String>
+    <sys:String x:Key="tgl5_desc_sys">When you disable something related to security or protection, you constantly receive notifications about it. This tweak will disable security notifications from the Notification Center.</sys:String>
+    <sys:String x:Key="tgl6_desc_sys">If you prefer to update your apps from the Microsoft Store yourself, you need to turn off the automatic update feature. Thus, the load on the network will drop.</sys:String>
+    <sys:String x:Key="tgl7_desc_sys">Some versions of the Realtek High Definition Audio drivers may exhibit an issue with sound delay. This tweak fixes that malfunction. However, it is not recommended to use it if you do not notice any delay or if you are not sure that the installed and/or operating driver is indeed from Realtek.</sys:String>
+    <sys:String x:Key="tgl8_desc_sys">By default, Windows displays the lock screen for 1 minute, after which the screen goes out and it is independent of whether you are running on battery or mains. This tweak will remove these restrictions.</sys:String>
+    <sys:String x:Key="tgl9_desc_sys">Theoretically, a fast startup takes less time than exiting hibernation, but in practice it may not be noticeable. If you don't use either fast loading or hibernation functions, then you can also disable them. This way, you can free up additional space on your disk.</sys:String>
+    <sys:String x:Key="tgl10_desc_sys">Tweak allows you to disable the system message informing you that when you turn off or restart the computer, open programs will be terminated forcibly.</sys:String>
+    <sys:String x:Key="tgl11_desc_sys">Windows security alert when you run exe, msi, bat, cmd or other executable files downloaded over the Internet. Confirming the launch of such files can get boring pretty quickly every time, this tweak will disable this warning.</sys:String>
+    <sys:String x:Key="tgl12_desc_sys">This tweak disables the automatic launch of Windows memory diagnostics by turning off the scheduled task. As a result, the system boots faster due to the absence of unnecessary checks, while you retain the option to run diagnostics manually when needed.</sys:String>
+    <sys:String x:Key="tgl13_desc_sys">This tweak disables the Teredo, ISATAP, and IPv6 protocols, which, as a rule, are not required by the majority of users. However, it is not advisable to apply it on work or corporate devices: this may lead to network problems or improper functioning of some services.</sys:String>
+    <sys:String x:Key="tgl14_desc_sys">This tweak includes support for a large file system cache. Increasing the size of the file system cache generally improves computer performance, but this in turn reduces the physical memory space available for applications and services.</sys:String>
+    <sys:String x:Key="tgl15_desc_sys">By default, Windows has a built-in mechanism to slow down startup programs. This solution works quite well on older computers with HDD, but on modern PCs with SSD unnecessarily slows down the system startup with programs.</sys:String>
+    <sys:String x:Key="tgl16_desc_sys">The tweak will disable the recording of the usage history of files and folders displayed on the Quick Access panel. In other words, the system will no longer automatically save and show the most recent active items.</sys:String>
+    <sys:String x:Key="tgl17_desc_sys">The tweak disables autorun for various removable media types connected to your computer that Explorer is trying to open. Thus, a program unknown to you will not open automatically on a medium that you are not sure of its reliability.</sys:String>
+    <sys:String x:Key="tgl18_desc_sys">Adds the «Ultimate Performance» power supply circuit, or if available, simply switches to the existing power supply circuit. In addition, it unlocks the setting of the maximum processor frequency in the processor power management settings.</sys:String>
+    <sys:String x:Key="tgl19_desc_sys">If you don't need Bluetooth and you don't want to use your devices via Bluetooth, then turn it off, and it will also remove the tray icon.</sys:String>
+    <sys:String x:Key="tgl20_desc_sys">The firewall allows you to regulate the access of programs to the Internet by permitting or blocking their connections and controlling the traffic. If you are confident in your actions and understand what you are doing, you can disable the firewall; however, it is recommended to keep it enabled for most users.</sys:String>
+    <sys:String x:Key="tgl21_desc_sys">The game mode does not have much effect on powerful systems. However, if you have a lot of processes running in the background, then the mode ensures that background processes will not affect the operation of the game.</sys:String>
+    <sys:String x:Key="tgl22_desc_sys">A function for recording your games. By and large, it uses up the resources of your system. There are many better alternatives, and in addition, which do not open spontaneously.</sys:String>
+    <sys:String x:Key="tgl23_desc_sys">Some applications allow you to manage background activity, which determines what they can do when they are in the background and not actively used. In general, disabling background applications will help reduce network load, as well as CPU load and power consumption, which is useful for laptops because it prolongs battery life.</sys:String>
+    <sys:String x:Key="tgl24_desc_sys">Reserved storage is designed to provide a predictable allocation of free space that will be used by updates, applications, temporary files, and the system cache. Disabling it can free up a significant amount of space. However, if you have enough free space, it is not recommended to do this, you will not receive any additional benefits.</sys:String>
+    <sys:String x:Key="tgl25_desc_sys">Disabling the dynamic timer and HPET can improve system responsiveness by reducing micro‑stutter and yield a slight performance boost. However, the effect depends on the configuration: in some cases, instead of speeding up, the system may slow down and experience lag. If you're using a laptop, note that this may also slightly increase power consumption, as the CPU will remain more active even when idle.</sys:String>
+    <sys:String x:Key="tgl26_desc_sys">Tweak blocks intrusive automatic installation of PC Health Check - Microsoft utility that forcibly deploys itself through Windows Update without permission. Once installed, program constantly nags about «checking Windows 11 readiness» and pushes unsolicited «optimization recommendations».</sys:String>
+    <sys:String x:Key="tgl27_desc_sys">For Windows Insider participants, these tasks should remain enabled. However, if you are not part of the program, all associated tasks become unnecessary overhead: they consume system resources, generate useless logs, and may initiate telemetry connections without providing any benefit. Disabling them can improve startup time and overall system performance while also eliminating unneeded experimental data collection channels.</sys:String>
+    <sys:String x:Key="tgl28_desc_sys">If you have an SSD, disabling defragmentation and boot file optimization, which are effective only for hard drives (HDD), helps extend the lifespan of your drive. At the same time, the TRIM optimization function continues to work: it informs the SSD controller which data blocks are no longer in use and clears them, maintaining stable speed and drive longevity.</sys:String>
+    <!--#endregion-->
+
 </ResourceDictionary>

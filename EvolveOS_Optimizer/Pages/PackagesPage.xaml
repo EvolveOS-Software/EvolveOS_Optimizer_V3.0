@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:vm="using:EvolveOS_Optimizer.Core.ViewModel"
+      xmlns:pa="using:EvolveOS_Optimizer.Assets.Panels"
       xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
       xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
       xmlns:anim="using:EvolveOS_Optimizer.Utilities.Animation"
@@ -230,7 +231,7 @@
         </Grid>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <uc:HoneycombPanel x:Name="HcPanel" Margin="40,20" HorizontalAlignment="Center"
+            <pa:HoneycombPanel x:Name="HcPanel" Margin="40,20" HorizontalAlignment="Center"
                                PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
 
                 <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [MicrosoftStore]}"
@@ -545,7 +546,7 @@
                                   Style="{StaticResource TglPackages}" Tag="{StaticResource Img_WhatsApp}" />
                 </ContentControl>
 
-            </uc:HoneycombPanel>
+            </pa:HoneycombPanel>
         </ScrollViewer>
         <Grid Grid.Row="2">
             <uc:DescriptionBlock VerticalAlignment="Stretch" x:Name="DescBlock" DefaultText="{helpers:ResourceString Key=defaultDescriptionApp}"/>

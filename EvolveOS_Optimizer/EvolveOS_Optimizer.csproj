@@ -42,8 +42,7 @@
   
   <ItemGroup>
     <Content Include="Assets\**" />
-    <Compile Remove="Assets\UserControl\DescriptionBlock.xaml.cs" />
-    <Content Remove="Assets\UserControl\DescriptionBlock.xaml" />
+    <Compile Remove="Assets\UserControl\SystemViewFlowPanel.cs" />
     <None Remove="Pages\GroupPolicyPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\SecurityPage.xaml" />
