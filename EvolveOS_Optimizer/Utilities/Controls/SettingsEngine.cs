@@ -28,7 +28,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["AcrylicOpacity"] = 0.5,
             ["AcrylicLuminosity"] = 0.3,
             ["AcrylicTintColor"] = "#000000",
-            ["Language"] = "en-us"
+            ["Language"] = "en-us",
+            ["EnableHoverGlow"] = true,
+            ["EnableSelectionGlow"] = true
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -41,6 +43,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static double AcrylicOpacity { get => Convert.ToDouble(_cachedSettings["AcrylicOpacity"]); set => ChangingParameters("AcrylicOpacity", value); }
         internal static double AcrylicLuminosity { get => Convert.ToDouble(_cachedSettings["AcrylicLuminosity"]); set => ChangingParameters("AcrylicLuminosity", value); }
         internal static string Language { get => (string)_cachedSettings["Language"]; set => ChangingParameters("Language", value); }
+        internal static bool IsHoverGlowEnabled { get => (bool)_cachedSettings["EnableHoverGlow"]; set => ChangingParameters("EnableHoverGlow", value); }
+        internal static bool IsSelectionGlowEnabled { get => (bool)_cachedSettings["EnableSelectionGlow"]; set => ChangingParameters("EnableSelectionGlow", value); }
 
         private static void ChangingParameters(string key, object value)
         {

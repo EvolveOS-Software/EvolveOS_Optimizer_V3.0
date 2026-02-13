@@ -362,4 +362,76 @@
     <sys:String x:Key="SystemAppsPage_Continue">Continuer</sys:String>
     <!-- endregion Installed Apps -->
 
+    <!--#region System Page -->
+    <sys:String x:Key="slider1_sys">Vitesse du pointeur :</sys:String>
+    <sys:String x:Key="slider2_sys">Délai de répétition :</sys:String>
+    <sys:String x:Key="slider3_sys">Fréquence de répétition :</sys:String>
+    <sys:String x:Key="text_sys">Tapez ici pour tester vos paramètres clavier</sys:String>
+    <sys:String x:Key="tgl1_sys">Améliorer la précision du pointeur</sys:String>
+    <sys:String x:Key="tgl2_sys">Touches rémanentes et touches filtres</sys:String>
+    <sys:String x:Key="tgl3_sys">Defender, Antimalware, SmartScreen et VBS</sys:String>
+    <sys:String x:Key="tgl4_sys">UAC (Contrôle de compte d'utilisateur)</sys:String>
+    <sys:String x:Key="tgl5_sys">Alertes de sécurité du Centre de notifications</sys:String>
+    <sys:String x:Key="tgl6_sys">Mise à jour auto des apps (Microsoft Store)</sys:String>
+    <sys:String x:Key="tgl7_sys">Latence sonore du pilote Realtek</sys:String>
+    <sys:String x:Key="tgl8_sys">Délai d'extinction de l'écran de verrouillage</sys:String>
+    <sys:String x:Key="tgl9_sys">Technologie «Hibernation» et «Démarrage rapide»</sys:String>
+    <sys:String x:Key="tgl10_sys">Dialogue d'avertissement d'arrêt</sys:String>
+    <sys:String x:Key="tgl11_sys">Avertissements lors de l'exécution d'un .exe</sys:String>
+    <sys:String x:Key="tgl12_sys">Diagnostic automatique de la mémoire</sys:String>
+    <sys:String x:Key="tgl13_sys">Protocoles Teredo, ISATAP et IPv6</sys:String>
+    <sys:String x:Key="tgl14_sys">Taille standard du cache système de fichiers</sys:String>
+    <sys:String x:Key="tgl15_sys">Ralentissement du démarrage de Windows et des apps</sys:String>
+    <sys:String x:Key="tgl16_sys">Historique d'utilisation de l'Accès rapide</sys:String>
+    <sys:String x:Key="tgl17_sys">Exécution automatique des médias amovibles</sys:String>
+    <sys:String x:Key="tgl18_sys">Utiliser le mode de gestion d'alimentation par défaut</sys:String>
+    <sys:String x:Key="tgl19_sys">Utiliser la fonction «Bluetooth et appareils»</sys:String>
+    <sys:String x:Key="tgl20_sys">Pare-feu Windows Defender</sys:String>
+    <sys:String x:Key="tgl21_sys">Utiliser la fonction «Mode Jeu»</sys:String>
+    <sys:String x:Key="tgl22_sys">Utiliser la fonction «Barre de jeu»</sys:String>
+    <sys:String x:Key="tgl23_sys">Applications s'exécutant en arrière-plan</sys:String>
+    <sys:String x:Key="tgl24_sys">Stockage réservé dans Windows</sys:String>
+    <sys:String x:Key="tgl25_sys">Timer d'événement dynamique et de haute précision</sys:String>
+    <sys:String x:Key="tgl26_sys">Masquer «Contrôle de l'intégrité du PC» des mises à jour</sys:String>
+    <sys:String x:Key="tgl27_sys">Tâches de fond de Windows Insider</sys:String>
+    <sys:String x:Key="tgl28_sys">Défragmentation du disque système</sys:String>
+
+    <sys:String x:Key="settings_card_effects">Effets de carte</sys:String>
+    <sys:String x:Key="settings_hover_glow">Lueur de survol</sys:String>
+    <sys:String x:Key="settings_selection_glow">Lueur de sélection du commutateur</sys:String>
+
+    <sys:String x:Key="slider_desc_sys">Ajustez la sensibilité du pointeur de la souris et la réactivité du clavier, y compris le délai avant répétition et la vitesse de répétition.</sys:String>
+    <sys:String x:Key="slider1_desc_sys">Modifie la vitesse du pointeur, vous évitant de chercher dans les paramètres de la souris.</sys:String>
+    <sys:String x:Key="slider2_desc_sys">Modifie le délai avant la répétition d'un caractère ; la valeur recommandée est 0.</sys:String>
+    <sys:String x:Key="slider3_desc_sys">Modifie la fréquence de répétition des caractères ; la valeur recommandée est 31.</sys:String>
+    <sys:String x:Key="tgl1_desc_sys">Par défaut, l'accélération augmente la vitesse du mouvement. Il est recommandé de la désactiver pour une précision directionnelle constante.</sys:String>
+    <sys:String x:Key="tgl2_desc_sys">Désactive les fenêtres intempestives demandant d'activer les touches rémanentes ou le filtrage des touches. Le filtrage affecte aussi la vitesse de répétition.</sys:String>
+    <sys:String x:Key="tgl3_desc_sys">Désactive Windows Defender, SmartScreen, les charges Antimalware et la sécurité basée sur la virtualisation (VBS). Le système redémarrera en mode sans échec pour appliquer ces changements.</sys:String>
+    <sys:String x:Key="tgl4_desc_sys">Désactive complètement l'UAC, supprime les icônes de bouclier et les notifications de sécurité. L'UAC n'est pas un programme de protection complet.</sys:String>
+    <sys:String x:Key="tgl5_desc_sys">Empêche la réception constante de notifications de sécurité lorsque vous désactivez des fonctions de protection.</sys:String>
+    <sys:String x:Key="tgl6_desc_sys">Désactivez les mises à jour automatiques si vous préférez mettre à jour vos apps manuellement, réduisant ainsi la charge réseau.</sys:String>
+    <sys:String x:Key="tgl7_desc_sys">Corrige les problèmes de latence audio sur certains pilotes Realtek. Ne pas utiliser si vous ne remarquez aucun délai.</sys:String>
+    <sys:String x:Key="tgl8_desc_sys">Supprime la restriction qui éteint l'écran de verrouillage après 1 minute, quel que soit votre mode d'alimentation.</sys:String>
+    <sys:String x:Key="tgl9_desc_sys">Si vous n'utilisez pas l'hibernation ou le démarrage rapide, les désactiver permet de libérer de l'espace disque supplémentaire.</sys:String>
+    <sys:String x:Key="tgl10_desc_sys">Désactive le message informant que les programmes ouverts seront fermés de force lors de l'arrêt ou du redémarrage.</sys:String>
+    <sys:String x:Key="tgl11_desc_sys">Désactive l'avertissement de sécurité lors du lancement de fichiers exécutables téléchargés sur Internet.</sys:String>
+    <sys:String x:Key="tgl12_desc_sys">Désactive le diagnostic automatique de la mémoire au démarrage pour accélérer le boot. L'option manuelle reste disponible.</sys:String>
+    <sys:String x:Key="tgl13_desc_sys">Désactive les protocoles Teredo, ISATAP et IPv6. Déconseillé sur les réseaux d'entreprise car cela peut causer des problèmes de connexion.</sys:String>
+    <sys:String x:Key="tgl14_desc_sys">Augmente la taille du cache du système de fichiers pour améliorer les performances, au détriment de la RAM disponible pour les apps.</sys:String>
+    <sys:String x:Key="tgl15_desc_sys">Windows retarde par défaut le lancement des programmes au démarrage. Utile pour les HDD, mais inutilement lent pour les SSD modernes.</sys:String>
+    <sys:String x:Key="tgl16_desc_sys">Désactive l'enregistrement de l'historique des fichiers et dossiers affichés dans le volet Accès rapide.</sys:String>
+    <sys:String x:Key="tgl17_desc_sys">Désactive l'exécution automatique des médias amovibles pour éviter le lancement de programmes inconnus.</sys:String>
+    <sys:String x:Key="tgl18_desc_sys">Ajoute le mode «Performances optimales» et débloque le réglage de la fréquence maximale du processeur.</sys:String>
+    <sys:String x:Key="tgl19_desc_sys">Désactive complètement le Bluetooth si vous ne l'utilisez pas, supprimant ainsi l'icône de la barre des tâches.</sys:String>
+    <sys:String x:Key="tgl20_desc_sys">Régule l'accès des programmes à Internet. À ne désactiver que si vous savez ce que vous faites ; recommandé pour la plupart des utilisateurs.</sys:String>
+    <sys:String x:Key="tgl21_desc_sys">Garantit que les processus en arrière-plan n'affectent pas les performances de vos jeux.</sys:String>
+    <sys:String x:Key="tgl22_desc_sys">Fonction d'enregistrement de jeux. Consomme des ressources système ; il existe de meilleures alternatives qui ne s'ouvrent pas spontanément.</sys:String>
+    <sys:String x:Key="tgl23_desc_sys">Désactiver les apps en arrière-plan réduit la charge CPU et la consommation d'énergie, prolongeant ainsi l'autonomie des ordinateurs portables.</sys:String>
+    <sys:String x:Key="tgl24_desc_sys">Libère l'espace réservé aux mises à jour et fichiers temporaires. Recommandé uniquement si vous manquez d'espace disque.</sys:String>
+    <sys:String x:Key="tgl25_desc_sys">Désactiver le timer dynamique et HPET peut améliorer la réactivité en réduisant les micro-saccades, selon votre configuration.</sys:String>
+    <sys:String x:Key="tgl26_desc_sys">Bloque l'installation forcée de l'utilitaire de contrôle de l'intégrité du PC déployé par Microsoft via Windows Update.</sys:String>
+    <sys:String x:Key="tgl27_desc_sys">Désactive les tâches inutiles liées au programme Windows Insider si vous n'y participez pas, économisant ainsi des ressources.</sys:String>
+    <sys:String x:Key="tgl28_desc_sys">Pour les SSD, désactiver la défragmentation aide à prolonger leur durée de vie, tandis que la fonction TRIM reste active pour maintenir la vitesse.</sys:String>
+    <!--#endregion-->
+
 </ResourceDictionary>

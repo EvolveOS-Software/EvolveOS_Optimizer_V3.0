@@ -363,4 +363,76 @@
     <sys:String x:Key="SystemAppsPage_Continue">Doorgaan</sys:String>
     <!-- endregion Installed Apps -->
 
+    <!--#region System Page -->
+    <sys:String x:Key="slider1_sys">Snelheid aanwijzer:</sys:String>
+    <sys:String x:Key="slider2_sys">Vertraging voor herhaling:</sys:String>
+    <sys:String x:Key="slider3_sys">Herhalingssnelheid toetsenbord:</sys:String>
+    <sys:String x:Key="text_sys">Typ hier om uw toetsenbordinstellingen te testen</sys:String>
+    <sys:String x:Key="tgl1_sys">Precisie van de aanwijzer verbeteren</sys:String>
+    <sys:String x:Key="tgl2_sys">Plaktoetsen en Filter-toetsen</sys:String>
+    <sys:String x:Key="tgl3_sys">Defender, Antimalware, SmartScreen en VBS</sys:String>
+    <sys:String x:Key="tgl4_sys">UAC (Gebruikersaccountbeheer)</sys:String>
+    <sys:String x:Key="tgl5_sys">Beveiligingswaarschuwingen van het Actiecentrum</sys:String>
+    <sys:String x:Key="tgl6_sys">Apps automatisch bijwerken vanuit de Microsoft Store</sys:String>
+    <sys:String x:Key="tgl7_sys">Geluidsvertraging in het Realtek-stuurprogramma</sys:String>
+    <sys:String x:Key="tgl8_sys">Time-out voor uitschakelen van vergrendelingsscherm</sys:String>
+    <sys:String x:Key="tgl9_sys">«Slaapstand» en «Snel opstarten» technologie</sys:String>
+    <sys:String x:Key="tgl10_sys">Waarschuwingsdialoog bij afsluiten</sys:String>
+    <sys:String x:Key="tgl11_sys">Waarschuwingen bij het uitvoeren van elk .exe-bestand</sys:String>
+    <sys:String x:Key="tgl12_sys">Automatische Geheugendiagnose</sys:String>
+    <sys:String x:Key="tgl13_sys">Teredo, ISATAP en IPv6-protocollen</sys:String>
+    <sys:String x:Key="tgl14_sys">Standaardgrootte bestandssysteemcache</sys:String>
+    <sys:String x:Key="tgl15_sys">Vertraging bij het opstarten van Windows en programma's</sys:String>
+    <sys:String x:Key="tgl16_sys">Gebruiksgeschiedenis voor de werkbalk Snelle toegang</sys:String>
+    <sys:String x:Key="tgl17_sys">Automatisch afspelen van verwijderbare media</sys:String>
+    <sys:String x:Key="tgl18_sys">Standaard energiebeheerschema gebruiken</sys:String>
+    <sys:String x:Key="tgl19_sys">De functie «Bluetooth en apparaten» gebruiken</sys:String>
+    <sys:String x:Key="tgl20_sys">Windows Defender Firewall</sys:String>
+    <sys:String x:Key="tgl21_sys">De functie «Gamemodus» gebruiken</sys:String>
+    <sys:String x:Key="tgl22_sys">De functie «Gamebalk» gebruiken</sys:String>
+    <sys:String x:Key="tgl23_sys">Applicaties op de achtergrond uitvoeren</sys:String>
+    <sys:String x:Key="tgl24_sys">Gereserveerde opslag in Windows</sys:String>
+    <sys:String x:Key="tgl25_sys">Dynamic en High Precision Event Timer (HPET)</sys:String>
+    <sys:String x:Key="tgl26_sys">«PC-statuscontrole» verbergen voor Windows Update</sys:String>
+    <sys:String x:Key="tgl27_sys">Achtergrondtaken van Windows Insider</sys:String>
+    <sys:String x:Key="tgl28_sys">Systeemdiskdefragmentatie</sys:String>
+
+    <sys:String x:Key="settings_card_effects">Kaarteffecten</sys:String>
+    <sys:String x:Key="settings_hover_glow">Gloed bij aanwijzen</sys:String>
+    <sys:String x:Key="settings_selection_glow">Selectiegloed bij schakelen</sys:String>
+
+    <sys:String x:Key="slider_desc_sys">Pas de gevoeligheid van de muisaanwijzer en de responsiviteit van het toetsenbord aan, inclusief de herhaalvertraging en herhaalsnelheid.</sys:String>
+    <sys:String x:Key="slider1_desc_sys">Wijzigt de snelheid van de muisaanwijzer, waardoor u tijd bespaart bij het zoeken naar muisparameters.</sys:String>
+    <sys:String x:Key="slider2_desc_sys">Wijzigt de vertraging voordat een teken wordt herhaald; de aanbevolen waarde is 0.</sys:String>
+    <sys:String x:Key="slider3_desc_sys">Wijzigt de herhalingssnelheid van tekens; de aanbevolen waarde is 31.</sys:String>
+    <sys:String x:Key="tgl1_desc_sys">Standaard versnelt muisversnelling de beweging. Het wordt aanbevolen dit uit te schakelen voor een gelijkmatigere beweging en betere nauwkeurigheid.</sys:String>
+    <sys:String x:Key="tgl2_desc_sys">Schakel dit uit om hinderlijke pop-ups over plaktoetsen of filtertoetsen te voorkomen. Filteren beïnvloedt bovendien de herhalingssnelheid van het toetsenbord.</sys:String>
+    <sys:String x:Key="tgl3_desc_sys">Schakelt Windows Defender, SmartScreen, zware Antimalware-processen en VBS uit. Het systeem zal automatisch herstarten in Veilige Modus om dit toe te passen.</sys:String>
+    <sys:String x:Key="tgl4_desc_sys">Schakelt Gebruikersaccountbeheer (UAC) volledig uit, verwijdert schild-iconen en beveiligingsmeldingen. UAC is geen volwaardig beveiligingsprogramma.</sys:String>
+    <sys:String x:Key="tgl5_desc_sys">Voorkomt dat u constant meldingen ontvangt wanneer u beveiligingsfuncties uitschakelt.</sys:String>
+    <sys:String x:Key="tgl6_desc_sys">Schakel automatische updates uit als u uw apps uit de Microsoft Store handmatig wilt bijwerken. Dit vermindert de netwerkbelasting.</sys:String>
+    <sys:String x:Key="tgl7_desc_sys">Sommige Realtek-stuurprogramma's hebben last van geluidsvertraging. Deze tweak lost dat op. Alleen gebruiken als u daadwerkelijk vertraging ervaart.</sys:String>
+    <sys:String x:Key="tgl8_desc_sys">Verwijdert de beperking waarbij het vergrendelingsscherm na 1 minuut op zwart gaat, ongeacht uw stroominstellingen.</sys:String>
+    <sys:String x:Key="tgl9_desc_sys">Als u geen gebruik maakt van de slaapstand of snel opstarten, kunt u deze uitschakelen om extra schijfruimte vrij te maken.</sys:String>
+    <sys:String x:Key="tgl10_desc_sys">Schakelt de melding uit dat actieve programma's geforceerd worden afgesloten bij het herstarten of uitschakelen.</sys:String>
+    <sys:String x:Key="tgl11_desc_sys">Schakelt de beveiligingswaarschuwing uit die verschijnt bij het uitvoeren van gedownloade executable-bestanden.</sys:String>
+    <sys:String x:Key="tgl12_desc_sys">Schakelt de geplande taak voor automatische geheugendiagnose uit voor een snellere opstart. Handmatige diagnose blijft mogelijk.</sys:String>
+    <sys:String x:Key="tgl13_desc_sys">Schakelt Teredo, ISATAP en IPv6 uit. Niet aanbevolen voor zakelijke apparaten vanwege mogelijke netwerkproblemen.</sys:String>
+    <sys:String x:Key="tgl14_desc_sys">Vergroot de bestandssysteemcache voor betere prestaties, ten koste van beschikbaar werkgeheugen voor applicaties.</sys:String>
+    <sys:String x:Key="tgl15_desc_sys">Windows vertraagt standaard het opstarten van programma's. Dit is nuttig voor HDD's, maar overbodig en vertragend voor moderne SSD's.</sys:String>
+    <sys:String x:Key="tgl16_desc_sys">Stopt het bijhouden van recent geopende bestanden en mappen in het Snelle toegang-paneel.</sys:String>
+    <sys:String x:Key="tgl17_desc_sys">Schakelt het automatisch openen van verwisselbare media uit om de uitvoering van onbekende software te voorkomen.</sys:String>
+    <sys:String x:Key="tgl18_desc_sys">Activeert het schema 'Ultieme prestaties' en ontgrendelt instellingen voor de maximale processorfrequentie.</sys:String>
+    <sys:String x:Key="tgl19_desc_sys">Schakel Bluetooth volledig uit als u het niet gebruikt; dit verwijdert ook het pictogram in het systeemvak.</sys:String>
+    <sys:String x:Key="tgl20_desc_sys">Reguleert netwerktoegang. Alleen uitschakelen als u precies weet wat u doet; voor de meeste gebruikers wordt inschakelen aanbevolen.</sys:String>
+    <sys:String x:Key="tgl21_desc_sys">Zorgt ervoor dat achtergrondprocessen de prestaties van games niet negatief beïnvloeden.</sys:String>
+    <sys:String x:Key="tgl22_desc_sys">Functie voor het opnemen van games. Verbruikt onnodig systeembronnen en er zijn betere alternatieven beschikbaar.</sys:String>
+    <sys:String x:Key="tgl23_desc_sys">Het uitschakelen van achtergrondapps vermindert de belasting van de CPU en het netwerk, wat de batterijduur van laptops verlengt.</sys:String>
+    <sys:String x:Key="tgl24_desc_sys">Vrijmaken van gereserveerde ruimte voor updates en tijdelijke bestanden. Alleen aanbevolen bij een tekort aan schijfruimte.</sys:String>
+    <sys:String x:Key="tgl25_desc_sys">Het uitschakelen van HPET kan de reactiesnelheid verbeteren en micro-stotteren verminderen, afhankelijk van uw hardwareconfiguratie.</sys:String>
+    <sys:String x:Key="tgl26_desc_sys">Blokkeert de opdringerige installatie van de PC-statuscontrole die Microsoft via Windows Update forceert.</sys:String>
+    <sys:String x:Key="tgl27_desc_sys">Schakel deze taken uit als u geen lid bent van het Insider-programma om onnodige telemetrie en systeembelasting te voorkomen.</sys:String>
+    <sys:String x:Key="tgl28_desc_sys">Voor SSD's helpt het uitschakelen van defragmentatie de levensduur te verlengen, terwijl TRIM-optimalisatie actief blijft voor stabiele snelheid.</sys:String>
+    <!--#endregion-->
+
 </ResourceDictionary>

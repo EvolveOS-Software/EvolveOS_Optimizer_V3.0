@@ -29,7 +29,19 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
         internal static readonly Dictionary<string, NoticeAction> SysActions = new Dictionary<string, NoticeAction>()
         {
-            //["TglButton3"] = NoticeAction.Logout
+            ["TglButton2"] = NoticeAction.Logout,
+            ["TglButton3"] = NoticeAction.Restart,
+            ["TglButton4"] = NoticeAction.Restart,
+            ["TglButton5"] = NoticeAction.Restart,
+            ["TglButton7"] = NoticeAction.Restart,
+            ["TglButton12"] = NoticeAction.Restart,
+            ["TglButton13"] = NoticeAction.Restart,
+            ["TglButton14"] = NoticeAction.Restart,
+            ["TglButton15"] = NoticeAction.Restart,
+            ["TglButton20"] = NoticeAction.Restart,
+            ["TglButton23"] = NoticeAction.Restart,
+            ["TglButton25"] = NoticeAction.Restart,
+            ["TglButton27"] = NoticeAction.Restart
         };
 
         private static int _isNotificationOpen = 0;

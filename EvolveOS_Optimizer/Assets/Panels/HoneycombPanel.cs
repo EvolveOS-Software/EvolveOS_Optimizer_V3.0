@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
 
-namespace EvolveOS_Optimizer.Assets.UserControl
+namespace EvolveOS_Optimizer.Assets.Panels
 {
     public class HoneycombPanel : Panel
     {
