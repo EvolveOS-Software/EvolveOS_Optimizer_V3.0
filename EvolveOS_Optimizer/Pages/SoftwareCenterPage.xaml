@@ -6,8 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d"
-    Background="Transparent">
+    mc:Ignorable="d" Unloaded="Page_Unloaded"
+    Background="Transparent" NavigationCacheMode="Disabled">
 
     <Grid>
         <ui:NavigationView x:Name="SoftwareNav"

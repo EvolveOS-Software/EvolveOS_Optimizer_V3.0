@@ -10,7 +10,7 @@ namespace EvolveOS_Optimizer.Pages
 {
     public sealed partial class SystemPage : Page
     {
-        private readonly SystemTweaks _sysTweaks = new SystemTweaks();
+        private SystemTweaks? _sysTweaks = new SystemTweaks();
 
         public SystemPage()
         {
@@ -81,7 +81,7 @@ namespace EvolveOS_Optimizer.Pages
 
                     model.State = isOn;
 
-                    _sysTweaks.ApplyTweaks(key, isOn);
+                    _sysTweaks?.ApplyTweaks(key, isOn);
 
                     if (NotificationManager.SysActions.TryGetValue(key, out var action))
                     {
@@ -101,11 +101,25 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is Slider slider)
             {
-                _sysTweaks.ApplyTweaksSlider(slider.Name, (uint)slider.Value);
+                _sysTweaks?.ApplyTweaksSlider(slider.Name, (uint)slider.Value);
             }
         }
 
         #endregion
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is IDisposable disposableVM)
+            {
+                disposableVM.Dispose();
+            }
+
+            this.DataContext = null;
+
+            _sysTweaks = null;
+
+            System.Diagnostics.Debug.WriteLine("[SystemPage] Memory cleaned and disposed.");
+        }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {

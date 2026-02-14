@@ -7,6 +7,7 @@ using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -33,48 +34,52 @@ namespace EvolveOS_Optimizer.Pages
         {
             InitializeComponent();
 
-            this.Unloaded += (s, e) =>
-            {
-                _timer?.Stop();
-            };
+            this.Loaded += PackagesPage_Loaded;
+        }
 
-            Loaded += delegate
+        private void PackagesPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (HcPanel != null)
             {
-                if (HcPanel != null)
+                HcPanel.AnimationFinished = () =>
                 {
-                    HcPanel.AnimationFinished = () =>
-                    {
-                        ReleaseTypewriter();
-                    };
+                    ReleaseTypewriter();
+                };
+            }
+
+            SyncVisualStates();
+
+            _timer = new TimerControlManager(TimeSpan.FromSeconds(5), TimerControlManager.TimerMode.CountUp, time =>
+            {
+                if (!this.IsLoaded || this.DispatcherQueue == null)
+                {
+                    _timer?.Stop();
+                    return;
                 }
 
-                SyncVisualStates();
-
-                _timer = new TimerControlManager(TimeSpan.FromSeconds(5), TimerControlManager.TimerMode.CountUp, time =>
+                Task.Run(() =>
                 {
-                    if (!this.IsLoaded || this.DispatcherQueue == null)
+                    _uninstalling.GetInstalledPackages();
+
+                    this.DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
                     {
-                        _timer?.Stop();
-                        return;
-                    }
+                        if (!this.IsLoaded || HcPanel == null) return;
 
-                    Task.Run(() =>
-                    {
-                        _uninstalling.GetInstalledPackages();
-
-                        this.DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
-                        {
-                            if (!this.IsLoaded || HcPanel == null) return;
-
-                            UninstallingPakages.OnPackagesChanged();
-
-                            SyncVisualStates();
-                        });
+                        UninstallingPakages.OnPackagesChanged();
+                        SyncVisualStates();
                     });
                 });
+            });
 
-                _timer.Start();
-            };
+            _timer.Start();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter is PackagesViewModel vm)
+            {
+                this.DataContext = vm;
+            }
         }
 
         #region UI Event Handlers (Buttons & Menus)
@@ -136,6 +141,7 @@ namespace EvolveOS_Optimizer.Pages
                         }
                         else
                         {
+                            _isWebViewRemoval = false;
                             await HandlePackageRemoval(packageName);
                         }
                     }
@@ -243,13 +249,15 @@ namespace EvolveOS_Optimizer.Pages
 
                 await _backgroundQueue.QueueTask(async () =>
                 {
-                    this.DispatcherQueue.TryEnqueue(() => { UninstallingPakages.HandleAvailabilityStatus(packageName, true); });
+                    this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, true); });
                     await UninstallingPakages.RemoveAppxPackage(packageName, removeWebView);
                     await Task.Delay(2000);
-                    this.DispatcherQueue.TryEnqueue(() => { UninstallingPakages.HandleAvailabilityStatus(packageName, false); });
+                    this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, false); });
 
-                    this.DispatcherQueue.TryEnqueue(() =>
+                    this.DispatcherQueue?.TryEnqueue(() =>
                     {
+                        if (!this.IsLoaded) return;
+
                         if (ExplorerManager.PackageMapping.TryGetValue(packageName, out bool needRestart) && needRestart)
                         {
                             ExplorerManager.Restart();
@@ -353,6 +361,8 @@ namespace EvolveOS_Optimizer.Pages
 
             this.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
             {
+                if (!this.IsLoaded) return;
+
                 if (DescBlock != null && !_isHoveringItem)
                 {
                     DescBlock.Text = DescBlock.DefaultText;
@@ -416,17 +426,19 @@ namespace EvolveOS_Optimizer.Pages
 
             await _backgroundQueue.QueueTask(async () =>
             {
-                this.DispatcherQueue.TryEnqueue(() =>
+                this.DispatcherQueue?.TryEnqueue(() =>
                 {
-                    UninstallingPakages.HandleAvailabilityStatus(packageName, true);
+                    if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, true);
                 });
 
                 await UninstallingPakages.RemoveAppxPackage(packageName, _isWebViewRemoval);
 
                 await Task.Delay(3000);
 
-                this.DispatcherQueue.TryEnqueue(() =>
+                this.DispatcherQueue?.TryEnqueue(() =>
                 {
+                    if (!this.IsLoaded) return;
+
                     UninstallingPakages.HandleAvailabilityStatus(packageName, false);
 
                     if (targetPackage != null)
@@ -450,19 +462,40 @@ namespace EvolveOS_Optimizer.Pages
         {
             await _backgroundQueue.QueueTask(async () =>
             {
-                this.DispatcherQueue.TryEnqueue(() => { UninstallingPakages.HandleAvailabilityStatus(packageName, true); });
+                this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, true); });
                 await Task.Delay(3000);
-                this.DispatcherQueue.TryEnqueue(() => { UninstallingPakages.HandleAvailabilityStatus(packageName, false); });
+                this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, false); });
             });
         }
 
         private void HandleAnimationChanged(bool isEnabled)
         {
-            this.DispatcherQueue.TryEnqueue(() =>
+            this.DispatcherQueue?.TryEnqueue(() =>
             {
-                if (HcPanel != null) HcPanel.IsAnimationEnabled = isEnabled;
+                if (this.IsLoaded && HcPanel != null) HcPanel.IsAnimationEnabled = isEnabled;
             });
         }
-#endregion
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _timer?.Stop();
+            _timer = null;
+
+            if (_staggerTimer != null)
+            {
+                _staggerTimer.Stop();
+                _staggerTimer = null;
+            }
+
+            _entranceQueue?.Clear();
+
+            if (this.DataContext is IDisposable disposableVM)
+            {
+                disposableVM.Dispose();
+            }
+
+            this.DataContext = null;
+        }
+        #endregion
     }
 }

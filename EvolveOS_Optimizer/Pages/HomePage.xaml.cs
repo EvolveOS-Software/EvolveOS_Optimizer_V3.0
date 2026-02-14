@@ -30,7 +30,6 @@ public sealed partial class HomePage : Page
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread() ?? throw new InvalidOperationException("DispatcherQueue not found.");
 
         this.Loaded += HomePage_Loaded;
-        this.Unloaded += HomePage_Unloaded;
     }
 
     private void HomePage_Loaded(object sender, RoutedEventArgs e)
@@ -84,10 +83,38 @@ public sealed partial class HomePage : Page
         return (d, u);
     }
 
-    private void HomePage_Unloaded(object sender, RoutedEventArgs e)
+    private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
-        _monitoringTimer?.Stop();
-        SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
+        if (_monitoringTimer != null)
+        {
+            _monitoringTimer.Stop();
+            _monitoringTimer = null;
+        }
+
+        try
+        {
+            Microsoft.Win32.SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[HomePage] Error detaching SystemEvents: {ex.Message}");
+        }
+
+        if (this.DataContext is IDisposable disposableVM)
+        {
+            disposableVM.Dispose();
+        }
+
+        this.DataContext = null;
+        this.Content = null;
+
+        this.Loaded -= HomePage_Loaded;
+        this.Unloaded -= Page_Unloaded;
+
+        Debug.WriteLine("[HomePage] Nuclear disposal complete. Content and DataContext cleared.");
+
+        GC.Collect(2, GCCollectionMode.Forced, true);
+        GC.WaitForPendingFinalizers();
     }
 
     #region Real-time Monitoring

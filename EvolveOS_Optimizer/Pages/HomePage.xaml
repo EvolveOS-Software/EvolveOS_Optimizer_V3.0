@@ -7,9 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:anim="using:EvolveOS_Optimizer.Utilities.Animation"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
-    xmlns:num="using:System.Numerics"
-    mc:Ignorable="d"
-    Background="Transparent">
+    xmlns:num="using:System.Numerics" NavigationCacheMode="Disabled"
+    mc:Ignorable="d" Background="Transparent" Unloaded="Page_Unloaded">
 
     <Grid>
         <StackPanel HorizontalAlignment="Stretch" 

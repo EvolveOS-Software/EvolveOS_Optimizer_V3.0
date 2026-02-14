@@ -10,7 +10,7 @@ namespace EvolveOS_Optimizer.Pages
 {
     public sealed partial class ServicesPage : Page
     {
-        private readonly ServicesTweaks _svcTweaks = new ServicesTweaks();
+        private ServicesTweaks? _svcTweaks = new ServicesTweaks();
 
         public ServicesPage()
         {
@@ -82,6 +82,20 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is IDisposable disposableVM)
+            {
+                disposableVM.Dispose();
+            }
+
+            this.DataContext = null;
+
+            _svcTweaks = null;
+
+            System.Diagnostics.Debug.WriteLine("[ServicesPage] Disposed and Unloaded cleanly.");
+        }
+
         private void NativeTgl_Toggled(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleSwitch tgl)
@@ -103,7 +117,7 @@ namespace EvolveOS_Optimizer.Pages
                         }
                     }
 
-                    _svcTweaks.ApplyTweaks(key, isOn);
+                    _svcTweaks?.ApplyTweaks(key, isOn);
 
                     if (SettingsEngine.IsSelectionGlowEnabled)
                     {

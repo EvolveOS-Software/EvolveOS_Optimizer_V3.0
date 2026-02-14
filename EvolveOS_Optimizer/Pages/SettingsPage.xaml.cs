@@ -15,6 +15,8 @@ namespace EvolveOS_Optimizer.Pages
         private bool _isInitialized;
         private string _pendingHexColor = "#FF0078D4";
 
+        private PropertyChangedEventHandler? _localizationHandler;
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public LocalizationService Localizer => LocalizationService.Instance;
 
@@ -30,18 +32,24 @@ namespace EvolveOS_Optimizer.Pages
         {
             InitializeComponent();
 
-            LocalizationService.Instance.PropertyChanged += (s, e) =>
+            _localizationHandler = (s, e) =>
             {
                 if (e.PropertyName == "Item[]")
                 {
                     DispatcherQueue.TryEnqueue(async () =>
                     {
                         await Task.Delay(100);
-                        OnPropertyChanged(string.Empty);
-                        UpdateComboBoxLocalization();
+                        // Check if we are still on the page before updating
+                        if (this.XamlRoot != null)
+                        {
+                            OnPropertyChanged(string.Empty);
+                            UpdateComboBoxLocalization();
+                        }
                     });
                 }
             };
+
+            LocalizationService.Instance.PropertyChanged += _localizationHandler;
 
             InitializeSelections();
             UpdateComboBoxLocalization();
@@ -78,6 +86,29 @@ namespace EvolveOS_Optimizer.Pages
                 AcrylicOptionsPanel.Opacity = 1.0;
                 PanelTransform.Y = 0;
             }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _isInitialized = false;
+
+            if (_localizationHandler != null)
+            {
+                LocalizationService.Instance.PropertyChanged -= _localizationHandler;
+                _localizationHandler = null;
+            }
+
+            this.Loaded -= SettingsPage_Loaded;
+            this.Unloaded -= Page_Unloaded;
+
+            PropertyChanged = null;
+
+            this.Content = null;
+            this.DataContext = null;
+
+            Debug.WriteLine("[SettingsPage] Detached from Localization and Visual Tree cleared.");
+
+            GC.Collect(2, GCCollectionMode.Forced, true);
         }
 
         private void InitializeSelections()

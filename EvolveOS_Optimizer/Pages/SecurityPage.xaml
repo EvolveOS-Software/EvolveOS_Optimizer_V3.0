@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
-    mc:Ignorable="d">
+    mc:Ignorable="d" NavigationCacheMode="Disabled" Unloaded="Page_Unloaded">
 
     <Grid x:Name="ContentArea">
         <ScrollViewer Padding="24,14,24,0">

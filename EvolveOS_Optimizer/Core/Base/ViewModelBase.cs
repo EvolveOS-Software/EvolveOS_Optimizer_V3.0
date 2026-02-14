@@ -24,5 +24,10 @@ namespace EvolveOS_Optimizer.Core.Base
             OnPropertyChanged(propName);
             return true;
         }
+
+        public virtual void Dispose()
+        {
+            PropertyChanged = null;
+        }
     }
 }

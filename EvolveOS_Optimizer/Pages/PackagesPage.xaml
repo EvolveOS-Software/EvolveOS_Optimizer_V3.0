@@ -10,7 +10,7 @@
       xmlns:anim="using:EvolveOS_Optimizer.Utilities.Animation"
       xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
       xmlns:ui="using:Microsoft.UI.Xaml.Controls"
-      mc:Ignorable="d">
+      mc:Ignorable="d" NavigationCacheMode="Disabled" Unloaded="Page_Unloaded">
 
     <Page.DataContext>
         <vm:PackagesViewModel />

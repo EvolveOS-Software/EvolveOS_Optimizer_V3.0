@@ -2,6 +2,7 @@
 using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml.Hosting;
+using System.ComponentModel;
 using System.Numerics;
 using WinRT;
 
@@ -62,45 +63,20 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private static void UpdateAcrylicProperties()
         {
-            var controller = _currentController;
-
-            if (controller != null)
-            {
-                var color = ToColor(SettingsEngine.AcrylicTintColor);
-                float opacity = (float)SettingsEngine.AcrylicOpacity;
-                float luminosity = (float)SettingsEngine.AcrylicLuminosity;
-
-                controller.TintColor = color;
-                controller.FallbackColor = color;
-                controller.TintOpacity = opacity;
-
-                controller.LuminosityOpacity = luminosity + 0.001f;
-                controller.LuminosityOpacity = luminosity;
-
-                Debug.WriteLine($"[UIHelper] Properties Updated: {SettingsEngine.AcrylicTintColor} at {opacity} opacity");
-            }
-        }
-
-        /*private static void UpdateAcrylicProperties()
-        {
             if (_currentController != null)
             {
+                var color = ToColor(SettingsEngine.AcrylicTintColor);
                 float opacity = (float)SettingsEngine.AcrylicOpacity;
                 float luminosity = (float)SettingsEngine.AcrylicLuminosity;
-                var color = ToColor(SettingsEngine.AcrylicTintColor);
 
                 _currentController.TintColor = color;
                 _currentController.FallbackColor = color;
-
-                // Apply the values
-                _currentController.LuminosityOpacity = luminosity;
                 _currentController.TintOpacity = opacity;
 
-                // THE NUDGE: A tiny toggle to force the GPU to refresh the transparency
                 _currentController.LuminosityOpacity = luminosity + 0.001f;
                 _currentController.LuminosityOpacity = luminosity;
             }
-        }*/
+        }
 
         private static void SetAcrylicThinBackdrop(Window window)
         {
@@ -130,27 +106,26 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         public static Color ToColor(string hex)
         {
             hex = hex.Replace("#", string.Empty);
-
             if (hex.Length < 6) return Colors.Black;
-
             byte a = 255;
             int pos = 0;
-
             if (hex.Length == 8)
             {
                 a = byte.Parse(hex.Substring(pos, 2), System.Globalization.NumberStyles.HexNumber);
                 pos += 2;
             }
-
             byte r = byte.Parse(hex.Substring(pos, 2), System.Globalization.NumberStyles.HexNumber);
             byte g = byte.Parse(hex.Substring(pos + 2, 2), System.Globalization.NumberStyles.HexNumber);
             byte b = byte.Parse(hex.Substring(pos + 4, 2), System.Globalization.NumberStyles.HexNumber);
-
             return ColorHelper.FromArgb(a, r, g, b);
         }
 
-        public static void RegisterPageTransition(ContentControl container, FrameworkElement contextSource)
+        public static void RegisterPageTransition(FrameworkElement container, FrameworkElement contextSource)
         {
+            PropertyChangedEventHandler? propHandler = null;
+            SizeChangedEventHandler? sizeHandler = null;
+            RoutedEventHandler? unloadHandler = null;
+
             container.Loaded += (s, e) =>
             {
                 var visual = ElementCompositionPreview.GetElementVisual(container);
@@ -178,42 +153,61 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 animationGroup.Add(opacityAnimation);
 
                 visual.CenterPoint = new Vector3((float)container.ActualWidth / 2, (float)container.ActualHeight / 2, 0);
-                container.SizeChanged += (sender, args) =>
+
+                sizeHandler = (sender, args) =>
                 {
                     visual.CenterPoint = new Vector3((float)args.NewSize.Width / 2, (float)args.NewSize.Height / 2, 0);
                 };
+                container.SizeChanged += sizeHandler;
 
                 if (contextSource.DataContext is MainWinViewModel vm)
                 {
-                    vm.PropertyChanged += (sender, args) =>
+                    propHandler = (sender, args) =>
                     {
-                        if (args.PropertyName == nameof(MainWinViewModel.CurrentView))
+                        if (args.PropertyName == nameof(MainWinViewModel.CurrentViewTag))
                         {
                             visual.Scale = new Vector3(0.92f, 0.92f, 1.0f);
                             visual.Opacity = 0.0f;
                             visual.StartAnimationGroup(animationGroup);
                         }
                     };
+                    vm.PropertyChanged += propHandler;
                 }
+
+                unloadHandler = (sender, args) =>
+                {
+                    container.Unloaded -= unloadHandler;
+
+                    if (contextSource.DataContext is MainWinViewModel vmRef && propHandler != null)
+                    {
+                        vmRef.PropertyChanged -= propHandler;
+                        propHandler = null;
+                    }
+
+                    var visual = ElementCompositionPreview.GetElementVisual(container);
+                    visual.StopAnimation("Scale");
+                    visual.StopAnimation("Opacity");
+
+                    ElementCompositionPreview.SetElementChildVisual(container, null);
+
+                    container.DataContext = null;
+
+                    if (sizeHandler != null)
+                    {
+                        container.SizeChanged -= sizeHandler;
+                        sizeHandler = null;
+                    }
+                };
             };
         }
 
         public static T? FindParent<T>(DependencyObject? child) where T : DependencyObject
         {
             if (child == null) return null;
-
             DependencyObject? parentObject = VisualTreeHelper.GetParent(child);
-
             if (parentObject == null) return null;
-
-            if (parentObject is T parent)
-            {
-                return parent;
-            }
-            else
-            {
-                return FindParent<T>(parentObject);
-            }
+            if (parentObject is T parent) return parent;
+            return FindParent<T>(parentObject);
         }
 
         public static T? FindVisualChildByName<T>(DependencyObject parent, string name) where T : DependencyObject
@@ -221,32 +215,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T typedChild && child is FrameworkElement fe && fe.Name == name)
-                {
-                    return typedChild;
-                }
-
+                if (child is T typedChild && child is FrameworkElement fe && fe.Name == name) return typedChild;
                 var result = FindVisualChildByName<T>(child, name);
                 if (result != null) return result;
-            }
-            return null;
-        }
-
-        public static T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T typedChild)
-                {
-                    return typedChild;
-                }
-
-                T? childOfChild = FindVisualChild<T>(child);
-                if (childOfChild != null)
-                {
-                    return childOfChild;
-                }
             }
             return null;
         }
@@ -256,15 +227,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T typedChild)
-                {
-                    yield return typedChild;
-                }
-
-                foreach (T childOfChild in FindVisualChildren<T>(child))
-                {
-                    yield return childOfChild;
-                }
+                if (child is T typedChild) yield return typedChild;
+                foreach (T childOfChild in FindVisualChildren<T>(child)) yield return childOfChild;
             }
         }
     }
