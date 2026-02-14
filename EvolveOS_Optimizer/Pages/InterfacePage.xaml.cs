@@ -1,4 +1,4 @@
-using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Maintenance;
@@ -17,6 +17,8 @@ namespace EvolveOS_Optimizer.Pages
         public InterfacePage()
         {
             this.InitializeComponent();
+
+            //this.Loaded += (s, e) => DebugAvailableCards();
 
             if (!WindowsLicense.IsWindowsActivated)
             {
@@ -87,32 +89,74 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is ToggleSwitch tgl)
             {
+                if (!tgl.IsLoaded || tgl.FocusState == FocusState.Unfocused) return;
+
                 var card = UIHelper.FindParent<ContentControl>(tgl);
                 if (card != null)
                 {
-                    if (SettingsEngine.IsSelectionGlowEnabled)
-                    {
-                        VisualStateManager.GoToState(card, tgl.IsOn ? "Selected" : "Unselected", true);
-                    }
-
                     string key = card.Tag?.ToString() ?? string.Empty;
                     bool isOn = tgl.IsOn;
 
-                    _intfTweaks.ApplyTweaks(key, isOn);
-
-                    if (ExplorerManager.IntfMapping.TryGetValue(key, out bool needRestart))
+                    if (this.DataContext is InterfaceViewModel vm)
                     {
-                        ExplorerManager.Restart(new Process());
+                        var model = vm[key];
+                        if (model != null)
+                        {
+                            model.State = isOn;
+                        }
                     }
 
-                    if (NotificationManager.IntfActions.TryGetValue(key, out var action))
+                    _intfTweaks.ApplyTweaks(key, isOn);
+
+                    if (ExplorerManager.IntfMapping.TryGetValue(key, out bool needRestart) && needRestart)
                     {
-                        NotificationManager.Show().WithDuration(300).Perform(action);
+                        ExplorerManager.Restart();
+                    }
+
+                    if (SettingsEngine.IsSelectionGlowEnabled)
+                    {
+                        VisualStateManager.GoToState(card, isOn ? "Selected" : "Unselected", true);
                     }
                 }
             }
         }
 
-        private void BtnSettings_Click(object sender, RoutedEventArgs e) { }
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DebugAvailableCards()
+        {
+            var allButtonKeys = Enumerable.Range(1, 40).Select(i => $"TglButton{i}").ToList();
+
+            var existingCards = UIHelper.FindVisualChildren<ContentControl>(this)
+                                .Where(c => c.Tag?.ToString()?.StartsWith("TglButton") == true)
+                                .ToList();
+
+            Debug.WriteLine("--- INTERFACE PAGE DIAGNOSTICS ---");
+
+            foreach (var key in allButtonKeys)
+            {
+                var card = existingCards.FirstOrDefault(c => string.Equals(c.Tag?.ToString(), key, StringComparison.Ordinal));
+
+                if (card == null)
+                {
+                    Debug.WriteLine($"[MISSING] {key}: Card is not in the XAML at all.");
+                }
+                else if (card.Visibility == Visibility.Collapsed)
+                {
+                    Debug.WriteLine($"[HIDDEN] {key}: Card exists but is hidden by Win11/Build logic.");
+                }
+                else
+                {
+                    Debug.WriteLine($"[OK] {key}: Visible.");
+                }
+            }
+
+            int visibleCount = existingCards.Count(c => c.Visibility == Visibility.Visible);
+            Debug.WriteLine($"Total Cards Visible: {visibleCount}");
+            Debug.WriteLine("----------------------------------");
+        }
     }
 }

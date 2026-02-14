@@ -1,5 +1,3 @@
-using EvolveOS_Optimizer.Utilities.Controls;
-
 namespace EvolveOS_Optimizer.Utilities.Managers
 {
     internal class ExplorerManager
@@ -24,37 +22,42 @@ namespace EvolveOS_Optimizer.Utilities.Managers
         }.ToDictionary(x => x.Button, x => x.NeedRestart);
 
         internal static readonly Dictionary<string, bool> PackageMapping = new[]
-{
+        {
             new { Package = "Widgets", NeedRestart = true },
             new { Package = "Edge", NeedRestart = true }
         }.ToDictionary(x => x.Package, x => x.NeedRestart);
 
-        internal static void Restart(Process launchExplorer, Action? action = null)
+        internal static void Restart(Action? action = null)
         {
-            Task.Run(delegate
+            Task.Run(() =>
             {
-                foreach (Process process in Process.GetProcesses())
+                try
                 {
-                    try
+                    Process[] explorers = Process.GetProcessesByName("explorer");
+                    foreach (Process p in explorers)
                     {
-                        if (string.Compare(process.MainModule?.FileName, PathLocator.Executable.Explorer, StringComparison.OrdinalIgnoreCase) == 0 && Process.GetProcessesByName("explorer").Length != 0)
+                        try
                         {
-                            process.Kill();
-                            action?.Invoke();
-                            process.Start();
+                            p.Kill();
+                            p.WaitForExit(3000);
                         }
+                        catch { /* Process already exiting */ }
                     }
-                    catch (Exception ex) { ErrorLogging.LogDebug(ex); }
-                    finally
+
+                    action?.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error killing explorer: {ex.Message}");
+                }
+                finally
+                {
+                    Process.Start(new ProcessStartInfo
                     {
-                        if (Process.GetProcessesByName("explorer").Length == 0 && launchExplorer != null)
-                        {
-                            launchExplorer.StartInfo.FileName = PathLocator.Executable.Explorer;
-                            launchExplorer.StartInfo.Arguments = "/factory,{EFD469A7-7E0A-4517-8B39-45873948DA31}";
-                            launchExplorer.StartInfo.UseShellExecute = true;
-                            launchExplorer.Start();
-                        }
-                    }
+                        FileName = "explorer.exe",
+                        Arguments = "/factory,{EFD469A7-7E0A-4517-8B39-45873948DA31}",
+                        UseShellExecute = true
+                    });
                 }
             });
         }

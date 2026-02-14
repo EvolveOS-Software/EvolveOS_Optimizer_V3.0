@@ -200,25 +200,25 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                             if (isDisabled)
                             {
                                 await CommandExecutor.RunCommandAsTrustedInstaller($@"cmd /c ""{CommandExecutor.CleanCommand(string.Join(" && ", new[] {
-                                $@"takeown /f ""{currentFilePath}"" /a",
-                                $@"icacls ""{currentFilePath}"" /inheritance:r /remove *S-1-5-32-544 *S-1-5-11 *S-1-5-32-545 *S-1-5-18",
-                                $@"icacls ""{currentFilePath}"" /grant ""{Environment.UserName}"":F",
-                                $@"rename ""{currentFilePath}"" ""{Path.GetFileName(targetFilePath)}"""}))}""");
+                        $@"takeown /f ""{currentFilePath}"" /a",
+                        $@"icacls ""{currentFilePath}"" /inheritance:r /remove *S-1-5-32-544 *S-1-5-11 *S-1-5-32-545 *S-1-5-18",
+                        $@"icacls ""{currentFilePath}"" /grant ""{Environment.UserName}"":F",
+                        $@"rename ""{currentFilePath}"" ""{Path.GetFileName(targetFilePath)}"""}))}""");
                             }
                             else
                             {
                                 await CommandExecutor.RunCommandAsTrustedInstaller($@"cmd /c ""{CommandExecutor.CleanCommand(string.Join(" && ", new[] {
-                                $@"takeown /f ""{currentFilePath}"" /a",
-                                $@"rename ""{currentFilePath}"" ""{Path.GetFileName(targetFilePath)}""",
-                                $@"icacls ""{targetFilePath}"" /setowner *S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464",
-                                $@"icacls ""{targetFilePath}"" /inheritance:r",
-                                $@"icacls ""{targetFilePath}"" /grant *S-1-5-32-544:F",
-                                $@"icacls ""{targetFilePath}"" /grant *S-1-5-32-545:R",
-                                $@"icacls ""{targetFilePath}"" /grant *S-1-5-18:F",
-                                $@"icacls ""{targetFilePath}"" /grant *S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464:F",
-                                $@"icacls ""{targetFilePath}"" /grant *S-1-15-2-1:R",
-                                $@"icacls ""{targetFilePath}"" /grant *S-1-15-2-2:R",
-                                $@"icacls ""{targetFilePath}"" /remove ""{Environment.UserName}"""}))}""");
+                        $@"takeown /f ""{currentFilePath}"" /a",
+                        $@"rename ""{currentFilePath}"" ""{Path.GetFileName(targetFilePath)}""",
+                        $@"icacls ""{targetFilePath}"" /setowner *S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464",
+                        $@"icacls ""{targetFilePath}"" /inheritance:r",
+                        $@"icacls ""{targetFilePath}"" /grant *S-1-5-32-544:F",
+                        $@"icacls ""{targetFilePath}"" /grant *S-1-5-32-545:R",
+                        $@"icacls ""{targetFilePath}"" /grant *S-1-5-18:F",
+                        $@"icacls ""{targetFilePath}"" /grant *S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464:F",
+                        $@"icacls ""{targetFilePath}"" /grant *S-1-15-2-1:R",
+                        $@"icacls ""{targetFilePath}"" /grant *S-1-15-2-2:R",
+                        $@"icacls ""{targetFilePath}"" /remove ""{Environment.UserName}"""}))}""");
                             }
                         }
                         catch (Exception ex) { ErrorLogging.LogDebug(ex); }
@@ -246,7 +246,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     break;
                 case "TglButton4":
                     string[] services = {"WalletService","VacSvc", "spectrum", "SharedRealitySvc","perceptionsimulation", "MixedRealityOpenXRSvc",
-                        "MapsBroker", "EntAppSvc", "embeddedmode","wlidsvc", "WEPHOSTSVC", "StorSvc", "ClipSVC", "InstallService"};
+                "MapsBroker", "EntAppSvc", "embeddedmode","wlidsvc", "WEPHOSTSVC", "StorSvc", "ClipSVC", "InstallService"};
                     string command = $@"/c {string.Join(" & ", services.Select(s => $@"reg add HKLM\SYSTEM\CurrentControlSet\Services\{s} /t REG_DWORD /v Start /d {(isDisabled ? "4" : "3")} /f"))}";
                     await CommandExecutor.RunCommandAsTrustedInstaller(command);
                     break;
@@ -257,7 +257,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     break;
                 case "TglButton6":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\WbioSrvc", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\WbioSrvc", "DelayedAutoStart", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\WbioSrvc", "DelayedAutoStart", isDisabled ? 0 : 1, RegistryValueKind.DWord);
                     break;
                 case "TglButton7":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\bthserv", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
@@ -267,7 +267,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     break;
                 case "TglButton8":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\Spooler", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\Spooler", "DelayedAutoStart", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\Spooler", "DelayedAutoStart", isDisabled ? 0 : 1, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\PrintNotify", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\McpManagementService", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
 
@@ -331,7 +331,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     break;
                 case "TglButton13":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\CDPSvc", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\CDPSvc", "DelayedAutoStart", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\CDPSvc", "DelayedAutoStart", isDisabled ? 0 : 1, RegistryValueKind.DWord);
                     break;
                 case "TglButton14":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\Netlogon", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
@@ -341,8 +341,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\fdPHost", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\LanmanServer", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\LanmanWorkstation", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\LanmanServer", "DelayedAutoStart", isDisabled ? 1 : 0, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\LanmanWorkstation", "DelayedAutoStart", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\LanmanServer", "DelayedAutoStart", isDisabled ? 0 : 1, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\LanmanWorkstation", "DelayedAutoStart", isDisabled ? 0 : 1, RegistryValueKind.DWord);
                     break;
                 case "TglButton15":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\WwanSvc", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
@@ -350,7 +350,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\icssvc", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\DusmSvc", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\autotimesvc", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\DusmSvc", "DelayedAutoStart", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\DusmSvc", "DelayedAutoStart", isDisabled ? 0 : 1, RegistryValueKind.DWord);
                     break;
                 case "TglButton16":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\PolicyAgent", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
@@ -422,7 +422,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 case "TglButton29":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\PushToInstall", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\WpnService", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\WpnService", "DelayedAutoStart", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\WpnService", "DelayedAutoStart", isDisabled ? 0 : 1, RegistryValueKind.DWord);
                     break;
             }
         }

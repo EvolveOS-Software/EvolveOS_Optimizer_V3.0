@@ -252,7 +252,7 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         if (ExplorerManager.PackageMapping.TryGetValue(packageName, out bool needRestart) && needRestart)
                         {
-                            ExplorerManager.Restart(new Process());
+                            ExplorerManager.Restart();
                         }
                         UninstallingPakages.OnPackagesChanged();
                     });
@@ -437,7 +437,7 @@ namespace EvolveOS_Optimizer.Pages
 
                     if (ExplorerManager.PackageMapping.TryGetValue(packageName, out bool needRestart) && needRestart)
                     {
-                        ExplorerManager.Restart(new Process());
+                        ExplorerManager.Restart();
                     }
 
                     UninstallingPakages.OnPackagesChanged();

@@ -3,11 +3,12 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Storage;
+using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
+using EvolveOS_Optimizer.Views;
 using Microsoft.Win32;
 using System.IO;
 using System.Management;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace EvolveOS_Optimizer.Utilities.Tweaks
@@ -267,40 +268,55 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     await BlockWDefender(isDisabled);
 
                     byte[] resourceData = ArchiveManager.GetResourceBytes("NSudoLC.gz");
-                    if (resourceData.Length > 0)
-                    {
-                        ArchiveManager.Unarchive(PathLocator.Executable.NSudo, resourceData);
-                    }
+                    if (resourceData.Length > 0) ArchiveManager.Unarchive(PathLocator.Executable.NSudo, resourceData);
 
-                    // 2. Re-use the variable (no byte[] keyword) for DisablingWD
                     resourceData = ArchiveManager.GetResourceBytes("DisablingWD.gz");
-                    if (resourceData.Length > 0)
+                    if (resourceData.Length > 0) ArchiveManager.Unarchive(PathLocator.Executable.DisablingWD, resourceData);
+
+                    if (canShowWindow)
                     {
-                        ArchiveManager.Unarchive(PathLocator.Executable.DisablingWD, resourceData);
-                    }
+                        var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
-                    /*if (canShowWindow)
-                    {
-                        OverlayWindow overlayWindow = new OverlayWindow();
-                        overlayWindow.Show();
-
-                        BackgroundQueue backgroundQueue = new BackgroundQueue();
-                        await backgroundQueue.QueueTask(delegate { NotificationManager.Show(isDisabled ? "warn" : "info", isDisabled ? "warn_wd_noty" : "info_wd_noty").Perform(); });
-                        await backgroundQueue.QueueTask(delegate { WindowsDefender.SetProtectionState(isDisabled); });
-
-                        if (!isDisabled)
+                        if (dispatcherQueue != null)
                         {
-                            await backgroundQueue.QueueTask(delegate { NotificationManager.Show().WithDelay(300).Restart(); });
-                            await CommandExecutor.RunCommand($"/c timeout /t 10 && del /f \"{PathLocator.Executable.NSudo}\"");
-                        }
+                            dispatcherQueue.TryEnqueue(async () =>
+                            {
+                                try
+                                {
+                                    OverlayWindow overlayWindow = new OverlayWindow();
+                                    overlayWindow.Activate();
 
-                        overlayWindow.Close();
+                                    NotificationManager.Show(isDisabled ? "warn" : "info", isDisabled ? "warn_wd_noty" : "info_wd_noty").Perform();
+
+                                    await Task.Run(() => WindowsDefender.SetProtectionStateAsync(isDisabled));
+
+                                    if (!isDisabled)
+                                    {
+                                        NotificationManager.Show().WithDuration(300).Restart();
+
+                                        _ = Task.Run(async () => {
+                                            await Task.Delay(10000);
+                                            await CommandExecutor.RunCommand($"/c del /f \"{PathLocator.Executable.NSudo}\"");
+                                        });
+                                    }
+
+                                    overlayWindow.Close();
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"Defender Tweak Error: {ex.Message}");
+                                }
+                            });
+                        }
+                        else
+                        {
+                            await Task.Run(() => WindowsDefender.SetProtectionStateAsync(isDisabled));
+                        }
                     }
                     else
                     {
-                        WindowsDefender.SetProtectionState(isDisabled);
-                    }*/
-
+                        await Task.Run(() => WindowsDefender.SetProtectionStateAsync(isDisabled));
+                    }
                     break;
                 case "TglButton4":
                     RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "ConsentPromptBehaviorAdmin", isDisabled ? 0 : 5, RegistryValueKind.DWord);
@@ -323,7 +339,6 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     {
                         RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\WindowsStore", "AutoDownload");
                     }
-
                     break;
                 case "TglButton7":
                     try
@@ -339,7 +354,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                                     if (subKey.GetValue("DriverDesc") is string driverDesc && driverDesc.Equals("Realtek High Definition Audio", StringComparison.OrdinalIgnoreCase))
                                     {
                                         RegistryHelp.Write(Registry.LocalMachine, $@"{@"SYSTEM\CurrentControlSet\Control\Class\{4d36e96c-e325-11ce-bfc1-08002be10318}"}\{subKeyName}\PowerSettings", "ConservationIdleTime", isDisabled ? new byte[] { 0xFF, 0xFF, 0xFF, 0xFF } : new byte[] { 0x0a, 0x00, 0x00, 0x00 }, RegistryValueKind.Binary);
-                                        RegistryHelp.Write(Registry.LocalMachine, $@"{@"SYSTEM\CurrentControlSet\Control\Class\{4d36e96c-e325-11ce-bfc1-08002be10318}"}\{subKeyName}\PowerSettings", "IdlePowerState", isDisabled ? Encoding.Unicode.GetBytes("\0\0") : new byte[] { 0x03, 0x00, 0x00, 0x00 }, RegistryValueKind.Binary);
+                                        RegistryHelp.Write(Registry.LocalMachine, $@"{@"SYSTEM\CurrentControlSet\Control\Class\{4d36e96c-e325-11ce-bfc1-08002be10318}"}\{subKeyName}\PowerSettings", "IdlePowerState", isDisabled ? new byte[] { 0x00, 0x00, 0x00, 0x00 } : new byte[] { 0x03, 0x00, 0x00, 0x00 }, RegistryValueKind.Binary);
                                         RegistryHelp.Write(Registry.LocalMachine, $@"{@"SYSTEM\CurrentControlSet\Control\Class\{4d36e96c-e325-11ce-bfc1-08002be10318}"}\{subKeyName}\PowerSettings", "PerformanceIdleTime", isDisabled ? new byte[] { 0xFF, 0xFF, 0xFF, 0xFF } : new byte[] { 0x0a, 0x00, 0x00, 0x00 }, RegistryValueKind.Binary);
                                     }
                                 }
@@ -365,7 +380,6 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     {
                         RegistryHelp.DeleteValue(Registry.CurrentUser, @"Control Panel\Desktop", "AutoEndTasks");
                     }
-
                     break;
                 case "TglButton11":
                     if (isDisabled)
@@ -395,7 +409,6 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         argStateNetshSecond = @"enabled";
                         argStateNetsh = @"default";
                     }
-
                     await CommandExecutor.RunCommand($"/c netsh int teredo set state {argStateNetsh} & netsh int ipv6 6to4 set state state = {argStateNetsh} undoonstop = {argStateNetsh} & netsh int ipv6 isatap set state state = {argStateNetsh} & netsh int ipv6 set privacy state = {argStateNetshSecond} & netsh int ipv6 set global randomizeidentifier = {argStateNetshSecond} & netsh int isatap set state {argStateNetsh}");
                     break;
                 case "TglButton14":
@@ -410,7 +423,6 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     {
                         RegistryHelp.DeleteValue(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize", "Startupdelayinmsec");
                     }
-
                     break;
                 case "TglButton16":
                     if (isDisabled)
@@ -436,20 +448,21 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     break;
                 case "TglButton19":
                     await CommandExecutor.RunCommand(@"Add-Type -AssemblyName System.Runtime.WindowsRuntime
-                    $asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | ? { $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1' })[0]
-                    Function Await($WinRtTask, $ResultType) {
-                        $asTask = $asTaskGeneric.MakeGenericMethod($ResultType)
-                        $netTask = $asTask.Invoke($null, @($WinRtTask))
-                        $netTask.Wait(-1) | Out-Null
-                        $netTask.Result
-                    }
-                    [Windows.Devices.Radios.Radio,Windows.System.Devices,ContentType=WindowsRuntime] | Out-Null
-                    [Windows.Devices.Radios.RadioAccessStatus,Windows.System.Devices,ContentType=WindowsRuntime] | Out-Null
-                    Await ([Windows.Devices.Radios.Radio]::RequestAccessAsync()) ([Windows.Devices.Radios.RadioAccessStatus]) | Out-Null
-                    $radios = Await ([Windows.Devices.Radios.Radio]::GetRadiosAsync()) ([System.Collections.Generic.IReadOnlyList[Windows.Devices.Radios.Radio]])
-                    $bluetooth = $radios | ? { $_.Kind -eq 'Bluetooth' }
-                    [Windows.Devices.Radios.RadioState,Windows.System.Devices,ContentType=WindowsRuntime] | Out-Null
-                    Await ($bluetooth.SetStateAsync(" + (isDisabled ? "'off'" : "'on'") + ")) ([Windows.Devices.Radios.RadioAccessStatus]) | Out-Null", true);
+                        $asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | ? { $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1' })[0]
+                        Function Await($WinRtTask, $ResultType) {
+                            $asTask = $asTaskGeneric.MakeGenericMethod($ResultType)
+                            $netTask = $asTask.Invoke($null, @($WinRtTask))
+                            $netTask.Wait(-1) | Out-Null
+                            $netTask.Result
+                        }
+
+                        [Windows.Devices.Radios.Radio,Windows.System.Devices,ContentType=WindowsRuntime] | Out-Null
+                        [Windows.Devices.Radios.RadioAccessStatus,Windows.System.Devices,ContentType=WindowsRuntime] | Out-Null
+                        Await ([Windows.Devices.Radios.Radio]::RequestAccessAsync()) ([Windows.Devices.Radios.RadioAccessStatus]) | Out-Null
+                        $radios = Await ([Windows.Devices.Radios.Radio]::GetRadiosAsync()) ([System.Collections.Generic.IReadOnlyList[Windows.Devices.Radios.Radio]])
+                        $bluetooth = $radios | ? { $_.Kind -eq 'Bluetooth' }
+                        [Windows.Devices.Radios.RadioState,Windows.System.Devices,ContentType=WindowsRuntime] | Out-Null
+                        Await ($bluetooth.SetStateAsync(" + (isDisabled ? "'off'" : "'on'") + ")) ([Windows.Devices.Radios.RadioAccessStatus]) | Out-Null", true);
                     _isBluetoothStatus = !isDisabled;
                     break;
                 case "TglButton20":
@@ -459,16 +472,15 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     {
                         RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\wtd", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
                     }
-
                     break;
                 case "TglButton21":
-                    RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\GameBar", "AutoGameModeEnabled", isDisabled ? 0 : 1, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\GameBar", "AllowAutoGameMode", isDisabled ? 0 : 1, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\GameBar", "AutoGameModeEnabled", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\GameBar", "AllowAutoGameMode", isDisabled ? 1 : 0, RegistryValueKind.DWord);
                     break;
                 case "TglButton22":
-                    RegistryHelp.Write(Registry.CurrentUser, @"SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR", "AppCaptureEnabled", isDisabled ? 0 : 1, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.CurrentUser, @"System\GameConfigStore", "GameDVR_Enabled", isDisabled ? 0 : 1, RegistryValueKind.DWord);
-                    RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\GameBar", "UseNexusForGameBarEnabled", isDisabled ? 0 : 1, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.CurrentUser, @"SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR", "AppCaptureEnabled", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.CurrentUser, @"System\GameConfigStore", "GameDVR_Enabled", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\GameBar", "UseNexusForGameBarEnabled", isDisabled ? 1 : 0, RegistryValueKind.DWord);
                     break;
                 case "TglButton23":
                     if (isDisabled)
@@ -526,47 +538,42 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 case "TglButton27":
                     await SetTaskState(!isDisabled, TaskStorage.winInsiderTasks);
                     break;
-
                 case "TglButton28":
                     await SetTaskState(true, TaskStorage.defragTask);
-                    RegistryHelp.Write(Registry.CurrentUser, @"""SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction", "Enable", isDisabled ? "N" : "Y", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.CurrentUser, @"SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction", "Enable", isDisabled ? "N" : "Y", RegistryValueKind.String);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\services\defragsvc", "Start", 2, RegistryValueKind.DWord);
                     break;
-
                 case "TglButton29":
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff", isDisabled ? 0 : 1, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff", isDisabled ? 1 : 0, RegistryValueKind.DWord);
                     break;
-
                 case "TglButton30":
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Session Manager\Memory Management", "ClearPageFileAtShutdown", isDisabled ? 0 : 1, RegistryValueKind.DWord);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Session Manager\Memory Management", "ClearPageFileAtShutdown", isDisabled ? 1 : 0, RegistryValueKind.DWord);
                     break;
-
                 case "TglButton31":
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*PMARPOffload", isDisabled ? 1 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*FlowControl", isDisabled ? 3 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*InterruptModeration", isDisabled ? 1 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*IPChecksumOffloadIPv4", isDisabled ? 3 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*LsoV2IPv4", isDisabled ? 1 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*LsoV2IPv6", isDisabled ? 1 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*PMNSOffload", isDisabled ? 1 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*TCPChecksumOffloadIPv4", isDisabled ? 3 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*TCPChecksumOffloadIPv6", isDisabled ? 3 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*UDPChecksumOffloadIPv4", isDisabled ? 3 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*UDPChecksumOffloadIPv6", isDisabled ? 3 : 0, RegistryValueKind.String);
-                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*WakeOnMagicPacket", isDisabled ? 1 : 0, RegistryValueKind.String);
-                    //NotificationManager.Show("restart").WithDelay(500).Perform();
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*PMARPOffload", isDisabled ? "0" : "1", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*FlowControl", isDisabled ? "0" : "3", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*InterruptModeration", isDisabled ? "0" : "1", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*IPChecksumOffloadIPv4", isDisabled ? "0" : "3", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*LsoV2IPv4", isDisabled ? "0" : "1", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*LsoV2IPv6", isDisabled ? "0" : "1", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*PMNSOffload", isDisabled ? "0" : "1", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*TCPChecksumOffloadIPv4", isDisabled ? "0" : "3", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*TCPChecksumOffloadIPv6", isDisabled ? "0" : "3", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*UDPChecksumOffloadIPv4", isDisabled ? "0" : "3", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*UDPChecksumOffloadIPv6", isDisabled ? "0" : "3", RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*WakeOnMagicPacket", isDisabled ? "0" : "1", RegistryValueKind.String);
+                    NotificationManager.Show("restart").WithDuration(500).Perform();
                     break;
-
                 case "TglButton32":
                     if (isDisabled)
                     {
                         RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\AFD\Parameters", "FastSendDatagramThreshold", 65536, RegistryValueKind.DWord);
-                        //NotificationManager.Show("restart").WithDelay(500).Perform();
+                        NotificationManager.Show("restart").WithDuration(500).Perform();
                     }
                     else
                     {
                         RegistryHelp.DeleteValue(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\AFD\Parameters", "FastSendDatagramThreshold");
-                        //NotificationManager.Show("restart").WithDelay(500).Perform();
+                        NotificationManager.Show("restart").WithDuration(500).Perform();
                     }
                     break;
                 default:
@@ -668,7 +675,6 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         {
                             string instanceId = Convert.ToString(managementObj["InstanceID"]) ?? string.Empty;
 
-                            // 2. Perform the match
                             var match = Regex.Match(instanceId, @"\{([a-fA-F0-9\-]{36})\}");
                             searchScheme = match.Groups[1].Value;
 

@@ -262,7 +262,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                 NoticeSeverity.Error => new SolidColorBrush(Color.FromArgb(255, 199, 0, 57)),
                 NoticeSeverity.Warning => new SolidColorBrush(Color.FromArgb(255, 255, 195, 0)),
                 NoticeSeverity.Success => new SolidColorBrush(Color.FromArgb(255, 46, 204, 113)),
-                _ => (SolidColorBrush)Application.Current.Resources["SystemAccentColor"]
+                _ => new SolidColorBrush((Color)Application.Current.Resources["SystemAccentColor"])
             };
 
             textBlock.Text = string.IsNullOrEmpty(title) ? message : $"{title}: {message}";

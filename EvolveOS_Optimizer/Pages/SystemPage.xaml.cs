@@ -15,6 +15,8 @@ namespace EvolveOS_Optimizer.Pages
         public SystemPage()
         {
             this.InitializeComponent();
+
+            //this.Loaded += (s, e) => DebugAvailableCards();
         }
 
         #region Interaction & Hover Logic
@@ -68,23 +70,29 @@ namespace EvolveOS_Optimizer.Pages
 
         private void NativeTgl_Toggled(object sender, RoutedEventArgs e)
         {
-            if (sender is ToggleSwitch toggleSwitch && toggleSwitch.DataContext is SystemModel model)
+            if (sender is ToggleSwitch tgl)
             {
-                string key = model.Name;
-                bool isOn = toggleSwitch.IsOn;
+                if (!tgl.IsLoaded || tgl.FocusState == Microsoft.UI.Xaml.FocusState.Unfocused) return;
 
-                if (key != "TglButton3")
+                if (tgl.DataContext is SystemModel model)
                 {
+                    string key = model.Name;
+                    bool isOn = tgl.IsOn;
+
+                    model.State = isOn;
+
                     _sysTweaks.ApplyTweaks(key, isOn);
 
                     if (NotificationManager.SysActions.TryGetValue(key, out var action))
                     {
                         NotificationManager.Show().WithDuration(300).Perform(action);
                     }
-                }
-                else
-                {
-                    _sysTweaks.ApplyTweaks(key, isOn);
+
+                    var card = UIHelper.FindParent<ContentControl>(tgl);
+                    if (card != null && SettingsEngine.IsSelectionGlowEnabled)
+                    {
+                        VisualStateManager.GoToState(card, isOn ? "Selected" : "Unselected", true);
+                    }
                 }
             }
         }
@@ -102,6 +110,39 @@ namespace EvolveOS_Optimizer.Pages
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void DebugAvailableCards()
+        {
+            var allButtonKeys = Enumerable.Range(1, 32).Select(i => $"TglButton{i}").ToList();
+
+            var existingCards = UIHelper.FindVisualChildren<ContentControl>(this)
+                                .Where(c => c.Tag?.ToString()?.StartsWith("TglButton") == true)
+                                .ToList();
+
+            Debug.WriteLine("--- SYSTEM PAGE DIAGNOSTICS ---");
+
+            foreach (var key in allButtonKeys)
+            {
+                var card = existingCards.FirstOrDefault(c => string.Equals(c.Tag?.ToString(), key, StringComparison.Ordinal));
+
+                if (card == null)
+                {
+                    Debug.WriteLine($"[MISSING] {key}: Card is not in the XAML at all.");
+                }
+                else if (card.Visibility == Visibility.Collapsed)
+                {
+                    Debug.WriteLine($"[HIDDEN] {key}: Card exists but is hidden by Win11/Build logic.");
+                }
+                else
+                {
+                    Debug.WriteLine($"[OK] {key}: Visible.");
+                }
+            }
+
+            int visibleCount = existingCards.Count(c => c.Visibility == Visibility.Visible);
+            Debug.WriteLine($"Total Cards Visible: {visibleCount}");
+            Debug.WriteLine("----------------------------------");
         }
     }
 }
