@@ -93,7 +93,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 "Interface" => new Pages.InterfacePage(),*/
                 "Software" => new Pages.SoftwareCenterPage(),
                 "GroupPolicy" => new Pages.GroupPolicyPage(),
-                //"Services" => new Pages.ServicesPage(),
+                "Services" => new Pages.ServicesPage(),
                 "System" => new Pages.SystemPage(),
                 "Settings" => new Pages.SettingsPage(),
                 _ => new Pages.HomePage()

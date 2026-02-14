@@ -434,4 +434,66 @@
     <sys:String x:Key="tgl28_desc_sys">If you have an SSD, disabling defragmentation and boot file optimization, which are effective only for hard drives (HDD), helps extend the lifespan of your drive. At the same time, the TRIM optimization function continues to work: it informs the SSD controller which data blocks are no longer in use and clears them, maintaining stable speed and drive longevity.</sys:String>
     <!--#endregion-->
 
+    <!--#region Services Page -->
+    <sys:String x:Key="tgl1_svc">Services related to Windows Search</sys:String>
+    <sys:String x:Key="tgl2_svc">Services related to Xbox</sys:String>
+    <sys:String x:Key="tgl3_svc">Services related to Windows Update</sys:String>
+    <sys:String x:Key="tgl4_svc">Services related to Windows Store</sys:String>
+    <sys:String x:Key="tgl5_svc">Performance Counter Services</sys:String>
+    <sys:String x:Key="tgl6_svc">Windows Biometric Service</sys:String>
+    <sys:String x:Key="tgl7_svc">Services related to Bluetooth</sys:String>
+    <sys:String x:Key="tgl8_svc">Services related to printer</sys:String>
+    <sys:String x:Key="tgl9_svc">Service related to the operation of the scanner</sys:String>
+    <sys:String x:Key="tgl10_svc">Services related to fax</sys:String>
+    <sys:String x:Key="tgl11_svc">Services related to using tablet/smartphone mode</sys:String>
+    <sys:String x:Key="tgl12_svc">Services related to the operation of additional monitors</sys:String>
+    <sys:String x:Key="tgl13_svc">Service related to system components</sys:String>
+    <sys:String x:Key="tgl14_svc">Services related to the operation of the local network</sys:String>
+    <sys:String x:Key="tgl15_svc">Services related to USB modems and routers</sys:String>
+    <sys:String x:Key="tgl16_svc">Services related to VPN clients</sys:String>
+    <sys:String x:Key="tgl17_svc">Services related to the operation of Windows Media</sys:String>
+    <sys:String x:Key="tgl18_svc">Services related to Remote Desktop</sys:String>
+    <sys:String x:Key="tgl19_svc">Services that collect errors and event logs</sys:String>
+    <sys:String x:Key="tgl20_svc">WebDAV Remote File Management Service</sys:String>
+    <sys:String x:Key="tgl21_svc">Services related to the operation of a Smart card</sys:String>
+    <sys:String x:Key="tgl22_svc">Services related to the operation of Windows Kiosk</sys:String>
+    <sys:String x:Key="tgl23_svc">Services related to file encryption</sys:String>
+    <sys:String x:Key="tgl24_svc">Service related to Windows localization</sys:String>
+    <sys:String x:Key="tgl25_svc">Services related to background security checks</sys:String>
+    <sys:String x:Key="tgl26_svc">Services related to background diagnostics</sys:String>
+    <sys:String x:Key="tgl27_svc">Services related to corporate tools</sys:String>
+    <sys:String x:Key="tgl28_svc">Service related to the operation of Hyper-V</sys:String>
+    <sys:String x:Key="tgl29_svc">Services related to push notifications</sys:String>
+
+    <sys:String x:Key="tgl1_desc_svc">Disable if you don't use file history and content indexing.</sys:String>
+    <sys:String x:Key="tgl2_desc_svc">Disable if you don't use Xbox and Microsoft gamepads.</sys:String>
+    <sys:String x:Key="tgl3_desc_svc">Disable if you do not plan to update Windows. In addition to services, the tweak will change the files responsible for Windows updates. Because of this, even if the services are enabled, the Update Center will not work. Please note that the tweak affects downloading and updating apps from the Windows Store.</sys:String>
+    <sys:String x:Key="tgl4_desc_svc">Disable if you are not using the Windows Store and its UWP apps.</sys:String>
+    <sys:String x:Key="tgl5_desc_svc">Disable if you do not want services to analyze the performance of your system.</sys:String>
+    <sys:String x:Key="tgl6_desc_svc">Disable if you do not use sign-in with a PIN, fingerprint, facial recognition, or other Windows Hello methods. If a sign-in method has already been set up, it will continue to work, but you’ll need to re-enable Windows Hello to modify or remove it.</sys:String>
+    <sys:String x:Key="tgl7_desc_svc">Disable if you do not use Bluetooth and devices whose work is connected to Bluetooth."</sys:String>
+    <sys:String x:Key="tgl8_desc_svc">Disable if you don't have a printer.</sys:String>
+    <sys:String x:Key="tgl9_desc_svc">Disable if you don't have a scanner.</sys:String>
+    <sys:String x:Key="tgl10_desc_svc">Disable if you don't have a fax machine.</sys:String>
+    <sys:String x:Key="tgl11_desc_svc">Disable if you have a landline computer, laptop or netbook.</sys:String>
+    <sys:String x:Key="tgl12_desc_svc">Disable if you have only one monitor and you do not plan to connect additional ones.</sys:String>
+    <sys:String x:Key="tgl13_desc_svc">Disable if you do not use these apps: «Virtual Desktops», «Your Phone», and «Night Light». This service processes user data and synchronizes it with Microsoft servers. It is not critical for the system’s operation; however, some features, such as «Night Light» in Windows 10, may stop working completely or partially if it is disabled.</sys:String>
+    <sys:String x:Key="tgl14_desc_svc">Disable if you do not use or plan to use a local network.</sys:String>
+    <sys:String x:Key="tgl15_desc_svc">Disable if you are connected to the Internet via cable or Wi-Fi.</sys:String>
+    <sys:String x:Key="tgl16_desc_svc">Disable if you are not using VPN clients. May affect the operation of the Xbox.</sys:String>
+    <sys:String x:Key="tgl17_desc_svc">Disable if you do not need file synchronization and access to them on a local network for Windows Media Player. These services are not critical, you can continue to use the player.</sys:String>
+    <sys:String x:Key="tgl18_desc_svc">Disable if you do not use a remote desktop and do not use a server connection to them.</sys:String>
+    <sys:String x:Key="tgl19_desc_svc">Disable if you do not want the services to load your PC while they are handling errors.</sys:String>
+    <sys:String x:Key="tgl20_desc_svc">Disable if you do not remotely manage files via Sharing or using WebDAV.</sys:String>
+    <sys:String x:Key="tgl21_desc_svc">Disable if you are not using smart cards. A smart card is one of the varieties of electronic identifiers or plastic with a chip. The appearance is a «bank card». For everyday use of Windows, the service is not needed and you will never need it.</sys:String>
+    <sys:String x:Key="tgl22_desc_svc">Disable if you’re not using Windows kiosk mode. This mode minimizes the interface: only a single UWP app runs full-screen, and all other features are blocked. Note that this may interfere with installing Windows updates and programs via Windows Installer, since it also disables the setup and initialization of system data and applications on first logon.</sys:String>
+    <sys:String x:Key="tgl23_desc_svc">Disable if you do not use BitLocker disk encryption and EFS file or folder encryption.</sys:String>
+    <sys:String x:Key="tgl24_desc_svc">Disable if you have configured all the languages that you will use and do not plan to add new ones.</sys:String>
+    <sys:String x:Key="tgl25_desc_svc">Disable if you do not use Windows Defender and all additional Windows security.</sys:String>
+    <sys:String x:Key="tgl26_desc_svc">Disable if you do not need Windows to load the system with its useless diagnostics in the background.</sys:String>
+    <sys:String x:Key="tgl27_desc_svc">Disable if you do not use remote management of corporate applications and you do not have a remote server that your PC communicates with.</sys:String>
+    <sys:String x:Key="tgl28_desc_svc">Disable if you are not using the built-in virtualization system. It does not affect the work of VirtualBox and its like in any way.</sys:String>
+    <sys:String x:Key="tgl29_desc_svc">Disable if you do not use paired devices and do not install apps from the Windows Store remotely. These services handle the Notification Center with paired devices, process push requests, allow Windows to detect your smartphone for the «Your Phone» app, automatically reconnect to it, and display its messages and events in the Action Center. In Windows 10, after disabling them, the Notification Center may stop opening.</sys:String>
+    <!--#endregion-->
+
 </ResourceDictionary>

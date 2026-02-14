@@ -46,6 +46,7 @@
     <None Remove="Pages\GroupPolicyPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\SecurityPage.xaml" />
+    <None Remove="Pages\ServicesPage.xaml" />
     <None Remove="Pages\SystemAppsPage.xaml" />
     <None Remove="Resources\Blank.gz" />
     <None Remove="Resources\DisablingWD.gz" />
@@ -180,6 +181,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\SoftwareCenterPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\ServicesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Properties\AssemblyInfo.tt">

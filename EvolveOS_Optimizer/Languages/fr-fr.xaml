@@ -362,7 +362,7 @@
     <sys:String x:Key="SystemAppsPage_Continue">Continuer</sys:String>
     <!-- endregion Installed Apps -->
 
-    <!--#region System Page -->
+    <!-- region System Page -->
     <sys:String x:Key="slider1_sys">Vitesse du pointeur :</sys:String>
     <sys:String x:Key="slider2_sys">Délai de répétition :</sys:String>
     <sys:String x:Key="slider3_sys">Fréquence de répétition :</sys:String>
@@ -432,6 +432,68 @@
     <sys:String x:Key="tgl26_desc_sys">Bloque l'installation forcée de l'utilitaire de contrôle de l'intégrité du PC déployé par Microsoft via Windows Update.</sys:String>
     <sys:String x:Key="tgl27_desc_sys">Désactive les tâches inutiles liées au programme Windows Insider si vous n'y participez pas, économisant ainsi des ressources.</sys:String>
     <sys:String x:Key="tgl28_desc_sys">Pour les SSD, désactiver la défragmentation aide à prolonger leur durée de vie, tandis que la fonction TRIM reste active pour maintenir la vitesse.</sys:String>
-    <!--#endregion-->
+    <!-- endregion System Page-->
+
+    <!-- region Services Page -->
+    <sys:String x:Key="tgl1_svc">Services liés à Windows Search</sys:String>
+    <sys:String x:Key="tgl2_svc">Services liés à Xbox</sys:String>
+    <sys:String x:Key="tgl3_svc">Services liés à Windows Update</sys:String>
+    <sys:String x:Key="tgl4_svc">Services liés au Windows Store</sys:String>
+    <sys:String x:Key="tgl5_svc">Services des compteurs de performance</sys:String>
+    <sys:String x:Key="tgl6_svc">Service de biométrie Windows</sys:String>
+    <sys:String x:Key="tgl7_svc">Services liés au Bluetooth</sys:String>
+    <sys:String x:Key="tgl8_svc">Services liés à l'imprimante</sys:String>
+    <sys:String x:Key="tgl9_svc">Service lié au fonctionnement du scanner</sys:String>
+    <sys:String x:Key="tgl10_svc">Services liés au fax</sys:String>
+    <sys:String x:Key="tgl11_svc">Services liés au mode tablette/smartphone</sys:String>
+    <sys:String x:Key="tgl12_svc">Services liés au fonctionnement d'écrans supplémentaires</sys:String>
+    <sys:String x:Key="tgl13_svc">Service lié aux composants système</sys:String>
+    <sys:String x:Key="tgl14_svc">Services liés au fonctionnement du réseau local</sys:String>
+    <sys:String x:Key="tgl15_svc">Services liés aux modems USB et routeurs</sys:String>
+    <sys:String x:Key="tgl16_svc">Services liés aux clients VPN</sys:String>
+    <sys:String x:Key="tgl17_svc">Services liés au fonctionnement de Windows Media</sys:String>
+    <sys:String x:Key="tgl18_svc">Services liés au Bureau à distance</sys:String>
+    <sys:String x:Key="tgl19_svc">Services collectant les erreurs et les journaux d'événements</sys:String>
+    <sys:String x:Key="tgl20_svc">Service de gestion de fichiers à distance WebDAV</sys:String>
+    <sys:String x:Key="tgl21_svc">Services liés au fonctionnement d'une carte à puce (Smart card)</sys:String>
+    <sys:String x:Key="tgl22_svc">Services liés au fonctionnement du mode Kiosque Windows</sys:String>
+    <sys:String x:Key="tgl23_svc">Services liés au chiffrement de fichiers</sys:String>
+    <sys:String x:Key="tgl24_svc">Service lié à la localisation de Windows</sys:String>
+    <sys:String x:Key="tgl25_svc">Services liés aux vérifications de sécurité en arrière-plan</sys:String>
+    <sys:String x:Key="tgl26_svc">Services liés aux diagnostics en arrière-plan</sys:String>
+    <sys:String x:Key="tgl27_svc">Services liés aux outils d'entreprise</sys:String>
+    <sys:String x:Key="tgl28_svc">Service lié au fonctionnement de Hyper-V</sys:String>
+    <sys:String x:Key="tgl29_svc">Services liés aux notifications push</sys:String>
+
+    <sys:String x:Key="tgl1_desc_svc">Désactivez si vous n'utilisez pas l'historique des fichiers et l'indexation de contenu.</sys:String>
+    <sys:String x:Key="tgl2_desc_svc">Désactivez si vous n'utilisez pas Xbox et les manettes Microsoft.</sys:String>
+    <sys:String x:Key="tgl3_desc_svc">Désactivez si vous ne prévoyez pas de mettre à jour Windows. En plus des services, ce tweak modifiera les fichiers responsables des mises à jour. De ce fait, même si les services sont activés, le centre de mise à jour ne fonctionnera pas. Notez que cela affecte le téléchargement et la mise à jour des applications depuis le Windows Store.</sys:String>
+    <sys:String x:Key="tgl4_desc_svc">Désactivez si vous n'utilisez pas le Windows Store et ses applications UWP.</sys:String>
+    <sys:String x:Key="tgl5_desc_svc">Désactivez si vous ne souhaitez pas que les services analysent les performances de votre système.</sys:String>
+    <sys:String x:Key="tgl6_desc_svc">Désactivez si vous n'utilisez pas la connexion par code PIN, empreinte digitale, reconnaissance faciale ou autres méthodes Windows Hello. Si une méthode est déjà configurée, elle continuera de fonctionner, mais vous devrez réactiver Windows Hello pour la modifier ou la supprimer.</sys:String>
+    <sys:String x:Key="tgl7_desc_svc">Désactivez si vous n'utilisez pas le Bluetooth ou des appareils dont le fonctionnement est lié au Bluetooth.</sys:String>
+    <sys:String x:Key="tgl8_desc_svc">Désactivez si vous n'avez pas d'imprimante.</sys:String>
+    <sys:String x:Key="tgl9_desc_svc">Désactivez si vous n'avez pas de scanner.</sys:String>
+    <sys:String x:Key="tgl10_desc_svc">Désactivez si vous n'avez pas de télécopieur (fax).</sys:String>
+    <sys:String x:Key="tgl11_desc_svc">Désactivez si vous possédez un ordinateur fixe, un ordinateur portable ou un netbook.</sys:String>
+    <sys:String x:Key="tgl12_desc_svc">Désactivez si vous n'avez qu'un seul moniteur et que vous ne prévoyez pas d'en connecter d'autres.</sys:String>
+    <sys:String x:Key="tgl13_desc_svc">Désactivez si vous n'utilisez pas ces applications : « Bureaux virtuels », « Mobile connecté » et « Éclairage nocturne ». Ce service synchronise les données utilisateur avec les serveurs Microsoft. Il n'est pas critique, mais certaines fonctions comme l'« Éclairage nocturne » sous Windows 10 peuvent cesser de fonctionner.</sys:String>
+    <sys:String x:Key="tgl14_desc_svc">Désactivez si vous n'utilisez pas ou ne prévoyez pas d'utiliser un réseau local.</sys:String>
+    <sys:String x:Key="tgl15_desc_svc">Désactivez si vous êtes connecté à Internet par câble ou Wi-Fi.</sys:String>
+    <sys:String x:Key="tgl16_desc_svc">Désactivez si vous n'utilisez pas de clients VPN. Peut affecter le fonctionnement de la Xbox.</sys:String>
+    <sys:String x:Key="tgl17_desc_svc">Désactivez si vous n'avez pas besoin de la synchronisation de fichiers et de leur accès sur un réseau local pour le Lecteur Windows Media. Vous pourrez toujours utiliser le lecteur.</sys:String>
+    <sys:String x:Key="tgl18_desc_svc">Désactivez si vous n'utilisez pas le bureau à distance.</sys:String>
+    <sys:String x:Key="tgl19_desc_svc">Désactivez si vous ne voulez pas que les services chargent votre PC pendant qu'ils traitent les erreurs.</sys:String>
+    <sys:String x:Key="tgl20_desc_svc">Désactivez si vous ne gérez pas de fichiers à distance via le partage ou WebDAV.</sys:String>
+    <sys:String x:Key="tgl21_desc_svc">Désactivez si vous n'utilisez pas de cartes à puce. Ce service n'est pas nécessaire pour une utilisation quotidienne de Windows.</sys:String>
+    <sys:String x:Key="tgl22_desc_svc">Désactivez si vous n'utilisez pas le mode kiosque de Windows. Ce mode limite l'interface à une seule application UWP. Attention : cela peut interférer avec l'installation des mises à jour Windows et des programmes via Windows Installer.</sys:String>
+    <sys:String x:Key="tgl23_desc_svc">Désactivez si vous n'utilisez pas le chiffrement de disque BitLocker ou le chiffrement de fichiers EFS.</sys:String>
+    <sys:String x:Key="tgl24_desc_svc">Désactivez si vous avez configuré toutes les langues nécessaires et ne prévoyez pas d'en ajouter de nouvelles.</sys:String>
+    <sys:String x:Key="tgl25_desc_svc">Désactivez si vous n'utilisez pas Windows Defender et les sécurités Windows supplémentaires.</sys:String>
+    <sys:String x:Key="tgl26_desc_svc">Désactivez si vous ne voulez pas que Windows charge le système avec ses diagnostics inutiles en arrière-plan.</sys:String>
+    <sys:String x:Key="tgl27_desc_svc">Désactivez si vous n'utilisez pas la gestion à distance d'applications d'entreprise ou de serveurs distants.</sys:String>
+    <sys:String x:Key="tgl28_desc_svc">Désactivez si vous n'utilisez pas le système de virtualisation intégré. Cela n'affecte pas VirtualBox et consorts.</sys:String>
+    <sys:String x:Key="tgl29_desc_svc">Désactivez si vous n'utilisez pas d'appareils jumelés et n'installez pas d'applications du Windows Store à distance. Sous Windows 10, le centre de notifications pourrait cesser de s'ouvrir après désactivation.</sys:String>
+    <!-- endregion -->
 
 </ResourceDictionary>
