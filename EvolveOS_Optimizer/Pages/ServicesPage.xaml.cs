@@ -1,6 +1,6 @@
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
@@ -15,6 +15,8 @@ namespace EvolveOS_Optimizer.Pages
         public ServicesPage()
         {
             this.InitializeComponent();
+
+            //this.Loaded += (s, e) => DebugAvailableCards();
         }
 
         private void Tweak_MouseEnter(object sender, PointerRoutedEventArgs e)
@@ -84,26 +86,68 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is ToggleSwitch tgl)
             {
+                if (!tgl.IsLoaded || tgl.FocusState == FocusState.Unfocused) return;
+
                 var card = UIHelper.FindParent<ContentControl>(tgl);
-                if (card != null && SettingsEngine.IsSelectionGlowEnabled)
+                if (card != null)
                 {
-                    VisualStateManager.GoToState(card, tgl.IsOn ? "Selected" : "Unselected", true);
-                }
+                    string key = card.Tag?.ToString() ?? string.Empty;
+                    bool isOn = tgl.IsOn;
 
-                string key = card?.Tag?.ToString() ?? string.Empty;
-                bool isOn = tgl.IsOn;
+                    if (this.DataContext is ServicesViewModel vm)
+                    {
+                        var model = vm[key];
+                        if (model != null)
+                        {
+                            model.State = isOn;
+                        }
+                    }
 
-                _svcTweaks.ApplyTweaks(key, isOn);
+                    _svcTweaks.ApplyTweaks(key, isOn);
 
-                if (NotificationManager.SysActions.TryGetValue(key, out var action))
-                {
-                    NotificationManager.Show().WithDuration(300).Perform(action);
+                    if (SettingsEngine.IsSelectionGlowEnabled)
+                    {
+                        VisualStateManager.GoToState(card, isOn ? "Selected" : "Unselected", true);
+                    }
                 }
             }
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void DebugAvailableCards()
+        {
+            var allButtonKeys = Enumerable.Range(1, 40).Select(i => $"TglButton{i}").ToList();
+
+            var existingCards = UIHelper.FindVisualChildren<ContentControl>(this)
+                                .Where(c => c.Tag?.ToString()?.StartsWith("TglButton") == true)
+                                .ToList();
+
+            Debug.WriteLine("--- SERVICES PAGE DIAGNOSTICS ---");
+
+            foreach (var key in allButtonKeys)
+            {
+                var card = existingCards.FirstOrDefault(c => string.Equals(c.Tag?.ToString(), key, StringComparison.Ordinal));
+
+                if (card == null)
+                {
+                    Debug.WriteLine($"[MISSING] {key}: Card is not in the XAML at all.");
+                }
+                else if (card.Visibility == Visibility.Collapsed)
+                {
+                    Debug.WriteLine($"[HIDDEN] {key}: Card exists but is hidden by Win11/Build logic.");
+                }
+                else
+                {
+                    Debug.WriteLine($"[OK] {key}: Visible.");
+                }
+            }
+
+            int visibleCount = existingCards.Count(c => c.Visibility == Visibility.Visible);
+            Debug.WriteLine($"Total Cards Visible: {visibleCount}");
+            Debug.WriteLine("----------------------------------");
         }
     }
 }
