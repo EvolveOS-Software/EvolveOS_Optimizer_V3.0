@@ -363,7 +363,7 @@
     <sys:String x:Key="SystemAppsPage_Continue">Doorgaan</sys:String>
     <!-- endregion Installed Apps -->
 
-    <!--#region System Page -->
+    <!-- region System Page -->
     <sys:String x:Key="slider1_sys">Snelheid aanwijzer:</sys:String>
     <sys:String x:Key="slider2_sys">Vertraging voor herhaling:</sys:String>
     <sys:String x:Key="slider3_sys">Herhalingssnelheid toetsenbord:</sys:String>
@@ -433,6 +433,68 @@
     <sys:String x:Key="tgl26_desc_sys">Blokkeert de opdringerige installatie van de PC-statuscontrole die Microsoft via Windows Update forceert.</sys:String>
     <sys:String x:Key="tgl27_desc_sys">Schakel deze taken uit als u geen lid bent van het Insider-programma om onnodige telemetrie en systeembelasting te voorkomen.</sys:String>
     <sys:String x:Key="tgl28_desc_sys">Voor SSD's helpt het uitschakelen van defragmentatie de levensduur te verlengen, terwijl TRIM-optimalisatie actief blijft voor stabiele snelheid.</sys:String>
-    <!--#endregion-->
+    <!-- endregion System Page-->
+
+    <!-- region Services Page -->
+    <sys:String x:Key="tgl1_svc">Services gerelateerd aan Windows Search</sys:String>
+    <sys:String x:Key="tgl2_svc">Services gerelateerd aan Xbox</sys:String>
+    <sys:String x:Key="tgl3_svc">Services gerelateerd aan Windows Update</sys:String>
+    <sys:String x:Key="tgl4_svc">Services gerelateerd aan de Windows Store</sys:String>
+    <sys:String x:Key="tgl5_svc">Prestatieteller-services</sys:String>
+    <sys:String x:Key="tgl6_svc">Windows Biometrische-service</sys:String>
+    <sys:String x:Key="tgl7_svc">Services gerelateerd aan Bluetooth</sys:String>
+    <sys:String x:Key="tgl8_svc">Services gerelateerd aan de printer</sys:String>
+    <sys:String x:Key="tgl9_svc">Service gerelateerd aan de werking van de scanner</sys:String>
+    <sys:String x:Key="tgl10_svc">Services gerelateerd aan fax</sys:String>
+    <sys:String x:Key="tgl11_svc">Services gerelateerd aan tablet-/smartphonemodus</sys:String>
+    <sys:String x:Key="tgl12_svc">Services gerelateerd aan het gebruik van extra monitoren</sys:String>
+    <sys:String x:Key="tgl13_svc">Service gerelateerd aan systeemcomponenten</sys:String>
+    <sys:String x:Key="tgl14_svc">Services gerelateerd aan de werking van het lokale netwerk</sys:String>
+    <sys:String x:Key="tgl15_svc">Services gerelateerd aan USB-modems en routers</sys:String>
+    <sys:String x:Key="tgl16_svc">Services gerelateerd aan VPN-clients</sys:String>
+    <sys:String x:Key="tgl17_svc">Services gerelateerd aan de werking van Windows Media</sys:String>
+    <sys:String x:Key="tgl18_svc">Services gerelateerd aan Extern Bureaublad</sys:String>
+    <sys:String x:Key="tgl19_svc">Services die fouten en gebeurtenislogboeken verzamelen</sys:String>
+    <sys:String x:Key="tgl20_svc">WebDAV Extern Bestandsbeheer-service</sys:String>
+    <sys:String x:Key="tgl21_svc">Services gerelateerd aan de werking van een Smartcard</sys:String>
+    <sys:String x:Key="tgl22_svc">Services gerelateerd aan de werking van Windows Kiosk</sys:String>
+    <sys:String x:Key="tgl23_svc">Services gerelateerd aan bestandsversleuteling</sys:String>
+    <sys:String x:Key="tgl24_svc">Service gerelateerd aan Windows-lokalisatie</sys:String>
+    <sys:String x:Key="tgl25_svc">Services gerelateerd aan beveiligingscontroles op de achtergrond</sys:String>
+    <sys:String x:Key="tgl26_svc">Services gerelateerd aan achtergronddiagnose</sys:String>
+    <sys:String x:Key="tgl27_svc">Services gerelateerd aan bedrijfstools</sys:String>
+    <sys:String x:Key="tgl28_svc">Service gerelateerd aan de werking van Hyper-V</sys:String>
+    <sys:String x:Key="tgl29_svc">Services gerelateerd aan pushmeldingen</sys:String>
+
+    <sys:String x:Key="tgl1_desc_svc">Uitschakelen als u geen bestandsgeschiedenis en inhoudsindexering gebruikt.</sys:String>
+    <sys:String x:Key="tgl2_desc_svc">Uitschakelen als u geen Xbox en Microsoft-gamepads gebruikt.</sys:String>
+    <sys:String x:Key="tgl3_desc_svc">Uitschakelen als u niet van plan bent Windows bij te werken. Naast services wijzigt deze tweak ook de bestanden die verantwoordelijk zijn voor Windows-updates. Hierdoor zal het Updatecentrum niet werken, zelfs als de services zijn ingeschakeld. Let op: dit heeft invloed op het downloaden en bijwerken van apps uit de Windows Store.</sys:String>
+    <sys:String x:Key="tgl4_desc_svc">Uitschakelen als u de Windows Store en de bijbehorende UWP-apps niet gebruikt.</sys:String>
+    <sys:String x:Key="tgl5_desc_svc">Uitschakelen als u niet wilt dat services de prestaties van uw systeem analyseren.</sys:String>
+    <sys:String x:Key="tgl6_desc_svc">Uitschakelen als u geen gebruikmaakt van aanmelden met pincode, vingerafdruk, gezichtsherkenning of andere Windows Hello-methoden. Als er al een aanmeldingsmethode is ingesteld, blijft deze werken, maar moet u Windows Hello opnieuw inschakelen om deze te wijzigen of te verwijderen.</sys:String>
+    <sys:String x:Key="tgl7_desc_svc">Uitschakelen als u geen Bluetooth gebruikt of apparaten waarvan de werking afhankelijk is van Bluetooth.</sys:String>
+    <sys:String x:Key="tgl8_desc_svc">Uitschakelen als u geen printer hebt.</sys:String>
+    <sys:String x:Key="tgl9_desc_svc">Uitschakelen als u geen scanner hebt.</sys:String>
+    <sys:String x:Key="tgl10_desc_svc">Uitschakelen als u geen faxapparaat hebt.</sys:String>
+    <sys:String x:Key="tgl11_desc_svc">Uitschakelen als u een vaste computer, laptop of netbook hebt.</sys:String>
+    <sys:String x:Key="tgl12_desc_svc">Uitschakelen als u slechts één monitor hebt en niet van plan bent extra monitoren aan te sluiten.</sys:String>
+    <sys:String x:Key="tgl13_desc_svc">Uitschakelen als u deze apps niet gebruikt: «Virtuele bureaubladen», «Jouw telefoon» en «Nachtlamp». Deze service verwerkt gebruikersgegevens en synchroniseert deze met Microsoft-servers. Het is niet kritiek voor het systeem; sommige functies, zoals «Nachtlamp» in Windows 10, kunnen echter volledig of gedeeltelijk stoppen met werken als dit is uitgeschakeld.</sys:String>
+    <sys:String x:Key="tgl14_desc_svc">Uitschakelen als u geen lokaal netwerk gebruikt of van plan bent dit te gebruiken.</sys:String>
+    <sys:String x:Key="tgl15_desc_svc">Uitschakelen als u verbonden bent met internet via kabel of Wi-Fi.</sys:String>
+    <sys:String x:Key="tgl16_desc_svc">Uitschakelen als u geen VPN-clients gebruikt. Kan de werking van Xbox beïnvloeden.</sys:String>
+    <sys:String x:Key="tgl17_desc_svc">Uitschakelen als u geen bestandssynchronisatie en toegang daartoe via een lokaal netwerk nodig hebt voor Windows Media Player. Deze services zijn niet kritiek; u kunt de speler blijven gebruiken.</sys:String>
+    <sys:String x:Key="tgl18_desc_svc">Uitscherpen als u geen Extern Bureaublad gebruikt en geen serververbinding daarmee maakt.</sys:String>
+    <sys:String x:Key="tgl19_desc_svc">Uitschakelen als u niet wilt dat services uw pc belasten terwijl ze fouten afhandelen.</sys:String>
+    <sys:String x:Key="tgl20_desc_svc">Uitschakelen als u bestanden niet op afstand beheert via Delen of WebDAV.</sys:String>
+    <sys:String x:Key="tgl21_desc_svc">Uitschakelen als u geen smartcards gebruikt. Een smartcard is een elektronische identificatie of plastic kaart met een chip (zoals een bankkaart). Voor dagelijks gebruik van Windows is deze service niet nodig.</sys:String>
+    <sys:String x:Key="tgl22_desc_svc">Uitschakelen als u de Windows-kioskmodus niet gebruikt. Deze modus minimaliseert de interface: slechts één UWP-app draait op het volledige scherm. Let op: dit kan de installatie van Windows-updates en programma's via Windows Installer verstoren.</sys:String>
+    <sys:String x:Key="tgl23_desc_svc">Uitschakelen als u geen BitLocker-schijfversleuteling en EFS-bestandsversleuteling gebruikt.</sys:String>
+    <sys:String x:Key="tgl24_desc_svc">Uitschakelen als u alle talen die u gebruikt al hebt geconfigureerd en niet van plan bent nieuwe toe te voegen.</sys:String>
+    <sys:String x:Key="tgl25_svc">Uitschakelen als u Windows Defender en aanvullende Windows-beveiliging niet gebruikt.</sys:String>
+    <sys:String x:Key="tgl26_svc">Uitschakelen als u niet wilt dat Windows het systeem belast met nutteloze achtergronddiagnoses.</sys:String>
+    <sys:String x:Key="tgl27_svc">Uitschakelen als u geen beheer op afstand van zakelijke applicaties gebruikt en geen externe server hebt waarmee uw pc communiceert.</sys:String>
+    <sys:String x:Key="tgl28_svc">Uitschakelen als u het ingebouwde virtualisatiesysteem niet gebruikt. Het heeft geen invloed op VirtualBox en dergelijke.</sys:String>
+    <sys:String x:Key="tgl29_svc">Uitschakelen als u geen gekoppelde apparaten gebruikt en geen apps uit de Windows Store op afstand installeert. Deze services regelen het meldingencentrum voor gekoppelde apparaten en pushverzoeken. In Windows 10 kan het meldingencentrum stoppen met openen na uitschakeling.</sys:String>
+    <!-- endregion Services Page -->
 
 </ResourceDictionary>
