@@ -362,7 +362,7 @@
     <sys:String x:Key="SystemAppsPage_Continue">Continue</sys:String>
     <!-- endregion Installed Apps -->
 
-    <!--#region System Page -->
+    <!-- region System Page -->
     <sys:String x:Key="slider1_sys">Mouse pointer speed:</sys:String>
     <sys:String x:Key="slider2_sys">Keyboard repeat delay:</sys:String>
     <sys:String x:Key="slider3_sys">Keyboard repetition rate:</sys:String>
@@ -432,9 +432,9 @@
     <sys:String x:Key="tgl26_desc_sys">Tweak blocks intrusive automatic installation of PC Health Check - Microsoft utility that forcibly deploys itself through Windows Update without permission. Once installed, program constantly nags about «checking Windows 11 readiness» and pushes unsolicited «optimization recommendations».</sys:String>
     <sys:String x:Key="tgl27_desc_sys">For Windows Insider participants, these tasks should remain enabled. However, if you are not part of the program, all associated tasks become unnecessary overhead: they consume system resources, generate useless logs, and may initiate telemetry connections without providing any benefit. Disabling them can improve startup time and overall system performance while also eliminating unneeded experimental data collection channels.</sys:String>
     <sys:String x:Key="tgl28_desc_sys">If you have an SSD, disabling defragmentation and boot file optimization, which are effective only for hard drives (HDD), helps extend the lifespan of your drive. At the same time, the TRIM optimization function continues to work: it informs the SSD controller which data blocks are no longer in use and clears them, maintaining stable speed and drive longevity.</sys:String>
-    <!--#endregion-->
+    <!-- endregion System Page-->
 
-    <!--#region Services Page -->
+    <!-- region Services Page -->
     <sys:String x:Key="tgl1_svc">Services related to Windows Search</sys:String>
     <sys:String x:Key="tgl2_svc">Services related to Xbox</sys:String>
     <sys:String x:Key="tgl3_svc">Services related to Windows Update</sys:String>
@@ -494,6 +494,90 @@
     <sys:String x:Key="tgl27_desc_svc">Disable if you do not use remote management of corporate applications and you do not have a remote server that your PC communicates with.</sys:String>
     <sys:String x:Key="tgl28_desc_svc">Disable if you are not using the built-in virtualization system. It does not affect the work of VirtualBox and its like in any way.</sys:String>
     <sys:String x:Key="tgl29_desc_svc">Disable if you do not use paired devices and do not install apps from the Windows Store remotely. These services handle the Notification Center with paired devices, process push requests, allow Windows to detect your smartphone for the «Your Phone» app, automatically reconnect to it, and display its messages and events in the Action Center. In Windows 10, after disabling them, the Notification Center may stop opening.</sys:String>
-    <!--#endregion-->
+    <!-- endregion Services Page-->
+
+    <!-- region Interface Page -->
+    <sys:String x:Key="tgl1_intf">Standard color cursor selection</sys:String>
+    <sys:String x:Key="tgl2_intf">Standard color of the tooltip</sys:String>
+    <sys:String x:Key="tgl3_intf">Standard size of the system buttons</sys:String>
+    <sys:String x:Key="tgl4_intf">Standard cursor flicker frequency</sys:String>
+    <sys:String x:Key="tgl5_intf">Standard scrollbar size</sys:String>
+    <sys:String x:Key="tgl6_intf">Taskbar transparency effect</sys:String>
+    <sys:String x:Key="tgl7_intf">Dark Taskbar theme</sys:String>
+    <sys:String x:Key="tgl8_intf">Dark theme of applications and explorer</sys:String>
+    <sys:String x:Key="tgl9_intf">Delay when calling the context menu</sys:String>
+    <sys:String x:Key="tgl10_intf">Delay in the appearance of previews on the taskbar</sys:String>
+    <sys:String x:Key="tgl11_intf">Arrows for shortcuts to files, folders, or programs</sys:String>
+    <sys:String x:Key="tgl12_intf">Prefix «Label for...»/ postfix «– Label»</sys:String>
+    <sys:String x:Key="tgl13_intf">«This PC» icon on Desktop</sys:String>
+    <sys:String x:Key="tgl14_intf">«Trash» icon on Desktop</sys:String>
+    <sys:String x:Key="tgl15_intf">Taskbar Alignment</sys:String>
+    <sys:String x:Key="tgl16_intf">Standard layout of the «Start» menu</sys:String>
+    <sys:String x:Key="tgl17_intf">Stripped-down context menu</sys:String>
+    <sys:String x:Key="tgl18_intf">Show tips and suggestions</sys:String>
+    <sys:String x:Key="tgl19_intf">Use Compact Explorer mode</sys:String>
+    <sys:String x:Key="tgl20_intf">«Copilot» and «Recall» Assistants</sys:String>
+    <sys:String x:Key="tgl21_intf">«End task» RMB on the application</sys:String>
+    <sys:String x:Key="tgl22_intf">Show window snap assist layouts</sys:String>
+    <sys:String x:Key="tgl23_intf">Icons and buttons on the taskbar</sys:String>
+    <sys:String x:Key="tgl24_intf">Show personalized ads</sys:String>
+    <sys:String x:Key="tgl25_intf">Restore previous folder windows when logging in</sys:String>
+    <sys:String x:Key="tgl26_intf">Notifications with Windows tips and suggestions</sys:String>
+    <sys:String x:Key="tgl27_intf">Folders located in «This PC»</sys:String>
+    <sys:String x:Key="tgl28_intf">«3D Objects» in the explorer</sys:String>
+    <sys:String x:Key="tgl29_intf">Compression of wallpaper format .JPEG of the desktop</sys:String>
+    <sys:String x:Key="tgl30_intf">Tooltips for desktop elements</sys:String>
+    <sys:String x:Key="tgl31_intf">Search query with «Bing» integration in Start menu</sys:String>
+    <sys:String x:Key="tgl32_intf">Open «Quick Access» instead of «This PC»</sys:String>
+    <sys:String x:Key="tgl33_intf">Displaying file extensions in explorer</sys:String>
+    <sys:String x:Key="tgl34_intf">Disable acrylic blur effect on the login screen</sys:String>
+    <sys:String x:Key="tgl35_intf">Gallery in the navigation pane of File Explorer</sys:String>
+    <sys:String x:Key="tgl36_intf">Home in the navigation pane of File Explorer</sys:String>
+    <sys:String x:Key="tgl37_intf">Duplicate removable drives from navigation pane of File Explorer</sys:String>
+    <sys:String x:Key="tgl38_intf">Displaying hidden files and folders in explorer</sys:String>
+    <sys:String x:Key="tgl39_intf">Snap bar (Windows 11)</sys:String>
+    <sys:String x:Key="tgl40_intf">Show seconds in taskbar clock</sys:String>
+
+    <sys:String x:Key="tgl1_desc_intf">Will change the color of the cursor selection from blue to gray «wet asphalt».</sys:String>
+    <sys:String x:Key="tgl2_desc_intf">Will change the color of the tooltip in some programs from yellow to light blue «azure».</sys:String>
+    <sys:String x:Key="tgl3_desc_intf">A tweak reduces the size of the Minimize, Maximize, and Close buttons, making them less bulky. It adjusts the size for all windows, including File Explorer, Photos, browsers, and other familiar programs.</sys:String>
+    <sys:String x:Key="tgl4_desc_intf">A tweak increases the frequency of the text cursor's blinking. By default, the cursor blinks every 530 milliseconds.</sys:String>
+    <sys:String x:Key="tgl5_desc_intf">A tweak reduces the thickness of scrollbars in classic Windows applications, including File Explorer, browsers, and other legacy programs. However, it does not affect modern interfaces, as they utilize their own control elements independent of system settings.</sys:String>
+    <sys:String x:Key="tgl6_desc_intf">Tweak will disable or enable the transparency effect. Translucent windows and surfaces.</sys:String>
+    <sys:String x:Key="tgl7_desc_intf">Changes the taskbar theme to light or dark. Attention, the screen may blink.</sys:String>
+    <sys:String x:Key="tgl8_desc_intf">The tweak will change the explorer theme to light or dark, including browsers and other programs that support the device theme. Attention the screen may blink.</sys:String>
+    <sys:String x:Key="tgl9_desc_intf">By default, additional context menu items appear with a delay of 400 milliseconds. If you want to go faster, you can reduce this delay.</sys:String>
+    <sys:String x:Key="tgl10_desc_intf">By default, the Taskbar preview shows previews of running applications for too long. To make previews appear faster, apply this tweak.</sys:String>
+    <sys:String x:Key="tgl11_desc_intf">Tweak will remove arrows from labels by replacing the arrow file.</sys:String>
+    <sys:String x:Key="tgl12_desc_intf">Removing the too intuitive prefix-postfix for labels.</sys:String>
+    <sys:String x:Key="tgl13_desc_intf">The PC icon, unlike the PC shortcut, is better because it has the necessary properties of the context menu and is free of unnecessary ones.</sys:String>
+    <sys:String x:Key="tgl14_desc_intf">If you do not need the Trash icon on the desktop and you do not want to waste time looking for a shutdown, then you can use tweaks.</sys:String>
+    <sys:String x:Key="tgl15_desc_intf">Choose where you want the icons on the taskbar to be displayed, on the cent or on the left</sys:String>
+    <sys:String x:Key="tgl16_desc_intf">Changes the Start menu layout by expanding the area for pinned apps. In addition, except in the Windows Home edition, the «Recommended» section will be removed from the Start menu.</sys:String>
+    <sys:String x:Key="tgl17_desc_intf">This tweak will return you to the usual classic context menu for the desktop and «Explorer». Attention the screen may blink.</sys:String>
+    <sys:String x:Key="tgl18_desc_intf">Windows 11 sometimes shows hints on how to use a particular feature, for example, the new «Start» menu or «Quick Settings». They are useful if you are seeing Windows 11 for the first time, as it is useless junk.</sys:String>
+    <sys:String x:Key="tgl19_desc_intf">By default, Windows adds padding between items in Explorer. This is a new feature designed for touch screens. This tweak will restore the classic layout of the file explorer, removing the indentation between the elements and saving you from searching for settings.</sys:String>
+    <sys:String x:Key="tgl20_desc_intf">The tweak disables and, where possible, hides Copilot icons on the taskbar, in the «Start Menu», in Edge, and in Notepad, blocking its functionality, and also disables Recall. At the same time, the core Copilot application itself is not affected, remains in the system, and can be used if needed. Copilot can only be fully removed along with Microsoft Edge. If these AI features are not present in your Windows initially, using the tweak is pointless.</sys:String>
+    <sys:String x:Key="tgl21_desc_intf">This tweak will allow you to add the «End task» option to the context menu when you right-click on the application on the taskbar. This speeds up the completion of processes without having to open the task Manager. Attention the screen may blink.</sys:String>
+    <sys:String x:Key="tgl22_desc_intf">If you don’t need to see the snap layout suggestions when hovering over the «Maximize» button, you can disable this option.</sys:String>
+    <sys:String x:Key="tgl23_desc_intf">This tweak removes the «Search», «Task View», and «Chat» icons, and hides the «Learn about this picture» element. On older builds of Windows 11, it also removes the Copilot icon. For Windows 10 users, it additionally disables «News and Interests» and Cortana. Attention the screen may blink.</sys:String>
+    <sys:String x:Key="tgl24_desc_intf">By default, Windows uses the collected information to target ads, i.e. to display ads that match your interests. And literally, this advertisement is located wherever free space is available for display. If you don't want Windows to display personalized ads in all Store apps, Explorer, Options, and the Start menu, then you can disable this junk.</sys:String>
+    <sys:String x:Key="tgl25_desc_intf">By default, Windows does not save the positions of windows, as well as their state when turned off. This tweak will allow you to remember the type of open folders in order to restore them after Logging out, Rebooting and Shutting down.</sys:String>
+    <sys:String x:Key="tgl26_desc_intf">Tweak allows disabling all Windows tips and notifications, including online hints in settings, as well as disabling Second Chance Out of Box Experience (SCOOBE) for Windows 11 users. SCOOBE is suddenly appearing pop-up that aggressively prompts user to «complete device setup urgently» and sign in to Microsoft account.</sys:String>
+    <sys:String x:Key="tgl27_desc_intf">Tweak will hide folders from «This PC»: Desktop, Videos, Documents, Downloads, Images, Music. Attention the screen may blink.</sys:String>
+    <sys:String x:Key="tgl28_desc_intf">Removes the 3D Objects item from the Explorer Overview in the left menu list (from the Explorer list tree). Attention the screen may blink.</sys:String>
+    <sys:String x:Key="tgl29_desc_intf">By default, when you set a jpeg image as your desktop wallpaper, Windows automatically reduces its quality to 85%. This tweak will set the jpeg wallpaper quality to 100%.</sys:String>
+    <sys:String x:Key="tgl30_desc_intf">Tweak will disable tooltips for desktop elements when hovering the mouse cursor.</sys:String>
+    <sys:String x:Key="tgl31_desc_intf">By default, Windows sends everything you search for in the «Start» menu to its servers to provide you with Bing search results. If you don't need Bing integration in the «Start» menu, you can apply a tweak to disable web search. Attention the screen may blink.</sys:String>
+    <sys:String x:Key="tgl32_desc_intf">By default, when you open Explorer, the first tab will be «Quick Access». And to open any disk, you need to make unnecessary movements. This tweak will make «This PC» open when opened, rather than «Quick Access».</sys:String>
+    <sys:String x:Key="tgl33_desc_intf">By default, Windows hides file extensions, which makes the File Explorer view less cluttered. If needed, you can enable the display of file extensions using this tweak, saving you the time spent searching. Attention the screen may blink.</sys:String>
+    <sys:String x:Key="tgl34_desc_intf">By default, the sign-in screen background image has an acrylic blur effect as part of Windows 11 transparency effects.</sys:String>
+    <sys:String x:Key="tgl35_desc_intf">Show or hide Gallery in the navigation pane of File Explorer.</sys:String>
+    <sys:String x:Key="tgl36_desc_intf">Show or hide Home in the navigation pane of File Explorer.</sys:String>
+    <sys:String x:Key="tgl37_desc_intf">By default, You may find that when connecting a removable drive to the computer, the drive displays twice in File Explorer. This tweak allows you to hide the duplicate removable drives from navigation pane of File Explorer.</sys:String>
+    <sys:String x:Key="tgl38_desc_intf">By default, Windows hides files and folders. Users may want to access hidden files to customize their system preferences, such as modifying system themes, icons, or startup settings. Hidden folders like “AppData” contain user-specific application data and settings, allowing users to tailor their Windows 11 experience to their preferences.</sys:String>
+    <sys:String x:Key="tgl39_desc_intf">By default in Windows 11, The snap bar appears when you drag a window to the top of the screen. The tweak allow you to disable the snap bar.</sys:String>
+    <sys:String x:Key="tgl40_desc_intf">Choose if you want seconds in the taskbar clock to show, windows by default doesn't show the seconds in the taskbar clock.</sys:String>
+    <!-- endregion Interface Page-->
 
 </ResourceDictionary>
