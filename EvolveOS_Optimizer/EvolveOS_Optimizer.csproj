@@ -186,6 +186,9 @@
     <Page Update="Pages\ServicesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Pages\InterfacePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Properties\AssemblyInfo.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfo.cs</LastGenOutput>

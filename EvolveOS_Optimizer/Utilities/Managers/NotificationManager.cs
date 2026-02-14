@@ -24,7 +24,17 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
         internal static readonly Dictionary<string, NoticeAction> IntfActions = new Dictionary<string, NoticeAction>()
         {
-            //["TglButton2"] = NoticeAction.Logout
+            ["TglButton1"] = NoticeAction.Logout,
+            ["TglButton2"] = NoticeAction.Logout,
+            ["TglButton3"] = NoticeAction.Logout,
+            ["TglButton4"] = NoticeAction.Logout,
+            ["TglButton5"] = NoticeAction.Logout,
+            ["TglButton10"] = NoticeAction.Logout,
+            ["TglButton11"] = NoticeAction.Logout,
+            ["TglButton12"] = NoticeAction.Logout,
+            ["TglButton20"] = NoticeAction.Restart,
+            ["TglButton22"] = NoticeAction.Logout,
+            ["TglButton23"] = NoticeAction.Restart
         };
 
         internal static readonly Dictionary<string, NoticeAction> SysActions = new Dictionary<string, NoticeAction>()
