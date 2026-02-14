@@ -1,3 +1,4 @@
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -6,6 +7,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Navigation;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -22,10 +24,9 @@ namespace EvolveOS_Optimizer
 
         private AppWindow? _appWindow;
         private IntPtr _hWnd;
+        private bool _isBackdropInitialized = false;
 
         public string GetText(string key) => LocalizationService.Instance[key];
-
-        private bool _isBackdropInitialized = false;
 
         public MainWindow()
         {
@@ -52,8 +53,11 @@ namespace EvolveOS_Optimizer
             }
 
             WindowHelper.RegisterMinWidthHeight(_hWnd, 700, 400);
-            UIHelper.RegisterPageTransition(RootContentControl, RootGrid);
+
+            UIHelper.RegisterPageTransition(ContentFrame, RootGrid);
+
             CenterWindow();
+
             this.Activated += (s, e) =>
             {
                 if (!_isBackdropInitialized && e.WindowActivationState != WindowActivationState.Deactivated)
@@ -63,9 +67,7 @@ namespace EvolveOS_Optimizer
                     this.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
                     {
                         await Task.Delay(400);
-
                         UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
-
                         Debug.WriteLine("[Startup] Backdrop initialization complete.");
                     });
                 }
@@ -75,17 +77,91 @@ namespace EvolveOS_Optimizer
             {
                 if (e.PropertyName == "Item[]")
                 {
-                    OnPropertyChanged(string.Empty); 
+                    OnPropertyChanged(string.Empty);
                 }
             };
 
             this.RootGrid.Loaded += MainWindow_Loaded;
         }
 
-        public void SetBackdrop(SystemBackdrop backdrop)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            this.SystemBackdrop = backdrop;
+            SetupNavigationObserver();
+
+            if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
+            {
+                this.DispatcherQueue.TryEnqueue(() => AnimateUpdateBanner(true));
+            }
         }
+
+        private void SetupNavigationObserver()
+        {
+            if (this.RootGrid.DataContext is MainWinViewModel vm)
+            {
+                vm.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(MainWinViewModel.CurrentViewTag))
+                    {
+                        NavigateByTag(vm.CurrentViewTag);
+                    }
+                };
+
+                NavigateByTag(vm.CurrentViewTag);
+            }
+        }
+
+        private void NavigateByTag(string tag)
+        {
+            if (string.IsNullOrEmpty(tag)) return;
+
+            Type pageType = tag switch
+            {
+                "Home" => typeof(Pages.HomePage),
+                "Security" => typeof(Pages.SecurityPage),
+                /*"Utils" => new Pages.UtilitiesPage(),
+                "Confidentiality" => new Pages.PrivacyPage(),*/
+                "Interface" => typeof(Pages.InterfacePage),
+                "Software" => typeof(Pages.SoftwareCenterPage),
+                "GroupPolicy" => typeof(Pages.GroupPolicyPage),
+                "Services" => typeof(Pages.ServicesPage),
+                "System" => typeof(Pages.SystemPage),
+                "Settings" => typeof(Pages.SettingsPage),
+                _ => typeof(Pages.HomePage)
+            };
+
+            if (ContentFrame.CurrentSourcePageType != pageType)
+            {
+                ContentFrame.Navigate(pageType, null, new Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo());
+
+                _ = CleanupNavigationStackAsync();
+            }
+        }
+
+        private async Task CleanupNavigationStackAsync()
+        {
+            await Task.Delay(100);
+
+            this.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+            {
+                try
+                {
+                    if (ContentFrame.BackStack.Count > 0) ContentFrame.BackStack.Clear();
+                    if (ContentFrame.ForwardStack.Count > 0) ContentFrame.ForwardStack.Clear();
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
+                    Debug.WriteLine("[Navigation] Safe Background Cleanup Successful.");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Navigation] Cleanup deferred: {ex.Message}");
+                }
+            });
+        }
+
+        #region UI & Window Management
+        public void SetBackdrop(SystemBackdrop backdrop) => this.SystemBackdrop = backdrop;
 
         public void SetBackdropByName(string name)
         {
@@ -107,14 +183,11 @@ namespace EvolveOS_Optimizer
             if (appWindow != null)
             {
                 DisplayArea displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
-
                 if (displayArea != null)
                 {
                     var centeredPos = appWindow.Position;
-
                     centeredPos.X = (displayArea.WorkArea.Width - appWindow.Size.Width) / 2;
                     centeredPos.Y = (displayArea.WorkArea.Height - appWindow.Size.Height) / 2;
-
                     appWindow.Move(centeredPos);
                 }
             }
@@ -141,26 +214,13 @@ namespace EvolveOS_Optimizer
                 {
                     App.Current.Resources["MyDynamicAccentBrush"] = new SolidColorBrush(color);
                 }
-
-                Debug.WriteLine($"[Accent] Successfully applied color: {hexColor}");
+                Debug.WriteLine($"[Accent] Applied color: {hexColor}");
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[Accent] Error parsing/applying color: {ex.Message}");
-            }
+            catch (Exception ex) { Debug.WriteLine($"[Accent] Error: {ex.Message}"); }
         }
+        #endregion
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
-            {
-                this.DispatcherQueue.TryEnqueue(() =>
-                {
-                    AnimateUpdateBanner(true);
-                });
-            }
-        }
-
+        #region Update Management
         public void AnimateUpdateBanner(bool show)
         {
             if (show)
@@ -203,7 +263,6 @@ namespace EvolveOS_Optimizer
                     });
                 }
             };
-
             batch.End();
         }
 
@@ -214,17 +273,12 @@ namespace EvolveOS_Optimizer
             try
             {
                 if (sender is Button btn) btn.IsEnabled = false;
-
-
                 DownloadProgressArea.Visibility = Visibility.Visible;
-
                 string downloadUrl = PathLocator.Links.GitHubLatest;
-                string tempPath = Path.Combine(Path.GetTempPath(), $"EvolveOS_Update_{Guid.NewGuid().ToString("N").Substring(0, 8)}.exe");
+                string tempPath = Path.Combine(Path.GetTempPath(), $"EvolveOS_Update_{Guid.NewGuid():N}.exe");
 
                 PulseAnimation.Begin();
-
                 await DownloadUpdateAsync(downloadUrl, tempPath);
-
                 PulseAnimation.Stop();
 
                 string currentExe = Environment.ProcessPath ?? AppContext.BaseDirectory;
@@ -238,7 +292,6 @@ namespace EvolveOS_Optimizer
                     CreateNoWindow = true,
                     UseShellExecute = false
                 });
-
                 Application.Current.Exit();
             }
             catch (Exception ex)
@@ -262,7 +315,6 @@ namespace EvolveOS_Optimizer
             var buffer = new byte[8192];
             long totalRead = 0;
             int read;
-
             var sw = Stopwatch.StartNew();
 
             while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
@@ -290,25 +342,17 @@ namespace EvolveOS_Optimizer
                 }
             }
         }
+        #endregion
 
-        private void Banner_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            NotificationManager.SetPaused(true);
-        }
-
-        private void Banner_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            NotificationManager.SetPaused(false);
-        }
-
-        private void DismissNotification_Click(object sender, RoutedEventArgs e)
-        {
-            NotificationManager.HideBanner();
-        }
+        #region Events & Overrides
+        private void Banner_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => NotificationManager.SetPaused(true);
+        private void Banner_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => NotificationManager.SetPaused(false);
+        private void DismissNotification_Click(object sender, RoutedEventArgs e) => NotificationManager.HideBanner();
 
         private void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        #endregion
     }
 }

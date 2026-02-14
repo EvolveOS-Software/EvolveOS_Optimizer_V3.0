@@ -15,7 +15,8 @@ namespace EvolveOS_Optimizer.Pages;
 public sealed partial class SystemAppsPage : Page
 {
     public ObservableCollection<Tuple<string, string, bool>> AppList { get; set; } = new();
-    private readonly CancellationTokenSource cancellationTokenSource = new();
+
+    private CancellationTokenSource? cancellationTokenSource;
     private List<Tuple<string, string, bool>> allApps = new();
     private string? _pendingScrollTarget;
 
@@ -25,9 +26,26 @@ public sealed partial class SystemAppsPage : Page
     {
         InitializeComponent();
 
-        ErrorLogging.LogDebug(new Exception("Initializing SystemAppsPage"));
+        //ErrorLogging.LogDebug(new Exception("Initializing SystemAppsPage"));
         this.NavigationCacheMode = NavigationCacheMode.Required;
         Loaded += SystemAppsPage_Loaded;
+    }
+
+    private void Page_Unloaded(object sender, RoutedEventArgs e)
+    {
+        if (cancellationTokenSource != null)
+        {
+            cancellationTokenSource.Cancel();
+            cancellationTokenSource.Dispose();
+            cancellationTokenSource = null;
+        }
+
+        allApps.Clear();
+
+        this.ViewModel = null;
+        this.DataContext = null;
+
+        Debug.WriteLine("[SystemAppsPage] Background tasks canceled and memory cleared.");
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -49,6 +67,8 @@ public sealed partial class SystemAppsPage : Page
 
     private async void SystemAppsPage_Loaded(object sender, RoutedEventArgs e)
     {
+        if (cancellationTokenSource == null) cancellationTokenSource = new CancellationTokenSource();
+
         if (!string.IsNullOrEmpty(_pendingScrollTarget))
         {
             await ScrollToElementHelper.ScrollToElementAsync(this, _pendingScrollTarget);
@@ -80,10 +100,11 @@ public sealed partial class SystemAppsPage : Page
     {
         try
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            if (cancellationToken.IsCancellationRequested) return;
 
             DispatcherQueue.TryEnqueue(() =>
             {
+                if (this.XamlRoot == null) return; // Guard
                 gettingAppsLoading.Visibility = Visibility.Visible;
                 appTreeView.Visibility = Visibility.Collapsed;
                 uninstallButton.IsEnabled = false;
@@ -92,22 +113,22 @@ public sealed partial class SystemAppsPage : Page
                 appsFilter.IsEnabled = false;
             });
 
-            ErrorLogging.LogDebug(new Exception("Loading InstalledApps"));
-
             List<Tuple<string, string, bool>> installedApps;
             if (win32Only)
             {
-                installedApps = await Task.Run(AppManager.GetWin32Apps);
+                installedApps = await Task.Run(AppManager.GetWin32Apps, cancellationToken);
             }
             else
             {
-                installedApps = await Task.Run(() => AppManager.GetInstalledApps(uninstallableOnly));
+                installedApps = await Task.Run(() => AppManager.GetInstalledApps(uninstallableOnly), cancellationToken);
             }
 
             DispatcherQueue.TryEnqueue(() =>
             {
-                AppList.Clear();
+                // CRITICAL: Check if page is still alive before updating UI
+                if (this.XamlRoot == null || cancellationToken.IsCancellationRequested) return;
 
+                AppList.Clear();
                 allApps = installedApps.AsParallel().Where(app =>
                 !app.Item1.Contains("rytunex", StringComparison.CurrentCultureIgnoreCase)).ToList();
 
@@ -131,14 +152,8 @@ public sealed partial class SystemAppsPage : Page
                 TempStackButtonTextBar.Visibility = Visibility.Visible;
             });
         }
-        catch (OperationCanceledException ex)
-        {
-            ErrorLogging.LogDebug(ex);
-        }
-        catch (Exception ex)
-        {
-            ErrorLogging.LogWritingFile(ex);
-        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { ErrorLogging.LogWritingFile(ex); }
     }
 
     private async void UninstallSelectedApp_Click(object sender, RoutedEventArgs e)
@@ -349,6 +364,8 @@ public sealed partial class SystemAppsPage : Page
 
     private void appsFilter_SelectionChanged(object sender, RoutedEventArgs e)
     {
+        if (cancellationTokenSource == null) cancellationTokenSource = new CancellationTokenSource();
+
         switch (appsFilter.SelectedIndex)
         {
             case 0:

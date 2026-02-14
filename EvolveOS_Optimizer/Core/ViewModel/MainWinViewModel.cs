@@ -1,6 +1,7 @@
 ﻿using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Services;
+using Microsoft.UI.Xaml.Media;
 using System.Reflection;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
@@ -10,15 +11,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
 
         #region Properties
-        private object? _currentView;
-        public object? CurrentView
+
+        private string _currentViewTag = "Home";
+        public string CurrentViewTag
         {
-            get => _currentView;
+            get => _currentViewTag;
             set
             {
-                if (_currentView != value)
+                if (_currentViewTag != value)
                 {
-                    _currentView = value;
+                    _currentViewTag = value;
                     OnPropertyChanged();
                 }
             }
@@ -84,21 +86,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (string.IsNullOrEmpty(tag)) return;
 
-            var newPage = tag switch
-            {
-                "Home" => (Page)new Pages.HomePage(),
-                "Security" => new Pages.SecurityPage(),
-                /*"Utils" => new Pages.UtilitiesPage(),
-                "Confidentiality" => new Pages.PrivacyPage(),*/
-                "Interface" => new Pages.InterfacePage(),
-                "Software" => new Pages.SoftwareCenterPage(),
-                "GroupPolicy" => new Pages.GroupPolicyPage(),
-                "Services" => new Pages.ServicesPage(),
-                "System" => new Pages.SystemPage(),
-                "Settings" => new Pages.SettingsPage(),
-                _ => new Pages.HomePage()
-            };
-            CurrentView = newPage;
+            CurrentViewTag = tag;
         }
     }
 }

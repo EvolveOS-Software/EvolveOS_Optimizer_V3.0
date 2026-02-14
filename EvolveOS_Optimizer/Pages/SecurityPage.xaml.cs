@@ -31,14 +31,32 @@ public sealed partial class SecurityPage : Page
         _refreshTimer.Tick += async (s, e) => await CheckSecurityStatusAsync(_cancellationTokenSource.Token);
         _refreshTimer.Start();
 
-        Unloaded += (s, e) =>
-        {
-            _refreshTimer?.Stop();
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-        };
-
         Loaded += SecurityPage_Loaded;
+        Unloaded += Page_Unloaded;
+    }
+
+    private void Page_Unloaded(object sender, RoutedEventArgs e)
+    {
+        if (_refreshTimer != null)
+        {
+            _refreshTimer.Stop();
+            _refreshTimer = null;
+        }
+
+        if (_cancellationTokenSource != null)
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+        }
+
+        if (this.DataContext is IDisposable disposableVM)
+        {
+            disposableVM.Dispose();
+        }
+        this.DataContext = null;
+
+        Debug.WriteLine("[SecurityPage] Disposed and Unloaded cleanly.");
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -62,7 +80,7 @@ public sealed partial class SecurityPage : Page
 
     private async Task CheckSecurityStatusAsync(CancellationToken cancellationToken = default)
     {
-        if (_isCheckInProgress)
+        if (_isCheckInProgress || cancellationToken.IsCancellationRequested)
             return;
 
         _isCheckInProgress = true;
@@ -90,7 +108,7 @@ public sealed partial class SecurityPage : Page
 
             DispatcherQueue.TryEnqueue(() =>
             {
-                if (cancellationToken.IsCancellationRequested)
+                if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
                     return;
 
                 UpdateStatusCard(VirusThreatProtectionStatus, VirusThreatProtectionLink, results.antivirusInfo.IsEnabled);

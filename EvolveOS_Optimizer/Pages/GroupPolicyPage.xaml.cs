@@ -58,8 +58,19 @@ public sealed partial class GroupPolicyPage : Page
 
     private async Task ScanPoliciesAsync()
     {
-        _cancellationTokenSource?.Cancel();
+        if (_cancellationTokenSource != null)
+        {
+            try
+            {
+                _cancellationTokenSource.Cancel();
+                _cancellationTokenSource.Dispose();
+            }
+            catch (ObjectDisposedException) { }
+        }
+
         _cancellationTokenSource = new CancellationTokenSource();
+
+        var token = _cancellationTokenSource.Token;
 
         try
         {
@@ -69,35 +80,38 @@ public sealed partial class GroupPolicyPage : Page
             RefreshButton.IsEnabled = false;
             RemoveAllButton.IsEnabled = false;
 
-            _policyStates = await GroupPolicyHelper.DetectPolicyStatesAsync(_cancellationTokenSource.Token);
+            _policyStates = await GroupPolicyHelper.DetectPolicyStatesAsync(token);
 
             DispatcherQueue.TryEnqueue(() =>
             {
+                if (this.XamlRoot == null || token.IsCancellationRequested) return;
+
                 UpdateSummary();
                 UpdateCategorySummary();
                 UpdateConfiguredPoliciesList();
             });
         }
-        catch (OperationCanceledException)
-        {
-            // Scan was cancelled
-        }
+        catch (OperationCanceledException) { }
+        catch (ObjectDisposedException) { }
         catch (Exception ex)
         {
             ErrorLogging.LogDebug(ex);
-
             DispatcherQueue.TryEnqueue(() =>
             {
-                SummaryText.Text = ResourceString.GetString("GroupPolicyPage_ScanError");
+                if (this.XamlRoot != null && !token.IsCancellationRequested)
+                    SummaryText.Text = ResourceString.GetString("GroupPolicyPage_ScanError");
             });
         }
         finally
         {
             DispatcherQueue.TryEnqueue(() =>
             {
-                ScanProgressRing.Visibility = Visibility.Collapsed;
-                ScanProgressRing.IsActive = false;
-                RefreshButton.IsEnabled = true;
+                if (this.XamlRoot != null && !token.IsCancellationRequested)
+                {
+                    ScanProgressRing.Visibility = Visibility.Collapsed;
+                    ScanProgressRing.IsActive = false;
+                    RefreshButton.IsEnabled = true;
+                }
             });
         }
     }
@@ -370,6 +384,32 @@ public sealed partial class GroupPolicyPage : Page
             ScanProgressRing.IsActive = false;
             RefreshButton.IsEnabled = true;
         }
+    }
+
+    private void Page_Unloaded(object sender, RoutedEventArgs e)
+    {
+        if (this.DataContext is IDisposable disposableVM)
+        {
+            disposableVM.Dispose();
+        }
+        this.DataContext = null;
+
+        if (_cancellationTokenSource != null)
+        {
+            try
+            {
+                _cancellationTokenSource.Cancel();
+            }
+            catch (ObjectDisposedException) { }
+            catch (AggregateException) { }
+            finally
+            {
+                _cancellationTokenSource.Dispose();
+                _cancellationTokenSource = null;
+            }
+        }
+
+        System.Diagnostics.Debug.WriteLine("[GroupPolicyPage] Unloaded and Background tasks stopped.");
     }
 }
 

@@ -3,14 +3,20 @@ using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using static EvolveOS_Optimizer.Core.Model.WeatherApiModels;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using System.Threading;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    public partial class HomePageViewModel : ViewModelBase
+    public partial class HomePageViewModel : ViewModelBase, IDisposable
     {
         private readonly HomePageModel _model = new HomePageModel();
         private readonly SystemDiagnostics _monitoringService = new SystemDiagnostics();
         private readonly WeatherService _weatherService = new WeatherService();
+
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue =
             Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
@@ -127,29 +133,37 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public HomePageViewModel()
         {
             _weatherLocation = "Paris";
-
             _monitoringService.GetHardwareData();
 
             LoadDisplayData();
             LoadDiskData();
 
-            _ = InitializeAsync();
+            _ = InitializeAsync(_cts.Token);
         }
 
-        private async Task InitializeAsync()
+        private async Task InitializeAsync(CancellationToken token)
         {
-            _ = FetchWeatherAsync(_weatherLocation);
+            _ = FetchWeatherAsync(_weatherLocation, token);
 
-            while (true)
+            try
             {
-                _dispatcherQueue.TryEnqueue(() =>
+                while (!token.IsCancellationRequested)
                 {
-                    UpdateDateTime();
-                    UpdateNetworkSpeed();
-                    RefreshStats();
-                });
+                    _dispatcherQueue.TryEnqueue(() =>
+                    {
+                        if (token.IsCancellationRequested) return;
 
-                await Task.Delay(1000);
+                        UpdateDateTime();
+                        UpdateNetworkSpeed();
+                        RefreshStats();
+                    });
+
+                    await Task.Delay(1000, token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.WriteLine("[HomePageVM] Background loop stopped safely.");
             }
         }
 
@@ -164,20 +178,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public void RefreshStats()
         {
-            _dispatcherQueue.TryEnqueue(() =>
-            {
-                var osName = _displayData.FirstOrDefault(x => x.Name == "OSName");
-                if (osName != null) osName.Data = HardwareData.OS.Name;
+            if (_displayData == null) return;
 
-                var osVer = _displayData.FirstOrDefault(x => x.Name == "OSVersion");
-                if (osVer != null) osVer.Data = HardwareData.OS.Version;
+            var osName = _displayData.FirstOrDefault(x => x.Name == "OSName");
+            if (osName != null) osName.Data = HardwareData.OS.Name;
 
-                var proc = _displayData.FirstOrDefault(x => x.Name == "Processes");
-                if (proc != null) proc.Data = HardwareData.RunningProcessesCount;
+            var osVer = _displayData.FirstOrDefault(x => x.Name == "OSVersion");
+            if (osVer != null) osVer.Data = HardwareData.OS.Version;
 
-                var svc = _displayData.FirstOrDefault(x => x.Name == "Services");
-                if (svc != null) svc.Data = HardwareData.RunningServicesCount;
-            });
+            var proc = _displayData.FirstOrDefault(x => x.Name == "Processes");
+            if (proc != null) proc.Data = HardwareData.RunningProcessesCount;
+
+            var svc = _displayData.FirstOrDefault(x => x.Name == "Services");
+            if (svc != null) svc.Data = HardwareData.RunningServicesCount;
         }
 
         private void UpdateNetworkSpeed()
@@ -193,15 +206,27 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             CurrentDate = now.ToString("dddd, MMMM d");
         }
 
-        public async Task FetchWeatherAsync(string? locationOverride = null)
+        public async Task FetchWeatherAsync(string? locationOverride = null, CancellationToken token = default)
         {
             try
             {
                 string loc = locationOverride ?? WeatherLocation;
-                WeatherData data = await _weatherService.GetWeatherAsync(loc);
+
+                Task<WeatherData> weatherTask = _weatherService.GetWeatherAsync(loc);
+                Task timeoutTask = Task.Delay(5000, token);
+                Task completedTask = await Task.WhenAny(weatherTask, timeoutTask);
+
+                if (completedTask == timeoutTask || token.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                WeatherData data = await weatherTask;
 
                 _dispatcherQueue.TryEnqueue(() =>
                 {
+                    if (token.IsCancellationRequested) return;
+
                     WeatherDescription = data.Description;
                     WeatherTemperature = data.TempC.ToString("F0") + "°";
                     WeatherLocation = loc;
@@ -209,18 +234,26 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     if (data.Forecast != null)
                     {
                         FiveDayForecast.Clear();
-                        foreach (var day in data.Forecast) FiveDayForecast.Add(day);
+                        foreach (var day in data.Forecast)
+                        {
+                            FiveDayForecast.Add(day);
+                        }
                     }
                 });
             }
-            catch { /* Log error */ }
+            catch (OperationCanceledException)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Weather Error] {ex.Message}");
+            }
         }
 
         private void LoadDiskData()
         {
-            // Assuming DiskInfoService is accessible
-            // var driveData = DiskInfoService.GetDrivesData();
-            // DiskDrives = new ObservableCollection<DriveSpaceInfo>(driveData);
+
         }
 
         public void RefreshWallpaper()
@@ -236,6 +269,28 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 DisplayWallpaper = bitmap;
             });
+        }
+
+        public override void Dispose()
+        {
+            try
+            {
+                _cts.Cancel();
+            }
+            catch { }
+
+            DisplayWallpaper = null;
+            _displayWallpaper = null;
+
+            _displayData?.Clear();
+            _fiveDayForecast?.Clear();
+            _diskDrives?.Clear();
+
+            OnPropertyChanged(string.Empty);
+
+            base.Dispose();
+
+            Debug.WriteLine("[HomePageVM] ViewModel Disposed and Tasks Canceled.");
         }
     }
 }

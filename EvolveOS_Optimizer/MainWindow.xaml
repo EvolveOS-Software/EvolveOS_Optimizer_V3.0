@@ -89,14 +89,12 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ContentControl x:Name="RootContentControl"
-                            Grid.Column="1"
-                            Content="{Binding CurrentView}"
-                            Margin="5,2,0,13"
-                            Scale="1,1,1"
-                            Opacity="1"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch" />
+            <Frame x:Name="ContentFrame"
+                   Grid.Column="1"
+                   Margin="5,2,0,13"
+                   HorizontalContentAlignment="Stretch"
+                   VerticalContentAlignment="Stretch"
+                   IsNavigationStackEnabled="False" />
 
             <Grid Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Canvas.ZIndex="100">
                 <Border Width="55" 

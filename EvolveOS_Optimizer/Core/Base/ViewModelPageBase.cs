@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 
 namespace EvolveOS_Optimizer.Core.Base
@@ -48,13 +49,20 @@ namespace EvolveOS_Optimizer.Core.Base
                     break;
                 case string s when model is ITypedPageItem<string> stringItem:
                     stringItem.Value = s;
-                    // Logic: If string is "!! MISSING !!", flag the model
                     if (s.Contains("!!")) model.IsFaulted = true;
                     break;
             }
 
             OnModelCreated(model);
             return model;
+        }
+
+        public override void Dispose()
+        {
+            Toggles?.Clear();
+            base.Dispose();
+
+            Debug.WriteLine($"[Memory Management] {this.GetType().Name} disposed and Toggles cleared.");
         }
 
         protected virtual void OnModelCreated(TModel model) { }

@@ -12,7 +12,7 @@ namespace EvolveOS_Optimizer.Pages
 {
     public sealed partial class InterfacePage : Page
     {
-        private readonly InterfaceTweaks _intfTweaks = new InterfaceTweaks();
+        private InterfaceTweaks? _intfTweaks = new InterfaceTweaks();
 
         public InterfacePage()
         {
@@ -106,7 +106,7 @@ namespace EvolveOS_Optimizer.Pages
                         }
                     }
 
-                    _intfTweaks.ApplyTweaks(key, isOn);
+                    _intfTweaks?.ApplyTweaks(key, isOn);
 
                     if (ExplorerManager.IntfMapping.TryGetValue(key, out bool needRestart) && needRestart)
                     {
@@ -119,6 +119,16 @@ namespace EvolveOS_Optimizer.Pages
                     }
                 }
             }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is IDisposable disposableVM)
+            {
+                disposableVM.Dispose();
+            }
+            this.DataContext = null;
+            _intfTweaks = null;
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
