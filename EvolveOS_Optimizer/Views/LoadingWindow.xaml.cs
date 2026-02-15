@@ -8,6 +8,7 @@ using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Animation;
+using System.Threading;
 using WinPoint = global::Windows.Graphics.PointInt32;
 using WinSize = global::Windows.Graphics.SizeInt32;
 
@@ -19,6 +20,7 @@ namespace EvolveOS_Optimizer.Views
         private readonly UninstallingPakages _uninstallingPakages = new UninstallingPakages();
         private readonly bool _isAutoLoginSuccessful;
         private readonly DispatcherQueue _dispatcherQueue;
+        private readonly CancellationTokenSource _cts = new();
         private int _lastReportedStep = -1;
 
         public LocalizationService Localizer => LocalizationService.Instance;
@@ -39,6 +41,20 @@ namespace EvolveOS_Optimizer.Views
             LoadUserDisplayData();
 
             this.Activated += LoadingWindow_Activated;
+            this.Closed += LoadingWindow_Closed;
+        }
+
+        private void LoadingWindow_Closed(object sender, WindowEventArgs args)
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+
+            if (RootGrid != null) RootGrid.DataContext = null;
+
+            if (_systemDiagnostics is IDisposable d1) d1.Dispose();
+            if (_uninstallingPakages is IDisposable d2) d2.Dispose();
+
+            Debug.WriteLine("[LoadingWindow] Cleaned up background tasks and disposed scanners.");
         }
 
         private void LoadUserDisplayData()
@@ -47,16 +63,19 @@ namespace EvolveOS_Optimizer.Views
 
             Task.Run(() =>
             {
+                if (_cts.Token.IsCancellationRequested) return;
+
                 string? avatarPath = _systemDiagnostics.GetProfileAvatarPath();
                 if (!string.IsNullOrEmpty(avatarPath))
                 {
                     _dispatcherQueue.TryEnqueue(() =>
                     {
+                        if (_cts.Token.IsCancellationRequested) return;
                         try { DisplayProfileAvatar.Source = new BitmapImage(new Uri(avatarPath)); }
                         catch { }
                     });
                 }
-            });
+            }, _cts.Token);
 
             if (_isAutoLoginSuccessful)
             {
@@ -70,7 +89,6 @@ namespace EvolveOS_Optimizer.Views
             try
             {
                 string hexColor = SettingsEngine.AccentColor;
-
                 Color userColor = ColorFromHex(hexColor);
 
                 if (RootGrid.Resources.TryGetValue("Brush_Accent", out object? brushObj) && brushObj is SolidColorBrush accentBrush)
@@ -108,11 +126,10 @@ namespace EvolveOS_Optimizer.Views
         private void ConfigureWindow()
         {
             IntPtr hWnd = global::WinRT.Interop.WindowNative.GetWindowHandle(this);
-            WindowId windowId;
-            windowId.Value = (ulong)hWnd;
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
 
             int style = Win32Helper.GetWindowLong(hWnd, Win32Helper.GWL_STYLE);
-            Win32Helper.SetWindowLong(hWnd, Win32Helper.GWL_STYLE, style & Win32Helper.WS_BORDER & Win32Helper.WS_THICKFRAME);
+            Win32Helper.SetWindowLong(hWnd, Win32Helper.GWL_STYLE, style & ~Win32Helper.WS_CAPTION & ~Win32Helper.WS_THICKFRAME);
 
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
             if (appWindow != null)
@@ -163,13 +180,16 @@ namespace EvolveOS_Optimizer.Views
         private async Task StartProcessingAsync()
         {
             UpdateStatus(1);
+            var token = _cts.Token;
 
             await Task.Run(async () =>
             {
                 try
                 {
+                    if (token.IsCancellationRequested) return;
+
                     Report(10);
-                    await Task.Delay(400);
+                    await Task.Delay(400, token);
 
                     Report(20);
                     Parallel.Invoke(
@@ -190,9 +210,12 @@ namespace EvolveOS_Optimizer.Views
 
                     for (int p = 30; p <= 70; p += 10)
                     {
+                        if (token.IsCancellationRequested) return;
                         Report(p);
-                        await Task.Delay(350);
+                        await Task.Delay(350, token);
                     }
+
+                    if (token.IsCancellationRequested) return;
 
                     Report(80);
                     HardwareData.RunningProcessesCount = await _systemDiagnostics.GetProcessCount();
@@ -203,49 +226,42 @@ namespace EvolveOS_Optimizer.Views
                     await _systemDiagnostics.GetPhysicalAvailableMemory();
 
                     Report(100);
-                    await Task.Delay(1000);
+                    await Task.Delay(1000, token);
+
+                    if (token.IsCancellationRequested) return;
 
                     _dispatcherQueue.TryEnqueue(() =>
                     {
-                        FinalizeTransition();
-
-                        if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
+                        if (!token.IsCancellationRequested)
                         {
-                            if (App.Current.MainWindow is MainWindow mainWin)
-                            {
-                                mainWin.DispatcherQueue.TryEnqueue(async () =>
-                                {
-                                    await Task.Delay(500);
-                                    mainWin.AnimateUpdateBanner(true);
-                                });
-                            }
+                            FinalizeTransition();
                         }
                     });
                 }
+                catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
                     ErrorLogging.LogWritingFile(ex, "LoadingProcessing_Fail");
                 }
-            });
+            }, token);
         }
 
         private void FinalizeTransition()
         {
             try
             {
+                _cts.Cancel();
+
                 var mainDash = new global::EvolveOS_Optimizer.MainWindow();
 
                 if (Application.Current is App myApp)
                 {
                     myApp.MainWindow = mainDash;
-
                     SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
-
                     myApp.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
                 }
 
                 UIHelper.ApplyBackdrop(mainDash, SettingsEngine.Backdrop);
-
                 mainDash.Activate();
 
                 this.Close();
@@ -266,8 +282,12 @@ namespace EvolveOS_Optimizer.Views
 
         private void Report(int percentage)
         {
+            if (_cts.Token.IsCancellationRequested) return;
+
             _dispatcherQueue.TryEnqueue(() =>
             {
+                if (_cts.Token.IsCancellationRequested) return;
+
                 int stepNumber = (percentage / 10) + 1;
                 if (stepNumber != _lastReportedStep && stepNumber <= 10)
                 {
@@ -280,12 +300,14 @@ namespace EvolveOS_Optimizer.Views
         private void UpdateStatus(int step)
         {
             string resourceKey = $"step{step}_load";
-
             string message = LocalizationService.Instance[resourceKey];
 
             _dispatcherQueue.TryEnqueue(() =>
             {
-                TypewriterAnimation.Create(message, StatusLoading, TimeSpan.FromMilliseconds(50));
+                if (!_cts.Token.IsCancellationRequested && StatusLoading != null)
+                {
+                    TypewriterAnimation.Create(message, StatusLoading, TimeSpan.FromMilliseconds(50));
+                }
             });
         }
 

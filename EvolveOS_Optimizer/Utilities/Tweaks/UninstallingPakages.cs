@@ -4,11 +4,12 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.Win32;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading;
 using SystemTask = System.Threading.Tasks.Task;
 
 namespace EvolveOS_Optimizer.Utilities.Tweaks
 {
-    internal sealed class UninstallingPakages : TaskSchedulerManager
+    internal sealed class UninstallingPakages : TaskSchedulerManager, IDisposable
     {
         private static bool _isLocalAccount = false;
 
@@ -59,6 +60,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             ["Camera"] = new PackagesInfo(scripts: new[] { "Microsoft.WindowsCamera" }),
             ["Video"] = new PackagesInfo("zunevideo", new[] { "Microsoft.ZuneVideo" }),
             ["BingNews"] = new PackagesInfo(scripts: new[] { "Microsoft.BingNews" }),
+            ["BingSearch"] = new PackagesInfo(scripts: new[] { "Microsoft.BingSearch" }),
             ["Mail"] = new PackagesInfo("communicationsapps", new[] { "microsoft.windowscommunicationsapps" }),
             ["MicrosoftTeams"] = new PackagesInfo("Teams", new[] { "MicrosoftTeams", "MSTeams" }),
             ["PowerAutomateDesktop"] = new PackagesInfo(scripts: new[] { "Microsoft.PowerAutomateDesktop" }),
@@ -68,7 +70,6 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             ["BingSports"] = new PackagesInfo(scripts: new[] { "Microsoft.BingSports" }),
             ["BingFinance"] = new PackagesInfo(scripts: new[] { "Microsoft.BingFinance" }),
             ["MicrosoftFamily"] = new PackagesInfo("FamilySafety", new[] { "MicrosoftCorporationII.MicrosoftFamily" }),
-            ["BingSearch"] = new PackagesInfo(scripts: new[] { "Microsoft.BingSearch" }),
             ["Outlook"] = new PackagesInfo(scripts: new[] { "Microsoft.OutlookForWindows" }),
             ["QuickAssist"] = new PackagesInfo(scripts: new[] { "MicrosoftCorporationII.QuickAssist" }),
             ["DevHome"] = new PackagesInfo(scripts: new[] { "Microsoft.Windows.DevHome" }),
@@ -128,18 +129,22 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             }
         }
 
-        internal static async Task RestoreOneDriveFolder()
+        internal static async Task<bool> RestoreOneDriveFolder(CancellationToken token = default)
         {
+            if (token.IsCancellationRequested) return false;
             await CommandExecutor.InvokeRunCommand($@"/c {PathLocator.Executable.OneDrive}").ConfigureAwait(false);
 
-            await SetTaskState(true, oneDriveTask);
+            await SetTaskState(true, token, oneDriveTask);
 
             RegistryHelp.CreateFolder(Registry.ClassesRoot, @"CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}");
             RegistryHelp.CreateFolder(Registry.ClassesRoot, @"Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}");
+            return true;
         }
 
-        internal static async Task RemoveAppxPackage(string packageName, bool shouldRemoveWebView = false)
+        internal static async SystemTask RemoveAppxPackage(string packageName, bool shouldRemoveWebView = false, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested) return;
+
             if (packageName == "OneDrive")
             {
                 await CommandExecutor.InvokeRunCommand($@"/c taskkill /f /im OneDrive.exe & {PathLocator.Executable.OneDrive} /uninstall").ConfigureAwait(false);
@@ -147,11 +152,13 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 RegistryHelp.DeleteFolderTree(Registry.ClassesRoot, @"CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}");
                 RegistryHelp.DeleteFolderTree(Registry.ClassesRoot, @"Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}");
 
-                await SetTaskState(false, oneDriveTask);
+                await SetTaskState(false, token, oneDriveTask);
 
-                await CommandExecutor.RunCommand($@"/c rd /s /q %userprofile%\AppData\Local\Microsoft\OneDrive & rd /s /q %userprofile%\AppData\Local\OneDrive & 
-                rd /s /q ""%allusersprofile%\Microsoft OneDrive"" & rd /s /q {PathLocator.Folders.SystemDrive}OneDriveTemp{(_isLocalAccount ? @" & rd /s /q %userprofile%\OneDrive" : "")}");
-
+                if (!token.IsCancellationRequested)
+                {
+                    await CommandExecutor.RunCommand($@"/c rd /s /q %userprofile%\AppData\Local\Microsoft\OneDrive & rd /s /q %userprofile%\AppData\Local\OneDrive & 
+                    rd /s /q ""%allusersprofile%\Microsoft OneDrive"" & rd /s /q {PathLocator.Folders.SystemDrive}OneDriveTemp{(_isLocalAccount ? @" & rd /s /q %userprofile%\OneDrive" : "")}");
+                }
                 return;
             }
 
@@ -165,18 +172,12 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
                 string alias = details.Alias;
                 IReadOnlyList<string> scripts = details.Scripts;
-
                 List<string> packageNamesToRemove = new List<string> { packageName };
 
-                if (!string.IsNullOrWhiteSpace(alias))
-                {
-                    packageNamesToRemove.Add(alias);
-                }
+                if (!string.IsNullOrWhiteSpace(alias)) packageNamesToRemove.Add(alias);
+                if (scripts != null && scripts.Count > 0) packageNamesToRemove.AddRange(scripts);
 
-                if (scripts != null && scripts.Count > 0)
-                {
-                    packageNamesToRemove.AddRange(scripts);
-                }
+                if (token.IsCancellationRequested) return;
 
                 string psCommands = $@"$pattern = '{string.Join("|", packageNamesToRemove.Select(Regex.Escape))}'
                     Get-AppxPackage -AllUsers | Where-Object {{ $_.Name -match $pattern }} | ForEach-Object {{ Remove-AppxPackage -AllUsers -Package $_.PackageFullName }}
@@ -184,9 +185,14 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
                 await CommandExecutor.InvokeRunCommand(psCommands, true).ConfigureAwait(false);
 
-                await CommandExecutor.RunCommandAsTrustedInstaller($@"/c for /d %i in ({string.Join(" ", packageNamesToRemove.Select(n => $@"""{Path.Combine(PathLocator.Folders.SystemDrive, "Program Files", "WindowsApps")}\*{n}*"""))}) do takeown /f ""%i"" /r /d y && icacls ""%i"" /inheritance:r /remove S-1-5-32-544 S-1-5-11 S-1-5-32-545 S-1-5-18 && icacls ""%i"" /grant {Environment.UserName}:F && rd /s /q ""%i""");
+                if (!token.IsCancellationRequested)
+                {
+                    await CommandExecutor.RunCommandAsTrustedInstaller($@"/c for /d %i in ({string.Join(" ", packageNamesToRemove.Select(n => $@"""{Path.Combine(PathLocator.Folders.SystemDrive, "Program Files", "WindowsApps")}\*{n}*"""))}) do takeown /f ""%i"" /r /d y && icacls ""%i"" /inheritance:r /remove S-1-5-32-544 S-1-5-11 S-1-5-32-545 S-1-5-18 && icacls ""%i"" /grant {Environment.UserName}:F && rd /s /q ""%i""");
+                }
             }
             catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+
+            if (token.IsCancellationRequested) return;
 
             switch (packageName)
             {
@@ -230,29 +236,23 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                             {
                                 try
                                 {
-                                    using RegistryKey? assocKey = baseKey.OpenSubKey(subkey, true);
-                                    if (assocKey != null)
+                                    using RegistryKey? shellKey = baseKey.OpenSubKey($@"{subkey}\Shell", true);
+                                    if (shellKey != null && shellKey.GetSubKeyNames().Any(k => k.Equals("3D Print", StringComparison.OrdinalIgnoreCase)))
                                     {
-                                        using RegistryKey? shellKey = assocKey.OpenSubKey("Shell", true);
-                                        if (shellKey != null)
-                                        {
-                                            if (shellKey.GetSubKeyNames().Any(k => k.Equals("3D Print", StringComparison.OrdinalIgnoreCase)))
-                                            {
-                                                RegistryHelp.DeleteFolderTree(Registry.ClassesRoot, $@"SystemFileAssociations\{subkey}\shell\3D Print");
-                                            }
-                                        }
+                                        RegistryHelp.DeleteFolderTree(Registry.ClassesRoot, $@"SystemFileAssociations\{subkey}\shell\3D Print");
                                     }
                                 }
-                                catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+                                catch { }
                             }
-                            baseKey.Close();
                         }
                     }
-                    catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+                    catch { }
                     break;
                 case "Edge":
                     string[] processes = { "msedge", "edge", "edgeupdate", "edgeupdatem", "msedgewebview2", "microsoftedgeupdate", "msedgewebviewhost", "msedgeuserbroker", "usocoreworker", "widgets", "microsoftedgesh", "microsoftedgecp", "microsoftedge" };
                     await CommandExecutor.RunCommandAsTrustedInstaller("/c taskkill /f " + string.Join(" ", processes.Select(p => $"/im {p}.exe")));
+
+                    if (token.IsCancellationRequested) return;
 
                     await CommandExecutor.RunCommand("/c " + CommandExecutor.CleanCommand(string.Join(" & ", new[]
                     {
@@ -267,6 +267,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         $@"for /f ""delims="" %i in ('dir /b /s ""{PathLocator.Folders.SystemDrive}Windows\System32\Tasks\*Edge*""') do (if exist ""%i"" (if exist ""%i\"" (rmdir /s /q ""%i"") else (del /f /q ""%i"")))"
                     })));
 
+                    if (token.IsCancellationRequested) return;
+
                     RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", true);
                     RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Microsoft\Active Setup\Installed Components\{9459C573-B17A-45AE-9F64-1857B5D58CEE}", true);
                     RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Edge", true);
@@ -274,7 +276,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Classes\MSEdgeHTM", true);
                     RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Clients\StartMenuInternet\Microsoft Edge", true);
 
-                    if (shouldRemoveWebView)
+                    if (shouldRemoveWebView && !token.IsCancellationRequested)
                     {
                         RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge Update", true);
                         RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\edgeupdate", true);
@@ -306,79 +308,64 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                                     }
                                 }
                             }
-                            catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+                            catch { }
                         }
                     }
 
-                    await RemoveTasksAsync(edgeTasks);
+                    await RemoveTasksAsync(token, edgeTasks);
 
-                    static async Task RemoveDirectory(string path)
+                    static async Task RemoveDirectoryInternal(string path)
                     {
                         if (string.IsNullOrWhiteSpace(path)) return;
-
                         await CommandExecutor.RunCommandAsTrustedInstaller($@"/c takeown /f ""{path}"" /r /d y && icacls ""{path}"" /inheritance:r && icacls ""{path}"" /remove *S-1-5-32-544 *S-1-5-11 *S-1-5-32-545 *S-1-5-18 && icacls ""{path}"" /grant {Environment.UserName}:F /t && rd /s /q ""{path}""");
-
                         for (int i = 0; Directory.Exists(path) && i < 10; i++)
                         {
                             try { Directory.Delete(path, true); await Task.Delay(300); }
-                            catch (Exception ex) { ErrorLogging.LogDebug(ex); }
-
+                            catch { }
                             await CommandExecutor.RunCommand($"Remove-Item -LiteralPath '{path}' -Recurse -Force", true);
                         }
                     }
 
                     foreach (string folder in new[] { "Edge", "EdgeCore", "EdgeUpdate", "Temp", "EdgeWebView" })
                     {
-                        if (!shouldRemoveWebView && (folder == "EdgeWebView" || folder == "EdgeCore" || folder == "EdgeUpdate"))
-                        {
-                            continue;
-                        }
-
+                        if (!shouldRemoveWebView && (folder == "EdgeWebView" || folder == "EdgeCore" || folder == "EdgeUpdate")) continue;
                         string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft", folder);
                         UnlockHandleHelper.UnlockDirectory(dir);
-                        await RemoveDirectory(dir);
+                        await RemoveDirectoryInternal(dir);
                     }
 
                     try
                     {
                         using RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\InboxApplications", true);
-
-                        if (key == null) return;
-
-                        foreach (string subKeyName in key.GetSubKeyNames())
+                        if (key != null)
                         {
-                            using RegistryKey? subKeyEntry = key.OpenSubKey(subKeyName);
-                            if (subKeyEntry == null) continue;
-
-                            string? rawPath = subKeyEntry.GetValue("Path") as string;
-                            if (string.IsNullOrEmpty(rawPath)) continue;
-
-                            string currentPath = rawPath;
-
-                            if (currentPath.Contains("Edge", StringComparison.OrdinalIgnoreCase))
+                            foreach (string subKeyName in key.GetSubKeyNames())
                             {
-                                if (!shouldRemoveWebView && currentPath.Contains("WebView", StringComparison.OrdinalIgnoreCase))
+                                using RegistryKey? subKeyEntry = key.OpenSubKey(subKeyName);
+                                if (subKeyEntry == null) continue;
+                                string? rawPath = subKeyEntry.GetValue("Path") as string;
+                                if (!string.IsNullOrEmpty(rawPath) && rawPath.Contains("Edge", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    continue;
+                                    if (!shouldRemoveWebView && rawPath.Contains("WebView", StringComparison.OrdinalIgnoreCase)) continue;
+                                    string currentPath = rawPath.Replace(@"\AppxManifest.xml", "", StringComparison.OrdinalIgnoreCase).Trim();
+                                    await RemoveDirectoryInternal(currentPath);
+                                    key.DeleteSubKey(subKeyName);
+                                    break;
                                 }
-
-                                if (currentPath.EndsWith(@"\AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    currentPath = currentPath.Replace(@"\AppxManifest.xml", "", StringComparison.OrdinalIgnoreCase).Trim();
-                                }
-
-                                await RemoveDirectory(currentPath);
-
-                                key.DeleteSubKey(subKeyName);
-                                return;
                             }
                         }
                     }
-                    catch (Exception ex) { ErrorLogging.LogDebug(ex); }
-                    break;
-                default:
+                    catch { }
                     break;
             }
+        }
+
+        public void Dispose()
+        {
+            DataChanged = null;
+            InstalledPackagesCache?.Clear();
+            Debug.WriteLine("[UninstallingPakages] Cleaned up static event and cache references.");
+            GC.SuppressFinalize(this);
         }
     }
 }

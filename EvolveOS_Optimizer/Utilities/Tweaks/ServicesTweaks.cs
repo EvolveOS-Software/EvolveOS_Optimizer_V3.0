@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
@@ -10,8 +11,14 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
     {
         internal static Dictionary<string, object> ControlStates = new Dictionary<string, object>();
         private readonly ControlWriterManager _сontrolWriter = new ControlWriterManager(ControlStates);
-        private readonly (string Normal, string Block)[] _updateFiles = new[] { PathLocator.Executable.UsoClient, PathLocator.Executable.WorkerCore, PathLocator.Executable.WuauClient, PathLocator.Executable.WaaSMedic, PathLocator.Executable.MoNotificationUx
-    };
+        private readonly (string Normal, string Block)[] _updateFiles = new[]
+        {
+            PathLocator.Executable.UsoClient,
+            PathLocator.Executable.WorkerCore,
+            PathLocator.Executable.WuauClient,
+            PathLocator.Executable.WaaSMedic,
+            PathLocator.Executable.MoNotificationUx
+        };
 
         internal void AnalyzeAndUpdate()
         {
@@ -169,7 +176,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WpnService", "Start", "4");
         }
 
-        internal async void ApplyTweaks(string tweak, bool isDisabled)
+        internal async Task ApplyTweaks(string tweak, bool isDisabled, CancellationToken token = default)
         {
             INIManager.TempWrite(INIManager.TempTweaksSvc, tweak, isDisabled);
 
@@ -184,14 +191,15 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\XblAuthManager", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\XboxNetApiSvc", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\XblGameSave", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
-                    await SetTaskState(!isDisabled, xboxTasks);
+                    await SetTaskState(!isDisabled, token, xboxTasks);
                     break;
                 case "TglButton3":
                     await BlockWindowsUpdate(isDisabled);
-                    ChangeAccessUpdateFolders(isDisabled);
+                    await ChangeAccessUpdateFolders(isDisabled, token);
 
                     foreach (var (Normal, Block) in _updateFiles)
                     {
+                        if (token.IsCancellationRequested) return;
                         string currentFilePath = isDisabled ? Normal : Block;
                         string targetFilePath = isDisabled ? Block : Normal;
 
@@ -215,7 +223,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         $@"icacls ""{targetFilePath}"" /grant *S-1-5-32-544:F",
                         $@"icacls ""{targetFilePath}"" /grant *S-1-5-32-545:R",
                         $@"icacls ""{targetFilePath}"" /grant *S-1-5-18:F",
-                        $@"icacls ""{targetFilePath}"" /grant *S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464:F",
+                        $@"icacls ""{targetFilePath}"" /grant *S-1-80-956008885-3418522649-1831038044-1853292631-2271478464:F",
                         $@"icacls ""{targetFilePath}"" /grant *S-1-15-2-1:R",
                         $@"icacls ""{targetFilePath}"" /grant *S-1-15-2-2:R",
                         $@"icacls ""{targetFilePath}"" /remove ""{Environment.UserName}"""}))}""");
@@ -245,9 +253,9 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     }
                     break;
                 case "TglButton4":
-                    string[] services = {"WalletService","VacSvc", "spectrum", "SharedRealitySvc","perceptionsimulation", "MixedRealityOpenXRSvc",
+                    string[] servicesArr = {"WalletService","VacSvc", "spectrum", "SharedRealitySvc","perceptionsimulation", "MixedRealityOpenXRSvc",
                 "MapsBroker", "EntAppSvc", "embeddedmode","wlidsvc", "WEPHOSTSVC", "StorSvc", "ClipSVC", "InstallService"};
-                    string command = $@"/c {string.Join(" & ", services.Select(s => $@"reg add HKLM\SYSTEM\CurrentControlSet\Services\{s} /t REG_DWORD /v Start /d {(isDisabled ? "4" : "3")} /f"))}";
+                    string command = $@"/c {string.Join(" & ", servicesArr.Select(s => $@"reg add HKLM\SYSTEM\CurrentControlSet\Services\{s} /t REG_DWORD /v Start /d {(isDisabled ? "4" : "3")} /f"))}";
                     await CommandExecutor.RunCommandAsTrustedInstaller(command);
                     break;
                 case "TglButton5":
@@ -263,7 +271,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\bthserv", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\BthAvctpSvc", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\BTAGService", "Start", isDisabled ? 4 : 3, RegistryValueKind.DWord);
-                    await SetTaskState(!isDisabled, bluetoothTask);
+                    await SetTaskState(!isDisabled, token, bluetoothTask);
                     break;
                 case "TglButton8":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\Spooler", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
@@ -427,7 +435,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             }
         }
 
-        private static async void ChangeAccessUpdateFolders(bool isDenyAccess)
+        private static async Task ChangeAccessUpdateFolders(bool isDenyAccess, CancellationToken token)
         {
             await Task.Run(async () =>
             {
@@ -437,17 +445,22 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     {
                         await CommandExecutor.RunCommandAsTrustedInstaller("/c net stop wuauserv & net stop bits & net stop cryptSvc & net stop RuntimeBroker");
 
-                        string[] processes = { "usocoreworker", "msedge", "pwahelper", "edgeupdate", "edgeupdatem", "microsoftedgeupdate", "msedgewebviewhost", "msedgeuserbroker", "runtimebroker", "widgets" };
-                        await CommandExecutor.RunCommandAsTrustedInstaller($"/c taskkill /f " + string.Join(" ", processes.Select(p => $"/im {p}.exe")));
+                        string[] processesArr = { "usocoreworker", "msedge", "pwahelper", "edgeupdate", "edgeupdatem", "microsoftedgeupdate", "msedgewebviewhost", "msedgeuserbroker", "runtimebroker", "widgets" };
+                        await CommandExecutor.RunCommandAsTrustedInstaller($"/c taskkill /f " + string.Join(" ", processesArr.Select(p => $"/im {p}.exe")));
+
+                        if (token.IsCancellationRequested) return;
 
                         foreach (string path in new[] { $@"{PathLocator.Folders.SystemDrive}Windows\SoftwareDistribution\Download", $@"{PathLocator.Folders.SystemDrive}Windows\SoftwareDistribution\DataStore", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "Windows", "DeliveryOptimization") })
                         {
+                            if (token.IsCancellationRequested) return;
+
                             UnlockHandleHelper.UnlockDirectory(path);
 
                             await CommandExecutor.RunCommandAsTrustedInstaller($@"/c takeown /f ""{path}"" /r /d y && icacls ""{path}"" /inheritance:r && icacls ""{path}"" /remove *S-1-5-32-544 *S-1-5-11 *S-1-5-32-545 *S-1-5-18 && icacls ""{path}"" /grant {Environment.UserName}:F /t && rd /s /q ""{path}""");
 
                             for (int i = 0; Directory.Exists(path) && i < 5; i++)
                             {
+                                if (token.IsCancellationRequested) return;
                                 try { Directory.Delete(path, true); }
                                 catch (Exception ex) { ErrorLogging.LogDebug(ex); }
 
@@ -455,16 +468,16 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                             }
                         }
 
-                        SetTaskStateOwner(false, winUpdatesTasks);
+                        SetTaskStateOwner(false, token, winUpdatesTasks);
                         await CommandExecutor.RunCommandAsTrustedInstaller("/c net start bits & net start cryptSvc");
                     }
                     else
                     {
-                        SetTaskStateOwner(true, winUpdatesTasks);
+                        SetTaskStateOwner(true, token, winUpdatesTasks);
                     }
                 }
                 catch (Exception ex) { ErrorLogging.LogDebug(ex); }
-            });
+            }, token);
         }
     }
 }
