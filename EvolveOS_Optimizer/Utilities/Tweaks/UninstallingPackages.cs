@@ -9,7 +9,7 @@ using SystemTask = System.Threading.Tasks.Task;
 
 namespace EvolveOS_Optimizer.Utilities.Tweaks
 {
-    internal sealed class UninstallingPakages : TaskSchedulerManager, IDisposable
+    internal sealed class UninstallingPackages : TaskSchedulerManager, IDisposable
     {
         private static bool _isLocalAccount = false;
 

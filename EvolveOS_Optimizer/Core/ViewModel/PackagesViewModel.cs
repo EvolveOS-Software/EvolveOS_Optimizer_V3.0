@@ -71,14 +71,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 });
             };
 
-            UninstallingPakages.DataChanged += _dataChangedHandler;
+            UninstallingPackages.DataChanged += _dataChangedHandler;
         }
 
         public async Task RefreshAllDataAsync()
         {
             IsRefreshing = true;
 
-            var pkgManager = new UninstallingPakages();
+            var pkgManager = new UninstallingPackages();
             await Task.Run(() => pkgManager.GetInstalledPackages());
 
             var installedApps = await AppManager.GetInstalledApps(uninstallableOnly: true);
@@ -97,7 +97,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (DisplayState == null) return;
             DisplayState.Clear();
 
-            foreach (var kv in UninstallingPakages.PackagesDetails)
+            foreach (var kv in UninstallingPackages.PackagesDetails)
             {
                 string name = kv.Key;
                 bool unavailableStatus = kv.Value.IsUnavailable;
@@ -147,7 +147,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (item == null || string.IsNullOrEmpty(item.Name)) return;
 
-            var details = UninstallingPakages.PackagesDetails;
+            var details = UninstallingPackages.PackagesDetails;
             if (details != null && details.TryGetValue(item.Name, out var val) && val != null)
             {
                 item.IsUnavailable = !val.IsUnavailable;
@@ -155,7 +155,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (!string.Equals(item.Name, "OneDrive", StringComparison.OrdinalIgnoreCase))
                 {
                     var scripts = val.Scripts;
-                    var cache = UninstallingPakages.InstalledPackagesCache;
+                    var cache = UninstallingPackages.InstalledPackagesCache;
 
                     if (scripts != null && scripts.Count > 0 && cache != null)
                     {
@@ -171,7 +171,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
                 else
                 {
-                    item.Installed = UninstallingPakages.IsOneDriveInstalled;
+                    item.Installed = UninstallingPackages.IsOneDriveInstalled;
                 }
             }
         }
@@ -180,7 +180,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (_dataChangedHandler != null)
             {
-                UninstallingPakages.DataChanged -= _dataChangedHandler;
+                UninstallingPackages.DataChanged -= _dataChangedHandler;
                 _dataChangedHandler = null;
             }
 

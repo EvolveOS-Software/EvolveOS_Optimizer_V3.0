@@ -264,7 +264,7 @@
     <sys:String x:Key="Notepad_pkg">Kladblok</sys:String>
     <sys:String x:Key="Calculator_pkg">Rekenmachine</sys:String>
     <sys:String x:Key="Copilot_pkg">Copilot</sys:String>
-    <sys:String x:Key="Whiteboard_pkg">Microsoft Whiteboard</sys:String>
+    <sys:String x:Key="WhiteBoard_pkg">Microsoft Whiteboard</sys:String>
     <sys:String x:Key="Wallet_pkg">Microsoft Portemonnee</sys:String>
     <sys:String x:Key="Spotify_pkg">Spotify</sys:String>
     <sys:String x:Key="WhatsApp_pkg">WhatsApp</sys:String>
@@ -317,7 +317,7 @@
     <sys:String x:Key="Notepad_desc">De klassieke lichtgewicht teksteditor voor eenvoudige codering en notities.</sys:String>
     <sys:String x:Key="Calculator_desc">Geavanceerd hulpmiddel voor basis-, wetenschappelijke en programmeerberekeningen.</sys:String>
     <sys:String x:Key="Copilot_desc">Door AI aangedreven assistent voor het beantwoorden van vragen en het automatiseren van systeemtaken.</sys:String>
-    <sys:String x:Key="Whiteboard_desc">Oneindig digitaal canvas voor gezamenlijke brainstormsessies en ideevorming.</sys:String>
+    <sys:String x:Key="WhiteBoard_desc">Oneindig digitaal canvas voor gezamenlijke brainstormsessies en ideevorming.</sys:String>
     <sys:String x:Key="Wallet_desc">Sla digitale passen, klantenkaarten en betalingsinformatie veilig op.</sys:String>
     <sys:String x:Key="Spotify_desc">Stream miljoenen nummers en podcasts vanaf je desktop.</sys:String>
     <sys:String x:Key="WhatsApp_desc">Desktopversie van de populaire berichten-app voor versleutelde chats en oproepen.</sys:String>
@@ -470,6 +470,7 @@
     <sys:String x:Key="tgl27_svc">Services gerelateerd aan bedrijfstools</sys:String>
     <sys:String x:Key="tgl28_svc">Service gerelateerd aan de werking van Hyper-V</sys:String>
     <sys:String x:Key="tgl29_svc">Services gerelateerd aan pushmeldingen</sys:String>
+    <sys:String x:Key="tgl30_svc">Services gerelateerd aan Winkel-demomodus</sys:String>
 
     <sys:String x:Key="tgl1_desc_svc">Uitschakelen als u geen bestandsgeschiedenis en inhoudsindexering gebruikt.</sys:String>
     <sys:String x:Key="tgl2_desc_svc">Uitschakelen als u geen Xbox en Microsoft-gamepads gebruikt.</sys:String>
@@ -500,6 +501,7 @@
     <sys:String x:Key="tgl27_svc">Uitschakelen als u geen beheer op afstand van zakelijke applicaties gebruikt en geen externe server hebt waarmee uw pc communiceert.</sys:String>
     <sys:String x:Key="tgl28_svc">Uitschakelen als u het ingebouwde virtualisatiesysteem niet gebruikt. Het heeft geen invloed op VirtualBox en dergelijke.</sys:String>
     <sys:String x:Key="tgl29_svc">Uitschakelen als u geen gekoppelde apparaten gebruikt en geen apps uit de Windows Store op afstand installeert. Deze services regelen het meldingencentrum voor gekoppelde apparaten en pushverzoeken. In Windows 10 kan het meldingencentrum stoppen met openen na uitschakeling.</sys:String>
+    <sys:String x:Key="tgl30_desc_svc">Uitschakelen als u het apparaat niet in een winkel gebruikt om Windows-functies te demonstreren. De Store-demoservice beheert de weergave van demo-inhoud en interactieve functies die alleen bedoeld zijn voor winkeldisplays en testen. Deze service is niet nodig voor dagelijks gebruik van de computer.</sys:String>
     <!-- endregion Services Page -->
 
     <!-- region Interface Page -->
@@ -585,5 +587,45 @@
     <sys:String x:Key="tgl39_desc_intf">In Windows 11 verschijnt standaard de snap-balk bovenaan het scherm wanneer u een venster versleept. Met deze tweak kunt u deze balk uitschakelen.</sys:String>
     <sys:String x:Key="tgl40_desc_intf">Kies of u de seconden in de klok van de taakbalk wilt zien; Windows toont deze standaard niet.</sys:String>
     <!-- endregion Interface Page-->
+
+    <!-- region Privacy Page -->
+    <sys:String x:Key="tgl1_conf">Advertentie-id en gerichte advertenties</sys:String>
+    <sys:String x:Key="tgl2_conf">Alle vormen van gegevenssynchronisatie</sys:String>
+    <sys:String x:Key="tgl3_conf">Verzamelen en monitoren van Windows-telemetrie</sys:String>
+    <sys:String x:Key="tgl4_conf">Gegevens verzamelen via takenplanner-gebeurtenissen</sys:String>
+    <sys:String x:Key="tgl5_conf">Gegevens verzamelen over geïnstalleerde applicaties</sys:String>
+    <sys:String x:Key="tgl6_conf">Statistieken over applicatiegebruik verzamelen</sys:String>
+    <sys:String x:Key="tgl7_conf">Handschriftgegevens verzamelen en verzenden</sys:String>
+    <sys:String x:Key="tgl8_conf">Hardwareconfiguratiegegevens verzamelen</sys:String>
+    <sys:String x:Key="tgl9_conf">Netwerktoegang tot spionerende Microsoft-domeinen</sys:String>
+    <sys:String x:Key="tgl10_conf">Locatie van de gebruiker bepalen</sys:String>
+    <sys:String x:Key="tgl11_conf">Aanvragen controleren via Feedback</sys:String>
+    <sys:String x:Key="tgl12_conf">Verborgen achtergrondupdates van spraaksynthese</sys:String>
+    <sys:String x:Key="tgl13_conf">Verborgen monitoring van uw systeem</sys:String>
+    <sys:String x:Key="tgl14_conf">Verborgen experimenten op uw systeem</sys:String>
+    <sys:String x:Key="tgl15_conf">Services voor heimelijke gegevensverzameling en -overdracht</sys:String>
+    <sys:String x:Key="tgl16_conf">Windows-gebeurtenissen «loggen»</sys:String>
+    <sys:String x:Key="tgl17_conf">Verzamelen en monitoren van NVIDIA-telemetrie</sys:String>
+    <sys:String x:Key="tgl18_conf">Gebruikersgedrag bijhouden</sys:String>
+
+    <sys:String x:Key="tgl1_desc_conf">Windows maakt voor elke gebruiker een unieke advertentie-id aan om uw acties te volgen. Deze wordt door app-ontwikkelaars en Windows zelf gebruikt voor eigen doeleinden, waaronder het aanbieden van specifieke advertenties in apps.</sys:String>
+    <sys:String x:Key="tgl2_desc_conf">Zelfs bij gebruik van een lokaal account probeert Windows altijd uw gegevens te synchroniseren met Microsoft-servers. Met name: thema's, wachtwoorden, Windows-instellingen, browserinstellingen, taalbalkinstellingen, toegankelijkheidsinstellingen en extra instellingen.</sys:String>
+    <sys:String x:Key="tgl3_desc_conf">Telemetrie (diagnostische gegevens) zijn gegevens die Windows automatisch verzamelt om naar Microsoft-servers te sturen, of kortweg: "Wat? Waar? Waarom en wanneer gebruikt u het?". Microsoft beweert dat de gegevens geanonimiseerd zijn. Naast privacyzorgen kan dit zorgen voor overmatige processorbelasting, wat het systeem vertraagt.</sys:String>
+    <sys:String x:Key="tgl4_desc_conf">In de «Takenplanner» bevinden zich services die na hun uitvoering gegevens verzamelen over hun werking en deze naar de Microsoft-server verzenden.</sys:String>
+    <sys:String x:Key="tgl5_desc_conf">Microsoft verzamelt gegevens over uw software om compatibiliteitsproblemen te diagnosticeren. Het uitschakelen van deze functie voorkomt dat potentieel gevoelige informatie over uw applicatiegebruik wordt verzonden.</sys:String>
+    <sys:String x:Key="tgl6_desc_conf">Deze tweak schakelt de monitoring van applicatiegebruik uit, waardoor gegevens over gebruiksfrequentie, werkduur en andere productiviteitsmetrieken niet langer worden verzameld.</sys:String>
+    <sys:String x:Key="tgl7_conf">Deze tweak schakelt het mechanisme voor gegevensverzameling uit dat Microsoft gebruikt om handschriftherkenning te verbeteren. Het systeem hield uw activiteit bij om de nauwkeurigheid te verhogen, ongeacht of u de functie gebruikte.</sys:String>
+    <sys:String x:Key="tgl8_desc_conf">Het programma voor kwaliteitsverbetering (CEIP) verzamelt informatie over uw hardwareconfiguratie en hoe u software en services gebruikt. Dit programma is vrijwillig; het uitschakelen ervan beschermt uw privacy.</sys:String>
+    <sys:String x:Key="tgl9_desc_conf">Deze tweak past het hosts-bestand aan door het adres 0.0.0.0 voor specifieke domeinnamen te plaatsen, waardoor ze effectief worden geblokkeerd. Daarnaast blokkeert het firewallverbindingen met IP-adressen die geassocieerd worden met Microsoft-telemetrie.</sys:String>
+    <sys:String x:Key="tgl10_desc_conf">Het uitschakelen van geolocatieservices vermindert de kans dat locatiegegevens voor advertentiedoeleinden worden gebruikt. De toegang wordt beperkt voor zowel Microsoft-services als apps van derden.</sys:String>
+    <sys:String x:Key="tgl11_desc_conf">Deze tweak blokkeert het verzamelen van feedback en de bijbehorende meldingen in Windows, wat voorkomt dat gegevens zonder uw toestemming worden verzonden.</sys:String>
+    <sys:String x:Key="tgl12_desc_conf">Windows kan spraak herkennen via een speciale module. Zelfs als u Cortana of «Toegankelijkheid» niet gebruikt, controleert het systeem standaard altijd op updates voor de spraakherkenningsengine.</sys:String>
+    <sys:String x:Key="tgl13_desc_conf">Een functie die toegang heeft tot gebruikersgegevens en informatie uitwisselt met Microsoft-servers zonder de werking van het systeem of apps te verbeteren. Dit maakt de functie overbodig.</sys:String>
+    <sys:String x:Key="tgl14_desc_conf">Microsoft voert regelmatig experimenten uit bij Windows-gebruikers om te zien of functies nuttig zijn. Dit vormt echter een inbreuk op uw privacy.</sys:String>
+    <sys:String x:Key="tgl15_desc_conf">De services DiagTrack, dmwappushservice en diagsvc fungeren als keyloggers — ze registreren gebruikersactiviteit, inclusief toetsaanslagen, en verzenden dit naar Microsoft. Tenzij u UWF gebruikt, is het verstandig deze te verwijderen.</sys:String>
+    <sys:String x:Key="tgl16_desc_conf">Een gebeurtenislogboek dat diagnostische informatie verzamelt en verwerkt, wat systeembronnen verbruikt. Het uitschakelen hiervan voorkomt het verzenden van vertrouwelijke informatie.</sys:String>
+    <sys:String x:Key="tgl17_desc_conf">De service die verantwoordelijk is voor het verzamelen van gegevens over het systeemgebruik door NVIDIA is overbodig voor de werking van het videostuurprogramma zelf.</sys:String>
+    <sys:String x:Key="tgl18_desc_conf">Deze tweak schakelt de UAR-functie (User Activity Recording) uit – een systeem dat elke actie op uw computer logt: van screenshots en getypte tekst tot het openen van programma's.</sys:String>
+    <!-- endregion Privacy Page -->
 
 </ResourceDictionary>
