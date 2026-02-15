@@ -267,6 +267,28 @@
     <sys:String x:Key="Wallet_pkg">Portefeuille Microsoft</sys:String>
     <sys:String x:Key="Spotify_pkg">Spotify</sys:String>
     <sys:String x:Key="WhatsApp_pkg">WhatsApp</sys:String>
+    <sys:String x:Key="Facebook_pkg">Facebook</sys:String>
+    <sys:String x:Key="Hulu_pkg">Hulu</sys:String>
+    <sys:String x:Key="Disney_pkg">Disney</sys:String>
+    <sys:String x:Key="Instagram_pkg">Instagram</sys:String>
+    <sys:String x:Key="TwitterX_pkg">Twitter - X</sys:String>
+    <sys:String x:Key="TikTok_pkg">TikTok</sys:String>
+    <sys:String x:Key="MicrosoftSway_pkg">Microsoft Sway</sys:String>
+    <sys:String x:Key="Builder3D_pkg">Microsoft 3D-Builder</sys:String>
+    <sys:String x:Key="Netflix_pkg">Netflix</sys:String>
+    <sys:String x:Key="YandexMusic_pkg">Yandex.Music</sys:String>
+    <sys:String x:Key="Viber_pkg">Viber</sys:String>
+    <sys:String x:Key="Messaging_pkg">Microsoft Messaging</sys:String>
+    <sys:String x:Key="Picsart_pkg">Picsart AI Photo Editor</sys:String>
+    <sys:String x:Key="Plex_pkg">Plex for Windows</sys:String>
+    <sys:String x:Key="PrimeVideo_pkg">Amazon Prime Video</sys:String>
+    <sys:String x:Key="Shazam_pkg">Shazam</sys:String>
+    <sys:String x:Key="TuneInRadio_pkg">TuneIn Radio</sys:String>
+    <sys:String x:Key="iHeartRadio_pkg">iHeart: Radio, Music, Podcasts</sys:String>
+    <sys:String x:Key="Pandora_pkg">Pandora</sys:String>
+    <sys:String x:Key="DolbyAccess_pkg">Dolby Access</sys:String>
+    <sys:String x:Key="PowerToys_pkg">Microsoft PowerToys</sys:String>
+    <sys:String x:Key="MicrosoftJournal_pkg">Microsoft Journal</sys:String>
 
     <sys:String x:Key="MicrosoftStore_desc">La plateforme de distribution numérique principale pour les applications et jeux Windows.</sys:String>
     <sys:String x:Key="Xbox_desc">Accédez à l'écosystème Xbox, y compris le Game Pass, les fonctionnalités sociales et le jeu à distance.</sys:String>
@@ -320,6 +342,28 @@
     <sys:String x:Key="Wallet_desc">Stockez vos pass numériques, cartes de fidélité et informations de paiement en toute sécurité.</sys:String>
     <sys:String x:Key="Spotify_desc">Écoutez des millions de chansons et de podcasts depuis votre bureau.</sys:String>
     <sys:String x:Key="WhatsApp_desc">Version de bureau de l'application de messagerie populaire pour les chats et appels chiffrés.</sys:String>
+    <sys:String x:Key="Facebook_desc">Le client officiel Facebook. Il exécute fréquemment des services en arrière-plan pour les notifications, consommant de la mémoire et de la batterie.</sys:String>
+    <sys:String x:Key="Hulu_desc">Application de streaming pour films et séries. Si vous préférez utiliser un navigateur, cette application peut être supprimée en toute sécurité.</sys:String>
+    <sys:String x:Key="Disney_desc">Application officielle Disney+. À désinstaller si vous n'avez pas d'abonnement ou si vous préférez le streaming via navigateur.</sys:String>
+    <sys:String x:Key="Instagram_desc">Client de réseau social pour le partage de photos. Comme les autres apps Meta, elle reste souvent active en arrière-plan.</sys:String>
+    <sys:String x:Key="TwitterX_desc">Le client officiel X (Twitter) pour Windows. Fournit des notifications mais peut être remplacé par la version web pour économiser des ressources.</sys:String>
+    <sys:String x:Key="TikTok_desc">Client officiel TikTok. Connu pour une utilisation élevée des ressources lors de la lecture vidéo et des connexions persistantes.</sys:String>
+    <sys:String x:Key="MicrosoftSway_desc">Application Microsoft Office pour les rapports interactifs. Peut être supprimée si vous utilisez la version web ou PowerPoint.</sys:String>
+    <sys:String x:Key="Builder3D_desc">Outil pour visualiser et imprimer des modèles 3D. Rarement nécessaire, sauf si vous faites de l'impression 3D.</sys:String>
+    <sys:String x:Key="Netflix_desc">Application officielle Netflix. Prend une place considérable et reste active pour les mises à jour en arrière-plan.</sys:String>
+    <sys:String x:Key="YandexMusic_desc">Client de streaming musical Yandex. Recommandé de le supprimer si vous utilisez d'autres services de musique.</sys:String>
+    <sys:String x:Key="Viber_desc">Application de messagerie instantanée et VoIP. Souvent configurée pour démarrer avec Windows, consommant de la RAM au démarrage.</sys:String>
+    <sys:String x:Key="Messaging_desc">Ancienne application Microsoft pour SMS sur appareils cellulaires. Totalement inutile pour la plupart des utilisateurs de PC.</sys:String>
+    <sys:String x:Key="Picsart_desc">Éditeur photo et vidéo IA. Possède une empreinte d'installation large et plusieurs tâches de synchronisation cloud.</sys:String>
+    <sys:String x:Key="Plex_desc">Lecteur multimédia pour serveurs Plex. Si vous ne gérez pas de bibliothèque locale, cette application est inutile.</sys:String>
+    <sys:String x:Key="PrimeVideo_desc">Client de streaming d'Amazon. La suppression est sans risque pour ceux qui utilisent l'interface web.</sys:String>
+    <sys:String x:Key="Shazam_desc">Outil d'identification musicale. Souvent redondant car la reconnaissance est intégrée aux navigateurs et assistants.</sys:String>
+    <sys:String x:Key="TuneInRadio_desc">Streaming radio mondial. À supprimer pour épurer votre système si vous écoutez de la musique via d'autres plateformes.</sys:String>
+    <sys:String x:Key="iHeartRadio_desc">Plateforme de radio et podcasts. Utilise un cache important et peut impacter les performances réseau avec le pré-chargement.</sys:String>
+    <sys:String x:Key="Pandora_desc">Service radio personnalisé. À supprimer si le service n'est pas disponible dans votre région ou si vous utilisez Spotify.</sys:String>
+    <sys:String x:Key="DolbyAccess_desc">Configure Dolby Atmos pour casques. À supprimer uniquement si vous n'avez pas de matériel compatible ou de licence Dolby.</sys:String>
+    <sys:String x:Key="MicrosoftJournal_desc">Une application de prise de notes conçue pour les écrans tactiles et les stylets.</sys:String>
+    <sys:String x:Key="PowerToys_desc">Utilitaires système avancés. Bien qu'utiles, ils se composent de plusieurs processus en arrière-plan qui peuvent augmenter considérablement l'utilisation de la RAM et les réveils du processeur.</sys:String>
 
     <sys:String x:Key="title_over_pkg">Confirmation de désinstallation</sys:String>
     <sys:String x:Key="text_over_pkg" xml:space="preserve">Vous êtes sur le point de désinstaller le navigateur Microsoft Edge. Cela supprimera également le composant EdgeWebView, qui est utilisé pour afficher du contenu Web dans diverses applications — telles que Microsoft Office (ex: Meeting Insights, Room Finder), l'application Photos (la nouvelle version utilise WebView2), certains bots Telegram et d'autres programmes qui dépendent de WebView intégré. Avant de continuer, assurez-vous de ne pas avoir besoin de ce composant.

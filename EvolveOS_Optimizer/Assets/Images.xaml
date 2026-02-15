@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <BitmapImage x:Key="Img_SandTimer" UriSource="ms-appx:///Assets/ImagePackages/SandTimer.png"/>
+    <BitmapImage x:Key="Img_3DBuilder" UriSource="ms-appx:///Assets/ImagePackages/3DBuilder.png"/>
     <BitmapImage x:Key="Img_Alarms" UriSource="ms-appx:///Assets/ImagePackages/Alarms.png"/>
     <BitmapImage x:Key="Img_BingFinance" UriSource="ms-appx:///Assets/ImagePackages/BingFinance.png"/>
     <BitmapImage x:Key="Img_BingNews" UriSource="ms-appx:///Assets/ImagePackages/BingNews.png"/>
@@ -14,13 +15,22 @@
     <BitmapImage x:Key="Img_Copilot" UriSource="ms-appx:///Assets/ImagePackages/Copilot.png"/>
     <BitmapImage x:Key="Img_Cortana" UriSource="ms-appx:///Assets/ImagePackages/Cortana.png"/>
     <BitmapImage x:Key="Img_DevHome" UriSource="ms-appx:///Assets/ImagePackages/DevHome.png"/>
+    <BitmapImage x:Key="Img_Disney" UriSource="ms-appx:///Assets/ImagePackages/Disney.png"/>
+    <BitmapImage x:Key="Img_DolbyAccess" UriSource="ms-appx:///Assets/ImagePackages/DolbyAccess.png"/>
     <BitmapImage x:Key="Img_Edge" UriSource="ms-appx:///Assets/ImagePackages/Edge.png"/>
+    <BitmapImage x:Key="Img_EdgeDevTools" UriSource="ms-appx:///Assets/ImagePackages/Edge_DevTools.png"/>
+    <BitmapImage x:Key="Img_Facebook" UriSource="ms-appx:///Assets/ImagePackages/Facebook.png"/>
     <BitmapImage x:Key="Img_FeedbackHub" UriSource="ms-appx:///Assets/ImagePackages/FeedbackHub.png"/>
     <BitmapImage x:Key="Img_GetHelp" UriSource="ms-appx:///Assets/ImagePackages/GetHelp.png"/>
     <BitmapImage x:Key="Img_GetStarted" UriSource="ms-appx:///Assets/ImagePackages/GetStarted.png"/>
+    <BitmapImage x:Key="Img_Hulu" UriSource="ms-appx:///Assets/ImagePackages/Hulu.png"/>
+    <BitmapImage x:Key="Img_iHeartRadio" UriSource="ms-appx:///Assets/ImagePackages/iHeartRadio.png"/>
+    <BitmapImage x:Key="Img_Instagram" UriSource="ms-appx:///Assets/ImagePackages/Instagram.png"/>
+    <BitmapImage x:Key="Img_MicrosoftJournal" UriSource="ms-appx:///Assets/ImagePackages/Journal.png"/>
     <BitmapImage x:Key="Img_Linkedin" UriSource="ms-appx:///Assets/ImagePackages/Linkedin.png"/>
     <BitmapImage x:Key="Img_Mail" UriSource="ms-appx:///Assets/ImagePackages/Mail.png"/>
     <BitmapImage x:Key="Img_Maps" UriSource="ms-appx:///Assets/ImagePackages/Maps.png"/>
+    <BitmapImage x:Key="Img_Messaging" UriSource="ms-appx:///Assets/ImagePackages/Messaging.png"/>
     <BitmapImage x:Key="Img_Microsoft3DViewer" UriSource="ms-appx:///Assets/ImagePackages/Microsoft3DViewer.png"/>
     <BitmapImage x:Key="Img_MicrosoftFamilySafety" UriSource="ms-appx:///Assets/ImagePackages/MicrosoftFamilySafety.png"/>
     <BitmapImage x:Key="Img_MicrosoftOfficeHub" UriSource="ms-appx:///Assets/ImagePackages/MicrosoftOfficeHub.png"/>
@@ -28,32 +38,45 @@
     <BitmapImage x:Key="Img_MicrosoftSolitaireCollection" UriSource="ms-appx:///Assets/ImagePackages/MicrosoftSolitaireCollection.png"/>
     <BitmapImage x:Key="Img_MicrosoftStickyNotes" UriSource="ms-appx:///Assets/ImagePackages/MicrosoftStickyNotes.png"/>
     <BitmapImage x:Key="Img_MicrosoftStore" UriSource="ms-appx:///Assets/ImagePackages/MicrosoftStore.png"/>
+    <BitmapImage x:Key="Img_MicrosoftSway" UriSource="ms-appx:///Assets/ImagePackages/MicrosoftSway.png"/>
     <BitmapImage x:Key="Img_MicrosoftTeams" UriSource="ms-appx:///Assets/ImagePackages/MicrosoftTeams.png"/>
     <BitmapImage x:Key="Img_MixedReality" UriSource="ms-appx:///Assets/ImagePackages/MixedReality.png"/>
     <BitmapImage x:Key="Img_MobilePlanOneConnect" UriSource="ms-appx:///Assets/ImagePackages/MobilePlanOneConnect.png"/>
     <BitmapImage x:Key="Img_Music" UriSource="ms-appx:///Assets/ImagePackages/Music.png"/>
+    <BitmapImage x:Key="Img_Netflix" UriSource="ms-appx:///Assets/ImagePackages/Netflix.png"/>
     <BitmapImage x:Key="Img_Notepad" UriSource="ms-appx:///Assets/ImagePackages/Notepad.png"/>
     <BitmapImage x:Key="Img_OneDrive" UriSource="ms-appx:///Assets/ImagePackages/OneDrive.png"/>
     <BitmapImage x:Key="Img_OneNote" UriSource="ms-appx:///Assets/ImagePackages/OneNote.png"/>
     <BitmapImage x:Key="Img_Outlook" UriSource="ms-appx:///Assets/ImagePackages/Outlook.png"/>
     <BitmapImage x:Key="Img_Paint3D" UriSource="ms-appx:///Assets/ImagePackages/Paint3D.png"/>
+    <BitmapImage x:Key="Img_Pandora" UriSource="ms-appx:///Assets/ImagePackages/Pandora.png"/>
     <BitmapImage x:Key="Img_People" UriSource="ms-appx:///Assets/ImagePackages/People.png"/>
     <BitmapImage x:Key="Img_Phone" UriSource="ms-appx:///Assets/ImagePackages/Phone.png"/>
     <BitmapImage x:Key="Img_Photos" UriSource="ms-appx:///Assets/ImagePackages/Photos.png"/>
+    <BitmapImage x:Key="Img_Picsart" UriSource="ms-appx:///Assets/ImagePackages/Picsart.png"/>
+    <BitmapImage x:Key="Img_Plex" UriSource="ms-appx:///Assets/ImagePackages/Plex.png"/>
+    <BitmapImage x:Key="Img_PowerToys" UriSource="ms-appx:///Assets/ImagePackages/Powertoys.png"/>
+    <BitmapImage x:Key="Img_PrimeVideo" UriSource="ms-appx:///Assets/ImagePackages/PrimeVideo.png"/>
     <BitmapImage x:Key="Img_QuickAssist" UriSource="ms-appx:///Assets/ImagePackages/QuickAssist.png"/>
     <BitmapImage x:Key="Img_ScreenSketch" UriSource="ms-appx:///Assets/ImagePackages/ScreenSketch.png"/>
+    <BitmapImage x:Key="Img_Shazam" UriSource="ms-appx:///Assets/ImagePackages/Shazam.png"/>
     <BitmapImage x:Key="Img_SkypeApp" UriSource="ms-appx:///Assets/ImagePackages/SkypeApp.png"/>
     <BitmapImage x:Key="Img_SoundRecorder" UriSource="ms-appx:///Assets/ImagePackages/SoundRecorder.png"/>
+    <BitmapImage x:Key="Img_Spotify" UriSource="ms-appx:///Assets/ImagePackages/Spotify.png"/>
     <BitmapImage x:Key="Img_Terminal" UriSource="ms-appx:///Assets/ImagePackages/Terminal.png"/>
+    <BitmapImage x:Key="Img_TikTok" UriSource="ms-appx:///Assets/ImagePackages/TikTok.png"/>
     <BitmapImage x:Key="Img_Todos" UriSource="ms-appx:///Assets/ImagePackages/Todos.png"/>
+    <BitmapImage x:Key="Img_TuneInRadio" UriSource="ms-appx:///Assets/ImagePackages/TuneInRadio.png"/>
+    <BitmapImage x:Key="Img_TwitterX" UriSource="ms-appx:///Assets/ImagePackages/TwitterX.png"/>
     <BitmapImage x:Key="Img_Video" UriSource="ms-appx:///Assets/ImagePackages/Video.png"/>
+    <BitmapImage x:Key="Img_Viber" UriSource="ms-appx:///Assets/ImagePackages/Viber.png"/>
     <BitmapImage x:Key="Img_WebMediaExtensions" UriSource="ms-appx:///Assets/ImagePackages/WebMediaExtensions.png"/>
     <BitmapImage x:Key="Img_Widgets" UriSource="ms-appx:///Assets/ImagePackages/Widgets.png"/>
-    <BitmapImage x:Key="Img_Xbox" UriSource="ms-appx:///Assets/ImagePackages/Xbox.png"/>
     <BitmapImage x:Key="Img_WhiteBoard" UriSource="ms-appx:///Assets/ImagePackages/WhiteBoard.png"/>
     <BitmapImage x:Key="Img_Wallet" UriSource="ms-appx:///Assets/ImagePackages/Wallet.png"/>
-    <BitmapImage x:Key="Img_Spotify" UriSource="ms-appx:///Assets/ImagePackages/Spotify.png"/>
     <BitmapImage x:Key="Img_WhatsApp" UriSource="ms-appx:///Assets/ImagePackages/WhatsApp.png"/>
+    <BitmapImage x:Key="Img_Xbox" UriSource="ms-appx:///Assets/ImagePackages/Xbox.png"/>
+    <BitmapImage x:Key="Img_YandexMusic" UriSource="ms-appx:///Assets/ImagePackages/YandexMusic.png"/>
 
     <BitmapImage x:Key="Sunny" UriSource="ms-appx:///Assets/ImagePackages/Sunny.png"/>
     <BitmapImage x:Key="Rain" UriSource="ms-appx:///Assets/ImagePackages/Rain.png"/>
