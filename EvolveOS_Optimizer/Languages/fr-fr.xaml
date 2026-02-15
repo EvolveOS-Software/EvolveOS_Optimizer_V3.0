@@ -9,6 +9,11 @@
     <sys:String x:Key="defaultDescription">Survolez un tweak pour obtenir sa description.</sys:String>
     <!-- endregion Description Block -->
 
+    <!-- region Safe Mode -->
+    <sys:String x:Key="title_recovery">EvolveOS Optimizer - Mode de récupération</sys:String>
+    <sys:String x:Key="msg_safemode_detected">Mode sans échec détecté ! Votre système est actuellement dans un état restreint. Il s'agit d'un état critique pour Windows 25H2. Souhaitez-vous tenter une récupération et redémarrer en mode normal ?</sys:String>
+    <!-- endregion Safe Mode -->
+
     <!-- region Loading Window -->
     <sys:String x:Key="loading_message">Chargement de EvolveOS Optimizer</sys:String>
     <sys:String x:Key="step1_load">Démarrage du service Trusted Installer...</sys:String>

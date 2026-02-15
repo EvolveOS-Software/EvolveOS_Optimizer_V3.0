@@ -9,6 +9,11 @@
     <sys:String x:Key="defaultDescription">Hover your mouse over any tweak to get its description</sys:String>
     <!-- endregion Description Block -->
 
+    <!-- region Safe Mode -->
+    <sys:String x:Key="title_recovery">EvolveOS Optimizer - Recovery Mode</sys:String>
+    <sys:String x:Key="msg_safemode_detected">Safe Mode detected! Your system is currently in a restricted state. This is a critical state for Windows 25H2. Would you like to attempt a recovery and restart to Normal Mode?</sys:String>
+    <!-- endregion Safe Mode -->
+
     <!-- region Loading Window -->
     <sys:String x:Key="loading_message">Loading EvolveOS Optimizer</sys:String>
     <sys:String x:Key="step1_load">Starting Trusted Installer Service...</sys:String>
