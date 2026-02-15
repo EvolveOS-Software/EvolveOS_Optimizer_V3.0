@@ -196,7 +196,7 @@ namespace EvolveOS_Optimizer.Views
                         () => ExecuteWithLogging(TrustedInstaller.StartTrustedInstallerService, nameof(TrustedInstaller.StartTrustedInstallerService)),
                         () => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus)),
                         () => ExecuteWithLogging(_systemDiagnostics.GetHardwareData, nameof(_systemDiagnostics.GetHardwareData)),
-                        () => ExecuteAsyncWithLogging(_systemDiagnostics.ValidateVersionUpdatesAsync, nameof(_systemDiagnostics.ValidateVersionUpdatesAsync)),
+                        () => ExecuteAsyncWithLogging(() => _systemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(_systemDiagnostics.ValidateVersionUpdatesAsync)),
                         () => ExecuteWithLogging(_uninstallingPakages.GetInstalledPackages, nameof(_uninstallingPakages.GetInstalledPackages)),
                         () => ExecuteAsyncWithLogging(RunGuard.CheckingDefenderExclusions, nameof(RunGuard.CheckingDefenderExclusions)),
                         () =>
@@ -232,9 +232,18 @@ namespace EvolveOS_Optimizer.Views
 
                     _dispatcherQueue.TryEnqueue(() =>
                     {
-                        if (!token.IsCancellationRequested)
+                        FinalizeTransition();
+
+                        if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
                         {
-                            FinalizeTransition();
+                            if (App.Current.MainWindow is MainWindow mainWin)
+                            {
+                                mainWin.DispatcherQueue.TryEnqueue(async () =>
+                                {
+                                    await Task.Delay(500);
+                                    mainWin.AnimateUpdateBanner(true);
+                                });
+                            }
                         }
                     });
                 }
@@ -250,8 +259,6 @@ namespace EvolveOS_Optimizer.Views
         {
             try
             {
-                _cts.Cancel();
-
                 var mainDash = new global::EvolveOS_Optimizer.MainWindow();
 
                 if (Application.Current is App myApp)
@@ -264,6 +271,7 @@ namespace EvolveOS_Optimizer.Views
                 UIHelper.ApplyBackdrop(mainDash, SettingsEngine.Backdrop);
                 mainDash.Activate();
 
+                _cts.Cancel();
                 this.Close();
             }
             catch (Exception ex)
@@ -299,12 +307,14 @@ namespace EvolveOS_Optimizer.Views
 
         private void UpdateStatus(int step)
         {
-            string resourceKey = $"step{step}_load";
-            string message = LocalizationService.Instance[resourceKey];
-
             _dispatcherQueue.TryEnqueue(() =>
             {
-                if (!_cts.Token.IsCancellationRequested && StatusLoading != null)
+                if (_cts.Token.IsCancellationRequested || StatusLoading == null) return;
+
+                string resourceKey = $"step{step}_load";
+                string message = LocalizationService.Instance[resourceKey];
+
+                if (!string.IsNullOrEmpty(message))
                 {
                     TypewriterAnimation.Create(message, StatusLoading, TimeSpan.FromMilliseconds(50));
                 }
@@ -319,7 +329,10 @@ namespace EvolveOS_Optimizer.Views
 
         private void ExecuteAsyncWithLogging(Func<Task> action, string member)
         {
-            try { action().GetAwaiter().GetResult(); }
+            try
+            {
+                Task.Run(async () => await action()).GetAwaiter().GetResult();
+            }
             catch (Exception ex) { ErrorLogging.LogWritingFile(ex, member); }
         }
     }

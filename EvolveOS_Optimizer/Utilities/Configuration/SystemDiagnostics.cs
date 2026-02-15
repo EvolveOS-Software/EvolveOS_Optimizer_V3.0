@@ -1,6 +1,3 @@
-using EvolveOS_Optimizer.Utilities.Controls;
-using Microsoft.Win32;
-using Newtonsoft.Json;
 using System.Globalization;
 using System.IO;
 using System.Management;
@@ -13,15 +10,18 @@ using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Managers;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
     internal sealed class SystemDiagnostics : MonitoringService
     {
         private static readonly object _wmiLock = new object();
-        private static readonly HttpClient _updateClient = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+        private static readonly HttpClient _updateClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
 
-        // ADDED: Persistent counter to fix the 100% CPU bug
         private static readonly PerformanceCounter _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
 
         internal static bool IsElevated => IsRunningAsAdmin();
@@ -32,7 +32,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal string? WallpaperPath { get; private set; }
         internal string? AvatarPath { get; private set; }
 
-        // ADDED: Native Win32 structs for real RAM monitoring
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private class MEMORYSTATUSEX
         {
@@ -462,7 +461,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 try
                 {
-                    // Use a local client or the static one, but await it properly
                     UserIPAddress = await _updateClient.GetStringAsync("https://api.ipify.org", token);
                 }
                 catch { UserIPAddress = "Offline"; }
@@ -471,7 +469,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             isIPAddressFormatValid = UserIPAddress.Any(char.IsDigit);
         }
 
-        internal async Task ValidateVersionUpdatesAsync()
+        internal async Task ValidateVersionUpdatesAsync(CancellationToken token = default)
         {
             if (!SettingsEngine.IsUpdateCheckRequired || !IsNetworkAvailable())
             {
@@ -482,19 +480,28 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 using var request = new HttpRequestMessage(HttpMethod.Get, PathLocator.Links.GitHubApi);
                 request.Headers.Add("User-Agent", "EvolveOS-Optimizer-Updater");
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-                using var response = await _updateClient.SendAsync(request, cts.Token).ConfigureAwait(false);
+
+                using var response = await _updateClient.SendAsync(request, token);
+
                 if (response.IsSuccessStatusCode)
                 {
-                    var git = JsonConvert.DeserializeObject<GitMetadata>(await response.Content.ReadAsStringAsync());
+                    var json = await response.Content.ReadAsStringAsync();
+                    var git = JsonConvert.DeserializeObject<GitMetadata>(json);
+
                     if (git?.СurrentVersion != null && git.СurrentVersion.CompareTo(SettingsEngine.currentRelease) > 0)
                     {
                         IsNeedUpdate = true;
                         DownloadVersion = git.СurrentVersion;
+
+                        NotificationManager.Show("info", "msg_update_available").WithDuration(0).Perform();
                     }
                 }
             }
-            catch { IsNeedUpdate = false; }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Update Check] Failed: {ex.Message}");
+                IsNeedUpdate = false;
+            }
         }
 
         private static string SizeCalculationHelper<T>(T sizeInBytes) where T : struct, IConvertible
