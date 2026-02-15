@@ -20,7 +20,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private TimerControlManager? _timer = default;
         private readonly BackgroundQueue _backgroundQueue = new BackgroundQueue();
-        private readonly UninstallingPakages _uninstalling = new UninstallingPakages();
+        private readonly UninstallingPackages _uninstalling = new UninstallingPackages();
         private bool _isWebViewRemoval = false;
 
         private Queue<FrameworkElement> _entranceQueue = new Queue<FrameworkElement>();
@@ -77,7 +77,7 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         if (!this.IsLoaded || _pageCts == null || _pageCts.IsCancellationRequested) return;
 
-                        UninstallingPakages.OnPackagesChanged();
+                        UninstallingPackages.OnPackagesChanged();
                         SyncVisualStates();
                     });
                 }
@@ -262,10 +262,10 @@ namespace EvolveOS_Optimizer.Pages
 
                 await _backgroundQueue.QueueTask(async () =>
                 {
-                    this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, true); });
-                    await UninstallingPakages.RemoveAppxPackage(packageName, removeWebView);
+                    this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, true); });
+                    await UninstallingPackages.RemoveAppxPackage(packageName, removeWebView);
                     await Task.Delay(2000);
-                    this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, false); });
+                    this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, false); });
 
                     this.DispatcherQueue?.TryEnqueue(() =>
                     {
@@ -275,7 +275,7 @@ namespace EvolveOS_Optimizer.Pages
                         {
                             ExplorerManager.Restart();
                         }
-                        UninstallingPakages.OnPackagesChanged();
+                        UninstallingPackages.OnPackagesChanged();
                     });
                 });
             }
@@ -441,10 +441,10 @@ namespace EvolveOS_Optimizer.Pages
             {
                 this.DispatcherQueue?.TryEnqueue(() =>
                 {
-                    if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, true);
+                    if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, true);
                 });
 
-                await UninstallingPakages.RemoveAppxPackage(packageName, _isWebViewRemoval);
+                await UninstallingPackages.RemoveAppxPackage(packageName, _isWebViewRemoval);
 
                 await Task.Delay(3000);
 
@@ -452,7 +452,7 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     if (!this.IsLoaded) return;
 
-                    UninstallingPakages.HandleAvailabilityStatus(packageName, false);
+                    UninstallingPackages.HandleAvailabilityStatus(packageName, false);
 
                     if (targetPackage != null)
                     {
@@ -465,7 +465,7 @@ namespace EvolveOS_Optimizer.Pages
                         ExplorerManager.Restart();
                     }
 
-                    UninstallingPakages.OnPackagesChanged();
+                    UninstallingPackages.OnPackagesChanged();
                     SyncVisualStates();
                 });
             });
@@ -475,9 +475,9 @@ namespace EvolveOS_Optimizer.Pages
         {
             await _backgroundQueue.QueueTask(async () =>
             {
-                this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, true); });
+                this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, true); });
                 await Task.Delay(3000);
-                this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPakages.HandleAvailabilityStatus(packageName, false); });
+                this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, false); });
             });
         }
 

@@ -17,7 +17,7 @@ namespace EvolveOS_Optimizer.Views
     public sealed partial class LoadingWindow : Window
     {
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
-        private readonly UninstallingPakages _uninstallingPakages = new UninstallingPakages();
+        private readonly UninstallingPackages _uninstallingPakages = new UninstallingPackages();
         private readonly bool _isAutoLoginSuccessful;
         private readonly DispatcherQueue _dispatcherQueue;
         private readonly CancellationTokenSource _cts = new();
@@ -201,7 +201,7 @@ namespace EvolveOS_Optimizer.Views
                         () => ExecuteAsyncWithLogging(RunGuard.CheckingDefenderExclusions, nameof(RunGuard.CheckingDefenderExclusions)),
                         () =>
                         {
-                            ExecuteWithLogging(UninstallingPakages.CheckingForLocalAccount, nameof(UninstallingPakages.CheckingForLocalAccount));
+                            ExecuteWithLogging(UninstallingPackages.CheckingForLocalAccount, nameof(UninstallingPackages.CheckingForLocalAccount));
                             ExecuteWithLogging(SystemTweaks.ViewNetshState, nameof(SystemTweaks.ViewNetshState));
                             ExecuteWithLogging(SystemTweaks.ViewBluetoothStatus, nameof(SystemTweaks.ViewBluetoothStatus));
                             ExecuteWithLogging(SystemTweaks.ViewConfigTick, nameof(SystemTweaks.ViewConfigTick));

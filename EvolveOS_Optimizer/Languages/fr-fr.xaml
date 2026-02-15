@@ -263,7 +263,7 @@
     <sys:String x:Key="Notepad_pkg">Bloc-notes</sys:String>
     <sys:String x:Key="Calculator_pkg">Calculatrice</sys:String>
     <sys:String x:Key="Copilot_pkg">Copilot</sys:String>
-    <sys:String x:Key="Whiteboard_pkg">Microsoft Whiteboard</sys:String>
+    <sys:String x:Key="WhiteBoard_pkg">Microsoft Whiteboard</sys:String>
     <sys:String x:Key="Wallet_pkg">Portefeuille Microsoft</sys:String>
     <sys:String x:Key="Spotify_pkg">Spotify</sys:String>
     <sys:String x:Key="WhatsApp_pkg">WhatsApp</sys:String>
@@ -316,7 +316,7 @@
     <sys:String x:Key="Notepad_desc">Le bloc-notes classique et léger pour le codage simple et la prise de notes.</sys:String>
     <sys:String x:Key="Calculator_desc">Outil avancé pour les calculs de base, scientifiques et de programmation.</sys:String>
     <sys:String x:Key="Copilot_desc">Assistant alimenté par l'IA pour répondre aux questions et automatiser les tâches système.</sys:String>
-    <sys:String x:Key="Whiteboard_desc">Tableau blanc numérique infini pour le brainstorming et l'idéation collaborative.</sys:String>
+    <sys:String x:Key="WhiteBoard_desc">Tableau blanc numérique infini pour le brainstorming et l'idéation collaborative.</sys:String>
     <sys:String x:Key="Wallet_desc">Stockez vos pass numériques, cartes de fidélité et informations de paiement en toute sécurité.</sys:String>
     <sys:String x:Key="Spotify_desc">Écoutez des millions de chansons et de podcasts depuis votre bureau.</sys:String>
     <sys:String x:Key="WhatsApp_desc">Version de bureau de l'application de messagerie populaire pour les chats et appels chiffrés.</sys:String>
@@ -469,6 +469,8 @@
     <sys:String x:Key="tgl27_svc">Services liés aux outils d'entreprise</sys:String>
     <sys:String x:Key="tgl28_svc">Service lié au fonctionnement de Hyper-V</sys:String>
     <sys:String x:Key="tgl29_svc">Services liés aux notifications push</sys:String>
+    <sys:String x:Key="tgl30_svc">Services liés au mode de démonstration en magasin</sys:String>
+    
 
     <sys:String x:Key="tgl1_desc_svc">Désactivez si vous n'utilisez pas l'historique des fichiers et l'indexation de contenu.</sys:String>
     <sys:String x:Key="tgl2_desc_svc">Désactivez si vous n'utilisez pas Xbox et les manettes Microsoft.</sys:String>
@@ -499,6 +501,7 @@
     <sys:String x:Key="tgl27_desc_svc">Désactivez si vous n'utilisez pas la gestion à distance d'applications d'entreprise ou de serveurs distants.</sys:String>
     <sys:String x:Key="tgl28_desc_svc">Désactivez si vous n'utilisez pas le système de virtualisation intégré. Cela n'affecte pas VirtualBox et consorts.</sys:String>
     <sys:String x:Key="tgl29_desc_svc">Désactivez si vous n'utilisez pas d'appareils jumelés et n'installez pas d'applications du Windows Store à distance. Sous Windows 10, le centre de notifications pourrait cesser de s'ouvrir après désactivation.</sys:String>
+    <sys:String x:Key="tgl30_desc_svc">À désactiver als u n'utilisez pas l'appareil dans un magasin pour faire la démonstration des fonctionnalités de Windows. Le service de démonstration en magasin gère l'affichage du contenu de démonstration et des fonctions interactives destinés uniquement aux présentoirs et aux tests en magasin. Ce service n'est pas nécessaire pour une utilisation quotidienne de l'ordinateur.</sys:String>
     <!-- endregion -->
 
     <!-- region Interface Page -->
@@ -584,5 +587,49 @@
     <sys:String x:Key="tgl39_desc_intf">Sous Windows 11, la barre d'ancrage apparaît en haut de l'écran lorsque vous faites glisser une fenêtre. Ce tweak permet de désactiver cette barre.</sys:String>
     <sys:String x:Key="tgl40_desc_intf">Choisissez si vous souhaitez afficher les secondes dans l'horloge de la barre des tâches; Windows ne les affiche pas par défaut.</sys:String>
     <!-- endregion Interface Page-->
+
+    <!-- region Privacy Page -->
+    <sys:String x:Key="tgl1_conf">Identifiant publicitaire et publicité ciblée</sys:String>
+    <sys:String x:Key="tgl2_conf">Tous les types de synchronisation de vos données</sys:String>
+    <sys:String x:Key="tgl3_conf">Collecte et surveillance de la télémétrie Windows</sys:String>
+    <sys:String x:Key="tgl4_conf">Collecte de données via le planificateur de tâches</sys:String>
+    <sys:String x:Key="tgl5_conf">Collecte de données sur les applications installées</sys:String>
+    <sys:String x:Key="tgl6_conf">Collecte des statistiques d'utilisation des applications</sys:String>
+    <sys:String x:Key="tgl7_conf">Collecte et envoi des données d'écriture manuscrite</sys:String>
+    <sys:String x:Key="tgl8_conf">Collecte des données de configuration matérielle</sys:String>
+    <sys:String x:Key="tgl9_conf">Accès réseau aux domaines espions de Microsoft</sys:String>
+    <sys:String x:Key="tgl10_conf">Détermination de l'emplacement de l'utilisateur</sys:String>
+    <sys:String x:Key="tgl11_conf">Vérification des demandes via les commentaires (Feedback)</sys:String>
+    <sys:String x:Key="tgl12_conf">Mises à jour cachées de la synthèse vocale en arrière-plan</sys:String>
+    <sys:String x:Key="tgl13_conf">Surveillance cachée de votre système</sys:String>
+    <sys:String x:Key="tgl14_conf">Expériences cachées sur votre système</sys:String>
+    <sys:String x:Key="tgl15_conf">Services de collecte et de transmission de données déguisés</sys:String>
+    <sys:String x:Key="tgl16_conf">« Journalisation » des événements Windows</sys:String>
+    <sys:String x:Key="tgl17_conf">Collecte et surveillance de la télémétrie NVIDIA</sys:String>
+    <sys:String x:Key="tgl18_conf">Enregistrement du comportement de l'utilisateur</sys:String>
+    <sys:String x:Key="tgl19_conf">Collecte de données et mises à jour en arrière-plan des cartes hors ligne</sys:String>
+    <sys:String x:Key="tgl20_conf">Collecte et surveillance de la télémétrie Intel</sys:String>
+
+    <sys:String x:Key="tgl1_desc_conf">Windows crée un identifiant publicitaire unique pour chaque utilisateur afin de suivre vos actions. Il est utilisé par les développeurs d'applications et Windows lui-même pour vous proposer des publicités ciblées.</sys:String>
+    <sys:String x:Key="tgl2_desc_conf">Même avec un compte local, Windows tente toujours de synchroniser vos données avec les serveurs Microsoft : thèmes, mots de passe, paramètres Windows, paramètres du navigateur, langue, accessibilité, etc.</sys:String>
+    <sys:String x:Key="tgl3_desc_conf">La télémétrie (données de diagnostic) est ce que Windows collecte automatiquement pour l'envoyer à Microsoft. Outre la confidentialité, cela peut entraîner une charge CPU excessive qui ralentit le système.</sys:String>
+    <sys:String x:Key="tgl4_desc_conf">Le « Planificateur de tâches » contient des services qui, après leur exécution, collectent des données sur leur travail pour les envoyer aux serveurs de Microsoft.</sys:String>
+    <sys:String x:Key="tgl5_desc_conf">Microsoft collecte des données sur vos logiciels pour diagnostiquer les problèmes de compatibilité. Désactiver cette fonction empêche l'envoi d'informations potentiellement sensibles.</sys:String>
+    <sys:String x:Key="tgl6_desc_conf">Ce tweak désactive la surveillance de l'utilisation des applications, éliminant la collecte de données sur la fréquence d'utilisation, la durée du travail et d'autres mesures de productivité.</sys:String>
+    <sys:String x:Key="tgl7_desc_conf">Ce tweak désactive le mécanisme de collecte de données utilisé par Microsoft pour améliorer sa technologie de reconnaissance manuscrite, qui suit votre activité même si vous ne l'utilisez pas.</sys:String>
+    <sys:String x:Key="tgl8_desc_conf">Le programme d'amélioration de l'expérience utilisateur (CEIP) collecte des informations sur votre matériel et l'utilisation des services. Ce programme est facultatif et sa désactivation protège votre vie privée.</sys:String>
+    <sys:String x:Key="tgl9_desc_conf">Ce tweak modifie le fichier hosts en ajoutant l'adresse 0.0.0.0 devant certains noms de domaine pour les bloquer. Il ajuste également le pare-feu Windows pour bloquer les IP liées à la télémétrie.</sys:String>
+    <sys:String x:Key="tgl10_desc_conf">La désactivation de la géolocalisation réduit l'utilisation des données de localisation à des fins publicitaires pour les services Microsoft et les applications tierces.</sys:String>
+    <sys:String x:Key="tgl11_desc_conf">Ce tweak bloque la collecte des commentaires et ses notifications dans Windows, empêchant la transmission de données sans votre consentement.</sys:String>
+    <sys:String x:Key="tgl12_desc_conf">Windows vérifie par défaut les mises à jour de son moteur de reconnaissance vocale, même si vous n'utilisez pas Cortana ou les fonctions d'ergonomie.</sys:String>
+    <sys:String x:Key="tgl13_desc_conf">Une fonction qui accède aux données utilisateur et communique avec les serveurs Microsoft sans bénéfice pour l'utilisateur ou le fonctionnement des applications.</sys:String>
+    <sys:String x:Key="tgl14_desc_conf">Microsoft mène régulièrement des expériences sur les utilisateurs pour tester des fonctionnalités. Cela constitue une violation de la confidentialité.</sys:String>
+    <sys:String x:Key="tgl15_desc_conf">Les services DiagTrack, dmwappushservice et diagsvc agissent comme des enregistreurs de frappe (keyloggers). À moins d'utiliser UWF, il est logique de supprimer ces services espions.</sys:String>
+    <sys:String x:Key="tgl16_desc_conf">Un journal d'événements qui collecte des informations de diagnostic, gaspillant les ressources de votre ordinateur sans apporter de bénéfice réel.</sys:String>
+    <sys:String x:Key="tgl17_desc_conf">Le service responsable de la collecte des données système par NVIDIA est inutile au bon fonctionnement du pilote graphique lui-même.</sys:String>
+    <sys:String x:Key="tgl18_desc_conf">Ce tweak désactive la fonction UAR (User Activity Recording) – un système qui enregistre chaque action : captures d'écran, texte saisi, lancement de programmes, etc.</sys:String>
+    <sys:String x:Key="tgl19_desc_conf">Windows met régulièrement à jour les cartes hors ligne et envoie des notifications sur les nouvelles données en arrière-plan. Ces processus peuvent collecter des informations sur votre position, vos itinéraires et votre utilisation des cartes. Si vous n'utilisez pas les cartes hors ligne, il est recommandé de les désactiver pour éviter les mises à jour cachées et la transmission de données vers les serveurs de Microsoft à votre insu.</sys:String>
+    <sys:String x:Key="tgl20_desc_conf">Le module Intel, qui fonctionne en arrière-plan pour collecter et transmettre des données, est présenté comme un outil d'amélioration des produits de l'entreprise. Cependant, pour l'utilisateur moyen, il n'apporte que peu d'avantages pratiques, et la désactivation de cette fonction peut réduire l'activité en arrière-plan et empêcher une transmission de données inutile.</sys:String>
+    <!-- endregion Privacy Page -->
 
 </ResourceDictionary>

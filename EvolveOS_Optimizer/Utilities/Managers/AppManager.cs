@@ -405,7 +405,7 @@ public static class AppManager
         {
             ErrorLogging.LogDebug(new Exception("Executing Advanced Edge Removal Logic via AppManager"));
 
-            await UninstallingPakages.RemoveAppxPackage("Edge", true);
+            await UninstallingPackages.RemoveAppxPackage("Edge", true);
 
             ErrorLogging.LogDebug(new Exception("Advanced Edge Removal completed successfully."));
         }

@@ -128,8 +128,8 @@ namespace EvolveOS_Optimizer
             {
                 "Home" => typeof(Pages.HomePage),
                 "Security" => typeof(Pages.SecurityPage),
-                /*"Utils" => new Pages.UtilitiesPage(),
-                "Confidentiality" => new Pages.PrivacyPage(),*/
+                //"Utils" => new Pages.UtilitiesPage(),
+                "Confidentiality" => typeof(Pages.PrivacyPage),
                 "Interface" => typeof(Pages.InterfacePage),
                 "Software" => typeof(Pages.SoftwareCenterPage),
                 "GroupPolicy" => typeof(Pages.GroupPolicyPage),

@@ -19,7 +19,9 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
         internal static readonly Dictionary<string, NoticeAction> ConfActions = new Dictionary<string, NoticeAction>()
         {
-            //["TglButton1"] = NoticeAction.Restart
+            ["TglButton8"] = NoticeAction.Restart,
+            ["TglButton15"] = NoticeAction.Restart,
+            ["TglButton20"] = NoticeAction.Restart
         };
 
         internal static readonly Dictionary<string, NoticeAction> IntfActions = new Dictionary<string, NoticeAction>()

@@ -138,7 +138,7 @@
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
-                                     CommandParameter="Privacy"
+                                     CommandParameter="Confidentiality"
                                      Tag="{x:Bind GetText('Nav_Privacy'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEE3F;" FontSize="18"/>
                         </RadioButton>
