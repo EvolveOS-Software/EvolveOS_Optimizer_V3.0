@@ -23,6 +23,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         internal static readonly IntPtr HKEY_CURRENT_USER = new IntPtr(-2147483647);
 
+        internal const uint MB_YESNO = 0x00000004;
+        internal const uint MB_ICONWARNING = 0x00000030;
+        internal const uint MB_DEFBUTTON1 = 0x00000000;
+        internal const int IDYES = 6;
+        internal const int SM_CLEANBOOT = 67;
+
         public static class Privilege
         {
             public const string SeDebugName = "SeDebugPrivilege"; // Required to debug and adjust the memory of a process owned by another account. User Right: Debug programs.
@@ -244,6 +250,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         [DllImport("shell32.dll", CharSet = CharSet.Auto)]
         internal static extern uint ExtractIconEx(string szFileName, int nIconIndex, IntPtr[] phiconLarge, IntPtr[] phiconSmall, uint nIcons);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        internal static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
+
+        [DllImport("user32.dll")]
+        internal static extern int GetSystemMetrics(int nIndex);
 
         #endregion
 

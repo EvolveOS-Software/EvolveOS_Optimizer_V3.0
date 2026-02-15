@@ -522,38 +522,56 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
             catch (Exception ex) { ErrorLogging.LogDebug(ex); }
         }
 
-        public static async void Recovery()
+        public static async Task Recovery()
         {
-            await CommandExecutor.RunCommandAsTrustedInstaller("/c bcdedit /deletevalue {current} safeboot");
-
-            foreach (var (path, normal, block) in fileMappings)
+            try
             {
-                string blockedPath = Path.Combine(path, block);
-                string targetPath = Path.Combine(path, normal);
+                // 1. Remove SafeBoot flag - using {current} is correct, but ensure it's awaited properly
+                await CommandExecutor.RunCommandAsTrustedInstaller("/c bcdedit /deletevalue {current} safeboot");
 
-                if (File.Exists(blockedPath))
+                // 2. Restore Defender Files and Permissions
+                foreach (var (path, normal, block) in fileMappings)
                 {
-                    await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c ""{CleanCommand(string.Join(" && ", new[] {
-                        $@"takeown /f ""{blockedPath}"" /a",
-                        $@"rename ""{blockedPath}"" ""{normal}""",
-                        $@"icacls ""{targetPath}"" /setowner *S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464", // Restore TrustedInstaller
-                        $@"icacls ""{targetPath}"" /inheritance:r",
-                        $@"icacls ""{targetPath}"" /grant *S-1-5-32-544:F", // Admins
-                        $@"icacls ""{targetPath}"" /grant *S-1-5-18:F"    // System
-                    }))}""");
+                    string blockedPath = Path.Combine(path, block);
+                    string targetPath = Path.Combine(path, normal);
+
+                    if (File.Exists(blockedPath))
+                    {
+                        await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c ""{CleanCommand(string.Join(" && ", new[] {
+                    $@"takeown /f ""{blockedPath}"" /a",
+                    $@"rename ""{blockedPath}"" ""{normal}""",
+                    $@"icacls ""{targetPath}"" /setowner *S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464", // Restore TrustedInstaller
+                    $@"icacls ""{targetPath}"" /inheritance:r",
+                    $@"icacls ""{targetPath}"" /grant *S-1-5-32-544:F", // Admins
+                    $@"icacls ""{targetPath}"" /grant *S-1-5-18:F"    // System
+                }))}""");
+                    }
                 }
+
+                // 3. Restore Defender Platform Binaries
+                string platformPath = Path.Combine(PathLocator.Folders.SystemDrive, @"ProgramData\Microsoft\Windows Defender\Platform\*");
+                await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c " +
+                    $"for /d %D in (\"{platformPath}\") do if exist \"%D\\BlockAntimalware.exe\" ren \"%D\\BlockAntimalware.exe\" MsMpEng.exe & " +
+                    $"for /d %D in (\"{platformPath}\") do if exist \"%D\\BlockAntimalwareCore.exe\" ren \"%D\\BlockAntimalwareCore.exe\" MpDefenderCoreService.exe");
+
+                // 4. Reset Defender Services to Default Start Types
+                await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c {CleanCommand(string.Join(" & ", services.Select(kv => $@"reg add ""HKLM\SYSTEM\CurrentControlSet\Services\{kv.Key}"" /v Start /t REG_DWORD /d {kv.Value} /f")))}");
+
+                // 5. Re-enable Tamper Protection and fix the Shell
+                RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows Defender\Features", "TamperProtection", 1, RegistryValueKind.DWord);
+
+                // Ensure to explicitly overwrite any custom shell commands back to standard explorer
+                RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "Shell", "explorer.exe", RegistryValueKind.String, true);
+
+                // 6. Force immediate restart to Normal Mode
+                // Use /r (restart) /f (force) /t 0 (zero seconds)
+                await CommandExecutor.RunCommand("/c shutdown /r /f /t 0");
             }
-
-            string platformPath = Path.Combine(PathLocator.Folders.SystemDrive, @"ProgramData\Microsoft\Windows Defender\Platform\*");
-            await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c " +
-                $"for /d %D in (\"{platformPath}\") do if exist \"%D\\BlockAntimalware.exe\" ren \"%D\\BlockAntimalware.exe\" MsMpEng.exe & " +
-                $"for /d %D in (\"{platformPath}\") do if exist \"%D\\BlockAntimalwareCore.exe\" ren \"%D\\BlockAntimalwareCore.exe\" MpDefenderCoreService.exe");
-
-            await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c {CleanCommand(string.Join(" & ", services.Select(kv => $@"reg add ""HKLM\SYSTEM\CurrentControlSet\Services\{kv.Key}"" /v Start /t REG_DWORD /d {kv.Value} /f")))}");
-            RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows Defender\Features", "TamperProtection", 1, RegistryValueKind.DWord);
-            RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "Shell", "explorer.exe", RegistryValueKind.String, true);
-
-            await CommandExecutor.RunCommand("/c shutdown /r /f /t 0");
+            catch (Exception ex)
+            {
+                // If recovery fails, log it so the user isn't stuck in a boot loop
+                ErrorLogging.LogWritingFile(ex, "Defender_Recovery_Critical_Fail");
+            }
         }
 
         private static string CleanCommand(string rawCommand)

@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -7,7 +5,6 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Linq;
 
 namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
 {
@@ -90,9 +87,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
 
         private sealed class RegistryValueBackup
         {
-            // Fixed: Use 'required' keyword for .NET 8 to ensure initialization
-            internal required string Kind { get; set; }
-            internal required object Value { get; set; }
+            internal string Kind { get; set; } = string.Empty;
+            internal object Value { get; set; } = new object();
         }
 
         internal static void ExportRights()

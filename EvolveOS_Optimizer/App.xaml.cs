@@ -1,10 +1,11 @@
-﻿using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Views;
 using System.IO;
 using System.Security.Principal;
 using System.Threading;
+using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Managers;
+using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
+using EvolveOS_Optimizer.Views;
 
 namespace EvolveOS_Optimizer
 {
@@ -31,6 +32,24 @@ namespace EvolveOS_Optimizer
             {
                 ElevateToAdmin();
                 return;
+            }
+
+            if (CheckIfSafebootIsActive())
+            {
+                string title = ResourceString.GetString("title_recovery");
+                string message = ResourceString.GetString("msg_safemode_detected");
+
+                if (string.IsNullOrEmpty(title)) title = "Recovery Mode";
+                if (string.IsNullOrEmpty(message)) message = "Safe Mode detected! Would you like to attempt a recovery?";
+
+                int result = Win32Helper.MessageBox(IntPtr.Zero, message, title, Win32Helper.MB_YESNO | Win32Helper.MB_ICONWARNING | Win32Helper.MB_DEFBUTTON1);
+
+                if (result == Win32Helper.IDYES)
+                {
+                    _ =  WindowsDefender.Recovery();
+
+                    return;
+                }
             }
 
             SetPriority(ProcessPriorityClass.High);
@@ -142,6 +161,8 @@ namespace EvolveOS_Optimizer
                 Debug.WriteLine($"[App] Background service error: {ex.Message}");
             }
         }
+
+        private bool CheckIfSafebootIsActive() => Win32Helper.GetSystemMetrics(Win32Helper.SM_CLEANBOOT) > 0;
 
         public void UpdateGlobalAccentColor(string hexColor)
         {
