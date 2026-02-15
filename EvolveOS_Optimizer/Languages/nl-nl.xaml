@@ -177,7 +177,6 @@
     <sys:String x:Key="GroupPolicyPage_RefreshText">Vernieuwen</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesHeader">Geconfigureerd Beleid</sys:String>
     <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Description">Individuele beleidsoverschrijvingen bekijken en beheren</sys:String>
-    <sys:String x:Key="GroupPolicyPage_RemoveAllOverrides">Alle Overschrijvingen Verwijderen</sys:String>
     <sys:String x:Key="GroupPolicyPage_InfoBanner_Message">Deze pagina detecteert lokale groepsbeleid-overschrijvingen en stelt u in staat deze te verwijderen. Het verwijderen van een overschrijving herstelt de status naar de standaardwaarde.</sys:String>
     <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Description">Overzicht van gedetecteerde beleidsoverschrijvingen</sys:String>
     <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Header">Gedetailleerde Beleidslijst</sys:String>
@@ -540,11 +539,11 @@
     <sys:String x:Key="tgl22_desc_svc">Uitschakelen als u de Windows-kioskmodus niet gebruikt. Deze modus minimaliseert de interface: slechts één UWP-app draait op het volledige scherm. Let op: dit kan de installatie van Windows-updates en programma's via Windows Installer verstoren.</sys:String>
     <sys:String x:Key="tgl23_desc_svc">Uitschakelen als u geen BitLocker-schijfversleuteling en EFS-bestandsversleuteling gebruikt.</sys:String>
     <sys:String x:Key="tgl24_desc_svc">Uitschakelen als u alle talen die u gebruikt al hebt geconfigureerd en niet van plan bent nieuwe toe te voegen.</sys:String>
-    <sys:String x:Key="tgl25_svc">Uitschakelen als u Windows Defender en aanvullende Windows-beveiliging niet gebruikt.</sys:String>
-    <sys:String x:Key="tgl26_svc">Uitschakelen als u niet wilt dat Windows het systeem belast met nutteloze achtergronddiagnoses.</sys:String>
-    <sys:String x:Key="tgl27_svc">Uitschakelen als u geen beheer op afstand van zakelijke applicaties gebruikt en geen externe server hebt waarmee uw pc communiceert.</sys:String>
-    <sys:String x:Key="tgl28_svc">Uitschakelen als u het ingebouwde virtualisatiesysteem niet gebruikt. Het heeft geen invloed op VirtualBox en dergelijke.</sys:String>
-    <sys:String x:Key="tgl29_svc">Uitschakelen als u geen gekoppelde apparaten gebruikt en geen apps uit de Windows Store op afstand installeert. Deze services regelen het meldingencentrum voor gekoppelde apparaten en pushverzoeken. In Windows 10 kan het meldingencentrum stoppen met openen na uitschakeling.</sys:String>
+    <sys:String x:Key="tgl25_desc_svc">Uitschakelen als u Windows Defender en aanvullende Windows-beveiliging niet gebruikt.</sys:String>
+    <sys:String x:Key="tgl26_desc_svc">Uitschakelen als u niet wilt dat Windows het systeem belast met nutteloze achtergronddiagnoses.</sys:String>
+    <sys:String x:Key="tgl27_desc_svc">Uitschakelen als u geen beheer op afstand van zakelijke applicaties gebruikt en geen externe server hebt waarmee uw pc communiceert.</sys:String>
+    <sys:String x:Key="tgl28_desc_svc">Uitschakelen als u het ingebouwde virtualisatiesysteem niet gebruikt. Het heeft geen invloed op VirtualBox en dergelijke.</sys:String>
+    <sys:String x:Key="tgl29_desc_svc">Uitschakelen als u geen gekoppelde apparaten gebruikt en geen apps uit de Windows Store op afstand installeert. Deze services regelen het meldingencentrum voor gekoppelde apparaten en pushverzoeken. In Windows 10 kan het meldingencentrum stoppen met openen na uitschakeling.</sys:String>
     <sys:String x:Key="tgl30_desc_svc">Uitschakelen als u het apparaat niet in een winkel gebruikt om Windows-functies te demonstreren. De Store-demoservice beheert de weergave van demo-inhoud en interactieve functies die alleen bedoeld zijn voor winkeldisplays en testen. Deze service is niet nodig voor dagelijks gebruik van de computer.</sys:String>
     <!-- endregion Services Page -->
 
@@ -658,7 +657,7 @@
     <sys:String x:Key="tgl4_desc_conf">In de «Takenplanner» bevinden zich services die na hun uitvoering gegevens verzamelen over hun werking en deze naar de Microsoft-server verzenden.</sys:String>
     <sys:String x:Key="tgl5_desc_conf">Microsoft verzamelt gegevens over uw software om compatibiliteitsproblemen te diagnosticeren. Het uitschakelen van deze functie voorkomt dat potentieel gevoelige informatie over uw applicatiegebruik wordt verzonden.</sys:String>
     <sys:String x:Key="tgl6_desc_conf">Deze tweak schakelt de monitoring van applicatiegebruik uit, waardoor gegevens over gebruiksfrequentie, werkduur en andere productiviteitsmetrieken niet langer worden verzameld.</sys:String>
-    <sys:String x:Key="tgl7_conf">Deze tweak schakelt het mechanisme voor gegevensverzameling uit dat Microsoft gebruikt om handschriftherkenning te verbeteren. Het systeem hield uw activiteit bij om de nauwkeurigheid te verhogen, ongeacht of u de functie gebruikte.</sys:String>
+    <sys:String x:Key="tgl7_desc_conf">Deze tweak schakelt het mechanisme voor gegevensverzameling uit dat Microsoft gebruikt om handschriftherkenning te verbeteren. Het systeem hield uw activiteit bij om de nauwkeurigheid te verhogen, ongeacht of u de functie gebruikte.</sys:String>
     <sys:String x:Key="tgl8_desc_conf">Het programma voor kwaliteitsverbetering (CEIP) verzamelt informatie over uw hardwareconfiguratie en hoe u software en services gebruikt. Dit programma is vrijwillig; het uitschakelen ervan beschermt uw privacy.</sys:String>
     <sys:String x:Key="tgl9_desc_conf">Deze tweak past het hosts-bestand aan door het adres 0.0.0.0 voor specifieke domeinnamen te plaatsen, waardoor ze effectief worden geblokkeerd. Daarnaast blokkeert het firewallverbindingen met IP-adressen die geassocieerd worden met Microsoft-telemetrie.</sys:String>
     <sys:String x:Key="tgl10_desc_conf">Het uitschakelen van geolocatieservices vermindert de kans dat locatiegegevens voor advertentiedoeleinden worden gebruikt. De toegang wordt beperkt voor zowel Microsoft-services als apps van derden.</sys:String>
