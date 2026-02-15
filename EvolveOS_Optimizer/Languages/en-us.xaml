@@ -260,6 +260,7 @@
     <sys:String x:Key="WebMediaExtensions_pkg">Web Media Extensions</sys:String>
     <sys:String x:Key="OneConnect_pkg">Mobile Plans</sys:String>
     <sys:String x:Key="Edge_pkg">Microsoft Edge</sys:String>
+    <sys:String x:Key="Edge_DevTools_pkg">Microsoft Edge DevTools</sys:String>
     <sys:String x:Key="Notepad_pkg">Notepad</sys:String>
     <sys:String x:Key="Calculator_pkg">Calculator</sys:String>
     <sys:String x:Key="Copilot_pkg">Copilot</sys:String>
@@ -267,6 +268,28 @@
     <sys:String x:Key="Wallet_pkg">Microsoft Wallet</sys:String>
     <sys:String x:Key="Spotify_pkg">Spotify</sys:String>
     <sys:String x:Key="WhatsApp_pkg">WhatsApp</sys:String>
+    <sys:String x:Key="Facebook_pkg">Facebook</sys:String>
+    <sys:String x:Key="Hulu_pkg">Hulu</sys:String>
+    <sys:String x:Key="Disney_pkg">Disney</sys:String>
+    <sys:String x:Key="Instagram_pkg">Instagram</sys:String>
+    <sys:String x:Key="Twitter_pkg">Twitter - X</sys:String>
+    <sys:String x:Key="TikTok_pkg">TikTok</sys:String>
+    <sys:String x:Key="MicrosoftSway_pkg">Microsoft Sway</sys:String>
+    <sys:String x:Key="Builder3D_pkg">Microsoft 3D-Builder</sys:String>
+    <sys:String x:Key="Netflix_pkg">Netflix</sys:String>
+    <sys:String x:Key="YandexMusic_pkg">Yandex.Music</sys:String>
+    <sys:String x:Key="Viber_pkg">Viber</sys:String>
+    <sys:String x:Key="Messaging_pkg">Microsoft Messaging</sys:String>
+    <sys:String x:Key="Picsart_pkg">Picsart AI Photo Editor</sys:String>
+    <sys:String x:Key="Plex_pkg">Plex for Windows</sys:String>
+    <sys:String x:Key="PrimeVideo_pkg">Amazon Prime Video</sys:String>
+    <sys:String x:Key="Shazam_pkg">Shazam</sys:String>
+    <sys:String x:Key="TuneInRadio_pkg">TuneIn Radio</sys:String>
+    <sys:String x:Key="iHeartRadio_pkg">iHeart: Radio, Music, Podcasts</sys:String>
+    <sys:String x:Key="Pandora_pkg">Pandora</sys:String>
+    <sys:String x:Key="DolbyAccess_pkg">Dolby Access</sys:String>
+    <sys:String x:Key="MicrosoftJournal_pkg">Microsoft Journal</sys:String>
+    <sys:String x:Key="PowerToys_pkg">Microsoft PowerToys</sys:String>
 
     <sys:String x:Key="MicrosoftStore_desc">The primary digital distribution platform for Windows apps and games.</sys:String>
     <sys:String x:Key="Xbox_desc">Access the Xbox ecosystem, including game pass, social features, and remote play.</sys:String>
@@ -313,6 +336,7 @@
     <sys:String x:Key="WebMediaExtensions_desc">Adds support for modern web formats like OGG, Vorbis, and Theora.</sys:String>
     <sys:String x:Key="OneConnect_desc">Tool for finding and connecting to cellular data plans from your device.</sys:String>
     <sys:String x:Key="Edge_desc">The default Chromium-based web browser for fast and secure browsing.</sys:String>
+    <sys:String x:Key="Edge_DevTools_desc">A standalone developer toolset for debugging and inspecting web content within Microsoft Edge.</sys:String>
     <sys:String x:Key="Notepad_desc">The classic lightweight text editor for simple coding and note-taking.</sys:String>
     <sys:String x:Key="Calculator_desc">Advanced tool for basic, scientific, and programming calculations.</sys:String>
     <sys:String x:Key="Copilot_desc">AI-powered assistant for answering questions and automating system tasks.</sys:String>
@@ -320,6 +344,28 @@
     <sys:String x:Key="Wallet_desc">Store digital passes, loyalty cards, and payment information securely.</sys:String>
     <sys:String x:Key="Spotify_desc">Stream millions of songs and podcasts from your desktop.</sys:String>
     <sys:String x:Key="WhatsApp_desc">Desktop version of the popular messaging app for encrypted chats and calls.</sys:String>
+    <sys:String x:Key="Facebook_desc">The official Facebook client. It frequently runs background services for notifications and synchronization, which can consume system memory and battery.</sys:String>
+    <sys:String x:Key="Hulu_desc">Streaming service app for movies and TV shows. If you prefer using a web browser for streaming, this app can be safely removed to free up disk space.</sys:String>
+    <sys:String x:Key="Disney_desc">Official app for Disney+ streaming. Safe to uninstall if you do not have a subscription or prefer streaming via browser.</sys:String>
+    <sys:String x:Key="Instagram_desc">Social media client for photo and video sharing. Like other Meta apps, it often stays active in the background to fetch updates.</sys:String>
+    <sys:String x:Key="Twitter_desc">The official X (Twitter) client for Windows. Provides real-time notifications but can be replaced by the web version to reduce background processes.</sys:String>
+    <sys:String x:Key="TikTok_desc">Official TikTok client. Known for high resource usage during video playback and maintaining persistent background data connections.</sys:String>
+    <sys:String x:Key="MicrosoftSway_desc">A Microsoft Office app used for creating interactive reports and presentations. Safe to remove if you use the web version or standard PowerPoint.</sys:String>
+    <sys:String x:Key="Builder3D_desc">A tool for viewing, preparing, and printing 3D models. Unless you are involved in 3D modeling or 3D printing, this app is rarely needed.</sys:String>
+    <sys:String x:Key="Netflix_desc">Official Netflix application. While it supports offline downloads, it takes up significant space and remains active for background updates.</sys:String>
+    <sys:String x:Key="YandexMusic_desc">Streaming music client for Yandex. Freeing up space by removing this is recommended if you use alternative streaming services.</sys:String>
+    <sys:String x:Key="Viber_desc">VoIP and instant messaging application. It is often configured to start with Windows, consuming startup resources and system RAM.</sys:String>
+    <sys:String x:Key="Messaging_desc">A legacy Microsoft app used for basic text messaging on devices with cellular data. Most PC users find this app completely redundant.</sys:String>
+    <sys:String x:Key="Picsart_desc">AI-powered photo and video editor. It has a large install footprint and includes multiple background tasks for cloud synchronization.</sys:String>
+    <sys:String x:Key="Plex_desc">Media player for Plex servers. If you do not manage a local media library or use a Plex server, this app serves no purpose.</sys:String>
+    <sys:String x:Key="PrimeVideo_desc">Amazon's streaming client. Uninstalling this is safe for users who prefer the browser interface or do not use Amazon Prime.</sys:String>
+    <sys:String x:Key="Shazam_desc">Music identification tool. Since music recognition is often built into browsers and virtual assistants, this separate app is often unnecessary.</sys:String>
+    <sys:String x:Key="TuneInRadio_desc">Global radio streaming app. Safe to remove to declutter your system if you listen to music through other platforms.</sys:String>
+    <sys:String x:Key="iHeartRadio_desc">Radio and podcast platform. It maintains a large cache and can impact network performance with background content pre-loading.</sys:String>
+    <sys:String x:Key="Pandora_desc">Personalized radio service. Recommend removal if the service is not available in your region or if you use Spotify/YouTube Music.</sys:String>
+    <sys:String x:Key="DolbyAccess_desc">Used to configure Dolby Atmos for headphones or home theaters. Remove only if you do not have compatible hardware or a Dolby license.</sys:String>
+    <sys:String x:Key="MicrosoftJournal_desc">An ink-focused note-taking application designed for touch and pen devices.</sys:String>
+    <sys:String x:Key="PowerToys_desc">Advanced system utilities. May increase background RAM usage and CPU wakeups due to multiple active processes.</sys:String>
 
     <sys:String x:Key="title_over_pkg">Uninstallation confirmation</sys:String>
     <sys:String x:Key="text_over_pkg" xml:space="preserve">You are about to uninstall the Microsoft Edge browser. This will also remove the EdgeWebView component, which is used to display web content in various applications — such as Microsoft Office (e.g., Meeting Insights, Room Finder), the Photos app (the new version uses WebView2), some Telegram bots, and other programs that rely on embedded WebView. Before proceeding, make sure you do not need this component. 

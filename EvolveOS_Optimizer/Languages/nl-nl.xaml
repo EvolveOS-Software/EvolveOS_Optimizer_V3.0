@@ -268,6 +268,28 @@
     <sys:String x:Key="Wallet_pkg">Microsoft Portemonnee</sys:String>
     <sys:String x:Key="Spotify_pkg">Spotify</sys:String>
     <sys:String x:Key="WhatsApp_pkg">WhatsApp</sys:String>
+    <sys:String x:Key="Facebook_pkg">Facebook</sys:String>
+    <sys:String x:Key="Hulu_pkg">Hulu</sys:String>
+    <sys:String x:Key="Disney_pkg">Disney</sys:String>
+    <sys:String x:Key="Instagram_pkg">Instagram</sys:String>
+    <sys:String x:Key="TwitterX_pkg">Twitter - X</sys:String>
+    <sys:String x:Key="TikTok_pkg">TikTok</sys:String>
+    <sys:String x:Key="MicrosoftSway_pkg">Microsoft Sway</sys:String>
+    <sys:String x:Key="Builder3D_pkg">Microsoft 3D-Builder</sys:String>
+    <sys:String x:Key="Netflix_pkg">Netflix</sys:String>
+    <sys:String x:Key="YandexMusic_pkg">Yandex.Music</sys:String>
+    <sys:String x:Key="Viber_pkg">Viber</sys:String>
+    <sys:String x:Key="Messaging_pkg">Microsoft Messaging</sys:String>
+    <sys:String x:Key="Picsart_pkg">Picsart AI Photo Editor</sys:String>
+    <sys:String x:Key="Plex_pkg">Plex for Windows</sys:String>
+    <sys:String x:Key="PrimeVideo_pkg">Amazon Prime Video</sys:String>
+    <sys:String x:Key="Shazam_pkg">Shazam</sys:String>
+    <sys:String x:Key="TuneInRadio_pkg">TuneIn Radio</sys:String>
+    <sys:String x:Key="iHeartRadio_pkg">iHeart: Radio, Music, Podcasts</sys:String>
+    <sys:String x:Key="Pandora_pkg">Pandora</sys:String>
+    <sys:String x:Key="DolbyAccess_pkg">Dolby Access</sys:String>
+    <sys:String x:Key="PowerToys_pkg">Microsoft PowerToys</sys:String>
+    <sys:String x:Key="MicrosoftJournal_pkg">Microsoft Journal</sys:String>
 
     <sys:String x:Key="MicrosoftStore_desc">Het primaire digitale distributieplatform voor Windows-apps en games.</sys:String>
     <sys:String x:Key="Xbox_desc">Toegang tot het Xbox-ecosysteem, inclusief Game Pass, sociale functies en Remote Play.</sys:String>
@@ -321,6 +343,28 @@
     <sys:String x:Key="Wallet_desc">Sla digitale passen, klantenkaarten en betalingsinformatie veilig op.</sys:String>
     <sys:String x:Key="Spotify_desc">Stream miljoenen nummers en podcasts vanaf je desktop.</sys:String>
     <sys:String x:Key="WhatsApp_desc">Desktopversie van de populaire berichten-app voor versleutelde chats en oproepen.</sys:String>
+    <sys:String x:Key="Facebook_desc">De officiële Facebook-client. Deze voert vaak achtergrondservices uit voor meldingen en synchronisatie, wat systeemgeheugen en batterij kan verbruiken.</sys:String>
+    <sys:String x:Key="Hulu_desc">Streamingdienst-app voor films en series. Als u liever een webbrowser gebruikt voor streaming, kan deze app veilig worden verwijderd.</sys:String>
+    <sys:String x:Key="Disney_desc">Officiële app voor Disney+ streaming. Veilig om te verwijderen als u geen abonnement heeft of liever via de browser kijkt.</sys:String>
+    <sys:String x:Key="Instagram_desc">Social media client voor het delen van foto's en video's. Net als andere Meta-apps blijft deze vaak actief op de achtergrond voor updates.</sys:String>
+    <sys:String x:Key="TwitterX_desc">De officiële X (Twitter) client voor Windows. Biedt realtime meldingen, maar kan worden vervangen door de webversie om processen te verminderen.</sys:String>
+    <sys:String x:Key="TikTok_desc">Officiële TikTok-client. Staat bekend om hoog brongebruik tijdens het afspelen van video's en het onderhouden van constante dataverbindingen.</sys:String>
+    <sys:String x:Key="MicrosoftSway_desc">Een Microsoft Office-app voor interactieve rapporten. Veilig om te verwijderen als u de webversie of PowerPoint gebruikt.</sys:String>
+    <sys:String x:Key="Builder3D_desc">Hulpmiddel voor het bekijken en printen van 3D-modellen. Tenzij u bezig bent met 3D-printen, is deze app zelden nodig.</sys:String>
+    <sys:String x:Key="Netflix_desc">Officiële Netflix-applicatie. Hoewel het offline downloads ondersteunt, neemt het veel ruimte in beslag en blijft het actief voor updates.</sys:String>
+    <sys:String x:Key="YandexMusic_desc">Muziekstreaming-client voor Yandex. Verwijderen wordt aanbevolen als u alternatieve streamingdiensten gebruikt.</sys:String>
+    <sys:String x:Key="Viber_desc">VoIP- en berichtenapp. Vaak geconfigureerd om met Windows op te starten, wat RAM en opstarttijd verbruikt.</sys:String>
+    <sys:String x:Key="Messaging_desc">Een verouderde Microsoft-app voor tekstberichten op apparaten met simkaarten. Voor de meeste pc-gebruikers is deze app volledig overbodig.</sys:String>
+    <sys:String x:Key="Picsart_desc">AI-fotobewerker. Heeft een grote installatiegrootte en bevat meerdere achtergrondtaken voor cloud-synchronisatie.</sys:String>
+    <sys:String x:Key="Plex_desc">Mediaspeler voor Plex-servers. Als u geen lokale mediabibliotheek beheert, heeft deze app geen nut.</sys:String>
+    <sys:String x:Key="PrimeVideo_desc">Amazon's streamingclient. Verwijderen is veilig voor gebruikers die de browserinterface verkiezen.</sys:String>
+    <sys:String x:Key="Shazam_desc">Muziekherkenningstool. Omdat herkenning vaak in browsers is ingebouwd, is deze aparte app vaak onnodig.</sys:String>
+    <sys:String x:Key="TuneInRadio_desc">Wereldwijde radio-app. Veilig om te verwijderen om uw systeem op te schonen als u andere platforms gebruikt.</sys:String>
+    <sys:String x:Key="iHeartRadio_desc">Radio- en podcastplatform. Onderhoudt een grote cache en kan netwerkprestaties beïnvloeden door pre-loading.</sys:String>
+    <sys:String x:Key="Pandora__desc">Gepersonaliseerde radiodienst. Verwijder deze als de dienst niet beschikbaar is in uw regio of als u Spotify gebruikt.</sys:String>
+    <sys:String x:Key="DolbyAccess_desc">Configureert Dolby Atmos voor koptelefoons. Alleen verwijderen als u geen compatibele hardware of Dolby-licentie heeft.</sys:String>
+    <sys:String x:Key="PowerToys_desc">Geavanceerde systeemhulpprogrammas. Hoewel nuttig, bestaat het uit meerdere achtergrondprocessen die het RAM-gebruik en de CPU-belasting aanzienlijk kunnen verhogen.</sys:String>
+    <sys:String x:Key="MicrosoftJournal_desc">Een applicatie voor het maken van notities, speciaal ontworpen voor aanraakschermen en digitale pennen.</sys:String>
 
     <sys:String x:Key="title_over_pkg">Bevestiging van verwijdering</sys:String>
     <sys:String x:Key="text_over_pkg" xml:space="preserve">U staat op het punt de Microsoft Edge-browser te verwijderen. Hiermee wordt ook de EdgeWebView-component verwijderd, die wordt gebruikt om webinhoud weer te geven in verschillende toepassingen — zoals Microsoft Office (bijv. Meeting Insights, Room Finder), de Foto's-app (de nieuwe versie gebruikt WebView2), sommige Telegram-bots en andere programma's die afhankelijk zijn van embedded WebView. Voordat u verdergaat, moet u er zeker van zijn dat u deze component niet nodig hebt.
