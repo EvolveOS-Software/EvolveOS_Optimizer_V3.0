@@ -10,6 +10,7 @@ using System.IO;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace EvolveOS_Optimizer.Utilities.Tweaks
 {
@@ -73,10 +74,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 {
                     foreach (var subKeyName in regKey.GetSubKeyNames())
                     {
-                        if (subKeyName == "Properties")
-                        {
-                            continue;
-                        }
+                        if (subKeyName == "Properties") continue;
 
                         using RegistryKey? subKey = regKey.OpenSubKey(subKeyName);
                         if (subKey != null)
@@ -212,14 +210,22 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
         internal static void ViewNetshState()
         {
-            string getStateNetsh = CommandExecutor.GetCommandOutput("/c chcp 65001 & netsh int teredo show state & netsh int ipv6 isatap show state & netsh int isatap show state & netsh int ipv6 6to4 show state", false).Result;
-            _isNetshState = getStateNetsh.Contains("default") || getStateNetsh.Contains("enabled");
+            try
+            {
+                string getStateNetsh = CommandExecutor.GetCommandOutput("/c chcp 65001 & netsh int teredo show state & netsh int ipv6 isatap show state & netsh int isatap show state & netsh int ipv6 6to4 show state", false).Result;
+                _isNetshState = getStateNetsh.Contains("default") || getStateNetsh.Contains("enabled");
+            }
+            catch { _isNetshState = false; }
         }
 
         internal static void ViewConfigTick()
         {
-            string output = CommandExecutor.GetCommandOutput(PathLocator.Executable.BcdEdit).Result;
-            _isTickState = !Regex.IsMatch(output, @"(?is)(?=.*\bdisabledynamictick\s+(yes|true))(?=.*\buseplatformclock\s+(no|false))", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+            try
+            {
+                string output = CommandExecutor.GetCommandOutput(PathLocator.Executable.BcdEdit).Result;
+                _isTickState = !Regex.IsMatch(output, @"(?is)(?=.*\bdisabledynamictick\s+(yes|true))(?=.*\buseplatformclock\s+(no|false))", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.CultureInvariant);
+            }
+            catch { _isTickState = false; }
         }
 
         [DllImport("user32.dll")]
@@ -231,15 +237,15 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             switch (tweak)
             {
                 case "Slider1":
-                    SystemParametersInfo(UIAction.SPI_SETMOUSESPEED, value, value, 2);
+                    SystemParametersInfo(UIAction.SPI_SETMOUSESPEED, value, 0, 2);
                     RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Mouse", "MouseSensitivity", value, RegistryValueKind.String);
                     break;
                 case "Slider2":
-                    SystemParametersInfo(UIAction.SPI_SETKEYBOARDDELAY, value, value, 2);
+                    SystemParametersInfo(UIAction.SPI_SETKEYBOARDDELAY, value, 0, 2);
                     RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Keyboard", "KeyboardDelay", value, RegistryValueKind.String);
                     break;
                 case "Slider3":
-                    SystemParametersInfo(UIAction.SPI_SETKEYBOARDSPEED, value, value, 2);
+                    SystemParametersInfo(UIAction.SPI_SETKEYBOARDSPEED, value, 0, 2);
                     RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Keyboard", "KeyboardSpeed", value, RegistryValueKind.String);
                     break;
             }
@@ -248,7 +254,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
         [DllImport("user32.dll")]
         private static extern bool SystemParametersInfo(uint _uiAction, uint _uiParam, uint[] _pvParam, uint _fWinIni);
-        internal async void ApplyTweaks(string tweak, bool isDisabled, bool canShowWindow = true)
+
+        internal async Task ApplyTweaks(string tweak, bool isDisabled, bool canShowWindow = true, CancellationToken token = default)
         {
             INIManager.TempWrite(INIManager.TempTweaksSys, tweak, isDisabled);
 
@@ -276,7 +283,6 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     if (canShowWindow)
                     {
                         var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-
                         if (dispatcherQueue != null)
                         {
                             dispatcherQueue.TryEnqueue(async () =>
@@ -288,18 +294,16 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
                                     NotificationManager.Show(isDisabled ? "warn" : "info", isDisabled ? "warn_wd_noty" : "info_wd_noty").Perform();
 
-                                    await Task.Run(() => WindowsDefender.SetProtectionStateAsync(isDisabled));
+                                    await WindowsDefender.SetProtectionStateAsync(isDisabled, token);
 
                                     if (!isDisabled)
                                     {
                                         NotificationManager.Show().WithDuration(300).Restart();
-
                                         _ = Task.Run(async () => {
                                             await Task.Delay(10000);
                                             await CommandExecutor.RunCommand($"/c del /f \"{PathLocator.Executable.NSudo}\"");
                                         });
                                     }
-
                                     overlayWindow.Close();
                                 }
                                 catch (Exception ex)
@@ -310,12 +314,12 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         }
                         else
                         {
-                            await Task.Run(() => WindowsDefender.SetProtectionStateAsync(isDisabled));
+                            await WindowsDefender.SetProtectionStateAsync(isDisabled, token);
                         }
                     }
                     else
                     {
-                        await Task.Run(() => WindowsDefender.SetProtectionStateAsync(isDisabled));
+                        await WindowsDefender.SetProtectionStateAsync(isDisabled, token);
                     }
                     break;
                 case "TglButton4":
@@ -394,7 +398,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     }
                     break;
                 case "TglButton12":
-                    await SetTaskState(!isDisabled, TaskStorage.memoryDiagTasks);
+                    await SetTaskState(!isDisabled, token, TaskStorage.memoryDiagTasks);
                     break;
                 case "TglButton13":
                     string argStateNetshSecond, argStateNetsh;
@@ -444,7 +448,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers", "DisableAutoplay", isDisabled ? 1 : 0, RegistryValueKind.DWord);
                     break;
                 case "TglButton18":
-                    SetPowercfg(isDisabled);
+                    await SetPowercfg(isDisabled, token);
                     break;
                 case "TglButton19":
                     await CommandExecutor.RunCommand(@"Add-Type -AssemblyName System.Runtime.WindowsRuntime
@@ -536,10 +540,10 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     }
                     break;
                 case "TglButton27":
-                    await SetTaskState(!isDisabled, TaskStorage.winInsiderTasks);
+                    await SetTaskState(!isDisabled, token, TaskStorage.winInsiderTasks);
                     break;
                 case "TglButton28":
-                    await SetTaskState(true, TaskStorage.defragTask);
+                    await SetTaskState(true, token, TaskStorage.defragTask);
                     RegistryHelp.Write(Registry.CurrentUser, @"SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction", "Enable", isDisabled ? "N" : "Y", RegistryValueKind.String);
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\services\defragsvc", "Start", 2, RegistryValueKind.DWord);
                     break;
@@ -576,15 +580,15 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         NotificationManager.Show("restart").WithDuration(500).Perform();
                     }
                     break;
-                default:
-                    break;
             }
         }
 
-        private static void SetPowercfg(bool isDisabled)
+        private static async Task SetPowercfg(bool isDisabled, CancellationToken token)
         {
-            Task.Run(async () =>
+            await Task.Run(async () =>
             {
+                if (token.IsCancellationRequested) return;
+
                 Process _powercfg = new Process()
                 {
                     StartInfo = {
@@ -596,42 +600,35 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     },
                 };
 
-                string? searchScheme = default, unlockFrequency = @"-attributes SUB_PROCESSOR 75b0ae3f-bce0-45a7-8c89-c9611c25e100 -ATTRIB_HIDE";
+                string unlockFrequency = @"-attributes SUB_PROCESSOR 75b0ae3f-bce0-45a7-8c89-c9611c25e100 -ATTRIB_HIDE";
 
                 try
                 {
                     if (isDisabled)
                     {
+                        string? searchScheme = string.Empty;
                         using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"root\cimv2\power", "SELECT InstanceID FROM Win32_PowerPlan WHERE IsActive=false"))
                         {
                             foreach (ManagementObject managementObj in searcher.Get().Cast<ManagementObject>())
                             {
+                                if (token.IsCancellationRequested) return;
+
                                 using (managementObj)
                                 {
                                     string rawInstanceId = managementObj["InstanceID"]?.ToString() ?? string.Empty;
                                     var match = Regex.Match(rawInstanceId, @"\{([^)]*)\}");
+                                    string schemeGuid = match.Success ? match.Groups[1].Value : "00000000-0000-0000-0000-000000000000";
 
-                                    _currentPowerGuid = match.Success ? match.Groups[1].Value : "00000000-0000-0000-0000-000000000000";
-
-                                    if (RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{searchScheme}", "Description", string.Empty).Contains("-18") &&
-                                        RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{searchScheme}", "FriendlyName", string.Empty).Contains("-19"))
+                                    if (RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "Description", string.Empty).Contains("-18") &&
+                                        RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "FriendlyName", string.Empty).Contains("-19"))
                                     {
-                                        _currentPowerGuid = searchScheme ?? string.Empty;
+                                        searchScheme = schemeGuid;
+                                        _powercfg.StartInfo.Arguments = $"/setactive {searchScheme}";
+                                        _powercfg.Start();
 
-                                        using (_powercfg)
-                                        {
-                                            _powercfg.StartInfo.Arguments = $"/setactive {searchScheme}";
-                                            _powercfg.Start();
-
-                                            _powercfg.StartInfo.Arguments = unlockFrequency;
-                                            _powercfg.Start();
-                                        }
-
+                                        _powercfg.StartInfo.Arguments = unlockFrequency;
+                                        _powercfg.Start();
                                         break;
-                                    }
-                                    else
-                                    {
-                                        searchScheme = string.Empty;
                                     }
                                 }
                             }
@@ -640,70 +637,65 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         if (string.IsNullOrEmpty(searchScheme))
                         {
                             byte[] resourceData = ArchiveManager.GetResourceBytes("UltPower.pow");
-
-                            if (resourceData.Length > 0)
-                            {
-                                ArchiveManager.Unarchive(PathLocator.Files.PowPlan, resourceData);
-                            }
+                            if (resourceData.Length > 0) ArchiveManager.Unarchive(PathLocator.Files.PowPlan, resourceData);
 
                             string _guid = Guid.NewGuid().ToString("D");
+                            _powercfg.StartInfo.Arguments = $@"-import ""{PathLocator.Files.PowPlan}"" {_guid}";
+                            _powercfg.Start();
 
-                            using (_powercfg)
-                            {
-                                _powercfg.StartInfo.Arguments = $@"-import ""{PathLocator.Files.PowPlan}"" {_guid}";
-                                _powercfg.Start();
+                            await Task.Delay(5, token);
 
-                                await Task.Delay(5);
+                            _powercfg.StartInfo.Arguments = $"/setactive {_guid}";
+                            _powercfg.Start();
 
-                                _powercfg.StartInfo.Arguments = $"/setactive {_guid}";
-                                _powercfg.Start();
-
-                                _powercfg.StartInfo.Arguments = unlockFrequency;
-                                _powercfg.Start();
-                            }
+                            _powercfg.StartInfo.Arguments = unlockFrequency;
+                            _powercfg.Start();
 
                             _currentPowerGuid = _guid;
-                            await CommandExecutor.RunCommand($"/c timeout /t 10 && rd /s /q \"{PathLocator.Folders.Workspace}\"");
+                            await Task.Run(() => CommandExecutor.RunCommand($"/c timeout /t 10 && rd /s /q \"{PathLocator.Folders.Workspace}\""));
                         }
                     }
                     else
                     {
-                        string activeScheme = @"Microsoft:PowerPlan\\{" + RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{searchScheme}", "ActivePowerScheme", string.Empty) + "}";
+                        string activeSchemeGuid = RegistryHelp.GetValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes", "ActivePowerScheme", string.Empty);
+                        string activePath = @"Microsoft:PowerPlan\\{" + activeSchemeGuid + "}";
                         string selectedScheme = string.Empty, backupScheme = string.Empty;
 
-                        foreach (var managementObj in new ManagementObjectSearcher(@"root\cimv2\power", "SELECT InstanceID FROM Win32_PowerPlan WHERE InstanceID !='" + activeScheme + "'").Get())
+                        using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"root\cimv2\power", "SELECT InstanceID FROM Win32_PowerPlan WHERE InstanceID !='" + activePath + "'"))
                         {
-                            string instanceId = Convert.ToString(managementObj["InstanceID"]) ?? string.Empty;
-
-                            var match = Regex.Match(instanceId, @"\{([a-fA-F0-9\-]{36})\}");
-                            searchScheme = match.Groups[1].Value;
-
-                            if (!RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{searchScheme}", "Description", string.Empty).Contains("-10") &&
-                            !RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{searchScheme}", "FriendlyName", string.Empty).Contains("-11"))
+                            foreach (ManagementObject managementObj in searcher.Get().Cast<ManagementObject>())
                             {
-                                selectedScheme = searchScheme;
-                                break;
-                            }
+                                if (token.IsCancellationRequested) return;
 
-                            backupScheme ??= searchScheme;
+                                using (managementObj)
+                                {
+                                    string instanceId = Convert.ToString(managementObj["InstanceID"]) ?? string.Empty;
+                                    var match = Regex.Match(instanceId, @"\{([a-fA-F0-9\-]{36})\}");
+                                    string schemeGuid = match.Groups[1].Value;
+
+                                    if (!RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "Description", string.Empty).Contains("-10") &&
+                                        !RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "FriendlyName", string.Empty).Contains("-11"))
+                                    {
+                                        selectedScheme = schemeGuid;
+                                        break;
+                                    }
+                                    backupScheme = string.IsNullOrEmpty(backupScheme) ? schemeGuid : backupScheme;
+                                }
+                            }
                         }
 
-                        selectedScheme ??= backupScheme;
+                        selectedScheme = string.IsNullOrEmpty(selectedScheme) ? backupScheme : selectedScheme;
 
                         if (!string.IsNullOrEmpty(selectedScheme))
                         {
                             _currentPowerGuid = selectedScheme;
-
-                            using (_powercfg)
-                            {
-                                _powercfg.StartInfo.Arguments = $"/setactive {selectedScheme}";
-                                _powercfg.Start();
-                            }
+                            _powercfg.StartInfo.Arguments = $"/setactive {selectedScheme}";
+                            _powercfg.Start();
                         }
                     }
                 }
                 catch (Exception ex) { ErrorLogging.LogDebug(ex); }
-            });
+            }, token);
         }
     }
 }

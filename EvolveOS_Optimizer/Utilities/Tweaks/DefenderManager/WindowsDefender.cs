@@ -2,11 +2,7 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Storage;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -54,21 +50,25 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
            (Path.Combine(Environment.SystemDirectory, "HealthAttestationClient"), "HealthAttestationClientAgent.exe", "BlockHACA.exe")
         };
 
-        internal static async Task SetProtectionStateAsync(bool isDisabled)
+        internal static async Task SetProtectionStateAsync(bool isDisabled, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested) return;
+
             if (isDisabled)
             {
-                Deactivate();
+                await Deactivate(token);
             }
             else
             {
-                await Activate();
+                await Activate(token);
             }
         }
 
-        private static async Task Activate()
+        private static async Task Activate(CancellationToken token)
         {
             TerminateProcess();
+
+            if (token.IsCancellationRequested) return;
 
             InvokePowerShell(@"Set-MpPreference -DisableIOAVProtection $false
             Set-MpPreference -DisableRealtimeMonitoring $false
@@ -174,6 +174,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
             RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows defender\Windows defender Exploit Guard\Controlled Folder Access", "EnableControlledFolderAccess");
             RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection", "EnableNetworkProtection");
 
+            if (token.IsCancellationRequested) return;
+
             await CommandExecutor.RunCommandAsTrustedInstaller($@"{PathLocator.Executable.NSudo}-U:T -P:E -M:S -ShowWindowMode:Hide cmd /c " +
             @"reg delete HKLM\SYSTEM\CurrentControlSet\Services\WinDefend /v AutorunsDisabled /f & " +
             @"reg add HKLM\SYSTEM\CurrentControlSet\Services\wscsvc /v DelayedAutoStart /t REG_DWORD /d 1 /f & " +
@@ -192,12 +194,15 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
             @"reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows Defender"" /v DisableAntiVirus /t REG_DWORD /d 0 /f");
 
             ManageExclusions(false);
-            await SetTaskState(true, TaskStorage.winDefenderTasks);
+            await SetTaskState(true, token, TaskStorage.winDefenderTasks);
+
+            if (token.IsCancellationRequested) return;
 
             await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c {CommandExecutor.CleanCommand(string.Join(" & ", services.Select(kv => $@"reg add ""HKLM\SYSTEM\CurrentControlSet\Services\{kv.Key}"" /v Start /t REG_DWORD /d {kv.Value} /f")))}""");
 
             foreach (var (path, normal, block) in fileMappings)
             {
+                if (token.IsCancellationRequested) return;
                 string sourcePath = Path.Combine(path, block);
                 string targetPath = Path.Combine(path, normal);
 
@@ -208,10 +213,10 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
                     $@"icacls ""{targetPath}"" /inheritance:r",
                     $@"icacls ""{targetPath}"" /grant *S-1-5-32-544:F",
                     $@"icacls ""{targetPath}"" /grant *S-1-5-32-545:R",
-                    $@"icacls ""{targetPath}"" /grant *S-1-5-18:F",
-                    $@"icacls ""{targetPath}"" /grant *S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464:F",
                     $@"icacls ""{targetPath}"" /grant *S-1-15-2-1:R",
                     $@"icacls ""{targetPath}"" /grant *S-1-15-2-2:R",
+                    $@"icacls ""{targetPath}"" /grant *S-1-5-18:F",
+                    $@"icacls ""{targetPath}"" /grant *S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464:F",
                     $@"icacls ""{targetPath}"" /remove ""{Environment.UserName}"""}))}""");
             }
 
@@ -221,7 +226,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
             InvokePowerShell(@"Get-AppXpackage Microsoft.WindowsDefender | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register ""$($_.InstallLocation)\AppXManifest.xml""}");
         }
 
-        private static async void Deactivate()
+        private static async Task Deactivate(CancellationToken token)
         {
             ExportRights();
 
@@ -229,8 +234,11 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
 
             foreach (var (path, normal, block) in fileMappings)
             {
+                if (token.IsCancellationRequested) return;
                 await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c ""rename ""{Path.Combine(path, normal)}"" ""{block}""""");
             }
+
+            if (token.IsCancellationRequested) return;
 
             await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c {CommandExecutor.CleanCommand(string.Join(" & ", services.Select(kv => $@"reg add ""HKLM\SYSTEM\CurrentControlSet\Services\{kv.Key}"" /v Start /t REG_DWORD /d 4 /f")))}""");
 
@@ -291,7 +299,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
             @"reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection"" /v DisablePrivacyMode /t REG_DWORD /d 1 /f & " +
             @"reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection"" /v DisableBlockAtFirstSeen /t REG_DWORD /d 1 /f");
 
-            await SetTaskState(false, TaskStorage.winDefenderTasks);
+            await SetTaskState(false, token, TaskStorage.winDefenderTasks);
 
             RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows Defender", "DisableAntiSpyware", 1, RegistryValueKind.DWord);
             RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows Defender", "DisableAntiVirus", 1, RegistryValueKind.DWord);
@@ -329,6 +337,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
             RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Microsoft Antimalware", "DisableAntiVirus", 1, RegistryValueKind.DWord);
             RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Microsoft Antimalware\SpyNet", "SpyNetReporting", 0, RegistryValueKind.DWord);
             RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Microsoft Antimalware\SpyNet", "LocalSettingOverrideSpyNetReporting", 0, RegistryValueKind.DWord);
+
+            if (token.IsCancellationRequested) return;
 
             await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c " +
             @"reg add ""HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet"" /v DisableBlockAtFirstSeen /t REG_DWORD /d 1 /f & " +
@@ -400,6 +410,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
             RegistryHelp.DeleteValue(Registry.CurrentUser, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", "Windows Defender");
             RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", "SecurityHealth");
 
+            if (token.IsCancellationRequested) return;
+
             await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c " +
             @"reg add ""HKCU\Software\Microsoft\Windows\CurrentVersion\AppHost"" /v EnableWebContentEvaluation /t REG_DWORD /d 0 /f & " +
             @"reg add ""HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter"" /v EnabledV9 /t REG_DWORD /d 0 /f & " +
@@ -426,15 +438,14 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
                 Path.Combine(PathLocator.Folders.SystemDrive, "ProgramData", "Microsoft", "Windows Defender", "Support")
             })
             {
+                if (token.IsCancellationRequested) return;
                 try
                 {
-                    if (!Directory.Exists(directory))
-                    {
-                        continue;
-                    }
+                    if (!Directory.Exists(directory)) continue;
 
                     foreach (var filePath in Directory.EnumerateFiles(directory, "*", SearchOption.TopDirectoryOnly))
                     {
+                        if (token.IsCancellationRequested) return;
                         await CommandExecutor.RunCommandAsTrustedInstaller($@"{PathLocator.Executable.NSudo} -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c ""takeown /f \""{filePath}\"" /r /d y && icacls \""{filePath}\"" /inheritance:r /remove *S-1-5-32-544 *S-1-5-11 *S-1-5-32-545 *S-1-5-18 && icacls \""{filePath}\"" /grant {Environment.UserName}:F /t && del /q \""{filePath}\""""");
 
                         for (int i = 0; Directory.Exists(filePath) && i < 10; i++)
@@ -445,7 +456,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
                             TakingOwnership.GrantAdministratorsAccess(filePath, TakingOwnership.SE_OBJECT_TYPE.SE_FILE_OBJECT);
                             await CommandExecutor.RunCommandAsTrustedInstaller($@"{PathLocator.Executable.NSudo} -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c ""del /q ""{filePath}""""");
 
-                            Thread.Sleep(500);
+                            await Task.Delay(500, token);
                         }
                     }
                 }
@@ -509,7 +520,6 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
                 return;
             }
             catch (Exception ex) { ErrorLogging.LogDebug(ex); }
-
         }
 
         public static async void Recovery()
@@ -534,27 +544,21 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
                 }
             }
 
-
             string platformPath = Path.Combine(PathLocator.Folders.SystemDrive, @"ProgramData\Microsoft\Windows Defender\Platform\*");
             await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c " +
                 $"for /d %D in (\"{platformPath}\") do if exist \"%D\\BlockAntimalware.exe\" ren \"%D\\BlockAntimalware.exe\" MsMpEng.exe & " +
                 $"for /d %D in (\"{platformPath}\") do if exist \"%D\\BlockAntimalwareCore.exe\" ren \"%D\\BlockAntimalwareCore.exe\" MpDefenderCoreService.exe");
 
-
             await CommandExecutor.RunCommandAsTrustedInstaller($@"""{PathLocator.Executable.NSudo}"" -U:T -P:E -M:S -ShowWindowMode:Hide -Wait cmd /c {CleanCommand(string.Join(" & ", services.Select(kv => $@"reg add ""HKLM\SYSTEM\CurrentControlSet\Services\{kv.Key}"" /v Start /t REG_DWORD /d {kv.Value} /f")))}");
             RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows Defender\Features", "TamperProtection", 1, RegistryValueKind.DWord);
             RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "Shell", "explorer.exe", RegistryValueKind.String, true);
-
 
             await CommandExecutor.RunCommand("/c shutdown /r /f /t 0");
         }
 
         private static string CleanCommand(string rawCommand)
         {
-            if (string.IsNullOrWhiteSpace(rawCommand))
-            {
-                return string.Empty;
-            }
+            if (string.IsNullOrWhiteSpace(rawCommand)) return string.Empty;
 
             var lines = rawCommand
                 .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
@@ -563,18 +567,10 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
                 .Select(line => Regex.Replace(line, @"\s+", " "))
                 .ToList();
 
-            if (lines.Count == 0)
-            {
-                return "";
-            }
-
-            if (lines.Count == 1)
-            {
-                return lines[0];
-            }
+            if (lines.Count == 0) return "";
+            if (lines.Count == 1) return lines[0];
 
             string separator = rawCommand.Contains("&&") ? " && " : rawCommand.Contains("&") ? " & " : " && ";
-
             return string.Join(separator, lines);
         }
     }
