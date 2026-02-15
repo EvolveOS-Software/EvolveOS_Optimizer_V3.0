@@ -3,9 +3,6 @@ using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using static EvolveOS_Optimizer.Core.Model.WeatherApiModels;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml;
 using System.Threading;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
@@ -143,10 +140,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private async Task InitializeAsync(CancellationToken token)
         {
-            _ = FetchWeatherAsync(_weatherLocation, token);
-
             try
             {
+                var weatherTask = Task.Run(async () =>
+                {
+                    try { await FetchWeatherAsync(_weatherLocation, token); }
+                    catch (OperationCanceledException) { }
+                }, token);
+
                 while (!token.IsCancellationRequested)
                 {
                     _dispatcherQueue.TryEnqueue(() =>
@@ -165,6 +166,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 Debug.WriteLine("[HomePageVM] Background loop stopped safely.");
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[HomePageVM] Unexpected error: {ex.Message}");
+            }
+            // No finally block needed
         }
 
         public void LoadDisplayData()
@@ -212,7 +218,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 string loc = locationOverride ?? WeatherLocation;
 
-                Task<WeatherData> weatherTask = _weatherService.GetWeatherAsync(loc);
+                Task<WeatherData> weatherTask = _weatherService.GetWeatherAsync(loc, token);
                 Task timeoutTask = Task.Delay(5000, token);
                 Task completedTask = await Task.WhenAny(weatherTask, timeoutTask);
 
@@ -222,6 +228,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
 
                 WeatherData data = await weatherTask;
+
+                if (data == null) return;
 
                 _dispatcherQueue.TryEnqueue(() =>
                 {
@@ -243,7 +251,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch (OperationCanceledException)
             {
-
+                // Silent exit
             }
             catch (Exception ex)
             {

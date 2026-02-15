@@ -15,13 +15,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal event Action<DeviceType>? HandleDevicesEvents;
         private readonly List<(ManagementEventWatcher watcher, EventArrivedEventHandler handler)> _watcherHandler = new();
 
-        internal enum DeviceType
-        {
-            All,
-            Storage,
-            Audio,
-            Network
-        }
+        internal enum DeviceType { All, Storage, Audio, Network }
 
         #region P/Invoke Structures
         [StructLayout(LayoutKind.Sequential)]
@@ -61,6 +55,26 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             Task.Run(InitializeNetworkCounters);
         }
 
+        private void SafeWmiAction(Action action, string context)
+        {
+            try
+            {
+                action();
+            }
+            catch (COMException)
+            {
+                Debug.WriteLine($"[MonitoringService] {context}: COM Busy (Handled Silently)");
+            }
+            catch (ManagementException ex)
+            {
+                Debug.WriteLine($"[MonitoringService] {context}: WMI Error {ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[MonitoringService] {context}: Unexpected error: {ex.Message}");
+            }
+        }
+
         internal void InitializeNetworkCounters()
         {
             try
@@ -76,7 +90,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 if (targetInterface != null)
                 {
                     string instanceName = targetInterface.Description;
-
                     instanceName = instanceName.Replace('(', '[').Replace(')', ']')
                                                .Replace('/', '_').Replace('#', '_');
 
@@ -100,33 +113,18 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[NetworkMonitor] Init Error: {ex.Message}");
-                _downloadCounter = null;
-                _uploadCounter = null;
-            }
+            catch { }
         }
 
         internal double GetDownloadSpeed()
         {
-            try
-            {
-                if (_downloadCounter == null) return 0.0;
-                float bytesPerSec = _downloadCounter.NextValue();
-                return Math.Max(0.0, (double)bytesPerSec / 1024.0 / 1024.0);
-            }
+            try { return _downloadCounter != null ? Math.Max(0.0, (double)_downloadCounter.NextValue() / 1048576.0) : 0.0; }
             catch { return 0.0; }
         }
 
         internal double GetUploadSpeed()
         {
-            try
-            {
-                if (_uploadCounter == null) return 0.0;
-                float bytesPerSec = _uploadCounter.NextValue();
-                return Math.Max(0.0, (double)bytesPerSec / 1024.0 / 1024.0);
-            }
+            try { return _uploadCounter != null ? Math.Max(0.0, (double)_uploadCounter.NextValue() / 1048576.0) : 0.0; }
             catch { return 0.0; }
         }
 
@@ -134,15 +132,11 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             return await Task.Run(() =>
             {
-                uint capacity = 1024;
-                uint[] buffer = new uint[capacity];
-
+                uint[] buffer = new uint[1024];
                 if (EnumProcesses(buffer, (uint)(buffer.Length * sizeof(uint)), out uint bytesNeeded))
                 {
-                    uint count = bytesNeeded / sizeof(uint);
-                    if (count < capacity) return count.ToString();
+                    return (bytesNeeded / sizeof(uint)).ToString();
                 }
-
                 return Process.GetProcesses().Length.ToString();
             });
         }
@@ -151,41 +145,25 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             return await Task.Run(() =>
             {
-                ServiceController[]? allServices = null;
+                int runningCount = 0;
                 try
                 {
-                    allServices = ServiceController.GetServices();
-                    int runningCount = 0;
-
+                    ServiceController[] allServices = ServiceController.GetServices();
                     foreach (var svc in allServices)
                     {
-                        if (svc.Status == ServiceControllerStatus.Running &&
-                           (svc.ServiceType.HasFlag(ServiceType.Win32OwnProcess) ||
-                            svc.ServiceType.HasFlag(ServiceType.Win32ShareProcess)))
+                        using (svc)
                         {
-                            runningCount++;
-                        }
-
-                        svc.Dispose();
-                    }
-
-                    return runningCount.ToString();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[Service Monitor] Error: {ex.Message}");
-                    return "0";
-                }
-                finally
-                {
-                    if (allServices != null)
-                    {
-                        foreach (var svc in allServices)
-                        {
-                            try { svc.Dispose(); } catch { }
+                            if (svc.Status == ServiceControllerStatus.Running &&
+                               (svc.ServiceType.HasFlag(ServiceType.Win32OwnProcess) ||
+                                svc.ServiceType.HasFlag(ServiceType.Win32ShareProcess)))
+                            {
+                                runningCount++;
+                            }
                         }
                     }
                 }
+                catch { }
+                return runningCount.ToString();
             });
         }
 
@@ -195,11 +173,9 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 MemoryStatus memStatus = new();
                 if (!GlobalMemoryStatusEx(memStatus)) return;
-
-                ulong totalMemoryMb = memStatus.ullTotalPhys / 1048576;
-                ulong availMemoryMb = memStatus.ullAvailPhys / 1048576;
-
-                Memory.Usage = (int)((float)(totalMemoryMb - availMemoryMb) / totalMemoryMb * 100);
+                ulong total = memStatus.ullTotalPhys / 1048576;
+                ulong avail = memStatus.ullAvailPhys / 1048576;
+                Memory.Usage = (int)((float)(total - avail) / total * 100);
             });
         }
 
@@ -209,30 +185,19 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 await Task.Run(async () =>
                 {
-                    static ulong ConvertTimeToTicks(SystemTime st) => ((ulong)st.dwHighDateTime << 32) | st.dwLowDateTime;
-
-                    if (!GetSystemTimes(out SystemTime idleTime, out SystemTime kernelTime, out SystemTime userTime)) return;
-
-                    ulong idleTicks = ConvertTimeToTicks(idleTime);
-                    ulong totalTicks = ConvertTimeToTicks(kernelTime) + ConvertTimeToTicks(userTime);
-
+                    static ulong ToTicks(SystemTime st) => ((ulong)st.dwHighDateTime << 32) | st.dwLowDateTime;
+                    if (!GetSystemTimes(out var i1, out var k1, out var u1)) return;
                     await Task.Delay(1000);
+                    if (!GetSystemTimes(out var i2, out var k2, out var u2)) return;
 
-                    if (!GetSystemTimes(out idleTime, out kernelTime, out userTime)) return;
+                    ulong idleDiff = ToTicks(i2) - ToTicks(i1);
+                    ulong totalDiff = (ToTicks(k2) + ToTicks(u2)) - (ToTicks(k1) + ToTicks(u1));
 
-                    ulong newIdleTicks = ConvertTimeToTicks(idleTime);
-                    ulong newTotalTicks = ConvertTimeToTicks(kernelTime) + ConvertTimeToTicks(userTime);
-
-                    ulong totalTicksDiff = newTotalTicks - totalTicks;
-                    ulong idleTicksDiff = newIdleTicks - idleTicks;
-
-                    if (totalTicksDiff > 0)
-                    {
-                        Processor.Usage = Math.Min(100, Math.Max(0, (int)(100.0 * (totalTicksDiff - idleTicksDiff) / totalTicksDiff)));
-                    }
+                    if (totalDiff > 0)
+                        Processor.Usage = Math.Min(100, Math.Max(0, (int)(100.0 * (totalDiff - idleDiff) / totalDiff)));
                 });
             }
-            catch { Processor.Usage = 1; }
+            catch { Processor.Usage = 0; }
         }
 
         internal void StartDeviceMonitoring()
@@ -257,7 +222,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         private void SubscribeToDeviceEvents(string filter, DeviceType type, string? scope)
         {
-            try
+            SafeWmiAction(() =>
             {
                 WqlEventQuery query = new("__InstanceOperationEvent", TimeSpan.FromSeconds(1), filter);
                 ManagementEventWatcher watcher = new(new ManagementScope(scope ?? @"root\cimv2"), query);
@@ -267,8 +232,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 watcher.EventArrived += handler;
                 watcher.Start();
                 lock (_watcherHandler) { _watcherHandler.Add((watcher, handler)); }
-            }
-            catch (Exception ex) { Debug.WriteLine($"[WMI Watcher] Error: {ex.Message}"); }
+            }, $"DeviceWatcher ({type})");
         }
 
         internal void StopDeviceMonitoring()
@@ -277,13 +241,12 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 foreach (var item in _watcherHandler)
                 {
-                    try
+                    SafeWmiAction(() =>
                     {
                         item.watcher.EventArrived -= item.handler;
                         item.watcher.Stop();
                         item.watcher.Dispose();
-                    }
-                    catch { }
+                    }, "StopWatcher");
                 }
                 _watcherHandler.Clear();
             }
@@ -293,22 +256,13 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             StopDeviceMonitoring();
 
-            try
-            {
-                _downloadCounter?.Close();
-                _downloadCounter?.Dispose();
-                _downloadCounter = null;
-
-                _uploadCounter?.Close();
-                _uploadCounter?.Dispose();
-                _uploadCounter = null;
-            }
-            catch { }
+            _downloadCounter?.Dispose();
+            _uploadCounter?.Dispose();
+            _downloadCounter = null;
+            _uploadCounter = null;
 
             HandleDevicesEvents = null;
-
             GC.SuppressFinalize(this);
-            Debug.WriteLine("[MonitoringService] Cleanly disposed system handles.");
         }
 
         internal string GetWallpaperPath()
@@ -325,20 +279,13 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             try
             {
-                string wallpaperPath = GetWallpaperPath();
-
-                if (!string.IsNullOrWhiteSpace(wallpaperPath) && File.Exists(wallpaperPath))
+                string path = GetWallpaperPath();
+                if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
                 {
-                    var bitmap = new BitmapImage();
-                    bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                    bitmap.UriSource = new Uri(wallpaperPath);
-                    return bitmap;
+                    return new BitmapImage(new Uri(path)) { CreateOptions = BitmapCreateOptions.IgnoreImageCache };
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[MonitoringService] Wallpaper Refresh Error: {ex.Message}");
-            }
+            catch { }
             return null;
         }
     }

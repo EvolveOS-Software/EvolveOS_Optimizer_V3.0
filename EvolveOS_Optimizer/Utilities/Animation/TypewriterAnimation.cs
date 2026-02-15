@@ -1,25 +1,33 @@
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Text;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace EvolveOS_Optimizer.Utilities.Animation
 {
     internal sealed class TypewriterAnimation
     {
-        private static readonly Dictionary<TextBlock, CancellationTokenSource> ActiveCancellations = new();
+        private static readonly ConditionalWeakTable<TextBlock, CancellationTokenSource> ActiveCancellations = new();
 
         internal static void Create(string textToAnimate, TextBlock textBlock, TimeSpan duration)
         {
+            if (textBlock == null) return;
 
             if (ActiveCancellations.TryGetValue(textBlock, out var oldCts))
             {
-                oldCts.Cancel();
+                try
+                {
+                    oldCts.Cancel();
+                    oldCts.Dispose();
+                }
+                catch (ObjectDisposedException) { }
                 ActiveCancellations.Remove(textBlock);
             }
 
             var cts = new CancellationTokenSource();
-            ActiveCancellations[textBlock] = cts;
+            ActiveCancellations.Add(textBlock, cts);
 
+            textBlock.Opacity = 0;
             Storyboard storyboard = new Storyboard();
             DoubleAnimation opacityAnim = new DoubleAnimation
             {
@@ -43,9 +51,12 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             if (dispatcher == null) return;
 
             int charCount = text.Length;
-            double charPerMs = charCount / totalDuration.TotalMilliseconds;
+            if (charCount == 0) return;
+
+            double totalMs = totalDuration.TotalMilliseconds;
             int intervalMs = 15;
-            int charsToAppend = (int)Math.Max(1, Math.Round(charPerMs * intervalMs));
+            double charsPerMs = charCount / totalMs;
+            int charsToAppend = (int)Math.Max(1, Math.Round(charsPerMs * intervalMs));
 
             StringBuilder sb = new StringBuilder();
 
@@ -55,9 +66,7 @@ namespace EvolveOS_Optimizer.Utilities.Animation
                 {
                     if (token.IsCancellationRequested) return;
 
-                    await Task.Delay(intervalMs);
-
-                    if (token.IsCancellationRequested) return;
+                    await Task.Delay(intervalMs, token);
 
                     int remaining = charCount - i;
                     int currentChunkSize = Math.Min(charsToAppend, remaining);
@@ -74,16 +83,23 @@ namespace EvolveOS_Optimizer.Utilities.Animation
                     });
                 }
 
-                dispatcher.TryEnqueue(() => { if (target.IsLoaded) target.Text = text; });
+                dispatcher.TryEnqueue(() =>
+                {
+                    if (!token.IsCancellationRequested && target.IsLoaded)
+                        target.Text = text;
+                });
+            }
+            catch (OperationCanceledException)
+            {
+
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Typewriter] Unexpected error: {ex.Message}");
+                Debug.WriteLine($"[Typewriter] Actual Error: {ex.Message}");
             }
             finally
             {
-                if (!token.IsCancellationRequested)
-                    ActiveCancellations.Remove(target);
+                ActiveCancellations.Remove(target);
             }
         }
     }

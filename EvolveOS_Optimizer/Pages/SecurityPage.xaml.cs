@@ -28,7 +28,14 @@ public sealed partial class SecurityPage : Page
         {
             Interval = TimeSpan.FromSeconds(30)
         };
-        _refreshTimer.Tick += async (s, e) => await CheckSecurityStatusAsync(_cancellationTokenSource.Token);
+
+        _refreshTimer.Tick += async (s, e) =>
+        {
+            if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
+            {
+                await CheckSecurityStatusAsync(_cancellationTokenSource.Token);
+            }
+        };
         _refreshTimer.Start();
 
         Loaded += SecurityPage_Loaded;
@@ -54,9 +61,14 @@ public sealed partial class SecurityPage : Page
         {
             disposableVM.Dispose();
         }
+
+        this.Content = null;
         this.DataContext = null;
 
-        Debug.WriteLine("[SecurityPage] Disposed and Unloaded cleanly.");
+        Loaded -= SecurityPage_Loaded;
+        Unloaded -= Page_Unloaded;
+
+        Debug.WriteLine("[SecurityPage] Disposed and Visual Tree cleared cleanly.");
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -87,7 +99,7 @@ public sealed partial class SecurityPage : Page
 
         try
         {
-            var checksTask = Task.Run(async () =>
+            var results = await Task.Run(async () =>
             {
                 var antivirusInfo = await GetAntivirusInfoAsync(cancellationToken).ConfigureAwait(false);
                 var firewallProtection = await IsFirewallEnabledAsync(cancellationToken).ConfigureAwait(false);
@@ -102,47 +114,42 @@ public sealed partial class SecurityPage : Page
 
                 return (antivirusInfo, firewallProtection, windowsUpdate, smartscreen, realTimeProtection,
                         uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, defenderServiceEnabled);
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(true);
 
-            var results = await checksTask.ConfigureAwait(true);
+            if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
+                return;
 
-            DispatcherQueue.TryEnqueue(() =>
+            UpdateStatusCard(VirusThreatProtectionStatus, VirusThreatProtectionLink, results.antivirusInfo.IsEnabled);
+            UpdateStatusCard(FirewallStatus, FirewallLink, results.firewallProtection);
+            UpdateStatusCard(WindowsUpdateStatus, WindowsUpdateLink, results.windowsUpdate);
+            UpdateStatusCard(SmartScreenStatus, SmartScreenLink, results.smartscreen);
+            UpdateStatusCard(RealTimeProtectionStatus, RealTimeProtectionLink, results.realTimeProtection);
+            UpdateStatusCard(UACStatus, UACLink, results.uac);
+            UpdateStatusCard(TamperProtectionStatus, TamperProtectionLink, results.tamperProtection);
+            UpdateStatusCard(ControlledFolderAccessStatus, ControlledFolderAccessLink, results.controlledFolderAccess);
+            UpdateStatusCard(BitLockerStatus, BitLockerLink, results.bitLockerEnabled);
+            UpdateStatusCard(DefenderServiceStatus, DefenderServiceLink, results.defenderServiceEnabled);
+
+            AntivirusProductName.Text = results.antivirusInfo.ProductName ?? ResourceString.GetString("None");
+
+            if (results.antivirusInfo.SignatureUpdated.HasValue)
             {
-                if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
-                    return;
+                SignatureUpdateText.Text = $"{ResourceString.GetString("SecurityPage_LastUpdated")}: {results.antivirusInfo.SignatureUpdated.Value:g}";
+                SignatureUpdateText.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SignatureUpdateText.Visibility = Visibility.Collapsed;
+            }
 
-                UpdateStatusCard(VirusThreatProtectionStatus, VirusThreatProtectionLink, results.antivirusInfo.IsEnabled);
-                UpdateStatusCard(FirewallStatus, FirewallLink, results.firewallProtection);
-                UpdateStatusCard(WindowsUpdateStatus, WindowsUpdateLink, results.windowsUpdate);
-                UpdateStatusCard(SmartScreenStatus, SmartScreenLink, results.smartscreen);
-                UpdateStatusCard(RealTimeProtectionStatus, RealTimeProtectionLink, results.realTimeProtection);
-                UpdateStatusCard(UACStatus, UACLink, results.uac);
-                UpdateStatusCard(TamperProtectionStatus, TamperProtectionLink, results.tamperProtection);
-                UpdateStatusCard(ControlledFolderAccessStatus, ControlledFolderAccessLink, results.controlledFolderAccess);
-                UpdateStatusCard(BitLockerStatus, BitLockerLink, results.bitLockerEnabled);
-                UpdateStatusCard(DefenderServiceStatus, DefenderServiceLink, results.defenderServiceEnabled);
+            UpdateSecurityImage(results.antivirusInfo.IsEnabled, results.firewallProtection, results.windowsUpdate,
+                results.smartscreen, results.uac, results.realTimeProtection, results.tamperProtection, results.defenderServiceEnabled);
 
-                AntivirusProductName.Text = results.antivirusInfo.ProductName ?? ResourceString.GetString("None");
-
-                if (results.antivirusInfo.SignatureUpdated.HasValue)
-                {
-                    SignatureUpdateText.Text = $"{ResourceString.GetString("SecurityPage_LastUpdated")}: {results.antivirusInfo.SignatureUpdated.Value:g}";
-                    SignatureUpdateText.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    SignatureUpdateText.Visibility = Visibility.Collapsed;
-                }
-
-                UpdateSecurityImage(results.antivirusInfo.IsEnabled, results.firewallProtection, results.windowsUpdate,
-                    results.smartscreen, results.uac, results.realTimeProtection, results.tamperProtection, results.defenderServiceEnabled);
-
-                LastRefreshedText.Text = $"{ResourceString.GetString("SecurityPage_LastRefreshed")}: {DateTime.Now:T}";
-            });
+            LastRefreshedText.Text = $"{ResourceString.GetString("SecurityPage_LastRefreshed")}: {DateTime.Now:T}";
         }
         catch (OperationCanceledException)
         {
-            // Expected when cancellation is requested
+            // Silent exit
         }
         catch (Exception ex)
         {
@@ -186,13 +193,11 @@ public sealed partial class SecurityPage : Page
             {
                 using var searcher = new ManagementObjectSearcher(@"root\SecurityCenter2", "SELECT * FROM AntiVirusProduct");
 
-                ManagementObjectCollection? products;
-                try { products = searcher.Get(); }
-                catch (ManagementException) { products = null; }
+                using var products = searcher.Get();
 
-                if (products != null && products.Count > 0)
+                if (products != null)
                 {
-                    foreach (var obj in products)
+                    foreach (ManagementObject obj in products)
                     {
                         if (cancellationToken.IsCancellationRequested)
                             break;
@@ -210,6 +215,7 @@ public sealed partial class SecurityPage : Page
                                 result.IsEnabled = isEnabled;
                             }
                         }
+                        obj.Dispose();
                     }
                 }
 
@@ -217,7 +223,9 @@ public sealed partial class SecurityPage : Page
                 {
                     using var defenderSearcher = new ManagementObjectSearcher(@"root\Microsoft\Windows\Defender",
                         "SELECT * FROM MSFT_MpComputerStatus");
-                    foreach (var obj in defenderSearcher.Get())
+
+                    using var defenderResults = defenderSearcher.Get();
+                    foreach (ManagementObject obj in defenderResults)
                     {
                         if (cancellationToken.IsCancellationRequested)
                             break;
@@ -226,10 +234,10 @@ public sealed partial class SecurityPage : Page
                         {
                             result.SignatureUpdated = ManagementDateTimeConverter.ToDateTime(obj["AntivirusSignatureLastUpdated"].ToString());
                         }
+                        obj.Dispose();
                         break;
                     }
                 }
-                catch (ManagementException) { }
                 catch { }
             }
             catch (Exception ex)
@@ -426,9 +434,17 @@ public sealed partial class SecurityPage : Page
                     using var process = Process.Start(psi);
                     if (process != null)
                     {
-                        var output = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-                        await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+                        var readTask = process.StandardOutput.ReadToEndAsync();
 
+                        await Task.WhenAny(readTask, Task.Delay(-1, cancellationToken)).ConfigureAwait(false);
+
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            process.Kill();
+                            return false;
+                        }
+
+                        var output = await readTask;
                         if (int.TryParse(output.Trim(), out var status))
                         {
                             return status != 0;
@@ -444,11 +460,9 @@ public sealed partial class SecurityPage : Page
                 if (key != null)
                 {
                     var value = key.GetValue("EnableControlledFolderAccess");
-
                     if (value != null)
                     {
-                        var status = (int)value;
-                        return status != 0;
+                        return (int)value != 0;
                     }
                 }
 
@@ -481,19 +495,19 @@ public sealed partial class SecurityPage : Page
                             using var searcher = new ManagementObjectSearcher(@"root\CIMV2\Security\MicrosoftVolumeEncryption",
                                 $"SELECT * FROM Win32_EncryptableVolume WHERE DriveLetter = '{drive.Name.TrimEnd('\\', ':')}'");
 
-                            ManagementObjectCollection? volumes;
-                            try { volumes = searcher.Get(); }
-                            catch (ManagementException) { volumes = null; }
+                            using var volumes = searcher.Get();
 
                             if (volumes != null)
                             {
-                                foreach (var volume in volumes)
+                                foreach (ManagementObject volume in volumes)
                                 {
+                                    if (cancellationToken.IsCancellationRequested) break;
                                     var protectionStatus = volume["ProtectionStatus"];
                                     if (protectionStatus != null && (uint)protectionStatus == 1)
                                     {
                                         return true;
                                     }
+                                    volume.Dispose();
                                 }
                             }
                         }
@@ -531,6 +545,8 @@ public sealed partial class SecurityPage : Page
 
     private void UpdateSecurityImage(params bool[] featureStates)
     {
+        if (SecurityStatusImage == null) return;
+
         var disabledCount = featureStates.Count(status => !status);
 
         var imageUri = disabledCount switch
@@ -645,104 +661,35 @@ public sealed partial class SecurityPage : Page
         }
     }
 
-    private void VirusThreatProtectionLink_Click(object sender, RoutedEventArgs e)
-    {
-        OpenWindowsSecurityPage("windowsdefender://threatsettings/");
-    }
-
-    private void FirewallLink_Click(object sender, RoutedEventArgs e)
-    {
-        OpenWindowsSecurityPage("windowsdefender://network/");
-    }
-
-    private void WindowsUpdateLink_Click(object sender, RoutedEventArgs e)
-    {
-        OpenWindowsSecurityPage("ms-settings:windowsupdate");
-    }
-
-    private void SmartScreenLink_Click(object sender, RoutedEventArgs e)
-    {
-        OpenWindowsSecurityPage("windowsdefender://smartscreenpua/");
-    }
-
-    private void RealTimeProtectionLink_Click(object sender, RoutedEventArgs e)
-    {
-        OpenWindowsSecurityPage("windowsdefender://threatsettings/");
-    }
-
-    private void UACLink_Click(object sender, RoutedEventArgs e)
-    {
-        OpenWindowsSecurityPage("ms-settings:useraccounts");
-    }
-
-    private void TamperProtectionLink_Click(object sender, RoutedEventArgs e)
-    {
-        OpenWindowsSecurityPage("windowsdefender://threatsettings/");
-    }
-
-    private void ControlledFolderAccessLink_Click(object sender, RoutedEventArgs e)
-    {
-        OpenWindowsSecurityPage("windowsdefender://ransomwareprotection/");
-    }
+    private void VirusThreatProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
+    private void FirewallLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://network/");
+    private void WindowsUpdateLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("ms-settings:windowsupdate");
+    private void SmartScreenLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://smartscreenpua/");
+    private void RealTimeProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
+    private void UACLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("ms-settings:useraccounts");
+    private void TamperProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
+    private void ControlledFolderAccessLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://ransomwareprotection/");
 
     private void BitLockerLink_Click(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "ms-settings:deviceencryption",
-                UseShellExecute = true
-            });
-        }
+        try { Process.Start(new ProcessStartInfo { FileName = "ms-settings:deviceencryption", UseShellExecute = true }); }
         catch
         {
-            try
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "control.exe",
-                    Arguments = "/name Microsoft.BitLockerDriveEncryption",
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                ErrorLogging.LogDebug(ex);
-            }
+            try { Process.Start(new ProcessStartInfo { FileName = "control.exe", Arguments = "/name Microsoft.BitLockerDriveEncryption", UseShellExecute = true }); }
+            catch (Exception ex) { ErrorLogging.LogDebug(ex); }
         }
     }
 
-    private void DefenderServiceLink_Click(object sender, RoutedEventArgs e)
-    {
-        OpenWindowsSecurityPage("windowsdefender://threatsettings/");
-    }
+    private void DefenderServiceLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
 
     private void OpenWindowsSecurityPage(string uri)
     {
-        try
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = uri,
-                UseShellExecute = true
-            });
-        }
+        try { Process.Start(new ProcessStartInfo { FileName = uri, UseShellExecute = true }); }
         catch (Exception ex)
         {
             ErrorLogging.LogDebug(ex);
-            try
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "windowsdefender://",
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception fallbackEx)
-            {
-                ErrorLogging.LogDebug(fallbackEx);
-            }
+            try { Process.Start(new ProcessStartInfo { FileName = "windowsdefender://", UseShellExecute = true }); }
+            catch (Exception fallbackEx) { ErrorLogging.LogDebug(fallbackEx); }
         }
     }
 
@@ -753,9 +700,6 @@ public sealed partial class SecurityPage : Page
             using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\MpsSvc");
             return (int?)key?.GetValue("Start") == 4;
         }
-        catch
-        {
-            return false;
-        }
+        catch { return false; }
     }
 }

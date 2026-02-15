@@ -313,7 +313,6 @@ public sealed partial class GroupPolicyPage : Page
         if (selectedItems.Count == 0)
             return;
 
-        // Show confirmation dialog
         var dialog = new ContentDialog
         {
             XamlRoot = XamlRoot,
