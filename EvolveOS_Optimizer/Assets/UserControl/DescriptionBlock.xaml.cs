@@ -7,6 +7,7 @@ namespace EvolveOS_Optimizer.Assets.UserControl
     public sealed partial class DescriptionBlock : Microsoft.UI.Xaml.Controls.UserControl
     {
         private CancellationTokenSource? _scrollCts;
+        private CancellationTokenSource? _debounceCts;
         private Storyboard? _currentStoryboard;
 
         public string DefaultText
@@ -20,8 +21,7 @@ namespace EvolveOS_Optimizer.Assets.UserControl
                 nameof(DefaultText),
                 typeof(string),
                 typeof(DescriptionBlock),
-                new PropertyMetadata(string.Empty));
-
+                new PropertyMetadata(string.Empty, OnDefaultTextChanged));
 
         private static void OnDefaultTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -37,21 +37,36 @@ namespace EvolveOS_Optimizer.Assets.UserControl
             }
         }
 
-        private CancellationTokenSource? _debounceCts;
-
         public string Text
         {
             get => FunctionDescription.Text;
             set
             {
-                _scrollCts?.Cancel();
-                _debounceCts?.Cancel();
+                CancelAndDispose(ref _debounceCts);
+                CancelAndDispose(ref _scrollCts);
+
                 _debounceCts = new CancellationTokenSource();
+                var token = _debounceCts.Token;
 
                 StopScrolling();
                 Scroller.ChangeView(null, 0, null, true);
 
-                _ = StartTypewriterWithDebounce(value, _debounceCts.Token);
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await Task.Delay(100, token);
+
+                        DispatcherQueue.TryEnqueue(() =>
+                        {
+                            if (!token.IsCancellationRequested)
+                            {
+                                _ = StartTypewriterWithDebounce(value, token);
+                            }
+                        });
+                    }
+                    catch (OperationCanceledException) { }
+                });
             }
         }
 
@@ -59,24 +74,33 @@ namespace EvolveOS_Optimizer.Assets.UserControl
         {
             try
             {
-                await Task.Delay(50);
+                await Task.Delay(50, token);
 
                 if (token.IsCancellationRequested) return;
 
-                TimeSpan fastDuration = text.Length <= 50 ? TimeSpan.FromMilliseconds(100) : TimeSpan.FromMilliseconds(300);
+                TimeSpan duration = text.Length <= 50 ? TimeSpan.FromMilliseconds(100) : TimeSpan.FromMilliseconds(300);
 
-                TypewriterAnimation.Create(text, FunctionDescription, fastDuration);
+                TypewriterAnimation.Create(text, FunctionDescription, duration);
 
+                CancelAndDispose(ref _scrollCts);
                 _scrollCts = new CancellationTokenSource();
+
                 await StartAutoScrollAsync(text, _scrollCts.Token);
             }
-            catch (Exception) { }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { Debug.WriteLine($"[DescriptionBlock] Error: {ex.Message}"); }
         }
 
         public DescriptionBlock()
         {
             this.InitializeComponent();
-            this.Unloaded += (s, e) => { _scrollCts?.Cancel(); StopScrolling(); };
+            this.Unloaded += (s, e) =>
+            {
+                CancelAndDispose(ref _scrollCts);
+                CancelAndDispose(ref _debounceCts);
+                StopScrolling();
+                this.DataContext = null;
+            };
         }
 
         private void StopScrolling()
@@ -89,35 +113,48 @@ namespace EvolveOS_Optimizer.Assets.UserControl
         {
             try
             {
-                if (token.IsCancellationRequested) return;
-                await Task.Delay(2000);
+                await Task.Delay(2000, token);
+
+                if (text == DefaultText || token.IsCancellationRequested) return;
+
+                double maxOffset = Scroller.ScrollableHeight;
+                if (maxOffset <= 0) return;
+
+                double durationSeconds = Math.Max(2.0, maxOffset / 20);
+
+                _currentStoryboard = new Storyboard();
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 0,
+                    To = maxOffset,
+                    Duration = new Duration(TimeSpan.FromSeconds(durationSeconds)),
+                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+                };
+
+                Storyboard.SetTarget(animation, Scroller);
+                Storyboard.SetTargetProperty(animation, "(local:DescriptionBlock.ScrollViewerBehavior.VerticalOffset)");
+
+                _currentStoryboard.Children.Add(animation);
+
+                if (!token.IsCancellationRequested)
+                {
+                    _currentStoryboard.Begin();
+                }
             }
-            catch (Exception) { return; }
+            catch (OperationCanceledException) { }
+        }
 
-            if (text == DefaultText || token.IsCancellationRequested) return;
-
-            double maxOffset = Scroller.ScrollableHeight;
-            if (maxOffset <= 0) return;
-
-            double durationSeconds = Math.Max(2.0, maxOffset / 20);
-
-            _currentStoryboard = new Storyboard();
-            DoubleAnimation animation = new DoubleAnimation
+        private void CancelAndDispose(ref CancellationTokenSource? cts)
+        {
+            if (cts != null)
             {
-                From = 0,
-                To = maxOffset,
-                Duration = new Duration(TimeSpan.FromSeconds(durationSeconds)),
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
-            };
-
-            Storyboard.SetTarget(animation, Scroller);
-            Storyboard.SetTargetProperty(animation, "(local:DescriptionBlock.ScrollViewerBehavior.VerticalOffset)");
-
-            _currentStoryboard.Children.Add(animation);
-
-            if (!token.IsCancellationRequested)
-            {
-                _currentStoryboard.Begin();
+                try
+                {
+                    cts.Cancel();
+                    cts.Dispose();
+                }
+                catch (ObjectDisposedException) { }
+                finally { cts = null; }
             }
         }
 

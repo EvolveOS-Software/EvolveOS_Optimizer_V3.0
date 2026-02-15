@@ -1,7 +1,6 @@
 ﻿using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Services;
-using Microsoft.UI.Xaml.Media;
 using System.Reflection;
 
 namespace EvolveOS_Optimizer.Core.ViewModel

@@ -7,7 +7,6 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Navigation;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -33,55 +32,66 @@ namespace EvolveOS_Optimizer
             this.InitializeComponent();
 
             NotificationManager.Initialize(this);
-            ElementCompositionPreview.SetIsTranslationEnabled(GlobalNotificationBanner, true);
-            ElementCompositionPreview.SetIsTranslationEnabled(UpdateBanner, true);
-
             _hWnd = WindowNative.GetWindowHandle(this);
-            WindowId windowId = Win32Interop.GetWindowIdFromWindow(_hWnd);
-            _appWindow = AppWindow.GetFromWindowId(windowId);
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
 
-            if (_appWindow != null)
-            {
-                _appWindow.SetIcon("Assets/EvolveOS_Optimizer.ico");
-                var titleBar = _appWindow.TitleBar;
-                titleBar.ButtonBackgroundColor = Colors.Transparent;
-                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                _appWindow.Resize(new Windows.Graphics.SizeInt32(1575, 870));
-            }
+            ConfigureWindow();
 
             WindowHelper.RegisterMinWidthHeight(_hWnd, 700, 400);
-
             UIHelper.RegisterPageTransition(ContentFrame, RootGrid);
 
-            CenterWindow();
-
-            this.Activated += (s, e) =>
-            {
-                if (!_isBackdropInitialized && e.WindowActivationState != WindowActivationState.Deactivated)
-                {
-                    _isBackdropInitialized = true;
-
-                    this.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
-                    {
-                        await Task.Delay(400);
-                        UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
-                        Debug.WriteLine("[Startup] Backdrop initialization complete.");
-                    });
-                }
-            };
+            this.Activated += MainWindow_Activated;
 
             LocalizationService.Instance.PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName == "Item[]")
-                {
-                    OnPropertyChanged(string.Empty);
-                }
+                if (e.PropertyName == "Item[]") OnPropertyChanged(string.Empty);
             };
 
             this.RootGrid.Loaded += MainWindow_Loaded;
+        }
+
+        private void ConfigureWindow()
+        {
+            try
+            {
+                WindowId windowId = Win32Interop.GetWindowIdFromWindow(_hWnd);
+                _appWindow = AppWindow.GetFromWindowId(windowId);
+
+                if (_appWindow != null)
+                {
+                    _appWindow.SetIcon("Assets/EvolveOS_Optimizer.ico");
+                    _appWindow.Resize(new Windows.Graphics.SizeInt32(1575, 870));
+                    CenterWindow();
+
+                    var titleBar = _appWindow.TitleBar;
+                    titleBar.ButtonBackgroundColor = Colors.Transparent;
+                    titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Startup] AppWindow config delayed: {ex.Message}");
+            }
+        }
+
+        private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
+        {
+            if (!_isBackdropInitialized && args.WindowActivationState != WindowActivationState.Deactivated)
+            {
+                _isBackdropInitialized = true;
+
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(500);
+                    try
+                    {
+                        UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
+                    }
+                    catch (Exception ex) { Debug.WriteLine($"[Backdrop] COM Exception caught: {ex.Message}"); }
+                });
+            }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

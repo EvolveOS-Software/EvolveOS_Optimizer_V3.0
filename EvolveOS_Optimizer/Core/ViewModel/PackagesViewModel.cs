@@ -52,7 +52,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public PackagesViewModel()
         {
             DisplayState = new ObservableCollection<PackagesModel>();
-
             BuildCollection();
 
             var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();

@@ -8,12 +8,15 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
+using System.Threading;
 
 namespace EvolveOS_Optimizer.Pages
 {
     public partial class PackagesPage : Page
     {
         private readonly Dictionary<string, string> _currentCardStates = new();
+
+        private CancellationTokenSource? _pageCts;
 
         private TimerControlManager? _timer = default;
         private readonly BackgroundQueue _backgroundQueue = new BackgroundQueue();
@@ -39,36 +42,46 @@ namespace EvolveOS_Optimizer.Pages
 
         private void PackagesPage_Loaded(object sender, RoutedEventArgs e)
         {
+            // Initialize a page-level CTS
+            _pageCts?.Cancel();
+            _pageCts?.Dispose();
+            _pageCts = new CancellationTokenSource();
+
             if (HcPanel != null)
             {
-                HcPanel.AnimationFinished = () =>
-                {
-                    ReleaseTypewriter();
-                };
+                HcPanel.AnimationFinished = () => ReleaseTypewriter();
             }
 
             SyncVisualStates();
 
-            _timer = new TimerControlManager(TimeSpan.FromSeconds(5), TimerControlManager.TimerMode.CountUp, time =>
+            _timer = new TimerControlManager(TimeSpan.FromSeconds(5), TimerControlManager.TimerMode.CountUp, async time =>
             {
-                if (!this.IsLoaded || this.DispatcherQueue == null)
+                // 1. Check if page is still alive before starting work
+                if (!this.IsLoaded || _pageCts == null || _pageCts.IsCancellationRequested)
                 {
                     _timer?.Stop();
                     return;
                 }
 
-                Task.Run(() =>
+                try
                 {
-                    _uninstalling.GetInstalledPackages();
+                    // 2. Pass the token to the background work
+                    await Task.Run(() =>
+                    {
+                        if (_pageCts.IsCancellationRequested) return;
+                        _uninstalling.GetInstalledPackages();
+                    }, _pageCts.Token);
 
+                    // 3. Check again before updating UI
                     this.DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
                     {
-                        if (!this.IsLoaded || HcPanel == null) return;
+                        if (!this.IsLoaded || _pageCts == null || _pageCts.IsCancellationRequested) return;
 
                         UninstallingPakages.OnPackagesChanged();
                         SyncVisualStates();
                     });
-                });
+                }
+                catch (OperationCanceledException) { /* Silent exit */ }
             });
 
             _timer.Start();
@@ -478,6 +491,13 @@ namespace EvolveOS_Optimizer.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
+            if (_pageCts != null)
+            {
+                _pageCts.Cancel();
+                _pageCts.Dispose();
+                _pageCts = null;
+            }
+
             _timer?.Stop();
             _timer = null;
 
@@ -497,9 +517,13 @@ namespace EvolveOS_Optimizer.Pages
             this.Content = null;
             this.DataContext = null;
 
-            GC.Collect(2, GCCollectionMode.Forced, true);
+            this.Loaded -= PackagesPage_Loaded;
+            this.Unloaded -= Page_Unloaded;
 
-            Debug.WriteLine("[PackagesPage] Visual Tree and DataContext purged.");
+            GC.Collect(2, GCCollectionMode.Forced, true);
+            GC.WaitForPendingFinalizers();
+
+            Debug.WriteLine("[PackagesPage] Memory and Threads successfully reclaimed.");
         }
         #endregion
     }
