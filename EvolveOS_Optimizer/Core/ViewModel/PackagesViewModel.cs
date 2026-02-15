@@ -8,15 +8,17 @@ using EvolveOS_Optimizer.Utilities.Managers;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    internal class PackagesViewModel : ViewModelBase
+    internal class PackagesViewModel : ViewModelBase, IDisposable
     {
+        private Action? _dataChangedHandler;
+
         public ObservableCollection<PackagesModel> DisplayState { get; set; }
 
         public ObservableCollection<Tuple<string, string, bool>> SystemAppList { get; } = new();
 
         public Visibility Win11FeatureOnly => HardwareData.OS.IsWin11 ? Visibility.Visible : Visibility.Collapsed;
 
-        public PackagesModel? this[string name] => DisplayState.FirstOrDefault(d => d.Name == name);
+        public PackagesModel? this[string name] => DisplayState?.FirstOrDefault(d => d.Name == name);
 
         public ObservableCollection<PackagesModel> SelectedPackages { get; } = new ObservableCollection<PackagesModel>();
 
@@ -55,16 +57,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
-            UninstallingPakages.DataChanged += delegate
+            _dataChangedHandler = () =>
             {
+                if (DisplayState == null) return;
+
                 dispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
                 {
+                    if (DisplayState == null) return;
+
                     foreach (PackagesModel item in DisplayState)
                     {
                         UpdatePackageState(item);
                     }
                 });
             };
+
+            UninstallingPakages.DataChanged += _dataChangedHandler;
         }
 
         public async Task RefreshAllDataAsync()
@@ -87,6 +95,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void BuildCollection()
         {
+            if (DisplayState == null) return;
             DisplayState.Clear();
 
             foreach (var kv in UninstallingPakages.PackagesDetails)
@@ -124,6 +133,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void ClearSelection()
         {
+            if (DisplayState == null) return;
+
             foreach (var pkg in DisplayState)
             {
                 pkg.IsSelected = false;
@@ -164,6 +175,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     item.Installed = UninstallingPakages.IsOneDriveInstalled;
                 }
             }
+        }
+
+        public override void Dispose()
+        {
+            if (_dataChangedHandler != null)
+            {
+                UninstallingPakages.DataChanged -= _dataChangedHandler;
+                _dataChangedHandler = null;
+            }
+
+            DisplayState?.Clear();
+            DisplayState = null!;
+
+            SystemAppList?.Clear();
+
+            SelectedPackages?.Clear();
+
+            base.Dispose();
+            Debug.WriteLine("[PackagesVM] Cleanly Disposed.");
         }
     }
 }

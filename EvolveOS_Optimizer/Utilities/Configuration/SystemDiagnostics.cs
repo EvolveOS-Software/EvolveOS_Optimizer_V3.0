@@ -150,7 +150,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     GetProcessorInfo,
                     GetGraphicsInfo,
                     GetMemoryInfo,
-                    GetUserIpAddress,
+                    () => GetUserIpAddress().GetAwaiter().GetResult(),
                     () => RefreshDevicesData(DeviceType.All)
                 );
             });
@@ -456,14 +456,14 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             catch { return "0.0.0.0"; }
         }
 
-        internal void GetUserIpAddress()
+        internal async Task GetUserIpAddress(CancellationToken token = default)
         {
             if (IsNetworkAvailable())
             {
                 try
                 {
-                    using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
-                    UserIPAddress = client.GetStringAsync("https://api.ipify.org").GetAwaiter().GetResult();
+                    // Use a local client or the static one, but await it properly
+                    UserIPAddress = await _updateClient.GetStringAsync("https://api.ipify.org", token);
                 }
                 catch { UserIPAddress = "Offline"; }
             }
