@@ -1,12 +1,7 @@
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Diagnostics;
+using System.Threading;
 
 using static EvolveOS_Optimizer.Core.Model.WeatherApiModels;
 
@@ -14,7 +9,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 {
     public class WeatherService : IDisposable
     {
-        private readonly HttpClient _client = new HttpClient();
+        private static readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
 
         private const string API_KEY = "6aa62b54867341f3b3925740250511";
         private const int FORECAST_DAYS = 5;
@@ -24,7 +19,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         public string Location => _location;
 
-        public async Task<WeatherData> GetWeatherAsync(string? locationOverride = null)
+        public async Task<WeatherData> GetWeatherAsync(string? locationOverride = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(API_KEY) || API_KEY == "YOUR_WEATHERAPI_KEY")
             {
@@ -32,15 +27,21 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }
 
             string effectiveLocation = locationOverride ?? _location;
-
             if (string.IsNullOrEmpty(effectiveLocation)) effectiveLocation = "London";
 
             var url = $"{BASE_URL}?key={API_KEY}&q={effectiveLocation}&days={FORECAST_DAYS}";
 
             try
             {
-                var response = await _client.GetStringAsync(url);
-                var apiResponse = JsonSerializer.Deserialize<ApiWeatherResponse>(response);
+                using var response = await _client.GetAsync(url, token);
+
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync(token);
+
+                if (token.IsCancellationRequested) return null!;
+
+                var apiResponse = JsonSerializer.Deserialize<ApiWeatherResponse>(content);
 
                 if (apiResponse == null)
                 {
@@ -53,6 +54,11 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 }
 
                 return MapApiToUiModel(apiResponse);
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.WriteLine("[WeatherService] Operation was cancelled during network request.");
+                return null!;
             }
             catch (Exception ex)
             {
@@ -144,7 +150,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         public void Dispose()
         {
-            _client.Dispose();
             GC.SuppressFinalize(this);
         }
     }

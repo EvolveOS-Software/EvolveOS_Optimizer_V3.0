@@ -494,7 +494,12 @@ namespace EvolveOS_Optimizer.Pages
                 disposableVM.Dispose();
             }
 
+            this.Content = null;
             this.DataContext = null;
+
+            GC.Collect(2, GCCollectionMode.Forced, true);
+
+            Debug.WriteLine("[PackagesPage] Visual Tree and DataContext purged.");
         }
         #endregion
     }

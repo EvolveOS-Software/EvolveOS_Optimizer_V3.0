@@ -4,7 +4,6 @@ using System.Management;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using System.Threading;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
@@ -15,8 +14,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         internal event Action<DeviceType>? HandleDevicesEvents;
         private readonly List<(ManagementEventWatcher watcher, EventArrivedEventHandler handler)> _watcherHandler = new();
-
-        private readonly ServiceController[] _servicesList = ServiceController.GetServices();
 
         internal enum DeviceType
         {
@@ -116,17 +113,12 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             try
             {
                 if (_downloadCounter == null) return 0.0;
-                // Performance counter returns Bytes/sec. 
-                // Formula: Bytes / 1024 / 1024 = Megabytes
                 float bytesPerSec = _downloadCounter.NextValue();
                 return Math.Max(0.0, (double)bytesPerSec / 1024.0 / 1024.0);
             }
             catch { return 0.0; }
         }
 
-        /// <summary>
-        /// Returns Upload speed in MB/s (Megabytes per second)
-        /// </summary>
         internal double GetUploadSpeed()
         {
             try
@@ -148,11 +140,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 if (EnumProcesses(buffer, (uint)(buffer.Length * sizeof(uint)), out uint bytesNeeded))
                 {
                     uint count = bytesNeeded / sizeof(uint);
-
-                    if (count < capacity)
-                    {
-                        return count.ToString();
-                    }
+                    if (count < capacity) return count.ToString();
                 }
 
                 return Process.GetProcesses().Length.ToString();
@@ -163,18 +151,21 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             return await Task.Run(() =>
             {
+                ServiceController[]? allServices = null;
                 try
                 {
-                    var allServices = ServiceController.GetServices();
-
-                    int runningCount = allServices
-                        .Where(s => s.Status == ServiceControllerStatus.Running)
-                        .Where(s => s.ServiceType.HasFlag(ServiceType.Win32OwnProcess) ||
-                                    s.ServiceType.HasFlag(ServiceType.Win32ShareProcess))
-                        .Count();
+                    allServices = ServiceController.GetServices();
+                    int runningCount = 0;
 
                     foreach (var svc in allServices)
                     {
+                        if (svc.Status == ServiceControllerStatus.Running &&
+                           (svc.ServiceType.HasFlag(ServiceType.Win32OwnProcess) ||
+                            svc.ServiceType.HasFlag(ServiceType.Win32ShareProcess)))
+                        {
+                            runningCount++;
+                        }
+
                         svc.Dispose();
                     }
 
@@ -184,6 +175,16 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 {
                     Debug.WriteLine($"[Service Monitor] Error: {ex.Message}");
                     return "0";
+                }
+                finally
+                {
+                    if (allServices != null)
+                    {
+                        foreach (var svc in allServices)
+                        {
+                            try { svc.Dispose(); } catch { }
+                        }
+                    }
                 }
             });
         }
@@ -291,10 +292,23 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         public void Dispose()
         {
             StopDeviceMonitoring();
-            _downloadCounter?.Dispose();
-            _uploadCounter?.Dispose();
-            foreach (var svc in _servicesList) svc.Dispose();
+
+            try
+            {
+                _downloadCounter?.Close();
+                _downloadCounter?.Dispose();
+                _downloadCounter = null;
+
+                _uploadCounter?.Close();
+                _uploadCounter?.Dispose();
+                _uploadCounter = null;
+            }
+            catch { }
+
+            HandleDevicesEvents = null;
+
             GC.SuppressFinalize(this);
+            Debug.WriteLine("[MonitoringService] Cleanly disposed system handles.");
         }
 
         internal string GetWallpaperPath()
@@ -304,17 +318,14 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 using var key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop");
                 return key?.GetValue("Wallpaper")?.ToString() ?? string.Empty;
             }
-            catch
-            {
-                return string.Empty;
-            }
+            catch { return string.Empty; }
         }
 
         public ImageSource? GetWallpaperSource()
         {
             try
             {
-                string wallpaperPath = Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "WallPaper", string.Empty)?.ToString() ?? string.Empty;
+                string wallpaperPath = GetWallpaperPath();
 
                 if (!string.IsNullOrWhiteSpace(wallpaperPath) && File.Exists(wallpaperPath))
                 {
