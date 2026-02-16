@@ -31,6 +31,7 @@
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Click to copy</sys:String>
     <sys:String x:Key="copied_to_clipboard_noty">Copied to clipboard!</sys:String>
+    <sys:String x:Key="noty_warn_title">Warning</sys:String>
     <sys:String x:Key="noty_sys_title">System</sys:String>
     <sys:String x:Key="noty_sys_restart">A restart is required to apply changes.</sys:String>
     <sys:String x:Key="noty_acc_title">Account</sys:String>
@@ -63,6 +64,7 @@
     <sys:String x:Key="Nav_GroupPolicy">Policies</sys:String>
     <sys:String x:Key="Nav_Services">Services</sys:String>
     <sys:String x:Key="Nav_System">System</sys:String>
+    <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Settings</sys:String>
     <!-- endregion Main Window -->
 
@@ -680,5 +682,32 @@
     <sys:String x:Key="tgl19_desc_conf">Windows periodically updates Offline maps and sends notifications about new data in the background. These processes may collect information about your location, routes, and map usage. If you do not use Offline maps, it is recommended to disable them to avoid hidden updates and data transmission to Microsoft servers without your direct involvement.</sys:String>
     <sys:String x:Key="tgl20_desc_conf">The Intel module, which operates in the background to collect and transmit data, is positioned as a tool for improving the company’s products. However, for the average user it provides little practical benefit, and disabling this feature can reduce background activity and prevent unnecessary data transmission.</sys:String>
     <!-- endregion Privacy Page -->
+
+    <!--#region Scripts Page -->
+    <sys:String x:Key="btn_open_dir">Open Directory</sys:String>
+    <sys:String x:Key="btn_refresh">Refresh List</sys:String>
+    <sys:String x:Key="chk_run_ti_scripts">Run as TrustedInstaller</sys:String>
+    <sys:String x:Key="search_scripts_placeholder">Search scripts...</sys:String>
+    <sys:String x:Key="btn_sort_by">Sort By</sys:String>
+    <sys:String x:Key="sort_name">Name</sys:String>
+    <sys:String x:Key="sort_extension">File Extension</sys:String>
+    <sys:String x:Key="btn_toggle_sort_tip">Toggle Ascending / Descending</sys:String>
+    <sys:String x:Key="text_info_scripts">No scripts Detected, ready to import</sys:String>
+    <sys:String x:Key="scripts_info_scripts">Select or drag and drop folders and scripts (.ps1, .cmd, .bat, or .reg) here to begin.</sys:String>
+    <sys:String x:Key="lbl_terminal_title">Script Execution</sys:String>
+    <sys:String x:Key="btn_run_selected_scripts">Run Selected Scripts</sys:String>
+    <sys:String x:Key="btn_clear_selected_scripts">Clear all selections</sys:String>
+    <sys:String x:Key="btn_clear_path_scripts">Clear Current Path</sys:String>
+    <sys:String x:Key="lbl_terminal_subtitle">Processing script output in real-time. Please wait for completion.</sys:String>
+    <sys:String x:Key="lbl_terminal_finished">Execution Finished.</sys:String>
+    <sys:String x:Key="tt_terminal_clipboard">Copy Logs to Clipboard.</sys:String>
+    <sys:String x:Key="noty_terminal_clipboard">Logs copied to clipboard</sys:String>
+    <sys:String x:Key="text_drop_valid">Release to Add Scripts</sys:String>
+    <sys:String x:Key="btn_card_file_explorer">Open folder in Explorer</sys:String>
+    <sys:String x:Key="text_drop_invalid">Invalid File Type (Use .ps1, .bat, .cmd or .reg)</sys:String>
+    <sys:String x:Key="text_drop_zone_info">Drop folder or scripts here</sys:String>
+    <sys:String x:Key="tt_doubletapped_script">Double-click to run script</sys:String>
+    <sys:String x:Key="warn_invalid_script_ext">One or files were ignored. Supported types: .ps1, .bat, .cmd, .reg</sys:String>
+    <!--#endregion-->
 
 </ResourceDictionary>

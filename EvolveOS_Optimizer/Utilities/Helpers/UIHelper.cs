@@ -1,6 +1,7 @@
-﻿using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using System.ComponentModel;
 using System.Numerics;
@@ -12,6 +13,56 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
     {
         private static bool _isProcessing = false;
         private static DesktopAcrylicController? _currentController;
+
+        private static int _overlayRequestCount = 0;
+
+        public static void SetOverlay(bool isVisible, bool bringToFront = false)
+        {
+            var mainWindow = (Application.Current as App)?.GetType().GetProperty("MainWindow")?.GetValue(Application.Current) as Window;
+
+            if (mainWindow == null) return;
+
+            if (isVisible)
+            {
+                _overlayRequestCount++;
+            }
+            else
+            {
+                _overlayRequestCount--;
+            }
+
+            if (_overlayRequestCount < 0)
+            {
+                _overlayRequestCount = 0;
+            }
+
+            bool shouldActuallyShow = _overlayRequestCount > 0;
+
+            mainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+                if (mainWindow.Content is FrameworkElement rootElement && rootElement.DataContext != null)
+                {
+                    var vmType = rootElement.DataContext.GetType();
+                    var overlayProp = vmType.GetProperty("IsOverlayVisible");
+
+                    if (overlayProp != null && overlayProp.CanWrite)
+                    {
+                        overlayProp.SetValue(rootElement.DataContext, shouldActuallyShow);
+                    }
+                }
+
+                if (isVisible && bringToFront)
+                {
+                    mainWindow.Activate();
+
+                    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(mainWindow);
+                    var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+                    var appWindow = AppWindow.GetFromWindowId(windowId);
+
+                    appWindow.MoveInZOrderAtTop();
+                }
+            });
+        }
 
         public static void ApplyBackdrop(Window window, string name)
         {

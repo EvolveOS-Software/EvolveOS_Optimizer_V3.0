@@ -31,6 +31,7 @@
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Cliquez pour copier</sys:String>
     <sys:String x:Key="copied_to_clipboard_noty">Copié dans le presse-papiers !</sys:String>
+    <sys:String x:Key="noty_warn_title">Avertissement</sys:String>
     <sys:String x:Key="noty_sys_title">Système</sys:String>
     <sys:String x:Key="noty_sys_restart">Un redémarrage est nécessaire pour appliquer les modifications.</sys:String>
     <sys:String x:Key="noty_acc_title">Compte</sys:String>
@@ -679,5 +680,32 @@
     <sys:String x:Key="tgl19_desc_conf">Windows met régulièrement à jour les cartes hors ligne et envoie des notifications sur les nouvelles données en arrière-plan. Ces processus peuvent collecter des informations sur votre position, vos itinéraires et votre utilisation des cartes. Si vous n'utilisez pas les cartes hors ligne, il est recommandé de les désactiver pour éviter les mises à jour cachées et la transmission de données vers les serveurs de Microsoft à votre insu.</sys:String>
     <sys:String x:Key="tgl20_desc_conf">Le module Intel, qui fonctionne en arrière-plan pour collecter et transmettre des données, est présenté comme un outil d'amélioration des produits de l'entreprise. Cependant, pour l'utilisateur moyen, il n'apporte que peu d'avantages pratiques, et la désactivation de cette fonction peut réduire l'activité en arrière-plan et empêcher une transmission de données inutile.</sys:String>
     <!-- endregion Privacy Page -->
+
+    <!--#region Scripts Page -->
+    <sys:String x:Key="btn_open_dir">Ouvrir le répertoire</sys:String>
+    <sys:String x:Key="btn_refresh">Actualiser la liste</sys:String>
+    <sys:String x:Key="chk_run_ti_scripts">Exécuter en tant que TrustedInstaller</sys:String>
+    <sys:String x:Key="search_scripts_placeholder">Rechercher des scripts...</sys:String>
+    <sys:String x:Key="btn_sort_by">Trier par</sys:String>
+    <sys:String x:Key="sort_name">Nom</sys:String>
+    <sys:String x:Key="sort_extension">Extension de fichier</sys:String>
+    <sys:String x:Key="btn_toggle_sort_tip">Basculer Croissant / Décroissant</sys:String>
+    <sys:String x:Key="text_info_scripts">Aucun script détecté, prêt à l'importation</sys:String>
+    <sys:String x:Key="scripts_info_scripts">Sélectionnez ou glissez-déposez des dossiers et des scripts (.ps1, .cmd, .bat, ou .reg) ici pour commencer.</sys:String>
+    <sys:String x:Key="lbl_terminal_title">Exécution du script</sys:String>
+    <sys:String x:Key="btn_run_selected_scripts">Exécuter les scripts sélectionnés</sys:String>
+    <sys:String x:Key="btn_clear_selected_scripts">Effacer toutes les sélections</sys:String>
+    <sys:String x:Key="btn_clear_path_scripts">Effacer le chemin actuel</sys:String>
+    <sys:String x:Key="lbl_terminal_subtitle">Traitement de la sortie du script en temps réel. Veuillez patienter.</sys:String>
+    <sys:String x:Key="lbl_terminal_finished">Exécution terminée.</sys:String>
+    <sys:String x:Key="tt_terminal_clipboard">Copier les journaux dans le presse-papiers.</sys:String>
+    <sys:String x:Key="noty_terminal_clipboard">Journaux copiés dans le presse-papiers</sys:String>
+    <sys:String x:Key="text_drop_valid">Relâcher pour ajouter les scripts</sys:String>
+    <sys:String x:Key="btn_card_file_explorer">Ouvrir le dossier dans l'Explorateur</sys:String>
+    <sys:String x:Key="text_drop_invalid">Type de fichier non valide (Utilisez .ps1, .bat, .cmd ou .reg)</sys:String>
+    <sys:String x:Key="text_drop_zone_info">Déposez un dossier ou des scripts ici</sys:String>
+    <sys:String x:Key="tt_doubletapped_script">Double-cliquez pour exécuter le script</sys:String>
+    <sys:String x:Key="warn_invalid_script_ext">Un ou plusieurs fichiers ont été ignorés. Types supportés : .ps1, .bat, .cmd, .reg</sys:String>
+    <!--#endregion-->
 
 </ResourceDictionary>

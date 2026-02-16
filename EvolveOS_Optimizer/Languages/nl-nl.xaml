@@ -30,6 +30,7 @@
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Klik om te kopiëren</sys:String>
     <sys:String x:Key="copied_to_clipboard_noty">Gekopieerd naar klembord!</sys:String>
+    <sys:String x:Key="noty_warn_title">Waarschuwing</sys:String>
     <sys:String x:Key="noty_sys_title">Systeem</sys:String>
     <sys:String x:Key="noty_sys_restart">Een herstart is vereist om de wijzigingen toe te passen.</sys:String>
     <sys:String x:Key="noty_acc_title">Account</sys:String>
@@ -674,5 +675,32 @@
     <sys:String x:Key="tgl17_desc_conf">De service die verantwoordelijk is voor het verzamelen van gegevens over het systeemgebruik door NVIDIA is overbodig voor de werking van het videostuurprogramma zelf.</sys:String>
     <sys:String x:Key="tgl18_desc_conf">Deze tweak schakelt de UAR-functie (User Activity Recording) uit – een systeem dat elke actie op uw computer logt: van screenshots en getypte tekst tot het openen van programma's.</sys:String>
     <!-- endregion Privacy Page -->
+
+    <!--#region Scripts Page -->
+    <sys:String x:Key="btn_open_dir">Map Openen</sys:String>
+    <sys:String x:Key="btn_refresh">Lijst Vernieuwen</sys:String>
+    <sys:String x:Key="chk_run_ti_scripts">Uitvoeren als TrustedInstaller</sys:String>
+    <sys:String x:Key="search_scripts_placeholder">Scripts zoeken...</sys:String>
+    <sys:String x:Key="btn_sort_by">Sorteren op</sys:String>
+    <sys:String x:Key="sort_name">Naam</sys:String>
+    <sys:String x:Key="sort_extension">Bestandsextensie</sys:String>
+    <sys:String x:Key="btn_toggle_sort_tip">Omschakelen Oplopend / Aflopend</sys:String>
+    <sys:String x:Key="text_info_scripts">Geen scripts gedetecteerd, klaar om te importeren</sys:String>
+    <sys:String x:Key="scripts_info_scripts">Selecteer of sleep mappen en scripts (.ps1, .cmd, .bat, of .reg) hiernaartoe om te beginnen.</sys:String>
+    <sys:String x:Key="lbl_terminal_title">Script Uitvoering</sys:String>
+    <sys:String x:Key="btn_run_selected_scripts">Geselecteerde Scripts Uitvoeren</sys:String>
+    <sys:String x:Key="btn_clear_selected_scripts">Alle selecties wissen</sys:String>
+    <sys:String x:Key="btn_clear_path_scripts">Huidig pad wissen</sys:String>
+    <sys:String x:Key="lbl_terminal_subtitle">Scriptuitvoer in real-time verwerken. Wacht op voltooiing.</sys:String>
+    <sys:String x:Key="lbl_terminal_finished">Uitvoering voltooid.</sys:String>
+    <sys:String x:Key="tt_terminal_clipboard">Logs naar klembord kopiëren.</sys:String>
+    <sys:String x:Key="noty_terminal_clipboard">Logs gekopieerd naar klembord</sys:String>
+    <sys:String x:Key="text_drop_valid">Loslaten om scripts toe te voegen</sys:String>
+    <sys:String x:Key="btn_card_file_explorer">Map openen in Verkenner</sys:String>
+    <sys:String x:Key="text_drop_invalid">Ongeldig bestandstype (Gebruik .ps1, .bat, .cmd of .reg)</sys:String>
+    <sys:String x:Key="text_drop_zone_info">Sleep map of scripts hiernaartoe</sys:String>
+    <sys:String x:Key="tt_doubletapped_script">Dubbelklik om script uit te voeren</sys:String>
+    <sys:String x:Key="warn_invalid_script_ext">Eén of meer bestanden zijn genegeerd. Ondersteunde typen: .ps1, .bat, .cmd, .reg</sys:String>
+    <!--#endregion-->
 
 </ResourceDictionary>

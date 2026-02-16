@@ -1,7 +1,7 @@
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Text;
 using EvolveOS_Optimizer.Core;
 using Microsoft.Win32.SafeHandles;
 
@@ -28,6 +28,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         internal const uint MB_DEFBUTTON1 = 0x00000000;
         internal const int IDYES = 6;
         internal const int SM_CLEANBOOT = 67;
+
+        internal const int GWL_EXSTYLE = -20;
+        internal const int WS_EX_APPWINDOW = 0x00040000;
+        internal const int WS_EX_TOOLWINDOW = 0x00000080;
+
+        public const int IDC_ARROW = 32512;
 
         public static class Privilege
         {
@@ -114,7 +120,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         #endregion
 
         #region Native Methods
-
         [DllImport("winmm.dll")]
         internal static extern int waveOutSetVolume(IntPtr hwo, uint dwVolume);
 
@@ -202,12 +207,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [DllImport("ntdll.dll")]
         internal static extern uint NtSetSystemInformation(int InfoClass, IntPtr Info, int Length);
 
-        [DllImport("advapi32.dll", SetLastError = true)]
-        internal static extern bool OpenProcessToken(IntPtr ProcessHandle, uint DesiredAccess, out IntPtr TokenHandle);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        internal static extern bool CloseHandle(IntPtr hObject);
-
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern bool FlushFileBuffers(IntPtr hFile);
 
@@ -256,7 +255,160 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         [DllImport("user32.dll")]
         internal static extern int GetSystemMetrics(int nIndex);
+        #endregion
 
+        #region Delegates & Private Fields
+        public delegate IntPtr SubclassProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, nuint uIdSubclass, IntPtr dwRefData);
+        private static SubclassProc? _dragDropSubclassDelegate;
+        private static Action<string[]>? _onFilesDroppedCallback;
+
+        public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+
+        [DllImport("shell32.dll")]
+        public static extern void DragAcceptFiles(IntPtr hwnd, bool fAccept);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        public static extern uint DragQueryFile(IntPtr hDrop, uint iFile, StringBuilder? lpszFile, uint cch);
+
+        [DllImport("shell32.dll")]
+        public static extern void DragFinish(IntPtr hDrop);
+
+        [DllImport("comctl32.dll", SetLastError = true)]
+        public static extern bool SetWindowSubclass(IntPtr hWnd, SubclassProc pfnSubclass, nuint uIdSubclass, IntPtr dwRefData);
+
+        [DllImport("comctl32.dll", SetLastError = true)]
+        public static extern IntPtr DefSubclassProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, uint action, IntPtr changeFilterStruct);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr LoadCursor(IntPtr hInstance, int lpCursorName);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetCursor(IntPtr hCursor);
+        #endregion
+
+        #region Security & Integrity Native API
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CloseHandle(IntPtr hObject);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public static extern bool OpenProcessToken(IntPtr ProcessHandle, uint DesiredAccess, out IntPtr TokenHandle);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public static extern bool GetTokenInformation(IntPtr TokenHandle, int TokenInformationClass, IntPtr TokenInformation, uint TokenInformationLength, out uint ReturnLength);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public static extern IntPtr GetSidSubAuthorityCount(IntPtr pSid);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public static extern IntPtr GetSidSubAuthority(IntPtr pSid, uint nSubAuthority);
+        #endregion
+
+        #region Public Methods
+        public static void InitializeAdminDragDrop(IntPtr hWnd, Action<string[]> onFilesDropped)
+        {
+            _onFilesDroppedCallback = onFilesDropped;
+
+            uint WM_DROPFILES = 0x0233;
+            uint WM_COPYDATA = 0x004A;
+            uint WM_COPYGLOBALDATA = 0x0049;
+
+            ChangeWindowMessageFilterEx(hWnd, WM_DROPFILES, 1, IntPtr.Zero);
+            ChangeWindowMessageFilterEx(hWnd, WM_COPYDATA, 1, IntPtr.Zero);
+            ChangeWindowMessageFilterEx(hWnd, WM_COPYGLOBALDATA, 1, IntPtr.Zero);
+
+            DragAcceptFiles(hWnd, true);
+
+            _dragDropSubclassDelegate = new SubclassProc(DragDropSubclassProc);
+            SetWindowSubclass(hWnd, _dragDropSubclassDelegate, 1, IntPtr.Zero);
+
+            Debug.WriteLine("[Win32Helper] Native Drag & Drop Hook Initialized.");
+        }
+
+        public static void HideFromTaskbar(IntPtr hWnd)
+        {
+            int exStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+            exStyle &= ~WS_EX_APPWINDOW; // Remove from Taskbar
+            exStyle |= WS_EX_TOOLWINDOW; // Make it a ToolWindow
+            SetWindowLong(hWnd, GWL_EXSTYLE, exStyle);
+
+            // Refresh the window frame to apply changes immediately
+            SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+        }
+
+        public static void LogProcessIntegrityLevel()
+        {
+            IntPtr hToken = IntPtr.Zero;
+            if (OpenProcessToken(Process.GetCurrentProcess().Handle, 0x0008, out hToken))
+            {
+                try
+                {
+                    uint dwLengthNeeded;
+                    GetTokenInformation(hToken, 25, IntPtr.Zero, 0, out dwLengthNeeded);
+                    IntPtr pTIL = Marshal.AllocHGlobal((int)dwLengthNeeded);
+
+                    try
+                    {
+                        if (GetTokenInformation(hToken, 25, pTIL, dwLengthNeeded, out dwLengthNeeded))
+                        {
+                            IntPtr pSid = Marshal.ReadIntPtr(pTIL);
+                            IntPtr pSubAuthorityCount = GetSidSubAuthorityCount(pSid);
+                            int subAuthorityCount = Marshal.ReadByte(pSubAuthorityCount);
+
+                            IntPtr pRID = GetSidSubAuthority(pSid, (uint)subAuthorityCount - 1);
+                            int rid = Marshal.ReadInt32(pRID);
+
+                            string level = rid switch
+                            {
+                                0x0000 => "Untrusted",
+                                0x1000 => "Low",
+                                0x2000 => "Medium",
+                                0x3000 => "High (Administrator)",
+                                0x4000 => "System",
+                                _ => $"Unknown (0x{rid:X})"
+                            };
+
+                            Debug.WriteLine($"[Security] Process Integrity Level: {level}");
+                        }
+                    }
+                    finally { Marshal.FreeHGlobal(pTIL); }
+                }
+                finally { CloseHandle(hToken); }
+            }
+        }
+        #endregion
+
+        #region Private Subclass Processing
+        private static IntPtr DragDropSubclassProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, nuint uIdSubclass, IntPtr dwRefData)
+        {
+            if (uMsg == 0x0233)
+            {
+                Debug.WriteLine("[Win32Helper] Raw Drop Detected!");
+                IntPtr hDrop = wParam;
+
+                uint fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, null, 0);
+                List<string> files = new List<string>();
+
+                for (uint i = 0; i < fileCount; i++)
+                {
+                    StringBuilder sb = new StringBuilder(260);
+                    DragQueryFile(hDrop, i, sb, (uint)sb.Capacity);
+                    files.Add(sb.ToString());
+                }
+
+                DragFinish(hDrop);
+                Debug.WriteLine($"[Win32Helper] Extracted {files.Count} files natively.");
+
+                _onFilesDroppedCallback?.Invoke(files.ToArray());
+
+                return IntPtr.Zero;
+            }
+
+            return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+        }
         #endregion
 
         #region Backup

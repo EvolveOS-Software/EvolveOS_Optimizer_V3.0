@@ -15,6 +15,20 @@
 
     <Grid x:Name="RootGrid" x:FieldModifier="public" Background="Transparent">
         <Grid.Resources>
+            <Storyboard x:Name="ShowDimOverlay">
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="WindowDimOverlay" Storyboard.TargetProperty="Visibility">
+                    <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                </ObjectAnimationUsingKeyFrames>
+                <DoubleAnimation Storyboard.TargetName="WindowDimOverlay" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.4"/>
+            </Storyboard>
+
+            <Storyboard x:Name="HideDimOverlay">
+                <DoubleAnimation Storyboard.TargetName="WindowDimOverlay" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="WindowDimOverlay" Storyboard.TargetProperty="Visibility">
+                    <DiscreteObjectKeyFrame KeyTime="0:0:0.3" Value="Collapsed"/>
+                </ObjectAnimationUsingKeyFrames>
+            </Storyboard>
+            
             <Storyboard x:Name="GlobalPulseAnimation" x:Key="GlobalPulseAnimation">
                 <DoubleAnimation Storyboard.TargetName="NotificationProgress"
                              Storyboard.TargetProperty="Opacity"
@@ -176,6 +190,13 @@
                                      CommandParameter="System"
                                      Tag="{x:Bind GetText('Nav_System'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEDA2;" FontSize="18"/>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Scripts"
+                                     Tag="{x:Bind GetText('Nav_Scripts'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xEA86;" FontSize="18"/>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -388,5 +409,8 @@
             </Border>
         </Grid>
 
+        <Grid x:Name="WindowDimOverlay" Grid.Row="0" Grid.RowSpan="10" Canvas.ZIndex="999999" Background="#B3000000" IsHitTestVisible="False" Visibility="Collapsed" Opacity="0">
+            <ContentControl x:Name="PopupHost" HorizontalAlignment="Center" VerticalAlignment="Center" IsTabStop="False"/>
+        </Grid>
     </Grid>
 </Window>

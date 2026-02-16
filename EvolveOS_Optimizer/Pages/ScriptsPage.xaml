@@ -1,0 +1,184 @@
+<Page
+    x:Class="EvolveOS_Optimizer.Pages.ScriptsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:EvolveOS_Optimizer.Core.Model"
+    xmlns:pa="using:EvolveOS_Optimizer.Assets.Panels"
+    xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
+    xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    mc:Ignorable="d" Background="Transparent">
+
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style x:Key="BreadcrumbTextBlock" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{ThemeResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid x:Name="RootGrid" Background="Transparent">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ContentStates">
+                <VisualState x:Name="HasScripts">
+                    <VisualState.Setters>
+                        <Setter Target="EmptyStateGrid.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NoScripts">
+                    <VisualState.Setters>
+                        <Setter Target="EmptyStateGrid.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="HeaderContainer" Grid.Row="0" Margin="10,5,10,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" IsHitTestVisible="True" Height="32">
+
+                <TextBlock Text="{helpers:ResourceString Key=text_multi_select}" Style="{StaticResource BreadcrumbTextBlock}" FontSize="14" Margin="0,0,0,1"/>
+
+                <Rectangle Width="1" Height="16" Fill="{ThemeResource TextFillColorSecondaryBrush}" Margin="15,0,12,0" Opacity="0.3"/>
+
+                <CheckBox x:Name="TglMultiSelect" IsChecked="{x:Bind ViewModel.IsMultiSelectMode, Mode=TwoWay}" VerticalAlignment="Center" MinWidth="0" Padding="0" Margin="0" />
+
+                <Border Margin="15,0,0,0" Padding="8,2" CornerRadius="10" Background="{ThemeResource AccentFillColorDefaultBrush}" VerticalAlignment="Center" 
+                        Visibility="{x:Bind ViewModel.IsMultiSelectMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="{helpers:ResourceString Key=text_status_active}" FontSize="10" Foreground="White" VerticalAlignment="Center"/>
+                </Border>
+
+                <CheckBox VerticalAlignment="Center" IsChecked="{x:Bind ViewModel.IsRunAsTrustedInstaller, Mode=TwoWay}" Margin="20,0,0,0">
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                        <TextBlock Text="{helpers:ResourceString Key=chk_run_ti_scripts}" VerticalAlignment="Center"/>
+                        <FontIcon Glyph="&#xE785;" FontSize="13" 
+                      Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                      VerticalAlignment="Center" Margin="0,-2,0,0" />
+                    </StackPanel>
+                </CheckBox>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Visibility="{x:Bind ViewModel.HasSelection, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button Command="{x:Bind ViewModel.RunSelectedScriptsCommand}" Style="{StaticResource AccentButtonStyle}" Margin="15,0,0,0" Height="32">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <SymbolIcon Symbol="Play" Margin="0,0,5,0"/>
+                            <TextBlock Text="{helpers:ResourceString Key=btn_run_selected_scripts}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{x:Bind ViewModel.ClearSelectionCommand}" Background="Transparent" BorderThickness="0" Margin="10,0,0,0" Height="34">
+                        <SymbolIcon Symbol="Cancel" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" IsHitTestVisible="True" VerticalAlignment="Center" Height="32" Spacing="5">
+                <Button Command="{x:Bind ViewModel.SelectFolderCommand}" Height="32">
+                    <SymbolIcon Symbol="Folder"/>
+                </Button>
+
+                <ComboBox Width="220"
+                          Height="32"
+                          Margin="0,0,10,0"
+                          ItemsSource="{x:Bind ViewModel.SavedPaths, Mode=OneWay}"
+                          SelectedItem="{x:Bind ViewModel.SelectedPath, Mode=TwoWay}"
+                          Visibility="{x:Bind ViewModel.IsPathSet, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <StackPanel Orientation="Horizontal">
+                                <SymbolIcon Symbol="Folder" Margin="0,0,8,0" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+                                <TextBlock Text="{x:Bind}" MaxWidth="150" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <Button Command="{x:Bind ViewModel.ClearPathCommand}" Height="32" Visibility="{x:Bind ViewModel.IsPathSet, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <SymbolIcon Symbol="Cancel" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                </Button>
+
+                <AutoSuggestBox Width="180" Height="32" Text="{x:Bind ViewModel.SearchText, Mode=TwoWay}" PlaceholderText="Search scripts..." QueryIcon="Find"/>
+
+                <Button Command="{x:Bind ViewModel.ToggleSortCommand}" Height="32">
+                    <SymbolIcon Symbol="Sort"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Border x:Name="MainSeparator" Grid.Row="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Height="1.2" Margin="10,10,10,0" CornerRadius="10"/>
+
+        <Grid Grid.Row="2" Background="Transparent">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid Padding="40" Background="Transparent">
+
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.FilteredScripts, Mode=OneWay}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <pa:ScriptsFlowPanel ItemWidth="198" Margin="15,15,15,20" HorizontalSpacing="10" VerticalSpacing="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ScriptsModel">
+                                <uc:FileCard FileName="{x:Bind FileName}" IconSource="{x:Bind IconImage}" DoubleTapped="FileCard_DoubleTapped" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Grid x:Name="EmptyStateGrid" Visibility="Visible" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <FontIcon x:Name="EmptyStateIcon" Opacity="0" Glyph="&#xED41;" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="55" Grid.Row="0">
+                            <FontIcon.RenderTransform>
+                                <ScaleTransform x:Name="EmptyIconScale" ScaleX="0.5" ScaleY="0.5" CenterX="27" CenterY="27"/>
+                            </FontIcon.RenderTransform>
+                        </FontIcon>
+
+                        <TextBlock x:Name="EmptyStateText" TextAlignment="Center" Grid.Row="1" Margin="5,15,5,0" Opacity="0">
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform x:Name="EmptyTextTranslate" Y="20"/>
+                            </TextBlock.RenderTransform>
+                            
+                            <Run Text="{helpers:ResourceString Key=text_info_scripts}"
+                                 FontFamily="{StaticResource Jura}"
+                                 FontSize="24"
+                                 FontWeight="Bold"
+                                 Foreground="{ThemeResource TextFillColorPrimaryBrush}"/><LineBreak/>
+                                 
+                            <Run Text="{helpers:ResourceString Key=scripts_info_scripts}"
+                                 FontFamily="{StaticResource Jura}"
+                                 FontSize="20"
+                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        </TextBlock>
+
+                        <Grid.Resources>
+                            <Storyboard x:Name="EmptyStateAnimation">
+                                <DoubleAnimation Storyboard.TargetName="EmptyStateIcon" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.6"/>
+                                <DoubleAnimation Storyboard.TargetName="EmptyIconScale" Storyboard.TargetProperty="ScaleX" From="0.5" To="1" Duration="0:0:0.5"/>
+                                <DoubleAnimation Storyboard.TargetName="EmptyIconScale" Storyboard.TargetProperty="ScaleY" From="0.5" To="1" Duration="0:0:0.5"/>
+
+                                <DoubleAnimation Storyboard.TargetName="EmptyStateText" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.6" BeginTime="0:0:0.3"/>
+                                <DoubleAnimation Storyboard.TargetName="EmptyTextTranslate" Storyboard.TargetProperty="Y" From="20" To="0" Duration="0:0:0.5" BeginTime="0:0:0.3"/>
+                            </Storyboard>
+                        </Grid.Resources>
+                    </Grid>
+
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>

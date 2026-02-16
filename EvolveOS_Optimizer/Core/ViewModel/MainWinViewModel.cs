@@ -1,17 +1,38 @@
-﻿using EvolveOS_Optimizer.Core.Base;
+using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Services;
 using System.Reflection;
+using System;
+using Microsoft.UI.Xaml.Media;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
     public partial class MainWinViewModel : ViewModelBase
     {
+        #region Fields
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
+        private string _currentViewTag = "Home";
+        private ImageSource? _displayProfileAvatar;
+        private string? _displayProfileName;
+        private bool _isNeedUpdate;
+        private bool _isOverlayVisible;
+        #endregion
 
         #region Properties
 
-        private string _currentViewTag = "Home";
+        public bool IsOverlayVisible
+        {
+            get => _isOverlayVisible;
+            set
+            {
+                if (_isOverlayVisible != value)
+                {
+                    _isOverlayVisible = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public string CurrentViewTag
         {
             get => _currentViewTag;
@@ -25,7 +46,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        private ImageSource? _displayProfileAvatar;
         public ImageSource? DisplayProfileAvatar
         {
             get
@@ -38,7 +58,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        private string? _displayProfileName;
         public string DisplayProfileName
         {
             get
@@ -51,7 +70,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        private bool _isNeedUpdate;
         public bool IsNeedUpdate
         {
             get => _isNeedUpdate;
@@ -67,8 +85,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "Unknown Version";
         #endregion
 
+        #region Commands
         public RelayCommand<string> ExecuteNavigateCommand { get; }
+        #endregion
 
+        #region Constructor
         public MainWinViewModel()
         {
             ExecuteNavigateCommand = new RelayCommand<string>(ExecuteNavigate);
@@ -80,12 +101,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             ExecuteNavigate("Home");
         }
+        #endregion
 
+        #region Methods
         private void ExecuteNavigate(string? tag)
         {
             if (string.IsNullOrEmpty(tag)) return;
 
             CurrentViewTag = tag;
         }
+        #endregion
     }
 }

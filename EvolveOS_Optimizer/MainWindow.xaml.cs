@@ -1,3 +1,8 @@
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -7,11 +12,6 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
@@ -39,6 +39,9 @@ namespace EvolveOS_Optimizer
 
             ConfigureWindow();
 
+            Win32Helper.LogProcessIntegrityLevel();
+            Win32Helper.InitializeAdminDragDrop(_hWnd, RouteFilesToPage);
+
             WindowHelper.RegisterMinWidthHeight(_hWnd, 700, 400);
             UIHelper.RegisterPageTransition(ContentFrame, RootGrid);
 
@@ -63,17 +66,29 @@ namespace EvolveOS_Optimizer
                 {
                     _appWindow.SetIcon("Assets/EvolveOS_Optimizer.ico");
                     _appWindow.Resize(new Windows.Graphics.SizeInt32(1575, 870));
-                    CenterWindow();
 
                     var titleBar = _appWindow.TitleBar;
                     titleBar.ButtonBackgroundColor = Colors.Transparent;
                     titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+
+                    CenterWindow();
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Startup] AppWindow config delayed: {ex.Message}");
+                Debug.WriteLine($"[ConfigureWindow Error] {ex.Message}");
             }
+        }
+
+        private void RouteFilesToPage(string[] paths)
+        {
+            this.DispatcherQueue.TryEnqueue(async () =>
+            {
+                if (ContentFrame.Content is Pages.ScriptsPage scriptsPage)
+                {
+                    await scriptsPage.ViewModel.HandleDropAsync(paths);
+                }
+            });
         }
 
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
@@ -114,6 +129,25 @@ namespace EvolveOS_Optimizer
                     {
                         NavigateByTag(vm.CurrentViewTag);
                     }
+
+                    if (e.PropertyName == nameof(MainWinViewModel.IsOverlayVisible))
+                    {
+                        this.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            if (vm.IsOverlayVisible)
+                            {
+                                WindowDimOverlay.IsHitTestVisible = true;
+                                ShowDimOverlay.Begin();
+                            }
+                            else
+                            {
+                                WindowDimOverlay.IsHitTestVisible = false;
+                                HideDimOverlay.Begin();
+                            }
+
+                            System.Diagnostics.Debug.WriteLine($"[DEBUG] Overlay Toggled: {vm.IsOverlayVisible}");
+                        });
+                    }
                 };
 
                 NavigateByTag(vm.CurrentViewTag);
@@ -135,6 +169,7 @@ namespace EvolveOS_Optimizer
                 "GroupPolicy" => typeof(Pages.GroupPolicyPage),
                 "Services" => typeof(Pages.ServicesPage),
                 "System" => typeof(Pages.SystemPage),
+                "Scripts" => typeof(Pages.ScriptsPage),
                 "Settings" => typeof(Pages.SettingsPage),
                 _ => typeof(Pages.HomePage)
             };

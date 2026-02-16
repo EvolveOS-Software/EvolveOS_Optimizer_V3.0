@@ -38,5 +38,7 @@
     <SolidColorBrush x:Key="Brush_Success" Color="{StaticResource Color_Success}"/>
     <SolidColorBrush x:Key="Brush_Warning" Color="{StaticResource Color_Warning}"/>
     <SolidColorBrush x:Key="Brush_Info" Color="{StaticResource Color_Info}"/>
+    <SolidColorBrush x:Key="Brush_Overlay_Dim" Color="#B3000000"/>
+    <SolidColorBrush x:Key="Brush_Dark_Background" Color="#272727"/>
 
 </ResourceDictionary>

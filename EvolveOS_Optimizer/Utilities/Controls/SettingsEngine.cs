@@ -1,4 +1,4 @@
-﻿using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
 using System.Reflection;
@@ -30,7 +30,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["AcrylicTintColor"] = "#000000",
             ["Language"] = "en-us",
             ["EnableHoverGlow"] = true,
-            ["EnableSelectionGlow"] = true
+            ["EnableSelectionGlow"] = true,
+            ["ScriptsPath"] = string.Empty,
+            ["AllScriptsPaths"] = string.Empty
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -45,6 +47,28 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string Language { get => (string)_cachedSettings["Language"]; set => ChangingParameters("Language", value); }
         internal static bool IsHoverGlowEnabled { get => (bool)_cachedSettings["EnableHoverGlow"]; set => ChangingParameters("EnableHoverGlow", value); }
         internal static bool IsSelectionGlowEnabled { get => (bool)_cachedSettings["EnableSelectionGlow"]; set => ChangingParameters("EnableSelectionGlow", value); }
+        internal static string UserScriptsPath { get => (string)_cachedSettings["ScriptsPath"]; set => ChangingParameters("ScriptsPath", value); }
+        internal static List<string> AllUserScriptsPaths
+        {
+            get
+            {
+                if (_cachedSettings.TryGetValue("AllScriptsPaths", out object? val) &&
+                    val is string pathsRaw &&
+                    !string.IsNullOrWhiteSpace(pathsRaw))
+                {
+                    return pathsRaw.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
+                return new List<string>();
+            }
+            set
+            {
+                string serialized = (value != null)
+                    ? string.Join(";", value.Where(p => !string.IsNullOrEmpty(p)).Distinct())
+                    : string.Empty;
+
+                ChangingParameters("AllScriptsPaths", serialized);
+            }
+        }
 
         private static void ChangingParameters(string key, object value)
         {
