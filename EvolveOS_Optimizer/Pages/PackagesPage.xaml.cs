@@ -33,19 +33,22 @@ namespace EvolveOS_Optimizer.Pages
 
         private bool _isHoveringItem = false;
 
+        private bool _isUpdating = false;
+
         public PackagesPage()
         {
             InitializeComponent();
 
             this.Loaded += PackagesPage_Loaded;
+            this.Unloaded += Page_Unloaded;
         }
 
         private void PackagesPage_Loaded(object sender, RoutedEventArgs e)
         {
-            // Initialize a page-level CTS
             _pageCts?.Cancel();
             _pageCts?.Dispose();
             _pageCts = new CancellationTokenSource();
+            var token = _pageCts.Token;
 
             if (HcPanel != null)
             {
@@ -56,32 +59,38 @@ namespace EvolveOS_Optimizer.Pages
 
             _timer = new TimerControlManager(TimeSpan.FromSeconds(5), TimerControlManager.TimerMode.CountUp, async time =>
             {
-                // 1. Check if page is still alive before starting work
-                if (!this.IsLoaded || _pageCts == null || _pageCts.IsCancellationRequested)
+                if (!this.IsLoaded || token.IsCancellationRequested || _isUpdating)
                 {
-                    _timer?.Stop();
                     return;
                 }
 
+                _isUpdating = true;
+
                 try
                 {
-                    // 2. Pass the token to the background work
                     await Task.Run(() =>
                     {
-                        if (_pageCts.IsCancellationRequested) return;
+                        if (token.IsCancellationRequested) return;
                         _uninstalling.GetInstalledPackages();
-                    }, _pageCts.Token);
+                    }, token);
 
-                    // 3. Check again before updating UI
                     this.DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
                     {
-                        if (!this.IsLoaded || _pageCts == null || _pageCts.IsCancellationRequested) return;
+                        if (!this.IsLoaded || token.IsCancellationRequested) return;
 
                         UninstallingPackages.OnPackagesChanged();
                         SyncVisualStates();
                     });
                 }
                 catch (OperationCanceledException) { /* Silent exit */ }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[PackagesPage] Timer Loop Error: {ex.Message}");
+                }
+                finally
+                {
+                    _isUpdating = false;
+                }
             });
 
             _timer.Start();
@@ -276,6 +285,7 @@ namespace EvolveOS_Optimizer.Pages
                             ExplorerManager.Restart();
                         }
                         UninstallingPackages.OnPackagesChanged();
+                        SyncVisualStates();
                     });
                 });
             }
@@ -491,7 +501,6 @@ namespace EvolveOS_Optimizer.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            // 1. STOP page-specific background tasks immediately
             if (_pageCts != null)
             {
                 _pageCts.Cancel();
@@ -499,7 +508,6 @@ namespace EvolveOS_Optimizer.Pages
                 _pageCts = null;
             }
 
-            // 2. STOP page-specific timers
             _timer?.Stop();
             _timer = null;
 
@@ -515,10 +523,6 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Loaded -= PackagesPage_Loaded;
             this.Unloaded -= Page_Unloaded;
-
-            // Optional: Only use GC.Collect if you are seeing massive memory spikes.
-            // In WinUI 3, forced collections during navigation can cause UI stutter.
-            // GC.Collect(2, GCCollectionMode.Forced, true);
 
             Debug.WriteLine("[PackagesPage] Instance resources cleared. Shared ViewModel preserved.");
         }

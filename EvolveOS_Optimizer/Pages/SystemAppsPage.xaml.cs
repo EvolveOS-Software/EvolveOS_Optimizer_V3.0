@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Threading;
+using Microsoft.UI.Dispatching;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -20,13 +21,14 @@ public sealed partial class SystemAppsPage : Page
     private List<Tuple<string, string, bool>> allApps = new();
     private string? _pendingScrollTarget;
 
+    private bool _isUpdating = false;
+
     internal PackagesViewModel? ViewModel { get; private set; }
 
     public SystemAppsPage()
     {
         InitializeComponent();
 
-        //ErrorLogging.LogDebug(new Exception("Initializing SystemAppsPage"));
         this.NavigationCacheMode = NavigationCacheMode.Required;
         Loaded += SystemAppsPage_Loaded;
     }
@@ -102,13 +104,16 @@ public sealed partial class SystemAppsPage : Page
 
     private async void LoadInstalledApps(bool uninstallableOnly = true, bool win32Only = false, CancellationToken cancellationToken = default)
     {
+        if (_isUpdating || (cancellationToken != default && cancellationToken.IsCancellationRequested)) return;
+
+        _isUpdating = true;
+
         try
         {
             if (cancellationToken.IsCancellationRequested) return;
 
             DispatcherQueue.TryEnqueue(() =>
             {
-                if (this.XamlRoot == null) return; // Guard
                 gettingAppsLoading.Visibility = Visibility.Visible;
                 appTreeView.Visibility = Visibility.Collapsed;
                 uninstallButton.IsEnabled = false;
@@ -157,6 +162,10 @@ public sealed partial class SystemAppsPage : Page
         }
         catch (OperationCanceledException) { }
         catch (Exception ex) { ErrorLogging.LogWritingFile(ex); }
+        finally
+        {
+            _isUpdating = false;
+        }
     }
 
     private async void UninstallSelectedApp_Click(object sender, RoutedEventArgs e)
@@ -255,6 +264,7 @@ public sealed partial class SystemAppsPage : Page
 
             DispatcherQueue.TryEnqueue(() =>
             {
+                if (this.XamlRoot == null) return;
                 uninstallingStatusText.Text = ResourceString.GetString("SystemAppsPage_UninstallTip");
                 uninstallButton.IsEnabled = true;
                 appsFilter.IsEnabled = true;
@@ -320,7 +330,7 @@ public sealed partial class SystemAppsPage : Page
                         if (keyLocalMachine != null || keyCurrentUser != null)
                         {
                             var subKeyNames = (keyLocalMachine?.GetSubKeyNames() ?? Enumerable.Empty<string>())
-                                              .Concat(keyCurrentUser?.GetSubKeyNames() ?? Enumerable.Empty<string>());
+                                               .Concat(keyCurrentUser?.GetSubKeyNames() ?? Enumerable.Empty<string>());
 
                             foreach (var subKeyName in subKeyNames)
                             {
@@ -367,7 +377,12 @@ public sealed partial class SystemAppsPage : Page
 
     private void appsFilter_SelectionChanged(object sender, RoutedEventArgs e)
     {
-        if (cancellationTokenSource == null) cancellationTokenSource = new CancellationTokenSource();
+        if (cancellationTokenSource != null)
+        {
+            cancellationTokenSource.Cancel();
+            cancellationTokenSource.Dispose();
+        }
+        cancellationTokenSource = new CancellationTokenSource();
 
         switch (appsFilter.SelectedIndex)
         {
@@ -524,7 +539,7 @@ public sealed partial class SystemAppsPage : Page
 
         var confirmationDialog = new ContentDialog()
         {
-            XamlRoot = XamlRoot,
+            XamlRoot = this.XamlRoot,
             Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
             BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentAAFillColorDefaultBrush"],
             Title = ResourceString.GetString("SystemAppsPage_UnInstall"),
