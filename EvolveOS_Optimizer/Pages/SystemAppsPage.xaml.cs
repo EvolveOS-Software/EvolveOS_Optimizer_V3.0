@@ -134,7 +134,7 @@ public sealed partial class SystemAppsPage : Page
 
             DispatcherQueue.TryEnqueue(() =>
             {
-                if (this.XamlRoot == null || cancellationToken.IsCancellationRequested) return;
+                if (cancellationToken.IsCancellationRequested) return;
 
                 AppList.Clear();
                 allApps = installedApps.AsParallel().Where(app =>
@@ -414,10 +414,6 @@ public sealed partial class SystemAppsPage : Page
 
             var result = await AppManager.RemoveTempFiles();
 
-            TempStack.Visibility = Visibility.Collapsed;
-            TempProgress.Visibility = Visibility.Collapsed;
-            TempButtonStack.Visibility = Visibility.Visible;
-
             if (result)
             {
                 App.ShowNotification(
@@ -425,10 +421,7 @@ public sealed partial class SystemAppsPage : Page
                     ResourceString.GetString("SystemAppsPage_TempDelSucc"),
                     InfoBarSeverity.Success, 5000);
 
-                if (ViewModel != null)
-                {
-                    await ViewModel.RefreshAllDataAsync();
-                }
+                if (ViewModel != null) await ViewModel.RefreshAllDataAsync();
             }
             else
             {
@@ -438,16 +431,16 @@ public sealed partial class SystemAppsPage : Page
                     InfoBarSeverity.Error, 5000);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
+        {
+            ErrorLogging.LogWritingFile(ex);
+            App.ShowNotification("Error", ex.Message, InfoBarSeverity.Error, 5000);
+        }
+        finally
         {
             TempStack.Visibility = Visibility.Collapsed;
             TempProgress.Visibility = Visibility.Collapsed;
             TempButtonStack.Visibility = Visibility.Visible;
-
-            App.ShowNotification(
-                ResourceString.GetString("SystemAppsPage_UnInstall"),
-                ResourceString.GetString("SystemAppsPage_ErrTempDel"),
-                InfoBarSeverity.Error, 5000);
         }
     }
 

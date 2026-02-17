@@ -1,4 +1,4 @@
-﻿using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.Win32;
@@ -420,6 +420,40 @@ public static class AppManager
     {
         try
         {
+            string localApp = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var browserPaths = new[]
+            {
+            Path.Combine(localApp, @"Google\Chrome\User Data\Default\Cache"),
+            Path.Combine(localApp, @"Microsoft\Edge\User Data\Default\Cache"),
+            Path.Combine(localApp, @"BraveSoftware\Brave-Browser\User Data\Default\Cache")
+        };
+
+            foreach (var path in browserPaths)
+            {
+                if (Directory.Exists(path))
+                {
+                    UnlockHandleHelper.UnlockDirectory(path);
+                }
+            }
+
+            await CommandExecutor.RunCommand("taskkill /F /IM explorer.exe", isPowerShell: false).ConfigureAwait(false);
+
+            var explorerDependentCommands = new[]
+            {
+            "rd /S /Q %localappdata%\\Temp",
+            "rd /S /Q %localappdata%\\Microsoft\\Windows\\INetCache",
+            "del /A /F /Q %localappdata%\\Microsoft\\Windows\\Explorer\\iconcache*",
+            "del /A /F /Q %localappdata%\\Microsoft\\Windows\\Explorer\\thumbcache*",
+            "rd /S /Q %windir%\\Prefetch"
+        };
+
+            foreach (var cmd in explorerDependentCommands)
+            {
+                await CommandExecutor.RunCommand(cmd, isPowerShell: false).ConfigureAwait(false);
+            }
+
+            await CommandExecutor.RunCommand("start explorer.exe", isPowerShell: false).ConfigureAwait(false);
+
             var tempCommands = new[]
             {
             "rd /S /Q %windir%\\Temp",
@@ -427,104 +461,35 @@ public static class AppManager
             "rd /S /Q %windir%\\SoftwareDistribution\\Download",
             "rd /S /Q %windir%\\SoftwareDistribution\\DeliveryOptimization",
             "del /F /S /Q %windir%\\Logs\\CBS\\*",
-            "del /F /S /Q %windir%\\MEMORY.DMP",
+            "del /F /Q %windir%\\MEMORY.DMP",
             "del /F /S /Q %windir%\\Minidump\\*.dmp",
-            "del /F /S /Q %windir%\\Temp\\WindowsUpdate.log",
             "rd /S /Q %programdata%\\Microsoft\\Windows\\WER\\ReportQueue",
             "rd /S /Q %localappdata%\\Microsoft\\Windows\\WER\\ReportArchive",
             "rd /S /Q %systemdrive%\\Windows.old",
             "rd /S /Q %systemdrive%\\MSOCache",
             "del /F /S /Q %systemdrive%\\*.tmp",
-            "del /F /S /Q %systemdrive%\\*._mp",
             "del /F /S /Q %systemdrive%\\*.log",
-            "del /F /S /Q %systemdrive%\\*.chk",
-            "del /F /S /Q %systemdrive%\\*.old",
-            "del /F /S /Q %systemdrive%\\found.*",
             "del /F /S /Q %userprofile%\\recent\\*.*",
-            "del /F /S /Q \"%userprofile%\\Local Settings\\Temporary Internet Files\\*.*\"",
-            "PowerShell.exe -NoProfile -Command \"& { Remove-Item -Path \"$env:LOCALAPPDATA\\Google\\Chrome\\User Data\\Default\\*\" -Include 'Cache','Cookies','History','Visited Links','Archived History','Web Data','Current Session','Last Session' -Recurse -Force -ErrorAction SilentlyContinue }\"",
-            "PowerShell.exe -NoProfile -Command \"& { Remove-Item -Path \"$env:LOCALAPPDATA\\Microsoft\\Edge\\User Data\\Default\\Cache\" -Recurse -Force -ErrorAction SilentlyContinue }\"",
-            "PowerShell.exe -NoProfile -Command \"& { Remove-Item -Path \"$env:APPDATA\\Mozilla\\Firefox\\Profiles\\*\\cache2\" -Recurse -Force -ErrorAction SilentlyContinue }\"",
-            "PowerShell.exe -NoProfile -Command \"& { Remove-Item -Path \"$env:APPDATA\\Moonchild Productions\\Pale Moon\\Profiles\\*\\cache2\\entries\" -Recurse -Force -ErrorAction SilentlyContinue }\"",
-            "PowerShell.exe -NoProfile -Command \"Clear-RecycleBin -Force\"",
-            "PowerShell.exe -NoProfile -Command \"wevtutil cl System\"",
-            "PowerShell.exe -NoProfile -Command \"wevtutil cl Application\"",
+            "Remove-Item -Path \"$env:LOCALAPPDATA\\Google\\Chrome\\User Data\\Default\\Cache\\*\" -Recurse -Force -ErrorAction SilentlyContinue",
+            "Remove-Item -Path \"$env:LOCALAPPDATA\\Microsoft\\Edge\\User Data\\Default\\Cache\\*\" -Recurse -Force -ErrorAction SilentlyContinue",
+            "Remove-Item -Path \"$env:LOCALAPPDATA\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Cache\\*\" -Recurse -Force -ErrorAction SilentlyContinue",
+            "Clear-RecycleBin -Force -ErrorAction SilentlyContinue",
             "ipconfig /flushdns",
             "dism /Online /Cleanup-Image /StartComponentCleanup /Quiet"
-            };
-
-            var explorerDependentCommands = new[]
-            {
-            "rd /S /Q %localappdata%\\Temp",
-            "rd /S /Q %localappdata%\\Microsoft\\Windows\\INetCache",
-            "del /A /Q %localappdata%\\Microsoft\\Windows\\Explorer\\iconcache*",
-            "del /A /Q %localappdata%\\Microsoft\\Windows\\Explorer\\thumbcache*",
-            "rd /S /Q %windir%\\Prefetch"
-            };
-
-            await StartInCmd("taskkill /F /IM explorer.exe").ConfigureAwait(false);
-
-            foreach (var cmd in explorerDependentCommands)
-            {
-                await StartInCmd(cmd).ConfigureAwait(false);
-            }
-
-            await StartInCmd("start %SystemRoot%\\explorer.exe").ConfigureAwait(false);
+        };
 
             foreach (var cmd in tempCommands)
             {
-                await StartInCmd(cmd).ConfigureAwait(false);
+                bool usePS = cmd.Contains("Remove-Item") || cmd.Contains("Clear-RecycleBin");
+                await CommandExecutor.RunCommand(cmd, isPowerShell: usePS).ConfigureAwait(false);
             }
 
             return true;
         }
-        catch
-        {
-            return false;
-        }
-    }
-
-    internal static async Task<int> StartInCmd(string command)
-    {
-        try
-        {
-            string system32Path = Environment.SystemDirectory;
-            string windowsPath = Path.GetDirectoryName(system32Path) ?? @"C:\Windows";
-
-            string cmdPath = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
-                ? Path.Combine(windowsPath, @"SysNative\cmd.exe")
-                : Path.Combine(system32Path, "cmd.exe");
-
-            using var p = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = cmdPath,
-                    Arguments = $"/C {command}",
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    RedirectStandardError = true
-                }
-            };
-
-            p.Start();
-
-            var errorOutput = await p.StandardError.ReadToEndAsync();
-
-            await p.WaitForExitAsync();
-
-            if (p.ExitCode != 0 && !string.IsNullOrEmpty(errorOutput))
-            {
-                ErrorLogging.LogDebug(new Exception($"Command failed with exit code {p.ExitCode}: {errorOutput}"));
-            }
-
-            return p.ExitCode;
-        }
         catch (Exception ex)
         {
-            ErrorLogging.LogDebug(ex);
-            throw;
+            ErrorLogging.LogWritingFile(ex);
+            return false;
         }
     }
 }
