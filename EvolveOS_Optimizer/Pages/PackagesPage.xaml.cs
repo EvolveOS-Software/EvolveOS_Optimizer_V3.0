@@ -491,6 +491,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
+            // 1. STOP page-specific background tasks immediately
             if (_pageCts != null)
             {
                 _pageCts.Cancel();
@@ -498,6 +499,7 @@ namespace EvolveOS_Optimizer.Pages
                 _pageCts = null;
             }
 
+            // 2. STOP page-specific timers
             _timer?.Stop();
             _timer = null;
 
@@ -509,21 +511,16 @@ namespace EvolveOS_Optimizer.Pages
 
             _entranceQueue?.Clear();
 
-            if (this.DataContext is IDisposable disposableVM)
-            {
-                disposableVM.Dispose();
-            }
-
-            this.Content = null;
             this.DataContext = null;
 
             this.Loaded -= PackagesPage_Loaded;
             this.Unloaded -= Page_Unloaded;
 
-            GC.Collect(2, GCCollectionMode.Forced, true);
-            GC.WaitForPendingFinalizers();
+            // Optional: Only use GC.Collect if you are seeing massive memory spikes.
+            // In WinUI 3, forced collections during navigation can cause UI stutter.
+            // GC.Collect(2, GCCollectionMode.Forced, true);
 
-            Debug.WriteLine("[PackagesPage] Memory and Threads successfully reclaimed.");
+            Debug.WriteLine("[PackagesPage] Instance resources cleared. Shared ViewModel preserved.");
         }
         #endregion
     }

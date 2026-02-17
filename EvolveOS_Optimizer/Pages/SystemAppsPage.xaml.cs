@@ -40,29 +40,33 @@ public sealed partial class SystemAppsPage : Page
             cancellationTokenSource = null;
         }
 
-        allApps.Clear();
-
-        this.ViewModel = null;
         this.DataContext = null;
 
-        Debug.WriteLine("[SystemAppsPage] Background tasks canceled and memory cleared.");
+        Debug.WriteLine("[SystemAppsPage] Background tasks canceled. Shared data preserved for navigation.");
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
+        base.OnNavigatedTo(e);
+
         if (e.Parameter is PackagesViewModel vm)
         {
             this.ViewModel = vm;
             this.DataContext = vm;
-
             this.AppList = vm.SystemAppList;
+
+            if (this.AppList == null || this.AppList.Count == 0)
+            {
+                if (cancellationTokenSource == null)
+                    cancellationTokenSource = new CancellationTokenSource();
+
+                LoadInstalledApps(true, false, cancellationTokenSource.Token);
+            }
         }
         else if (e.Parameter is string optionTag && !string.IsNullOrEmpty(optionTag))
         {
             _pendingScrollTarget = optionTag;
         }
-
-        base.OnNavigatedTo(e);
     }
 
     private async void SystemAppsPage_Loaded(object sender, RoutedEventArgs e)
@@ -125,7 +129,6 @@ public sealed partial class SystemAppsPage : Page
 
             DispatcherQueue.TryEnqueue(() =>
             {
-                // CRITICAL: Check if page is still alive before updating UI
                 if (this.XamlRoot == null || cancellationToken.IsCancellationRequested) return;
 
                 AppList.Clear();
