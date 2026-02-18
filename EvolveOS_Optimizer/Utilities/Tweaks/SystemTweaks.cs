@@ -237,16 +237,17 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             switch (tweak)
             {
                 case "Slider1":
-                    SystemParametersInfo(UIAction.SPI_SETMOUSESPEED, value, 0, 2);
-                    RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Mouse", "MouseSensitivity", value, RegistryValueKind.String);
+                    // Fix: uiParam should be 0, pvParam is the value
+                    SystemParametersInfo(UIAction.SPI_SETMOUSESPEED, 0, value, 2);
+                    RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Mouse", "MouseSensitivity", value.ToString(), RegistryValueKind.String);
                     break;
                 case "Slider2":
                     SystemParametersInfo(UIAction.SPI_SETKEYBOARDDELAY, value, 0, 2);
-                    RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Keyboard", "KeyboardDelay", value, RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Keyboard", "KeyboardDelay", value.ToString(), RegistryValueKind.String);
                     break;
                 case "Slider3":
                     SystemParametersInfo(UIAction.SPI_SETKEYBOARDSPEED, value, 0, 2);
-                    RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Keyboard", "KeyboardSpeed", value, RegistryValueKind.String);
+                    RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Keyboard", "KeyboardSpeed", value.ToString(), RegistryValueKind.String);
                     break;
             }
         }

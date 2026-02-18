@@ -217,7 +217,7 @@ public sealed partial class SystemAppsPage : Page
                 }
                 catch (Exception ex)
                 {
-                    ErrorLogging.LogWritingFile(ex);
+                    ErrorLogging.LogWritingFile(new Exception($"Error uninstalling {selectedAppName}: {ex.Message}\nStack Trace: {ex.StackTrace}"));
                     failedUninstalls.Add(selectedAppName);
                 }
 
@@ -235,11 +235,6 @@ public sealed partial class SystemAppsPage : Page
                     ResourceString.GetString("SystemAppsPage_UnInstall"),
                     ResourceString.GetString("SystemAppsPage_UninstallationSuccess") + $":\n{successMessage}",
                     InfoBarSeverity.Success, 5000);
-
-                if (ViewModel != null)
-                {
-                    await ViewModel.RefreshAllDataAsync();
-                }
             }
 
             if (failedUninstalls.Count > 0)
@@ -256,7 +251,7 @@ public sealed partial class SystemAppsPage : Page
         }
         catch (Exception ex)
         {
-            ErrorLogging.LogWritingFile(ex);
+            ErrorLogging.LogWritingFile(new Exception($"Error during uninstallation process: {ex.Message}\nStack Trace: {ex.StackTrace}"));
         }
         finally
         {
@@ -264,7 +259,6 @@ public sealed partial class SystemAppsPage : Page
 
             DispatcherQueue.TryEnqueue(() =>
             {
-                if (this.XamlRoot == null) return;
                 uninstallingStatusText.Text = ResourceString.GetString("SystemAppsPage_UninstallTip");
                 uninstallButton.IsEnabled = true;
                 appsFilter.IsEnabled = true;
@@ -281,26 +275,50 @@ public sealed partial class SystemAppsPage : Page
         {
             if (!appName.Contains("edge.stable", StringComparison.CurrentCultureIgnoreCase))
             {
-                var cmdCommandRemoveProvisioned = $"Get-AppxProvisionedPackage -Online | Where-Object {{ $_.DisplayName -eq '{appName}' }} | ForEach-Object {{ Remove-AppxProvisionedPackage -Online -PackageName $_.PackageName }}";
-                var cmdCommandRemoveAppxPackage = $"Get-AppxPackage -AllUsers | Where-Object {{ $_.Name -eq '{appName}' }} | Remove-AppxPackage";
+                var cmdCommandRemoveProvisioned = $"powershell -Command \"Get-AppxProvisionedPackage -Online | Where-Object {{ $_.DisplayName -eq '{appName}' }} | ForEach-Object {{ Remove-AppxProvisionedPackage -Online -PackageName $_.PackageName }}\"";
+                var cmdCommandRemoveAppxPackage = $"powershell -Command \"Get-AppxPackage -AllUsers | Where-Object {{ $_.Name -eq '{appName}' }} | Remove-AppxPackage\"";
 
-                try
+                string windir = Environment.GetEnvironmentVariable("windir")!;
+
+                var processInfoProvisioned = new ProcessStartInfo(Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                        ? Path.Combine(windir, @"SysNative\cmd.exe")
+                        : Path.Combine(windir, @"System32\cmd.exe"), $"/c {cmdCommandRemoveProvisioned}")
                 {
-                    await CommandExecutor.RunCommand("/c powershell -Command \"" + cmdCommandRemoveProvisioned + "\"");
-                }
-                catch (Exception ex)
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var processProvisioned = new Process { StartInfo = processInfoProvisioned };
                 {
-                    ErrorLogging.LogWritingFile(ex);
+                    processProvisioned.Start();
+                    var errorProvisioned = await processProvisioned.StandardError.ReadToEndAsync();
+
+                    if (!string.IsNullOrEmpty(errorProvisioned))
+                    {
+                        ErrorLogging.LogWritingFile(new Exception(errorProvisioned));
+                    }
                 }
 
-                try
+                var processInfoAppxPackage = new ProcessStartInfo(Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                        ? Path.Combine(windir, @"SysNative\cmd.exe")
+                        : Path.Combine(windir, @"System32\cmd.exe"), $"/c {cmdCommandRemoveAppxPackage}")
                 {
-                    await CommandExecutor.RunCommand("/c powershell -Command \"" + cmdCommandRemoveAppxPackage + "\"");
-                }
-                catch (Exception ex)
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var processAppxPackage = new Process { StartInfo = processInfoAppxPackage };
                 {
-                    ErrorLogging.LogWritingFile(ex);
-                    throw;
+                    processAppxPackage.Start();
+                    var errorAppxPackage = await processAppxPackage.StandardError.ReadToEndAsync();
+
+                    if (!string.IsNullOrEmpty(errorAppxPackage))
+                    {
+                        ErrorLogging.LogWritingFile(new Exception(errorAppxPackage));
+                        throw new Exception($"Failed to remove Appx package for {appName}: {errorAppxPackage}");
+                    }
                 }
             }
             else
@@ -308,7 +326,27 @@ public sealed partial class SystemAppsPage : Page
                 var scriptFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "RemoveEdge.ps1");
                 var cmdCommand = $"powershell.exe -ExecutionPolicy Bypass -File \"{scriptFilePath}\" -UninstallEdge -RemoveEdgeData -NonInteractive";
 
-                await CommandExecutor.RunCommand("/c " + cmdCommand);
+                string windir = Environment.GetEnvironmentVariable("windir")!;
+
+                var processInfo = new ProcessStartInfo(Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                        ? Path.Combine(windir, @"SysNative\cmd.exe")
+                        : Path.Combine(windir, @"System32\cmd.exe"), $"/c {cmdCommand}")
+                {
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = new Process { StartInfo = processInfo };
+                {
+                    process.Start();
+                    var error = await process.StandardError.ReadToEndAsync();
+
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        ErrorLogging.LogWritingFile(new Exception(error));
+                    }
+                }
             }
         }
         else
@@ -317,9 +355,9 @@ public sealed partial class SystemAppsPage : Page
             {
                 var registryKeys = new[]
                 {
-                    @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
-                    @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
-                };
+                @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
+                @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+            };
 
                 string? uninstallString = null;
                 foreach (var registryKey in registryKeys)
@@ -329,8 +367,7 @@ public sealed partial class SystemAppsPage : Page
                     {
                         if (keyLocalMachine != null || keyCurrentUser != null)
                         {
-                            var subKeyNames = (keyLocalMachine?.GetSubKeyNames() ?? Enumerable.Empty<string>())
-                                               .Concat(keyCurrentUser?.GetSubKeyNames() ?? Enumerable.Empty<string>());
+                            var subKeyNames = keyLocalMachine?.GetSubKeyNames().Concat(keyCurrentUser?.GetSubKeyNames() ?? Enumerable.Empty<string>()) ?? Enumerable.Empty<string>();
 
                             foreach (var subKeyName in subKeyNames)
                             {
@@ -340,7 +377,6 @@ public sealed partial class SystemAppsPage : Page
                                 if (!string.IsNullOrEmpty(displayName) && displayName.Equals(appName, StringComparison.OrdinalIgnoreCase))
                                 {
                                     uninstallString = subKey?.GetValue("QuietUninstallString") as string;
-
                                     if (string.IsNullOrEmpty(uninstallString))
                                     {
                                         uninstallString = subKey?.GetValue("UninstallString") as string;
@@ -356,21 +392,48 @@ public sealed partial class SystemAppsPage : Page
                 if (string.IsNullOrEmpty(uninstallString))
                 {
                     ErrorLogging.LogWritingFile(new Exception($"Uninstall string for {appName} not found in registry."));
-                    return;
                 }
 
-                if (!uninstallString.StartsWith("\"") && !uninstallString.EndsWith("\""))
+                if (!string.IsNullOrEmpty(uninstallString))
                 {
-                    uninstallString = $"\"{uninstallString}\"";
+                    if (!uninstallString.StartsWith("\"") && !uninstallString.EndsWith("\""))
+                    {
+                        uninstallString = $"\"{uninstallString}\"";
+                    }
                 }
 
-                await CommandExecutor.RunCommand("/c " + uninstallString);
+                var windir = Environment.GetEnvironmentVariable("windir")!; // Added ! here
+
+                var processInfo = new ProcessStartInfo(Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                        ? Path.Combine(windir, @"SysNative\cmd.exe")
+                        : Path.Combine(windir, @"System32\cmd.exe"),
+                                        $"/c {uninstallString}")
+                {
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = new Process { StartInfo = processInfo };
+                process.Start();
+
+                var error = await process.StandardError.ReadToEndAsync();
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    ErrorLogging.LogWritingFile(new Exception(error));
+                }
+
+                if (process.ExitCode != 0)
+                {
+                    ErrorLogging.LogWritingFile(new Exception($"Uninstallation failed with exit code: {process.ExitCode}"));
+                }
 
                 ErrorLogging.LogDebug(new Exception($"Successfully uninstalled {appName}"));
             }
             catch (Exception ex)
             {
-                ErrorLogging.LogWritingFile(ex);
+                ErrorLogging.LogWritingFile(new Exception($"Error uninstalling {appName}: {ex.Message}"));
             }
         }
     }
