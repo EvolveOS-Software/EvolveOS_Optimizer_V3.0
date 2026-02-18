@@ -50,20 +50,34 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         internal static void Write<T>(RegistryKey registrykey, string subkey, string? name, T data, RegistryValueKind kind, bool isTakingOwner = false) where T : notnull
         {
-            Task.Run(delegate
+            try
             {
-                try
-                {
-                    if (isTakingOwner)
-                    {
-                        GrantAdministratorsAccess($"{GeneralRegistry(registrykey)}{subkey}", SE_OBJECT_TYPE.SE_REGISTRY_KEY);
-                    }
+                RegistryHive hive = registrykey.Name.StartsWith("HKEY_LOCAL_MACHINE")
+                    ? RegistryHive.LocalMachine
+                    : RegistryHive.CurrentUser;
 
-                    using var writeKey = registrykey.CreateSubKey(subkey, true);
-                    writeKey?.SetValue(name, data, kind);
+                using var baseKey = RegistryKey.OpenBaseKey(hive, RegistryView.Registry64);
+
+                if (isTakingOwner)
+                {
+                    GrantAdministratorsAccess($"{GeneralRegistry(registrykey)}{subkey}", SE_OBJECT_TYPE.SE_REGISTRY_KEY);
                 }
-                catch (Exception ex) { ErrorLogging.LogDebug(ex); }
-            }).GetAwaiter().GetResult();
+
+                using var writeKey = baseKey.CreateSubKey(subkey, RegistryKeyPermissionCheck.ReadWriteSubTree);
+
+                if (writeKey != null)
+                {
+                    writeKey.SetValue(name ?? "", data, kind);
+
+                    writeKey.Flush();
+
+                    //Debug.WriteLine($"[HARDWARE WRITE] Verified: {name} committed to {subkey}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[PERMISSIONS ERROR] {ex.Message}");
+            }
         }
 
         internal static void CreateFolder(RegistryKey registrykey, string subkey)

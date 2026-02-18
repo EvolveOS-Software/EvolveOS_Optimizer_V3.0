@@ -1,7 +1,8 @@
+using System.Threading;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Views;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Animation;
-using System.Threading;
 
 namespace EvolveOS_Optimizer.Utilities.Managers
 {
@@ -79,8 +80,8 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
         internal sealed class NotificationBuilder
         {
-            private readonly string _title;
-            private readonly string _text;
+            private string _title;
+            private string _text;
             private NoticeSeverity _severity = NoticeSeverity.Info;
             private int _delayMs = 100;
             private int _durationMs = 4000;
@@ -115,9 +116,29 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                 return this;
             }
 
-            internal void Perform(NoticeAction action = NoticeAction.None) => Create(action);
-            internal void Logout() => Create(NoticeAction.Logout);
-            internal void Restart() => Create(NoticeAction.Restart);
+            internal void Perform(NoticeAction action = NoticeAction.None)
+            {
+                if (string.IsNullOrEmpty(_title) && string.IsNullOrEmpty(_text))
+                {
+                    switch (action)
+                    {
+                        case NoticeAction.Restart:
+                            _title = ResourceString.GetString("noty_sys_title");
+                            _text = ResourceString.GetString("noty_sys_restart");
+                            _severity = NoticeSeverity.Warning;
+                            break;
+                        case NoticeAction.Logout:
+                            _title = ResourceString.GetString("noty_acc_title");
+                            _text = ResourceString.GetString("noty_acc_logout");
+                            _severity = NoticeSeverity.Info;
+                            break;
+                    }
+                }
+                Create(action);
+            }
+
+            internal void Logout() => Perform(NoticeAction.Logout);
+            internal void Restart() => Perform(NoticeAction.Restart);
 
             public async void Create(NoticeAction action = NoticeAction.None)
             {
@@ -131,8 +152,6 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
                 if (isMinimized)
                 {
-                    // ShowSystemToast(_title, _text); || Windows own native System Toast ||   Nuget: Microsoft.Toolkit.Uwp.Notifications;
-
                     if (Interlocked.CompareExchange(ref _isNotificationOpen, 1, 0) == 0)
                     {
                         if (_delayMs > 0) await Task.Delay(_delayMs);
@@ -160,7 +179,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                     }
                     else
                     {
-                        _pendingNotifications.Enqueue(() => ShowInAppBanner(_title, _text, _severity, _durationMs));
+                        _pendingNotifications.Enqueue(() => Create(action));
                     }
                 }
                 else
@@ -222,15 +241,6 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                 Debug.WriteLine("[NotifyLog] Queue empty. Flag reset to 0 (Ready).");
             }
         }
-
-        /*private static void ShowSystemToast(string title, string text)
-        {
-            new ToastContentBuilder()
-                .AddHeader("EvolveOS", "EvolveOS Optimizer", "")
-                .AddText(title)
-                .AddText(text)
-                .Show();
-        }*/
 
         private static void ShowInAppBanner(string title, string message, NoticeSeverity severity, int duration)
         {

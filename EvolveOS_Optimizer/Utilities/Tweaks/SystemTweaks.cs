@@ -260,6 +260,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
         {
             INIManager.TempWrite(INIManager.TempTweaksSys, tweak, isDisabled);
 
+            //Debug.WriteLine($"[DEBUG] SystemTweaks Received: {tweak} | State: {isDisabled}");
+
             switch (tweak)
             {
                 case "TglButton1":

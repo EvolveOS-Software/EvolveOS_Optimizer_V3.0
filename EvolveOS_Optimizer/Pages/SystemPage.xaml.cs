@@ -68,20 +68,30 @@ namespace EvolveOS_Optimizer.Pages
 
         #region Toggles & Sliders Logic
 
-        private void NativeTgl_Toggled(object sender, RoutedEventArgs e)
+        private async void NativeTgl_Toggled(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleSwitch tgl)
             {
-                if (!tgl.IsLoaded || tgl.FocusState == Microsoft.UI.Xaml.FocusState.Unfocused) return;
+                if (!tgl.IsLoaded) return;
 
                 if (tgl.DataContext is SystemModel model)
                 {
                     string key = model.Name;
+
                     bool isOn = tgl.IsOn;
+                    bool isDisabled = !isOn;
 
                     model.State = isOn;
 
-                    _sysTweaks?.ApplyTweaks(key, isOn);
+                    //Debug.WriteLine($"[SYSTEM] {key} Toggled | UI On: {isOn} | Sending isDisabled: {isDisabled}");
+
+                    await Task.Run(async () =>
+                    {
+                        if (_sysTweaks != null)
+                        {
+                            await _sysTweaks.ApplyTweaks(key, isDisabled);
+                        }
+                    });
 
                     if (NotificationManager.SysActions.TryGetValue(key, out var action))
                     {
@@ -96,6 +106,7 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
+
 
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {

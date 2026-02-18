@@ -31,6 +31,10 @@
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Cliquez pour copier</sys:String>
     <sys:String x:Key="copied_to_clipboard_noty">Copié dans le presse-papiers !</sys:String>
+    <sys:String x:Key="noty_sys_title">Système</sys:String>
+    <sys:String x:Key="noty_sys_restart">Un redémarrage est nécessaire pour appliquer les modifications.</sys:String>
+    <sys:String x:Key="noty_acc_title">Compte</sys:String>
+    <sys:String x:Key="noty_acc_logout">Déconnectez-vous et reconnectez-vous pour appliquer les modifications.</sys:String>
     <!-- endregion Notification Manager -->
 
     <!-- region App Updates -->
