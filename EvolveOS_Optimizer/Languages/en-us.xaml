@@ -420,6 +420,11 @@
     <!-- endregion Installed Apps -->
 
     <!-- region System Page -->
+    <sys:String x:Key="SystemPage_BatterySection">Battery &amp; Power</sys:String>
+    <sys:String x:Key="SystemPage_BasicOptimization">Basic System Optimizations</sys:String>
+    <sys:String x:Key="SystemPage_AdvancedOptimization">Advanced System Optimizations</sys:String>
+    <sys:String x:Key="OtherSettings">Other Settings</sys:String>
+
     <sys:String x:Key="slider1_sys">Mouse pointer speed:</sys:String>
     <sys:String x:Key="slider2_sys">Keyboard repeat delay:</sys:String>
     <sys:String x:Key="slider3_sys">Keyboard repetition rate:</sys:String>
@@ -441,7 +446,7 @@
     <sys:String x:Key="tgl15_sys">Slowing down Windows and program startup</sys:String>
     <sys:String x:Key="tgl16_sys">Usage history for the Quick Access Toolbar</sys:String>
     <sys:String x:Key="tgl17_sys">Autorun removable media</sys:String>
-    <sys:String x:Key="tgl18_sys">Use the default power plan</sys:String>
+    <sys:String x:Key="tgl18_sys">Import EvolveOS performance plan</sys:String>
     <sys:String x:Key="tgl19_sys">Use the function «Bluetooth and devices»</sys:String>
     <sys:String x:Key="tgl20_sys">Windows Defender Firewall</sys:String>
     <sys:String x:Key="tgl21_sys">Use the function «Game mode»</sys:String>
@@ -453,9 +458,54 @@
     <sys:String x:Key="tgl27_sys">Windows Insider’s Background Tasks</sys:String>
     <sys:String x:Key="tgl28_sys">System Disk Defragmentation</sys:String>
 
+    <sys:String x:Key="Feature_AddUltimatePowerPlan_Button">Add Plan</sys:String>
+    <sys:String x:Key="Feature_CompressOSButton_Content">Check Compression</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Default_Content">Default</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Security_Content">Security Only</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Manually_Content">Manually</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Disabled_Content">Disabled</sys:String>
+    <sys:String x:Key="Feature_CreatePowerPlanButton_Header">Create New</sys:String>
+    <sys:String x:Key="Feature_PowerMode_Header">Power Mode</sys:String>
+    <sys:String x:Key="Feature_AddUltimatePowerPlan_Header">Add Ultimate performance plan</sys:String>
+    <sys:String x:Key="Feature_MenuShowDelay_Header">Disable menu show delay</sys:String>
+    <sys:String x:Key="Feature_MouseHoverTime_Header">Disable mouse hover time</sys:String>
+    <sys:String x:Key="Feature_BackgroundApps_Header">Disable background apps</sys:String>
+    <sys:String x:Key="Feature_AutoComplete_Header">Disable auto complete</sys:String>
+    <sys:String x:Key="Feature_CrashDump_Header">Disable crash dump</sys:String>
+    <sys:String x:Key="Feature_RemoteAssistance_Header">Disable remote assistance</sys:String>
+    <sys:String x:Key="Feature_WindowShake_Header">Disable window shake</sys:String>
+    <sys:String x:Key="Feature_CopyMoveContextMenu_Header">Add copy/move context menu</sys:String>
+    <sys:String x:Key="Feature_TaskTimeouts_Header">Adjust task timeouts</sys:String>
+    <sys:String x:Key="Feature_LowDiskSpaceChecks_Header">Enable low disk space checks</sys:String>
+    <sys:String x:Key="Feature_LinkResolve_Header">Disable link resolve</sys:String>
+    <sys:String x:Key="Feature_ServiceTimeouts_Header">Decrease service timeouts</sys:String>
+    <sys:String x:Key="Feature_RemoteRegistry_Header">Disable remote registry</sys:String>
+    <sys:String x:Key="Feature_FileExtensionsAndHiddenFiles_Header">Hide file extensions and hidden files</sys:String>
+    <sys:String x:Key="Feature_SystemProfile_Header">Optimize system profile</sys:String>
+    <sys:String x:Key="Feature_DisableSysMain_Header">Disable SysMain</sys:String>
+    <sys:String x:Key="Feature_EnableGamingMode_Header">Enable gaming mode</sys:String>
+    <sys:String x:Key="Feature_ExcludeDriversFromWindowsUpdates_Header">Exclude drivers from windows updates</sys:String>
+    <sys:String x:Key="Feature_Page_CompressOS_Content">Compress OS</sys:String>
+    <sys:String x:Key="Feature_ServiceHostSplitting_Header">Disable service host splitting</sys:String>
+    <sys:String x:Key="Feature_LegacyBootMenu_Header">Enable legacy boot menu</sys:String>
+    <sys:String x:Key="Feature_OptimizeNTFS_Header">Optimize NTFS settings</sys:String>
+    <sys:String x:Key="Feature_PrioritizeForegroundApplications_Header">Optimize foreground app performance</sys:String>
+    <sys:String x:Key="Feature_WPBT_Header">Disable WPBT execution</sys:String>
+    <sys:String x:Key="Feature_DisableSystemRestore_Header">Disable system restore</sys:String>
+    <sys:String x:Key="Feature_DisableCortana_Header">Disable cortana</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Header">Windows updates</sys:String>
+    <sys:String x:Key="Feature_DisableSmartScreen_Header">Disable Smart Screen</sys:String>
+
     <sys:String x:Key="settings_card_effects">Card Effects</sys:String>
     <sys:String x:Key="settings_hover_glow">Hover Highlight Glow</sys:String>
     <sys:String x:Key="settings_selection_glow">Toggle Selection Glow</sys:String>
+
+    <sys:String x:Key="CreatePowerPlanTitle">Create Power Plan</sys:String>
+    <sys:String x:Key="PowerPlanNameLabel">Power plan name</sys:String>
+    <sys:String x:Key="PowerPlanNamePlaceholder">Enter power plan name</sys:String>
+    <sys:String x:Key="BasePowerPlanLabel">Base power plan</sys:String>
+    <sys:String x:Key="Create">Create</sys:String>
+    <sys:String x:Key="Cancel">Cancel</sys:String>
 
     <sys:String x:Key="slider_desc_sys">Adjust mouse pointer sensitivity and keyboard responsiveness, including repeat delay and repetition rates</sys:String>
     <sys:String x:Key="slider1_desc_sys">Changes the speed of the mouse pointer, saving you time to search for mouse parameters.</sys:String>
@@ -489,6 +539,37 @@
     <sys:String x:Key="tgl26_desc_sys">Tweak blocks intrusive automatic installation of PC Health Check - Microsoft utility that forcibly deploys itself through Windows Update without permission. Once installed, program constantly nags about «checking Windows 11 readiness» and pushes unsolicited «optimization recommendations».</sys:String>
     <sys:String x:Key="tgl27_desc_sys">For Windows Insider participants, these tasks should remain enabled. However, if you are not part of the program, all associated tasks become unnecessary overhead: they consume system resources, generate useless logs, and may initiate telemetry connections without providing any benefit. Disabling them can improve startup time and overall system performance while also eliminating unneeded experimental data collection channels.</sys:String>
     <sys:String x:Key="tgl28_desc_sys">If you have an SSD, disabling defragmentation and boot file optimization, which are effective only for hard drives (HDD), helps extend the lifespan of your drive. At the same time, the TRIM optimization function continues to work: it informs the SSD controller which data blocks are no longer in use and clears them, maintaining stable speed and drive longevity.</sys:String>
+
+    <sys:String x:Key="powerplangroup_desc_sys">Select or add a power plan to balance performance and energy consumption</sys:String>
+    <sys:String x:Key="addultimatepowerplan_desc_sys">Adds the hidden Ultimate Performance power plan to your system for maximum performance.</sys:String>
+    <sys:String x:Key="menushowdelay_desc_sys">Controls the delay before menus appear after a mouse hover. Disabling this feature can make the menus open instantly, improving responsiveness but may reduce user control.</sys:String>
+    <sys:String x:Key="mousehovertime_desc_sys">Adjusts the time the system waits before triggering a hover event. Disabling this may speed up interactions but can lead to unintentional activations.</sys:String>
+    <sys:String x:Key="backgroundapps_desc_sys">Prevents the apps from running in the background, leading to enhanced performance in some cases.</sys:String>
+    <sys:String x:Key="autocomplete_desc_sys">Disables automatic suggestions while typing in certain fields, such as search boxes and form inputs. Disabling it can reduce distractions but may slow down workflow.</sys:String>
+    <sys:String x:Key="crashdump_desc_sys">Controls whether crash reports and memory dumps are generated when applications crash. Disabling this feature can help preserve disk space, but may reduce the ability to diagnose and troubleshoot application issues.</sys:String>
+    <sys:String x:Key="remoteassistance_desc_sys">Disables remote support features, allowing others to assist you via remote desktop. Disabling it can improve security but limits support options.</sys:String>
+    <sys:String x:Key="windowshake_desc_sys">Disables the window shake feature that minimizes all open windows when you shake a window. Disabling it improves focus but removes a handy window management tool.</sys:String>
+    <sys:String x:Key="copymovecontextmenu_desc_sys">Enables additional options in the file context menu to easily copy or move files to a new location. This feature streamlines file management by providing quick access to these functions directly from the right-click menu.</sys:String>
+    <sys:String x:Key="tasktimeouts_desc_sys">Modifies the timeout settings for system tasks. Adjusting it can improve performance in some scenarios but may cause tasks to fail under certain conditions.</sys:String>
+    <sys:String x:Key="lowdiskspacechecks_desc_sys">Enables automatic checks for low disk space to prevent performance issues. Disabling it could reduce notifications, but you may miss critical storage warnings.</sys:String>
+    <sys:String x:Key="linkresolve_desc_sys">Disables the resolution of broken links in files and folders. Disabling it can speed up operations but may leave outdated links unresolved.</sys:String>
+    <sys:String x:Key="servicetimeouts_desc_sys">Adjusts the timeouts for system services. Shortening these can improve performance but may cause services to terminate prematurely.</sys:String>
+    <sys:String x:Key="remoteregistry_desc_sys">Disables access to the registry remotely. Disabling it improves security but prevents remote configuration of registry settings.</sys:String>
+    <sys:String x:Key="fileextensionsandhiddenfiles_desc_sys">Controls the visibility of file extensions and hidden files. Enabling this reduces clutter but hides important file details.</sys:String>
+    <sys:String x:Key="systemprofile_desc_sys">Enhances your system's performance by adjusting system profile settings. This feature prioritize speed and efficiency, improving overall system responsiveness and resource management.</sys:String>
+    <sys:String x:Key="sysmain_desc_sys">Turns off SysMain, which preloads frequently used applications for faster startup. May impact startup times for some programs if you're using HDD.</sys:String>
+    <sys:String x:Key="enablegamingmode_desc_sys">Enables Gaming Mode, which optimizes system resources for a smoother gaming experience. May affect background processes.</sys:String>
+    <sys:String x:Key="drivers_desc_sys">Excludes driver updates from Windows Update. May lead to outdated drivers with potential security risks or compatibility issues. Use with caution.</sys:String>
+    <sys:String x:Key="compressosgroup_desc_sys">Enable operating system compression to reduce disk space usage. This feature is particularly useful for devices with limited storage capacity but may slightly affect system performance on lower-end hardware</sys:String>
+    <sys:String x:Key="servicehostsplitting_desc_sys">Disables Service Host splitting for much lower RAM usage and process count.</sys:String>
+    <sys:String x:Key="legacybootmenu_desc_sys">Switch to the legacy boot menu for faster startup.</sys:String>
+    <sys:String x:Key="optimizentfs_desc_sys">Tune NTFS settings to improve performance and enhance privacy.</sys:String>
+    <sys:String x:Key="prioritizeforegroundapplications_desc_sys">Boosts performance for active applications by prioritizing foreground tasks.</sys:String>
+    <sys:String x:Key="wpbt_desc_sys">Stop firmware from running programs (e.g., OEM bloatware) during startup.</sys:String>
+    <sys:String x:Key="systemrestore_desc_sys">Disables System Restore, which creates restore points to revert the system to a previous state in case of problems. Not recommended. Disabling this feature removes the ability to easily recover from potential system issues.</sys:String>
+    <sys:String x:Key="cortana_desc_sys">Disables Cortana, the virtual assistant that can answer questions and complete tasks. May impact voice search and some productivity features.</sys:String>
+    <sys:String x:Key="windowsupdatesgroup_desc_sys">Configure how Windows handles automatic updates. Choose between automatic updates, security-only, manual control, or completely disabled.</sys:String>
+    <sys:String x:Key="smartscreen_desc_sys">Turns off SmartScreen Filter, which warns you about potentially unsafe apps and files downloaded from the internet. Disabling this feature increases the risk of malware infection.</sys:String>
     <!-- endregion System Page-->
 
     <!-- region Services Page -->

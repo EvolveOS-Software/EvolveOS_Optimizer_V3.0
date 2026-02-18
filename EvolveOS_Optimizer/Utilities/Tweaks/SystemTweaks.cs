@@ -237,7 +237,6 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             switch (tweak)
             {
                 case "Slider1":
-                    // Fix: uiParam should be 0, pvParam is the value
                     SystemParametersInfo(UIAction.SPI_SETMOUSESPEED, 0, value, 2);
                     RegistryHelp.Write(Registry.CurrentUser, @"Control Panel\Mouse", "MouseSensitivity", value.ToString(), RegistryValueKind.String);
                     break;
@@ -585,6 +584,174 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     break;
             }
         }
+
+
+
+        public static async Task SetWindowsUpdatesDefault()
+        {
+            var build = Environment.OSVersion.Version.Build;
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DoNotConnectToWindowsUpdateInternetLocations' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DisableWindowsUpdateAccess' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'AUOptions' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'NoAutoUpdate' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'NoAutoRebootWithLoggedOnUsers' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferFeatureUpdates' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferFeatureUpdatesPeriodInDays' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferQualityUpdates' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferQualityUpdatesPeriodInDays' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'AllowOptionalContent' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'SetAllowOptionalContent' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config' -Name 'DODownloadMode' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Speech' -Name 'AllowSpeechModelUpdate' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Schedule\\Maintenance' -Name 'MaintenanceDisabled' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'AllowMUUpdateService' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'RestartNotificationsAllowed2' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'AllowOptionalContent' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'DeferFeatureUpdatesPeriodInDays' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'DeferQualityUpdatesPeriodInDays' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'IsContinuousInnovationOptedIn' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'IsExpedited' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'SetPolicyDrivenUpdateSourceForDriverUpdates' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'SetPolicyDrivenUpdateSourceForFeatureUpdates' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'SetPolicyDrivenUpdateSourceForQualityUpdates' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'SetPolicyDrivenUpdateSourceForOtherUpdates' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'ManagePreviewBuildsPolicyValue' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'BranchReadinessLevel' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'PauseFeatureUpdatesStartTime' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'PauseQualityUpdatesStartTime' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-Item 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Recurse -Force -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-Item 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Recurse -Force -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("sc config DoSvc start= delayed-auto", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\DoSvc\" /v Start /t REG_DWORD /d 2 /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("sc config wuauserv start= demand", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config UsoSvc start= demand", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config BITS start= delayed-auto", false).ConfigureAwait(false);
+
+            if (build >= 19041)
+            {
+                await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\WaaSMedicSvc\" /v Start /t REG_DWORD /d 3 /f", false).ConfigureAwait(false);
+
+                await CommandExecutor.InvokeRunCommand("$acl = Get-Acl 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\WaaSMedicSvc'; $acl.SetAccessRuleProtection($false,$true); Set-Acl 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\WaaSMedicSvc' $acl", true).ConfigureAwait(false);
+
+                await CommandExecutor.InvokeRunCommand("Get-ScheduledTask -TaskPath '\\Microsoft\\Windows\\WaaSMedic\\*' -ErrorAction SilentlyContinue | Enable-ScheduledTask -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            }
+            else
+            {
+                await CommandExecutor.InvokeRunCommand("sc config WaaSMedicSvc start= demand", false).ConfigureAwait(false);
+            }
+
+            await CommandExecutor.InvokeRunCommand("Get-ScheduledTask -TaskPath '\\Microsoft\\Windows\\UpdateOrchestrator\\*' -ErrorAction SilentlyContinue | Enable-ScheduledTask -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Get-ScheduledTask -TaskPath '\\Microsoft\\Windows\\WindowsUpdate\\*' -ErrorAction SilentlyContinue | Enable-ScheduledTask -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("net stop wuauserv", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("net stop bits", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("net stop cryptsvc", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("net start cryptsvc", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("net start bits", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("net start wuauserv", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("gpupdate /force", false).ConfigureAwait(false);
+        }
+
+        public static async Task SetWindowsUpdatesSecurityOnly()
+        {
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v AUOptions /t REG_DWORD /d 3 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoUpdate /t REG_DWORD /d 0 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DeferFeatureUpdates /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DeferFeatureUpdatesPeriodInDays /t REG_DWORD /d 365 /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DeferQualityUpdates /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DeferQualityUpdatesPeriodInDays /t REG_DWORD /d 0 /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DoNotConnectToWindowsUpdateInternetLocations' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("sc config wuauserv start= demand", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config UsoSvc start= demand", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config BITS start= demand", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config DoSvc start= demand", false).ConfigureAwait(false);
+        }
+
+        public static async Task SetWindowsUpdatesManually()
+        {
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v AUOptions /t REG_DWORD /d 2 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoUpdate /t REG_DWORD /d 0 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferFeatureUpdates' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferFeatureUpdatesPeriodInDays' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferQualityUpdates' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferQualityUpdatesPeriodInDays' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("Remove-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DoNotConnectToWindowsUpdateInternetLocations' -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("sc config wuauserv start= demand", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config UsoSvc start= demand", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config BITS start= demand", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config DoSvc start= demand", false).ConfigureAwait(false);
+        }
+
+        public static async Task SetWindowsUpdatesDisabled()
+        {
+            var build = Environment.OSVersion.Version.Build;
+
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoUpdate /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DoNotConnectToWindowsUpdateInternetLocations /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v AUOptions /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DisableWindowsUpdateAccess /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config\" /v DODownloadMode /t REG_DWORD /d 0 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\DoSvc\" /v Start /t REG_DWORD /d 4 /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Speech\" /v AllowSpeechModelUpdate /t REG_DWORD /d 0 /f", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Schedule\\Maintenance\" /v MaintenanceDisabled /t REG_DWORD /d 1 /f", false).ConfigureAwait(false);
+
+            await CommandExecutor.InvokeRunCommand("sc config wuauserv start= disabled", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config UsoSvc start= disabled", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config BITS start= disabled", false).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("sc config DoSvc start= disabled", false).ConfigureAwait(false);
+
+            if (build >= 19041)
+            {
+                await CommandExecutor.InvokeRunCommand("Get-ScheduledTask -TaskPath '\\Microsoft\\Windows\\WaaSMedic\\*' -ErrorAction SilentlyContinue | Disable-ScheduledTask -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+
+                await CommandExecutor.InvokeRunCommand("$acl = Get-Acl 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\WaaSMedicSvc' -ErrorAction SilentlyContinue; if($acl) { $rule = New-Object System.Security.AccessControl.RegistryAccessRule('Administrators','FullControl','ContainerInherit,ObjectInherit','None','Allow'); $acl.SetAccessRule($rule); Set-Acl 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\WaaSMedicSvc' $acl -ErrorAction SilentlyContinue }", true).ConfigureAwait(false);
+                await CommandExecutor.InvokeRunCommand("reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\WaaSMedicSvc\" /v Start /t REG_DWORD /d 4 /f", false).ConfigureAwait(false);
+            }
+            else
+            {
+                await CommandExecutor.InvokeRunCommand("sc stop WaaSMedicSvc", false).ConfigureAwait(false);
+                await CommandExecutor.InvokeRunCommand("sc config WaaSMedicSvc start= disabled", false).ConfigureAwait(false);
+            }
+
+            await CommandExecutor.InvokeRunCommand("Get-ScheduledTask -TaskPath '\\Microsoft\\Windows\\UpdateOrchestrator\\*' -ErrorAction SilentlyContinue | Disable-ScheduledTask -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+            await CommandExecutor.InvokeRunCommand("Get-ScheduledTask -TaskPath '\\Microsoft\\Windows\\WindowsUpdate\\*' -ErrorAction SilentlyContinue | Disable-ScheduledTask -ErrorAction SilentlyContinue", true).ConfigureAwait(false);
+        }
+
+
 
         private static async Task SetPowercfg(bool isDisabled, CancellationToken token)
         {

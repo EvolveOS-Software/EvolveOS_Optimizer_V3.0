@@ -417,6 +417,11 @@
     <!-- endregion Installed Apps -->
 
     <!-- region System Page -->
+    <sys:String x:Key="SystemPage_BatterySection">Batterij &amp; Stroom</sys:String>
+    <sys:String x:Key="SystemPage_BasicOptimization">Basis Systeemoptimalisaties</sys:String>
+    <sys:String x:Key="SystemPage_AdvancedOptimization">Geavanceerde Systeemoptimalisaties</sys:String>
+    <sys:String x:Key="OtherSettings">Overige Instellingen</sys:String>
+
     <sys:String x:Key="slider1_sys">Snelheid aanwijzer:</sys:String>
     <sys:String x:Key="slider2_sys">Vertraging voor herhaling:</sys:String>
     <sys:String x:Key="slider3_sys">Herhalingssnelheid toetsenbord:</sys:String>
@@ -450,9 +455,54 @@
     <sys:String x:Key="tgl27_sys">Achtergrondtaken van Windows Insider</sys:String>
     <sys:String x:Key="tgl28_sys">Systeemdiskdefragmentatie</sys:String>
 
+    <sys:String x:Key="Feature_AddUltimatePowerPlan_Button">Schema Toevoegen</sys:String>
+    <sys:String x:Key="Feature_CompressOSButton_Content">Compressie Controleren</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Default_Content">Standaard</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Security_Content">Alleen Beveiliging</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Manually_Content">Handmatig</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Disabled_Content">Uitgeschakeld</sys:String>
+    <sys:String x:Key="Feature_CreatePowerPlanButton_Header">Nieuwe Maken</sys:String>
+    <sys:String x:Key="Feature_PowerMode_Header">Energiemodus</sys:String>
+    <sys:String x:Key="Feature_AddUltimatePowerPlan_Header">'Ultieme prestaties' energieschema toevoegen</sys:String>
+    <sys:String x:Key="Feature_MenuShowDelay_Header">Vertraging voor menuweergave uitschakelen</sys:String>
+    <sys:String x:Key="Feature_MouseHoverTime_Header">Aanwijstijd (hover) muis uitschakelen</sys:String>
+    <sys:String x:Key="Feature_BackgroundApps_Header">Achtergrond-apps uitschakelen</sys:String>
+    <sys:String x:Key="Feature_AutoComplete_Header">Automatisch aanvullen uitschakelen</sys:String>
+    <sys:String x:Key="Feature_CrashDump_Header">Crashdump uitschakelen</sys:String>
+    <sys:String x:Key="Feature_RemoteAssistance_Header">Hulp op afstand uitschakelen</sys:String>
+    <sys:String x:Key="Feature_WindowShake_Header">Venster schudden uitschakelen</sys:String>
+    <sys:String x:Key="Feature_CopyMoveContextMenu_Header">Kopiëren/Verplaatsen contextmenu toevoegen</sys:String>
+    <sys:String x:Key="Feature_TaskTimeouts_Header">Taak-timeouts aanpassen</sys:String>
+    <sys:String x:Key="Feature_LowDiskSpaceChecks_Header">Meldingen voor weinig schijfruimte inschakelen</sys:String>
+    <sys:String x:Key="Feature_LinkResolve_Header">Linkresolutie uitschakelen</sys:String>
+    <sys:String x:Key="Feature_ServiceTimeouts_Header">Service-timeouts verlagen</sys:String>
+    <sys:String x:Key="Feature_RemoteRegistry_Header">Register op afstand uitschakelen</sys:String>
+    <sys:String x:Key="Feature_FileExtensionsAndHiddenFiles_Header">Bestandsextensies en verborgen bestanden verbergen</sys:String>
+    <sys:String x:Key="Feature_SystemProfile_Header">Systeemprofiel optimaliseren</sys:String>
+    <sys:String x:Key="Feature_DisableSysMain_Header">SysMain uitschakelen</sys:String>
+    <sys:String x:Key="Feature_EnableGamingMode_Header">Gamemodus inschakelen</sys:String>
+    <sys:String x:Key="Feature_ExcludeDriversFromWindowsUpdates_Header">Stuurprogramma's uitsluiten van Windows Updates</sys:String>
+    <sys:String x:Key="Feature_Page_CompressOS_Content">Besturingssysteem comprimeren</sys:String>
+    <sys:String x:Key="Feature_ServiceHostSplitting_Header">Service Host Splitting uitschakelen</sys:String>
+    <sys:String x:Key="Feature_LegacyBootMenu_Header">Oude (Legacy) opstartmenu inschakelen</sys:String>
+    <sys:String x:Key="Feature_OptimizeNTFS_Header">NTFS-instellingen optimaliseren</sys:String>
+    <sys:String x:Key="Feature_PrioritizeForegroundApplications_Header">Prestaties voorgrond-apps prioriteren</sys:String>
+    <sys:String x:Key="Feature_WPBT_Header">WPBT-uitvoering uitschakelen</sys:String>
+    <sys:String x:Key="Feature_DisableSystemRestore_Header">Systeemherstel uitschakelen</sys:String>
+    <sys:String x:Key="Feature_DisableCortana_Header">Cortana uitschakelen</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Header">Windows updates</sys:String>
+    <sys:String x:Key="Feature_DisableSmartScreen_Header">Smart Screen uitschakelen</sys:String>
+
     <sys:String x:Key="settings_card_effects">Kaarteffecten</sys:String>
     <sys:String x:Key="settings_hover_glow">Gloed bij aanwijzen</sys:String>
     <sys:String x:Key="settings_selection_glow">Selectiegloed bij schakelen</sys:String>
+
+    <sys:String x:Key="CreatePowerPlanTitle">Energieschema Maken</sys:String>
+    <sys:String x:Key="PowerPlanNameLabel">Naam energieschema</sys:String>
+    <sys:String x:Key="PowerPlanNamePlaceholder">Voer naam energieschema in</sys:String>
+    <sys:String x:Key="BasePowerPlanLabel">Basis energieschema</sys:String>
+    <sys:String x:Key="Create">Maken</sys:String>
+    <sys:String x:Key="Cancel">Annuleren</sys:String>
 
     <sys:String x:Key="slider_desc_sys">Pas de gevoeligheid van de muisaanwijzer en de responsiviteit van het toetsenbord aan, inclusief de herhaalvertraging en herhaalsnelheid.</sys:String>
     <sys:String x:Key="slider1_desc_sys">Wijzigt de snelheid van de muisaanwijzer, waardoor u tijd bespaart bij het zoeken naar muisparameters.</sys:String>
@@ -486,6 +536,37 @@
     <sys:String x:Key="tgl26_desc_sys">Blokkeert de opdringerige installatie van de PC-statuscontrole die Microsoft via Windows Update forceert.</sys:String>
     <sys:String x:Key="tgl27_desc_sys">Schakel deze taken uit als u geen lid bent van het Insider-programma om onnodige telemetrie en systeembelasting te voorkomen.</sys:String>
     <sys:String x:Key="tgl28_desc_sys">Voor SSD's helpt het uitschakelen van defragmentatie de levensduur te verlengen, terwijl TRIM-optimalisatie actief blijft voor stabiele snelheid.</sys:String>
+
+    <sys:String x:Key="powerplangroup_desc_sys">Selecteer of voeg een energieschema toe om prestaties en energieverbruik in balans te brengen.</sys:String>
+    <sys:String x:Key="addultimatepowerplan_desc_sys">Voegt het verborgen 'Ultieme prestaties' energieschema toe aan uw systeem voor maximale prestaties.</sys:String>
+    <sys:String x:Key="menushowdelay_desc_sys">Bepaalt de vertraging voordat menu's verschijnen na het aanwijzen met de muis. Het uitschakelen hiervan zorgt dat menu's direct openen, wat de reactiesnelheid verbetert maar de controle kan verminderen.</sys:String>
+    <sys:String x:Key="mousehovertime_desc_sys">Past de tijd aan die het systeem wacht voordat een hover-gebeurtenis wordt geactiveerd. Dit verlaagt de wachttijd voor interacties, maar kan leiden tot onbedoelde acties.</sys:String>
+    <sys:String x:Key="backgroundapps_desc_sys">Voorkomt dat apps op de achtergrond draaien, wat in sommige gevallen tot betere prestaties leidt.</sys:String>
+    <sys:String x:Key="autocomplete_desc_sys">Schakelt automatische suggesties tijdens het typen uit in bepaalde velden, zoals zoekvakken en formulieren. Dit kan afleiding verminderen, maar de workflow vertragen.</sys:String>
+    <sys:String x:Key="crashdump_desc_sys">Bepaalt of crashrapporten en geheugendumps worden gegenereerd wanneer programma's vastlopen. Uitschakelen bespaart schijfruimte, maar bemoeilijkt het diagnosticeren van problemen.</sys:String>
+    <sys:String x:Key="remoteassistance_desc_sys">Schakelt externe ondersteuningsfuncties uit, waarmee anderen u kunnen helpen via extern bureaublad. Dit verbetert de beveiliging, maar beperkt de mogelijkheden voor externe hulp.</sys:String>
+    <sys:String x:Key="windowshake_desc_sys">Schakelt de venster-schudden functie uit die alle open vensters minimaliseert wanneer u een venster schudt. Uitschakelen verbetert de focus, maar verwijdert een handig hulpmiddel voor vensterbeheer.</sys:String>
+    <sys:String x:Key="copymovecontextmenu_desc_sys">Voegt extra opties toe aan het contextmenu om bestanden eenvoudig te kopiëren of verplaatsen. Dit versnelt bestandsbeheer door directe toegang tot deze functies via de rechtermuisknop.</sys:String>
+    <sys:String x:Key="tasktimeouts_desc_sys">Wijzigt de time-outinstellingen voor systeemtaken. Dit kan de prestaties in sommige scenario's verbeteren, maar kan ertoe leiden dat taken mislukken onder bepaalde omstandigheden.</sys:String>
+    <sys:String x:Key="lowdiskspacechecks_desc_sys">Schakelt automatische controles in voor weinig schijfruimte om prestatieproblemen te voorkomen. Uitschakelen vermindert meldingen, maar u mist mogelijk kritieke waarschuwingen voor opslag.</sys:String>
+    <sys:String x:Key="linkresolve_desc_sys">Schakelt het oplossen van verbroken snelkoppelingen in bestanden en mappen uit. Kan bewerkingen versnellen, maar laat verouderde links onopgelost.</sys:String>
+    <sys:String x:Key="servicetimeouts_desc_sys">Past de time-outs voor systeemservices aan. Verkorten hiervan kan de prestaties verbeteren, maar kan ertoe leiden dat services voortijdig worden beëindigd.</sys:String>
+    <sys:String x:Key="remoteregistry_desc_sys">Schakelt toegang tot het register op afstand uit. Dit verbetert de beveiliging, maar voorkomt externe configuratie van registerinstellingen.</sys:String>
+    <sys:String x:Key="fileextensionsandhiddenfiles_desc_sys">Regelt de zichtbaarheid van bestandsextensies en verborgen bestanden. Inschakelen vermindert rommel, maar verbergt belangrijke bestandsdetails.</sys:String>
+    <sys:String x:Key="systemprofile_desc_sys">Verbetert de prestaties van uw systeem door profielinstellingen aan te passen. Deze functie geeft prioriteit aan snelheid en efficiëntie, wat de algehele systeemreactiesnelheid en het bronbeheer verbetert.</sys:String>
+    <sys:String x:Key="sysmain_desc_sys">Schakelt SysMain uit, dat veelgebruikte applicaties vooraf laadt voor sneller opstarten. Kan invloed hebben op opstarttijden van programma's als u een HDD gebruikt.</sys:String>
+    <sys:String x:Key="enablegamingmode_desc_sys">Schakelt de Gamemodus in, die systeembronnen optimaliseert voor een vloeiendere game-ervaring. Kan invloed hebben op achtergrondprocessen.</sys:String>
+    <sys:String x:Key="drivers_desc_sys">Sluit stuurprogramma-updates uit van Windows Update. Kan leiden tot verouderde drivers met mogelijke veiligheidsrisico's of compatibiliteitsproblemen. Gebruik met voorzichtigheid.</sys:String>
+    <sys:String x:Key="compressosgroup_desc_sys">Schakel OS-compressie in om schijfruimte te besparen. Deze functie is vooral nuttig voor apparaten met beperkte opslagcapaciteit, maar kan de systeemprestaties op tragere hardware enigszins beïnvloeden.</sys:String>
+    <sys:String x:Key="servicehostsplitting_desc_sys">Schakelt Service Host Splitting uit voor een aanzienlijk lager RAM-gebruik en minder actieve processen.</sys:String>
+    <sys:String x:Key="legacybootmenu_desc_sys">Schakelt over naar het verouderde (Legacy) opstartmenu voor een snellere opstart.</sys:String>
+    <sys:String x:Key="optimizentfs_desc_sys">Optimaliseert NTFS-instellingen om de prestaties te verbeteren en de privacy te vergroten.</sys:String>
+    <sys:String x:Key="prioritizeforegroundapplications_desc_sys">Verbetert de prestaties van actieve applicaties door voorgrondtaken prioriteit te geven.</sys:String>
+    <sys:String x:Key="wpbt_desc_sys">Voorkomt dat firmware programma's (bijv. OEM bloatware) uitvoert tijdens het opstarten van het systeem.</sys:String>
+    <sys:String x:Key="systemrestore_desc_sys">Schakelt Systeemherstel uit, dat herstelpunten aanmaakt om het systeem bij problemen terug te draaien. Niet aanbevolen. Het uitschakelen hiervan verwijdert de mogelijkheid om eenvoudig te herstellen van mogelijke systeemproblemen.</sys:String>
+    <sys:String x:Key="cortana_desc_sys">Schakelt Cortana, de virtuele assistent, uit. Kan invloed hebben op spraakgestuurd zoeken en enkele productiviteitsfuncties.</sys:String>
+    <sys:String x:Key="windowsupdatesgroup_desc_sys">Configureer hoe Windows omgaat met automatische updates. Kies uit automatische updates, alleen beveiliging, handmatige controle of volledig uitgeschakeld.</sys:String>
+    <sys:String x:Key="smartscreen_desc_sys">Schakelt het SmartScreen-filter uit, dat u waarschuwt voor mogelijk onveilige apps en bestanden die u van internet downloadt. Het uitschakelen van deze functie verhoogt het risico op een malware-infectie.</sys:String>
     <!-- endregion System Page-->
 
     <!-- region Services Page -->

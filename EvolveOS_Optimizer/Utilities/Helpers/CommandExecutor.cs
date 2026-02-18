@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -261,6 +262,56 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             string separator = (rawCommand?.Contains("&&") == true) ? " && " : (rawCommand?.Contains("&") == true) ? " & " : " && ";
 
             return string.Join(separator, lines);
+        }
+
+        internal static async Task<string> StartTaskAsync(string command)
+        {
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                        ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"SysNative\cmd.exe")
+                        : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"System32\cmd.exe"),
+                    Arguments = $"/C \"{command}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+
+            var output = await process.StandardOutput.ReadToEndAsync();
+
+            await process.WaitForExitAsync();
+
+            return output;
+        }
+
+        internal static async Task<string> StartTask(string command)
+        {
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                        ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"SysNative\cmd.exe")
+                        : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"System32\cmd.exe"),
+                    Arguments = $"/C \"{command}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+
+            var output = await process.StandardOutput.ReadToEndAsync();
+
+            await process.WaitForExitAsync();
+
+            return output;
         }
     }
 }

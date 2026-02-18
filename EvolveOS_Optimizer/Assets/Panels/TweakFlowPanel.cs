@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using Windows.Foundation;

@@ -15,6 +15,14 @@
         <vm:SystemViewModel />
     </Page.DataContext>
 
+    <Page.Resources>
+        <Style x:Key="SettingsSectionHeaderTextBlockStyle" BasedOn="{StaticResource BodyStrongTextBlockStyle}" TargetType="TextBlock">
+            <Setter Property="Margin" Value="5,0,0,5" />
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}"/>
+        </Style>
+    </Page.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -22,16 +30,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <CommandBar Grid.Row="0" 
-            Background="Transparent" 
-            DefaultLabelPosition="Collapsed" 
-            HorizontalAlignment="Right" 
-            Margin="0,10,0,0">
-
+        <CommandBar Grid.Row="0" Background="Transparent" DefaultLabelPosition="Collapsed" HorizontalAlignment="Right" Margin="0,10,0,0">
             <CommandBar.PrimaryCommands>
-                <AppBarButton Icon="Setting" 
-                      Width="48" 
-                      HorizontalAlignment="Center">
+                <AppBarButton Icon="Setting" Width="48" HorizontalAlignment="Center">
                     <AppBarButton.Flyout>
                         <Flyout Placement="Bottom">
                             <StackPanel Spacing="10" MinWidth="200">
@@ -45,430 +46,828 @@
             </CommandBar.PrimaryCommands>
         </CommandBar>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="12.5">
-            <pa:TweakFlowPanel ItemWidth="469" HorizontalSpacing="10" VerticalSpacing="10">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0">
+            <StackPanel Spacing="10">
 
-                <ContentControl Style="{StaticResource SystemCardStyle}"
-                                PointerEntered="Tweak_MouseEnter"
-                                PointerExited="Tweak_MouseLeave"
-                                Width="469"
-                                Height="266"
-                                Tag="SliderGroup">
-                    <StackPanel VerticalAlignment="Center" Padding="15,5">
-                        <Grid Margin="0,0,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                <TextBlock Text="{helpers:ResourceString Key=SystemPage_BasicOptimization}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
+
+                <pa:SystemFlowPanel ItemWidth="464" HorizontalSpacing="10" VerticalSpacing="10">
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="274" Tag="PowerPlanGroup">
+                        <StackPanel VerticalAlignment="Center" Padding="15,5">
+
+                            <Grid Margin="0,0,0,25">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Grid.Column="0" Glyph="&#xEBB7;" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_PowerMode_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                                <ComboBox Grid.Column="2" x:Name="PowerModeComboBox" Width="140" SelectionChanged="PowerModeComboBox_SelectionChanged" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{helpers:ResourceString Key=Feature_CreatePowerPlanButton_Header}" VerticalAlignment="Center" Style="{StaticResource BodyTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+
+                                <Button Grid.Column="1" x:Name="CreatePowerPlanButton" Click="CreatePowerPlanButton_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE710;" FontSize="14"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=Create}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{helpers:ResourceString Key=Feature_AddUltimatePowerPlan_Header}" VerticalAlignment="Center" Style="{StaticResource BodyTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+
+                                <Button Grid.Column="1" x:Name="AddUltimatePowerPlanButton" Click="AddUltimatePowerPlanButton_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE945;" FontSize="14"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=Feature_AddUltimatePowerPlan_Button}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{helpers:ResourceString Key=tgl18_sys}" VerticalAlignment="Center" Style="{StaticResource BodyTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+
+                                <ToggleSwitch Grid.Column="1" DataContext="{Binding [TglButton18]}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled" MinWidth="0" Margin="0" Padding="0" VerticalAlignment="Center"/>
+                            </Grid>
+
+                        </StackPanel>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="274" Tag="SliderGroup" >
+                        <StackPanel VerticalAlignment="Center" Padding="15,5">
+                            <Grid Margin="0,0,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Grid.Column="0" Glyph="&#xE962;" FontSize="16" Margin="0,0,10,0" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{helpers:ResourceString Key=slider1_sys}" Style="{StaticResource BodyStrongTextBlockStyle}" FontSize="13"/>
+                                <Slider x:Name="Slider1" Grid.Row="1" Grid.ColumnSpan="2" Value="{Binding [Slider1].Value, Mode=TwoWay}" ValueChanged="Slider_ValueChanged" Minimum="0" Maximum="20" Margin="0,0,0,-5"/>
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Grid.Column="0" Glyph="&#xE92F;" FontSize="16" Margin="0,0,10,0" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{helpers:ResourceString Key=slider2_sys}" Style="{StaticResource BodyStrongTextBlockStyle}" FontSize="13"/>
+                                <Slider x:Name="Slider2" Grid.Row="1" Grid.ColumnSpan="2" Value="{Binding [Slider2].Value, Mode=TwoWay}" ValueChanged="Slider_ValueChanged" Minimum="0" Maximum="3" Margin="0,0,0,-5"/>
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Grid.Column="0" Glyph="&#xE765;" FontSize="16" Margin="0,0,10,0" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{helpers:ResourceString Key=slider3_sys}" Style="{StaticResource BodyStrongTextBlockStyle}" FontSize="13"/>
+                                <Slider x:Name="Slider3" Grid.Row="1" Grid.ColumnSpan="2" Value="{Binding [Slider3].Value, Mode=TwoWay}" ValueChanged="Slider_ValueChanged" Minimum="0" Maximum="31" Margin="0,0,0,-5"/>
+                            </Grid>
+                            <TextBox PlaceholderText="{helpers:ResourceString Key=text_sys}" Width="400" HorizontalAlignment="Center" Margin="0,25,0,0"/>
+                        </StackPanel>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton7" Visibility="{Binding RealtekSupportAvailable}">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton7]}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-
-                            <FontIcon Grid.Column="0" Glyph="&#xE962;" FontSize="16" Margin="0,0,10,0" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{helpers:ResourceString Key=slider1_sys}" Style="{StaticResource BodyStrongTextBlockStyle}" FontSize="13"/>
-                            <Slider x:Name="Slider1" Grid.Row="1" Grid.ColumnSpan="2" Value="{Binding [Slider1].Value, Mode=TwoWay}" ValueChanged="Slider_ValueChanged" Minimum="0" Maximum="20" Margin="0,0,0,-5"/>
+                            <FontIcon Grid.Column="0" Glyph="&#xEA1F;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl7_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
                         </Grid>
+                    </ContentControl>
 
-                        <Grid Margin="0,5,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton8">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton8]}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-
-                            <FontIcon Grid.Column="0" Glyph="&#xE92F;" FontSize="16" Margin="0,0,10,0" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{helpers:ResourceString Key=slider2_sys}" Style="{StaticResource BodyStrongTextBlockStyle}" FontSize="13"/>
-                            <Slider x:Name="Slider2" Grid.Row="1" Grid.ColumnSpan="2" Value="{Binding [Slider2].Value, Mode=TwoWay}" ValueChanged="Slider_ValueChanged" Minimum="0" Maximum="3" Margin="0,0,0,-5"/>
+                            <FontIcon Grid.Column="0" Glyph="&#xE72E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl8_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
                         </Grid>
+                    </ContentControl>
 
-                        <Grid Margin="0,5,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton9">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton9]}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-
-                            <FontIcon Grid.Column="0" Glyph="&#xE765;" FontSize="16" Margin="0,0,10,0" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{helpers:ResourceString Key=slider3_sys}" Style="{StaticResource BodyStrongTextBlockStyle}" FontSize="13"/>
-                            <Slider x:Name="Slider3" Grid.Row="1" Grid.ColumnSpan="2" Value="{Binding [Slider3].Value, Mode=TwoWay}" ValueChanged="Slider_ValueChanged" Minimum="0" Maximum="31" Margin="0,0,0,-5"/>
+                            <FontIcon Grid.Column="0" Glyph="&#xE708;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl9_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
                         </Grid>
+                    </ContentControl>
 
-                        <TextBox PlaceholderText="{helpers:ResourceString Key=text_sys}" Width="400" HorizontalAlignment="Center" Margin="0,25,0,0"/>
-                    </StackPanel>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton1">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton1]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE962;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl1_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton1">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton1]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE962;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl1_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton2">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton2]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE765;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl2_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton2">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton2]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE765;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl2_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="MenuShowDelay">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [MenuShowDelay]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xF182;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_MenuShowDelay_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton3">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton3]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE73E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl3_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="MouseHoverTime">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [MouseHoverTime]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE8B0;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_MouseHoverTime_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton4">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton4]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE8D7;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl4_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="WindowShake">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [WindowShake]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE746;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_WindowShake_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton5">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton5]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE8BD;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl5_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="CopyMoveContextMenu">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [CopyMoveContextMenu]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE8C8;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_CopyMoveContextMenu_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton6">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton6]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE719;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl6_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="AutoComplete">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [AutoComplete]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE8A1;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_AutoComplete_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton7" Visibility="{Binding RealtekSupportAvailable}">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton7]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xEA1F;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl7_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="FileExtensionsAndHiddenFiles">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [FileExtensionsAndHiddenFiles]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xF19D;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_FileExtensionsAndHiddenFiles_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton8">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton8]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE72E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl8_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="LinkResolve">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [LinkResolve]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE8F5;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_LinkResolve_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton9">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton9]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE708;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl9_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                </pa:SystemFlowPanel>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton10">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton10]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xEF3C;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl10_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                <TextBlock Text="{helpers:ResourceString Key=SystemPage_AdvancedOptimization}" Margin="5,15,0,0" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
+                <pa:TweakFlowPanel ItemWidth="469" HorizontalSpacing="10" VerticalSpacing="10">
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton11">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton11]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xF140;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl11_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" Tag="CompressOSGroup" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xEB05;" FontSize="20" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,0,12,0"/>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{helpers:ResourceString Key=Feature_Page_CompressOS_Content}" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                <TextBlock x:Name="CompressOSProgressText" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </StackPanel>
+                            <Grid Grid.Column="2" VerticalAlignment="Center">
+                                <Button x:Name="CompressOSButton" Click="CompressOSButton_Click" Content="{helpers:ResourceString Key=Feature_CompressOSButton_Content}" Style="{StaticResource AccentButtonStyle}"/>
+                                <ProgressRing x:Name="CompressOSProgressRing" Width="18" Height="18" Visibility="Collapsed"/>
+                            </Grid>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton12">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton12]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE950;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl12_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" Tag="WindowsUpdatesGroup" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE777;" FontSize="20" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_WindowsUpdates_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+                            <ComboBox Grid.Column="2" x:Name="WindowsUpdatesComboBox" MinWidth="150" SelectionChanged="WindowsUpdatesComboBox_SelectionChanged" VerticalAlignment="Center">
+                                <ComboBoxItem Content="{helpers:ResourceString Key=Feature_WindowsUpdates_Default_Content}" Tag="Default"/>
+                                <ComboBoxItem Content="{helpers:ResourceString Key=Feature_WindowsUpdates_Security_Content}" Tag="Security"/>
+                                <ComboBoxItem Content="{helpers:ResourceString Key=Feature_WindowsUpdates_Manually_Content}" Tag="Manually"/>
+                                <ComboBoxItem Content="{helpers:ResourceString Key=Feature_WindowsUpdates_Disabled_Content}" Tag="Disabled"/>
+                            </ComboBox>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton13">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton13]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xEC05;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl13_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="SysMain">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [SysMain]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xEC4A;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_DisableSysMain_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton14">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton14]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xEDA2;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl14_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="SystemProfile">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [SystemProfile]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE9F5;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_SystemProfile_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton15">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton15]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE945;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl15_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="ServiceHostSplitting">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [ServiceHostSplitting]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE15E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_ServiceHostSplitting_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton16">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton16]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE81C;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl16_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="LegacyBootMenu">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [LegacyBootMenu]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xF16A;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_LegacyBootMenu_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton17">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton17]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE88E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl17_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="OptimizeNTFS">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [OptimizeNTFS]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE9F3;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_OptimizeNTFS_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton18">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton18]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE7E8;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl18_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="PrioritizeForegroundApplications">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [PrioritizeForegroundApplications]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE9D9;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_PrioritizeForegroundApplications_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton19">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton19]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE702;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl19_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TaskTimeouts">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TaskTimeouts]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE916;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_TaskTimeouts_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton20">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton20]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE7F5;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl20_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="ServiceTimeouts">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [ServiceTimeouts]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE823;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_ServiceTimeouts_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton21">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton21]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE909;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl21_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="Drivers">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [Drivers]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE772;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_ExcludeDriversFromWindowsUpdates_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton22">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton22]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xF20B;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl22_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton10">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton10]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xEF3C;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl10_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton23">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton23]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE71D;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl23_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton12">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton12]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE950;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl12_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton24">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton24]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE74E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl24_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton14">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton14]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xEDA2;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl14_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton25">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton25]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xEC92;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl25_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton15">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton15]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE945;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl15_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton26">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton26]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xEA92;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl26_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton25">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton25]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xEC92;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl25_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton27">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton27]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE8EF;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl27_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton28">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton28]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE946;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl28_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton28">
-                    <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton28]}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0" Glyph="&#xE946;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl28_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                        <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
-                    </Grid>
-                </ContentControl>
+                </pa:TweakFlowPanel>
 
-            </pa:TweakFlowPanel>
+
+                <TextBlock Text="{helpers:ResourceString Key=OtherSettings}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
+                <pa:TweakFlowPanel ItemWidth="469" HorizontalSpacing="10" VerticalSpacing="10">
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="CrashDump">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [CrashDump]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE74D;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_CrashDump_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="RemoteAssistance">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [RemoteAssistance]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE8AF;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_RemoteAssistance_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="LowDiskSpaceChecks">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [LowDiskSpaceChecks]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE73E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_LowDiskSpaceChecks_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="RemoteRegistry">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [RemoteRegistry]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xED5C;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_RemoteRegistry_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="WPBT">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [WPBT]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE9E9;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_WPBT_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="SystemRestore">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [SystemRestore]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xEBC4;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_DisableSystemRestore_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="Cortana">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [Cortana]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xED66;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_DisableCortana_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="SmartScreen">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [SmartScreen]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xF8A5;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=Feature_DisableSmartScreen_Header}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton3">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton3]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE73E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl3_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton4">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton4]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE8D7;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl4_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton5">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton5]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE8BD;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl5_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton6">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton6]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE719;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl6_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton11">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton11]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xF140;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl11_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton13">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton13]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xEC05;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl13_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton16">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton16]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE81C;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl16_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton17">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton17]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE88E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl17_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton19">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton19]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE702;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl19_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton20">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton20]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE7F5;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl20_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton21">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton21]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE909;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl21_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton22">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton22]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xF20B;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl22_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton23">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton23]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE71D;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl23_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton24">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton24]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE74E;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl24_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton26">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton26]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xEA92;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl26_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton27">
+                        <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton27]}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xE8EF;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl27_sys}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+                        </Grid>
+                    </ContentControl>
+
+                </pa:TweakFlowPanel>
+            </StackPanel>
         </ScrollViewer>
 
         <Grid Grid.Row="2">

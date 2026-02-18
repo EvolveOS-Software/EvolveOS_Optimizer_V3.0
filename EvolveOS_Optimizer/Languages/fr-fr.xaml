@@ -417,6 +417,11 @@
     <!-- endregion Installed Apps -->
 
     <!-- region System Page -->
+    <sys:String x:Key="SystemPage_BatterySection">Batterie &amp; Alimentation</sys:String>
+    <sys:String x:Key="SystemPage_BasicOptimization">Optimisations de Base du Système</sys:String>
+    <sys:String x:Key="SystemPage_AdvancedOptimization">Optimisations Avancées du Système</sys:String>
+    <sys:String x:Key="OtherSettings">Autres Paramètres</sys:String>
+    
     <sys:String x:Key="slider1_sys">Vitesse du pointeur :</sys:String>
     <sys:String x:Key="slider2_sys">Délai de répétition :</sys:String>
     <sys:String x:Key="slider3_sys">Fréquence de répétition :</sys:String>
@@ -450,9 +455,54 @@
     <sys:String x:Key="tgl27_sys">Tâches de fond de Windows Insider</sys:String>
     <sys:String x:Key="tgl28_sys">Défragmentation du disque système</sys:String>
 
+    <sys:String x:Key="Feature_AddUltimatePowerPlan_Button">Ajouter le Mode</sys:String>
+    <sys:String x:Key="Feature_CompressOSButton_Content">Vérifier la Compression</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Default_Content">Par Défaut</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Security_Content">Sécurité Uniquement</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Manually_Content">Manuellement</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Disabled_Content">Désactivé</sys:String>
+    <sys:String x:Key="Feature_CreatePowerPlanButton_Header">Créer un Nouveau</sys:String>
+    <sys:String x:Key="Feature_PowerMode_Header">Mode d'Alimentation</sys:String>
+    <sys:String x:Key="Feature_AddUltimatePowerPlan_Header">Ajouter le mode Performances optimales</sys:String>
+    <sys:String x:Key="Feature_MenuShowDelay_Header">Désactiver le délai d'affichage des menus</sys:String>
+    <sys:String x:Key="Feature_MouseHoverTime_Header">Désactiver le temps de survol de la souris</sys:String>
+    <sys:String x:Key="Feature_BackgroundApps_Header">Désactiver les applications en arrière-plan</sys:String>
+    <sys:String x:Key="Feature_AutoComplete_Header">Désactiver la saisie automatique</sys:String>
+    <sys:String x:Key="Feature_CrashDump_Header">Désactiver les rapports de plantage</sys:String>
+    <sys:String x:Key="Feature_RemoteAssistance_Header">Désactiver l'assistance à distance</sys:String>
+    <sys:String x:Key="Feature_WindowShake_Header">Désactiver le secouement des fenêtres</sys:String>
+    <sys:String x:Key="Feature_CopyMoveContextMenu_Header">Ajouter copier/déplacer au menu contextuel</sys:String>
+    <sys:String x:Key="Feature_TaskTimeouts_Header">Ajuster les délais d'attente des tâches</sys:String>
+    <sys:String x:Key="Feature_LowDiskSpaceChecks_Header">Activer les alertes d'espace disque faible</sys:String>
+    <sys:String x:Key="Feature_LinkResolve_Header">Désactiver la résolution des raccourcis</sys:String>
+    <sys:String x:Key="Feature_ServiceTimeouts_Header">Diminuer les délais d'attente des services</sys:String>
+    <sys:String x:Key="Feature_RemoteRegistry_Header">Désactiver le registre à distance</sys:String>
+    <sys:String x:Key="Feature_FileExtensionsAndHiddenFiles_Header">Masquer les extensions et fichiers cachés</sys:String>
+    <sys:String x:Key="Feature_SystemProfile_Header">Optimiser le profil système</sys:String>
+    <sys:String x:Key="Feature_DisableSysMain_Header">Désactiver SysMain</sys:String>
+    <sys:String x:Key="Feature_EnableGamingMode_Header">Activer le mode Jeu</sys:String>
+    <sys:String x:Key="Feature_ExcludeDriversFromWindowsUpdates_Header">Exclure les pilotes de Windows Update</sys:String>
+    <sys:String x:Key="Feature_Page_CompressOS_Content">Compresser le Système d'Exploitation</sys:String>
+    <sys:String x:Key="Feature_ServiceHostSplitting_Header">Désactiver la séparation des hôtes de service</sys:String>
+    <sys:String x:Key="Feature_LegacyBootMenu_Header">Activer le menu de démarrage hérité (Legacy)</sys:String>
+    <sys:String x:Key="Feature_OptimizeNTFS_Header">Optimiser les paramètres NTFS</sys:String>
+    <sys:String x:Key="Feature_PrioritizeForegroundApplications_Header">Prioriser les applications au premier plan</sys:String>
+    <sys:String x:Key="Feature_WPBT_Header">Désactiver l'exécution WPBT</sys:String>
+    <sys:String x:Key="Feature_DisableSystemRestore_Header">Désactiver la restauration du système</sys:String>
+    <sys:String x:Key="Feature_DisableCortana_Header">Désactiver Cortana</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Header">Mises à jour Windows</sys:String>
+    <sys:String x:Key="Feature_DisableSmartScreen_Header">Désactiver SmartScreen</sys:String>
+
     <sys:String x:Key="settings_card_effects">Effets de carte</sys:String>
     <sys:String x:Key="settings_hover_glow">Lueur de survol</sys:String>
     <sys:String x:Key="settings_selection_glow">Lueur de sélection du commutateur</sys:String>
+
+    <sys:String x:Key="CreatePowerPlanTitle">Créer un Mode d'Alimentation</sys:String>
+    <sys:String x:Key="PowerPlanNameLabel">Nom du mode d'alimentation</sys:String>
+    <sys:String x:Key="PowerPlanNamePlaceholder">Entrer le nom du mode d'alimentation</sys:String>
+    <sys:String x:Key="BasePowerPlanLabel">Mode d'alimentation de base</sys:String>
+    <sys:String x:Key="Create">Créer</sys:String>
+    <sys:String x:Key="Cancel">Annuler</sys:String>
 
     <sys:String x:Key="slider_desc_sys">Ajustez la sensibilité du pointeur de la souris et la réactivité du clavier, y compris le délai avant répétition et la vitesse de répétition.</sys:String>
     <sys:String x:Key="slider1_desc_sys">Modifie la vitesse du pointeur, vous évitant de chercher dans les paramètres de la souris.</sys:String>
@@ -486,6 +536,37 @@
     <sys:String x:Key="tgl26_desc_sys">Bloque l'installation forcée de l'utilitaire de contrôle de l'intégrité du PC déployé par Microsoft via Windows Update.</sys:String>
     <sys:String x:Key="tgl27_desc_sys">Désactive les tâches inutiles liées au programme Windows Insider si vous n'y participez pas, économisant ainsi des ressources.</sys:String>
     <sys:String x:Key="tgl28_desc_sys">Pour les SSD, désactiver la défragmentation aide à prolonger leur durée de vie, tandis que la fonction TRIM reste active pour maintenir la vitesse.</sys:String>
+
+    <sys:String x:Key="powerplangroup_desc_sys">Sélectionnez ou ajoutez un mode d'alimentation pour équilibrer les performances et la consommation d'énergie.</sys:String>
+    <sys:String x:Key="addultimatepowerplan_desc_sys">Ajoute le mode d'alimentation masqué 'Performances optimales' à votre système pour des performances maximales.</sys:String>
+    <sys:String x:Key="menushowdelay_desc_sys">Contrôle le délai avant l'apparition des menus au survol de la souris. Désactiver cette fonction permet d'ouvrir les menus instantanément, ce qui améliore la réactivité mais peut réduire le contrôle de l'utilisateur.</sys:String>
+    <sys:String x:Key="mousehovertime_desc_sys">Ajuste le temps que le système attend avant de déclencher un événement de survol. La désactivation peut accélérer les interactions mais entraîner des activations involontaires.</sys:String>
+    <sys:String x:Key="backgroundapps_desc_sys">Empêche les applications de s'exécuter en arrière-plan, ce qui permet d'améliorer les performances dans certains cas.</sys:String>
+    <sys:String x:Key="autocomplete_desc_sys">Désactive les suggestions automatiques lors de la frappe dans certains champs, tels que les zones de recherche. Cela peut réduire les distractions mais ralentir le flux de travail.</sys:String>
+    <sys:String x:Key="crashdump_desc_sys">Contrôle si des rapports de plantage et des vidages mémoire sont générés en cas de problème. Les désactiver permet d'économiser de l'espace disque, mais limite la capacité à diagnostiquer les erreurs.</sys:String>
+    <sys:String x:Key="remoteassistance_desc_sys">Désactive les fonctions de support à distance. Améliore la sécurité mais limite vos options d'assistance technique.</sys:String>
+    <sys:String x:Key="windowshake_desc_sys">Désactive la fonction qui réduit toutes les fenêtres ouvertes lorsque vous en secouez une. La désactivation améliore la concentration mais supprime un outil pratique de gestion des fenêtres.</sys:String>
+    <sys:String x:Key="copymovecontextmenu_desc_sys">Ajoute des options au menu contextuel pour copier ou déplacer facilement des fichiers. Cette fonctionnalité accélère la gestion des fichiers avec un simple clic droit.</sys:String>
+    <sys:String x:Key="tasktimeouts_desc_sys">Modifie les paramètres de délai d'attente pour les tâches du système. Peut améliorer les performances dans certains cas, mais peut faire échouer des tâches sous certaines conditions.</sys:String>
+    <sys:String x:Key="lowdiskspacechecks_desc_sys">Active les vérifications automatiques d'espace disque faible pour prévenir les problèmes. La désactivation réduit les notifications, mais vous pourriez manquer des alertes critiques.</sys:String>
+    <sys:String x:Key="linkresolve_desc_sys">Désactive la résolution des liens rompus dans les fichiers et dossiers. Accélère les opérations mais laisse les raccourcis obsolètes non résolus.</sys:String>
+    <sys:String x:Key="servicetimeouts_desc_sys">Ajuste les délais d'attente des services système. Les réduire peut améliorer les performances mais risque de fermer prématurément certains services.</sys:String>
+    <sys:String x:Key="remoteregistry_desc_sys">Désactive l'accès au registre à distance. Cela améliore la sécurité, mais empêche la configuration à distance du registre.</sys:String>
+    <sys:String x:Key="fileextensionsandhiddenfiles_desc_sys">Contrôle la visibilité des extensions de fichiers et des fichiers cachés. Les masquer réduit l'encombrement visuel mais cache des détails importants.</sys:String>
+    <sys:String x:Key="systemprofile_desc_sys">Améliore les performances de votre système en ajustant les paramètres du profil système. Donne la priorité à la vitesse et à l'efficacité.</sys:String>
+    <sys:String x:Key="sysmain_desc_sys">Désactive SysMain, qui précharge les applications fréquemment utilisées. Peut impacter les temps de démarrage si vous utilisez un disque dur (HDD).</sys:String>
+    <sys:String x:Key="enablegamingmode_desc_sys">Active le mode Jeu, qui optimise les ressources du système pour une expérience de jeu plus fluide. Peut impacter les processus en arrière-plan.</sys:String>
+    <sys:String x:Key="drivers_desc_sys">Exclut les mises à jour de pilotes via Windows Update. Peut entraîner des pilotes obsolètes ou des problèmes de compatibilité. À utiliser avec précaution.</sys:String>
+    <sys:String x:Key="compressosgroup_desc_sys">Active la compression du système d'exploitation pour réduire l'espace disque. Très utile pour les appareils avec peu de stockage, mais peut légèrement affecter les performances sur du matériel bas de gamme.</sys:String>
+    <sys:String x:Key="servicehostsplitting_desc_sys">Désactive la séparation des hôtes de service (Service Host Splitting) pour réduire considérablement l'utilisation de la RAM et le nombre de processus.</sys:String>
+    <sys:String x:Key="legacybootmenu_desc_sys">Bascule vers le menu de démarrage hérité (Legacy) pour un démarrage plus rapide de l'ordinateur.</sys:String>
+    <sys:String x:Key="optimizentfs_desc_sys">Ajuste les paramètres NTFS pour améliorer les performances générales et renforcer la confidentialité.</sys:String>
+    <sys:String x:Key="prioritizeforegroundapplications_desc_sys">Améliore les performances des applications actives en donnant la priorité aux tâches au premier plan.</sys:String>
+    <sys:String x:Key="wpbt_desc_sys">Empêche le firmware de votre ordinateur d'exécuter des programmes (comme les bloatwares constructeurs) lors du démarrage de Windows.</sys:String>
+    <sys:String x:Key="systemrestore_desc_sys">Désactive la Restauration du système. Non recommandé, car cela supprime la possibilité de revenir à un état précédent en cas de panne de votre système.</sys:String>
+    <sys:String x:Key="cortana_desc_sys">Désactive l'assistant virtuel Cortana. Peut avoir un impact sur la recherche vocale et certaines fonctionnalités de productivité.</sys:String>
+    <sys:String x:Key="windowsupdatesgroup_desc_sys">Configurez la manière dont Windows gère les mises à jour automatiques. Choisissez entre les mises à jour automatiques, uniquement de sécurité, manuelles ou complètement désactivées.</sys:String>
+    <sys:String x:Key="smartscreen_desc_sys">Désactive le filtre SmartScreen, qui vous avertit des applications et fichiers potentiellement dangereux. La désactivation augmente le risque d'infection par des logiciels malveillants.</sys:String>
     <!-- endregion System Page-->
 
     <!-- region Services Page -->
