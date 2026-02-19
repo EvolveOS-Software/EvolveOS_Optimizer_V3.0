@@ -15,6 +15,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly SystemDiagnostics _monitoringService = new SystemDiagnostics();
         private readonly WeatherService _weatherService = new WeatherService();
 
+        private DispatcherTimer? _statsTimer;
+        public int GpuUsageDisplay => HardwareData.Gpu.Usage;
+        public int GpuUsagePercentage => HardwareData.Gpu.Usage;
+
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue =
             Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
@@ -223,6 +227,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             LoadDisplayData();
             LoadDiskData();
 
+            SetupTimer();
+
             _ = InitializeAsync(_cts.Token);
         }
 
@@ -277,7 +283,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _displayData.Add(new HomePageModel { Name = "Type", Data = HardwareData.Memory.Type });
 
             _displayData.Add(new HomePageModel { Name = "CPU", Data = HardwareData.Processor.DetailedData });
-            _displayData.Add(new HomePageModel { Name = "GPU", Data = HardwareData.Graphics });
+            _displayData.Add(new HomePageModel { Name = "GPU", Data = HardwareData.Gpu.Data });
 
             LocalIP = new IPWrapper { Data = HardwareData.LocalIPAddress };
         }
@@ -314,7 +320,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (cpuItem != null) cpuItem.Data = HardwareData.Processor.DetailedData;
 
             var gpuItem = _displayData.FirstOrDefault(x => x.Name == "GPU");
-            if (gpuItem != null) gpuItem.Data = HardwareData.Graphics;
+            if (gpuItem != null)
+            {
+                gpuItem.Data = HardwareData.Gpu.Data;
+            }
 
             if (LocalIP.Data != HardwareData.LocalIPAddress)
             {
@@ -421,9 +430,42 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
         #endregion
 
+        #region Background Statistics Timer
+
+        private void SetupTimer()
+        {
+            _statsTimer?.Stop();
+
+            _statsTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+
+            _statsTimer.Tick += StatsTimer_Tick;
+            _statsTimer.Start();
+        }
+
+        private async void StatsTimer_Tick(object? sender, object? e)
+        {
+            await SystemDiagnostics.GetGpuUsage();
+
+            RefreshStats();
+
+            OnPropertyChanged(nameof(GpuUsageDisplay));
+        }
+
+        #endregion
+
         #region Disposal
         public override void Dispose()
         {
+            if (_statsTimer != null)
+            {
+                _statsTimer.Stop();
+                _statsTimer.Tick -= StatsTimer_Tick;
+                _statsTimer = null;
+            }
+
             try
             {
                 _cts.Cancel();

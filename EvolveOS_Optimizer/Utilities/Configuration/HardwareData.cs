@@ -32,6 +32,12 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             internal string L3CacheSize { get; set; } = string.Empty;
         }
 
+        internal sealed class GpuInfo
+        {
+            internal string Data { get; set; } = string.Empty;
+            internal int Usage { get; set; } = default;
+        }
+
         internal sealed class MemoryInfo
         {
             internal string Data { get; set; } = string.Empty;
@@ -49,6 +55,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal static BiosInfo Bios { get; set; } = new BiosInfo();
         internal static ProcessorInfo Processor { get; set; } = new ProcessorInfo();
         internal static string Motherboard { get; set; } = string.Empty;
+        internal static GpuInfo Gpu { get; set; } = new GpuInfo();
         internal static string Graphics { get; set; } = string.Empty;
         internal static MemoryInfo Memory { get; set; } = new MemoryInfo();
         internal static string Storage { get; set; } = string.Empty;

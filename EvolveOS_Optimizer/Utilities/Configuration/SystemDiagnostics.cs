@@ -23,6 +23,8 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         private static readonly HttpClient _updateClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
 
         private static readonly PerformanceCounter _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+        private static List<PerformanceCounter> _gpuCounters = new();
+        private static bool _gpuCountersInitialized = false;
 
         internal static bool IsElevated => IsRunningAsAdmin();
         internal static bool IsNeedUpdate { get; private set; } = false;
@@ -315,6 +317,56 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }
         }
 
+        public static async Task<int> GetGpuUsage()
+        {
+            try
+            {
+                if (!_gpuCountersInitialized)
+                {
+                    var category = new PerformanceCounterCategory("GPU Engine");
+                    var instanceNames = category.GetInstanceNames();
+
+                    foreach (var name in instanceNames)
+                    {
+                        if (name.EndsWith("engtype_3D"))
+                        {
+                            var counters = category.GetCounters(name);
+                            foreach (var counter in counters)
+                            {
+                                if (counter.CounterName == "Utilization Percentage")
+                                {
+                                    _gpuCounters.Add(counter);
+                                }
+                            }
+                        }
+                    }
+
+                    _gpuCounters.ForEach(x => x.NextValue());
+                    _gpuCountersInitialized = true;
+                }
+
+                if (_gpuCounters.Count == 0) return 0;
+
+                await Task.Delay(200);
+
+                float totalUsage = 0;
+                foreach (var counter in _gpuCounters)
+                {
+                    totalUsage += counter.NextValue();
+                }
+
+                int finalUsage = (int)Math.Clamp(totalUsage, 0, 100);
+
+                HardwareData.Gpu.Usage = finalUsage;
+
+                return finalUsage;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         private void GetGraphicsInfo()
         {
             lock (_wmiLock)
@@ -356,9 +408,14 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         gpuNumber++;
                     }
 
-                    Graphics = string.Join(Environment.NewLine, entries);
+                    HardwareData.Gpu.Data = entries.Count > 0
+                        ? string.Join(Environment.NewLine, entries)
+                        : "No GPU detected";
                 }
-                catch { Graphics = "Unavailable"; }
+                catch
+                {
+                    HardwareData.Gpu.Data = "Unavailable";
+                }
             }
         }
 

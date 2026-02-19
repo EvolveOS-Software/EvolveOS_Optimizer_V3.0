@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:anim="using:EvolveOS_Optimizer.Utilities.Animation"
+    xmlns:conv="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:num="using:System.Numerics" 
     xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
@@ -14,6 +15,8 @@
     mc:Ignorable="d" Background="Transparent" Unloaded="Page_Unloaded">
 
     <Page.Resources>
+        <conv:StringFormatConverter x:Key="StringFormatConverter" />
+        
         <SolidColorBrush x:Key="Brush_Accent" Color="{ThemeResource SystemAccentColor}"/>
         <SolidColorBrush x:Key="Brush_Inactive" Color="#808080"/>
         <SolidColorBrush x:Key="Brush_Highlighted" Color="White"/>
@@ -47,7 +50,7 @@
     <Grid>
         <StackPanel HorizontalAlignment="Stretch" 
                 VerticalAlignment="Top" 
-                Margin="0,20,0,0" 
+                Margin="0,0,0,0" 
                 Spacing="20">
 
             <Grid>
@@ -171,7 +174,7 @@
                 </StackPanel>
             </Grid>
 
-            <uc:DashboardFlowPanel x:Name="DashboardPanel" Grid.Column="1" Margin="5,2,0,13" HorizontalSpacing="10" VerticalSpacing="10">
+            <uc:DashboardFlowPanel x:Name="DashboardPanel" Grid.Column="1" Margin="0,2,0,13" HorizontalSpacing="10" VerticalSpacing="10">
 
                 <uc:DashboardFlowPanel.ChildrenTransitions>
                     <TransitionCollection>
@@ -386,6 +389,8 @@
                             <TextBlock Text="{helpers:ResourceString Key=title_cpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                         </StackPanel>
 
+                        <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                            
                         <TextBlock Text="{Binding [CPU].Data}"
                                    FontFamily="Jura Medium"
                                    FontWeight="Normal"
@@ -393,6 +398,8 @@
                                    Opacity="0.85"
                                    LineHeight="22"
                                    IsTextSelectionEnabled="True"/>
+                            
+                        </ScrollViewer>
                     </StackPanel>
                 </Border>
 
@@ -403,6 +410,8 @@
                             <TextBlock Text="{helpers:ResourceString Key=title_gpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                         </StackPanel>
 
+                        <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                            
                         <TextBlock Text="{Binding [GPU].Data}"
                                    FontFamily="Jura Medium"
                                    FontWeight="Normal"
@@ -410,6 +419,22 @@
                                    Opacity="0.85"
                                    LineHeight="22"
                                    IsTextSelectionEnabled="True"/>
+                            
+                        </ScrollViewer>
+
+                        <StackPanel Spacing="4" Margin="0,-3,0,0">
+                            <TextBlock Text="{helpers:ResourceString Key=title_gpu_liveinfo}" FontSize="12" Opacity="0.6"/>
+                            <Grid ColumnDefinitions="*, Auto">
+                                <ProgressBar Value="{Binding GpuUsageDisplay}"
+                                             Maximum="100"
+                                             VerticalAlignment="Center"
+                                             Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                <TextBlock Grid.Column="1"
+                                           FontFamily="Jura Medium"
+                                           Text="{Binding GpuUsageDisplay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}"
+                                           FontSize="12"/>
+                            </Grid>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 

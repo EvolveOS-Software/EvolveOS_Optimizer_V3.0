@@ -106,6 +106,7 @@
     <!-- Cpu/Gpu Card -->
     <sys:String x:Key="title_cpu_sysinfo">Informations CPU :</sys:String>
     <sys:String x:Key="title_gpu_sysinfo">Informations GPU :</sys:String>
+    <sys:String x:Key="title_gpu_liveinfo">Utilisation en direct :</sys:String>
 
     <!-- Memory Card -->
     <sys:String x:Key="title_ram_sysinfo">Mémoire :</sys:String>
