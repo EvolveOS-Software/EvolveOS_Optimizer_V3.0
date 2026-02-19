@@ -1,6 +1,4 @@
-using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Assets.Panels
@@ -65,6 +63,7 @@ namespace EvolveOS_Optimizer.Assets.Panels
                 double childHeight = child.DesiredSize.Height;
 
                 child.Arrange(new Rect(x, y, slotWidth, childHeight + Bleed));
+
                 AnimateChild(child, new Point(x, y));
 
                 colHeights[targetCol] += childHeight + VerticalSpacing;
@@ -75,23 +74,54 @@ namespace EvolveOS_Optimizer.Assets.Panels
 
         private void AnimateChild(UIElement child, Point newPos)
         {
-            Visual visual = ElementCompositionPreview.GetElementVisual(child);
-            Vector3 targetOffset = new Vector3((float)newPos.X, (float)newPos.Y, 0f);
+            if (child is not FrameworkElement element) return;
+
+            if (element.RenderTransform is not TransformGroup group)
+            {
+                group = new TransformGroup();
+                group.Children.Add(new TranslateTransform());
+                element.RenderTransform = group;
+            }
+
+            var trans = (TranslateTransform)group.Children[0];
 
             if (!_lastPos.ContainsKey(child))
             {
                 _lastPos[child] = newPos;
-                visual.Offset = targetOffset;
                 return;
             }
 
-            if (Math.Abs(_lastPos[child].X - newPos.X) < 0.5 && Math.Abs(_lastPos[child].Y - newPos.Y) < 0.5) return;
+            Point oldPos = _lastPos[child];
+
+            if (Math.Abs(oldPos.X - newPos.X) < 0.5 && Math.Abs(oldPos.Y - newPos.Y) < 0.5) return;
 
             _lastPos[child] = newPos;
-            var moveAnim = visual.Compositor.CreateVector3KeyFrameAnimation();
-            moveAnim.InsertKeyFrame(1.0f, targetOffset, visual.Compositor.CreateCubicBezierEasingFunction(new Vector2(0.4f, 0.0f), new Vector2(0.2f, 1.0f)));
-            moveAnim.Duration = TimeSpan.FromMilliseconds(450);
-            visual.StartAnimation("Offset", moveAnim);
+
+            double deltaX = oldPos.X - newPos.X + trans.X;
+            double deltaY = oldPos.Y - newPos.Y + trans.Y;
+
+            trans.X = deltaX;
+            trans.Y = deltaY;
+
+            Storyboard sb = new Storyboard();
+
+            DoubleAnimation animX = new DoubleAnimation { To = 0, Duration = TimeSpan.FromMilliseconds(450) };
+            DoubleAnimation animY = new DoubleAnimation { To = 0, Duration = TimeSpan.FromMilliseconds(450) };
+
+            var moveEase = new CubicEase { EasingMode = EasingMode.EaseOut };
+            animX.EasingFunction = moveEase;
+            animY.EasingFunction = moveEase;
+
+            Storyboard.SetTarget(animX, trans);
+            Storyboard.SetTargetProperty(animX, "X");
+
+            Storyboard.SetTarget(animY, trans);
+            Storyboard.SetTargetProperty(animY, "Y");
+
+            sb.Children.Add(animX);
+            sb.Children.Add(animY);
+
+            sb.Begin();
         }
     }
 }
