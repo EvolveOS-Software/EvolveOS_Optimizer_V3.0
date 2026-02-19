@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -9,7 +10,6 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.Win32;
-using Windows.ApplicationModel.DataTransfer;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -45,6 +45,7 @@ namespace EvolveOS_Optimizer.Pages
         private void HomePage_Loaded(object sender, RoutedEventArgs e)
         {
             ApplyElevationUI();
+            LoadWeather();
 
             var stats = GetCurrentNetworkBytes();
             _lastDownloadBytes = stats.Down;
@@ -91,7 +92,7 @@ namespace EvolveOS_Optimizer.Pages
 
             try
             {
-                Microsoft.Win32.SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
+                SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
             }
             catch (Exception ex)
             {
@@ -248,6 +249,21 @@ namespace EvolveOS_Optimizer.Pages
                 anim.InsertKeyFrame(1.0f, new System.Numerics.Vector3(0, 0, 0));
                 anim.Duration = TimeSpan.FromMilliseconds(200);
                 visual.StartAnimation("Translation", anim);
+            }
+        }
+
+        private void LoadWeather()
+        {
+            if (this.DataContext is HomePageViewModel vm)
+            {
+                if (GlobalAppData.PreloadedWeather != null)
+                {
+                    vm.UpdateWeatherData(GlobalAppData.PreloadedWeather);
+                }
+                else
+                {
+                    _ = vm.FetchWeatherAsync(vm.WeatherLocation);
+                }
             }
         }
 

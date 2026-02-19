@@ -42,7 +42,7 @@ namespace EvolveOS_Optimizer
             Win32Helper.LogProcessIntegrityLevel();
             Win32Helper.InitializeAdminDragDrop(_hWnd, RouteFilesToPage);
 
-            WindowHelper.RegisterMinWidthHeight(_hWnd, 700, 400);
+            WindowHelper.RegisterMinWidthHeight(_hWnd, 850, 400);
             UIHelper.RegisterPageTransition(ContentFrame, RootGrid);
 
             this.Activated += MainWindow_Activated;

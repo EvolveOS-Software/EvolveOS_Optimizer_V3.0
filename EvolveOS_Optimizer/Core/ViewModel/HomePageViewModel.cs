@@ -428,6 +428,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch { return "Paris"; }
         }
+
+        public void UpdateWeatherData(WeatherApiModels.WeatherData data)
+        {
+            this.WeatherTemperature = $"{data.TempC:F0}°";
+            this.WeatherDescription = data.Description;
+            this.CurrentWeatherIcon = data.CurrentIconUrl;
+
+            if (data.Forecast != null)
+            {
+                this.FiveDayForecast.Clear();
+                foreach (var item in data.Forecast)
+                {
+                    this.FiveDayForecast.Add(item);
+                }
+            }
+        }
         #endregion
 
         #region Background Statistics Timer

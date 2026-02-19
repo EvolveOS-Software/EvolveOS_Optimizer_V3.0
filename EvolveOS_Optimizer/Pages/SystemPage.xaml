@@ -313,7 +313,7 @@
 
                 </pa:SystemFlowPanel>
 
-                <TextBlock Text="{helpers:ResourceString Key=SystemPage_AdvancedOptimization}" Margin="5,15,0,0" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
+                <TextBlock Text="{helpers:ResourceString Key=SystemPage_AdvancedOptimization}" Margin="5,20,0,0" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
                 <pa:TweakFlowPanel ItemWidth="469" HorizontalSpacing="10" VerticalSpacing="10">
 
                     <ContentControl Style="{StaticResource SystemCardStyle}" Tag="CompressOSGroup" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82">

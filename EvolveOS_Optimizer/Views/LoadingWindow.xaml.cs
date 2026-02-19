@@ -1,3 +1,5 @@
+using System.Threading;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Animation;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -8,7 +10,6 @@ using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Animation;
-using System.Threading;
 using WinPoint = global::Windows.Graphics.PointInt32;
 using WinSize = global::Windows.Graphics.SizeInt32;
 
@@ -193,10 +194,17 @@ namespace EvolveOS_Optimizer.Views
                     await Task.Delay(400, token);
 
                     Report(20);
+
+                    using var weatherService = new WeatherService();
+
                     Parallel.Invoke(
                         () => ExecuteWithLogging(TrustedInstaller.StartTrustedInstallerService, nameof(TrustedInstaller.StartTrustedInstallerService)),
                         () => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus)),
                         () => ExecuteWithLogging(_systemDiagnostics.GetHardwareData, nameof(_systemDiagnostics.GetHardwareData)),
+                        () => {
+                            var weatherTask = weatherService.GetWeatherAsync(null, token);
+                            GlobalAppData.PreloadedWeather = weatherTask.GetAwaiter().GetResult();
+                        },
                         () => ExecuteAsyncWithLogging(() => _systemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(_systemDiagnostics.ValidateVersionUpdatesAsync)),
                         () => ExecuteWithLogging(_uninstallingPakages.GetInstalledPackages, nameof(_uninstallingPakages.GetInstalledPackages)),
                         () => ExecuteAsyncWithLogging(RunGuard.CheckingDefenderExclusions, nameof(RunGuard.CheckingDefenderExclusions)),
