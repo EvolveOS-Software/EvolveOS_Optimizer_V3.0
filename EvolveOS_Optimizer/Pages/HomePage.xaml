@@ -171,7 +171,7 @@
                 </StackPanel>
             </Grid>
 
-            <uc:DashboardFlowPanel x:Name="DashboardPanel" Grid.Column="1" Margin="5,2,0,13" HorizontalSpacing="20" VerticalSpacing="20">
+            <uc:DashboardFlowPanel x:Name="DashboardPanel" Grid.Column="1" Margin="5,2,0,13" HorizontalSpacing="20" VerticalSpacing="15">
 
                 <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
                     <Grid>
@@ -332,6 +332,44 @@
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource DashCard}" Height="220" Padding="15" Margin="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE964;" FontSize="18" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-5" FontFamily="Jura Medium" Text="{helpers:ResourceString Key=title_ram_sysinfo}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,0">
+                            <TextBlock Text="{Binding [Memory].Data}" 
+                                       Style="{StaticResource InfoValue}"
+                                       FontFamily="Jura Medium"
+                                       FontWeight="Normal"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,10"
+                                       PointerPressed="HandleCopyingData_PointerPressed" />
+
+                            <TextBlock Style="{StaticResource InfoLabel}"
+                                       Text="{helpers:ResourceString Key=title_mtype_sysinfo}"
+                                       FontFamily="Jura Medium"
+                                       FontWeight="SemiBold"
+                                       Margin="0,10,0,5"/>
+
+                            <TextBlock Text="{Binding [Type].Data}"
+                                       Style="{StaticResource InfoValue}"
+                                       FontFamily="Jura Medium"
+                                       FontWeight="Normal"
+                                       TextAlignment="Left"
+                                       PointerPressed="HandleCopyingData_PointerPressed" />
+                        </StackPanel>
                     </Grid>
                 </Border>
 

@@ -14,7 +14,6 @@ namespace EvolveOS_Optimizer.Assets.UserControl
     {
         private readonly Dictionary<UIElement, Point> _lastPos = new();
 
-        // 1. Fixed for WinUI 3: Replaced FrameworkPropertyMetadata with PropertyMetadata and a Callback
         public static readonly DependencyProperty HorizontalSpacingProperty = DependencyProperty.Register(
             nameof(HorizontalSpacing), typeof(double), typeof(DashboardFlowPanel),
             new PropertyMetadata(10.0, OnLayoutPropertyChanged));
@@ -35,7 +34,6 @@ namespace EvolveOS_Optimizer.Assets.UserControl
             set => SetValue(VerticalSpacingProperty, value);
         }
 
-        // This callback forces the panel to redraw if you change the spacing in XAML
         private static void OnLayoutPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is DashboardFlowPanel panel)
@@ -51,14 +49,12 @@ namespace EvolveOS_Optimizer.Assets.UserControl
         private const double SmallCardFixedUnitWidth = 356.0;
         private const double SmallCardFixedUnitHeight = 220.0;
 
-        // Added Bleed to protect drop shadows and rounded corners
         private const double Bleed = 10.0;
 
         private double _smallCardWidth = SmallCardFixedUnitWidth;
         private double _smallCardHeight = SmallCardFixedUnitHeight;
         private readonly List<bool[]> _cellOccupancy = new List<bool[]>();
 
-        // 2. Fixed for WinUI 3: Replaced InternalChildren with Children
         private UIElement? BigCard => Children.FirstOrDefault(c => c.Visibility == Visibility.Visible);
 
         private int CalculateTotalColumns(double availableWidth)
@@ -81,7 +77,7 @@ namespace EvolveOS_Optimizer.Assets.UserControl
             int totalColumns = CalculateTotalColumns(availableSize.Width);
 
             var bigCardWidth = (_smallCardWidth * LargeCardColumnSpan) + HorizontalSpacing;
-            var bigCardHeight = (_smallCardHeight * LargeCardRowSpan) + VerticalSpacing;
+            var bigCardHeight = ((_smallCardHeight * LargeCardRowSpan) + (VerticalSpacing * (LargeCardRowSpan - 1))) - 5.0;
 
             var bigCard = BigCard;
             if (bigCard != null)
@@ -114,7 +110,6 @@ namespace EvolveOS_Optimizer.Assets.UserControl
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            // 4. Fixed for WinUI 3: Replaced InternalChildren with Children
             var visibleChildren = Children.Where(c => c.Visibility != Visibility.Collapsed).ToList();
             if (visibleChildren.Count == 0)
             {
@@ -125,8 +120,8 @@ namespace EvolveOS_Optimizer.Assets.UserControl
             _smallCardWidth = SmallCardFixedUnitWidth;
             _smallCardHeight = SmallCardFixedUnitHeight;
 
-            var bigCardWidth = (_smallCardWidth * LargeCardColumnSpan) + HorizontalSpacing;
-            var bigCardHeight = (_smallCardHeight * LargeCardRowSpan) + VerticalSpacing;
+            var bigCardWidth = (_smallCardWidth * LargeCardColumnSpan) + (HorizontalSpacing * (LargeCardColumnSpan - 1));
+            var bigCardHeight = ((_smallCardHeight * LargeCardRowSpan) + (VerticalSpacing * (LargeCardRowSpan - 1))) - 5.0;
 
             int totalColumns = CalculateTotalColumns(finalSize.Width);
             _cellOccupancy.Clear();
@@ -165,7 +160,6 @@ namespace EvolveOS_Optimizer.Assets.UserControl
                     }
                 }
 
-                // Add Bleed to layout bounds
                 var rect = new Rect(0, 0, bigCardWidth + Bleed, bigCardHeight + Bleed);
                 bigCard.Arrange(rect);
                 AnimateChild(bigCard, new Point(0, 0));
@@ -200,7 +194,6 @@ namespace EvolveOS_Optimizer.Assets.UserControl
             return new Size(finalSize.Width, maxLayoutHeight + Bleed);
         }
 
-        // Smooth composition animations
         private void AnimateChild(UIElement child, Point newPos)
         {
             Visual visual = ElementCompositionPreview.GetElementVisual(child);

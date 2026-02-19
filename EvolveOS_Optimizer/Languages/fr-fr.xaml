@@ -103,6 +103,10 @@
     <sys:String x:Key="label_proc_sysinfo">Processus en cours :</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services :</sys:String>
 
+    <!-- Memory Card -->
+    <sys:String x:Key="title_ram_sysinfo">Mémoire :</sys:String>
+    <sys:String x:Key="title_mtype_sysinfo">Type de mémoire :</sys:String>
+
     <!-- Network Card -->
     <sys:String x:Key="title_netadapter_sysinfo">Adaptateurs réseau :</sys:String>
     <sys:String x:Key="title_ip_sysinfo">Adresse IP publique :</sys:String>

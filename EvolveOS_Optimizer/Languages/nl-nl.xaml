@@ -103,6 +103,10 @@
     <sys:String x:Key="label_proc_sysinfo">Actieve processen:</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services:</sys:String>
 
+    <!-- Memory Card -->
+    <sys:String x:Key="title_ram_sysinfo">Geheugen:</sys:String>
+    <sys:String x:Key="title_mtype_sysinfo">Geheugentype:</sys:String>
+
     <!-- Network Card -->
     <sys:String x:Key="title_netadapter_sysinfo">Netwerkadapters:</sys:String>
     <sys:String x:Key="title_ip_sysinfo">Publiek IP-adres:</sys:String>

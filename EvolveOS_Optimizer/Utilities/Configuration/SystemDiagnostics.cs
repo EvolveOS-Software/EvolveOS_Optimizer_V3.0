@@ -364,22 +364,53 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     using var results = searcher.Get();
                     var entries = new List<string>();
                     ulong totalCapacity = 0;
+                    int memoryTypeCode = 0;
 
                     foreach (ManagementObject managementObj in results)
                     {
                         ulong cap = Convert.ToUInt64(managementObj["Capacity"]);
                         totalCapacity += cap;
-                        string data = managementObj["Manufacturer"]?.ToString() ?? "Unknown RAM";
-                        string capacity = SizeCalculationHelper(cap);
-                        string speed = managementObj["Speed"]?.ToString() ?? "";
-                        entries.Add($"{data}, {capacity} @ {speed}MHz");
-                    }
-                    Memory.Data = string.Join(Environment.NewLine, entries);
 
-                    HardwareData.Memory.Total = totalCapacity / (1024.0 * 1024.0);
+                        string manufacturer = managementObj["Manufacturer"]?.ToString() ?? "Unknown";
+                        string capacity = SizeCalculationHelper(cap);
+                        string speed = managementObj["Speed"]?.ToString() ?? "0";
+
+                        entries.Add($"{manufacturer}, {capacity} @ {speed} MHz");
+
+                        if (memoryTypeCode == 0 && managementObj["SMBIOSMemoryType"] != null)
+                        {
+                            int.TryParse(managementObj["SMBIOSMemoryType"].ToString(), out memoryTypeCode);
+                        }
+                    }
+
+                    HardwareData.Memory.Data = string.Join(Environment.NewLine, entries);
+
+                    HardwareData.Memory.Total = totalCapacity / (1024.0 * 1024.0 * 1024.0);
+
+                    HardwareData.Memory.Type = MapSmbiosMemoryType(memoryTypeCode);
                 }
-                catch { Memory.Data = "Unavailable"; }
+                catch
+                {
+                    HardwareData.Memory.Data = "Unavailable";
+                    HardwareData.Memory.Type = "Unknown";
+                }
             }
+        }
+
+        private string MapSmbiosMemoryType(int code)
+        {
+            return code switch
+            {
+                20 => "DDR",
+                21 => "DDR2",
+                24 => "DDR3",
+                26 => "DDR4",
+                30 => "LPDDR4",
+                34 => "DDR5",
+                35 => "LPDDR5",
+                0 => "Unknown",
+                _ => $"DDR ({code})"
+            };
         }
 
         private string GetStorageDevices()

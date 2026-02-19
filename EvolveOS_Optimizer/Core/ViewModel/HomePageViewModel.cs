@@ -273,6 +273,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _displayData.Add(new HomePageModel { Name = "Network", Data = HardwareData.NetworkAdapter });
             _displayData.Add(new HomePageModel { Name = "IpAddress", Data = HardwareData.UserIPAddress });
 
+            _displayData.Add(new HomePageModel { Name = "Memory", Data = HardwareData.Memory.Data });
+            _displayData.Add(new HomePageModel { Name = "Type", Data = HardwareData.Memory.Type });
+
             LocalIP = new IPWrapper { Data = HardwareData.LocalIPAddress };
         }
 
@@ -297,6 +300,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             var ipItem = _displayData.FirstOrDefault(x => x.Name == "IpAddress");
             if (ipItem != null) ipItem.Data = HardwareData.UserIPAddress;
+
+            var memItem = _displayData.FirstOrDefault(x => x.Name == "Memory");
+            if (memItem != null) memItem.Data = HardwareData.Memory.Data;
+
+            var typeItem = _displayData.FirstOrDefault(x => x.Name == "Type");
+            if (typeItem != null) typeItem.Data = HardwareData.Memory.Type;
 
             if (LocalIP.Data != HardwareData.LocalIPAddress)
             {
