@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using EvolveOS_Optimizer.Core.Base;
-using Microsoft.UI.Xaml.Media;
 
 namespace EvolveOS_Optimizer.Core.Model
 {
@@ -10,7 +9,7 @@ namespace EvolveOS_Optimizer.Core.Model
         public class DailyForecast
         {
             public string? Day { get; set; }
-            public ImageSource? IconSource { get; set; }
+            public string? IconSource { get; set; } // Fixed: Changed back to string?
             public string? MaxTemp { get; set; }
             public string? MinTemp { get; set; }
         }
@@ -31,7 +30,7 @@ namespace EvolveOS_Optimizer.Core.Model
                 set { _tempC = value; OnPropertyChanged(); }
             }
 
-            public ImageSource? CurrentIconUrl { get; set; }
+            public string? CurrentIconUrl { get; set; } // Fixed: Changed back to string?
             public List<DailyForecast> Forecast { get; set; } = new List<DailyForecast>();
         }
 

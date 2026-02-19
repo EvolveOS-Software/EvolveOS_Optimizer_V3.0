@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
@@ -9,97 +9,112 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 {
     public partial class HomePageViewModel : ViewModelBase, IDisposable
     {
+        #region Fields
         private readonly HomePageModel _model = new HomePageModel();
         private readonly SystemDiagnostics _monitoringService = new SystemDiagnostics();
         private readonly WeatherService _weatherService = new WeatherService();
 
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-
         private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue =
             Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
-        #region Properties
-
         private ObservableCollection<HomePageModel> _displayData = new();
+        private ObservableCollection<DriveSpaceInfo> _diskDrives = new();
+        private ObservableCollection<DailyForecast> _fiveDayForecast = new ObservableCollection<DailyForecast>();
+        private ObservableCollection<string> _availableCities = new ObservableCollection<string>();
+
+        private string? _currentWeatherIcon = "ms-appx:///Assets/ImagePackages/Sunny.png";
+        private string _weatherDescription = "Loading...";
+        private string _weatherTemperature = "--°";
+        private string _weatherLocation;
+        private string _currentTime = "--:--";
+        private string _currentDate = "Loading...";
+        private double _downloadSpeed;
+        private double _uploadSpeed;
+        private ImageSource? _displayWallpaper;
+        #endregion
+
+        #region Properties
         public ObservableCollection<HomePageModel> DisplayData
         {
             get => _displayData;
             set { _displayData = value; OnPropertyChanged(); }
         }
 
-        private ObservableCollection<DriveSpaceInfo> _diskDrives = new();
         public ObservableCollection<DriveSpaceInfo> DiskDrives
         {
             get => _diskDrives;
             set { _diskDrives = value; OnPropertyChanged(); }
         }
 
-        private ImageSource _currentWeatherIcon = new BitmapImage(
-            new Uri("ms-appx:///Assets/ImagePackages/Sunny.png")
-        );
-        public ImageSource CurrentWeatherIcon
+        public string? CurrentWeatherIcon
         {
             get => _currentWeatherIcon;
             set { _currentWeatherIcon = value; OnPropertyChanged(); }
         }
 
-        private ObservableCollection<DailyForecast> _fiveDayForecast = new ObservableCollection<DailyForecast>();
         public ObservableCollection<DailyForecast> FiveDayForecast
         {
             get => _fiveDayForecast;
             set { _fiveDayForecast = value; OnPropertyChanged(); }
         }
 
-        private string _weatherDescription = "Loading...";
         public string WeatherDescription
         {
             get => _weatherDescription;
             set { _weatherDescription = value; OnPropertyChanged(); }
         }
 
-        private string _weatherTemperature = "--";
         public string WeatherTemperature
         {
             get => _weatherTemperature;
             set { _weatherTemperature = value; OnPropertyChanged(); }
         }
 
-        private string _weatherLocation;
         public string WeatherLocation
         {
             get => _weatherLocation;
-            set { _weatherLocation = value; OnPropertyChanged(); }
+            set
+            {
+                if (_weatherLocation != value)
+                {
+                    _weatherLocation = value;
+                    OnPropertyChanged();
+                    _ = FetchWeatherAsync(value, _cts.Token);
+                }
+            }
         }
 
-        private string _currentTime = "--:--";
+        public ObservableCollection<string> AvailableCities
+        {
+            get => _availableCities;
+            set { _availableCities = value; OnPropertyChanged(); }
+        }
+
         public string CurrentTime
         {
             get => _currentTime;
             set { _currentTime = value; OnPropertyChanged(); }
         }
 
-        private string _currentDate = "Loading...";
         public string CurrentDate
         {
             get => _currentDate;
             set { _currentDate = value; OnPropertyChanged(); }
         }
 
-        private double _downloadSpeed;
         public double DownloadSpeed
         {
             get => _downloadSpeed;
             set { _downloadSpeed = value; OnPropertyChanged(); }
         }
 
-        private double _uploadSpeed;
         public double UploadSpeed
         {
             get => _uploadSpeed;
             set { _uploadSpeed = value; OnPropertyChanged(); }
         }
 
-        private ImageSource? _displayWallpaper;
         public ImageSource? DisplayWallpaper
         {
             get
@@ -115,9 +130,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        public Visibility IpVisibility => SystemDiagnostics.isIPAddressFormatValid ? Visibility.Visible : Visibility.Collapsed;
-
-        #endregion
+        public Microsoft.UI.Xaml.Visibility IpVisibility => SystemDiagnostics.isIPAddressFormatValid ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
 
         public HomePageModel? this[string name]
         {
@@ -126,10 +139,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public HomePageViewModel OSInfo => this;
         public HomePageViewModel SystemStats => this;
+        #endregion
 
+        #region Constructor & Initialization
         public HomePageViewModel()
         {
-            _weatherLocation = "Paris";
+            AvailableCities = new ObservableCollection<string>
+            {
+                "New York", "Los Angeles", "Chicago", "Toronto", "Mexico City", "Vancouver", "Miami", "Houston",
+                "London", "Paris", "Berlin", "Amsterdam", "Rome", "Madrid", "Barcelona", "Moscow", "Istanbul",
+                "Vienna", "Saint Petersburg", "Dublin", "Zurich", "Lisbon",
+                "Tokyo", "Beijing", "Shanghai", "Seoul", "Delhi", "Mumbai", "Singapore", "Hong Kong", "Bangkok",
+                "Jakarta", "Manila", "Taipei", "Kuala Lumpur", "Riyadh", "Dubai", "Tel Aviv",
+                "Rio de Janeiro", "Sao Paulo", "Buenos Aires", "Lima", "Santiago", "Bogotá",
+                "Cairo", "Lagos", "Johannesburg", "Cape Town", "Nairobi", "Casablanca",
+                "Sydney", "Melbourne", "Auckland", "Perth", "Brisbane"
+            };
+
+            _weatherLocation = LoadLocationFromRegistry();
             _monitoringService.GetHardwareData();
 
             LoadDisplayData();
@@ -170,9 +197,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 Debug.WriteLine($"[HomePageVM] Unexpected error: {ex.Message}");
             }
-            // No finally block needed
         }
+        #endregion
 
+        #region System Data Management
         public void LoadDisplayData()
         {
             _displayData.Clear();
@@ -212,6 +240,28 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             CurrentDate = now.ToString("dddd, MMMM d");
         }
 
+        private void LoadDiskData()
+        {
+            // Populate disk data
+        }
+
+        public void RefreshWallpaper()
+        {
+            var wallpaperPath = _monitoringService.GetWallpaperPath();
+            if (string.IsNullOrEmpty(wallpaperPath)) return;
+
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                var bitmap = new BitmapImage();
+                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                bitmap.UriSource = new Uri(wallpaperPath);
+
+                DisplayWallpaper = bitmap;
+            });
+        }
+        #endregion
+
+        #region Weather Service
         public async Task FetchWeatherAsync(string? locationOverride = null, CancellationToken token = default)
         {
             try
@@ -239,6 +289,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     WeatherTemperature = data.TempC.ToString("F0") + "°";
                     WeatherLocation = loc;
 
+                    CurrentWeatherIcon = data.CurrentIconUrl;
+
                     if (data.Forecast != null)
                     {
                         FiveDayForecast.Clear();
@@ -255,30 +307,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Weather Error] {ex.Message}");
+                Debug.WriteLine($"[Weather Error] {ex.Message}");
             }
         }
 
-        private void LoadDiskData()
+        private string LoadLocationFromRegistry()
         {
-
-        }
-
-        public void RefreshWallpaper()
-        {
-            var wallpaperPath = _monitoringService.GetWallpaperPath();
-            if (string.IsNullOrEmpty(wallpaperPath)) return;
-
-            _dispatcherQueue.TryEnqueue(() =>
+            try
             {
-                var bitmap = new BitmapImage();
-                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                bitmap.UriSource = new Uri(wallpaperPath);
-
-                DisplayWallpaper = bitmap;
-            });
+                using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\EvolveOS_Optimizer");
+                string? saved = key?.GetValue("LastLocation") as string;
+                return !string.IsNullOrEmpty(saved) ? saved : "Paris";
+            }
+            catch { return "Paris"; }
         }
+        #endregion
 
+        #region Disposal
         public override void Dispose()
         {
             try
@@ -300,5 +345,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             Debug.WriteLine("[HomePageVM] ViewModel Disposed and Tasks Canceled.");
         }
+        #endregion
     }
 }

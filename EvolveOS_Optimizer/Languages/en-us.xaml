@@ -104,6 +104,16 @@
     <sys:String x:Key="label_proc_sysinfo">Running processes:</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services:</sys:String>
 
+    <!-- Weather Card -->
+    <sys:String x:Key="txt_header_weather_card">Time, Date, and Weather</sys:String>
+    <sys:String x:Key="txt_greeting_evening">Good Evening</sys:String>
+    <sys:String x:Key="txt_weather_forecast">5-Day Forecast</sys:String>
+    <sys:String x:Key="txt_select_location">Select Weather Location</sys:String>
+    <sys:String x:Key="btn_update_location">Update Location</sys:String>
+    <sys:String x:Key="txt_placeholder_location">e.g. Tokyo, JP</sys:String>
+    <sys:String x:Key="txt_placeholder_city">Select a city...</sys:String>
+
+
     <!-- Elevation Mode -->
     <sys:String x:Key="btn_restart_admin">Restart as Admin</sys:String>
     <sys:String x:Key="label_admin_notice">Run as Admin for full optimization (Services &amp; Memory)</sys:String>
@@ -764,7 +774,7 @@
     <sys:String x:Key="tgl20_desc_conf">The Intel module, which operates in the background to collect and transmit data, is positioned as a tool for improving the company’s products. However, for the average user it provides little practical benefit, and disabling this feature can reduce background activity and prevent unnecessary data transmission.</sys:String>
     <!-- endregion Privacy Page -->
 
-    <!--#region Scripts Page -->
+    <!-- region Scripts Page -->
     <sys:String x:Key="btn_open_dir">Open Directory</sys:String>
     <sys:String x:Key="btn_refresh">Refresh List</sys:String>
     <sys:String x:Key="chk_run_ti_scripts">Run as TrustedInstaller</sys:String>
@@ -789,6 +799,6 @@
     <sys:String x:Key="text_drop_zone_info">Drop folder or scripts here</sys:String>
     <sys:String x:Key="tt_doubletapped_script">Double-click to run script</sys:String>
     <sys:String x:Key="warn_invalid_script_ext">One or files were ignored. Supported types: .ps1, .bat, .cmd, .reg</sys:String>
-    <!--#endregion-->
+    <!-- endregion Scripts Page -->
 
 </ResourceDictionary>

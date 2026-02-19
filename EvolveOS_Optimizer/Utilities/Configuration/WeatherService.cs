@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
-
 using static EvolveOS_Optimizer.Core.Model.WeatherApiModels;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
@@ -34,19 +33,14 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             try
             {
                 using var response = await _client.GetAsync(url, token);
-
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync(token);
-
                 if (token.IsCancellationRequested) return null!;
 
                 var apiResponse = JsonSerializer.Deserialize<ApiWeatherResponse>(content);
 
-                if (apiResponse == null)
-                {
-                    return GetMockWeatherData();
-                }
+                if (apiResponse == null) return GetMockWeatherData();
 
                 if (apiResponse.Location?.Name != null)
                 {
@@ -67,36 +61,23 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }
         }
 
-        private ImageSource? GetImageSourceFromUrl(string? url)
+        private string GetLocalIconPath(string? conditionText)
         {
-            if (string.IsNullOrEmpty(url)) return null;
+            if (string.IsNullOrEmpty(conditionText))
+                return "ms-appx:///Assets/ImagePackages/Sunny.png";
 
-            if (!url.StartsWith("https:"))
-            {
-                url = url.Replace("http:", "https:").Replace("//", "https://");
-            }
+            string lower = conditionText.ToLowerInvariant();
 
-            try
-            {
-                return new BitmapImage(new Uri(url));
-            }
-            catch
-            {
-                return null;
-            }
-        }
+            if (lower.Contains("rain") || lower.Contains("drizzle") || lower.Contains("shower") || lower.Contains("snow") || lower.Contains("sleet"))
+                return "ms-appx:///Assets/ImagePackages/Rain.png";
 
-        private ImageSource? GetLocalImage(string path)
-        {
-            try
-            {
-                return new BitmapImage(new Uri(path));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Local Image Load Failed: {ex.Message}");
-                return null;
-            }
+            if (lower.Contains("cloud") || lower.Contains("overcast") || lower.Contains("fog"))
+                return "ms-appx:///Assets/ImagePackages/Cloudy.png";
+
+            if (lower.Contains("wind") || lower.Contains("storm") || lower.Contains("blizzard"))
+                return "ms-appx:///Assets/ImagePackages/Wind.png";
+
+            return "ms-appx:///Assets/ImagePackages/Sunny.png";
         }
 
         private WeatherData MapApiToUiModel(ApiWeatherResponse apiResponse)
@@ -105,7 +86,8 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 TempC = apiResponse.Current?.TempC ?? 0,
                 Description = apiResponse.Current?.Condition?.Text ?? "Unknown",
-                CurrentIconUrl = GetImageSourceFromUrl(apiResponse.Current?.Condition?.Icon)
+
+                CurrentIconUrl = GetLocalIconPath(apiResponse.Current?.Condition?.Text)
             };
 
             if (apiResponse.Forecast?.ForecastDay != null)
@@ -117,7 +99,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         uiModel.Forecast.Add(new DailyForecast
                         {
                             Day = date.DayOfWeek.ToString().Substring(0, 3).ToUpper(),
-                            IconSource = GetImageSourceFromUrl(apiDay.Day?.Condition?.Icon),
+                            IconSource = GetLocalIconPath(apiDay.Day?.Condition?.Text),
                             MaxTemp = $"{apiDay.Day?.MaxTempC ?? 0:F0}°",
                             MinTemp = $"{apiDay.Day?.MinTempC ?? 0:F0}°"
                         });
@@ -136,14 +118,14 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 TempC = 25,
                 Description = "Partly Cloudy",
-                CurrentIconUrl = GetLocalImage(BasePath + "Cloudy.png"),
+                CurrentIconUrl = BasePath + "Cloudy.png",
                 Forecast = new List<DailyForecast>
                 {
-                    new DailyForecast { Day = "MON", IconSource = GetLocalImage(BasePath + "Sunny.png"), MaxTemp = "25°", MinTemp = "18°" },
-                    new DailyForecast { Day = "TUE", IconSource = GetLocalImage(BasePath + "Cloudy.png"), MaxTemp = "22°", MinTemp = "16°" },
-                    new DailyForecast { Day = "WED", IconSource = GetLocalImage(BasePath + "Rain.png"), MaxTemp = "19°", MinTemp = "14°" },
-                    new DailyForecast { Day = "THU", IconSource = GetLocalImage(BasePath + "Wind.png"), MaxTemp = "21°", MinTemp = "15°" },
-                    new DailyForecast { Day = "FRI", IconSource = GetLocalImage(BasePath + "Sunny.png"), MaxTemp = "24°", MinTemp = "17°" }
+                    new DailyForecast { Day = "MON", IconSource = BasePath + "Sunny.png", MaxTemp = "25°", MinTemp = "18°" },
+                    new DailyForecast { Day = "TUE", IconSource = BasePath + "Cloudy.png", MaxTemp = "22°", MinTemp = "16°" },
+                    new DailyForecast { Day = "WED", IconSource = BasePath + "Rain.png", MaxTemp = "19°", MinTemp = "14°" },
+                    new DailyForecast { Day = "THU", IconSource = BasePath + "Wind.png", MaxTemp = "21°", MinTemp = "15°" },
+                    new DailyForecast { Day = "FRI", IconSource = BasePath + "Sunny.png", MaxTemp = "24°", MinTemp = "17°" }
                 }
             };
         }

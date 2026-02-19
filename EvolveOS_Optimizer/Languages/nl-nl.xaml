@@ -103,6 +103,15 @@
     <sys:String x:Key="label_proc_sysinfo">Actieve processen:</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services:</sys:String>
 
+    <!-- Weather Card -->
+    <sys:String x:Key="txt_header_weather_card">Tijd, Datum en Weer</sys:String>
+    <sys:String x:Key="txt_greeting_evening">Goedenavond</sys:String>
+    <sys:String x:Key="txt_weather_forecast">5-daagse weersverwachting</sys:String>
+    <sys:String x:Key="txt_select_location">Selecteer weerlocatie</sys:String>
+    <sys:String x:Key="btn_update_location">Locatie bijwerken</sys:String>
+    <sys:String x:Key="txt_placeholder_location">bijv. Tokio, JP</sys:String>
+    <sys:String x:Key="txt_placeholder_city">Selecteer een stad...</sys:String>
+
     <!-- Elevation Mode -->
     <sys:String x:Key="btn_restart_admin">Opnieuw opstarten als Admin</sys:String>
     <sys:String x:Key="label_admin_notice">Voer uit als Admin voor volledige optimalisatie (Services &amp; Geheugen)</sys:String>

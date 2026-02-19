@@ -103,6 +103,15 @@
     <sys:String x:Key="label_proc_sysinfo">Processus en cours :</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services :</sys:String>
 
+    <!-- Weather Card -->
+    <sys:String x:Key="txt_header_weather_card">Heure, Date et Météo</sys:String>
+    <sys:String x:Key="txt_greeting_evening">Bonsoir</sys:String>
+    <sys:String x:Key="txt_weather_forecast">Prévisions sur 5 jours</sys:String>
+    <sys:String x:Key="txt_select_location">Sélectionner le lieu</sys:String>
+    <sys:String x:Key="btn_update_location">Mettre à jour le lieu</sys:String>
+    <sys:String x:Key="txt_placeholder_location">ex: Tokyo, JP</sys:String>
+    <sys:String x:Key="txt_placeholder_city">Sélectionnez une ville...</sys:String>
+
     <!-- Elevation Mode -->
     <sys:String x:Key="btn_restart_admin">Redémarrer en tant qu'Admin</sys:String>
     <sys:String x:Key="label_admin_notice">Exécuter en tant qu'administrateur pour une optimisation complète (Services et Mémoire)</sys:String>

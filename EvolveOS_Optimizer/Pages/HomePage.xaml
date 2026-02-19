@@ -7,8 +7,42 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:anim="using:EvolveOS_Optimizer.Utilities.Animation"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
-    xmlns:num="using:System.Numerics" NavigationCacheMode="Disabled"
+    xmlns:num="using:System.Numerics" 
+    xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
+    xmlns:ui="using:CommunityToolkit.WinUI.Controls"
+    NavigationCacheMode="Disabled"
     mc:Ignorable="d" Background="Transparent" Unloaded="Page_Unloaded">
+
+    <Page.Resources>
+        <SolidColorBrush x:Key="Brush_Accent" Color="{ThemeResource SystemAccentColor}"/>
+        <SolidColorBrush x:Key="Brush_Inactive" Color="#808080"/>
+        <SolidColorBrush x:Key="Brush_Highlighted" Color="White"/>
+
+        <Style x:Key="DashCard" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="CardTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Padding" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="InfoLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style x:Key="InfoValue" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </Page.Resources>
 
     <Grid>
         <StackPanel HorizontalAlignment="Stretch" 
@@ -103,7 +137,7 @@
 
                         <Viewbox Width="100" Height="100">
                             <ProgressRing x:Name="DownLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" 
-                              Foreground="#00bfff"/>
+                               Foreground="#00bfff"/>
                         </Viewbox>
 
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -122,7 +156,7 @@
 
                         <Viewbox Width="100" Height="100">
                             <ProgressRing x:Name="UpLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" 
-                              Foreground="#ff9f1c"/>
+                               Foreground="#ff9f1c"/>
                         </Viewbox>
 
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -136,6 +170,165 @@
                     </Grid>
                 </StackPanel>
             </Grid>
+
+            <uc:DashboardFlowPanel x:Name="DashboardPanel" Grid.Column="1" Margin="5,2,0,13" HorizontalSpacing="10" VerticalSpacing="10">
+                <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Style="{StaticResource CardTitle}" FontFamily="Jura Medium" Text="{helpers:ResourceString Key=txt_header_weather_card}" FontSize="22" Margin="0,0,0,15"/>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="290"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0" VerticalAlignment="Top">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Row="0" VerticalAlignment="Top" Margin="0, 10, 0, 10">
+                                        <TextBlock Text="{Binding CurrentTime}"
+                                                   FontSize="82"
+                                                   FontFamily="{ThemeResource Jura}"
+                                                   Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                   HorizontalAlignment="Left"/>
+
+                                        <TextBlock Text="{Binding CurrentDate}"
+                                                   FontSize="18"
+                                                   FontFamily="{ThemeResource Jura}"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                   Margin="5,0,0,0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Vertical" Margin="0,-35,0,0">
+                                        <Grid HorizontalAlignment="Right">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Image Grid.Column="0"
+                                                   Source="{Binding CurrentWeatherIcon}"
+                                                   Width="70"
+                                                   Height="70"
+                                                   Stretch="Uniform"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,10,0"/>
+
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding WeatherTemperature}"
+                                                           FontFamily="Jura Medium"
+                                                           Style="{StaticResource InfoValue}"
+                                                           FontSize="48"
+                                                           FontWeight="Bold"
+                                                           Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                           Margin="0,-5,0,0"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <StackPanel HorizontalAlignment="Right">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+
+                                                <TextBlock Text="{Binding WeatherLocation}"
+                                                           Style="{StaticResource InfoValue}"
+                                                           FontFamily="Jura Medium"
+                                                           FontSize="18"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{StaticResource Brush_Highlighted}"
+                                                           VerticalAlignment="Center"/>
+
+                                                <Button x:Name="LocationButton"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Padding="6"
+                                                        ToolTipService.ToolTip="{helpers:ResourceString Key=txt_select_location}">
+                                                    <Button.Flyout>
+                                                        <Flyout x:Name="LocationFlyout">
+                                                            <StackPanel Spacing="12" MinWidth="220">
+                                                                <TextBlock Text="{helpers:ResourceString Key=txt_select_location}"  Style="{StaticResource BodyStrongTextBlockStyle}"/>
+
+                                                                <ComboBox x:Name="CityPicker"
+                                                                          ItemsSource="{Binding AvailableCities}"
+                                                                          HorizontalAlignment="Stretch"
+                                                                          PlaceholderText="{helpers:ResourceString Key=txt_placeholder_city}"
+                                                                          SelectionChanged="CityPicker_SelectionChanged"/>
+
+                                                                <TextBlock Text="Or enter custom:" Style="{StaticResource CaptionTextBlockStyle}"/>
+
+                                                                <TextBox x:Name="CustomLocationBox" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_location}" KeyDown="CustomLocationBox_KeyDown"/>
+
+                                                                <Button Content="{helpers:ResourceString Key=btn_update_location}"
+                                                                        HorizontalAlignment="Stretch"
+                                                                        Style="{StaticResource AccentButtonStyle}"
+                                                                        Click="UpdateLocation_Click"/>
+                                                            </StackPanel>
+                                                        </Flyout>
+                                                    </Button.Flyout>
+                                                    <SymbolIcon Symbol="Map" Foreground="{ThemeResource Brush_Inactive}"/>
+                                                </Button>
+                                            </StackPanel>
+
+                                            <TextBlock Text="{Binding WeatherDescription}"
+                                                       Style="{StaticResource InfoValue}"
+                                                       FontFamily="Jura Medium"
+                                                       FontSize="16"
+                                                       Foreground="{StaticResource Brush_Highlighted}"
+                                                       HorizontalAlignment="Right"
+                                                       Margin="0,5,30,0"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+
+                                <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="0, 0, 0, -5">
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_weather_forecast}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" FontSize="16" Margin="0, 10, 0, 5"/>
+                                    <ItemsControl ItemsSource="{Binding FiveDayForecast}" HorizontalAlignment="Stretch">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <ui:UniformGrid Rows="1" Columns="5" HorizontalAlignment="Stretch"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                                    <TextBlock Text="{Binding Day}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                                    <Image Source="{Binding IconSource}" Width="32" Height="32" Margin="0, 5, 0, 0" />
+                                                    <TextBlock Text="{Binding MaxTemp}" Style="{StaticResource InfoValue}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                                    <TextBlock Text="{Binding MinTemp}" Style="{StaticResource InfoLabel}" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Grid>
+
+                            <Border Grid.Column="1" Width="1" Background="{StaticResource Brush_Inactive}" Opacity="0.3" Margin="10,0,20,0"/>
+
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <CalendarView VerticalAlignment="Center" 
+                                              Background="Transparent" 
+                                              MinWidth="230" 
+                                              Margin="-10,0,-5,0" 
+                                              HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </uc:DashboardFlowPanel>
 
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                 <Border x:Name="AdminWarningBanner"
