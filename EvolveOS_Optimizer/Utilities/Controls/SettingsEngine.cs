@@ -32,7 +32,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableHoverGlow"] = true,
             ["EnableSelectionGlow"] = true,
             ["ScriptsPath"] = string.Empty,
-            ["AllScriptsPaths"] = string.Empty
+            ["AllScriptsPaths"] = string.Empty,
+            ["EnableIpBlur"] = true
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -69,6 +70,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 ChangingParameters("AllScriptsPaths", serialized);
             }
         }
+        internal static bool IsHiddenIpAddress { get => (bool)_cachedSettings["EnableIpBlur"]; set => ChangingParameters("EnableIpBlur", value); }
 
         private static void ChangingParameters(string key, object value)
         {

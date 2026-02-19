@@ -103,6 +103,11 @@
     <sys:String x:Key="label_proc_sysinfo">Processus en cours :</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services :</sys:String>
 
+    <!-- Network Card -->
+    <sys:String x:Key="title_netadapter_sysinfo">Adaptateurs réseau :</sys:String>
+    <sys:String x:Key="title_ip_sysinfo">Adresse IP publique :</sys:String>
+    <sys:String x:Key="title_localip_sysinfo">Adresse IP locale :</sys:String>
+
     <!-- Weather Card -->
     <sys:String x:Key="txt_header_weather_card">Heure, Date et Météo</sys:String>
     <sys:String x:Key="txt_greeting_evening">Bonsoir</sys:String>

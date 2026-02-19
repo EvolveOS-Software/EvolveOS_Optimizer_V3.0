@@ -450,9 +450,17 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             try
             {
                 var host = Dns.GetHostEntry(Dns.GetHostName());
-                return host.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork)?.ToString() ?? "127.0.0.1";
+                string ip = host.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork)?.ToString() ?? "127.0.0.1";
+
+                HardwareData.LocalIPAddress = ip;
+
+                return ip;
             }
-            catch { return "0.0.0.0"; }
+            catch
+            {
+                HardwareData.LocalIPAddress = "0.0.0.0";
+                return "0.0.0.0";
+            }
         }
 
         internal async Task GetUserIpAddress(CancellationToken token = default)

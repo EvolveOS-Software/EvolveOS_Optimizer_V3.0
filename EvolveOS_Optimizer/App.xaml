@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="ms-appx:///Assets/DrawingImages/SystemInfo.xaml" />
                 <ResourceDictionary Source="ms-appx:///Styles/Themes/Colors.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Buttons/RadioButtons.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Styles/Buttons/ToggleButtons.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Display/Cards.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Display/TextBlock.xaml"/>
             </ResourceDictionary.MergedDictionaries>

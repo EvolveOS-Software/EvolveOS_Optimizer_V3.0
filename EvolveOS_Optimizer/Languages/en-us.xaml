@@ -104,6 +104,11 @@
     <sys:String x:Key="label_proc_sysinfo">Running processes:</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services:</sys:String>
 
+    <!-- Network Card -->
+    <sys:String x:Key="title_netadapter_sysinfo">Network adapters:</sys:String>
+    <sys:String x:Key="title_ip_sysinfo">Public IP address:</sys:String>
+    <sys:String x:Key="title_localip_sysinfo">Local IP address:</sys:String>
+
     <!-- Weather Card -->
     <sys:String x:Key="txt_header_weather_card">Time, Date, and Weather</sys:String>
     <sys:String x:Key="txt_greeting_evening">Good Evening</sys:String>

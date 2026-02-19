@@ -3,10 +3,13 @@ using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.Win32;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -68,6 +71,14 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
             SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
+
+            StartShimmer(IpShimmerBrush, "Stop2");
+            StartShimmer(LocalIpShimmerBrush, "LocalStop2");
+
+            if (this.DataContext is HomePageViewModel vm)
+            {
+                UpdateIpPrivacy(vm.StateButtonVision);
+            }
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
@@ -363,6 +374,66 @@ namespace EvolveOS_Optimizer.Pages
             {
                 _dispatcherQueue.TryEnqueue(() => (this.DataContext as HomePageViewModel)?.RefreshWallpaper());
             }
+        }
+        #endregion
+
+        #region Privacy & Masking Logic
+        private void BtnVision_PreviewKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Space || e.Key == Windows.System.VirtualKey.Enter)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void BtnVision_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleButton btn)
+            {
+                UpdateIpPrivacy(btn.IsChecked ?? false);
+            }
+        }
+
+        private void UpdateIpPrivacy(bool showText)
+        {
+            float targetOpacity = showText ? 0.0f : 1.0f;
+
+            AnimateMaskOpacity(IpBlurMask, targetOpacity);
+            AnimateMaskOpacity(LocalIpBlurMask, targetOpacity);
+        }
+
+        private void AnimateMaskOpacity(Border? mask, float targetOpacity)
+        {
+            if (mask == null) return;
+
+            var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(mask);
+            var compositor = visual.Compositor;
+
+            var animation = compositor.CreateScalarKeyFrameAnimation();
+            animation.InsertKeyFrame(1.0f, targetOpacity);
+            animation.Duration = TimeSpan.FromMilliseconds(250);
+
+            visual.StartAnimation("Opacity", animation);
+        }
+
+        private void StartShimmer(LinearGradientBrush brush, string stopName)
+        {
+            Storyboard storyboard = new Storyboard();
+
+            DoubleAnimation animation = new DoubleAnimation
+            {
+                From = -0.5,
+                To = 1.5,
+                Duration = new Duration(TimeSpan.FromSeconds(2)),
+                RepeatBehavior = RepeatBehavior.Forever,
+                AutoReverse = false
+            };
+
+            Storyboard.SetTarget(animation, brush.GradientStops[1]);
+            Storyboard.SetTargetProperty(animation, "Offset");
+
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
         }
         #endregion
     }

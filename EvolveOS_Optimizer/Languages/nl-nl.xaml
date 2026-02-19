@@ -103,6 +103,11 @@
     <sys:String x:Key="label_proc_sysinfo">Actieve processen:</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services:</sys:String>
 
+    <!-- Network Card -->
+    <sys:String x:Key="title_netadapter_sysinfo">Netwerkadapters:</sys:String>
+    <sys:String x:Key="title_ip_sysinfo">Publiek IP-adres:</sys:String>
+    <sys:String x:Key="title_localip_sysinfo">Lokaal IP-adres:</sys:String>
+
     <!-- Weather Card -->
     <sys:String x:Key="txt_header_weather_card">Tijd, Datum en Weer</sys:String>
     <sys:String x:Key="txt_greeting_evening">Goedenavond</sys:String>

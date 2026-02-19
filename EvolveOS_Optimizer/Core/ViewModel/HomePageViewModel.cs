@@ -1,9 +1,10 @@
 using System.Collections.ObjectModel;
+using System.Threading;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
+using EvolveOS_Optimizer.Utilities.Controls;
 using static EvolveOS_Optimizer.Core.Model.WeatherApiModels;
-using System.Threading;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -130,6 +131,64 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
+        public class IPWrapper
+        {
+            public string Data { get; set; } = "0.0.0.0";
+        }
+
+        private IPWrapper _localIP = new IPWrapper();
+        public IPWrapper LocalIP
+        {
+            get => _localIP;
+            set
+            {
+                if (_localIP == value) return;
+                _localIP = value;
+                OnPropertyChanged(nameof(LocalIP));
+            }
+        }
+
+        public Visibility SetVisibility
+        {
+            get => _model.IpVisibility;
+            set
+            {
+                if (_model.IpVisibility != value)
+                {
+                    _model.IpVisibility = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int SetBlurValue
+        {
+            get => _model.BlurValue;
+            set
+            {
+                if (_model.BlurValue != value)
+                {
+                    _model.BlurValue = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool StateButtonVision
+        {
+            get => SettingsEngine.IsHiddenIpAddress;
+            set
+            {
+                if (SettingsEngine.IsHiddenIpAddress != value)
+                {
+                    SettingsEngine.IsHiddenIpAddress = value;
+
+                    SetBlurValue = value ? 0 : 20;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public Microsoft.UI.Xaml.Visibility IpVisibility => SystemDiagnostics.isIPAddressFormatValid ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
 
         public HomePageModel? this[string name]
@@ -158,6 +217,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _weatherLocation = LoadLocationFromRegistry();
             _monitoringService.GetHardwareData();
+
+            LocalIP = new IPWrapper { Data = _monitoringService.GetDefaultLocalIP() };
 
             LoadDisplayData();
             LoadDiskData();
@@ -208,6 +269,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _displayData.Add(new HomePageModel { Name = "OSVersion", Data = HardwareData.OS.Version });
             _displayData.Add(new HomePageModel { Name = "Processes", Data = HardwareData.RunningProcessesCount });
             _displayData.Add(new HomePageModel { Name = "Services", Data = HardwareData.RunningServicesCount });
+
+            _displayData.Add(new HomePageModel { Name = "Network", Data = HardwareData.NetworkAdapter });
+            _displayData.Add(new HomePageModel { Name = "IpAddress", Data = HardwareData.UserIPAddress });
+
+            LocalIP = new IPWrapper { Data = HardwareData.LocalIPAddress };
         }
 
         public void RefreshStats()
@@ -225,6 +291,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             var svc = _displayData.FirstOrDefault(x => x.Name == "Services");
             if (svc != null) svc.Data = HardwareData.RunningServicesCount;
+
+            var netItem = _displayData.FirstOrDefault(x => x.Name == "Network");
+            if (netItem != null) netItem.Data = HardwareData.NetworkAdapter;
+
+            var ipItem = _displayData.FirstOrDefault(x => x.Name == "IpAddress");
+            if (ipItem != null) ipItem.Data = HardwareData.UserIPAddress;
+
+            if (LocalIP.Data != HardwareData.LocalIPAddress)
+            {
+                LocalIP = new IPWrapper { Data = HardwareData.LocalIPAddress };
+            }
+
+            OnPropertyChanged(nameof(IpVisibility));
+            OnPropertyChanged("Item[]");
         }
 
         private void UpdateNetworkSpeed()
@@ -346,5 +426,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             Debug.WriteLine("[HomePageVM] ViewModel Disposed and Tasks Canceled.");
         }
         #endregion
+
+        private void UpdateModelData(string name, string newData)
+        {
+            var item = _displayData.FirstOrDefault(x => x.Name == name);
+            if (item != null && item.Data != newData)
+            {
+                item.Data = newData;
+                OnPropertyChanged("Item[]");
+            }
+        }
     }
 }
