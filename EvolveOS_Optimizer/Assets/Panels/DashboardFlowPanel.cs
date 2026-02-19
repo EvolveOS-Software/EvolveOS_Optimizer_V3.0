@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Windows.Foundation;
 
@@ -49,7 +44,7 @@ namespace EvolveOS_Optimizer.Assets.UserControl
         private const double SmallCardFixedUnitWidth = 356.0;
         private const double SmallCardFixedUnitHeight = 220.0;
 
-        private const double Bleed = 10.0;
+        private const double Bleed = 0;
 
         private double _smallCardWidth = SmallCardFixedUnitWidth;
         private double _smallCardHeight = SmallCardFixedUnitHeight;
@@ -77,7 +72,7 @@ namespace EvolveOS_Optimizer.Assets.UserControl
             int totalColumns = CalculateTotalColumns(availableSize.Width);
 
             var bigCardWidth = (_smallCardWidth * LargeCardColumnSpan) + HorizontalSpacing;
-            var bigCardHeight = ((_smallCardHeight * LargeCardRowSpan) + (VerticalSpacing * (LargeCardRowSpan - 1))) - 5.0;
+            var bigCardHeight = ((_smallCardHeight * LargeCardRowSpan) + (VerticalSpacing * (LargeCardRowSpan - 1)));
 
             var bigCard = BigCard;
             if (bigCard != null)
@@ -121,7 +116,7 @@ namespace EvolveOS_Optimizer.Assets.UserControl
             _smallCardHeight = SmallCardFixedUnitHeight;
 
             var bigCardWidth = (_smallCardWidth * LargeCardColumnSpan) + (HorizontalSpacing * (LargeCardColumnSpan - 1));
-            var bigCardHeight = ((_smallCardHeight * LargeCardRowSpan) + (VerticalSpacing * (LargeCardRowSpan - 1))) - 5.0;
+            var bigCardHeight = ((_smallCardHeight * LargeCardRowSpan) + (VerticalSpacing * (LargeCardRowSpan - 1)));
 
             int totalColumns = CalculateTotalColumns(finalSize.Width);
             _cellOccupancy.Clear();

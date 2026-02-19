@@ -171,7 +171,7 @@
                 </StackPanel>
             </Grid>
 
-            <uc:DashboardFlowPanel x:Name="DashboardPanel" Grid.Column="1" Margin="5,2,0,13" HorizontalSpacing="20" VerticalSpacing="15">
+            <uc:DashboardFlowPanel x:Name="DashboardPanel" Grid.Column="1" Margin="5,2,0,13" HorizontalSpacing="10" VerticalSpacing="10">
 
                 <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
                     <Grid>
