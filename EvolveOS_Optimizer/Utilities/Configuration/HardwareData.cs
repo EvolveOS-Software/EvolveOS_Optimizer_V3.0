@@ -1,5 +1,3 @@
-using Microsoft.UI.Xaml.Media;
-
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
     internal class HardwareData
@@ -25,6 +23,13 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             internal double Usage { get; set; } = default;
             internal string Cores { get; set; } = string.Empty;
             internal string Threads { get; set; } = string.Empty;
+            internal string DetailedData { get; set; } = string.Empty;
+            internal string Manufacturer { get; set; } = string.Empty;
+            internal string Architecture { get; set; } = string.Empty;
+            internal string MaxClockSpeed { get; set; } = string.Empty;
+            internal string SocketDesignation { get; set; } = string.Empty;
+            internal string L2CacheSize { get; set; } = string.Empty;
+            internal string L3CacheSize { get; set; } = string.Empty;
         }
 
         internal sealed class MemoryInfo

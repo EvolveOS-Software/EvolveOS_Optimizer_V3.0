@@ -285,14 +285,31 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 try
                 {
-                    using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Name, NumberOfCores, NumberOfLogicalProcessors from Win32_Processor", new System.Management.EnumerationOptions { ReturnImmediately = true });
+                    using var searcher = new ManagementObjectSearcher(@"root\cimv2",
+                        "select Name, Manufacturer, Architecture, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, SocketDesignation, L2CacheSize, L3CacheSize from Win32_Processor",
+                        new System.Management.EnumerationOptions { ReturnImmediately = true });
+
                     using var results = searcher.Get();
+                    var sb = new StringBuilder(512);
+
                     foreach (ManagementObject managementObj in results)
                     {
                         Processor.Data = (string)managementObj["Name"];
                         Processor.Cores = Convert.ToString(managementObj["NumberOfCores"]) ?? "0";
                         Processor.Threads = Convert.ToString(managementObj["NumberOfLogicalProcessors"]) ?? "0";
+
+                        sb.AppendLine($"Name: {managementObj["Name"]}");
+                        sb.AppendLine($"Manufacturer: {managementObj["Manufacturer"]}");
+                        sb.AppendLine($"Architecture: {managementObj["Architecture"]}");
+                        sb.AppendLine($"Cores: {managementObj["NumberOfCores"]}");
+                        sb.AppendLine($"Logical Processors: {managementObj["NumberOfLogicalProcessors"]}");
+                        sb.AppendLine($"Max Speed: {managementObj["MaxClockSpeed"]} MHz");
+                        sb.AppendLine($"Socket Designation: {managementObj["SocketDesignation"]}");
+                        sb.AppendLine($"L2 Cache: {managementObj["L2CacheSize"]} KB");
+                        sb.Append($"L3 Cache: {managementObj["L3CacheSize"]} KB");
                     }
+
+                    Processor.DetailedData = sb.ToString();
                 }
                 catch { }
             }
@@ -304,23 +321,41 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 try
                 {
-                    using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Name, AdapterRAM, PNPDeviceID from Win32_VideoController", new System.Management.EnumerationOptions { ReturnImmediately = true });
+                    using var searcher = new ManagementObjectSearcher(@"root\cimv2",
+                        "select Name, AdapterRAM, PNPDeviceID, DriverVersion, VideoArchitecture from Win32_VideoController",
+                        new System.Management.EnumerationOptions { ReturnImmediately = true });
+
                     using var results = searcher.Get();
                     var entries = new List<string>();
+                    int gpuNumber = 0;
 
                     foreach (ManagementObject managementObj in results)
                     {
                         string data = managementObj["Name"] as string ?? "Unknown GPU";
                         string pnp = managementObj["PNPDeviceID"]?.ToString() ?? "";
+                        string driverVersion = managementObj["DriverVersion"]?.ToString() ?? "Unknown";
+                        string videoArch = managementObj["VideoArchitecture"]?.ToString() ?? "Unknown";
 
                         var (isFound, dataMemoryReg, driverDesc) = GetMemorySizeFromRegistry(data);
 
                         string displayName = (!string.IsNullOrEmpty(driverDesc)) ? driverDesc : data;
                         string displayRAM = isFound ? dataMemoryReg : (managementObj["AdapterRAM"] != null ? SizeCalculationHelper(Convert.ToUInt64(managementObj["AdapterRAM"])) : "N/A");
 
-                        entries.Add($"{displayName}, {displayRAM}");
+                        var sb = new StringBuilder();
+                        if (gpuNumber > 0) sb.AppendLine();
+
+                        sb.AppendLine($"GPU {gpuNumber}:");
+                        sb.AppendLine($"   Name: {displayName}");
+                        sb.AppendLine($"   Adapter RAM: {displayRAM}");
+                        sb.AppendLine($"   Driver Version: {driverVersion}");
+                        sb.Append($"   Video Architecture: {videoArch}");
+
+                        entries.Add(sb.ToString());
+
                         VendorDetection.Nvidia |= pnp.IndexOf("VEN_10DE", StringComparison.OrdinalIgnoreCase) >= 0;
+                        gpuNumber++;
                     }
+
                     Graphics = string.Join(Environment.NewLine, entries);
                 }
                 catch { Graphics = "Unavailable"; }

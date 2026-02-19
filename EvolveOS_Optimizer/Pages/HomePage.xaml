@@ -379,6 +379,40 @@
                     </Grid>
                 </Border>
 
+                <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
+                    <StackPanel Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE950;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                            <TextBlock Text="{helpers:ResourceString Key=title_cpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                        </StackPanel>
+
+                        <TextBlock Text="{Binding [CPU].Data}"
+                                   FontFamily="Jura Medium"
+                                   FontWeight="Normal"
+                                   TextWrapping="Wrap"
+                                   Opacity="0.85"
+                                   LineHeight="22"
+                                   IsTextSelectionEnabled="True"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
+                    <StackPanel Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xEC06;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                            <TextBlock Text="{helpers:ResourceString Key=title_gpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                        </StackPanel>
+
+                        <TextBlock Text="{Binding [GPU].Data}"
+                                   FontFamily="Jura Medium"
+                                   FontWeight="Normal"
+                                   TextWrapping="Wrap"
+                                   Opacity="0.85"
+                                   LineHeight="22"
+                                   IsTextSelectionEnabled="True"/>
+                    </StackPanel>
+                </Border>
+
             </uc:DashboardFlowPanel>
 
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">

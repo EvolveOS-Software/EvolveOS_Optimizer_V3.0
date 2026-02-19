@@ -276,6 +276,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _displayData.Add(new HomePageModel { Name = "Memory", Data = HardwareData.Memory.Data });
             _displayData.Add(new HomePageModel { Name = "Type", Data = HardwareData.Memory.Type });
 
+            _displayData.Add(new HomePageModel { Name = "CPU", Data = HardwareData.Processor.DetailedData });
+            _displayData.Add(new HomePageModel { Name = "GPU", Data = HardwareData.Graphics });
+
             LocalIP = new IPWrapper { Data = HardwareData.LocalIPAddress };
         }
 
@@ -306,6 +309,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             var typeItem = _displayData.FirstOrDefault(x => x.Name == "Type");
             if (typeItem != null) typeItem.Data = HardwareData.Memory.Type;
+
+            var cpuItem = _displayData.FirstOrDefault(x => x.Name == "CPU");
+            if (cpuItem != null) cpuItem.Data = HardwareData.Processor.DetailedData;
+
+            var gpuItem = _displayData.FirstOrDefault(x => x.Name == "GPU");
+            if (gpuItem != null) gpuItem.Data = HardwareData.Graphics;
 
             if (LocalIP.Data != HardwareData.LocalIPAddress)
             {

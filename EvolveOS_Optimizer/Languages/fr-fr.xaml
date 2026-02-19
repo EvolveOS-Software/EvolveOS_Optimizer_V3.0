@@ -103,6 +103,10 @@
     <sys:String x:Key="label_proc_sysinfo">Processus en cours :</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services :</sys:String>
 
+    <!-- Cpu/Gpu Card -->
+    <sys:String x:Key="title_cpu_sysinfo">Informations CPU :</sys:String>
+    <sys:String x:Key="title_gpu_sysinfo">Informations GPU :</sys:String>
+
     <!-- Memory Card -->
     <sys:String x:Key="title_ram_sysinfo">Mémoire :</sys:String>
     <sys:String x:Key="title_mtype_sysinfo">Type de mémoire :</sys:String>
