@@ -157,6 +157,7 @@ namespace EvolveOS_Optimizer.Assets.UserControl
 
                 var rect = new Rect(0, 0, bigCardWidth + Bleed, bigCardHeight + Bleed);
                 bigCard.Arrange(rect);
+
                 AnimateChild(bigCard, new Point(0, 0));
 
                 currentCol = LargeCardColumnSpan;
@@ -175,14 +176,15 @@ namespace EvolveOS_Optimizer.Assets.UserControl
                     _cellOccupancy[currentRow][currentCol] = true;
                 }
 
-                double x = (currentCol * (_smallCardWidth + HorizontalSpacing));
-                double y = (currentRow * (_smallCardHeight + VerticalSpacing));
+                double targetX = (currentCol * (_smallCardWidth + HorizontalSpacing));
+                double targetY = (currentRow * (_smallCardHeight + VerticalSpacing));
 
-                var rect = new Rect(x, y, _smallCardWidth + Bleed, _smallCardHeight + Bleed);
+                var rect = new Rect(0, 0, _smallCardWidth + Bleed, _smallCardHeight + Bleed);
                 child.Arrange(rect);
-                AnimateChild(child, new Point(x, y));
 
-                maxLayoutHeight = Math.Max(maxLayoutHeight, y + _smallCardHeight);
+                AnimateChild(child, new Point(targetX, targetY));
+
+                maxLayoutHeight = Math.Max(maxLayoutHeight, targetY + _smallCardHeight);
                 currentCol++;
             }
 

@@ -173,6 +173,12 @@
 
             <uc:DashboardFlowPanel x:Name="DashboardPanel" Grid.Column="1" Margin="5,2,0,13" HorizontalSpacing="10" VerticalSpacing="10">
 
+                <uc:DashboardFlowPanel.ChildrenTransitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                    </TransitionCollection>
+                </uc:DashboardFlowPanel.ChildrenTransitions>
+
                 <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
                     <Grid>
                         <Grid.RowDefinitions>
