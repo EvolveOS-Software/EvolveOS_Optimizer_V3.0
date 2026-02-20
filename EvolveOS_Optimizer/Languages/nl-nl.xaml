@@ -103,6 +103,9 @@
     <sys:String x:Key="label_proc_sysinfo">Actieve processen:</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services:</sys:String>
 
+    <!-- Diskspace Card -->
+    <sys:String x:Key="txt_header_disk_space_card">Schijfruimte:</sys:String>
+
     <!-- Cpu/Gpu Card -->
     <sys:String x:Key="title_cpu_sysinfo">CPU-informatie:</sys:String>
     <sys:String x:Key="title_gpu_sysinfo">GPU-informatie:</sys:String>
@@ -849,5 +852,135 @@
     <sys:String x:Key="process_manager_page_refresh">Vernieuwen</sys:String>
     <sys:String x:Key="process_manager_page_search_placeholder">Processen zoeken...</sys:String>
     <!-- endregion Process Manager Page -->
+
+    <!-- System Optimizer -->
+    <sys:String x:Key="title_system_health_status">Gezondheidsstatus</sys:String>
+    <sys:String x:Key="text_system_optimizer_description">Verbeter de reactiesnelheid van het systeem door verkeerd beheerd geheugen terug te winnen en overbodige bestanden te verwijderen. Richt zich efficiënt op geheugenlekken, leegt DNS-caches en verwijdert tijdelijke gegevens om topprestaties te herstellen.</sys:String>
+    <sys:String x:Key="btn_open_system_optimizer">Open Systeemoptimalisatie</sys:String>
+
+    <sys:String x:Key="txt_header_physical_memory">Fysiek Geheugen</sys:String>
+    <sys:String x:Key="txt_physical_memory_used">Gebruikt:</sys:String>
+    <sys:String x:Key="txt_physical_memory_free">Vrij:</sys:String>
+    <sys:String x:Key="txt_header_virtual_memory">Virtueel Geheugen</sys:String>
+    <sys:String x:Key="txt_virtual_memory_used">Gebruikt:</sys:String>
+    <sys:String x:Key="txt_virtual_memory_free">Vrij:</sys:String>
+    <sys:String x:Key="txt_header_process_exlusions">Procesuitsluitingen</sys:String>
+    <sys:String x:Key="txt_header_cleaning_targets">Schoonmaakdoelen</sys:String>
+    <sys:String x:Key="txt_header_auto_optimizations">Automatische Optimalisaties</sys:String>
+    <sys:String x:Key="txt_header_optimization_hotkey">Optimalisatie Sneltoets</sys:String>
+    <sys:String x:Key="txt_header_settings">Instellingen</sys:String>
+    <sys:String x:Key="btn_clean_now">Nu Schoonmaken</sys:String>
+    <sys:String x:Key="notify_mem_clean_successfull">Geheugen succesvol schoongemaakt</sys:String>
+    <sys:String x:Key="txt_progress_step">Optimaliseren</sys:String>
+    <sys:String x:Key="txt_virtual_memory_header">virtueel geheugen</sys:String>
+    <sys:String x:Key="title_memory_areas_combined_page_list">Gecombineerde Paginalijst</sys:String>
+    <sys:String x:Key="description_memory_areas_combined_page_list">Verplaatst pagina's met identieke inhoud naar de stand-bylijst.</sys:String>
+    <sys:String x:Key="title_memory_areas_modified_file_cache">Gewijzigde Bestandscache</sys:String>
+    <sys:String x:Key="description_memory_system_file_cache">Schrijft de gewijzigde bestandscache weg naar de schijf.</sys:String>
+    <sys:String x:Key="title_memory_areas_modified_page_list">Gewijzigde Paginalijst</sys:String>
+    <sys:String x:Key="description_memory_areas_modified_page_list">Verplaatst geheugen van de gewijzigde lijst naar de stand-bylijst.</sys:String>
+    <sys:String x:Key="title_memory_areas_registry_cache">Registercache</sys:String>
+    <sys:String x:Key="description_memory_areas_registry_cache">Verkleint de werkset van de register-hive.</sys:String>
+    <sys:String x:Key="title_memory_areas_standby_list">Stand-bylijst</sys:String>
+    <sys:String x:Key="description_memory_areas_standby_list">Verwijdert alle pagina's uit de stand-bylijst.</sys:String>
+    <sys:String x:Key="title_memory_areas_standby_list_low_priority">Stand-bylijst (Lage Prioriteit)</sys:String>
+    <sys:String x:Key="description_memory_areas_standby_list_low_priority">Verwijdert alleen pagina's met een lage prioriteit uit de stand-bylijst.</sys:String>
+    <sys:String x:Key="title_memory_areas_system_file_cache">Systeembestandscache</sys:String>
+    <sys:String x:Key="description_memory_areas_system_file_cache">Verkleint de systeembrede werkset.</sys:String>
+    <sys:String x:Key="title_memory_areas_working_set">Werkset</sys:String>
+    <sys:String x:Key="description_memory_areas_working_set">Verkleint de werksets van alle processen.</sys:String>
+    <sys:String x:Key="title_settings_items_close_afer_optimization">Sluiten na optimalisatie</sys:String>
+    <sys:String x:Key="description_settings_items_close_afer_optimization">Sluit het venster voor systeemoptimalisatie automatisch nadat het proces is voltooid.</sys:String>
+    <sys:String x:Key="title_settings_items_show_notification">Toon optimalisatiemeldingen</sys:String>
+    <sys:String x:Key="description_settings_items_show_notification">Toont een melding in het systeemvak in plaats van een pop-upvenster wanneer de optimalisatie is voltooid.</sys:String>
+    <sys:String x:Key="title_settings_items_show_no_result">Schakel alle optimalisatieresultaten uit</sys:String>
+    <sys:String x:Key="description_settings_items_show_no_result">Toon geen melding of pop-upvenster wanneer de optimalisatie is voltooid.</sys:String>
+    <sys:String x:Key="title_settings_items_low_priority">Uitvoeren met lage prioriteit</sys:String>
+    <sys:String x:Key="description_settings_items_low_priority">Stelt het optimalisatieproces in op een lagere CPU-prioriteit om systeemvertraging tijdens het schoonmaken te voorkomen.</sys:String>
+    <sys:String x:Key="title_settings_items_show_virtual_memory">Virtueel Geheugen</sys:String>
+    <sys:String x:Key="description_settings_items_show_virtual_memory">Schakelt de zichtbaarheid in/uit van het wisselbestand en virtueel geheugenstatistieken op het hoofddashboard.</sys:String>
+    <sys:String x:Key="title_settings_items_restart_explorer">Windows Verkenner herstarten</sys:String>
+    <sys:String x:Key="description_settings_items_restart_explorer">Herstart de shell om het opschonen van de pictogramcache volledig toe te passen en het systeemvak te vernieuwen. De taakbalk kan hierdoor enkele seconden verdwijnen.</sys:String>
+    <sys:String x:Key="txt_auto_opt_interval_singular">Elke {0} uur</sys:String>
+    <sys:String x:Key="txt_auto_opt_interval_plural">Elke {0} uur</sys:String>
+    <sys:String x:Key="txt_disabled">Uitgeschakeld</sys:String>
+    <sys:String x:Key="txt_auto_opt_usage_limit">Wanneer het gebruik de {0}% overschrijdt</sys:String>
+    <sys:String x:Key="txt_auto_opt_usage_warning">Automatische optimalisatie kan slechts om de paar minuten worden uitgevoerd om lussen te voorkomen.</sys:String>
+    <sys:String x:Key="msg_hotkey_in_use">De sneltoets ({0}) is in gebruik door het besturingssysteem</sys:String>
+    <sys:String x:Key="msg_mem_optimized">GEHEUGEN GEOPTIMALISEERD:</sys:String>
+    <sys:String x:Key="optimizations_step_working_set">werkset</sys:String>
+    <sys:String x:Key="optimizations_step_system_file_cache">systeembestandscache</sys:String>
+    <sys:String x:Key="optimizations_step_modified_page_list">gewijzigde paginalijst</sys:String>
+    <sys:String x:Key="optimizations_step_standby_list">stand-bylijst</sys:String>
+    <sys:String x:Key="optimizations_step_standby_list_lp">stand-bylijst (lage prioriteit)</sys:String>
+    <sys:String x:Key="optimizations_step_combined_page_list">gecombineerde paginalijst</sys:String>
+    <sys:String x:Key="optimizations_step_registry_cache">registercache</sys:String>
+    <sys:String x:Key="optimizations_step_modified_file_cache">gewijzigde bestandscache</sys:String>
+    <sys:String x:Key="optimizations_step_modified_garbage_collector">garbage collector</sys:String>
+    <sys:String x:Key="title_warning_priority">Beveiligings- &amp; Prestatiewaarschuwing</sys:String>
+    <sys:String x:Key="msg_warning_windows_old_deletion">Waarschuwing: Het verwijderen van Windows.old is permanent. U kunt NIET meer terugkeren naar een eerdere versie van Windows als u problemen ondervindt. Wilt u doorgaan?</sys:String>
+    <sys:String x:Key="optimizations_step_disk_cleanup">Tijdelijke Bestanden Opschonen...</sys:String>
+    <sys:String x:Key="optimizations_step_windows_old">Windows.old Verwijderen (Rechten aanpassen)...</sys:String>
+    <sys:String x:Key="optimizations_step_update_cache">Windows Update-cache Opschonen...</sys:String>
+    <sys:String x:Key="label_disk_recovered">Schijfruimte Vrijgemaakt</sys:String>
+    <sys:String x:Key="title_memory_areas_disk_cleanup">Schijfopruiming (Temp Bestanden)</sys:String>
+    <sys:String x:Key="title_memory_areas_windows_old">Windows.old Map</sys:String>
+    <sys:String x:Key="description_memory_areas_disk_cleanup">Verwijdert tijdelijke bestanden, prefetch en miniatuurcaches om schijfruimte vrij te maken.</sys:String>
+    <sys:String x:Key="description_memory_areas_windows_old">Verwijdert back-ups van eerdere Windows-installaties. WAARSCHUWING: Dit proces is permanent en voorkomt systeem-rollbacks.</sys:String>
+    <sys:String x:Key="title_memory_areas_flush_dns">DNS-cache Leegmaken</sys:String>
+    <sys:String x:Key="description_memory_areas_flush_dns">Leegt de DNS-resolver-cache om verbindingsproblemen op te lossen en domeintoewijzingen te vernieuwen.</sys:String>
+    <sys:String x:Key="optimizations_step_flush_dns">DNS-cache leegmaken</sys:String>
+    <sys:String x:Key="txt_total_estimated_space">Totale Geschatte Ruimte:</sys:String>
+    <sys:String x:Key="tooltip_refresh_space">Bereken schoonmaakgrootte opnieuw</sys:String>
+    <sys:String x:Key="txt_scanning">Scannen...</sys:String>
+    <sys:String x:Key="txt_header_memory_areas">Geheugenoptimalisatie</sys:String>
+    <sys:String x:Key="txt_header_system_cleanup">Systeemopschoning</sys:String>
+    <sys:String x:Key="txt_progress_preparing">Systeemanalyse voorbereiden...</sys:String>
+    <sys:String x:Key="txt_progress_optimizing">Geheugenoptimalisatie uitvoeren...</sys:String>
+    <sys:String x:Key="txt_progress_finalizing">Afronden en statistieken vernieuwen...</sys:String>
+    <sys:String x:Key="txt_optimization_completed">Optimalisatie succesvol afgerond!</sys:String>
+    <sys:String x:Key="UnexpectedError">Er is een onverwachte fout opgetreden</sys:String>
+    <sys:String x:Key="Repair">Repareren</sys:String>
+    <sys:String x:Key="OperationStopped">Bewerking gestopt</sys:String>
+    <sys:String x:Key="OperationCompleted">Bewerking voltooid</sys:String>
+    <sys:String x:Key="BatteryStatus">Batterijstatus</sys:String>
+    <sys:String x:Key="ReportSaved">Rapport opgeslagen op Bureaublad</sys:String>
+    <sys:String x:Key="MemoryDiagnosticDialogTitle">Geheugendiagnose</sys:String>
+    <sys:String x:Key="MemoryDiagnosticDialogText">Geheugenproblemen kunnen ertoe leiden dat uw computer informatie verliest of stopt met werken.</sys:String>
+    <sys:String x:Key="RestartNow">Nu herstarten</sys:String>
+    <sys:String x:Key="ScheduleLater">Later inplannen</sys:String>
+    <sys:String x:Key="ScheduledLater">Ingepland voor volgende herstart</sys:String>
+    <sys:String x:Key="ScanInProgress">{0} / {1}: {2} scan is bezig...</sys:String>
+    <sys:String x:Key="RepairInProgress">{0} / {1}: {2} reparatie is bezig...</sys:String>
+    <sys:String x:Key="Health_Poor">Slecht - Actie vereist</sys:String>
+    <sys:String x:Key="Health_Warning">Matig - Optimalisatie aanbevolen</sys:String>
+    <sys:String x:Key="Health_Good">Goed - Systeem is gezond</sys:String>
+    <sys:String x:Key="txt_header_drive_c_space">Systeemschijf (C:)</sys:String>
+    <sys:String x:Key="txt_drive_c_used">Gebruikte ruimte:</sys:String>
+    <sys:String x:Key="txt_drive_c_free">Vrije ruimte:</sys:String>
+    <sys:String x:Key="txt_header_system_repair">Systeemherstel</sys:String>
+    <sys:String x:Key="txt_dism">DISM</sys:String>
+    <sys:String x:Key="txt_sfc">SFC</sys:String>
+    <sys:String x:Key="txt_chkdsk">CHKDSK</sys:String>
+    <sys:String x:Key="btn_scan">Scannen</sys:String>
+    <sys:String x:Key="btn_repair">Herstellen</sys:String>
+    <sys:String x:Key="btn_stop">Stoppen</sys:String>
+    <sys:String x:Key="txt_header_diagnostic_options">Diagnostische opties</sys:String>
+    <sys:String x:Key="txt_battery_health">Batterijgezondheid</sys:String>
+    <sys:String x:Key="btn_generate">Genereren</sys:String>
+    <sys:String x:Key="txt_disk_optimizations">Schijfoptimalisaties</sys:String>
+    <sys:String x:Key="btn_optimize">Optimaliseren</sys:String>
+    <sys:String x:Key="txt_event_viewer">Logboeken</sys:String>
+    <sys:String x:Key="txt_memory_diagnostic">Geheugendiagnose</sys:String>
+    <sys:String x:Key="btn_check">Controleren</sys:String>
+    <sys:String x:Key="txt_ready">Klaar</sys:String>
+    <sys:String x:Key="txt_invalid">Ongeldig</sys:String>
+    <!--#endregion-->
+
+    <!-- Resource Helper -->
+    <sys:String x:Key="unit_B">B</sys:String>
+    <sys:String x:Key="unit_KB">KB</sys:String>
+    <sys:String x:Key="unit_MB">MB</sys:String>
+    <sys:String x:Key="unit_GB">GB</sys:String>
 
 </ResourceDictionary>

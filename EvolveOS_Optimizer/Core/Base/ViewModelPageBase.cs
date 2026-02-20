@@ -1,4 +1,3 @@
-using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 
 namespace EvolveOS_Optimizer.Core.Base
@@ -57,12 +56,16 @@ namespace EvolveOS_Optimizer.Core.Base
             return model;
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            Toggles?.Clear();
-            base.Dispose();
+            if (disposing)
+            {
+                Toggles?.Clear();
 
-            Debug.WriteLine($"[Memory Management] {this.GetType().Name} disposed and Toggles cleared.");
+                Debug.WriteLine($"[Memory Management] {this.GetType().Name} disposed and Toggles cleared.");
+            }
+
+            base.Dispose(disposing);
         }
 
         protected virtual void OnModelCreated(TModel model) { }

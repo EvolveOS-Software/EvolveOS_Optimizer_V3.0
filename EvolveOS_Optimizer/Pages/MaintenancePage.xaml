@@ -1,0 +1,1150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="EvolveOS_Optimizer.Pages.MaintenancePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:pa="using:EvolveOS_Optimizer.Assets.Panels"
+    xmlns:conv="using:EvolveOS_Optimizer.Utilities.Converters"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:viewmodel="using:EvolveOS_Optimizer.Core.ViewModel"
+    Name="RootControl"
+    d:DataContext="{d:DesignInstance Type=viewmodel:MaintenanceViewModel}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <conv:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+        <conv:StringFormatConverter x:Key="StringFormatConverter" />
+        <conv:KeyDisplayConverter x:Key="KeyDisplayConverter" />
+
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{ThemeResource Brush_Highlighted}"/>
+            <Setter Property="Opacity" Value="0.7"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style x:Key="SettingsCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+
+        <Style x:Key="CardHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource Jura}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{ThemeResource Brush_Highlighted}"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="Transparent" Padding="4,0,24,0" HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="12" Margin="0,0,0,16">
+
+            <Grid Margin="0,0,0,10">
+                
+                <TextBlock Text="{helpers:ResourceString Key=title_system_health_status}" 
+                           FontFamily="{StaticResource Jura}"
+                           FontSize="28"
+                           FontWeight="Bold" 
+                           Foreground="{ThemeResource MyDynamicAccentBrush}"
+                           HorizontalAlignment="Center" Margin="0,0,0,4"/>
+
+                <Button x:Name="RefreshButton" 
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="RefreshButton_Click">
+                    <Button.Content>
+                        
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="6">
+                            
+                            <FontIcon Glyph="&#xE72C;"
+                                      FontSize="14"/>
+                            
+                            <TextBlock x:Uid="MaintenancePage_RefreshButton"
+                                       Text="Refresh"/>
+                            
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </Grid>
+
+            <Grid HorizontalAlignment="Center"
+                  Margin="20,0,20,10"
+                  Width="96"
+                  Height="96">
+                
+                <ProgressRing x:Name="MaintenanceStatusLoadingRing"
+                              Width="96"
+                              Height="96"
+                              IsActive="True"/>
+                
+                <Image x:Name="MaintenanceStatusImage"
+                        Width="96"
+                        Height="96"
+                        Visibility="Collapsed"/>
+                
+            </Grid>
+
+            <TextBlock x:Name="LastRefreshedText" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,10"
+                       Opacity="0.7"
+                       FontSize="12"
+                       Visibility="Collapsed"/>
+
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource SettingsCardStyle}">
+                    
+                    <StackPanel>
+                        
+                        <TextBlock Text="{helpers:ResourceString Key=txt_header_physical_memory}"
+                                   Style="{StaticResource CardHeaderStyle}"
+                                   Margin="0,0,0,12"/>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Computer.Memory.Physical.Used.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+                                       FontSize="32"
+                                       FontFamily="{ThemeResource Jura-SemiBold}"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                            
+                            <TextBlock Text="{Binding Computer.Memory.Physical.Used.Unit}"
+                                       FontFamily="{ThemeResource Jura}"
+                                       FontSize="16"
+                                       VerticalAlignment="Bottom"
+                                       Margin="4,0,0,6"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            
+                            <TextBlock Text="{Binding Computer.Memory.Physical.Used.Percentage, UpdateSourceTrigger=PropertyChanged}"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="14"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                            
+                            <TextBlock Text="%"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="14"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                        </StackPanel>
+
+                        <ProgressBar Value="{Binding Computer.Memory.Physical.Used.Percentage}"
+                                     Maximum="100"
+                                     Height="8"
+                                     CornerRadius="4"
+                                     Margin="0,8,0,16"
+                                     Foreground="{ThemeResource Brush_Error}"
+                                     Background="{ThemeResource Brush_Success}"
+                                     BorderThickness="0" />
+
+                        <Grid>
+                            
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal">
+                                
+                                <Border Background="{ThemeResource Brush_Error}"
+                                        CornerRadius="4"
+                                        Height="14"
+                                        Width="14"
+                                        Margin="0,0,10,0"
+                                        VerticalAlignment="Center"/>
+                                
+                                <StackPanel VerticalAlignment="Center">
+                                    
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_physical_memory_used}"
+                                               Style="{StaticResource LabelStyle}"
+                                               FontFamily="{StaticResource Jura}"
+                                               FontSize="12"
+                                               Margin="0"/>
+                                    
+                                    <StackPanel Orientation="Horizontal">
+                                        
+                                        <TextBlock Text="{Binding Computer.Memory.Physical.Used.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="12"/>
+                                        
+                                        <TextBlock Text="{Binding Computer.Memory.Physical.Used.Unit}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="12"
+                                                   Margin="4,0,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                
+                                <Border Background="{ThemeResource Brush_Success}"
+                                        CornerRadius="4" 
+                                        Height="14"
+                                        Width="14"
+                                        Margin="0,0,10,0"
+                                        VerticalAlignment="Center"/>
+                                
+                                <StackPanel VerticalAlignment="Center">
+                                    
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_physical_memory_free}"
+                                               Style="{StaticResource LabelStyle}"
+                                               FontFamily="{StaticResource Jura}"
+                                               Margin="0,2,0,0"
+                                               FontSize="12"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        
+                                        <TextBlock Text="{Binding Computer.Memory.Physical.Free.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura-SemiBold}"
+                                                   Margin="0,1,0,0"
+                                                   FontSize="12"/>
+                                        
+                                        <TextBlock Text="{Binding Computer.Memory.Physical.Free.Unit}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="12"
+                                                   Margin="4,0,0,0"/>
+                                        
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Style="{StaticResource SettingsCardStyle}"
+                        Visibility="{Binding ShowVirtualMemory, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <StackPanel>
+                        
+                        <TextBlock Text="{helpers:ResourceString Key=txt_header_virtual_memory}"
+                                   Style="{StaticResource CardHeaderStyle}"
+                                   Margin="0,0,0,12"/>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+                                       FontSize="32"
+                                       FontFamily="{ThemeResource Jura-SemiBold}"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                            <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Unit}"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="16"
+                                       VerticalAlignment="Bottom"
+                                       Margin="4,0,0,6"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                            
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            
+                            <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Percentage, UpdateSourceTrigger=PropertyChanged}"
+                                       FontFamily="{StaticResource Jura-SemiBold}"
+                                       FontSize="14"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                            <TextBlock Text="%"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="14"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                        </StackPanel>
+
+                        <ProgressBar Value="{Binding Computer.Memory.Virtual.Used.Percentage}"
+                                     Maximum="100"
+                                     Height="8"
+                                     CornerRadius="4"
+                                     Margin="0,8,0,16"
+                                     Foreground="{ThemeResource Brush_Error}"
+                                     Background="{ThemeResource Brush_Success}"
+                                     BorderThickness="0" />
+
+                        <Grid>
+                            
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                
+                                <Border Background="{ThemeResource Brush_Error}"
+                                        CornerRadius="4"
+                                        Height="14"
+                                        Width="14"
+                                        Margin="0,0,10,0"
+                                        VerticalAlignment="Center"/>
+                                
+                                <StackPanel VerticalAlignment="Center">
+                                    
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_virtual_memory_used}"
+                                               Style="{StaticResource LabelStyle}"
+                                               FontFamily="{StaticResource Jura}"
+                                               FontSize="12"
+                                               Margin="0"/>
+                                    
+                                    <StackPanel Orientation="Horizontal">
+                                        
+                                        <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura-SemiBold}"
+                                                   Margin="0,1,0,0"
+                                                   FontSize="12"/>
+                                        
+                                        <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Unit}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="12"
+                                                   Margin="4,0,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+                                
+                                <Border Background="{ThemeResource Brush_Success}"
+                                        CornerRadius="4"
+                                        Height="14"
+                                        Width="14"
+                                        Margin="0,0,10,0"
+                                        VerticalAlignment="Center"/>
+                                
+                                <StackPanel VerticalAlignment="Center">
+                                    
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_virtual_memory_free}"
+                                               Style="{StaticResource LabelStyle}"
+                                               FontFamily="{StaticResource Jura}"
+                                               FontSize="12" Margin="0"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        
+                                        <TextBlock Text="{Binding Computer.Memory.Virtual.Free.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura-SemiBold}"
+                                                   Margin="0,1,0,0"
+                                                   FontSize="12"/>
+                                        
+                                        <TextBlock Text="{Binding Computer.Memory.Virtual.Free.Unit}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="12"
+                                                   Margin="4,0,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2"
+                        Visibility="{Binding ShowDiskSpace, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}"
+                        Style="{StaticResource SettingsCardStyle}">
+                    
+                    <StackPanel>
+                        
+                        <TextBlock Text="{helpers:ResourceString Key=txt_header_drive_c_space}"
+                                   Style="{StaticResource CardHeaderStyle}"
+                                   Margin="0,0,0,12"/>
+
+                        <StackPanel Orientation="Horizontal">
+                            
+                            <TextBlock Text="{Binding DriveCInfo.UsedSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.##}'}"
+                                       FontFamily="{StaticResource Jura-Bold}"
+                                       FontSize="32"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                            <TextBlock Text="GB"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="16"
+                                       VerticalAlignment="Bottom"
+                                       Margin="4,0,0,6"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                            
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            
+                            <TextBlock Text="{Binding DriveCInfo.UsedPercentage, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0}'}"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="14"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                            
+                            <TextBlock Text="%"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="14"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                        </StackPanel>
+
+                        <ProgressBar Value="{Binding DriveCInfo.UsedPercentage}"
+                                     Maximum="100"
+                                     Height="8"
+                                     CornerRadius="4"
+                                     Margin="0,8,0,16"
+                                     Foreground="{ThemeResource Brush_Error}"
+                                     Background="{ThemeResource Brush_Success}"
+                                     BorderThickness="0" />
+
+                        <Grid>
+                            
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                
+                                <Border Background="{ThemeResource Brush_Error}"
+                                        CornerRadius="4"
+                                        Height="14"
+                                        Width="14"
+                                        Margin="0,0,10,0"
+                                        VerticalAlignment="Center"/>
+                                
+                                <StackPanel VerticalAlignment="Center">
+                                    
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_drive_c_used}"
+                                               Style="{StaticResource LabelStyle}"
+                                               FontFamily="{StaticResource Jura}"
+                                               FontSize="12"
+                                               Margin="0"/>
+                                    
+                                    <StackPanel Orientation="Horizontal">
+                                        
+                                        <TextBlock Text="{Binding DriveCInfo.UsedSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.##}'}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura-SemiBold}"
+                                                   Margin="0,1,0,0"
+                                                   FontSize="12"/>
+                                        
+                                        <TextBlock Text="GB"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="12"
+                                                   Margin="4,0,0,0"/>
+                                        
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+                                
+                                <Border Background="{ThemeResource Brush_Success}"
+                                        CornerRadius="4"
+                                        Height="14"
+                                        Width="14"
+                                        Margin="0,0,10,0"
+                                        VerticalAlignment="Center"/>
+                                
+                                <StackPanel VerticalAlignment="Center">
+                                    
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_drive_c_free}"
+                                               Style="{StaticResource LabelStyle}"
+                                               FontFamily="{StaticResource Jura}"
+                                               FontSize="12"
+                                               Margin="0"/>
+                                    
+                                    <StackPanel Orientation="Horizontal">
+                                        
+                                        <TextBlock Text="{Binding DriveCInfo.FreeSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.##}'}"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura-SemiBold}"
+                                                   Margin="0,1,0,0"
+                                                   FontSize="12"/>
+                                        
+                                        <TextBlock Text="GB"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="12"
+                                                   Margin="4,0,0,0"/>
+                                    </StackPanel>
+                                    
+                                </StackPanel>
+                                
+                            </StackPanel>
+                            
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Margin="0,0,-8,0"
+                          Padding="0,0,8,0">
+
+                <pa:FlowPanel x:Name="TweakFlowPanel"
+                              HorizontalGap="10"
+                              VerticalGap="10"
+                              Margin="0,0,0,24">
+
+                    <Border Style="{StaticResource SettingsCardStyle}"
+                            VerticalAlignment="Top">
+                        
+                        <StackPanel>
+                            
+                            <TextBlock Text="{helpers:ResourceString Key=txt_header_process_exlusions}"
+                                       Style="{StaticResource CardHeaderStyle}"/>
+                            
+                            <Grid>
+                                
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="140" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <ListBox Name="ProcessExclusionList"
+                                         FontFamily="{StaticResource Jura}"
+                                         Grid.Row="0" Grid.ColumnSpan="2"
+                                         ItemsSource="{Binding ProcessExclusionList}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Margin="0,0,0,16"
+                                         MinHeight="130">
+                                    
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,4">
+                                                
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <Button Content="×"
+                                                        Command="{Binding ElementName=RootControl, Path=DataContext.RemoveProcessFromExclusionListCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Width="32"
+                                                        Height="32"/>
+                                                
+                                                <TextBlock Text="{Binding}"
+                                                           Grid.Column="1"
+                                                           Margin="12,0,0,0"
+                                                           Foreground="{ThemeResource Brush_Error}"
+                                                           FontSize="14"
+                                                           VerticalAlignment="Center"/>
+                                                
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    
+                                </ListBox>
+
+                                <ComboBox Grid.Row="1"
+                                          Grid.Column="0"
+                                          ItemsSource="{Binding Processes}"
+                                          SelectedValue="{Binding SelectedProcess, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Height="40"
+                                          Margin="0,0,12,0"
+                                          HorizontalAlignment="Stretch"/>
+                                
+                                <Button Grid.Row="1"
+                                        Grid.Column="1"
+                                        Content="+"
+                                        Command="{Binding AddProcessToExclusionListCommand}"
+                                        CommandParameter="{Binding SelectedProcess}"
+                                        Width="40"
+                                        Height="40" />
+                                
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SettingsCardStyle}"
+                            Height="417"
+                            VerticalAlignment="Top">
+                        
+                        <StackPanel>
+                            
+                            <TextBlock Text="{helpers:ResourceString Key=txt_header_memory_areas}"
+                                       Style="{StaticResource CardHeaderStyle}"/>
+                            
+                            <ItemsControl ItemsSource="{Binding MemoryAreaItems}">
+                                
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        
+                                        <CheckBox Content="{Binding Name}"
+                                                  ToolTipService.ToolTip="{Binding Tooltip}"
+                                                  FontFamily="{StaticResource Jura}"
+                                                  IsChecked="{Binding Value, Mode=TwoWay}"
+                                                  IsEnabled="{Binding IsEnabled}"
+                                                  Foreground="{ThemeResource Brush_Highlighted}"
+                                                  Margin="0,6"
+                                                  FontSize="14"/>
+                                        
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                
+                            </ItemsControl>
+                            
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SettingsCardStyle}"
+                            VerticalAlignment="Top">
+                        
+                        <StackPanel>
+                            
+                            <TextBlock Text="{helpers:ResourceString Key=txt_header_system_cleanup}"
+                                       Style="{StaticResource CardHeaderStyle}"/>
+                            
+                            <ItemsControl ItemsSource="{Binding SystemCleanupAreaItems}">
+                                
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        
+                                        <CheckBox Content="{Binding Name}"
+                                                  ToolTipService.ToolTip="{Binding Tooltip}"
+                                                  FontFamily="{StaticResource Jura}"
+                                                  IsChecked="{Binding Value, Mode=TwoWay}"
+                                                  IsEnabled="{Binding IsEnabled}"
+                                                  Foreground="{ThemeResource Brush_Highlighted}"
+                                                  Margin="0,6" FontSize="14"/>
+                                        
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                
+                            </ItemsControl>
+
+                            <Border Background="{ThemeResource MyDynamicAccentBrush}"
+                                    Opacity="0.1"
+                                    CornerRadius="6"
+                                    Padding="12"
+                                    Margin="0,16,0,0"/>
+                            
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="12,-40,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center">
+                                
+                                <Grid Width="24"
+                                      Height="24"
+                                      Margin="0,0,12,0">
+                                    
+                                    <Button Command="{Binding RefreshCleanupSpaceCommand}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Padding="0"
+                                            Visibility="{Binding IsScanning, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                        
+                                        <FontIcon Glyph="&#xE72C;"
+                                                  Foreground="{ThemeResource Brush_Highlighted}"
+                                                  FontSize="18"/>
+                                    </Button>
+                                    
+                                    <ProgressRing IsActive="{Binding IsScanning}"
+                                                  Width="20"
+                                                  Height="20"
+                                                  Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                  Visibility="{Binding IsScanning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                </Grid>
+                                
+                                <TextBlock Text="{helpers:ResourceString Key=txt_total_estimated_space}"
+                                           FontFamily="{StaticResource Jura}"
+                                           FontSize="14"
+                                           Foreground="{ThemeResource Brush_Highlighted}"
+                                           VerticalAlignment="Center"/>
+                                
+                                <TextBlock Text="{Binding TotalSpaceToFree}"
+                                           FontFamily="{StaticResource Jura-Bold}"
+                                           FontSize="14"
+                                           Foreground="{ThemeResource Brush_Highlighted}"
+                                           Margin="8,0,0,0"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SettingsCardStyle}"
+                            VerticalAlignment="Top">
+                        
+                        <StackPanel>
+                            
+                            <TextBlock Text="{helpers:ResourceString Key=txt_header_auto_optimizations}" Style="{StaticResource CardHeaderStyle}"/>
+
+                            <TextBlock Text="{Binding AutoOptimizationMemoryIntervalDescription}"
+                                       Foreground="{ThemeResource Brush_Highlighted}"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="13"
+                                       Margin="0,0,0,8"/>
+                            
+                            <Slider x:Name="AutoOptimizationIntervalSlider"
+                                    Minimum="0"
+                                    Maximum="168"
+                                    Value="{Binding AutoOptimizationInterval, Mode=TwoWay}"
+                                    PointerPressed="OnSliderPointerPressed"
+                                    Margin="0,0,0,24"/>
+
+                            <TextBlock Text="{Binding AutoOptimizationMemoryUsageDescription}"
+                                       Foreground="{ThemeResource Brush_Highlighted}"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="13"
+                                       Margin="0,0,0,8"/>
+                            
+                            <Slider x:Name="AutoOptimizationMemoryUsageSlider"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    Value="{Binding AutoOptimizationMemoryUsage, Mode=TwoWay}"
+                                    PointerPressed="OnSliderPointerPressed"
+                                    Margin="0,0,0,8"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SettingsCardStyle}"
+                            VerticalAlignment="Top">
+                        
+                        <StackPanel>
+                            <TextBlock Text="{helpers:ResourceString Key=txt_header_settings}"
+                                       Style="{StaticResource CardHeaderStyle}"/>
+                            
+                            <ItemsControl ItemsSource="{Binding SettingItems}">
+                                
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        
+                                        <CheckBox Content="{Binding Name}"
+                                                  ToolTipService.ToolTip="{Binding Tooltip}"
+                                                  IsChecked="{Binding Value, Mode=TwoWay}"
+                                                  IsEnabled="{Binding IsEnabled}"
+                                                  Margin="0, 0, 0, 12"
+                                                  VerticalAlignment="Center"
+                                                  FontFamily="{StaticResource Jura}"
+                                                  FontSize="14"
+                                                  Foreground="{ThemeResource Brush_Highlighted}"/>
+                                        
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                
+                            </ItemsControl>
+                            
+                        </StackPanel>
+                        
+                    </Border>
+
+                    <Border Style="{StaticResource SettingsCardStyle}"
+                            VerticalAlignment="Top"
+                            Visibility="{Binding Computer.OperatingSystem.HasHotkeyManager, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                        
+                        <StackPanel>
+                            
+                            <TextBlock Text="{helpers:ResourceString Key=txt_header_optimization_hotkey}"
+                                       Style="{StaticResource CardHeaderStyle}"/>
+
+                            <StackPanel Orientation="Vertical" Spacing="16">
+
+                                <ToggleSwitch IsOn="{Binding UseHotkey, Mode=TwoWay}"
+                                              OnContent="Hotkey Enabled"
+                                              OffContent="Hotkey Disabled"
+                                              Margin="0"
+                                              FontFamily="{StaticResource Jura}"
+                                              Foreground="{ThemeResource Brush_Highlighted}" />
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                    
+                                    <ComboBox ItemsSource="{Binding KeyboardModifiers}"
+                                              SelectedValue="{Binding OptimizationModifiers, Mode=TwoWay}"
+                                              SelectedValuePath="Key"
+                                              IsEnabled="{Binding UseHotkey}"
+                                              MinWidth="120">
+                                        
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Value}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                        
+                                    </ComboBox>
+
+                                    <TextBlock Text="+"
+                                               Foreground="{ThemeResource Brush_Highlighted}"
+                                               FontSize="18"
+                                               VerticalAlignment="Center"
+                                               FontFamily="{StaticResource Jura-Bold}"/>
+
+                                    <ComboBox ItemsSource="{Binding KeyboardKeys}"
+                                              SelectedValue="{Binding OptimizationKey, Mode=TwoWay}"
+                                              IsEnabled="{Binding UseHotkey}"
+                                              MinWidth="80">
+                                        
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Converter={StaticResource KeyDisplayConverter}}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                        
+                                    </ComboBox>
+                                    
+                                </StackPanel>
+
+                                <TextBlock Text="{helpers:ResourceString Key=txt_invalid}"
+                                           Foreground="{ThemeResource Brush_Error}"
+                                           FontFamily="{StaticResource Jura}"
+                                           FontSize="13"
+                                           Visibility="{Binding IsOptimizationKeyValid, Converter={StaticResource InverseBooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SettingsCardStyle}"
+                            VerticalAlignment="Top">
+                        
+                        <StackPanel>
+                            
+                            <TextBlock x:Uid="RepairPage_RepairOptions"
+                                       Text="{helpers:ResourceString Key=txt_header_system_repair}"
+                                       Style="{StaticResource CardHeaderStyle}"/>
+
+                            <StackPanel x:Name="CheckBoxes">
+                                
+                                <CheckBox x:Name="DismCheckBox"
+                                          Content="{helpers:ResourceString Key=txt_dism}"
+                                          Checked="CheckBox_Changed"
+                                          Unchecked="CheckBox_Changed"
+                                          Margin="0,0,0,10"
+                                          FontFamily="{StaticResource Jura}" 
+                                          Foreground="{ThemeResource Brush_Highlighted}"/>
+                                
+                                <CheckBox x:Name="SfcCheckBox"
+                                          Content="{helpers:ResourceString Key=txt_sfc}"
+                                          Checked="CheckBox_Changed"
+                                          Unchecked="CheckBox_Changed"
+                                          Margin="0,0,0,10"
+                                          FontFamily="{StaticResource Jura}"
+                                          Foreground="{ThemeResource Brush_Highlighted}"/>
+                                
+                                <CheckBox x:Name="ChkdskCheckBox"
+                                          Content="{helpers:ResourceString Key=txt_chkdsk}"
+                                          Checked="CheckBox_Changed"
+                                          Unchecked="CheckBox_Changed"
+                                          Margin="0,0,0,16"
+                                          FontFamily="{StaticResource Jura}"
+                                          Foreground="{ThemeResource Brush_Highlighted}"/>
+                                
+                            </StackPanel>
+
+                            <Grid Margin="0,10,0,0">
+                                
+                                <StackPanel x:Name="ScanRepairPanel"
+                                            Orientation="Horizontal"
+                                            Spacing="10">
+
+                                    <Button Content="{helpers:ResourceString Key=btn_scan}"
+                                            Click="OnScanButtonClick"
+                                            MinWidth="100"/>
+
+                                    <Button Content="{helpers:ResourceString Key=btn_repair}"
+                                            Click="OnRepairButtonClick"
+                                            MinWidth="100" Style="{StaticResource AccentButtonStyle}"/>
+                                </StackPanel>
+
+                                <Button Content="{helpers:ResourceString Key=btn_stop}"
+                                        x:Name="StopButton"
+                                        Click="OnStopButtonClick"
+                                        Visibility="Collapsed"
+                                        MinWidth="100"/>
+                            </Grid>
+
+                            <Grid x:Name="ProgressGrid"
+                                  ColumnSpacing="16"
+                                  Margin="0,20,0,6">
+                                
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <ProgressBar x:Name="ProgressBar"
+                                             Background="Transparent"
+                                             Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                             Grid.Column="0"
+                                             Maximum="100"
+                                             Minimum="0"
+                                             VerticalAlignment="Center"
+                                             Height="6"
+                                             CornerRadius="3"
+                                             BorderThickness="0"/>
+                                
+                                <TextBlock x:Name="PercentageTextBlock"
+                                           Grid.Column="1"
+                                           Padding="4,0"
+                                           FontFamily="{StaticResource Jura}"
+                                           FontSize="13"
+                                           Foreground="{ThemeResource Brush_Highlighted}"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock x:Name="StatusTextBlock"
+                                       Text="{helpers:ResourceString Key=txt_ready}"
+                                       FontFamily="{StaticResource Jura}"
+                                       FontSize="13"
+                                       Opacity="0.7"
+                                       Foreground="{ThemeResource Brush_Highlighted}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border pa:FlowPanel.ColumnSpan="2"
+                            Style="{StaticResource SettingsCardStyle}"
+                            Height="188"
+                            VerticalAlignment="Top">
+                        
+                        <StackPanel>
+
+                            <TextBlock Text="{helpers:ResourceString Key=txt_header_diagnostic_options}"
+                                       Style="{StaticResource CardHeaderStyle}"
+                                       Margin="0,0,0,12"/>
+
+                            <Grid ColumnSpacing="12" RowSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Grid.Row="0"
+                                        Grid.Column="0"
+                                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                        CornerRadius="6"
+                                        Padding="14,10"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1">
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <FontIcon Glyph="&#xF5FC;"
+                                                  FontSize="18"
+                                                  Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,16,0"/>
+
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_battery_health}"
+                                                   Grid.Column="1"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="{StaticResource Jura-SemiBold}"
+                                                   FontSize="14"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"/>
+                                        
+                                        <Button Content="{helpers:ResourceString Key=btn_generate}"
+                                                Grid.Column="2"
+                                                Click="BatteryHealthButton_Click"
+                                                VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="0"
+                                        Grid.Column="1"
+                                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                        CornerRadius="6"
+                                        Padding="14,10"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1">
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <FontIcon Glyph="&#xE964;"
+                                                  FontSize="18"
+                                                  Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,16,0"/>
+
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_memory_diagnostic}"
+                                                   Grid.Column="1"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"/>
+                                        
+                                        <TextBlock x:Name="MemStatusText"
+                                                   Grid.Column="2"
+                                                   Margin="0,0,12,0"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="12"
+                                                   Opacity="0.7"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"
+                                                   VerticalAlignment="Center"/>
+                                        
+                                        <Button x:Name="MemCheckButton"
+                                                Content="{helpers:ResourceString Key=btn_check}"
+                                                Grid.Column="3"
+                                                Click="MemoryHealthButton_Click"
+                                                VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="1" Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="6" Padding="14,10" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <FontIcon Glyph="&#xEB05;"
+                                                  FontSize="18"
+                                                  Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,16,0"/>
+
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_disk_optimizations}"
+                                                   Grid.Column="1"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"/>
+
+                                        <Button Content="{helpers:ResourceString Key=btn_optimize}"
+                                                Grid.Column="2"
+                                                Click="DiskOptimizationsButton_Click"
+                                                VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="1"
+                                        Grid.Column="1"
+                                        Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                        CornerRadius="6"
+                                        Padding="14,10"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1">
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <FontIcon Glyph="&#xE82D;"
+                                                  FontSize="18"
+                                                  Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,16,0"/>
+                                        
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_event_viewer}"
+                                                   Grid.Column="1"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="{StaticResource Jura}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{ThemeResource Brush_Highlighted}"/>
+                                        
+                                        <Button Content="Open" Grid.Column="2" Click="EventViewerSettingsCard_Click" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                </pa:FlowPanel>
+            </ScrollViewer>
+
+            <Grid Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                  CornerRadius="8"
+                  Opacity="0.95"
+                  Canvas.ZIndex="100">
+                
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="650" Spacing="4">
+
+                    <ProgressBar Value="{Binding OptimizationProgressPercentage}"
+                                 Minimum="0"
+                                 Maximum="100"
+                                 Height="8"
+                                 CornerRadius="4"
+                                 Margin="0,0,0,12"
+                                 Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                 Background="{ThemeResource ControlFillColorTransparentBrush}"
+                                 BorderThickness="0" HorizontalAlignment="Stretch"/>
+
+                    <TextBlock Text="{Binding OptimizationProgressStep}"
+                               FontFamily="{StaticResource Jura-SemiBold}"
+                               HorizontalAlignment="Center"
+                               FontSize="16"
+                               Foreground="{ThemeResource Brush_Highlighted}"
+                               Margin="0,0,0,4"/>
+                    
+                    <TextBlock Text="{Binding OptimizationProgressValue}"
+                               FontFamily="{StaticResource Jura}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource Brush_Highlighted}"
+                               FontStyle="Italic"
+                               Margin="0,0,0,24"
+                               FontSize="14"
+                               Opacity="0.8"/>
+
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+
+        <StackPanel Grid.Row="2" Background="Transparent" VerticalAlignment="Bottom" Margin="0,20,0,0">
+            
+            <Button Name="Optimize"
+                    Command="{Binding OptimizeCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}"
+                    Content="{helpers:ResourceString Key=btn_clean_now}"
+                    Height="48"
+                    Width="400"
+                    FontSize="16"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,10"/>
+        </StackPanel>
+    </Grid>
+</Page>

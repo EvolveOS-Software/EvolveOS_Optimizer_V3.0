@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
@@ -23,31 +23,39 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             if (string.IsNullOrEmpty(key)) return string.Empty;
 
             var result = LocalizationService.Instance[key];
-
-            if (!string.IsNullOrEmpty(result))
+            if (!string.IsNullOrEmpty(result) && !result.StartsWith("["))
             {
                 return result;
             }
 
-            try
+            if (Application.Current != null)
             {
-                string altKey = string.Empty;
+                var resources = Application.Current.Resources;
 
-                if (key.Contains('.'))
-                    altKey = key.Replace('.', '_');
-                else if (key.Contains('/'))
-                    altKey = key.Replace('/', '_');
-
-                if (!string.IsNullOrEmpty(altKey))
+                if (resources.TryGetValue(key, out object? val))
                 {
-                    var altResult = LocalizationService.Instance[altKey];
-                    if (!string.IsNullOrEmpty(altResult)) return altResult;
+                    return val?.ToString() ?? $"[{key}]";
+                }
+
+                foreach (var dict in resources.MergedDictionaries)
+                {
+                    if (dict.TryGetValue(key, out object? mergedVal))
+                    {
+                        return mergedVal?.ToString() ?? $"[{key}]";
+                    }
                 }
             }
-            catch
+
+            try
             {
-                // Fallback to key if logic fails
+                string altKey = key.Replace('.', '_').Replace('/', '_');
+                if (altKey != key)
+                {
+                    var altResult = GetString(altKey);
+                    if (!altResult.StartsWith("[")) return altResult;
+                }
             }
+            catch { }
 
             return $"[{key}]";
         }

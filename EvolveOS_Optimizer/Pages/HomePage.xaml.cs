@@ -252,6 +252,42 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void DiskCard_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is UIElement element)
+            {
+                var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(element);
+                var compositor = visual.Compositor;
+
+                visual.CenterPoint = new System.Numerics.Vector3((float)(element.ActualSize.X / 2), (float)(element.ActualSize.Y / 2), 0f);
+
+                var springAnimation = compositor.CreateSpringVector3Animation();
+                springAnimation.Target = "Scale";
+                springAnimation.FinalValue = new System.Numerics.Vector3(1.05f, 1.05f, 1f); // 5% larger
+                springAnimation.DampingRatio = 0.6f;
+                springAnimation.Period = TimeSpan.FromMilliseconds(50);
+
+                visual.StartAnimation("Scale", springAnimation);
+            }
+        }
+
+        private void DiskCard_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is UIElement element)
+            {
+                var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(element);
+                var compositor = visual.Compositor;
+
+                var springAnimation = compositor.CreateSpringVector3Animation();
+                springAnimation.Target = "Scale";
+                springAnimation.FinalValue = new System.Numerics.Vector3(1f, 1f, 1f);
+                springAnimation.DampingRatio = 0.9f;
+                springAnimation.Period = TimeSpan.FromMilliseconds(50);
+
+                visual.StartAnimation("Scale", springAnimation);
+            }
+        }
+
         private void LoadWeather()
         {
             if (this.DataContext is HomePageViewModel vm)

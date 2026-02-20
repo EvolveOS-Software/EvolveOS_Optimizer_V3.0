@@ -1,12 +1,54 @@
-using System;
 using System.Runtime.InteropServices;
 
 namespace EvolveOS_Optimizer.Core
 {
     public static class Structs
     {
+        #region General Windows Messages
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MSG
+        {
+            public IntPtr hwnd;
+            public uint message;
+            public IntPtr wParam;
+            public IntPtr lParam;
+            public uint time;
+            public int pt_x;
+            public int pt_y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct COORD
+        {
+            public short X, Y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct STARTUPINFO
+        {
+            public int cb;
+            public IntPtr lpReserved, lpDesktop, lpTitle;
+            public int dwX, dwY, dwXSize, dwYSize, dwXCountChars, dwYCountChars, dwFillAttribute, dwFlags;
+            public short wShowWindow, cbReserved2;
+            public IntPtr lpReserved2, hStdInput, hStdOutput, hStdError;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct STARTUPINFOEX
+        {
+            public STARTUPINFO StartupInfo; public IntPtr lpAttributeList;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct PROCESS_INFORMATION
+        {
+            public IntPtr hProcess, hThread; public int dwProcessId, dwThreadId;
+        }
+        #endregion
+
         public static class Windows
         {
+            #region Memory Management Structs
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
             public struct MemoryCombineInformationEx
             {
@@ -41,7 +83,9 @@ namespace EvolveOS_Optimizer.Core
                     AvailExtendedVirtual = 0;
                 }
             }
+            #endregion
 
+            #region Cache Information Structs
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
             public struct SystemFileCacheInformation32
             {
@@ -69,7 +113,9 @@ namespace EvolveOS_Optimizer.Core
                 public long TransitionRePurposeCount;
                 public long Flags;
             }
+            #endregion
 
+            #region Security & Privilege Structs
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
             public struct TokenPrivileges
             {
@@ -77,7 +123,9 @@ namespace EvolveOS_Optimizer.Core
                 public long Luid;
                 public int Attr;
             }
+            #endregion
 
+            #region UI & Drawing Structs
             [StructLayout(LayoutKind.Sequential)]
             public struct Rect
             {
@@ -86,6 +134,7 @@ namespace EvolveOS_Optimizer.Core
                 public int Right;
                 public int Bottom;
             }
+            #endregion
         }
     }
 }

@@ -1,7 +1,9 @@
+using System.Reflection;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Utilities.Configuration;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Services;
-using System.Reflection;
+using Windows.System;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -14,9 +16,64 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private string? _displayProfileName;
         private bool _isNeedUpdate;
         private bool _isOverlayVisible;
+
+        public IEnumerable<VirtualKeyModifiers> AvailableModifiers { get; } = new[]
+        {
+            VirtualKeyModifiers.Control,
+            VirtualKeyModifiers.Menu,
+            VirtualKeyModifiers.Shift,
+            VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift,
+            VirtualKeyModifiers.Control | VirtualKeyModifiers.Menu
+        };
+
+        public IEnumerable<VirtualKey> AvailableKeys { get; } = Enumerable.Range((int)VirtualKey.A, 26)
+            .Select(k => (VirtualKey)k)
+            .Concat(Enumerable.Range((int)VirtualKey.F1, 12).Select(k => (VirtualKey)k));
         #endregion
 
         #region Properties
+
+        public bool UseHotkey
+        {
+            get => LocalMachineSettingsEngine.UseHotkey;
+            set
+            {
+                if (LocalMachineSettingsEngine.UseHotkey != value)
+                {
+                    LocalMachineSettingsEngine.UseHotkey = value;
+                    OnPropertyChanged();
+                    App.NotifyHotkeySettingsChanged();
+                }
+            }
+        }
+
+        public VirtualKeyModifiers OptimizationModifiers
+        {
+            get => LocalMachineSettingsEngine.OptimizationModifiers;
+            set
+            {
+                if (value != LocalMachineSettingsEngine.OptimizationModifiers)
+                {
+                    LocalMachineSettingsEngine.OptimizationModifiers = value;
+                    OnPropertyChanged();
+                    App.NotifyHotkeySettingsChanged();
+                }
+            }
+        }
+
+        public VirtualKey OptimizationKey
+        {
+            get => LocalMachineSettingsEngine.OptimizationKey;
+            set
+            {
+                if (value != LocalMachineSettingsEngine.OptimizationKey)
+                {
+                    LocalMachineSettingsEngine.OptimizationKey = value;
+                    OnPropertyChanged();
+                    App.NotifyHotkeySettingsChanged();
+                }
+            }
+        }
 
         public bool IsOverlayVisible
         {

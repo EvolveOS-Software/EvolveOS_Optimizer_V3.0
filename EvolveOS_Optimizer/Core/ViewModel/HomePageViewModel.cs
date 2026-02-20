@@ -20,8 +20,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public int GpuUsagePercentage => HardwareData.Gpu.Usage;
 
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue =
-            Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
         private ObservableCollection<HomePageModel> _displayData = new();
         private ObservableCollection<DriveSpaceInfo> _diskDrives = new();
@@ -349,7 +347,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void LoadDiskData()
         {
-            // Populate disk data
+            try
+            {
+                var driveData = DiskInfoService.GetDrivesData();
+
+                DiskDrives = new ObservableCollection<DriveSpaceInfo>(driveData);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Disk Data Error] Failed to load disk drives: {ex.Message}");
+            }
         }
 
         public void RefreshWallpaper()
@@ -477,33 +484,37 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Disposal
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (_statsTimer != null)
+            if (disposing)
             {
-                _statsTimer.Stop();
-                _statsTimer.Tick -= StatsTimer_Tick;
-                _statsTimer = null;
+                if (_statsTimer != null)
+                {
+                    _statsTimer.Stop();
+                    _statsTimer.Tick -= StatsTimer_Tick;
+                    _statsTimer = null;
+                }
+
+                try
+                {
+                    _cts.Cancel();
+                    // Optional: _cts.Dispose();
+                }
+                catch (ObjectDisposedException) { }
+
+                DisplayWallpaper = null;
+                _displayWallpaper = null;
+
+                _displayData?.Clear();
+                _fiveDayForecast?.Clear();
+                _diskDrives?.Clear();
+
+                OnPropertyChanged(string.Empty);
+
+                Debug.WriteLine("[HomePageVM] ViewModel Disposed and Tasks Canceled.");
             }
 
-            try
-            {
-                _cts.Cancel();
-            }
-            catch { }
-
-            DisplayWallpaper = null;
-            _displayWallpaper = null;
-
-            _displayData?.Clear();
-            _fiveDayForecast?.Clear();
-            _diskDrives?.Clear();
-
-            OnPropertyChanged(string.Empty);
-
-            base.Dispose();
-
-            Debug.WriteLine("[HomePageVM] ViewModel Disposed and Tasks Canceled.");
+            base.Dispose(disposing);
         }
         #endregion
 

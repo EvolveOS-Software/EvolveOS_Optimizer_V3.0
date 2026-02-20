@@ -313,5 +313,35 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             return output;
         }
+
+        internal static async Task<int> StartInCmd(string command)
+        {
+            try
+            {
+                using var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"SysNative\cmd.exe")
+                            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"System32\cmd.exe"),
+                        Arguments = $"/c {command}",
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
+                    }
+                };
+
+                process.Start();
+                await process.WaitForExitAsync().ConfigureAwait(false);
+                return process.ExitCode;
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                return -1;
+            }
+        }
     }
 }

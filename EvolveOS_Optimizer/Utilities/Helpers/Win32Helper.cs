@@ -9,7 +9,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class Win32Helper
     {
-        #region Constants
+        #region Win32 Constants
 
         public const int AutoOptimizationMemoryUsageInterval = 5;
 
@@ -117,6 +117,18 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         public const uint SWP_FRAMECHANGED = 0x0020; // This is the magic flag
         public const uint SWP_SHOWWINDOW = 0x0040;
 
+        public const int WM_HOTKEY = 0x0312;
+        public const int WM_USER_REGISTER_HOTKEY = 0x0401;
+
+        public const uint MOD_ALT = 0x0001;
+        public const uint MOD_CONTROL = 0x0002;
+        public const uint MOD_SHIFT = 0x0004;
+        public const uint MOD_WIN = 0x0008;
+        public const uint MOD_NOREPEAT = 0x4000;
+
+        public const uint EXTENDED_STARTUPINFO_PRESENT = 0x00080000;
+        public const int PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE = 0x00020016;
+
         #endregion
 
         #region Native Methods
@@ -155,7 +167,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         internal static extern bool EmptyWorkingSet(IntPtr hProcess);
 
         [DllImport("user32", SetLastError = true, CharSet = CharSet.Unicode)]
-        internal static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        internal static extern IntPtr FindWindow(string lpClassName, string? lpWindowName);
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -178,7 +190,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool LookupPrivilegeValue(string lpSystemName, string lpName, ref long lpLuid);
+        internal static extern bool LookupPrivilegeValue(string? lpSystemName, string lpName, ref long lpLuid);
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport("ntdll.dll", SetLastError = true)]
@@ -214,7 +226,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         internal static extern bool DeviceIoControl(SafeFileHandle hDevice, uint dwIoControlCode, IntPtr lpInBuffer, uint nInBufferSize, IntPtr lpOutBuffer, uint nOutBufferSize, out int lpBytesReturned, IntPtr lpOverlapped);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+        public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string? lpszWindow);
 
         [DllImport("user32.dll")]
         public static extern bool GetClientRect(IntPtr hWnd, out Structs.Windows.Rect lpRect);
@@ -255,6 +267,53 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         [DllImport("user32.dll")]
         internal static extern int GetSystemMetrics(int nIndex);
+
+        [DllImport("dnsapi.dll", EntryPoint = "DnsFlushResolverCache", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool DnsFlushResolverCache();
+
+        [DllImport("Iphlpapi.dll", SetLastError = true)]
+        internal static extern uint FlushIpNetTable(int dwIfIndex);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetActiveWindow();
+
+        [DllImport("user32.dll")]
+        internal static extern sbyte GetMessage(out Structs.MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
+        [DllImport("user32.dll")]
+        internal static extern bool TranslateMessage(ref Structs.MSG lpMsg);
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr DispatchMessage(ref Structs.MSG lpMsg);
+
+        [DllImport("user32.dll")]
+        internal static extern bool PostThreadMessage(uint idThread, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("kernel32.dll")]
+        internal static extern uint GetCurrentThreadId();
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern int CreatePseudoConsole(Structs.COORD size, SafeFileHandle hInput, SafeFileHandle hOutput, uint dwFlags, out IntPtr phPC);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern void ClosePseudoConsole(IntPtr hPC);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool InitializeProcThreadAttributeList(IntPtr lpAttributeList, int dwAttributeCount, int dwFlags, ref IntPtr lpSize);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool UpdateProcThreadAttribute(IntPtr lpAttributeList, uint dwFlags, IntPtr attribute, IntPtr lpValue, IntPtr cbSize, IntPtr lpPreviousValue, IntPtr lpReturnSize);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool CreatePipe(out SafeFileHandle hReadPipe, out SafeFileHandle hWritePipe, IntPtr lpPipeAttributes, int nSize);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool CreateProcessW(string? lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string? lpCurrentDirectory, ref Structs.STARTUPINFOEX lpStartupInfo, out Structs.PROCESS_INFORMATION lpProcessInformation);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool GetExitCodeProcess(IntPtr hProcess, out uint lpExitCode);
+
         #endregion
 
         #region Delegates & Private Fields

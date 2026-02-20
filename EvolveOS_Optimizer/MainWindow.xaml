@@ -206,6 +206,13 @@
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Maintenance"
+                                     Tag="{x:Bind GetText('Nav_Maintenance'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xE772;" FontSize="18"/>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Settings"
                                      Tag="{x:Bind GetText('Nav_Settings'), Mode=OneWay}">
                             <SymbolIcon Symbol="Setting" />

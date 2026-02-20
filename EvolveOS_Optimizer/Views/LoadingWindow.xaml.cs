@@ -121,7 +121,6 @@ namespace EvolveOS_Optimizer.Views
             byte g = byte.Parse(hex.Substring(pos + 2, 2), System.Globalization.NumberStyles.HexNumber);
             byte b = byte.Parse(hex.Substring(pos + 4, 2), System.Globalization.NumberStyles.HexNumber);
 
-            // Color.FromArgb is in Windows.UI
             return Color.FromArgb(a, r, g, b);
         }
 
@@ -289,6 +288,8 @@ namespace EvolveOS_Optimizer.Views
             try
             {
                 var mainDash = new global::EvolveOS_Optimizer.MainWindow();
+
+                mainDash.Closed += (s, e) => { App.ExitApp(); };
 
                 if (Application.Current is App myApp)
                 {

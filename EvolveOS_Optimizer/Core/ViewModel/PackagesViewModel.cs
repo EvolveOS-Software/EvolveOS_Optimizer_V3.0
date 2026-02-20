@@ -176,23 +176,26 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (_dataChangedHandler != null)
+            if (disposing)
             {
-                UninstallingPackages.DataChanged -= _dataChangedHandler;
-                _dataChangedHandler = null;
+                if (_dataChangedHandler != null)
+                {
+                    UninstallingPackages.DataChanged -= _dataChangedHandler;
+                    _dataChangedHandler = null;
+                }
+
+                DisplayState?.Clear();
+                DisplayState = null!;
+
+                SystemAppList?.Clear();
+                SelectedPackages?.Clear();
+
+                Debug.WriteLine("[PackagesVM] Cleanly Disposed.");
             }
 
-            DisplayState?.Clear();
-            DisplayState = null!;
-
-            SystemAppList?.Clear();
-
-            SelectedPackages?.Clear();
-
-            base.Dispose();
-            Debug.WriteLine("[PackagesVM] Cleanly Disposed.");
+            base.Dispose(disposing);
         }
     }
 }

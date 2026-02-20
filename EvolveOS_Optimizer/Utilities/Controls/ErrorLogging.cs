@@ -11,6 +11,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
     {
         [Conditional("DEBUG")]
         internal static void LogDebug(Exception ex, [CallerMemberName] string memberName = "") => Debug.WriteLine($"Debug: {ex.Message}\nStack Trace: {ex.StackTrace}\nMember: {memberName}\n");
+        [Conditional("DEBUG")]
+        internal static void LogDebug(string message, [CallerMemberName] string memberName = "") => Debug.WriteLine($"Debug: {message}\nMember: {memberName}\n");
 
         internal static void LogWritingFile(Exception ex, [CallerMemberName] string memberName = "") => Task.Run(() => LogToFile(ex, memberName)).Wait();
 

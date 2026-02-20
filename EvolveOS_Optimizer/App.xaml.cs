@@ -1,9 +1,12 @@
 using System.IO;
 using System.Security.Principal;
 using System.Threading;
+using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
+using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
 
@@ -11,8 +14,13 @@ namespace EvolveOS_Optimizer
 {
     public partial class App : Application
     {
+        public const string Name = "EvolveOS Optimizer";
+
         public Window? MainWindow { get; set; }
         private static Mutex? _mutex;
+
+        private static IHotkeyService? _hotkeyService;
+        public static event EventHandler? HotkeySettingsChanged;
 
         public static new App Current => (App)Application.Current;
 
@@ -52,9 +60,11 @@ namespace EvolveOS_Optimizer
                 }
             }
 
-            SetPriority(ProcessPriorityClass.High);
+            SetPriority(LocalMachineSettingsEngine.RunOnPriority);
 
-            SettingsEngine.CheckingParameters();
+            _hotkeyService = new EvolveOS_Optimizer.Utilities.Services.HotkeyService();
+
+            СheckingGlobalParameters.Initialize();
             App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
 
             var loadingWindow = new LoadingWindow();
@@ -68,21 +78,45 @@ namespace EvolveOS_Optimizer
                 await Task.Delay(500);
                 UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
 
+                NotifyHotkeySettingsChanged();
+
                 _ = StartBackgroundServices();
             });
         }
 
         #region System & Process Utilities
 
-        public static void SetPriority(ProcessPriorityClass priorityClass)
+        public static void SetPriority(Enums.Priority priority)
         {
+            var (boost, procClass, threadPri, threadLevel) = priority switch
+            {
+                Enums.Priority.Low => (false, ProcessPriorityClass.Idle, ThreadPriority.Lowest, ThreadPriorityLevel.Idle),
+                Enums.Priority.Normal => (true, ProcessPriorityClass.Normal, ThreadPriority.Normal, ThreadPriorityLevel.Normal),
+                Enums.Priority.High => (true, ProcessPriorityClass.High, ThreadPriority.Highest, ThreadPriorityLevel.Highest),
+                _ => throw new NotImplementedException()
+            };
+
             try
             {
+                Thread.CurrentThread.Priority = threadPri;
                 var process = Process.GetCurrentProcess();
-                process.PriorityClass = priorityClass;
-                Debug.WriteLine($"[App] Priority set to: {priorityClass}");
+                process.PriorityBoostEnabled = boost;
+                process.PriorityClass = procClass;
+
+                Task.Run(() =>
+                {
+                    foreach (ProcessThread thread in process.Threads)
+                    {
+                        try
+                        {
+                            thread.PriorityBoostEnabled = boost;
+                            thread.PriorityLevel = threadLevel;
+                        }
+                        catch { }
+                    }
+                });
             }
-            catch (Exception ex) { Debug.WriteLine($"[App] Priority Error: {ex.Message}"); }
+            catch { }
         }
 
         private bool IsRunningAsAdmin()
@@ -107,6 +141,62 @@ namespace EvolveOS_Optimizer
                 catch (IOException) { await Task.Delay(200); }
             }
             return false;
+        }
+
+        public static bool NotifyHotkeySettingsChanged()
+        {
+            HotkeySettingsChanged?.Invoke(null, EventArgs.Empty);
+
+            var service = GetService<IHotkeyService>();
+            if (service == null) return false;
+
+            service.UnregisterAll();
+
+            if (LocalMachineSettingsEngine.UseHotkey)
+            {
+                var hotkey = new EvolveOS_Optimizer.Core.Model.Hotkey(
+                    LocalMachineSettingsEngine.OptimizationModifiers,
+                    LocalMachineSettingsEngine.OptimizationKey
+                );
+
+                bool success = service.Register(hotkey, () =>
+                {
+                    Task.Run(() => RunGlobalOptimization());
+                });
+
+                if (!success)
+                {
+                    ShowNotification("Hotkey Warning", $"Hotkey {hotkey} is in use by another app.", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Warning, 5000);
+                }
+
+                return success;
+            }
+
+            return true;
+        }
+
+        private static void RunGlobalOptimization()
+        {
+            var computerService = new ComputerService();
+            _ = computerService.Optimize(Enums.Memory.Optimization.Reason.Manual, LocalMachineSettingsEngine.MemoryAreas);
+
+            if (Current.MainWindow?.DispatcherQueue != null)
+            {
+                Current.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                {
+                    ShowNotification("Optimizer", "Memory successfully cleaned via Global Hotkey!", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Success, 3000);
+                });
+            }
+        }
+
+        public static T? GetService<T>() where T : class
+        {
+            if (typeof(T) == typeof(IHotkeyService))
+            {
+                return _hotkeyService as T;
+            }
+
+            return null;
         }
 
         private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
@@ -200,6 +290,53 @@ namespace EvolveOS_Optimizer
             }
         }
 
+        #endregion
+
+        #region Application Cleanup & Shutdown
+        private void MainWindow_Closed(object sender, WindowEventArgs args)
+        {
+            ExitApp();
+        }
+
+        public static void ExitApp()
+        {
+            try
+            {
+                Debug.WriteLine("[App] Shutting down...");
+
+                _hotkeyService?.Dispose();
+
+                if (_mutex != null)
+                {
+                    _mutex.ReleaseMutex();
+                    _mutex.Dispose();
+                }
+
+                ReleaseMemory();
+
+                Environment.Exit(0);
+            }
+            catch
+            {
+                Environment.Exit(1);
+            }
+        }
+
+        public static void ReleaseMemory()
+        {
+            try
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                Win32Helper.EmptyWorkingSet(Process.GetCurrentProcess().Handle);
+
+                Debug.WriteLine("[App] Memory successfully released.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[App] Failed to release memory: {ex.Message}");
+            }
+        }
         #endregion
     }
 }

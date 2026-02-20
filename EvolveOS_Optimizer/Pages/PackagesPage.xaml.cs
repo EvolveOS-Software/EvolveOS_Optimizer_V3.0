@@ -98,10 +98,22 @@ namespace EvolveOS_Optimizer.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            base.OnNavigatedTo(e);
+
             if (e.Parameter is PackagesViewModel vm)
             {
                 this.DataContext = vm;
             }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            if (this.DataContext is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+
+            base.OnNavigatedFrom(e);
         }
 
         #region UI Event Handlers (Buttons & Menus)

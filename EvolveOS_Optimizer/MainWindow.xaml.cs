@@ -171,6 +171,7 @@ namespace EvolveOS_Optimizer
                 //"Utils" => new Pages.UtilitiesPage(),
                 "Scripts" => typeof(Pages.ScriptsPage),
                 "System" => typeof(Pages.SystemPage),
+                "Maintenance" => typeof(Pages.MaintenancePage),
                 "Settings" => typeof(Pages.SettingsPage),
                 _ => typeof(Pages.HomePage)
             };
