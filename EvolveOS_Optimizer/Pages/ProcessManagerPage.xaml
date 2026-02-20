@@ -7,7 +7,7 @@
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     mc:Ignorable="d">
 
-    <Grid x:Name="ContentArea" Padding="24,14,24,0">
+    <Grid x:Name="ContentArea" Padding="4,14,24,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>

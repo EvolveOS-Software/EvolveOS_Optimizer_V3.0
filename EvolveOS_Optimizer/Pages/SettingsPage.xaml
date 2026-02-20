@@ -15,7 +15,7 @@
     </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Spacing="24" Margin="28,20,28,40">
+        <StackPanel Spacing="24" Margin="4,20,28,40">
 
             <StackPanel Spacing="4">
                 <TextBlock Text="{x:Bind GetText('Settings_Appearance_Title'), Mode=OneWay}" 
