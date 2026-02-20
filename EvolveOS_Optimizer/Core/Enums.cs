@@ -1,4 +1,4 @@
-﻿namespace EvolveOS_Optimizer.Core
+namespace EvolveOS_Optimizer.Core
 {
     internal class Enums
     {
@@ -12,5 +12,12 @@
             PausePending = 0x00000006,
             Paused = 0x00000007
         }
+    }
+
+    internal enum ServiceControlAction
+    {
+        Start,
+        Stop,
+        Restart
     }
 }

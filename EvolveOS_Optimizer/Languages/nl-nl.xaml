@@ -62,7 +62,7 @@
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
     <sys:String x:Key="Nav_Software_Center">Software Centrum</sys:String>
     <sys:String x:Key="Nav_GroupPolicy">Beleid</sys:String>
-    <sys:String x:Key="Nav_Services">Services</sys:String>
+    <sys:String x:Key="Nav_Services">Service Tweaks</sys:String>
     <sys:String x:Key="Nav_System">Systeem</sys:String>
     <sys:String x:Key="Nav_Settings">Instellingen</sys:String>
     <!-- endregion Main Window -->
@@ -806,5 +806,48 @@
     <sys:String x:Key="tt_doubletapped_script">Dubbelklik om script uit te voeren</sys:String>
     <sys:String x:Key="warn_invalid_script_ext">Eén of meer bestanden zijn genegeerd. Ondersteunde typen: .ps1, .bat, .cmd, .reg</sys:String>
     <!--#endregion-->
+
+    <!-- region Service Manager Page -->
+    <sys:String x:Key="service_manager_page_search_placeholder">Services zoeken...</sys:String>
+    <sys:String x:Key="service_manager_page_start_tooltip">Service starten</sys:String>
+    <sys:String x:Key="service_manager_page_stop_tooltip">Service stoppen</sys:String>
+    <sys:String x:Key="service_manager_page_restart_tooltip">Service opnieuw starten</sys:String>
+
+    <sys:String x:Key="service_manager_page_all">Alles</sys:String>
+    <sys:String x:Key="service_manager_page_running">Wordt uitgevoerd</sys:String>
+    <sys:String x:Key="service_manager_page_stopped">Gestopt</sys:String>
+
+    <sys:String x:Key="service_manager_page_automatic">Automatisch</sys:String>
+    <sys:String x:Key="service_manager_page_manual">Handmatig</sys:String>
+    <sys:String x:Key="service_manager_page_disabled">Uitgeschakeld</sys:String>
+
+    <sys:String x:Key="service_manager_page_total_services">Totaal aantal services</sys:String>
+    <sys:String x:Key="service_manager_page_running_services">Actieve services</sys:String>
+    <sys:String x:Key="service_manager_page_stopped_services">Gestopte services</sys:String>
+
+    <sys:String x:Key="service_manager_page_startup">Opstarten</sys:String>
+    <sys:String x:Key="service_manager_page_actions">Acties</sys:String>
+
+    <sys:String x:Key="service_manager_page_service_name">Servicenaam</sys:String>
+    <sys:String x:Key="service_manager_page_status">Status</sys:String>
+    <!-- endregion Service Manager Page -->
+
+    <!-- region Process Manager Page -->
+    <sys:String x:Key="process_manager_page_total_processes">Totaal aantal processen</sys:String>
+    <sys:String x:Key="process_manager_page_total_memory">Totaal geheugengebruik</sys:String>
+    <sys:String x:Key="process_manager_page_total_threads">Totaal aantal threads</sys:String>
+
+    <sys:String x:Key="process_manager_page_name">Naam</sys:String>
+    <sys:String x:Key="process_manager_page_memory">Geheugen</sys:String>
+    <sys:String x:Key="process_manager_page_threads">Threads</sys:String>
+    <sys:String x:Key="process_manager_page_pid">PID</sys:String>
+    <sys:String x:Key="process_manager_page_actions">Acties</sys:String>
+
+    <sys:String x:Key="process_manager_page_end_task">Taak beëindigen</sys:String>
+    <sys:String x:Key="process_manager_page_end_task_tooltip">Proces beëindigen</sys:String>
+
+    <sys:String x:Key="process_manager_page_refresh">Vernieuwen</sys:String>
+    <sys:String x:Key="process_manager_page_search_placeholder">Processen zoeken...</sys:String>
+    <!-- endregion Process Manager Page -->
 
 </ResourceDictionary>

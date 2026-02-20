@@ -1,10 +1,7 @@
-using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
 
@@ -16,6 +13,16 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static void LogDebug(Exception ex, [CallerMemberName] string memberName = "") => Debug.WriteLine($"Debug: {ex.Message}\nStack Trace: {ex.StackTrace}\nMember: {memberName}\n");
 
         internal static void LogWritingFile(Exception ex, [CallerMemberName] string memberName = "") => Task.Run(() => LogToFile(ex, memberName)).Wait();
+
+        internal static async Task LogInfo(string message, [CallerMemberName] string memberName = "")
+        {
+            // Outputs to the Visual Studio Debug console
+            Debug.WriteLine($"[INFO] {memberName}: {message}");
+
+            // try { await File.AppendAllTextAsync(PathLocator.Files.ErrorLog.Replace(".log", "_Info.log"), $"[{DateTime.Now}] {memberName}: {message}\n"); } catch { }
+
+            await Task.CompletedTask;
+        }
 
         private static async Task EnsureAssociation()
         {

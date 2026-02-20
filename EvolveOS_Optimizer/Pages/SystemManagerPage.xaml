@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="EvolveOS_Optimizer.Pages.SystemManagerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:ui="using:Microsoft.UI.Xaml.Controls"
+    Background="Transparent" NavigationCacheMode="Disabled"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ui:NavigationView x:Name="SystemNav"
+                           PaneDisplayMode="Top"
+                           IsBackButtonVisible="Collapsed"
+                           IsSettingsVisible="False" 
+                           Background="Transparent"
+                           SelectionChanged="SystemNav_SelectionChanged">
+
+            <ui:NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+            </ui:NavigationView.Resources>
+
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="Processes" Tag="ProcessManagerPage">
+                    <ui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEA37;"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="Services" Tag="ServiceManagerPage">
+                    <ui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE90F;"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.MenuItems>
+
+            <Frame x:Name="ContentFrame" Background="Transparent" Margin="0,10,0,0"/>
+        </ui:NavigationView>
+    </Grid>
+</Page>

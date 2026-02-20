@@ -162,14 +162,15 @@ namespace EvolveOS_Optimizer
             {
                 "Home" => typeof(Pages.HomePage),
                 "Security" => typeof(Pages.SecurityPage),
-                //"Utils" => new Pages.UtilitiesPage(),
                 "Confidentiality" => typeof(Pages.PrivacyPage),
-                "Interface" => typeof(Pages.InterfacePage),
-                "Software" => typeof(Pages.SoftwareCenterPage),
                 "GroupPolicy" => typeof(Pages.GroupPolicyPage),
-                "Services" => typeof(Pages.ServicesPage),
-                "System" => typeof(Pages.SystemPage),
+                "Interface" => typeof(Pages.InterfacePage),
+                "ServiceTweaks" => typeof(Pages.ServicesPage),
+                "SystemManager" => typeof(Pages.SystemManagerPage),
+                "Software" => typeof(Pages.SoftwareCenterPage),
+                //"Utils" => new Pages.UtilitiesPage(),
                 "Scripts" => typeof(Pages.ScriptsPage),
+                "System" => typeof(Pages.SystemPage),
                 "Settings" => typeof(Pages.SettingsPage),
                 _ => typeof(Pages.HomePage)
             };

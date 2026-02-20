@@ -62,7 +62,7 @@
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
     <sys:String x:Key="Nav_Software_Center">Centre de logiciels</sys:String>
     <sys:String x:Key="Nav_GroupPolicy">Stratégies</sys:String>
-    <sys:String x:Key="Nav_Services">Services</sys:String>
+    <sys:String x:Key="Nav_Services">Service Tweaks</sys:String>
     <sys:String x:Key="Nav_System">Système</sys:String>
     <sys:String x:Key="Nav_Settings">Paramètres</sys:String>
     <!-- endregion Main Window -->
@@ -811,5 +811,48 @@
     <sys:String x:Key="tt_doubletapped_script">Double-cliquez pour exécuter le script</sys:String>
     <sys:String x:Key="warn_invalid_script_ext">Un ou plusieurs fichiers ont été ignorés. Types supportés : .ps1, .bat, .cmd, .reg</sys:String>
     <!--#endregion-->
+
+    <!-- region Service Manager Page -->
+    <sys:String x:Key="service_manager_page_search_placeholder">Rechercher des services...</sys:String>
+    <sys:String x:Key="service_manager_page_start_tooltip">Démarrer le service</sys:String>
+    <sys:String x:Key="service_manager_page_stop_tooltip">Arrêter le service</sys:String>
+    <sys:String x:Key="service_manager_page_restart_tooltip">Redémarrer le service</sys:String>
+
+    <sys:String x:Key="service_manager_page_all">Tous</sys:String>
+    <sys:String x:Key="service_manager_page_running">En cours d'exécution</sys:String>
+    <sys:String x:Key="service_manager_page_stopped">Arrêté</sys:String>
+
+    <sys:String x:Key="service_manager_page_automatic">Automatique</sys:String>
+    <sys:String x:Key="service_manager_page_manual">Manuel</sys:String>
+    <sys:String x:Key="service_manager_page_disabled">Désactivé</sys:String>
+
+    <sys:String x:Key="service_manager_page_total_services">Total des services</sys:String>
+    <sys:String x:Key="service_manager_page_running_services">Services en cours d'exécution</sys:String>
+    <sys:String x:Key="service_manager_page_stopped_services">Services arrêtés</sys:String>
+
+    <sys:String x:Key="service_manager_page_startup">Démarrage</sys:String>
+    <sys:String x:Key="service_manager_page_actions">Actions</sys:String>
+
+    <sys:String x:Key="service_manager_page_service_name">Nom du service</sys:String>
+    <sys:String x:Key="service_manager_page_status">État</sys:String>
+    <!-- endregion Service Manager Page -->
+
+    <!-- region Process Manager Page -->
+    <sys:String x:Key="process_manager_page_total_processes">Processus totaux</sys:String>
+    <sys:String x:Key="process_manager_page_total_memory">Mémoire totale</sys:String>
+    <sys:String x:Key="process_manager_page_total_threads">Threads totaux</sys:String>
+
+    <sys:String x:Key="process_manager_page_name">Nom</sys:String>
+    <sys:String x:Key="process_manager_page_memory">Mémoire</sys:String>
+    <sys:String x:Key="process_manager_page_threads">Threads</sys:String>
+    <sys:String x:Key="process_manager_page_pid">PID</sys:String>
+    <sys:String x:Key="process_manager_page_actions">Actions</sys:String>
+
+    <sys:String x:Key="process_manager_page_end_task">Fin de tâche</sys:String>
+    <sys:String x:Key="process_manager_page_end_task_tooltip">Arrêter le processus</sys:String>
+
+    <sys:String x:Key="process_manager_page_refresh">Actualiser</sys:String>
+    <sys:String x:Key="process_manager_page_search_placeholder">Rechercher des processus...</sys:String>
+    <!-- endregion Process Manager Page -->
 
 </ResourceDictionary>
