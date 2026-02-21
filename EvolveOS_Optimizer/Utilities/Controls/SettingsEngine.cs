@@ -33,7 +33,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableSelectionGlow"] = true,
             ["ScriptsPath"] = string.Empty,
             ["AllScriptsPaths"] = string.Empty,
-            ["EnableIpBlur"] = true
+            ["EnableIpBlur"] = true,
+            ["LastLocation"] = "Paris"
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -49,6 +50,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool IsHoverGlowEnabled { get => (bool)_cachedSettings["EnableHoverGlow"]; set => ChangingParameters("EnableHoverGlow", value); }
         internal static bool IsSelectionGlowEnabled { get => (bool)_cachedSettings["EnableSelectionGlow"]; set => ChangingParameters("EnableSelectionGlow", value); }
         internal static string UserScriptsPath { get => (string)_cachedSettings["ScriptsPath"]; set => ChangingParameters("ScriptsPath", value); }
+        internal static string LastLocation { get => (string)_cachedSettings["LastLocation"]; set => ChangingParameters("LastLocation", value); }
         internal static List<string> AllUserScriptsPaths
         {
             get

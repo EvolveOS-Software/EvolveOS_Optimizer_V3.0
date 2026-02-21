@@ -2,64 +2,89 @@ using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
+using EvolveOS_Optimizer.Utilities.Controls;
 using static EvolveOS_Optimizer.Core.Model.WeatherApiModels;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
-    public class WeatherService : IDisposable
+    public class WeatherService
     {
-        private static readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
+        private static readonly HttpClient _client = new HttpClient();
 
         private const string API_KEY = "6aa62b54867341f3b3925740250511";
         private const int FORECAST_DAYS = 5;
         private const string BASE_URL = "https://api.weatherapi.com/v1/forecast.json";
 
         private string _location = string.Empty;
-
         public string Location => _location;
 
         public async Task<WeatherData> GetWeatherAsync(string? locationOverride = null, CancellationToken token = default)
         {
-            if (string.IsNullOrEmpty(API_KEY) || API_KEY == "YOUR_WEATHERAPI_KEY")
-            {
-                return GetMockWeatherData();
-            }
+            if (string.IsNullOrEmpty(API_KEY) || API_KEY.Contains("CHANGE_ME")) return GetMockWeatherData();
 
             string effectiveLocation = locationOverride ?? _location;
-            if (string.IsNullOrEmpty(effectiveLocation)) effectiveLocation = "London";
+            if (string.IsNullOrEmpty(effectiveLocation)) effectiveLocation = SettingsEngine.LastLocation;
+            if (string.IsNullOrEmpty(effectiveLocation)) effectiveLocation = "Paris";
 
-            var url = $"{BASE_URL}?key={API_KEY}&q={effectiveLocation}&days={FORECAST_DAYS}";
+            var url = $"{BASE_URL}?key={API_KEY}&q={Uri.EscapeDataString(effectiveLocation)}&days={FORECAST_DAYS}";
 
-            try
+            int maxRetries = 3;
+            int currentAttempt = 0;
+
+            while (currentAttempt < maxRetries)
             {
-                using var response = await _client.GetAsync(url, token);
-                response.EnsureSuccessStatusCode();
-
-                var content = await response.Content.ReadAsStringAsync(token);
-                if (token.IsCancellationRequested) return null!;
-
-                var apiResponse = JsonSerializer.Deserialize<ApiWeatherResponse>(content);
-
-                if (apiResponse == null) return GetMockWeatherData();
-
-                if (apiResponse.Location?.Name != null)
+                currentAttempt++;
+                try
                 {
-                    _location = apiResponse.Location.Name;
-                }
+                    int timeoutSeconds = currentAttempt == 1 ? 4 : 7;
+                    using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+                    cts.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
 
-                return MapApiToUiModel(apiResponse);
+                    using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        break;
+                    }
+
+                    var content = await response.Content.ReadAsStringAsync(cts.Token);
+                    var apiResponse = JsonSerializer.Deserialize<ApiWeatherResponse>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    if (apiResponse?.Current != null)
+                    {
+                        if (apiResponse.Location?.Name != null)
+                        {
+                            _location = apiResponse.Location.Name;
+                            SettingsEngine.LastLocation = _location;
+                        }
+                        return MapApiToUiModel(apiResponse);
+                    }
+                }
+                catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+                {
+                    Debug.WriteLine($"[Weather] Attempt {currentAttempt} timed out.");
+
+                    if (currentAttempt < maxRetries)
+                    {
+                        await Task.Delay(500, token);
+                        continue;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Weather] Fetch Error on attempt {currentAttempt}: {ex.Message}");
+                    break;
+                }
             }
-            catch (OperationCanceledException)
-            {
-                Debug.WriteLine("[WeatherService] Operation was cancelled during network request.");
-                return null!;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Weather API Error: {ex.Message}");
-                return GetMockWeatherData();
-            }
+
+            return GetMockWeatherData();
         }
+
+        #region Helpers & Mapping
 
         private string GetLocalIconPath(string? conditionText)
         {
@@ -68,10 +93,11 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
             string lower = conditionText.ToLowerInvariant();
 
-            if (lower.Contains("rain") || lower.Contains("drizzle") || lower.Contains("shower") || lower.Contains("snow") || lower.Contains("sleet"))
+            if (lower.Contains("rain") || lower.Contains("drizzle") || lower.Contains("shower") ||
+                lower.Contains("snow") || lower.Contains("sleet") || lower.Contains("thunder"))
                 return "ms-appx:///Assets/ImagePackages/Rain.png";
 
-            if (lower.Contains("cloud") || lower.Contains("overcast") || lower.Contains("fog"))
+            if (lower.Contains("cloud") || lower.Contains("overcast") || lower.Contains("fog") || lower.Contains("mist"))
                 return "ms-appx:///Assets/ImagePackages/Cloudy.png";
 
             if (lower.Contains("wind") || lower.Contains("storm") || lower.Contains("blizzard"))
@@ -86,7 +112,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 TempC = apiResponse.Current?.TempC ?? 0,
                 Description = apiResponse.Current?.Condition?.Text ?? "Unknown",
-
                 CurrentIconUrl = GetLocalIconPath(apiResponse.Current?.Condition?.Text)
             };
 
@@ -113,26 +138,15 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         private WeatherData GetMockWeatherData()
         {
             const string BasePath = "ms-appx:///Assets/ImagePackages/";
-
             return new WeatherData
             {
-                TempC = 25,
-                Description = "Partly Cloudy",
+                TempC = 0,
+                Description = "Offline",
                 CurrentIconUrl = BasePath + "Cloudy.png",
-                Forecast = new List<DailyForecast>
-                {
-                    new DailyForecast { Day = "MON", IconSource = BasePath + "Sunny.png", MaxTemp = "25°", MinTemp = "18°" },
-                    new DailyForecast { Day = "TUE", IconSource = BasePath + "Cloudy.png", MaxTemp = "22°", MinTemp = "16°" },
-                    new DailyForecast { Day = "WED", IconSource = BasePath + "Rain.png", MaxTemp = "19°", MinTemp = "14°" },
-                    new DailyForecast { Day = "THU", IconSource = BasePath + "Wind.png", MaxTemp = "21°", MinTemp = "15°" },
-                    new DailyForecast { Day = "FRI", IconSource = BasePath + "Sunny.png", MaxTemp = "24°", MinTemp = "17°" }
-                }
+                Forecast = new List<DailyForecast>()
             };
         }
 
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
+        #endregion
     }
 }

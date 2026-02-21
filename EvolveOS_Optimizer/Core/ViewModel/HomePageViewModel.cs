@@ -374,19 +374,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             try
             {
                 string loc = locationOverride ?? WeatherLocation;
+                if (string.IsNullOrWhiteSpace(loc)) loc = "Paris";
 
-                Task<WeatherData> weatherTask = _weatherService.GetWeatherAsync(loc, token);
-                Task timeoutTask = Task.Delay(5000, token);
-                Task completedTask = await Task.WhenAny(weatherTask, timeoutTask);
+                WeatherData data = await _weatherService.GetWeatherAsync(loc, token);
 
-                if (completedTask == timeoutTask || token.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                WeatherData data = await weatherTask;
-
-                if (data == null) return;
+                if (data == null || token.IsCancellationRequested) return;
 
                 _dispatcherQueue.TryEnqueue(() =>
                 {
@@ -394,6 +386,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     WeatherDescription = data.Description;
                     WeatherTemperature = data.TempC.ToString("F0") + "°";
+
                     WeatherLocation = loc;
 
                     CurrentWeatherIcon = data.CurrentIconUrl;
@@ -408,41 +401,52 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                 });
             }
-            catch (OperationCanceledException)
-            {
-                // Silent exit
-            }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Weather Error] {ex.Message}");
+                Debug.WriteLine($"[Weather UI Error] {ex.Message}");
             }
         }
 
-        private string LoadLocationFromRegistry()
+        private static string LoadLocationFromRegistry()
         {
             try
             {
                 using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\EvolveOS_Optimizer");
-                string? saved = key?.GetValue("LastLocation") as string;
-                return !string.IsNullOrEmpty(saved) ? saved : "Paris";
+                if (key != null)
+                {
+                    var saved = key.GetValue("LastLocation") as string;
+                    if (!string.IsNullOrWhiteSpace(saved))
+                    {
+                        return saved;
+                    }
+                }
             }
-            catch { return "Paris"; }
+            catch
+            {
+                // Log error if necessary, otherwise fall back
+            }
+
+            return "Paris";
         }
 
         public void UpdateWeatherData(WeatherApiModels.WeatherData data)
         {
-            this.WeatherTemperature = $"{data.TempC:F0}°";
-            this.WeatherDescription = data.Description;
-            this.CurrentWeatherIcon = data.CurrentIconUrl;
-
-            if (data.Forecast != null)
+            _dispatcherQueue.TryEnqueue(() =>
             {
-                this.FiveDayForecast.Clear();
-                foreach (var item in data.Forecast)
+                this.WeatherTemperature = $"{data.TempC:F0}°";
+                this.WeatherDescription = data.Description;
+                this.CurrentWeatherIcon = data.CurrentIconUrl;
+
+                if (data.Forecast != null)
                 {
-                    this.FiveDayForecast.Add(item);
+                    this.FiveDayForecast.Clear();
+                    foreach (var item in data.Forecast)
+                    {
+                        this.FiveDayForecast.Add(item);
+                    }
                 }
-            }
+            });
         }
         #endregion
 

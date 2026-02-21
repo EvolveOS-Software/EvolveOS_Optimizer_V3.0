@@ -195,16 +195,34 @@ namespace EvolveOS_Optimizer.Views
 
                     Report(20);
 
-                    using var weatherService = new WeatherService();
+                    //_ = Task.Run(async () =>
+                    Task weatherTask = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var weatherService = new WeatherService();
+                            using var weatherCts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+                            string savedLocation = SettingsEngine.LastLocation;
+                            if (string.IsNullOrEmpty(savedLocation)) savedLocation = "London";
+
+                            var data = await weatherService.GetWeatherAsync(savedLocation, weatherCts.Token);
+                            if (data != null)
+                            {
+                                GlobalAppData.PreloadedWeather = data;
+                                Debug.WriteLine($"[Weather] Preloaded for {savedLocation} successfully.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"[Weather] Background fetch failed: {ex.Message}");
+                        }
+                    });
 
                     Parallel.Invoke(
                         () => ExecuteWithLogging(TrustedInstaller.StartTrustedInstallerService, nameof(TrustedInstaller.StartTrustedInstallerService)),
                         () => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus)),
                         () => ExecuteWithLogging(_systemDiagnostics.GetHardwareData, nameof(_systemDiagnostics.GetHardwareData)),
-                        () => {
-                            var weatherTask = weatherService.GetWeatherAsync(null, token);
-                            GlobalAppData.PreloadedWeather = weatherTask.GetAwaiter().GetResult();
-                        },
                         () => ExecuteAsyncWithLogging(() => _systemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(_systemDiagnostics.ValidateVersionUpdatesAsync)),
                         () => ExecuteWithLogging(_uninstallingPakages.GetInstalledPackages, nameof(_uninstallingPakages.GetInstalledPackages)),
                         () => ExecuteAsyncWithLogging(RunGuard.CheckingDefenderExclusions, nameof(RunGuard.CheckingDefenderExclusions)),
@@ -236,6 +254,8 @@ namespace EvolveOS_Optimizer.Views
 
                     Report(100);
                     await Task.Delay(1000, token);
+
+                    await Task.WhenAny(weatherTask, Task.Delay(1500, token));
 
                     if (token.IsCancellationRequested) return;
 
