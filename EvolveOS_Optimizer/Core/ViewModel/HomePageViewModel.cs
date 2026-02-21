@@ -502,6 +502,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
                 catch (ObjectDisposedException) { }
 
+                _monitoringService?.Dispose();
+
                 DisplayWallpaper = null;
                 _displayWallpaper = null;
 

@@ -120,7 +120,10 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     using var results = searcher.Get();
                     foreach (ManagementObject managementObj in results)
                     {
-                        nameProfile = managementObj["FullName"] as string ?? string.Empty;
+                        using (managementObj)
+                        {
+                            nameProfile = managementObj["FullName"] as string ?? string.Empty;
+                        }
                     }
                 }
                 catch (Exception ex) { Debug.WriteLine($"[Diagnostics] WMI User Error: {ex.Message}"); }
@@ -222,14 +225,17 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     using var results = searcher.Get();
                     foreach (ManagementObject managementObj in results)
                     {
-                        string data = managementObj["Caption"] as string ?? "Windows";
-                        HardwareData.OS.Name = $"{data} {Regex.Replace((string)managementObj["OSArchitecture"], @"\-.+", "-bit")} {(!string.IsNullOrWhiteSpace(release) ? $"({release})" : string.Empty)}";
-                        HardwareData.OS.Version = $"{(string)managementObj["Version"]}.{revisionNumber}";
-
-                        string buildRaw = $"{Convert.ToString(managementObj["BuildNumber"])}.{revisionNumber}";
-                        if (decimal.TryParse(buildRaw, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal result))
+                        using (managementObj)
                         {
-                            HardwareData.OS.Build = result;
+                            string data = managementObj["Caption"] as string ?? "Windows";
+                            HardwareData.OS.Name = $"{data} {Regex.Replace((string)managementObj["OSArchitecture"], @"\-.+", "-bit")} {(!string.IsNullOrWhiteSpace(release) ? $"({release})" : string.Empty)}";
+                            HardwareData.OS.Version = $"{(string)managementObj["Version"]}.{revisionNumber}";
+
+                            string buildRaw = $"{Convert.ToString(managementObj["BuildNumber"])}.{revisionNumber}";
+                            if (decimal.TryParse(buildRaw, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal result))
+                            {
+                                HardwareData.OS.Build = result;
+                            }
                         }
                     }
                 }
@@ -249,10 +255,13 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     var biosEntries = new List<string>();
                     foreach (ManagementObject managementObj in results)
                     {
-                        string data = managementObj["SMBIOSBIOSVersion"]?.ToString() ?? "Unknown BIOS";
-                        string dataSN = managementObj["SerialNumber"]?.ToString()?.Trim() ?? "";
-                        bool isValidSN = !string.IsNullOrWhiteSpace(dataSN) && !dataSN.Equals("To be filled by O.E.M.", StringComparison.OrdinalIgnoreCase);
-                        biosEntries.Add(isValidSN ? $"{data}, S/N-{dataSN}" : data);
+                        using (managementObj)
+                        {
+                            string data = managementObj["SMBIOSBIOSVersion"]?.ToString() ?? "Unknown BIOS";
+                            string dataSN = managementObj["SerialNumber"]?.ToString()?.Trim() ?? "";
+                            bool isValidSN = !string.IsNullOrWhiteSpace(dataSN) && !dataSN.Equals("To be filled by O.E.M.", StringComparison.OrdinalIgnoreCase);
+                            biosEntries.Add(isValidSN ? $"{data}, S/N-{dataSN}" : data);
+                        }
                     }
                     Bios.Data = string.Join(Environment.NewLine, biosEntries);
                 }
@@ -271,9 +280,12 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     var entries = new List<string>();
                     foreach (ManagementObject managementObj in results)
                     {
-                        string data = $"{managementObj["Manufacturer"]} {managementObj["Product"]}";
-                        string? dataVersion = managementObj["Version"]?.ToString();
-                        entries.Add(!string.IsNullOrWhiteSpace(dataVersion) ? $"{data}, V{dataVersion}" : data);
+                        using (managementObj)
+                        {
+                            string data = $"{managementObj["Manufacturer"]} {managementObj["Product"]}";
+                            string? dataVersion = managementObj["Version"]?.ToString();
+                            entries.Add(!string.IsNullOrWhiteSpace(dataVersion) ? $"{data}, V{dataVersion}" : data);
+                        }
                     }
                     Motherboard = string.Join(Environment.NewLine, entries);
                 }
@@ -296,19 +308,22 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
                     foreach (ManagementObject managementObj in results)
                     {
-                        Processor.Data = (string)managementObj["Name"];
-                        Processor.Cores = Convert.ToString(managementObj["NumberOfCores"]) ?? "0";
-                        Processor.Threads = Convert.ToString(managementObj["NumberOfLogicalProcessors"]) ?? "0";
+                        using (managementObj)
+                        {
+                            Processor.Data = (string)managementObj["Name"];
+                            Processor.Cores = Convert.ToString(managementObj["NumberOfCores"]) ?? "0";
+                            Processor.Threads = Convert.ToString(managementObj["NumberOfLogicalProcessors"]) ?? "0";
 
-                        sb.AppendLine($"Name: {managementObj["Name"]}");
-                        sb.AppendLine($"Manufacturer: {managementObj["Manufacturer"]}");
-                        sb.AppendLine($"Architecture: {managementObj["Architecture"]}");
-                        sb.AppendLine($"Cores: {managementObj["NumberOfCores"]}");
-                        sb.AppendLine($"Logical Processors: {managementObj["NumberOfLogicalProcessors"]}");
-                        sb.AppendLine($"Max Speed: {managementObj["MaxClockSpeed"]} MHz");
-                        sb.AppendLine($"Socket Designation: {managementObj["SocketDesignation"]}");
-                        sb.AppendLine($"L2 Cache: {managementObj["L2CacheSize"]} KB");
-                        sb.Append($"L3 Cache: {managementObj["L3CacheSize"]} KB");
+                            sb.AppendLine($"Name: {managementObj["Name"]}");
+                            sb.AppendLine($"Manufacturer: {managementObj["Manufacturer"]}");
+                            sb.AppendLine($"Architecture: {managementObj["Architecture"]}");
+                            sb.AppendLine($"Cores: {managementObj["NumberOfCores"]}");
+                            sb.AppendLine($"Logical Processors: {managementObj["NumberOfLogicalProcessors"]}");
+                            sb.AppendLine($"Max Speed: {managementObj["MaxClockSpeed"]} MHz");
+                            sb.AppendLine($"Socket Designation: {managementObj["SocketDesignation"]}");
+                            sb.AppendLine($"L2 Cache: {managementObj["L2CacheSize"]} KB");
+                            sb.Append($"L3 Cache: {managementObj["L3CacheSize"]} KB");
+                        }
                     }
 
                     Processor.DetailedData = sb.ToString();
@@ -383,29 +398,32 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
                     foreach (ManagementObject managementObj in results)
                     {
-                        string data = managementObj["Name"] as string ?? "Unknown GPU";
-                        string pnp = managementObj["PNPDeviceID"]?.ToString() ?? "";
-                        string driverVersion = managementObj["DriverVersion"]?.ToString() ?? "Unknown";
-                        string videoArch = managementObj["VideoArchitecture"]?.ToString() ?? "Unknown";
+                        using (managementObj)
+                        {
+                            string data = managementObj["Name"] as string ?? "Unknown GPU";
+                            string pnp = managementObj["PNPDeviceID"]?.ToString() ?? "";
+                            string driverVersion = managementObj["DriverVersion"]?.ToString() ?? "Unknown";
+                            string videoArch = managementObj["VideoArchitecture"]?.ToString() ?? "Unknown";
 
-                        var (isFound, dataMemoryReg, driverDesc) = GetMemorySizeFromRegistry(data);
+                            var (isFound, dataMemoryReg, driverDesc) = GetMemorySizeFromRegistry(data);
 
-                        string displayName = (!string.IsNullOrEmpty(driverDesc)) ? driverDesc : data;
-                        string displayRAM = isFound ? dataMemoryReg : (managementObj["AdapterRAM"] != null ? SizeCalculationHelper(Convert.ToUInt64(managementObj["AdapterRAM"])) : "N/A");
+                            string displayName = (!string.IsNullOrEmpty(driverDesc)) ? driverDesc : data;
+                            string displayRAM = isFound ? dataMemoryReg : (managementObj["AdapterRAM"] != null ? SizeCalculationHelper(Convert.ToUInt64(managementObj["AdapterRAM"])) : "N/A");
 
-                        var sb = new StringBuilder();
-                        if (gpuNumber > 0) sb.AppendLine();
+                            var sb = new StringBuilder();
+                            if (gpuNumber > 0) sb.AppendLine();
 
-                        sb.AppendLine($"GPU {gpuNumber}:");
-                        sb.AppendLine($"   Name: {displayName}");
-                        sb.AppendLine($"   Adapter RAM: {displayRAM}");
-                        sb.AppendLine($"   Driver Version: {driverVersion}");
-                        sb.Append($"   Video Architecture: {videoArch}");
+                            sb.AppendLine($"GPU {gpuNumber}:");
+                            sb.AppendLine($"   Name: {displayName}");
+                            sb.AppendLine($"   Adapter RAM: {displayRAM}");
+                            sb.AppendLine($"   Driver Version: {driverVersion}");
+                            sb.Append($"   Video Architecture: {videoArch}");
 
-                        entries.Add(sb.ToString());
+                            entries.Add(sb.ToString());
 
-                        VendorDetection.Nvidia |= pnp.IndexOf("VEN_10DE", StringComparison.OrdinalIgnoreCase) >= 0;
-                        gpuNumber++;
+                            VendorDetection.Nvidia |= pnp.IndexOf("VEN_10DE", StringComparison.OrdinalIgnoreCase) >= 0;
+                            gpuNumber++;
+                        }
                     }
 
                     HardwareData.Gpu.Data = entries.Count > 0
@@ -460,7 +478,9 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
                     foreach (ManagementObject managementObj in results)
                     {
-                        ulong cap = Convert.ToUInt64(managementObj["Capacity"]);
+                        using (managementObj)
+                        {
+                            ulong cap = Convert.ToUInt64(managementObj["Capacity"]);
                         totalCapacity += cap;
 
                         string manufacturer = managementObj["Manufacturer"]?.ToString() ?? "Unknown";
@@ -469,9 +489,10 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
                         entries.Add($"{manufacturer}, {capacity} @ {speed} MHz");
 
-                        if (memoryTypeCode == 0 && managementObj["SMBIOSMemoryType"] != null)
-                        {
-                            int.TryParse(managementObj["SMBIOSMemoryType"].ToString(), out memoryTypeCode);
+                            if (memoryTypeCode == 0 && managementObj["SMBIOSMemoryType"] != null)
+                            {
+                                int.TryParse(managementObj["SMBIOSMemoryType"].ToString(), out memoryTypeCode);
+                            }
                         }
                     }
 
