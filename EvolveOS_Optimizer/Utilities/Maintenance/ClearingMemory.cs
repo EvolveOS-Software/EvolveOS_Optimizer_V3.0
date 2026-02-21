@@ -536,13 +536,11 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
                 adminCmd.Append($@"rd /s /q ""{chrome}"" & ");
                 adminCmd.Append($@"rd /s /q ""{edge}"" & ");
                 adminCmd.Append($@"rd /s /q ""{brave}"" & ");
-                adminCmd.Append($@"rd /s /q ""{PathLocator.Folders.SystemDrive}Windows\Temp"" & ");
-                adminCmd.Append($@"rd /s /q ""%localappdata%\Temp"" & ");
                 adminCmd.Append($@"rd /s /q ""{PathLocator.Folders.SystemDrive}Windows\CbsTemp\*""");
 
                 await CommandExecutor.RunCommand(adminCmd.ToString(), isPowerShell: false);
 
-                if (shouldRemoveWinOld && Directory.Exists(PathLocator.Folders.WindowsOld))
+                await Task.Run(() => SafeCleanTempFolders());
                 {
                     status.WinOldRemovedAttempted = true;
                     string winOldCmd = $@"/c rd /s /q ""{PathLocator.Folders.WindowsOld}""";
@@ -583,6 +581,41 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
             catch (Exception ex)
             {
                 Debug.WriteLine($"SoftwareDistribution cleanup failed: {ex.Message}");
+            }
+        }
+
+        private static void SafeCleanTempFolders()
+        {
+            string localTemp = Path.GetTempPath();
+            string winTemp = Path.Combine(PathLocator.Folders.SystemDrive, @"Windows\Temp");
+
+            CleanDirectorySafely(winTemp);
+            CleanDirectorySafely(localTemp, skipNetExtracts: true);
+        }
+
+        private static void CleanDirectorySafely(string directoryPath, bool skipNetExtracts = false)
+        {
+            if (!Directory.Exists(directoryPath)) return;
+
+            DirectoryInfo dir = new DirectoryInfo(directoryPath);
+
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                try { file.Delete(); } catch { }
+            }
+
+            foreach (DirectoryInfo subDir in dir.GetDirectories())
+            {
+                if (skipNetExtracts && subDir.Name.Equals(".net", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    subDir.Delete(true);
+                }
+                catch { }
             }
         }
 

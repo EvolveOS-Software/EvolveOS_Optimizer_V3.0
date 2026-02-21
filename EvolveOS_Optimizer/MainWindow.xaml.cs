@@ -12,6 +12,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media.Animation;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
@@ -20,6 +21,8 @@ namespace EvolveOS_Optimizer
     public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private static Frame? _permanentFrameReference;
 
         private AppWindow? _appWindow;
         private IntPtr _hWnd;
@@ -30,6 +33,7 @@ namespace EvolveOS_Optimizer
         public MainWindow()
         {
             this.InitializeComponent();
+            _permanentFrameReference = this.ContentFrame;
 
             NotificationManager.Initialize(this);
             _hWnd = WindowNative.GetWindowHandle(this);
@@ -178,32 +182,28 @@ namespace EvolveOS_Optimizer
 
             if (ContentFrame.CurrentSourcePageType != pageType)
             {
-                ContentFrame.Navigate(pageType, null, new Microsoft.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo());
+                ContentFrame.Navigate(pageType, null, new SuppressNavigationTransitionInfo());
 
-                _ = CleanupNavigationStackAsync();
+                // DO NOT 'await' this. Run it as a detached background task.
+                Task.Run(async () => await CleanupNavigationStackAsync());
             }
+
+            GC.KeepAlive(ContentFrame);
         }
 
         private async Task CleanupNavigationStackAsync()
         {
-            await Task.Delay(100);
+            // Wait for the UI to settle completely
+            await Task.Delay(500);
 
-            this.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+            // Use the Dispatcher ONLY for the parts that touch the UI (the Stacks)
+            this.DispatcherQueue.TryEnqueue(() =>
             {
-                try
-                {
-                    if (ContentFrame.BackStack.Count > 0) ContentFrame.BackStack.Clear();
-                    if (ContentFrame.ForwardStack.Count > 0) ContentFrame.ForwardStack.Clear();
+                if (ContentFrame.BackStack.Count > 0) ContentFrame.BackStack.Clear();
+                if (ContentFrame.ForwardStack.Count > 0) ContentFrame.ForwardStack.Clear();
 
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
-
-                    Debug.WriteLine("[Navigation] Safe Background Cleanup Successful.");
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[Navigation] Cleanup deferred: {ex.Message}");
-                }
+                // Final safety check: Root the frame one last time
+                GC.KeepAlive(ContentFrame);
             });
         }
 

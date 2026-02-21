@@ -27,6 +27,7 @@ namespace EvolveOS_Optimizer
         public App()
         {
             InitializeComponent();
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
 
             UnhandledException += OnUnhandledException;
         }
