@@ -7,7 +7,6 @@ using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Navigation;
 using System.Threading;
 
 namespace EvolveOS_Optimizer.Pages
@@ -82,7 +81,7 @@ namespace EvolveOS_Optimizer.Pages
                         SyncVisualStates();
                     });
                 }
-                catch (OperationCanceledException) { /* Silent exit */ }
+                catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[PackagesPage] Timer Loop Error: {ex.Message}");
@@ -94,26 +93,6 @@ namespace EvolveOS_Optimizer.Pages
             });
 
             _timer.Start();
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            if (e.Parameter is PackagesViewModel vm)
-            {
-                this.DataContext = vm;
-            }
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            if (this.DataContext is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-
-            base.OnNavigatedFrom(e);
         }
 
         #region UI Event Handlers (Buttons & Menus)
@@ -214,6 +193,8 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (this.DataContext is PackagesViewModel vm)
             {
+                if (vm.DisplayState == null) return;
+
                 foreach (var pkg in vm.DisplayState.ToList())
                 {
                     if (pkg.IsSelected)

@@ -20,13 +20,12 @@ public sealed partial class SoftwareCenterPage : Page
             disposable.Dispose();
         }
 
-        //ContentFrame.Content = null;
+        ContentFrame.Content = null;
 
         _sharedViewModel = null;
+        this.DataContext = null;
 
-        //this.DataContext = null;
-
-        //Debug.WriteLine("[SoftwareCenterPage] Shared ViewModel and Frame cleared.");
+        Debug.WriteLine("[SoftwareCenterPage] Shared ViewModel and Frame cleared.");
     }
 
     private void SoftwareNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
