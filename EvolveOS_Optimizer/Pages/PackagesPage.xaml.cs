@@ -70,16 +70,17 @@ namespace EvolveOS_Optimizer.Pages
                     await Task.Run(() =>
                     {
                         if (token.IsCancellationRequested) return;
+
                         _uninstalling.GetInstalledPackages();
+
+                        this.DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
+                        {
+                            if (!this.IsLoaded || token.IsCancellationRequested) return;
+
+                            UninstallingPackages.OnPackagesChanged();
+                            SyncVisualStates();
+                        });
                     }, token);
-
-                    this.DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
-                    {
-                        if (!this.IsLoaded || token.IsCancellationRequested) return;
-
-                        UninstallingPackages.OnPackagesChanged();
-                        SyncVisualStates();
-                    });
                 }
                 catch (OperationCanceledException) { }
                 catch (Exception ex)

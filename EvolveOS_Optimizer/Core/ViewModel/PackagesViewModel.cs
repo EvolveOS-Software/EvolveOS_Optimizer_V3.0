@@ -162,7 +162,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         item.Installed = scripts.Any(pattern =>
                             cache.Any(pkg =>
                                 !string.IsNullOrEmpty(pkg) &&
-                                Regex.IsMatch(pkg, $"^{Regex.Escape(pattern)}", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)));
+                                pkg.StartsWith(pattern, StringComparison.OrdinalIgnoreCase)));
                     }
                     else
                     {

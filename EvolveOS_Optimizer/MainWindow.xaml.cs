@@ -59,6 +59,7 @@ namespace EvolveOS_Optimizer
             this.RootGrid.Loaded += MainWindow_Loaded;
         }
 
+        #region Window Configuration
         private void ConfigureWindow()
         {
             try
@@ -83,7 +84,9 @@ namespace EvolveOS_Optimizer
                 Debug.WriteLine($"[ConfigureWindow Error] {ex.Message}");
             }
         }
+        #endregion
 
+        #region File Handling & Routing
         private void RouteFilesToPage(string[] paths)
         {
             this.DispatcherQueue.TryEnqueue(async () =>
@@ -94,7 +97,9 @@ namespace EvolveOS_Optimizer
                 }
             });
         }
+        #endregion
 
+        #region Window Lifecycle Events
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
             if (!_isBackdropInitialized && args.WindowActivationState != WindowActivationState.Deactivated)
@@ -122,7 +127,9 @@ namespace EvolveOS_Optimizer
                 this.DispatcherQueue.TryEnqueue(() => AnimateUpdateBanner(true));
             }
         }
+        #endregion
 
+        #region Navigation Logic
         private void SetupNavigationObserver()
         {
             if (this.RootGrid.DataContext is MainWinViewModel vm)
@@ -184,7 +191,6 @@ namespace EvolveOS_Optimizer
             {
                 ContentFrame.Navigate(pageType, null, new SuppressNavigationTransitionInfo());
 
-                // DO NOT 'await' this. Run it as a detached background task.
                 Task.Run(async () => await CleanupNavigationStackAsync());
             }
 
@@ -193,19 +199,17 @@ namespace EvolveOS_Optimizer
 
         private async Task CleanupNavigationStackAsync()
         {
-            // Wait for the UI to settle completely
             await Task.Delay(500);
 
-            // Use the Dispatcher ONLY for the parts that touch the UI (the Stacks)
             this.DispatcherQueue.TryEnqueue(() =>
             {
                 if (ContentFrame.BackStack.Count > 0) ContentFrame.BackStack.Clear();
                 if (ContentFrame.ForwardStack.Count > 0) ContentFrame.ForwardStack.Clear();
 
-                // Final safety check: Root the frame one last time
                 GC.KeepAlive(ContentFrame);
             });
         }
+        #endregion
 
         #region UI & Window Management
         public void SetBackdrop(SystemBackdrop backdrop) => this.SystemBackdrop = backdrop;
