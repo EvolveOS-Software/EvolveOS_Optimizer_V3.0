@@ -35,7 +35,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal string? AvatarPath { get; private set; }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        private class MEMORYSTATUSEX
+        private struct MEMORYSTATUSEX
         {
             public uint dwLength;
             public uint dwMemoryLoad;
@@ -46,12 +46,11 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             public ulong ullTotalVirtual;
             public ulong ullAvailVirtual;
             public ulong ullAvailExtendedVirtual;
-            public MEMORYSTATUSEX() { this.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX)); }
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
+        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
         private static readonly (object[] Keys, string Type)[] MediaTypeMap = new (object[] Keys, string Type)[]
         {
@@ -537,11 +536,15 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     string query = isMsftAvailable ? "select FriendlyName, Size from MSFT_PhysicalDisk" : "select Model, Size from Win32_DiskDrive";
 
                     using var searcher = new ManagementObjectSearcher(scope, query);
-                    foreach (ManagementObject managementObj in searcher.Get())
+                    using var results = searcher.Get();
+                    foreach (ManagementObject managementObj in results)
                     {
-                        string name = managementObj[isMsftAvailable ? "FriendlyName" : "Model"]?.ToString() ?? "Disk";
-                        string size = SizeCalculationHelper(Convert.ToUInt64(managementObj["Size"]));
-                        result.AppendLine($"{size} [{name}]");
+                        using (managementObj)
+                        {
+                            string name = managementObj[isMsftAvailable ? "FriendlyName" : "Model"]?.ToString() ?? "Disk";
+                            string size = SizeCalculationHelper(Convert.ToUInt64(managementObj["Size"]));
+                            result.AppendLine($"{size} [{name}]");
+                        }
                     }
                 }
                 catch { }
@@ -557,11 +560,15 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 try
                 {
                     using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Name, PNPDeviceID from Win32_SoundDevice where Status = 'OK'");
-                    foreach (ManagementObject managementObj in searcher.Get())
+                    using var results = searcher.Get();
+                    foreach (ManagementObject managementObj in results)
                     {
-                        result.AppendLine(managementObj["Name"]?.ToString() ?? "Audio Device");
-                        string pnpId = managementObj["PNPDeviceID"]?.ToString() ?? string.Empty;
-                        VendorDetection.Realtek |= pnpId.IndexOf("VEN_10EC", StringComparison.OrdinalIgnoreCase) >= 0;
+                        using (managementObj)
+                        {
+                            result.AppendLine(managementObj["Name"]?.ToString() ?? "Audio Device");
+                            string pnpId = managementObj["PNPDeviceID"]?.ToString() ?? string.Empty;
+                            VendorDetection.Realtek |= pnpId.IndexOf("VEN_10EC", StringComparison.OrdinalIgnoreCase) >= 0;
+                        }
                     }
                 }
                 catch { }
@@ -577,9 +584,13 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 try
                 {
                     using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Name from Win32_NetworkAdapter where NetConnectionStatus=2");
-                    foreach (ManagementObject managementObj in searcher.Get())
+                    using var results = searcher.Get();
+                    foreach (ManagementObject managementObj in results)
                     {
-                        result.AppendLine(managementObj["Name"]?.ToString() ?? "Network Adapter");
+                        using (managementObj)
+                        {
+                            result.AppendLine(managementObj["Name"]?.ToString() ?? "Network Adapter");
+                        }
                     }
                 }
                 catch { }
@@ -667,35 +678,52 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         internal new async Task<string> GetProcessCount()
         {
-            return await Task.Run(() => Process.GetProcesses().Length.ToString());
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    var processes = Process.GetProcesses();
+                    int count = processes.Length;
+
+                    foreach (var p in processes)
+                    {
+                        p.Dispose();
+                    }
+
+                    return count.ToString();
+                }
+                catch
+                {
+                    return "0";
+                }
+            });
         }
 
         internal new async Task<string> GetServicesCount()
         {
             return await Task.Run(() =>
             {
-                try
+                int count = 0;
+                var allServices = System.ServiceProcess.ServiceController.GetServices();
+
+                foreach (var svc in allServices)
                 {
-                    var allServices = System.ServiceProcess.ServiceController.GetServices();
-
-                    int runningCount = allServices
-                        .Where(s => s.Status == System.ServiceProcess.ServiceControllerStatus.Running)
-                        .Where(s => s.ServiceType.HasFlag(System.ServiceProcess.ServiceType.Win32OwnProcess) ||
-                                    s.ServiceType.HasFlag(System.ServiceProcess.ServiceType.Win32ShareProcess))
-                        .Count();
-
-                    foreach (var svc in allServices)
+                    try
+                    {
+                        if (svc.Status == System.ServiceProcess.ServiceControllerStatus.Running &&
+                            (svc.ServiceType.HasFlag(System.ServiceProcess.ServiceType.Win32OwnProcess) ||
+                             svc.ServiceType.HasFlag(System.ServiceProcess.ServiceType.Win32ShareProcess)))
+                        {
+                            count++;
+                        }
+                    }
+                    catch { }
+                    finally
                     {
                         svc.Dispose();
                     }
-
-                    return runningCount.ToString();
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[Service Monitor] Error: {ex.Message}");
-                    return "0";
-                }
+                return count.ToString();
             });
         }
 
@@ -713,7 +741,8 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             return await Task.Run(() =>
             {
                 MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
-                if (GlobalMemoryStatusEx(memStatus))
+                memStatus.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+                if (GlobalMemoryStatusEx(ref memStatus))
                 {
                     return (double)memStatus.ullAvailPhys;
                 }

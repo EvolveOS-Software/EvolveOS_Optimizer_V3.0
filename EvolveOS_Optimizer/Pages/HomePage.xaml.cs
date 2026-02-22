@@ -21,6 +21,9 @@ namespace EvolveOS_Optimizer.Pages
         private DispatcherTimer? _monitoringTimer;
         private string _lastWallpaperPath = string.Empty;
 
+        private NetworkInterface[]? _activeInterfaces;
+        private DateTime _lastInterfaceUpdate = DateTime.MinValue;
+
         private const string RegistryPath = @"Software\EvolveOS_Optimizer";
         private const string RegistryValueName = "LastLocation";
 
@@ -46,6 +49,9 @@ namespace EvolveOS_Optimizer.Pages
         {
             ApplyElevationUI();
             LoadWeather();
+
+            SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
+            SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
 
             var stats = GetCurrentNetworkBytes();
             _lastDownloadBytes = stats.Down;
@@ -127,8 +133,19 @@ namespace EvolveOS_Optimizer.Pages
             _monitoringTimer.Tick += async (s, e) =>
             {
                 if (this.XamlRoot == null) return;
-                await UpdateHardwareStats();
+
+                _monitoringTimer.Stop();
+
+                try
+                {
+                    await UpdateHardwareStats();
+                }
+                finally
+                {
+                    _monitoringTimer.Start();
+                }
             };
+
             _monitoringTimer.Start();
         }
 
@@ -167,7 +184,8 @@ namespace EvolveOS_Optimizer.Pages
 
                     if (this.DataContext is HomePageViewModel vm)
                     {
-                        vm.RefreshStats();
+                        vm.RefreshStats(pCount, sCount);
+
                         vm.UpdateDateTime();
 
                         CPULoad.Value = Math.Clamp(cpuPercentage, 0, 100);
@@ -200,18 +218,27 @@ namespace EvolveOS_Optimizer.Pages
             long d = 0, u = 0;
             try
             {
-                var interfaces = NetworkInterface.GetAllNetworkInterfaces()
-                    .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
-                                 ni.NetworkInterfaceType != NetworkInterfaceType.Loopback);
+                if (_activeInterfaces == null || (DateTime.Now - _lastInterfaceUpdate).TotalSeconds > 60)
+                {
+                    _activeInterfaces = NetworkInterface.GetAllNetworkInterfaces()
+                        .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
+                                     ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                        .ToArray();
 
-                foreach (var ni in interfaces)
+                    _lastInterfaceUpdate = DateTime.Now;
+                }
+
+                foreach (var ni in _activeInterfaces)
                 {
                     var stats = ni.GetIPStatistics();
                     d += stats.BytesReceived;
                     u += stats.BytesSent;
                 }
             }
-            catch { }
+            catch
+            {
+                _activeInterfaces = null;
+            }
             return (d, u);
         }
         #endregion
@@ -263,7 +290,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 var springAnimation = compositor.CreateSpringVector3Animation();
                 springAnimation.Target = "Scale";
-                springAnimation.FinalValue = new System.Numerics.Vector3(1.05f, 1.05f, 1f); // 5% larger
+                springAnimation.FinalValue = new System.Numerics.Vector3(1.05f, 1.05f, 1f);
                 springAnimation.DampingRatio = 0.6f;
                 springAnimation.Period = TimeSpan.FromMilliseconds(50);
 

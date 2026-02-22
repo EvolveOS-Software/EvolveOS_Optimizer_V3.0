@@ -224,45 +224,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             LoadDisplayData();
             LoadDiskData();
-
-            SetupTimer();
-
-            _ = InitializeAsync(_cts.Token);
         }
 
-        private async Task InitializeAsync(CancellationToken token)
-        {
-            try
-            {
-                var weatherTask = Task.Run(async () =>
-                {
-                    try { await FetchWeatherAsync(_weatherLocation, token); }
-                    catch (OperationCanceledException) { }
-                }, token);
-
-                while (!token.IsCancellationRequested)
-                {
-                    _dispatcherQueue.TryEnqueue(() =>
-                    {
-                        if (token.IsCancellationRequested) return;
-
-                        UpdateDateTime();
-                        UpdateNetworkSpeed();
-                        RefreshStats();
-                    });
-
-                    await Task.Delay(1000, token);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.WriteLine("[HomePageVM] Background loop stopped safely.");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[HomePageVM] Unexpected error: {ex.Message}");
-            }
-        }
         #endregion
 
         #region System Data Management
@@ -286,7 +249,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             LocalIP = new IPWrapper { Data = HardwareData.LocalIPAddress };
         }
 
-        public void RefreshStats()
+        public void RefreshStats(string processCount, string servicesCount)
         {
             if (_displayData == null) return;
 
@@ -297,10 +260,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (osVer != null) osVer.Data = HardwareData.OS.Version;
 
             var proc = _displayData.FirstOrDefault(x => x.Name == "Processes");
-            if (proc != null) proc.Data = HardwareData.RunningProcessesCount;
+            if (proc != null) proc.Data = processCount;
 
             var svc = _displayData.FirstOrDefault(x => x.Name == "Services");
-            if (svc != null) svc.Data = HardwareData.RunningServicesCount;
+            if (svc != null) svc.Data = servicesCount;
 
             var netItem = _displayData.FirstOrDefault(x => x.Name == "Network");
             if (netItem != null) netItem.Data = HardwareData.NetworkAdapter;
@@ -318,10 +281,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (cpuItem != null) cpuItem.Data = HardwareData.Processor.DetailedData;
 
             var gpuItem = _displayData.FirstOrDefault(x => x.Name == "GPU");
-            if (gpuItem != null)
-            {
-                gpuItem.Data = HardwareData.Gpu.Data;
-            }
+            if (gpuItem != null) gpuItem.Data = HardwareData.Gpu.Data;
 
             if (LocalIP.Data != HardwareData.LocalIPAddress)
             {
@@ -457,32 +417,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
         #endregion
 
-        #region Background Statistics Timer
-
-        private void SetupTimer()
-        {
-            _statsTimer?.Stop();
-
-            _statsTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1)
-            };
-
-            _statsTimer.Tick += StatsTimer_Tick;
-            _statsTimer.Start();
-        }
-
-        private async void StatsTimer_Tick(object? sender, object? e)
-        {
-            await SystemDiagnostics.GetGpuUsage();
-
-            RefreshStats();
-
-            OnPropertyChanged(nameof(GpuUsageDisplay));
-        }
-
-        #endregion
-
         #region Disposal
         protected override void Dispose(bool disposing)
         {
@@ -491,7 +425,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (_statsTimer != null)
                 {
                     _statsTimer.Stop();
-                    _statsTimer.Tick -= StatsTimer_Tick;
                     _statsTimer = null;
                 }
 
