@@ -18,6 +18,13 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         private string _location = string.Empty;
         public string Location => _location;
 
+        static WeatherService()
+        {
+            _client.DefaultRequestHeaders.Add("User-Agent", "EvolveOS_Optimizer/1.0 (Windows)");
+
+            _client.Timeout = TimeSpan.FromSeconds(30);
+        }
+
         public async Task<WeatherData> GetWeatherAsync(string? locationOverride = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(API_KEY) || API_KEY.Contains("CHANGE_ME")) return GetMockWeatherData();
@@ -36,16 +43,23 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 currentAttempt++;
                 try
                 {
-                    int timeoutSeconds = currentAttempt == 1 ? 4 : 7;
                     using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
-                    cts.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
+                    cts.CancelAfter(TimeSpan.FromSeconds(10));
 
                     using var request = new HttpRequestMessage(HttpMethod.Get, url);
                     var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        break;
+                        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                            response.StatusCode == System.Net.HttpStatusCode.BadRequest ||
+                            response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                        {
+                            Debug.WriteLine($"[Weather] Fatal API Error: {response.StatusCode}");
+                            break;
+                        }
+
+                        throw new HttpRequestException($"HTTP Error {response.StatusCode}");
                     }
 
                     var content = await response.Content.ReadAsStringAsync(cts.Token);
@@ -64,19 +78,19 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         return MapApiToUiModel(apiResponse);
                     }
                 }
-                catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+                catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException || ex is HttpRequestException || ex is JsonException)
                 {
-                    Debug.WriteLine($"[Weather] Attempt {currentAttempt} timed out.");
+                    Debug.WriteLine($"[Weather] Attempt {currentAttempt} failed: {ex.Message}");
 
                     if (currentAttempt < maxRetries)
                     {
-                        await Task.Delay(500, token);
+                        await Task.Delay(currentAttempt * 1000, token);
                         continue;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[Weather] Fetch Error on attempt {currentAttempt}: {ex.Message}");
+                    Debug.WriteLine($"[Weather] Fatal Fetch Error on attempt {currentAttempt}: {ex.Message}");
                     break;
                 }
             }

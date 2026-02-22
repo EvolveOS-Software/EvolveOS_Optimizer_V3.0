@@ -212,21 +212,21 @@
                                     <TextBlock Text="{helpers:ResourceString Key=txt_physical_memory_free}"
                                                Style="{StaticResource LabelStyle}"
                                                FontFamily="{StaticResource Jura}"
-                                               Margin="0,2,0,0"
+                                               Margin="0,-1,0,0"
                                                FontSize="12"/>
                                     <StackPanel Orientation="Horizontal">
                                         
                                         <TextBlock Text="{Binding Computer.Memory.Physical.Free.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura-SemiBold}"
-                                                   Margin="0,1,0,0"
+                                                   Margin="0,0,0,0"
                                                    FontSize="12"/>
                                         
                                         <TextBlock Text="{Binding Computer.Memory.Physical.Free.Unit}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura}"
                                                    FontSize="12"
-                                                   Margin="4,0,0,0"/>
+                                                   Margin="4,-1,0,0"/>
                                         
                                     </StackPanel>
                                 </StackPanel>

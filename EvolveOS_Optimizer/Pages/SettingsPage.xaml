@@ -291,8 +291,8 @@
             </StackPanel>
 
             <StackPanel Spacing="12">
-                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_SectionTitle}" 
-               FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock Text="{x:Bind GetText('Settings_Update_SectionTitle'), Mode=OneWay}" 
+   FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
@@ -302,14 +302,14 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_AutoTitle}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_AutoSubtitle}" 
-                               Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_AutoTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_AutoSubtitle'), Mode=OneWay}" 
+                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <ToggleSwitch Grid.Column="1" 
-                              IsOn="{x:Bind IsUpdateCheckRequired, Mode=TwoWay}" 
-                              OnContent="{helpers:ResourceString Key=Settings_Update_ToggleOn}" 
-                              OffContent="{helpers:ResourceString Key=Settings_Update_ToggleOff}"/>
+                  IsOn="{x:Bind IsUpdateCheckRequired, Mode=TwoWay}" 
+                  OnContent="{x:Bind GetText('Settings_Update_ToggleOn'), Mode=OneWay}" 
+                  OffContent="{x:Bind GetText('Settings_Update_ToggleOff'), Mode=OneWay}"/>
                         </Grid>
 
                         <MenuFlyoutSeparator/>
@@ -320,15 +320,15 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_ManualTitle}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{helpers:ResourceString Key=Settings_Update_ManualSubtitle}" 
-                               Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_ManualTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_ManualSubtitle'), Mode=OneWay}" 
+                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <Button Grid.Column="1" 
-                        Content="{helpers:ResourceString Key=Settings_Update_CheckButton}" 
-                        Width="200" 
-                        Click="ManualUpdateCheck_Click" 
-                        Style="{StaticResource AccentButtonStyle}"/>
+            Content="{x:Bind GetText('Settings_Update_CheckButton'), Mode=OneWay}" 
+            Width="200" 
+            Click="ManualUpdateCheck_Click" 
+            Style="{StaticResource AccentButtonStyle}"/>
                         </Grid>
                     </StackPanel>
                 </Border>

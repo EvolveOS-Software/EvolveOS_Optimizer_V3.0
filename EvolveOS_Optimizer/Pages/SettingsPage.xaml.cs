@@ -39,7 +39,7 @@ namespace EvolveOS_Optimizer.Pages
                     DispatcherQueue.TryEnqueue(async () =>
                     {
                         await Task.Delay(100);
-                        // Check if we are still on the page before updating
+
                         if (this.XamlRoot != null)
                         {
                             OnPropertyChanged(string.Empty);

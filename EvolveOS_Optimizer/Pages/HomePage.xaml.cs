@@ -384,6 +384,44 @@ namespace EvolveOS_Optimizer.Pages
             LocationFlyout.Hide();
         }
 
+        private async void RefreshWeatherButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.IsEnabled = false;
+
+                var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(RefreshIcon);
+                var compositor = visual.Compositor;
+
+                visual.RotationAngleInDegrees = 0f;
+                visual.CenterPoint = new System.Numerics.Vector3((float)(RefreshIcon.ActualWidth / 2), (float)(RefreshIcon.ActualHeight / 2), 0);
+
+                var rotateAnimation = compositor.CreateScalarKeyFrameAnimation();
+                rotateAnimation.InsertKeyFrame(1.0f, 360f);
+                rotateAnimation.Duration = TimeSpan.FromMilliseconds(750);
+
+                rotateAnimation.IterationBehavior = Microsoft.UI.Composition.AnimationIterationBehavior.Forever;
+
+                visual.StartAnimation("RotationAngleInDegrees", rotateAnimation);
+
+                try
+                {
+                    if (this.DataContext is HomePageViewModel vm)
+                    {
+                        await vm.FetchWeatherAsync(vm.WeatherLocation);
+                    }
+
+                    await Task.Delay(500);
+                }
+                finally
+                {
+                    visual.StopAnimation("RotationAngleInDegrees");
+                    visual.RotationAngleInDegrees = 0f;
+                    btn.IsEnabled = true;
+                }
+            }
+        }
+
         #endregion
 
         #region Admin & UI Helper Methods
@@ -475,17 +513,21 @@ namespace EvolveOS_Optimizer.Pages
 
         private void UpdateIpPrivacy(bool showText)
         {
-            float targetOpacity = showText ? 0.0f : 1.0f;
+            float maskOpacity = showText ? 0.0f : 1.0f;
+            float textOpacity = showText ? 1.0f : 0.0f;
 
-            AnimateMaskOpacity(IpBlurMask, targetOpacity);
-            AnimateMaskOpacity(LocalIpBlurMask, targetOpacity);
+            AnimateOpacity(IpBlurMask, maskOpacity);
+            AnimateOpacity(LocalIpBlurMask, maskOpacity);
+
+            AnimateOpacity(IpAddress, textOpacity);
+            AnimateOpacity(LocalIpAddress, textOpacity);
         }
 
-        private void AnimateMaskOpacity(Border? mask, float targetOpacity)
+        private void AnimateOpacity(UIElement? element, float targetOpacity)
         {
-            if (mask == null) return;
+            if (element == null) return;
 
-            var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(mask);
+            var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(element);
             var compositor = visual.Compositor;
 
             var animation = compositor.CreateScalarKeyFrameAnimation();

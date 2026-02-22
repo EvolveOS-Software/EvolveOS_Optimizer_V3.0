@@ -60,10 +60,13 @@
     <sys:String x:Key="Nav_Utilities">Hulpprogramma's</sys:String>
     <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
-    <sys:String x:Key="Nav_Software_Center">Software Centrum</sys:String>
-    <sys:String x:Key="Nav_GroupPolicy">Beleid</sys:String>
-    <sys:String x:Key="Nav_Services">Service Tweaks</sys:String>
+    <sys:String x:Key="Nav_Software_Center">Softwarecentrum</sys:String>
+    <sys:String x:Key="Nav_System_Manager">Systeembeheer</sys:String>
+    <sys:String x:Key="Nav_GroupPolicy">Beleidsregels</sys:String>
+    <sys:String x:Key="Nav_Services">Serviceaanpassingen</sys:String>
     <sys:String x:Key="Nav_System">Systeem</sys:String>
+    <sys:String x:Key="Nav_Maintenance">Onderhoud</sys:String>
+    <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Instellingen</sys:String>
     <!-- endregion Main Window -->
 

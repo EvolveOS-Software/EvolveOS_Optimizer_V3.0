@@ -40,7 +40,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            //this.NavigationCacheMode = NavigationCacheMode.Required;
 
             IComputerService computerService = new ComputerService();
             IHotkeyService? globalHotkeyService = App.GetService<IHotkeyService>();
