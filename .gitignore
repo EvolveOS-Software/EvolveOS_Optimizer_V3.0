@@ -31,7 +31,7 @@ bld/
 [Oo]bj/
 [Oo]ut/
 [Ll]og/
-[Ll]ogs/
+![Ll]ogs/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -361,3 +361,16 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# --- Custom Folder Overrides ---
+# 1. Un-ignore the Log folder so Git looks inside it
+!Log/
+![Ll]ogs/
+
+# 2. Ignore all actual files inside the Log folder
+Log/*
+[Ll]ogs/*
+
+# 3. Make an exception to explicitly track the .gitkeep file
+!Log/.gitkeep
+![Ll]ogs/.gitkeep

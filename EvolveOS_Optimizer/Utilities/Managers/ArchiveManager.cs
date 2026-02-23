@@ -35,7 +35,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
             {
                 if (stream == null) return Array.Empty<byte>();
                 byte[] ba = new byte[stream.Length];
-                stream.Read(ba, 0, ba.Length);
+                stream.ReadExactly(ba);
                 return ba;
             }
         }
