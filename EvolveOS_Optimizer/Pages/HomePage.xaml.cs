@@ -331,8 +331,8 @@ namespace EvolveOS_Optimizer.Pages
         private void UpdateLocation_Click(object sender, RoutedEventArgs e)
         {
             string? newLoc = !string.IsNullOrWhiteSpace(CustomLocationBox.Text)
-                            ? CustomLocationBox.Text.Trim()
-                            : CityPicker.SelectedItem?.ToString();
+                    ? CustomLocationBox.Text.Trim()
+                    : CityPicker.SelectedItem as string;
 
             if (!string.IsNullOrEmpty(newLoc))
             {
@@ -358,19 +358,21 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ApplyNewLocation(string location)
         {
-            if (this.DataContext is HomePageViewModel vm)
+            if (ViewModel != null && !string.IsNullOrWhiteSpace(location))
             {
-                vm.WeatherLocation = location;
                 SaveLocationToRegistry(location);
 
-                _ = vm.FetchWeatherAsync(location);
+                ViewModel.WeatherLocation = location;
             }
+
             LocationFlyout.Hide();
+
+            CustomLocationBox.Text = string.Empty;
         }
 
         private async void RefreshWeatherButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn)
+            if (sender is Button btn && ViewModel != null)
             {
                 btn.IsEnabled = false;
 
@@ -378,24 +380,27 @@ namespace EvolveOS_Optimizer.Pages
                 var compositor = visual.Compositor;
 
                 visual.RotationAngleInDegrees = 0f;
-                visual.CenterPoint = new System.Numerics.Vector3((float)(RefreshIcon.ActualWidth / 2), (float)(RefreshIcon.ActualHeight / 2), 0);
+                visual.CenterPoint = new System.Numerics.Vector3(
+                    (float)(RefreshIcon.ActualWidth / 2),
+                    (float)(RefreshIcon.ActualHeight / 2),
+                    0);
 
                 var rotateAnimation = compositor.CreateScalarKeyFrameAnimation();
                 rotateAnimation.InsertKeyFrame(1.0f, 360f);
                 rotateAnimation.Duration = TimeSpan.FromMilliseconds(750);
-
                 rotateAnimation.IterationBehavior = Microsoft.UI.Composition.AnimationIterationBehavior.Forever;
 
                 visual.StartAnimation("RotationAngleInDegrees", rotateAnimation);
 
                 try
                 {
-                    if (this.DataContext is HomePageViewModel vm)
-                    {
-                        await vm.FetchWeatherAsync(vm.WeatherLocation);
-                    }
+                    await ViewModel.FetchWeatherAsync(ViewModel.WeatherLocation);
 
                     await Task.Delay(500);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Refresh Error] {ex.Message}");
                 }
                 finally
                 {
@@ -542,6 +547,7 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
+        #region Purge Page
         public void Purge()
         {
             Debug.WriteLine("[HomePage] Deep Purge Initiated...");
@@ -586,5 +592,6 @@ namespace EvolveOS_Optimizer.Pages
 
             Debug.WriteLine("[HomePage] Purge complete. 0 remaining references.");
         }
+        #endregion
     }
 }

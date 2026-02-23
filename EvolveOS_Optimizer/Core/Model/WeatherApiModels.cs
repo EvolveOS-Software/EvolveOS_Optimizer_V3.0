@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using EvolveOS_Optimizer.Core.Base;
 
@@ -6,34 +5,6 @@ namespace EvolveOS_Optimizer.Core.Model
 {
     public partial class WeatherApiModels
     {
-        public class DailyForecast
-        {
-            public string? Day { get; set; }
-            public string? IconSource { get; set; } // Fixed: Changed back to string?
-            public string? MaxTemp { get; set; }
-            public string? MinTemp { get; set; }
-        }
-
-        public class WeatherData : ViewModelBase
-        {
-            private string _description = "N/A";
-            public string Description
-            {
-                get => _description;
-                set { _description = value; OnPropertyChanged(); }
-            }
-
-            private double _tempC;
-            public double TempC
-            {
-                get => _tempC;
-                set { _tempC = value; OnPropertyChanged(); }
-            }
-
-            public string? CurrentIconUrl { get; set; } // Fixed: Changed back to string?
-            public List<DailyForecast> Forecast { get; set; } = new List<DailyForecast>();
-        }
-
         public class LocationModel
         {
             [JsonPropertyName("name")]
@@ -96,5 +67,33 @@ namespace EvolveOS_Optimizer.Core.Model
             [JsonPropertyName("forecast")]
             public ApiForecast? Forecast { get; set; }
         }
+    }
+
+    public class DailyForecast
+    {
+        public string? Day { get; set; }
+        public string? IconSource { get; set; }
+        public string? MaxTemp { get; set; }
+        public string? MinTemp { get; set; }
+    }
+
+    public class WeatherData : ViewModelBase
+    {
+        private string _description = "N/A";
+        public string Description
+        {
+            get => _description;
+            set { _description = value; OnPropertyChanged(); }
+        }
+
+        private double _tempC;
+        public double TempC
+        {
+            get => _tempC;
+            set { _tempC = value; OnPropertyChanged(); }
+        }
+
+        public string? CurrentIconUrl { get; set; }
+        public List<DailyForecast> Forecast { get; set; } = new List<DailyForecast>();
     }
 }

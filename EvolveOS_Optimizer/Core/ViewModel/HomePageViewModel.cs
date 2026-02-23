@@ -4,7 +4,6 @@ using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
-using static EvolveOS_Optimizer.Core.Model.WeatherApiModels;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -30,8 +29,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private string _weatherDescription = "Loading...";
         private string _weatherTemperature = "--°";
         private string _weatherLocation;
-        private string _currentTime = "--:--";
-        private string _currentDate = "Loading...";
+        private string _currentTime = DateTime.Now.ToString("HH:mm");
+        private string _currentDate = DateTime.Now.ToString("dddd, MMMM d");
         private double _downloadSpeed;
         private double _uploadSpeed;
         private ImageSource? _displayWallpaper;
@@ -266,6 +265,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             LoadDisplayData();
             LoadDiskData();
+
+            _ = FetchWeatherAsync(_weatherLocation, _cts.Token);
         }
 
         #endregion
@@ -397,7 +398,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     WeatherDescription = data.Description;
                     WeatherTemperature = data.TempC.ToString("F0") + "°";
 
-                    WeatherLocation = loc;
+                    _weatherLocation = loc;
+                    OnPropertyChanged(nameof(WeatherLocation));
 
                     CurrentWeatherIcon = data.CurrentIconUrl;
 
@@ -441,7 +443,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             return "Paris";
         }
 
-        public void UpdateWeatherData(WeatherApiModels.WeatherData data)
+        public void UpdateWeatherData(WeatherData data)
         {
             _dispatcherQueue.TryEnqueue(() =>
             {

@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:EvolveOS_Optimizer.Core.Model"
     xmlns:anim="using:EvolveOS_Optimizer.Utilities.Animation"
     xmlns:conv="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
@@ -213,8 +214,8 @@
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Grid.Row="0" VerticalAlignment="Top" Margin="0, 10, 0, 10">
-                                        <TextBlock Text="{Binding CurrentTime}" FontSize="82" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Left"/>
-                                        <TextBlock Text="{Binding CurrentDate}" FontSize="18" FontFamily="{ThemeResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="5,0,0,0"/>
+                                        <TextBlock Text="{x:Bind ViewModel.CurrentTime, Mode=OneWay}" FontSize="82" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Left"/>
+                                        <TextBlock Text="{x:Bind ViewModel.CurrentDate, Mode=OneWay}" FontSize="18" FontFamily="{ThemeResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="5,0,0,0"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Vertical" Margin="0,-5,0,0">
@@ -224,15 +225,15 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <Image Grid.Column="0" Source="{Binding CurrentWeatherIcon}" Width="70" Height="70" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                            <Image Grid.Column="0" Source="{x:Bind ViewModel.CurrentWeatherIcon, Mode=OneWay}" Width="70" Height="70" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding WeatherTemperature}" FontFamily="Jura Medium" Style="{StaticResource InfoValue}" FontSize="48" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,-5,10,0"/>
+                                                <TextBlock Text="{x:Bind ViewModel.WeatherTemperature, Mode=OneWay}" FontFamily="Jura Medium" Style="{StaticResource InfoValue}" FontSize="48" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,-5,10,0"/>
                                             </StackPanel>
                                         </Grid>
 
                                         <StackPanel HorizontalAlignment="Right">
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
-                                                <TextBlock Text="{Binding WeatherLocation}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Brush_Highlighted}" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{x:Bind ViewModel.WeatherLocation, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Brush_Highlighted}" VerticalAlignment="Center"/>
 
                                                 <Button x:Name="RefreshWeatherButton"
                                                         Background="Transparent"
@@ -249,7 +250,7 @@
                                                         <Flyout x:Name="LocationFlyout">
                                                             <StackPanel Spacing="12" MinWidth="220">
                                                                 <TextBlock Text="{helpers:ResourceString Key=txt_select_location}" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                                                                <ComboBox x:Name="CityPicker" ItemsSource="{Binding AvailableCities}" HorizontalAlignment="Stretch" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_city}" SelectionChanged="CityPicker_SelectionChanged"/>
+                                                                <ComboBox x:Name="CityPicker" ItemsSource="{x:Bind ViewModel.AvailableCities, Mode=OneWay}" HorizontalAlignment="Stretch" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_city}" SelectionChanged="CityPicker_SelectionChanged"/>
                                                                 <TextBlock Text="Or enter custom:" Style="{StaticResource CaptionTextBlockStyle}"/>
                                                                 <TextBox x:Name="CustomLocationBox" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_location}" KeyDown="CustomLocationBox_KeyDown"/>
                                                                 <Button Content="{helpers:ResourceString Key=btn_update_location}" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Click="UpdateLocation_Click"/>
@@ -260,26 +261,26 @@
                                                 </Button>
                                             </StackPanel>
 
-                                            <TextBlock Text="{Binding WeatherDescription}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="16" Foreground="{StaticResource Brush_Highlighted}" HorizontalAlignment="Right" Margin="0,5,10,0"/>
+                                            <TextBlock Text="{x:Bind ViewModel.WeatherDescription, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="16" Foreground="{StaticResource Brush_Highlighted}" HorizontalAlignment="Right" Margin="0,5,10,0"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Grid>
 
                                 <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="0, 0, 0, -5">
                                     <TextBlock Text="{helpers:ResourceString Key=txt_weather_forecast}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" FontSize="16" Margin="0, 10, 0, 5"/>
-                                    <ItemsControl x:Name="ForecastList" ItemsSource="{Binding FiveDayForecast}" HorizontalAlignment="Stretch">
+                                    <ItemsControl x:Name="ForecastList" ItemsSource="{x:Bind ViewModel.FiveDayForecast, Mode=OneWay}" HorizontalAlignment="Stretch">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <ui:UniformGrid Rows="1" Columns="5" HorizontalAlignment="Stretch"/>
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate x:DataType="model:DailyForecast">
                                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
-                                                    <TextBlock Text="{Binding Day}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                                    <Image Source="{Binding IconSource}" Width="32" Height="32" Margin="0, 5, 0, 0" />
-                                                    <TextBlock Text="{Binding MaxTemp}" Style="{StaticResource InfoValue}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                                    <TextBlock Text="{Binding MinTemp}" Style="{StaticResource InfoLabel}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="{x:Bind Day, Mode=OneWay}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                                    <Image Source="{x:Bind IconSource, Mode=OneWay}" Width="32" Height="32" Margin="0, 5, 0, 0" />
+                                                    <TextBlock Text="{x:Bind MaxTemp, Mode=OneWay}" Style="{StaticResource InfoValue}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                                    <TextBlock Text="{x:Bind MinTemp, Mode=OneWay}" Style="{StaticResource InfoLabel}" HorizontalAlignment="Center"/>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
