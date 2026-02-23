@@ -19,7 +19,7 @@ namespace EvolveOS_Optimizer.Pages
     public sealed partial class MaintenancePage : Page, IPurgeable
     {
         #region Fields
-        private readonly MaintenanceViewModel? _viewModel;
+        private static MaintenanceViewModel? _sharedViewModel;
         private bool _isShowingResult = false;
 
         private readonly Dictionary<string, StringBuilder> _scanResults = new()
@@ -42,20 +42,23 @@ namespace EvolveOS_Optimizer.Pages
             InitializeComponent();
             //this.NavigationCacheMode = NavigationCacheMode.Required;
 
-            IComputerService computerService = new ComputerService();
-            IHotkeyService? globalHotkeyService = App.GetService<IHotkeyService>();
+            if (_sharedViewModel == null)
+            {
+                IComputerService computerService = new ComputerService();
+                IHotkeyService? globalHotkeyService = App.GetService<IHotkeyService>();
+                _sharedViewModel = new MaintenanceViewModel(computerService, globalHotkeyService!);
+            }
 
-            _viewModel = new MaintenanceViewModel(computerService, globalHotkeyService!);
-            this.DataContext = _viewModel;
+            this.DataContext = MaintenanceViewModel.Current;
 
             this.Loaded += MaintenancePage_Loaded;
 
-            if (_viewModel != null)
+            if (_sharedViewModel != null)
             {
-                _viewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
-                _viewModel.OnRemoveProcessFromExclusionListCommandCompleted += () => SetFocusTo(ProcessExclusionList);
+                _sharedViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
+                _sharedViewModel.OnRemoveProcessFromExclusionListCommandCompleted += () => SetFocusTo(ProcessExclusionList);
 
-                _viewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
+                _sharedViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
             }
 
             this.Unloaded += MaintenancePage_Unloaded;
@@ -733,34 +736,34 @@ namespace EvolveOS_Optimizer.Pages
 
         private async Task CalculateSystemHealthAsync()
         {
-            if (_viewModel == null) return;
+            if (_sharedViewModel == null) return;
 
             MaintenanceStatusLoadingRing.Visibility = Visibility.Visible;
             MaintenanceStatusImage.Visibility = Visibility.Collapsed;
             LastRefreshedText.Visibility = Visibility.Collapsed;
             RefreshButton.IsEnabled = false;
 
-            if (_viewModel.RefreshCleanupSpaceCommand.CanExecute(null))
+            if (_sharedViewModel.RefreshCleanupSpaceCommand.CanExecute(null))
             {
-                _viewModel.RefreshCleanupSpaceCommand.Execute(null);
+                _sharedViewModel.RefreshCleanupSpaceCommand.Execute(null);
             }
 
-            while (_viewModel.IsScanning)
+            while (_sharedViewModel.IsScanning)
             {
                 await Task.Delay(250);
             }
 
             int penaltyScore = 0;
 
-            double ramUsage = _viewModel.Computer?.Memory?.Physical?.Used?.Percentage ?? 0;
+            double ramUsage = _sharedViewModel.Computer?.Memory?.Physical?.Used?.Percentage ?? 0;
             if (ramUsage > 85) penaltyScore += 2;
             else if (ramUsage > 70) penaltyScore += 1;
 
-            double vRamUsage = _viewModel.Computer?.Memory?.Virtual?.Used?.Percentage ?? 0;
+            double vRamUsage = _sharedViewModel.Computer?.Memory?.Virtual?.Used?.Percentage ?? 0;
             if (vRamUsage > 85) penaltyScore += 2;
             else if (vRamUsage > 70) penaltyScore += 1;
 
-            double junkGigabytes = ParseSizeToGigabytes(_viewModel.TotalSpaceToFree);
+            double junkGigabytes = ParseSizeToGigabytes(_sharedViewModel.TotalSpaceToFree);
             if (junkGigabytes > 5.0) penaltyScore += 2;
             else if (junkGigabytes > 1.0) penaltyScore += 1;
 
@@ -846,14 +849,9 @@ namespace EvolveOS_Optimizer.Pages
                 _cancellationTokenSource = null;
             }
 
-            if (_viewModel != null)
-            {
-                _viewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
-                _viewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
-                _viewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
-
-                if (_viewModel is IDisposable disposable) disposable.Dispose();
-            }
+            MaintenanceViewModel.Current.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
+            MaintenanceViewModel.Current.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
+            MaintenanceViewModel.Current.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
 
             foreach (var result in _scanResults.Values)
             {
@@ -867,8 +865,50 @@ namespace EvolveOS_Optimizer.Pages
             this.DataContext = null;
             this.Content = null;
 
-            Debug.WriteLine("[MaintenancePage] Purge Complete.");
+            Debug.WriteLine("[MaintenancePage] Purge Complete. UI Destroyed, ViewModel safely kept alive.");
         }
+
+        /*public async void Purge()
+        {
+            Debug.WriteLine("[MaintenancePage] Purge Initiated...");
+
+            await StopCurrentOperationAsync();
+
+            if (_cancellationTokenSource != null)
+            {
+                try
+                {
+                    _cancellationTokenSource.Cancel();
+                    _cancellationTokenSource.Dispose();
+                }
+                catch { }
+                _cancellationTokenSource = null;
+            }
+
+            if (_sharedViewModel != null)
+            {
+                _sharedViewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
+                _sharedViewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
+                _sharedViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
+
+                /* WE DO NOT DISPOSE THE VIEWMODEL *\
+                if (_sharedViewModel is IDisposable disposable) disposable.Dispose(); */
+            //}
+
+            /*foreach (var result in _scanResults.Values)
+            {
+                result.Clear();
+            }
+            _scanResults.Clear();
+
+            this.Loaded -= MaintenancePage_Loaded;
+            this.Unloaded -= MaintenancePage_Unloaded;
+
+            this.DataContext = null;
+            this.Content = null;
+
+            Debug.WriteLine("[MaintenancePage] Purge Complete.");
+        }*/
         #endregion
     }
 }

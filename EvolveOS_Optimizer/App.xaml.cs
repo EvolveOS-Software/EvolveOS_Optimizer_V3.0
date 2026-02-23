@@ -6,7 +6,6 @@ using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
 
@@ -68,6 +67,7 @@ namespace EvolveOS_Optimizer
             СheckingGlobalParameters.Initialize();
             App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
 
+            _ = Core.ViewModel.MaintenanceViewModel.Current;
             var loadingWindow = new LoadingWindow();
             MainWindow = loadingWindow;
 
@@ -167,7 +167,7 @@ namespace EvolveOS_Optimizer
 
                 if (!success)
                 {
-                    ShowNotification("Hotkey Warning", $"Hotkey {hotkey} is in use by another app.", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Warning, 5000);
+                    ShowNotification("Hotkey Warning", $"Hotkey {hotkey} is in use by another app.", InfoBarSeverity.Warning, 5000);
                 }
 
                 return success;
@@ -178,15 +178,17 @@ namespace EvolveOS_Optimizer
 
         private static void RunGlobalOptimization()
         {
-            var computerService = new ComputerService();
-            _ = computerService.Optimize(Enums.Memory.Optimization.Reason.Manual, LocalMachineSettingsEngine.MemoryAreas);
-
-            if (Current.MainWindow?.DispatcherQueue != null)
+            if (Core.ViewModel.MaintenanceViewModel.Current.OptimizeCommand.CanExecute(null))
             {
-                Current.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                Core.ViewModel.MaintenanceViewModel.Current.OptimizeCommand.Execute(null);
+
+                if (Current.MainWindow?.DispatcherQueue != null)
                 {
-                    ShowNotification("Optimizer", "Memory successfully cleaned via Global Hotkey!", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Success, 3000);
-                });
+                    Current.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        ShowNotification("Optimizer", "Memory successfully cleaned via Global Hotkey!", InfoBarSeverity.Success, 3000);
+                    });
+                }
             }
         }
 
@@ -206,7 +208,7 @@ namespace EvolveOS_Optimizer
             e.Handled = true;
         }
 
-        public static void ShowNotification(string title, string message, Microsoft.UI.Xaml.Controls.InfoBarSeverity severity, int duration)
+        public static void ShowNotification(string title, string message, InfoBarSeverity severity, int duration)
         {
             NotificationManager.Show(title, message)
                 .WithSeverity(severity)

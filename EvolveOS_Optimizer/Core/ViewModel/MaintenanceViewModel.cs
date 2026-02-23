@@ -14,6 +14,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 {
     public class MaintenanceViewModel : ViewModelBase, IDisposable
     {
+        private static MaintenanceViewModel? _instance;
+        public static MaintenanceViewModel Current => _instance ??= CreateGlobalInstance();
+
+        private static MaintenanceViewModel CreateGlobalInstance()
+        {
+            // We create the services here so the App can start it without needing the Page
+            IComputerService computerService = new EvolveOS_Optimizer.Utilities.Services.ComputerService();
+            IHotkeyService? globalHotkeyService = App.GetService<IHotkeyService>();
+
+            return new MaintenanceViewModel(computerService, globalHotkeyService!);
+        }
+
         private CancellationTokenSource? _cancellationTokenSource;
         private Computer? _computer;
         private readonly IComputerService _computerService;
@@ -178,11 +190,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             get => LocalMachineSettingsEngine.OptimizationKey;
             set
             {
+                if (value == VirtualKey.None || (int)value == 0) return;
+
                 if (value != LocalMachineSettingsEngine.OptimizationKey)
                 {
                     LocalMachineSettingsEngine.OptimizationKey = value;
                     OnPropertyChanged();
-
                     IsOptimizationKeyValid = App.NotifyHotkeySettingsChanged();
                 }
             }
@@ -193,6 +206,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             get => LocalMachineSettingsEngine.OptimizationModifiers;
             set
             {
+                if (value == VirtualKeyModifiers.None || (int)value == 0) return;
+
                 if (value != LocalMachineSettingsEngine.OptimizationModifiers)
                 {
                     LocalMachineSettingsEngine.OptimizationModifiers = value;
