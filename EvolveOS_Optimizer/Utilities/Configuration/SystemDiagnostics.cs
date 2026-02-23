@@ -22,9 +22,14 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         private static readonly object _wmiLock = new object();
         private static readonly HttpClient _updateClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
 
+        private ImageSource? _cachedAvatarSource;
+        private string? _cachedAvatarPath;
+
         private static readonly PerformanceCounter _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
         private static List<PerformanceCounter> _gpuCounters = new();
         private static bool _gpuCountersInitialized = false;
+
+        //private bool _isRefreshing = false;
 
         internal static bool IsElevated => IsRunningAsAdmin();
         internal static bool IsNeedUpdate { get; private set; } = false;
@@ -91,20 +96,43 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             try
             {
                 string sid = WindowsIdentity.GetCurrent().User?.Value ?? "";
-                string regPath = $@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AccountPicture\Users\{sid}";
-                string? avatarPath = Registry.GetValue(regPath, "Image1080", string.Empty)?.ToString();
+                string regKey = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\AccountPicture\Users\{sid}";
 
-                if (!string.IsNullOrWhiteSpace(avatarPath) && File.Exists(avatarPath) && new FileInfo(avatarPath).Length != 0)
+                using var key = Registry.LocalMachine.OpenSubKey(regKey);
+                string? avatarPath = key?.GetValue("Image1080")?.ToString();
+
+                if (_cachedAvatarSource != null && avatarPath == _cachedAvatarPath)
                 {
-                    return new BitmapImage(new Uri(avatarPath));
+                    return _cachedAvatarSource;
+                }
+
+                if (!string.IsNullOrWhiteSpace(avatarPath) && File.Exists(avatarPath) && new FileInfo(avatarPath).Length > 0)
+                {
+                    var bitmap = new BitmapImage();
+
+                    bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+
+                    bitmap.DecodePixelWidth = 200;
+
+                    bitmap.UriSource = new Uri(avatarPath);
+
+                    _cachedAvatarPath = avatarPath;
+                    _cachedAvatarSource = bitmap;
+
+                    Debug.WriteLine($"[Diagnostics] Avatar loaded and cached: {avatarPath}");
+                    return bitmap;
                 }
             }
-            catch (Exception ex) { Debug.WriteLine($"[Diagnostics] Profile Image Error: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Diagnostics] Profile Image Error: {ex.Message}");
+            }
 
             if (Application.Current.Resources.ContainsKey("Icon_ProfileAvatar"))
             {
                 return Application.Current.Resources["Icon_ProfileAvatar"] as ImageSource;
             }
+
             return null;
         }
 
@@ -676,21 +704,13 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             return $"{Math.Round(bytes, 2)} {units[unitIndex]}";
         }
 
-        internal new async Task<string> GetProcessCount()
+        internal async Task<string> GetProcessCountAsync()
         {
             return await Task.Run(() =>
             {
                 try
                 {
-                    var processes = Process.GetProcesses();
-                    int count = processes.Length;
-
-                    foreach (var p in processes)
-                    {
-                        p.Dispose();
-                    }
-
-                    return count.ToString();
+                    return Process.GetProcesses().Length.ToString();
                 }
                 catch
                 {
@@ -751,6 +771,21 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         }
 
         internal new string GetWallpaperPath() => WallpaperPath ?? string.Empty;
+
+        #region Disposal
+
+        public void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _cachedAvatarSource = null;
+                _cachedAvatarPath = null;
+
+                base.Dispose();
+            }
+        }
+
+        #endregion
     }
 
     public sealed class GitMetadata

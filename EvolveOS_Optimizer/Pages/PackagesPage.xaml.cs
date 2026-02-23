@@ -1,3 +1,5 @@
+using System.Threading;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Animation;
@@ -7,11 +9,10 @@ using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using System.Threading;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public partial class PackagesPage : Page
+    public partial class PackagesPage : Page, IPurgeable
     {
         private readonly Dictionary<string, string> _currentCardStates = new();
 
@@ -39,7 +40,7 @@ namespace EvolveOS_Optimizer.Pages
             InitializeComponent();
 
             this.Loaded += PackagesPage_Loaded;
-            this.Unloaded += Page_Unloaded;
+            this.Unloaded += PackagesPage_Unloaded;
         }
 
         private void PackagesPage_Loaded(object sender, RoutedEventArgs e)
@@ -94,6 +95,11 @@ namespace EvolveOS_Optimizer.Pages
             });
 
             _timer.Start();
+        }
+
+        private void PackagesPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Purge();
         }
 
         #region UI Event Handlers (Buttons & Menus)
@@ -492,33 +498,60 @@ namespace EvolveOS_Optimizer.Pages
                 if (this.IsLoaded && HcPanel != null) HcPanel.IsAnimationEnabled = isEnabled;
             });
         }
+        #endregion
 
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        #region Purge Page
+        public void Purge()
         {
-            if (_pageCts != null)
-            {
-                _pageCts.Cancel();
-                _pageCts.Dispose();
-                _pageCts = null;
-            }
+            Debug.WriteLine("[PackagesPage] Purge Initiated...");
 
-            _timer?.Stop();
-            _timer = null;
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer = null;
+                Debug.WriteLine("[PackagesPage] Refresh Timer stopped.");
+            }
 
             if (_staggerTimer != null)
             {
                 _staggerTimer.Stop();
                 _staggerTimer = null;
+                Debug.WriteLine("[PackagesPage] Stagger Timer stopped.");
+            }
+
+            if (_pageCts != null)
+            {
+                try
+                {
+                    _pageCts.Cancel();
+                    _pageCts.Dispose();
+                }
+                catch (ObjectDisposedException) { }
+                _pageCts = null;
+                Debug.WriteLine("[PackagesPage] CancellationToken cancelled.");
             }
 
             _entranceQueue?.Clear();
+            _currentCardStates?.Clear();
 
+            if (HcPanel != null)
+            {
+                HcPanel.AnimationFinished = null;
+                HcPanel.Children.Clear();
+            }
+
+            if (this.DataContext is IDisposable disposableVM)
+            {
+                disposableVM.Dispose();
+            }
             this.DataContext = null;
 
-            this.Loaded -= PackagesPage_Loaded;
-            this.Unloaded -= Page_Unloaded;
+            this.Content = null;
 
-            Debug.WriteLine("[PackagesPage] Instance resources cleared. Shared ViewModel preserved.");
+            this.Loaded -= PackagesPage_Loaded;
+            this.Unloaded -= PackagesPage_Unloaded;
+
+            Debug.WriteLine("[PackagesPage] Purge Complete.");
         }
         #endregion
     }

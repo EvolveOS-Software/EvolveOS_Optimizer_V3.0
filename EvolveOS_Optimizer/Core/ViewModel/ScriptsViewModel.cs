@@ -12,7 +12,7 @@ using Windows.Storage.Pickers;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
-    public partial class ScriptsViewModel : ObservableObject
+    public partial class ScriptsViewModel : ObservableObject, IDisposable
     {
         #region Events & Delegates
         public Action<TerminalOutputWindow>? RequestShowTerminal;
@@ -426,6 +426,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
                 catch (Exception ex) { ErrorLogging.LogDebug(ex); }
             });
+        }
+        #endregion
+
+        #region Disposal
+        public void Dispose()
+        {
+            RequestShowTerminal = null;
+            OnScriptsUpdated = null;
+
+            lock (_locker)
+            {
+                Scripts.Clear();
+                FilteredScripts.Clear();
+            }
+            SavedPaths.Clear();
+
+            Debug.WriteLine("[ScriptsViewModel] Cleanly Disposed.");
         }
         #endregion
     }

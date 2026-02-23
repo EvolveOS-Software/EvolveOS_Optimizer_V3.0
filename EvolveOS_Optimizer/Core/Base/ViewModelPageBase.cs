@@ -43,12 +43,24 @@ namespace EvolveOS_Optimizer.Core.Base
                 case bool b:
                     model.State = b;
                     break;
-                case double d when model is ITypedPageItem<double> doubleItem:
-                    doubleItem.Value = d;
-                    break;
+
                 case string s when model is ITypedPageItem<string> stringItem:
                     stringItem.Value = s;
                     if (s.Contains("!!")) model.IsFaulted = true;
+                    break;
+
+                default:
+                    if (model is ITypedPageItem<double> doubleItem)
+                    {
+                        try
+                        {
+                            doubleItem.Value = Convert.ToDouble(parameter);
+                        }
+                        catch
+                        {
+                            doubleItem.Value = 0.0;
+                        }
+                    }
                     break;
             }
 
@@ -60,9 +72,17 @@ namespace EvolveOS_Optimizer.Core.Base
         {
             if (disposing)
             {
-                Toggles?.Clear();
+                if (Toggles != null)
+                {
+                    foreach (var item in Toggles.OfType<IDisposable>())
+                    {
+                        item.Dispose();
+                    }
 
-                Debug.WriteLine($"[Memory Management] {this.GetType().Name} disposed and Toggles cleared.");
+                    Toggles.Clear();
+                }
+
+                Debug.WriteLine($"[Memory Management] {this.GetType().Name} collections cleared.");
             }
 
             base.Dispose(disposing);

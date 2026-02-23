@@ -7,9 +7,10 @@ using static EvolveOS_Optimizer.Core.Model.WeatherApiModels;
 
 namespace EvolveOS_Optimizer.Utilities.Configuration
 {
-    public class WeatherService
+    public class WeatherService : IDisposable
     {
         private static readonly HttpClient _client = new HttpClient();
+        private readonly CancellationTokenSource _internalCts = new();
 
         private const string API_KEY = "6aa62b54867341f3b3925740250511";
         private const int FORECAST_DAYS = 5;
@@ -27,6 +28,9 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         public async Task<WeatherData> GetWeatherAsync(string? locationOverride = null, CancellationToken token = default)
         {
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, _internalCts.Token);
+            var activeToken = linkedCts.Token;
+
             if (string.IsNullOrEmpty(API_KEY) || API_KEY.Contains("CHANGE_ME")) return GetMockWeatherData();
 
             string effectiveLocation = locationOverride ?? _location;
@@ -159,6 +163,23 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 CurrentIconUrl = BasePath + "Cloudy.png",
                 Forecast = new List<DailyForecast>()
             };
+        }
+
+        #endregion
+
+        #region Disposal
+
+        public void Dispose()
+        {
+            try
+            {
+                _internalCts.Cancel();
+                _internalCts.Dispose();
+            }
+            catch { }
+
+            Debug.WriteLine("[WeatherService] Disposed - Pending requests cancelled.");
+            GC.SuppressFinalize(this);
         }
 
         #endregion

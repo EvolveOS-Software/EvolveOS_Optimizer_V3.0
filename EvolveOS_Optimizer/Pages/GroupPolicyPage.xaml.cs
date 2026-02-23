@@ -1,11 +1,13 @@
+using System.Threading;
+using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.ViewModel.Items;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Xaml.Navigation;
-using System.Threading;
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class GroupPolicyPage : Page
+public sealed partial class GroupPolicyPage : Page, IPurgeable
 {
     private CancellationTokenSource? _cancellationTokenSource;
     private IReadOnlyList<GroupPolicyHelper.PolicyState>? _policyStates;
@@ -24,8 +26,9 @@ public sealed partial class GroupPolicyPage : Page
 
         ErrorLogging.LogDebug(new Exception(ResourceString.GetString("Initializing GroupPolicyPage")));
 
-        NavigationCacheMode = NavigationCacheMode.Required;
+        //NavigationCacheMode = NavigationCacheMode.Required;
         Loaded += GroupPolicyPage_Loaded;
+        Unloaded += GroupPolicyPage_Unloaded;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -49,6 +52,11 @@ public sealed partial class GroupPolicyPage : Page
             await ScrollToElementHelper.ScrollToElementAsync(this, _pendingScrollTarget);
             _pendingScrollTarget = null;
         }
+    }
+
+    private void GroupPolicyPage_Unloaded(object sender, RoutedEventArgs e)
+    {
+        Purge();
     }
 
     private void ConfiguredPoliciesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -385,84 +393,41 @@ public sealed partial class GroupPolicyPage : Page
         }
     }
 
-    private void Page_Unloaded(object sender, RoutedEventArgs e)
+    #region Purge Page
+    public void Purge()
     {
-        if (this.DataContext is IDisposable disposableVM)
-        {
-            disposableVM.Dispose();
-        }
-        this.DataContext = null;
+        Debug.WriteLine("[GroupPolicyPage] Purge initiated...");
+
+        Loaded -= GroupPolicyPage_Loaded;
+        Unloaded -= GroupPolicyPage_Unloaded;
+        ConfiguredPoliciesListView.SelectionChanged -= ConfiguredPoliciesListView_SelectionChanged;
 
         if (_cancellationTokenSource != null)
         {
             try
             {
                 _cancellationTokenSource.Cancel();
+                _cancellationTokenSource.Dispose();
             }
             catch (ObjectDisposedException) { }
-            catch (AggregateException) { }
-            finally
-            {
-                _cancellationTokenSource.Dispose();
-                _cancellationTokenSource = null;
-            }
+            _cancellationTokenSource = null;
+            Debug.WriteLine("[GroupPolicyPage] Background tasks cancelled.");
         }
 
-        System.Diagnostics.Debug.WriteLine("[GroupPolicyPage] Unloaded and Background tasks stopped.");
-    }
-}
+        _policyStates = null;
 
-public sealed class CategorySummaryItem
-{
-    public required string Category { get; init; }
-    public required int TotalCount { get; init; }
-    public required int ConfiguredCount { get; init; }
-    public required string IconGlyph { get; init; }
+        CategorySummaryRepeater.ItemsSource = null;
+        ConfiguredPoliciesListView.ItemsSource = null;
 
-    public string? StatusText => ConfiguredCount == 0
-        ? ResourceString.GetString("GroupPolicyPage_NotConfigured")
-        : string.Format(ResourceString.GetString("GroupPolicyPage_ConfiguredCount"), ConfiguredCount);
-
-    public SolidColorBrush StatusColor => ConfiguredCount == 0
-        ? new SolidColorBrush(Colors.Green)
-        : (SolidColorBrush)Application.Current.Resources["SystemFillColorCautionBrush"];
-
-    public bool HasConfiguredPolicies => ConfiguredCount > 0;
-
-    public string? ButtonText => ResourceString.GetString("GroupPolicyPage_RemoveOverrides");
-}
-
-public sealed class PolicyStateViewModel
-{
-    private readonly GroupPolicyHelper.PolicyState _state;
-
-    public PolicyStateViewModel(GroupPolicyHelper.PolicyState state)
-    {
-        _state = state;
-    }
-
-    public GroupPolicyHelper.PolicyEntry Policy => _state.Policy;
-
-    public string HiveDisplay => _state.Policy.Hive switch
-    {
-        Microsoft.Win32.RegistryHive.LocalMachine => "HKLM",
-        Microsoft.Win32.RegistryHive.CurrentUser => "HKCU",
-        _ => _state.Policy.Hive.ToString()
-    };
-
-    public string CurrentValueDisplay
-    {
-        get
+        if (this.DataContext is IDisposable disposableVM)
         {
-            if (_state.CurrentValue == null)
-                return ResourceString.GetString("Not set");
-
-            return _state.ActualValueKind switch
-            {
-                Microsoft.Win32.RegistryValueKind.DWord => $"{ResourceString.GetString("Value")}: {_state.CurrentValue}",
-                Microsoft.Win32.RegistryValueKind.String => $"{ResourceString.GetString("Value")}: \"{_state.CurrentValue}\"",
-                _ => $"{ResourceString.GetString("Value")}: {_state.CurrentValue}"
-            };
+            disposableVM.Dispose();
         }
+        this.DataContext = null;
+
+        this.Content = null;
+
+        Debug.WriteLine("[GroupPolicyPage] Purge Complete.");
     }
+    #endregion
 }

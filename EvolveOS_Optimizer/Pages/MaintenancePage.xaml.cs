@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class MaintenancePage : Page
+    public sealed partial class MaintenancePage : Page, IPurgeable
     {
         #region Fields
         private readonly MaintenanceViewModel? _viewModel;
@@ -56,11 +56,12 @@ namespace EvolveOS_Optimizer.Pages
                 _viewModel.OnRemoveProcessFromExclusionListCommandCompleted += () => SetFocusTo(ProcessExclusionList);
 
                 _viewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
-                _viewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
             }
 
             this.Unloaded += MaintenancePage_Unloaded;
         }
+
+        private void OnRemoveProcessFromExclusionListCommandCompletedCallback() => SetFocusTo(ProcessExclusionList);
 
         private async void MaintenancePage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -94,6 +95,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void MaintenancePage_Unloaded(object sender, RoutedEventArgs e)
         {
+            Purge();
         }
         #endregion
 
@@ -824,6 +826,49 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
+        #endregion
+
+        #region Purge Page
+        public async void Purge()
+        {
+            Debug.WriteLine("[MaintenancePage] Purge Initiated...");
+
+            await StopCurrentOperationAsync();
+
+            if (_cancellationTokenSource != null)
+            {
+                try
+                {
+                    _cancellationTokenSource.Cancel();
+                    _cancellationTokenSource.Dispose();
+                }
+                catch { }
+                _cancellationTokenSource = null;
+            }
+
+            if (_viewModel != null)
+            {
+                _viewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
+                _viewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
+                _viewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
+
+                if (_viewModel is IDisposable disposable) disposable.Dispose();
+            }
+
+            foreach (var result in _scanResults.Values)
+            {
+                result.Clear();
+            }
+            _scanResults.Clear();
+
+            this.Loaded -= MaintenancePage_Loaded;
+            this.Unloaded -= MaintenancePage_Unloaded;
+
+            this.DataContext = null;
+            this.Content = null;
+
+            Debug.WriteLine("[MaintenancePage] Purge Complete.");
+        }
         #endregion
     }
 }

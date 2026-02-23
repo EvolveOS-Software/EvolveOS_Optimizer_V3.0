@@ -252,6 +252,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }
         }
 
+        #region Disposal
         public void Dispose()
         {
             StopDeviceMonitoring();
@@ -262,8 +263,10 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             _uploadCounter = null;
 
             HandleDevicesEvents = null;
+
             GC.SuppressFinalize(this);
         }
+        #endregion
 
         internal string GetWallpaperPath()
         {

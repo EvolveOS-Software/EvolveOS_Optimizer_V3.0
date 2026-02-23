@@ -973,6 +973,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _cancellationTokenSource?.Dispose();
 
                 _cancellationTokenSource = null;
+
+                _computerService.OnOptimizeProgressUpdate -= OnOptimizeProgressUpdate;
             }
             base.Dispose(disposing);
         }

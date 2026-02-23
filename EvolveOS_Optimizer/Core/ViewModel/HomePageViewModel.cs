@@ -38,6 +38,48 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Properties
+
+        public double CpuUsage => HardwareData.Processor.Usage;
+        public string CpuUsageText => CpuUsage.ToString("F0");
+
+        public double RamUsage => HardwareData.Memory.Usage;
+        public string RamUsageText => RamUsage.ToString("F0");
+
+
+        public string? OSName
+        {
+            get
+            {
+                var info = this["OSName"];
+                return info != null ? info.Data : "Windows";
+            }
+        }
+
+        public string? OSVersion
+        {
+            get
+            {
+                var info = this["OSVersion"];
+                return info != null ? info.Data : string.Empty;
+            }
+        }
+
+        public string NetworkName => HardwareData.NetworkAdapter ?? "Disconnected";
+        public string PublicIP => HardwareData.UserIPAddress ?? "0.0.0.0";
+        public string LocalIPValue => HardwareData.LocalIPAddress ?? "127.0.0.1";
+
+        public double DownloadSpeedMbps { get; set; }
+        public double UploadSpeedMbps { get; set; }
+
+
+        public Visibility VisionVisibility => SetVisibility;
+        public bool IsVisionChecked
+        {
+            get => StateButtonVision;
+            set { StateButtonVision = value; OnPropertyChanged(); }
+        }
+
+
         public ObservableCollection<HomePageModel> DisplayData
         {
             get => _displayData;
@@ -349,7 +391,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 _dispatcherQueue.TryEnqueue(() =>
                 {
-                    if (token.IsCancellationRequested) return;
+                    if (_isDisposed || token.IsCancellationRequested || _fiveDayForecast == null)
+                        return;
 
                     WeatherDescription = data.Description;
                     WeatherTemperature = data.TempC.ToString("F0") + "°";
@@ -363,7 +406,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         FiveDayForecast.Clear();
                         foreach (var day in data.Forecast)
                         {
-                            FiveDayForecast.Add(day);
+                            if (_fiveDayForecast == null) return;
+                            _fiveDayForecast.Add(day);
                         }
                     }
                 });
@@ -422,6 +466,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (disposing)
             {
+                _isDisposed = true;
+
                 if (_statsTimer != null)
                 {
                     _statsTimer.Stop();
@@ -430,23 +476,47 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 try
                 {
-                    _cts.Cancel();
-                    // Optional: _cts.Dispose();
+                    if (!_cts.IsCancellationRequested)
+                    {
+                        _cts.Cancel();
+                    }
+                    _cts.Dispose();
                 }
                 catch (ObjectDisposedException) { }
-
-                _monitoringService?.Dispose();
 
                 DisplayWallpaper = null;
                 _displayWallpaper = null;
 
-                _displayData?.Clear();
-                _fiveDayForecast?.Clear();
-                _diskDrives?.Clear();
+                if (_displayData != null)
+                {
+                    _displayData.Clear();
+                    _displayData = null!;
+                }
 
-                OnPropertyChanged(string.Empty);
+                if (_fiveDayForecast != null)
+                {
+                    _fiveDayForecast.Clear();
+                    _fiveDayForecast = null!;
+                }
 
-                Debug.WriteLine("[HomePageVM] ViewModel Disposed and Tasks Canceled.");
+                if (_diskDrives != null)
+                {
+                    _diskDrives.Clear();
+                    _diskDrives = null!;
+                }
+
+                if (_availableCities != null)
+                {
+                    _availableCities.Clear();
+                    _availableCities = null!;
+                }
+
+                (_weatherService as IDisposable)?.Dispose();
+                (_monitoringService as IDisposable)?.Dispose();
+
+                ClearPropertyChangedListeners();
+
+                Debug.WriteLine("[HomePageVM] Purge: All models and delegates unrooted.");
             }
 
             base.Dispose(disposing);

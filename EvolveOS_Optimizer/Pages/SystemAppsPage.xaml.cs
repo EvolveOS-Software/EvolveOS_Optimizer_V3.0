@@ -1,19 +1,20 @@
-using CommunityToolkit.WinUI;
-using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Threading;
+using CommunityToolkit.WinUI;
+using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class SystemAppsPage : Page
+public sealed partial class SystemAppsPage : Page, IPurgeable
 {
     public ObservableCollection<Tuple<string, string, bool>> AppList { get; set; } = new();
 
@@ -31,20 +32,7 @@ public sealed partial class SystemAppsPage : Page
 
         this.NavigationCacheMode = NavigationCacheMode.Required;
         Loaded += SystemAppsPage_Loaded;
-    }
-
-    private void Page_Unloaded(object sender, RoutedEventArgs e)
-    {
-        if (cancellationTokenSource != null)
-        {
-            cancellationTokenSource.Cancel();
-            cancellationTokenSource.Dispose();
-            cancellationTokenSource = null;
-        }
-
-        this.DataContext = null;
-
-        Debug.WriteLine("[SystemAppsPage] Background tasks canceled. Shared data preserved for navigation.");
+        Unloaded += SystemAppsPage_Unloaded;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -80,6 +68,11 @@ public sealed partial class SystemAppsPage : Page
             await ScrollToElementHelper.ScrollToElementAsync(this, _pendingScrollTarget);
             _pendingScrollTarget = null;
         }
+    }
+
+    private void SystemAppsPage_Unloaded(object sender, RoutedEventArgs e)
+    {
+        Purge();
     }
 
     private void AppTreeView_DragItemsStarting(TreeView sender, TreeViewDragItemsStartingEventArgs args)
@@ -607,4 +600,40 @@ public sealed partial class SystemAppsPage : Page
 
         return await confirmationDialog.ShowAsync();
     }
+
+    #region Purge Page
+    public void Purge()
+    {
+        Debug.WriteLine("[SystemAppsPage] Deep Purge Initiated...");
+
+        if (cancellationTokenSource != null)
+        {
+            try
+            {
+                cancellationTokenSource.Cancel();
+                cancellationTokenSource.Dispose();
+            }
+            catch { }
+            cancellationTokenSource = null;
+        }
+
+        Loaded -= SystemAppsPage_Loaded;
+        Unloaded -= SystemAppsPage_Unloaded;
+
+        if (this.DataContext is IDisposable disposableVM)
+        {
+            disposableVM.Dispose();
+            Debug.WriteLine("[SystemAppsPage] ViewModel Disposed.");
+        }
+        this.DataContext = null;
+        this.ViewModel = null;
+
+        AppList?.Clear();
+        allApps?.Clear();
+
+        this.Content = null;
+
+        Debug.WriteLine("[SystemAppsPage] Purge Complete.");
+    }
+    #endregion
 }

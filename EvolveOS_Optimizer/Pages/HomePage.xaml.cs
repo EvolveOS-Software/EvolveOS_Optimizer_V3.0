@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
@@ -13,7 +14,7 @@ using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class HomePage : Page
+    public sealed partial class HomePage : Page, IPurgeable
     {
         #region Fields
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
@@ -33,6 +34,8 @@ namespace EvolveOS_Optimizer.Pages
         private bool _isFirstTick = true;
         #endregion
 
+        public HomePageViewModel ViewModel { get; } = new();
+
         #region Constructor & Page Lifecycle
         public HomePage()
         {
@@ -43,6 +46,7 @@ namespace EvolveOS_Optimizer.Pages
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread() ?? throw new InvalidOperationException("DispatcherQueue not found.");
 
             this.Loaded += HomePage_Loaded;
+            this.Unloaded += Page_Unloaded;
         }
 
         private void HomePage_Loaded(object sender, RoutedEventArgs e)
@@ -96,14 +100,7 @@ namespace EvolveOS_Optimizer.Pages
                 _monitoringTimer = null;
             }
 
-            try
-            {
-                SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[HomePage] Error detaching SystemEvents: {ex.Message}");
-            }
+            SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
 
             if (this.DataContext is IDisposable disposableVM)
             {
@@ -111,42 +108,29 @@ namespace EvolveOS_Optimizer.Pages
             }
 
             this.DataContext = null;
-            this.Content = null;
 
             this.Loaded -= HomePage_Loaded;
             this.Unloaded -= Page_Unloaded;
 
-            Debug.WriteLine("[HomePage] Nuclear disposal complete. Content and DataContext cleared.");
-
-            GC.Collect(2, GCCollectionMode.Forced, true);
-            GC.WaitForPendingFinalizers();
+            //Debug.WriteLine("[HomePage] Memory leaks plugged. Static events unhooked.");
         }
+
+
         #endregion
 
         #region Real-time Monitoring (Hardware & Network)
         private void StartMonitoring()
         {
-            _ = UpdateHardwareStats();
-
             _monitoringTimer = new DispatcherTimer();
             _monitoringTimer.Interval = TimeSpan.FromSeconds(2);
-            _monitoringTimer.Tick += async (s, e) =>
-            {
-                if (this.XamlRoot == null) return;
-
-                _monitoringTimer.Stop();
-
-                try
-                {
-                    await UpdateHardwareStats();
-                }
-                finally
-                {
-                    _monitoringTimer.Start();
-                }
-            };
-
+            _monitoringTimer.Tick += OnMonitoringTick;
             _monitoringTimer.Start();
+        }
+
+        private async void OnMonitoringTick(object? sender, object e)
+        {
+            if (this.XamlRoot == null) return;
+            await UpdateHardwareStats();
         }
 
         private async Task UpdateHardwareStats()
@@ -557,5 +541,50 @@ namespace EvolveOS_Optimizer.Pages
             storyboard.Begin();
         }
         #endregion
+
+        public void Purge()
+        {
+            Debug.WriteLine("[HomePage] Deep Purge Initiated...");
+
+
+            if (_monitoringTimer != null)
+            {
+                _monitoringTimer.Stop();
+                _monitoringTimer.Tick -= OnMonitoringTick;
+                _monitoringTimer = null;
+            }
+
+            if (DashboardPanel != null)
+            {
+                DashboardPanel.Children.Clear();
+            }
+
+            SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
+
+            HardwareData.ClearResources();
+
+            if (this.DataContext is IDisposable vm)
+            {
+                vm.Dispose();
+                Debug.WriteLine("[HomePage] ViewModel disposed and unhooked.");
+            }
+
+            IpShimmerBrush = null;
+            LocalIpShimmerBrush = null;
+            this.Content = null;
+            this.DataContext = null;
+
+            if (ForecastList != null) ForecastList.ItemsSource = null;
+            if (DiskDrivesList != null) DiskDrivesList.ItemsSource = null;
+
+            this.Loaded -= HomePage_Loaded;
+            this.Unloaded -= Page_Unloaded;
+
+            // CLEAR LOCAL COLLECTIONS
+            // Lists or Observables, clear to drop refs
+            // _someLocalList?.Clear();
+
+            Debug.WriteLine("[HomePage] Purge complete. 0 remaining references.");
+        }
     }
 }

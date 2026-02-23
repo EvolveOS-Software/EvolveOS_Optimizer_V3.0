@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Reflection;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Utilities.Configuration;
@@ -149,12 +150,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             ExecuteNavigateCommand = new RelayCommand<string>(ExecuteNavigate);
 
-            LocalizationService.Instance.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "Item[]") OnPropertyChanged(string.Empty);
-            };
+            LocalizationService.Instance.PropertyChanged += OnLocalizationPropertyChanged;
 
             ExecuteNavigate("Home");
+        }
+
+        private void OnLocalizationPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Item[]")
+            {
+                OnPropertyChanged(string.Empty);
+            }
         }
         #endregion
 
@@ -164,6 +170,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (string.IsNullOrEmpty(tag)) return;
 
             CurrentViewTag = tag;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                LocalizationService.Instance.PropertyChanged -= OnLocalizationPropertyChanged;
+            }
+
+            base.Dispose(disposing);
         }
         #endregion
     }

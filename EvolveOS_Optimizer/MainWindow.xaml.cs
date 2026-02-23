@@ -13,6 +13,8 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
+using Windows.System;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
@@ -21,6 +23,8 @@ namespace EvolveOS_Optimizer
     public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+        private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue =
+            Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
         private static Frame? _permanentFrameReference;
 
@@ -167,7 +171,7 @@ namespace EvolveOS_Optimizer
 
         private void NavigateByTag(string tag)
         {
-            if (string.IsNullOrEmpty(tag)) return;
+            if (string.IsNullOrEmpty(tag) || ContentFrame == null) return;
 
             Type pageType = tag switch
             {
@@ -179,7 +183,6 @@ namespace EvolveOS_Optimizer
                 "ServiceTweaks" => typeof(Pages.ServicesPage),
                 "SystemManager" => typeof(Pages.SystemManagerPage),
                 "Software" => typeof(Pages.SoftwareCenterPage),
-                //"Utils" => new Pages.UtilitiesPage(),
                 "Scripts" => typeof(Pages.ScriptsPage),
                 "System" => typeof(Pages.SystemPage),
                 "Maintenance" => typeof(Pages.MaintenancePage),
@@ -187,27 +190,33 @@ namespace EvolveOS_Optimizer
                 _ => typeof(Pages.HomePage)
             };
 
-            if (ContentFrame.CurrentSourcePageType != pageType)
-            {
-                ContentFrame.Navigate(pageType, null, new SuppressNavigationTransitionInfo());
+            if (ContentFrame.Content?.GetType() == pageType) return;
 
-                Task.Run(async () => await CleanupNavigationStackAsync());
+            try
+            {
+                var oldPage = ContentFrame.Content as Page;
+
+                var newPage = Activator.CreateInstance(pageType) as Page;
+
+                ContentFrame.Content = newPage;
+                //Debug.WriteLine($"[Navigation] Manually swapped to {tag}.");
+
+                this.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+                {
+                    if (oldPage != null)
+                    {
+                        NavigationHelper.PurgePage(oldPage);
+
+                        oldPage = null;
+                    }
+                });
+
+                _ = NavigationHelper.TriggerDeepCleanupAsync(this.DispatcherQueue);
             }
-
-            GC.KeepAlive(ContentFrame);
-        }
-
-        private async Task CleanupNavigationStackAsync()
-        {
-            await Task.Delay(500);
-
-            this.DispatcherQueue.TryEnqueue(() =>
+            catch (Exception ex)
             {
-                if (ContentFrame.BackStack.Count > 0) ContentFrame.BackStack.Clear();
-                if (ContentFrame.ForwardStack.Count > 0) ContentFrame.ForwardStack.Clear();
-
-                GC.KeepAlive(ContentFrame);
-            });
+                Debug.WriteLine($"[Critical] Swap Failed: {ex.Message}");
+            }
         }
         #endregion
 

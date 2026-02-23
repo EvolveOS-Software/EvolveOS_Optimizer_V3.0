@@ -6,6 +6,8 @@ namespace EvolveOS_Optimizer.Core.Base
 {
     public class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
+        protected bool _isDisposed = false;
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
@@ -37,6 +39,19 @@ namespace EvolveOS_Optimizer.Core.Base
             return true;
         }
 
+        protected void ClearPropertyChangedListeners()
+        {
+            if (PropertyChanged != null)
+            {
+                foreach (var d in PropertyChanged.GetInvocationList())
+                {
+                    PropertyChanged -= (PropertyChangedEventHandler)d;
+                }
+            }
+        }
+
+
+
         public void Dispose()
         {
             Dispose(true);
@@ -47,7 +62,9 @@ namespace EvolveOS_Optimizer.Core.Base
         {
             if (disposing)
             {
-                PropertyChanged = null;
+                _isDisposed = true;
+                ClearPropertyChangedListeners();
+                Debug.WriteLine($"[Memory Management] {this.GetType().Name} base disposal complete.");
             }
         }
     }

@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
@@ -10,7 +12,7 @@ using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class SystemPage : Page
+    public sealed partial class SystemPage : Page, IPurgeable
     {
         private SystemTweaks? _sysTweaks = new SystemTweaks();
         private const string RegistryBaseKey = @"SOFTWARE\EvolveOS_Optimizer\SystemOptimizations";
@@ -21,8 +23,11 @@ namespace EvolveOS_Optimizer.Pages
         {
             this.InitializeComponent();
 
+            this.DataContext = new SystemViewModel();
+
             //this.Loaded += (s, e) => DebugAvailableCards();
             Loaded += SystemPage_Loaded;
+            Unloaded += SystemPage_Unloaded;
         }
 
         private async void SystemPage_Loaded(object sender, RoutedEventArgs e)
@@ -31,18 +36,9 @@ namespace EvolveOS_Optimizer.Pages
             await InitializeWindowsUpdatesAsync();
         }
 
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        private void SystemPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (this.DataContext is IDisposable disposableVM)
-            {
-                disposableVM.Dispose();
-            }
-
-            this.DataContext = null;
-
-            _sysTweaks = null;
-
-            Debug.WriteLine("[SystemPage] Memory cleaned and disposed.");
+            Purge();
         }
 
         #region Interaction & Hover Logic
@@ -102,6 +98,8 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (tgl.DataContext is SystemModel model)
                 {
+                    if (tgl.IsOn == model.State) return;
+
                     string key = model.Name;
 
                     bool isOn = tgl.IsOn;
@@ -136,9 +134,12 @@ namespace EvolveOS_Optimizer.Pages
 
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            if (sender is Slider slider)
+            if (sender is Slider slider && slider.IsLoaded)
             {
-                _sysTweaks?.ApplyTweaksSlider(slider.Name, (uint)slider.Value);
+                if (Math.Abs(e.NewValue - e.OldValue) > 0.1)
+                {
+                    _sysTweaks?.ApplyTweaksSlider(slider.Name, (uint)slider.Value);
+                }
             }
         }
 
@@ -599,6 +600,30 @@ namespace EvolveOS_Optimizer.Pages
             int visibleCount = existingCards.Count(c => c.Visibility == Visibility.Visible);
             Debug.WriteLine($"Total Cards Visible: {visibleCount}");
             Debug.WriteLine("----------------------------------");
+        }
+        #endregion
+
+        #region Purge Page
+        public void Purge()
+        {
+            Debug.WriteLine("[SystemPage] Purge initiated...");
+
+            Loaded -= SystemPage_Loaded;
+            Unloaded -= SystemPage_Unloaded;
+
+            if (this.DataContext is IDisposable disposableVM)
+            {
+                disposableVM.Dispose();
+                Debug.WriteLine("[SystemPage] ViewModel Disposed.");
+            }
+
+            this.DataContext = null;
+
+            _sysTweaks = null;
+
+            this.Content = null;
+
+            Debug.WriteLine("[SystemPage] Purge Complete.");
         }
         #endregion
     }

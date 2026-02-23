@@ -1,15 +1,16 @@
-﻿using EvolveOS_Optimizer.Utilities.Controls;
+using System.IO;
+using System.Management;
+using System.Threading;
+using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Win32;
 using NetFwTypeLib;
-using System.IO;
-using System.Management;
-using System.Threading;
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class SecurityPage : Page
+public sealed partial class SecurityPage : Page, IPurgeable
 {
     private DispatcherTimer? _refreshTimer;
     private CancellationTokenSource? _cancellationTokenSource;
@@ -39,36 +40,12 @@ public sealed partial class SecurityPage : Page
         _refreshTimer.Start();
 
         Loaded += SecurityPage_Loaded;
-        Unloaded += Page_Unloaded;
+        Unloaded += SecurityPage_Unloaded;
     }
 
-    private void Page_Unloaded(object sender, RoutedEventArgs e)
+    private void SecurityPage_Unloaded(object sender, RoutedEventArgs e)
     {
-        if (_refreshTimer != null)
-        {
-            _refreshTimer.Stop();
-            _refreshTimer = null;
-        }
-
-        if (_cancellationTokenSource != null)
-        {
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource.Dispose();
-            _cancellationTokenSource = null;
-        }
-
-        if (this.DataContext is IDisposable disposableVM)
-        {
-            disposableVM.Dispose();
-        }
-
-        this.Content = null;
-        this.DataContext = null;
-
-        Loaded -= SecurityPage_Loaded;
-        Unloaded -= Page_Unloaded;
-
-        Debug.WriteLine("[SecurityPage] Disposed and Visual Tree cleared cleanly.");
+        Purge();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -702,4 +679,52 @@ public sealed partial class SecurityPage : Page
         }
         catch { return false; }
     }
+
+    private async void RefreshTimer_Tick(object? sender, object e)
+    {
+        if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
+        {
+            await CheckSecurityStatusAsync(_cancellationTokenSource.Token);
+        }
+    }
+
+    #region Purge Page
+    public void Purge()
+    {
+        Debug.WriteLine("[SecurityPage] Purge Initiated...");
+
+        if (_refreshTimer != null)
+        {
+            _refreshTimer.Stop();
+            _refreshTimer.Tick -= RefreshTimer_Tick;
+            _refreshTimer = null;
+            Debug.WriteLine("[SecurityPage] Refresh Timer stopped.");
+        }
+
+        if (_cancellationTokenSource != null)
+        {
+            try
+            {
+                _cancellationTokenSource.Cancel();
+                _cancellationTokenSource.Dispose();
+            }
+            catch (ObjectDisposedException) { }
+            _cancellationTokenSource = null;
+            Debug.WriteLine("[SecurityPage] Background tasks cancelled.");
+        }
+
+        Loaded -= SecurityPage_Loaded;
+        Unloaded -= SecurityPage_Unloaded;
+
+        if (this.DataContext is IDisposable disposableVM)
+        {
+            disposableVM.Dispose();
+        }
+        this.DataContext = null;
+
+        this.Content = null;
+
+        Debug.WriteLine("[SecurityPage] Purge Complete.");
+    }
+    #endregion
 }

@@ -1,5 +1,6 @@
-using EvolveOS_Optimizer.Utilities.Controls;
+using System.Threading;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -10,6 +11,8 @@ public sealed partial class ProcessManagerPage : Page
     private List<ProcessManagerModel> _filteredProcesses = [];
     private string _currentSort = "Memory";
     private bool _sortAscending;
+
+    private CancellationTokenSource? _cts;
     #endregion
 
     #region Constructor & Lifecycle
@@ -17,10 +20,19 @@ public sealed partial class ProcessManagerPage : Page
     {
         InitializeComponent();
         Loaded += ProcessesPage_Loaded;
+        Unloaded += ProcessesPage_Unloaded;
+    }
+
+    private void ProcessesPage_Unloaded(object sender, RoutedEventArgs e)
+    {
+        Purge();
     }
 
     private async void ProcessesPage_Loaded(object sender, RoutedEventArgs e)
     {
+        if (_cts == null || _cts.IsCancellationRequested)
+            _cts = new CancellationTokenSource();
+
         await LoadProcessesAsync();
     }
 
@@ -32,11 +44,15 @@ public sealed partial class ProcessManagerPage : Page
 
         try
         {
+            var token = _cts?.Token ?? default;
+
             _allProcesses = await Task.Run(() =>
             {
                 return Process.GetProcesses()
                     .Select(p =>
                     {
+                        if (token.IsCancellationRequested) return null;
+
                         try
                         {
                             return new ProcessManagerModel
@@ -52,9 +68,12 @@ public sealed partial class ProcessManagerPage : Page
                             return new ProcessManagerModel { Name = p.ProcessName, Id = p.Id };
                         }
                     })
+                    .OfType<ProcessManagerModel>()
                     .OrderByDescending(p => p.MemoryMB)
                     .ToList();
-            });
+            }, token);
+
+            if (token.IsCancellationRequested) return;
 
             UpdateSummary();
             ApplyFilterAndSort();
@@ -179,6 +198,33 @@ public sealed partial class ProcessManagerPage : Page
             ErrorLogging.LogDebug(ex);
             App.ShowNotification("Error", $"Failed to end process: {ex.Message}", InfoBarSeverity.Error, 5000);
         }
+    }
+    #endregion
+
+    #region Purge Page
+    public void Purge()
+    {
+        Debug.WriteLine("[ProcessManagerPage] Purge initiated...");
+
+        if (_cts != null)
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = null;
+        }
+
+        Loaded -= ProcessesPage_Loaded;
+        Unloaded -= ProcessesPage_Unloaded;
+
+        _allProcesses?.Clear();
+        _filteredProcesses?.Clear();
+
+        ProcessListView.ItemsSource = null;
+
+        this.DataContext = null;
+        this.Content = null;
+
+        Debug.WriteLine("[ProcessManagerPage] Purge Complete.");
     }
     #endregion
 }

@@ -1,14 +1,16 @@
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class ScriptsPage : Page
+    public sealed partial class ScriptsPage : Page, IPurgeable
     {
         private TimerControlManager? _timer = default;
-        
-        public ScriptsViewModel ViewModel { get; } = new();
+
+        private ScriptsViewModel? _viewModel = new();
+        public ScriptsViewModel ViewModel => _viewModel ?? new();
 
         public ScriptsPage()
         {
@@ -19,27 +21,36 @@ namespace EvolveOS_Optimizer.Pages
 
             ViewModel.OnScriptsUpdated += UpdateEmptyState;
 
-            this.Unloaded += (s, e) => {
-                _timer?.Stop();
-                ViewModel.OnScriptsUpdated -= UpdateEmptyState;
-            };
-            
-            this.Loaded += (s, e) => { 
-                InitializeTimer();
-                UpdateEmptyState();
-                EmptyStateAnimation.Begin();
-            };
+            this.Unloaded += ScriptsPage_Unloaded;
+
+            this.Loaded += ScriptsPage_Loaded;
+        }
+
+        private void ScriptsPage_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            InitializeTimer();
+            UpdateEmptyState();
+            EmptyStateAnimation.Begin();
+        }
+
+        private void ScriptsPage_Unloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            Purge();
         }
 
         private void InitializeTimer()
         {
+            if (_timer != null) return;
+
             _timer = new TimerControlManager(TimeSpan.Zero, TimerControlManager.TimerMode.CountUp, time =>
             {
+                if (_viewModel == null || this.DispatcherQueue == null) return;
+
                 if ((int)time.TotalSeconds % 5 == 0)
                 {
                     this.DispatcherQueue.TryEnqueue(async () =>
                     {
-                        if (ViewModel.RefreshScriptsCommand is CommunityToolkit.Mvvm.Input.IAsyncRelayCommand asyncCmd)
+                        if (_viewModel?.RefreshScriptsCommand is CommunityToolkit.Mvvm.Input.IAsyncRelayCommand asyncCmd)
                         {
                             await asyncCmd.ExecuteAsync(null);
                         }
@@ -50,9 +61,11 @@ namespace EvolveOS_Optimizer.Pages
 
         private void UpdateEmptyState()
         {
+            if (this.DispatcherQueue == null || _viewModel == null) return;
+
             this.DispatcherQueue.TryEnqueue(() =>
             {
-                if (ViewModel.FilteredScripts != null && ViewModel.FilteredScripts.Count > 0)
+                if (_viewModel?.FilteredScripts != null && _viewModel.FilteredScripts.Count > 0)
                     VisualStateManager.GoToState(this, "HasScripts", true);
                 else
                     VisualStateManager.GoToState(this, "NoScripts", true);
@@ -71,5 +84,38 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
+
+        #region Purge Page
+        public void Purge()
+        {
+            Debug.WriteLine("[ScriptsPage] Purge initiated...");
+
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer = null;
+                Debug.WriteLine("[ScriptsPage] TimerControlManager stopped.");
+            }
+
+            if (_viewModel != null)
+            {
+                _viewModel.OnScriptsUpdated -= UpdateEmptyState;
+
+                if (_viewModel is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+                _viewModel = null;
+            }
+
+            this.DataContext = null;
+            this.Content = null;
+
+            this.Loaded -= ScriptsPage_Loaded;
+            this.Unloaded -= ScriptsPage_Unloaded;
+
+            Debug.WriteLine("[ScriptsPage] Purge Complete.");
+        }
+        #endregion
     }
 }

@@ -1,3 +1,5 @@
+using System.Numerics;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -6,11 +8,10 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
-using System.Numerics;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class InterfacePage : Page
+    public sealed partial class InterfacePage : Page, IPurgeable
     {
         private InterfaceTweaks? _intfTweaks = new InterfaceTweaks();
 
@@ -24,6 +25,13 @@ namespace EvolveOS_Optimizer.Pages
             {
                 NotificationManager.Show("info", "warn_activate_noty").Perform();
             }
+
+            this.Unloaded += InterfacePage_Unloaded;
+        }
+
+        private void InterfacePage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Purge();
         }
 
         private void Tweak_MouseEnter(object sender, PointerRoutedEventArgs e)
@@ -121,16 +129,6 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (this.DataContext is IDisposable disposableVM)
-            {
-                disposableVM.Dispose();
-            }
-            this.DataContext = null;
-            _intfTweaks = null;
-        }
-
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
 
@@ -168,5 +166,27 @@ namespace EvolveOS_Optimizer.Pages
             Debug.WriteLine($"Total Cards Visible: {visibleCount}");
             Debug.WriteLine("----------------------------------");
         }
+
+        #region Purge Page
+        public void Purge()
+        {
+            Debug.WriteLine("[InterfacePage] Purge initiated...");
+
+            this.Unloaded -= InterfacePage_Unloaded;
+
+            if (this.DataContext is IDisposable disposableVM)
+            {
+                disposableVM.Dispose();
+                Debug.WriteLine("[InterfacePage] ViewModel Disposed.");
+            }
+            this.DataContext = null;
+
+            _intfTweaks = null;
+
+            this.Content = null;
+
+            Debug.WriteLine("[InterfacePage] Professional Purge Complete.");
+        }
+        #endregion
     }
 }

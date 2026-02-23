@@ -1,16 +1,17 @@
+using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
-using System.ComponentModel;
-using System.Globalization;
-using System.Runtime.CompilerServices;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class SettingsPage : Page, INotifyPropertyChanged
+    public sealed partial class SettingsPage : Page, INotifyPropertyChanged, IPurgeable
     {
         private bool _isInitialized;
         private string _pendingHexColor = "#FF0078D4";
@@ -56,6 +57,7 @@ namespace EvolveOS_Optimizer.Pages
             SetSelectedByTag(ThemeSelector, SettingsEngine.AppTheme);
 
             this.Loaded += SettingsPage_Loaded;
+            this.Unloaded += SettingsPage_Unloaded;
         }
 
         private void SettingsPage_Loaded(object sender, RoutedEventArgs e)
@@ -88,27 +90,9 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        private void SettingsPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            _isInitialized = false;
-
-            if (_localizationHandler != null)
-            {
-                LocalizationService.Instance.PropertyChanged -= _localizationHandler;
-                _localizationHandler = null;
-            }
-
-            this.Loaded -= SettingsPage_Loaded;
-            this.Unloaded -= Page_Unloaded;
-
-            PropertyChanged = null;
-
-            this.Content = null;
-            this.DataContext = null;
-
-            Debug.WriteLine("[SettingsPage] Detached from Localization and Visual Tree cleared.");
-
-            GC.Collect(2, GCCollectionMode.Forced, true);
+            Purge();
         }
 
         private void InitializeSelections()
@@ -284,5 +268,30 @@ namespace EvolveOS_Optimizer.Pages
 
         private void OnPropertyChanged([CallerMemberName] string? name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        #region Purge Page
+        public void Purge()
+        {
+            Debug.WriteLine("[SettingsPage] Purge initiated...");
+
+            if (_localizationHandler != null)
+            {
+                LocalizationService.Instance.PropertyChanged -= _localizationHandler;
+                _localizationHandler = null;
+            }
+
+            this.Loaded -= SettingsPage_Loaded;
+            this.Unloaded -= SettingsPage_Unloaded;
+
+            PropertyChanged = null;
+
+            this.DataContext = null;
+            this.Content = null;
+
+            _isInitialized = false;
+
+            Debug.WriteLine("[SettingsPage] Purge complete.");
+        }
+        #endregion
     }
 }

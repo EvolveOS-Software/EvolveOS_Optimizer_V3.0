@@ -12,7 +12,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         protected override Dictionary<string, object> GetControlStates() => SystemTweaks.ControlStates;
 
-        protected override void Analyze(SystemTweaks tweaks) => tweaks?.AnalyzeAndUpdate();
+        protected override void Analyze(SystemTweaks tweaks)
+        {
+            tweaks?.AnalyzeAndUpdate();
+
+            OnPropertyChanged("Item[]");
+        }
 
         public bool IsHoverGlowEnabled
         {

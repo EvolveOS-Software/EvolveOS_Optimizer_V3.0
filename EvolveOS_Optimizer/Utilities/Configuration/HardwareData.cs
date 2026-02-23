@@ -2,6 +2,8 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 {
     internal class HardwareData
     {
+        #region Nested Info Classes
+
         internal sealed class OperatingSystemInfo
         {
             internal string Name { get; set; } = string.Empty;
@@ -46,18 +48,32 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             internal string Type { get; set; } = string.Empty;
         }
 
-        internal enum ConnectionStatus { Available, Lose, Block, Limited, }
+        #endregion
+
+        #region Enums
+
+        internal enum ConnectionStatus { Available, Lose, Block, Limited }
+
+        #endregion
+
+        #region Static Data Instances
 
         internal static OperatingSystemInfo OS { get; set; } = new OperatingSystemInfo();
-        internal static ImageSource? Wallpaper { get; set; } = default;
-        internal static string RunningProcessesCount { get; set; } = string.Empty;
-        internal static string RunningServicesCount { get; set; } = string.Empty;
         internal static BiosInfo Bios { get; set; } = new BiosInfo();
         internal static ProcessorInfo Processor { get; set; } = new ProcessorInfo();
-        internal static string Motherboard { get; set; } = string.Empty;
         internal static GpuInfo Gpu { get; set; } = new GpuInfo();
-        internal static string Graphics { get; set; } = string.Empty;
         internal static MemoryInfo Memory { get; set; } = new MemoryInfo();
+
+        #endregion
+
+        #region Static State Properties
+
+        internal static ImageSource? Wallpaper { get; set; } = default;
+
+        internal static string RunningProcessesCount { get; set; } = string.Empty;
+        internal static string RunningServicesCount { get; set; } = string.Empty;
+        internal static string Motherboard { get; set; } = string.Empty;
+        internal static string Graphics { get; set; } = string.Empty;
         internal static string Storage { get; set; } = string.Empty;
         internal static string AudioDevice { get; set; } = string.Empty;
         internal static string NetworkAdapter { get; set; } = string.Empty;
@@ -65,11 +81,19 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal static string LocalIPAddress { get; set; } = string.Empty;
         internal static ConnectionStatus CurrentConnection = ConnectionStatus.Lose;
 
+        #endregion
+
+        #region Vendor Detection
+
         internal static class VendorDetection
         {
             internal static bool Nvidia { get; set; } = default;
             internal static bool Realtek { get; set; } = default;
         }
+
+        #endregion
+
+        #region Disk Type Labels
 
         internal static class DiskTypeLabels
         {
@@ -85,5 +109,16 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             internal const string VHD = "(VHD)";
             internal const string VHDX = "(VHDX)";
         }
+
+        #endregion
+
+        #region Cleanup Logic
+
+        internal static void ClearResources()
+        {
+            Wallpaper = null;
+        }
+
+        #endregion
     }
 }

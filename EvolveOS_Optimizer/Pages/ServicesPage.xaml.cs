@@ -1,14 +1,16 @@
+using System.Numerics;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
-using System.Numerics;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class ServicesPage : Page
+    public sealed partial class ServicesPage : Page, IPurgeable
     {
         private ServicesTweaks? _svcTweaks = new ServicesTweaks();
 
@@ -17,6 +19,7 @@ namespace EvolveOS_Optimizer.Pages
             this.InitializeComponent();
 
             //this.Loaded += (s, e) => DebugAvailableCards();
+            this.Unloaded += ServicesPage_Unloaded;
         }
 
         private void Tweak_MouseEnter(object sender, PointerRoutedEventArgs e)
@@ -82,18 +85,9 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        private void ServicesPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (this.DataContext is IDisposable disposableVM)
-            {
-                disposableVM.Dispose();
-            }
-
-            this.DataContext = null;
-
-            _svcTweaks = null;
-
-            System.Diagnostics.Debug.WriteLine("[ServicesPage] Disposed and Unloaded cleanly.");
+            Purge();
         }
 
         private void NativeTgl_Toggled(object sender, RoutedEventArgs e)
@@ -163,5 +157,27 @@ namespace EvolveOS_Optimizer.Pages
             Debug.WriteLine($"Total Cards Visible: {visibleCount}");
             Debug.WriteLine("----------------------------------");
         }
+
+        #region Purge Page
+        public void Purge()
+        {
+            Debug.WriteLine("[ServicesPage] Purge initiated...");
+
+            if (this.DataContext is IDisposable disposableVM)
+            {
+                disposableVM.Dispose();
+                System.Diagnostics.Debug.WriteLine("[ServicesPage] ViewModel Disposed.");
+            }
+            this.DataContext = null;
+
+            _svcTweaks = null;
+
+            this.Content = null;
+
+            this.Unloaded -= ServicesPage_Unloaded;
+
+            System.Diagnostics.Debug.WriteLine("[ServicesPage] Purge Complete.");
+        }
+        #endregion
     }
 }
