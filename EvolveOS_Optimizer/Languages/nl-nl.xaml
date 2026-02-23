@@ -270,7 +270,6 @@
     <sys:String x:Key="Photos_pkg">Windows Foto's</sys:String>
     <sys:String x:Key="ScreenSketch_pkg">Schermschets</sys:String>
     <sys:String x:Key="ClipChamp_pkg">Microsoft Clipchamp</sys:String>
-    <sys:String x:Key="GetStarted_pkg">Aan de slag</sys:String>
     <sys:String x:Key="GetHelp_pkg">Hulp vragen</sys:String>
     <sys:String x:Key="MicrosoftStickyNotes_pkg">Microsoft Plaknotities</sys:String>
     <sys:String x:Key="Maps_pkg">Windows Kaarten</sys:String>
@@ -296,6 +295,7 @@
     <sys:String x:Key="Edge_pkg">Microsoft Edge</sys:String>
     <sys:String x:Key="Notepad_pkg">Kladblok</sys:String>
     <sys:String x:Key="Calculator_pkg">Rekenmachine</sys:String>
+    <sys:String x:Key="Paint_pkg">Microsoft Paint</sys:String>
     <sys:String x:Key="Copilot_pkg">Copilot</sys:String>
     <sys:String x:Key="WhiteBoard_pkg">Microsoft Whiteboard</sys:String>
     <sys:String x:Key="Wallet_pkg">Microsoft Portemonnee</sys:String>
@@ -345,7 +345,6 @@
     <sys:String x:Key="Photos_desc">Viewer en editor voor het organiseren en verbeteren van je persoonlijke fotobibliotheek.</sys:String>
     <sys:String x:Key="ScreenSketch_desc">Hulpprogramma voor het vastleggen, bijsnijden en annoteren van schermafbeeldingen van je bureaublad.</sys:String>
     <sys:String x:Key="ClipChamp_desc">Cloud-gebaseerde video-editor met professionele functies en sjablonen.</sys:String>
-    <sys:String x:Key="GetStarted_desc">Interactieve gids voor nieuwe gebruikers om Windows-functies en -instellingen te leren kennen.</sys:String>
     <sys:String x:Key="GetHelp_desc">Zelfhulpportaal voor het oplossen van Windows-problemen en het opnemen van contact met ondersteuning.</sys:String>
     <sys:String x:Key="MicrosoftStickyNotes_desc">Snelle digitale notities op je bureaublad voor herinneringen en lijsten.</sys:String>
     <sys:String x:Key="Maps_desc">Gedetailleerde navigatie, straatweergaven en 3D-kaarten met offline ondersteuning.</sys:String>
@@ -371,6 +370,7 @@
     <sys:String x:Key="Edge_desc">De standaard op Chromium gebaseerde webbrowser voor snel en veilig browsen.</sys:String>
     <sys:String x:Key="Notepad_desc">De klassieke lichtgewicht teksteditor voor eenvoudige codering en notities.</sys:String>
     <sys:String x:Key="Calculator_desc">Geavanceerd hulpmiddel voor basis-, wetenschappelijke en programmeerberekeningen.</sys:String>
+    <sys:String x:Key="Paint_desc">Klassieke Windows-afbeeldingseditor, gebruikt voor basistekeningen, het bekijken van afbeeldingen en eenvoudige bewerkingen.</sys:String>
     <sys:String x:Key="Copilot_desc">Door AI aangedreven assistent voor het beantwoorden van vragen en het automatiseren van systeemtaken.</sys:String>
     <sys:String x:Key="WhiteBoard_desc">Oneindig digitaal canvas voor gezamenlijke brainstormsessies en ideevorming.</sys:String>
     <sys:String x:Key="Wallet_desc">Sla digitale passen, klantenkaarten en betalingsinformatie veilig op.</sys:String>

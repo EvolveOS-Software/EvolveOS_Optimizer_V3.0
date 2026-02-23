@@ -315,13 +315,13 @@
                 <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [GetHelp]}"
                 PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
                     <ToggleButton x:Name="GetHelp" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"
-                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_GetHelp}" />
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_GetHelp}" Visibility="{Binding Win11FeatureOnly}"/>
                 </ContentControl>
 
-                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [GetStarted]}"
+                <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [Paint]}"
                 PointerPressed="ToggleButton_PointerPressed" PointerEntered="Package_PointerEntered" PointerExited="Package_PointerExited">
-                    <ToggleButton x:Name="GetStarted" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"
-                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_GetStarted}" />
+                    <ToggleButton x:Name="Paint" IsChecked="{Binding Installed, Mode=TwoWay}" IsEnabled="{Binding IsUnavailable}"
+                  Style="{StaticResource TglPackages}" Tag="{StaticResource Img_Paint}" />
                 </ContentControl>
 
                 <ContentControl Style="{StaticResource HexagonCardStyle}" DataContext="{Binding [LinkedIn]}"

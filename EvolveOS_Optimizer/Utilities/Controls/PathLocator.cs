@@ -26,6 +26,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             internal static readonly string WallpaperCache = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) ?? "", "Microsoft", "Windows", "Themes");
 
             internal static readonly string ProgramData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) ?? "");
+
+            internal static readonly string Edge = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft", "Edge");
         }
 
         internal static class Executable

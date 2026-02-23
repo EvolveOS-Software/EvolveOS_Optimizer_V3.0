@@ -145,34 +145,33 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void UpdatePackageState(PackagesModel item)
         {
-            if (item == null || string.IsNullOrEmpty(item.Name)) return;
+            if (item == null || string.IsNullOrWhiteSpace(item.Name)) return;
 
-            var details = UninstallingPackages.PackagesDetails;
-            if (details != null && details.TryGetValue(item.Name, out var val) && val != null)
+            if (UninstallingPackages.PackagesDetails?.TryGetValue(item.Name, out var val) != true || val == null)
+                return;
+
+            item.IsUnavailable = !val.IsUnavailable;
+
+            switch (item.Name.ToLowerInvariant())
             {
-                item.IsUnavailable = !val.IsUnavailable;
-
-                if (!string.Equals(item.Name, "OneDrive", StringComparison.OrdinalIgnoreCase))
-                {
-                    var scripts = val.Scripts;
-                    var cache = UninstallingPackages.InstalledPackagesCache;
-
-                    if (scripts != null && scripts.Count > 0 && cache != null)
-                    {
-                        item.Installed = scripts.Any(pattern =>
-                            cache.Any(pkg =>
-                                !string.IsNullOrEmpty(pkg) &&
-                                pkg.StartsWith(pattern, StringComparison.OrdinalIgnoreCase)));
-                    }
-                    else
-                    {
-                        item.Installed = false;
-                    }
-                }
-                else
-                {
+                case "onedrive":
                     item.Installed = UninstallingPackages.IsOneDriveInstalled;
-                }
+                    return;
+                case "edge":
+                    item.Installed = UninstallingPackages.IsEdgeInstalled;
+                    return;
+            }
+
+            var scripts = val.Scripts;
+            if (scripts != null && scripts.Count > 0)
+            {
+                item.Installed = scripts.Any(pattern =>
+                    UninstallingPackages.InstalledPackagesCache.Any(pkg =>
+                        pkg.StartsWith(pattern, StringComparison.OrdinalIgnoreCase)));
+            }
+            else
+            {
+                item.Installed = false;
             }
         }
 

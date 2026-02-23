@@ -31,6 +31,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
         internal static bool IsOneDriveInstalled => File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "OneDrive", "OneDrive.exe")) ||
             File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Microsoft OneDrive", "OneDrive.exe")) || File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft OneDrive", "OneDrive.exe"));
 
+        internal static bool IsEdgeInstalled => Directory.Exists(PathLocator.Folders.Edge);
+
         internal static readonly Dictionary<string, PackagesInfo> PackagesDetails = new Dictionary<string, PackagesInfo>(StringComparer.OrdinalIgnoreCase)
         {
             ["OneDrive"] = new PackagesInfo(),
@@ -48,7 +50,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             ["OneNote"] = new PackagesInfo("MSOneNote", new[] { "Microsoft.Office.OneNote", "Microsoft.OneNote" }),
             ["People"] = new PackagesInfo(scripts: new[] { "Microsoft.People" }),
             ["MicrosoftStickyNotes"] = new PackagesInfo("MSStickyNotes", new[] { "Microsoft.MicrosoftStickyNotes" }),
-            ["Widgets"] = new PackagesInfo("Windows.Client.WebExperience", new[] { "MicrosoftWindows.Client.WebExperience", "Microsoft.WidgetsPlatformRuntime", "Windows.Client.WebExperience" }),
+            ["Widgets"] = new PackagesInfo("Windows.Client.WebExperience", new[] { "MicrosoftWindows.Client.WebExperience", "Microsoft.WidgetsPlatformRuntime", "Microsoft.StartExperiencesApp" }),
             ["ScreenSketch"] = new PackagesInfo(scripts: new[] { "Microsoft.ScreenSketch" }),
             ["Phone"] = new PackagesInfo("PhoneLink", new[] { "Microsoft.YourPhone", "MicrosoftWindows.CrossDevice" }),
             ["Photos"] = new PackagesInfo("MSPhotos", new[] { "Microsoft.Windows.Photos" }),
@@ -65,7 +67,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             ["PowerAutomateDesktop"] = new PackagesInfo(scripts: new[] { "Microsoft.PowerAutomateDesktop" }),
             ["Cortana"] = new PackagesInfo(scripts: new[] { "Microsoft.549981C3F5F10" }),
             ["ClipChamp"] = new PackagesInfo("Clipchamp Video Editor", new[] { "Clipchamp.Clipchamp" }),
-            ["GetStarted"] = new PackagesInfo(scripts: new[] { "Microsoft.Getstarted" }),
+            ["Paint"] = new PackagesInfo(scripts: new[] { "Microsoft.Paint" }),
             ["BingSports"] = new PackagesInfo(scripts: new[] { "Microsoft.BingSports" }),
             ["BingFinance"] = new PackagesInfo(scripts: new[] { "Microsoft.BingFinance" }),
             ["MicrosoftFamily"] = new PackagesInfo("FamilySafety", new[] { "MicrosoftCorporationII.MicrosoftFamily" }),
@@ -78,7 +80,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             ["WebMediaExtensions"] = new PackagesInfo(scripts: new[] { "Microsoft.WebMediaExtensions" }),
             ["OneConnect"] = new PackagesInfo("MobilePlans", new[] { "Microsoft.OneConnect" }),
             ["Edge_DevTools"] = new PackagesInfo("MicrosoftEdgeDevTools", new[] { "Microsoft.MicrosoftEdgeDevToolsClient" }),
-            ["Edge"] = new PackagesInfo("MicrosoftEdge", new[] { "Microsoft.MicrosoftEdge.Stable", "Microsoft.MicrosoftEdge.*", "Microsoft.Copilot" }),
+            ["Edge"] = new PackagesInfo("MicrosoftEdge", new[] { "Microsoft.MicrosoftEdge.Stable", "Microsoft.MicrosoftEdgeDevToolsClient", "Microsoft.Copilot" }),
             ["Notepad"] = new PackagesInfo("Notepad", new[] { "Microsoft.WindowsNotepad" }),
             ["Calculator"] = new PackagesInfo("Calculator", new[] { "Microsoft.WindowsCalculator" }),
             ["Copilot"] = new PackagesInfo("M365Copilot", new[] { "Microsoft.Copilot" }),
@@ -272,114 +274,138 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     catch { }
                     break;
                 case "Edge":
+                    string setupPathEdge = Directory.EnumerateFiles(Path.Combine(PathLocator.Folders.Edge, "Application"), "setup.exe", SearchOption.AllDirectories).FirstOrDefault() ?? string.Empty;
+                    string tempPathEdge = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "SystemApps", "Microsoft.MicrosoftEdge_8wekyb3d8bbwe", "MicrosoftEdge.exe");
+
+                    string? tempEdgeDir = Path.GetDirectoryName(tempPathEdge);
+
                     string[] processes = { "msedge", "edge", "edgeupdate", "edgeupdatem", "msedgewebview2", "microsoftedgeupdate", "msedgewebviewhost", "msedgeuserbroker", "usocoreworker", "widgets", "microsoftedgesh", "microsoftedgecp", "microsoftedge" };
                     await CommandExecutor.RunCommandAsTrustedInstaller("/c taskkill /f " + string.Join(" ", processes.Select(p => $"/im {p}.exe")));
 
-                    if (token.IsCancellationRequested) return;
-
-                    await CommandExecutor.RunCommand("/c " + CommandExecutor.CleanCommand(string.Join(" & ", new[]
+                    try
                     {
-                        @"rmdir /s /q ""%LocalAppData%\Microsoft\Edge""",
-                        @"rmdir /s /q ""%ProgramFiles%\Microsoft\Edge""",
-                        @"del /f /q ""%AppData%\Microsoft\Internet Explorer\Quick Launch\*Edge*.lnk""",
-                        @"del /f /q ""%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\*Edge*.lnk""",
-                        @"del /f /q ""%Public%\Desktop\*Edge*.lnk""",
-                        @"del /f /q ""%UserProfile%\Desktop\*Edge*.lnk""",
-                        $@"del /f /q ""{PathLocator.Folders.SystemDrive}ProgramData\Microsoft\Windows\Start Menu\Programs\*Edge*.lnk""",
-                        $@"for /r ""{PathLocator.Folders.SystemDrive}Users"" %f in (*Edge*) do @if exist ""%f"" del /f /q ""%f""",
-                        $@"for /f ""delims="" %i in ('dir /b /s ""{PathLocator.Folders.SystemDrive}Windows\System32\Tasks\*Edge*""') do (if exist ""%i"" (if exist ""%i\"" (rmdir /s /q ""%i"") else (del /f /q ""%i"")))"
-                    })));
-
-                    if (token.IsCancellationRequested) return;
-
-                    RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", true);
-                    RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Microsoft\Active Setup\Installed Components\{9459C573-B17A-45AE-9F64-1857B5D58CEE}", true);
-                    RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Edge", true);
-                    RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge", true);
-                    RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Classes\MSEdgeHTM", true);
-                    RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Clients\StartMenuInternet\Microsoft Edge", true);
-
-                    if (shouldRemoveWebView && !token.IsCancellationRequested)
-                    {
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge Update", true);
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\edgeupdate", true);
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\edgeupdatem", true);
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate", true);
-                        RegistryHelp.DeleteFolderTree(Registry.ClassesRoot, @"AppID\MicrosoftEdgeUpdate.exe", true);
-                        RegistryHelp.DeleteFolderTree(Registry.CurrentUser, @"Software\Microsoft\EdgeUpdate", true);
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\EdgeWebView", true);
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Microsoft\EdgeWebView", true);
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft EdgeWebView", true);
-                        RegistryHelp.DeleteFolderTree(Registry.CurrentUser, @"Software\Microsoft\EdgeWebView", true);
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\MicrosoftEdgeElevationService", true);
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects", true);
-                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects", true);
-
-                        foreach (var path in new[] { @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", @"SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" })
+                        if (tempEdgeDir != null)
                         {
-                            try
-                            {
-                                using RegistryKey? key = Registry.CurrentUser.OpenSubKey(path, writable: true);
-                                if (key != null)
-                                {
-                                    foreach (var valueName in key.GetValueNames())
-                                    {
-                                        if (valueName.Contains("MicrosoftEdgeAutoLaunch"))
-                                        {
-                                            RegistryHelp.DeleteValue(Registry.CurrentUser, path, valueName);
-                                        }
-                                    }
-                                }
-                            }
-                            catch { }
+                            Directory.CreateDirectory(tempEdgeDir);
+                            File.WriteAllBytes(tempPathEdge, Array.Empty<byte>());
                         }
                     }
+                    catch (Exception ex) { ErrorLogging.LogDebug(ex); }
 
-                    await RemoveTasksAsync(token, edgeTasks);
-
-                    static async Task RemoveDirectoryInternal(string path)
+                    if (!string.IsNullOrEmpty(setupPathEdge))
                     {
-                        if (string.IsNullOrWhiteSpace(path)) return;
-                        await CommandExecutor.RunCommandAsTrustedInstaller($@"/c takeown /f ""{path}"" /r /d y && icacls ""{path}"" /inheritance:r && icacls ""{path}"" /remove *S-1-5-32-544 *S-1-5-11 *S-1-5-32-545 *S-1-5-18 && icacls ""{path}"" /grant {Environment.UserName}:F /t && rd /s /q ""{path}""");
-                        for (int i = 0; Directory.Exists(path) && i < 10; i++)
+                        ProcessStartInfo startInfo = new ProcessStartInfo()
                         {
-                            try { Directory.Delete(path, true); await Task.Delay(300); }
-                            catch { }
-                            await CommandExecutor.RunCommand($"Remove-Item -LiteralPath '{path}' -Recurse -Force", true);
-                        }
-                    }
+                            FileName = setupPathEdge,
+                            Arguments = "--uninstall --system-level --force-uninstall --delete-profile",
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            UseShellExecute = true,
+                            Verb = "runas",
+                            CreateNoWindow = true
+                        };
 
-                    foreach (string folder in new[] { "Edge", "EdgeCore", "EdgeUpdate", "Temp", "EdgeWebView" })
-                    {
-                        if (!shouldRemoveWebView && (folder == "EdgeWebView" || folder == "EdgeCore" || folder == "EdgeUpdate")) continue;
-                        string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft", folder);
-                        UnlockHandleHelper.UnlockDirectory(dir);
-                        await RemoveDirectoryInternal(dir);
+                        using Process process = new Process { StartInfo = startInfo };
+                        try
+                        {
+                            process.Start();
+                            process.WaitForExit();
+                        }
+                        catch (Exception ex) { ErrorLogging.LogDebug(ex); }
                     }
 
                     try
                     {
-                        using RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\InboxApplications", true);
+                        if (tempEdgeDir != null && Directory.Exists(tempEdgeDir))
+                        {
+                            Directory.Delete(tempEdgeDir, true);
+                        }
+                    }
+                    catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+
+                    if (shouldRemoveWebView)
+                    {
+                        await RemoveTasksAsync(token, edgeTasks);
+
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\edgeupdate", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\edgeupdatem", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\MicrosoftEdgeElevationService", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Edge", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\EdgeWebView", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge Update", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft EdgeWebView", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Microsoft\EdgeWebView", true);
+                        RegistryHelp.DeleteFolderTree(Registry.CurrentUser, @"Software\Microsoft\EdgeUpdate", true);
+                        RegistryHelp.DeleteFolderTree(Registry.CurrentUser, @"Software\Microsoft\EdgeWebView", true);
+                        RegistryHelp.DeleteFolderTree(Registry.ClassesRoot, @"AppID\MicrosoftEdgeUpdate.exe", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects", true);
+                        RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects", true);
+
+                        DirectoryInfo? edgeParent = Directory.GetParent(PathLocator.Folders.Edge);
+                        if (edgeParent != null)
+                        {
+                            foreach (string folder in new[] { "Edge", "EdgeCore", "EdgeUpdate", "Temp", "EdgeWebView" })
+                            {
+                                string dir = Path.Combine(edgeParent.FullName, folder);
+                                UnlockHandleHelper.UnlockDirectory(dir);
+                                await RemoveDirectoryAsync(dir);
+                            }
+                        }
+                    }
+
+                    try
+                    {
+                        using RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\InboxApplications");
+
                         if (key != null)
                         {
-                            foreach (string subKeyName in key.GetSubKeyNames())
+                            foreach (string subKey in key.GetSubKeyNames())
                             {
-                                using RegistryKey? subKeyEntry = key.OpenSubKey(subKeyName);
-                                if (subKeyEntry == null) continue;
-                                string? rawPath = subKeyEntry.GetValue("Path") as string;
-                                if (!string.IsNullOrEmpty(rawPath) && rawPath.Contains("Edge", StringComparison.OrdinalIgnoreCase))
+                                using RegistryKey? subKeyEntry = key.OpenSubKey(subKey);
+                                string? path = subKeyEntry?.GetValue("Path") as string;
+
+                                if (!string.IsNullOrEmpty(path) && path.Equals("Edge"))
                                 {
-                                    if (!shouldRemoveWebView && rawPath.Contains("WebView", StringComparison.OrdinalIgnoreCase)) continue;
-                                    string currentPath = rawPath.Replace(@"\AppxManifest.xml", "", StringComparison.OrdinalIgnoreCase).Trim();
-                                    await RemoveDirectoryInternal(currentPath);
-                                    key.DeleteSubKey(subKeyName);
-                                    break;
+                                    if (!shouldRemoveWebView && path.Contains("WebView"))
+                                    {
+                                        continue;
+                                    }
+
+                                    if (path.EndsWith(@"\AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        path = path.Replace(@"\AppxManifest.xml", "").Trim();
+                                    }
+
+                                    await RemoveDirectoryAsync(path);
+                                    key.DeleteSubKey(subKey);
+                                    return;
                                 }
                             }
                         }
                     }
-                    catch { }
+                    catch (Exception ex) { ErrorLogging.LogDebug(ex); }
                     break;
+            }
+        }
+
+        private static async Task RemoveDirectoryAsync(string path)
+        {
+            await CommandExecutor.RunCommandAsTrustedInstaller($@"/c takeown /f ""{path}"" /r /d y && icacls ""{path}"" /inheritance:r && icacls ""{path}"" /remove *S-1-5-32-544 *S-1-5-11 *S-1-5-32-545 *S-1-5-18 && icacls ""{path}"" /grant {Environment.UserName}:F /t && rd /s /q ""{path}""");
+
+            for (int i = 0; Directory.Exists(path) && i < 10; i++)
+            {
+                try
+                {
+                    Directory.Delete(path, true);
+
+                    await Task.Delay(300);
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogDebug(ex);
+                }
+
+                await CommandExecutor.RunCommand($"Remove-Item -LiteralPath '{path}' -Recurse -Force", true);
             }
         }
 

@@ -271,7 +271,6 @@
     <sys:String x:Key="Photos_pkg">Windows Photos</sys:String>
     <sys:String x:Key="ScreenSketch_pkg">Screen Sketch</sys:String>
     <sys:String x:Key="ClipChamp_pkg">Microsoft Clipchamp</sys:String>
-    <sys:String x:Key="GetStarted_pkg">Get Started</sys:String>
     <sys:String x:Key="GetHelp_pkg">Get Help</sys:String>
     <sys:String x:Key="MicrosoftStickyNotes_pkg">Microsoft Sticky Notes</sys:String>
     <sys:String x:Key="Maps_pkg">Windows Maps</sys:String>
@@ -298,6 +297,7 @@
     <sys:String x:Key="Edge_DevTools_pkg">Microsoft Edge DevTools</sys:String>
     <sys:String x:Key="Notepad_pkg">Notepad</sys:String>
     <sys:String x:Key="Calculator_pkg">Calculator</sys:String>
+    <sys:String x:Key="Paint_pkg">Microsoft Paint</sys:String>
     <sys:String x:Key="Copilot_pkg">Copilot</sys:String>
     <sys:String x:Key="WhiteBoard_pkg">Microsoft Whiteboard</sys:String>
     <sys:String x:Key="Wallet_pkg">Microsoft Wallet</sys:String>
@@ -347,7 +347,6 @@
     <sys:String x:Key="Photos_desc">Viewer and editor for organizing and enhancing your personal photo library.</sys:String>
     <sys:String x:Key="ScreenSketch_desc">Utility for capturing, cropping, and annotating screenshots of your desktop.</sys:String>
     <sys:String x:Key="ClipChamp_desc">Cloud-based video editor with professional features and templates.</sys:String>
-    <sys:String x:Key="GetStarted_desc">Interactive guide for new users to learn Windows features and settings.</sys:String>
     <sys:String x:Key="GetHelp_desc">Self-help portal for troubleshooting Windows issues and contacting support.</sys:String>
     <sys:String x:Key="MicrosoftStickyNotes_desc">Quick digital notes that float on your desktop for reminders and lists.</sys:String>
     <sys:String x:Key="Maps_desc">Detailed navigation, street views, and 3D maps with offline support.</sys:String>
@@ -374,6 +373,7 @@
     <sys:String x:Key="Edge_DevTools_desc">A standalone developer toolset for debugging and inspecting web content within Microsoft Edge.</sys:String>
     <sys:String x:Key="Notepad_desc">The classic lightweight text editor for simple coding and note-taking.</sys:String>
     <sys:String x:Key="Calculator_desc">Advanced tool for basic, scientific, and programming calculations.</sys:String>
+    <sys:String x:Key="Paint_desc">Classic Windows graphics editor used for basic drawing, image viewing, and simple modifications.</sys:String>
     <sys:String x:Key="Copilot_desc">AI-powered assistant for answering questions and automating system tasks.</sys:String>
     <sys:String x:Key="WhiteBoard_desc">Infinite digital canvas for collaborative brainstorming and ideation.</sys:String>
     <sys:String x:Key="Wallet_desc">Store digital passes, loyalty cards, and payment information securely.</sys:String>

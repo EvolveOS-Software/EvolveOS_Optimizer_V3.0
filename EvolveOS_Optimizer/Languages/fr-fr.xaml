@@ -270,7 +270,6 @@
     <sys:String x:Key="Photos_pkg">Photos Windows</sys:String>
     <sys:String x:Key="ScreenSketch_pkg">Capture d'écran</sys:String>
     <sys:String x:Key="ClipChamp_pkg">Microsoft Clipchamp</sys:String>
-    <sys:String x:Key="GetStarted_pkg">Prise en main</sys:String>
     <sys:String x:Key="GetHelp_pkg">Obtenir de l'aide</sys:String>
     <sys:String x:Key="MicrosoftStickyNotes_pkg">Microsoft Pense-bête</sys:String>
     <sys:String x:Key="Maps_pkg">Cartes Windows</sys:String>
@@ -296,6 +295,7 @@
     <sys:String x:Key="Edge_pkg">Microsoft Edge</sys:String>
     <sys:String x:Key="Notepad_pkg">Bloc-notes</sys:String>
     <sys:String x:Key="Calculator_pkg">Calculatrice</sys:String>
+    <sys:String x:Key="Paint_pkg">Microsoft Paint</sys:String>
     <sys:String x:Key="Copilot_pkg">Copilot</sys:String>
     <sys:String x:Key="WhiteBoard_pkg">Microsoft Whiteboard</sys:String>
     <sys:String x:Key="Wallet_pkg">Portefeuille Microsoft</sys:String>
@@ -345,7 +345,6 @@
     <sys:String x:Key="Photos_desc">Visionneuse et éditeur pour organiser et améliorer votre bibliothèque de photos personnelles.</sys:String>
     <sys:String x:Key="ScreenSketch_desc">Utilitaire pour capturer, recadrer et annoter des captures d'écran de votre bureau.</sys:String>
     <sys:String x:Key="ClipChamp_desc">Éditeur vidéo basé sur le cloud avec des fonctionnalités et des modèles professionnels.</sys:String>
-    <sys:String x:Key="GetStarted_desc">Guide interactif permettant aux nouveaux utilisateurs de découvrir les fonctionnalités et paramètres de Windows.</sys:String>
     <sys:String x:Key="GetHelp_desc">Portail d'auto-assistance pour résoudre les problèmes Windows et contacter le support.</sys:String>
     <sys:String x:Key="MicrosoftStickyNotes_desc">Notes numériques rapides flottant sur votre bureau pour vos rappels et listes.</sys:String>
     <sys:String x:Key="Maps_desc">Navigation détaillée, vues de rues et cartes 3D avec prise en charge hors ligne.</sys:String>
@@ -371,6 +370,7 @@
     <sys:String x:Key="Edge_desc">Le navigateur web par défaut basé sur Chromium pour une navigation rapide et sécurisée.</sys:String>
     <sys:String x:Key="Notepad_desc">Le bloc-notes classique et léger pour le codage simple et la prise de notes.</sys:String>
     <sys:String x:Key="Calculator_desc">Outil avancé pour les calculs de base, scientifiques et de programmation.</sys:String>
+    <sys:String x:Key="Paint_desc">Éditeur graphique classique de Windows, utilisé pour le dessin de base, la visualisation d'images et les retouches simples.</sys:String>
     <sys:String x:Key="Copilot_desc">Assistant alimenté par l'IA pour répondre aux questions et automatiser les tâches système.</sys:String>
     <sys:String x:Key="WhiteBoard_desc">Tableau blanc numérique infini pour le brainstorming et l'idéation collaborative.</sys:String>
     <sys:String x:Key="Wallet_desc">Stockez vos pass numériques, cartes de fidélité et informations de paiement en toute sécurité.</sys:String>
