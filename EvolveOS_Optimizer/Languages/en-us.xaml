@@ -68,6 +68,9 @@
     <sys:String x:Key="Nav_Maintenance">Maintenance</sys:String>
     <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Settings</sys:String>
+
+    <sys:String x:Key="Tab_DNSChanger">DNS Changer</sys:String>
+    <sys:String x:Key="Tab_Advanced">Advanced</sys:String>
     <!-- endregion Main Window -->
 
     <!-- region Settings -->
@@ -863,7 +866,7 @@
     <sys:String x:Key="process_manager_page_search_placeholder">Search processes...</sys:String>
     <!-- endregion Process Manager Page -->
 
-    <!-- System Optimizer -->
+    <!-- region System Optimizer -->
     <sys:String x:Key="title_system_health_status">Health Status</sys:String>
     <sys:String x:Key="text_system_optimizer_description">Boost system responsiveness by reclaiming mismanaged memory and purging redundant files. Efficiently targets memory leaks, flushes DNS caches, and eliminates temporary data to restore peak performance.</sys:String>
     <sys:String x:Key="btn_open_system_optimizer">Open System Optimizer</sys:String>
@@ -985,7 +988,7 @@
     <sys:String x:Key="btn_check">Check</sys:String>
     <sys:String x:Key="txt_ready">Ready</sys:String>
     <sys:String x:Key="txt_invalid">Invalid</sys:String>
-    <!--#endregion-->
+    <!-- endregion System Optimizer -->
 
     <!-- Resource Helper -->
     <sys:String x:Key="unit_B">B</sys:String>
@@ -993,5 +996,84 @@
     <sys:String x:Key="unit_MB">MB</sys:String>
     <sys:String x:Key="unit_GB">GB</sys:String>
     <!--#endregion-->
+
+    <!-- region DNS Changer -->
+    <sys:String x:Key="title_dns_changer">DNS Changer</sys:String>
+    <sys:String x:Key="text_dns_changer">Quickly switch between popular DNS providers like Google, Cloudflare, or Custom configurations to potentially improve browsing speed and security.</sys:String>
+    <sys:String x:Key="btn_open_changer">Open Changer</sys:String>
+    <sys:String x:Key="popup_title_dns_changer">Configure DNS Settings</sys:String>
+    <sys:String x:Key="text_ipv4_primary">IPv4 Primary DNS</sys:String>
+    <sys:String x:Key="text_ipv4_secondary">IPv4 Secondary DNS</sys:String>
+    <sys:String x:Key="text_ipv6_primary">IPv6 Primary DNS</sys:String>
+    <sys:String x:Key="text_ipv6_secondary">IPv6 Secondary DNS</sys:String>
+    <sys:String x:Key="btn_apply">Apply Settings</sys:String>
+    <sys:String x:Key="btn_close">Close</sys:String>
+    <sys:String x:Key="text_current_dns_label">Current System DNS Servers:</sys:String>
+    <sys:String x:Key="noty_apply_dns_settings">Applying DNS settings...</sys:String>
+    <sys:String x:Key="noty_dns_set_successful">DNS settings successfully applied and cache flushed.</sys:String>
+    <sys:String x:Key="msg_dns_unexpected_error">An unexpected error occurred during DNS application.</sys:String>
+    <sys:String x:Key="txt_dns_server">DNS Server</sys:String>
+    <sys:String x:Key="txt_latency_test">Latency Test</sys:String>
+    <sys:String x:Key="btn_test_latency">Test Latency</sys:String>
+    <sys:String x:Key="btn_find_best_dns">Optimize &amp; Find Best DNS</sys:String>
+    <sys:String x:Key="status_pinging">Pinging...</sys:String>
+    <sys:String x:Key="status_ping_timeout">Timeout</sys:String>
+    <sys:String x:Key="noty_best_dns_found">Best DNS found: {0} ({1} ms)</sys:String>
+    <sys:String x:Key="msg_best_dns_error_title">Ping Error</sys:String>
+    <sys:String x:Key="msg_best_dns_error_body">Could not determine the best server. Please check your internet connection.</sys:String>
+    <sys:String x:Key="msg_dns_set_error">An error occurred while applying the DNS settings. Please ensure you have administrative privileges.</sys:String>
+    <sys:String x:Key="msg_dns_set_failed_ipv4">Failed to set IPv4 addresses.</sys:String>
+    <sys:String x:Key="msg_dns_set_failed_ipv6">Failed to set IPv6 addresses.</sys:String>
+    <sys:String x:Key="label_ipv4_status">IPv4: {0}</sys:String>
+    <sys:String x:Key="label_ipv6_status">IPv6: {0}</sys:String>
+    <sys:String x:Key="status_loading">Loading...</sys:String>
+    <sys:String x:Key="status_retrieving">Retrieving...</sys:String>
+    <sys:String x:Key="status_automatic_none">Automatic/None</sys:String>
+    <sys:String x:Key="status_failed_to_load">Failed to load configuration</sys:String>
+    <!-- endregion DNS Changer -->
+
+    <!-- region DNS Encryption -->
+    <sys:String x:Key="title_dns_encryption_more">DNS encryption</sys:String>
+    <sys:String x:Key="btn_open_dns_encrypt">Open DNS encryption</sys:String>
+    <sys:String x:Key="text_dns_encryption_more">Encrypt and authenticates communications between DNS client and DNS resolver. It prevents DNS spoofing.</sys:String>
+
+    <sys:String x:Key="btn_default">Default</sys:String>
+    <sys:String x:Key="btn_dns_clear">Clear</sys:String>
+    <sys:String x:Key="btn_save_config">Save</sys:String>
+    <sys:String x:Key="btn_load_config">Load</sys:String>
+    <sys:String x:Key="btn_balanced_config">Balanced</sys:String>
+    <sys:String x:Key="btn_privacy_config">Privacy</sys:String>
+    <sys:String x:Key="btn_download_install">Install Script (DNSCrypt v2.1.15)</sys:String>
+    <sys:String x:Key="btn_uninstall_script">Uninstall Script</sys:String>
+    <sys:String x:Key="btn_open_configfile">Open config file</sys:String>
+    <sys:String x:Key="btn_start_service">Start service</sys:String>
+    <sys:String x:Key="text_services_running">Service running...</sys:String>
+    <sys:String x:Key="btn_debug_process">Debug process</sys:String>
+    <sys:String x:Key="notif_dns_encrpyt_service_stopped">DnsCrypt service stopped successfully</sys:String>
+    <sys:String x:Key="title_dns_encrypt">DNS Encryption</sys:String>
+    <sys:String x:Key="text_status">Currently nothing is running in the background</sys:String>
+    <sys:String x:Key="text_combo_1">Use IPv4 servers:</sys:String>
+    <sys:String x:Key="text_combo_2">Use IPv6 servers:</sys:String>
+    <sys:String x:Key="text_combo_3">Use DNSCrypt protocol:</sys:String>
+    <sys:String x:Key="text_combo_4">Use DOH protocol:</sys:String>
+    <sys:String x:Key="text_combo_5">Require DNSSEC:</sys:String>
+    <sys:String x:Key="text_combo_6">Require NOLOG:</sys:String>
+    <sys:String x:Key="text_combo_7">Require NOFILTER:</sys:String>
+    <sys:String x:Key="text_combo_8">Bootstrap resolvers:</sys:String>
+    <sys:String x:Key="text_combo_9">Disable key reuse:</sys:String>
+    <sys:String x:Key="text_combo_10">Disable session tickets:</sys:String>
+    <sys:String x:Key="text_combo_11">Netprobe timeout:</sys:String>
+    <sys:String x:Key="text_combo_12">Netprobe address:</sys:String>
+    <sys:String x:Key="text_combo_13">Block IPv6 requests:</sys:String>
+    <sys:String x:Key="text_combo_14">Block response TTL:</sys:String>
+    <sys:String x:Key="text_dns_primary_ip4">Primary IPV4</sys:String>
+    <sys:String x:Key="textbox_dns_primary_ip4">Enter the primary ipv4</sys:String>
+    <sys:String x:Key="text_dns_secondary_ip4">Secondary IPV4</sys:String>
+    <sys:String x:Key="textbox_dns_secondary_ip4">Enter the secondary ipv4</sys:String>
+    <sys:String x:Key="text_dns_primary_ip6">Primary IPV6</sys:String>
+    <sys:String x:Key="textbox_dns_primary_ip6">Enter the primary ipv6</sys:String>
+    <sys:String x:Key="text_dns_secondary_ip6">Secondary IPV6</sys:String>
+    <sys:String x:Key="textbox_dns_secondary_ip6">Enter the secondary ipv6</sys:String>
+    <!-- endregion DNS Encryption -->
 
 </ResourceDictionary>

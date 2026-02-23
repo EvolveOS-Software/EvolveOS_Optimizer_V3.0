@@ -275,10 +275,10 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="model:DailyForecast">
                                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
-                                                    <TextBlock Text="{x:Bind Day, Mode=OneWay}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                                    <Image Source="{x:Bind IconSource, Mode=OneWay}" Width="32" Height="32" Margin="0, 5, 0, 0" />
-                                                    <TextBlock Text="{x:Bind MaxTemp, Mode=OneWay}" Style="{StaticResource InfoValue}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                                    <TextBlock Text="{x:Bind MinTemp, Mode=OneWay}" Style="{StaticResource InfoLabel}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="{x:Bind Day}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                                    <Image Source="{x:Bind IconSource}" Width="32" Height="32" Margin="0, 5, 0, 0" />
+                                                    <TextBlock Text="{x:Bind MaxTemp}" Style="{StaticResource InfoValue}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                                    <TextBlock Text="{x:Bind MinTemp}" Style="{StaticResource InfoLabel}" HorizontalAlignment="Center"/>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>

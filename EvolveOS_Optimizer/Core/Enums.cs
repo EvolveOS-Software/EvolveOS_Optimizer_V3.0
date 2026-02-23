@@ -80,5 +80,11 @@ namespace EvolveOS_Optimizer.Core
             Normal,
             High
         }
+
+        public enum DNSSettingPreference
+        {
+            Recommended,
+            Privacy,
+        }
     }
 }

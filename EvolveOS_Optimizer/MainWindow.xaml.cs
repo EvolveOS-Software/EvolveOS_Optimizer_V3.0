@@ -183,6 +183,7 @@ namespace EvolveOS_Optimizer
                 "ServiceTweaks" => typeof(Pages.ServicesPage),
                 "SystemManager" => typeof(Pages.SystemManagerPage),
                 "Software" => typeof(Pages.SoftwareCenterPage),
+                "Utilities" => typeof(Pages.UtilitiesPage),
                 "Scripts" => typeof(Pages.ScriptsPage),
                 "System" => typeof(Pages.SystemPage),
                 "Maintenance" => typeof(Pages.MaintenancePage),

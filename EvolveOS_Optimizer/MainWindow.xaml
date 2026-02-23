@@ -185,6 +185,13 @@
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Utilities"
+                                     Tag="{x:Bind GetText('Nav_Utilities'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xEC7A;" FontSize="18"/>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Scripts"
                                      Tag="{x:Bind GetText('Nav_Scripts'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEA86;" FontSize="18"/>

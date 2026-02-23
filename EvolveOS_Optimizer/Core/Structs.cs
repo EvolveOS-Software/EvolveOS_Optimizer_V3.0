@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace EvolveOS_Optimizer.Core
 {
@@ -43,6 +44,81 @@ namespace EvolveOS_Optimizer.Core
         public struct PROCESS_INFORMATION
         {
             public IntPtr hProcess, hThread; public int dwProcessId, dwThreadId;
+        }
+        #endregion
+
+        #region DNS Encryption DNSEntry
+        public struct DNSEntry
+        {
+            public string Value;
+            public bool IsV4 => Regex.IsMatch(Value, @"^(\d+?[\.]?){4}$");
+            public bool IsV6 => !IsV4;
+
+            public DNSEntry(string value)
+            {
+                Value = value;
+            }
+
+            public override string ToString()
+            {
+                return Value;
+            }
+        }
+
+        public class DNSServerEntry
+        {
+            public string? Name;
+            public float Latency = -1f;
+            public DNSEntry[]? DnsEntries;
+
+            public override string ToString()
+            {
+                if (Latency == -1f)
+                {
+                    return $"{Name}";
+                }
+
+                if (Latency <= 1f)
+                {
+                    return $"{Name} [<1 ms]";
+                }
+
+                if (float.IsNaN(Latency))
+                {
+                    return $"{Name} [Timeout]";
+                }
+
+                return $"{Name} [{Math.Round(Latency, 1)} ms]";
+            }
+        }
+
+        public struct Interface
+        {
+            public string Name;
+            public override string ToString() => Name;
+        }
+
+        public class ComboBoxItem
+        {
+            private readonly string _text;
+            public readonly object Value;
+
+            public ComboBoxItem(string text)
+            {
+                _text = text;
+                Value = text;
+            }
+
+            public ComboBoxItem(string text, object value)
+            {
+                _text = text;
+                Value = value;
+            }
+
+            public override string ToString()
+            {
+                return _text;
+            }
         }
         #endregion
 

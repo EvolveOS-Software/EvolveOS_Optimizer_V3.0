@@ -68,6 +68,9 @@
     <sys:String x:Key="Nav_Maintenance">Onderhoud</sys:String>
     <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Instellingen</sys:String>
+
+    <sys:String x:Key="Tab_DNSChanger">DNS-wisselaar</sys:String>
+    <sys:String x:Key="Tab_Advanced">Geavanceerd</sys:String>
     <!-- endregion Main Window -->
 
     <!-- region Settings -->
@@ -985,5 +988,84 @@
     <sys:String x:Key="unit_KB">KB</sys:String>
     <sys:String x:Key="unit_MB">MB</sys:String>
     <sys:String x:Key="unit_GB">GB</sys:String>
+
+    <!-- region DNS Changer -->
+    <sys:String x:Key="title_dns_changer">DNS-wisselaar</sys:String>
+    <sys:String x:Key="text_dns_changer">Schakel snel tussen populaire DNS-providers zoals Google, Cloudflare of aangepaste configuraties om de browsesnelheid en beveiliging mogelijk te verbeteren.</sys:String>
+    <sys:String x:Key="btn_open_changer">Open Wisselaar</sys:String>
+    <sys:String x:Key="popup_title_dns_changer">DNS-instellingen configureren</sys:String>
+    <sys:String x:Key="text_ipv4_primary">Primaire IPv4 DNS</sys:String>
+    <sys:String x:Key="text_ipv4_secondary">Secundaire IPv4 DNS</sys:String>
+    <sys:String x:Key="text_ipv6_primary">Primaire IPv6 DNS</sys:String>
+    <sys:String x:Key="text_ipv6_secondary">Secundaire IPv6 DNS</sys:String>
+    <sys:String x:Key="btn_apply">Instellingen toepassen</sys:String>
+    <sys:String x:Key="btn_close">Sluiten</sys:String>
+    <sys:String x:Key="text_current_dns_label">Huidige systeem DNS-servers:</sys:String>
+    <sys:String x:Key="noty_apply_dns_settings">DNS-instellingen toepassen...</sys:String>
+    <sys:String x:Key="noty_dns_set_successful">DNS-instellingen succesvol toegepast en cache leeggemaakt.</sys:String>
+    <sys:String x:Key="msg_dns_unexpected_error">Er is een onverwachte fout opgetreden bij het toepassen van DNS.</sys:String>
+    <sys:String x:Key="txt_dns_server">DNS-server</sys:String>
+    <sys:String x:Key="txt_latency_test">Latentietest</sys:String>
+    <sys:String x:Key="btn_test_latency">Test latentie</sys:String>
+    <sys:String x:Key="btn_find_best_dns">Optimaliseren &amp; beste DNS vinden</sys:String>
+    <sys:String x:Key="status_pinging">Pingen...</sys:String>
+    <sys:String x:Key="status_ping_timeout">Time-out</sys:String>
+    <sys:String x:Key="noty_best_dns_found">Beste DNS gevonden: {0} ({1} ms)</sys:String>
+    <sys:String x:Key="msg_best_dns_error_title">Ping-fout</sys:String>
+    <sys:String x:Key="msg_best_dns_error_body">Kon de beste server niet bepalen. Controleer uw internetverbinding.</sys:String>
+    <sys:String x:Key="msg_dns_set_error">Er is een fout opgetreden bij het toepassen van de DNS-instellingen. Zorg ervoor dat u beheerdersrechten heeft.</sys:String>
+    <sys:String x:Key="msg_dns_set_failed_ipv4">Instellen van IPv4-adressen mislukt.</sys:String>
+    <sys:String x:Key="msg_dns_set_failed_ipv6">Instellen van IPv6-adressen mislukt.</sys:String>
+    <sys:String x:Key="label_ipv4_status">IPv4: {0}</sys:String>
+    <sys:String x:Key="label_ipv6_status">IPv6: {0}</sys:String>
+    <sys:String x:Key="status_loading">Laden...</sys:String>
+    <sys:String x:Key="status_retrieving">Ophalen...</sys:String>
+    <sys:String x:Key="status_automatic_none">Automatisch/Geen</sys:String>
+    <sys:String x:Key="status_failed_to_load">Laden van configuratie mislukt</sys:String>
+    <!-- endregion DNS Changer -->
+
+    <!-- region DNS Encryption -->
+    <sys:String x:Key="title_dns_encryption_more">DNS-versleuteling</sys:String>
+    <sys:String x:Key="btn_open_dns_encrypt">Open DNS-versleuteling</sys:String>
+    <sys:String x:Key="text_dns_encryption_more">Versleutelt en authenticeert communicatie tussen de DNS-client en DNS-resolver. Het voorkomt DNS-spoofing.</sys:String>
+
+    <sys:String x:Key="btn_default">Standaard</sys:String>
+    <sys:String x:Key="btn_dns_clear">Wissen</sys:String>
+    <sys:String x:Key="btn_save_config">Opslaan</sys:String>
+    <sys:String x:Key="btn_load_config">Laden</sys:String>
+    <sys:String x:Key="btn_balanced_config">Gebalanceerd</sys:String>
+    <sys:String x:Key="btn_privacy_config">Privacy</sys:String>
+    <sys:String x:Key="btn_download_install">Script installeren (DNSCrypt v2.1.15)</sys:String>
+    <sys:String x:Key="btn_uninstall_script">Script verwijderen</sys:String>
+    <sys:String x:Key="btn_open_configfile">Open configuratiebestand</sys:String>
+    <sys:String x:Key="btn_start_service">Start service</sys:String>
+    <sys:String x:Key="text_services_running">Service draait...</sys:String>
+    <sys:String x:Key="btn_debug_process">Proces debuggen</sys:String>
+    <sys:String x:Key="notif_dns_encrpyt_service_stopped">DnsCrypt-service succesvol gestopt</sys:String>
+    <sys:String x:Key="title_dns_encrypt">DNS-versleuteling</sys:String>
+    <sys:String x:Key="text_status">Momenteel draait er niets op de achtergrond</sys:String>
+    <sys:String x:Key="text_combo_1">Gebruik IPv4-servers:</sys:String>
+    <sys:String x:Key="text_combo_2">Gebruik IPv6-servers:</sys:String>
+    <sys:String x:Key="text_combo_3">Gebruik DNSCrypt-protocol:</sys:String>
+    <sys:String x:Key="text_combo_4">Gebruik DOH-protocol:</sys:String>
+    <sys:String x:Key="text_combo_5">Vereis DNSSEC:</sys:String>
+    <sys:String x:Key="text_combo_6">Vereis NOLOG:</sys:String>
+    <sys:String x:Key="text_combo_7">Vereis NOFILTER:</sys:String>
+    <sys:String x:Key="text_combo_8">Bootstrap-resolvers:</sys:String>
+    <sys:String x:Key="text_combo_9">Hergebruik van sleutels uitschakelen:</sys:String>
+    <sys:String x:Key="text_combo_10">Sessietickets uitschakelen:</sys:String>
+    <sys:String x:Key="text_combo_11">Netprobe time-out:</sys:String>
+    <sys:String x:Key="text_combo_12">Netprobe-adres:</sys:String>
+    <sys:String x:Key="text_combo_13">Blokkeer IPv6-verzoeken:</sys:String>
+    <sys:String x:Key="text_combo_14">Blokkeer respons-TTL:</sys:String>
+    <sys:String x:Key="text_dns_primary_ip4">Primaire IPv4</sys:String>
+    <sys:String x:Key="textbox_dns_primary_ip4">Voer de primaire IPv4 in</sys:String>
+    <sys:String x:Key="text_dns_secondary_ip4">Secundaire IPv4</sys:String>
+    <sys:String x:Key="textbox_dns_secondary_ip4">Voer de secundaire IPv4 in</sys:String>
+    <sys:String x:Key="text_dns_primary_ip6">Primaire IPv6</sys:String>
+    <sys:String x:Key="textbox_dns_primary_ip6">Voer de primaire IPv6 in</sys:String>
+    <sys:String x:Key="text_dns_secondary_ip6">Secundaire IPv6</sys:String>
+    <sys:String x:Key="textbox_dns_secondary_ip6">Voer de secundaire IPv6 in</sys:String>
+    <!-- endregion DNS Encryption -->
 
 </ResourceDictionary>
