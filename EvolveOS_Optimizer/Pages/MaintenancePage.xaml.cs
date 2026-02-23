@@ -19,6 +19,8 @@ namespace EvolveOS_Optimizer.Pages
     public sealed partial class MaintenancePage : Page, IPurgeable
     {
         #region Fields
+        public MaintenanceViewModel ViewModel => MaintenanceViewModel.Current;
+
         private static MaintenanceViewModel? _sharedViewModel;
         private bool _isShowingResult = false;
 
@@ -40,7 +42,6 @@ namespace EvolveOS_Optimizer.Pages
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             InitializeComponent();
-            //this.NavigationCacheMode = NavigationCacheMode.Required;
 
             if (_sharedViewModel == null)
             {

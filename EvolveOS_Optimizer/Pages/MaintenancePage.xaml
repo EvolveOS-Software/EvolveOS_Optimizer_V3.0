@@ -122,12 +122,12 @@
                                    Margin="0,0,0,12"/>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Computer.Memory.Physical.Used.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+                            <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Physical.Used.Value, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
                                        FontSize="32"
                                        FontFamily="{ThemeResource Jura-SemiBold}"
                                        Foreground="{ThemeResource Brush_Highlighted}"/>
-                            
-                            <TextBlock Text="{Binding Computer.Memory.Physical.Used.Unit}"
+
+                            <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Physical.Used.Unit, Mode=OneWay}"
                                        FontFamily="{ThemeResource Jura}"
                                        FontSize="16"
                                        VerticalAlignment="Bottom"
@@ -136,8 +136,8 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                            
-                            <TextBlock Text="{Binding Computer.Memory.Physical.Used.Percentage, UpdateSourceTrigger=PropertyChanged}"
+
+                            <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Physical.Used.Percentage, Mode=OneWay}"
                                        FontFamily="{StaticResource Jura}"
                                        FontSize="14"
                                        Foreground="{ThemeResource Brush_Highlighted}"/>
@@ -148,7 +148,7 @@
                                        Foreground="{ThemeResource Brush_Highlighted}"/>
                         </StackPanel>
 
-                        <ProgressBar Value="{Binding Computer.Memory.Physical.Used.Percentage}"
+                        <ProgressBar Value="{x:Bind ViewModel.Computer.Memory.Physical.Used.Percentage, Mode=OneWay}"
                                      Maximum="100"
                                      Height="8"
                                      CornerRadius="4"
@@ -183,13 +183,13 @@
                                                Margin="0"/>
                                     
                                     <StackPanel Orientation="Horizontal">
-                                        
-                                        <TextBlock Text="{Binding Computer.Memory.Physical.Used.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Physical.Used.Value, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura}"
                                                    FontSize="12"/>
-                                        
-                                        <TextBlock Text="{Binding Computer.Memory.Physical.Used.Unit}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Physical.Used.Unit, Mode=OneWay}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura}"
                                                    FontSize="12"
@@ -215,14 +215,14 @@
                                                Margin="0,-1,0,0"
                                                FontSize="12"/>
                                     <StackPanel Orientation="Horizontal">
-                                        
-                                        <TextBlock Text="{Binding Computer.Memory.Physical.Free.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Physical.Free.Value, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura-SemiBold}"
                                                    Margin="0,0,0,0"
                                                    FontSize="12"/>
-                                        
-                                        <TextBlock Text="{Binding Computer.Memory.Physical.Free.Unit}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Physical.Free.Unit, Mode=OneWay}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura}"
                                                    FontSize="12"
@@ -236,7 +236,7 @@
                 </Border>
 
                 <Border Grid.Column="1" Style="{StaticResource SettingsCardStyle}"
-                        Visibility="{Binding ShowVirtualMemory, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                        Visibility="{x:Bind ViewModel.ShowVirtualMemory, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
                     <StackPanel>
                         
                         <TextBlock Text="{helpers:ResourceString Key=txt_header_virtual_memory}"
@@ -244,11 +244,11 @@
                                    Margin="0,0,0,12"/>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+                            <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Virtual.Used.Value, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
                                        FontSize="32"
                                        FontFamily="{ThemeResource Jura-SemiBold}"
                                        Foreground="{ThemeResource Brush_Highlighted}"/>
-                            <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Unit}"
+                            <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Virtual.Used.Unit, Mode=OneWay}"
                                        FontFamily="{StaticResource Jura}"
                                        FontSize="16"
                                        VerticalAlignment="Bottom"
@@ -258,8 +258,8 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                            
-                            <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Percentage, UpdateSourceTrigger=PropertyChanged}"
+
+                            <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Virtual.Used.Percentage, Mode=OneWay}"
                                        FontFamily="{StaticResource Jura-SemiBold}"
                                        FontSize="14"
                                        Foreground="{ThemeResource Brush_Highlighted}"/>
@@ -269,7 +269,7 @@
                                        Foreground="{ThemeResource Brush_Highlighted}"/>
                         </StackPanel>
 
-                        <ProgressBar Value="{Binding Computer.Memory.Virtual.Used.Percentage}"
+                        <ProgressBar Value="{x:Bind ViewModel.Computer.Memory.Virtual.Used.Percentage, Mode=OneWay}"
                                      Maximum="100"
                                      Height="8"
                                      CornerRadius="4"
@@ -303,14 +303,14 @@
                                                Margin="0"/>
                                     
                                     <StackPanel Orientation="Horizontal">
-                                        
-                                        <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Virtual.Used.Value, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura-SemiBold}"
                                                    Margin="0,1,0,0"
                                                    FontSize="12"/>
-                                        
-                                        <TextBlock Text="{Binding Computer.Memory.Virtual.Used.Unit}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Virtual.Used.Unit, Mode=OneWay}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura}"
                                                    FontSize="12"
@@ -337,14 +337,14 @@
                                                FontFamily="{StaticResource Jura}"
                                                FontSize="12" Margin="0"/>
                                     <StackPanel Orientation="Horizontal">
-                                        
-                                        <TextBlock Text="{Binding Computer.Memory.Virtual.Free.Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Virtual.Free.Value, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.#}'}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura-SemiBold}"
                                                    Margin="0,1,0,0"
                                                    FontSize="12"/>
-                                        
-                                        <TextBlock Text="{Binding Computer.Memory.Virtual.Free.Unit}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.Computer.Memory.Virtual.Free.Unit, Mode=OneWay}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura}"
                                                    FontSize="12"
@@ -357,7 +357,7 @@
                 </Border>
 
                 <Border Grid.Column="2"
-                        Visibility="{Binding ShowDiskSpace, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}"
+                        Visibility="{x:Bind ViewModel.ShowDiskSpace, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}"
                         Style="{StaticResource SettingsCardStyle}">
                     
                     <StackPanel>
@@ -367,8 +367,8 @@
                                    Margin="0,0,0,12"/>
 
                         <StackPanel Orientation="Horizontal">
-                            
-                            <TextBlock Text="{Binding DriveCInfo.UsedSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.##}'}"
+
+                            <TextBlock Text="{x:Bind ViewModel.DriveCInfo.UsedSpaceGB, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.##}'}"
                                        FontFamily="{StaticResource Jura-Bold}"
                                        FontSize="32"
                                        Foreground="{ThemeResource Brush_Highlighted}"/>
@@ -382,8 +382,8 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                            
-                            <TextBlock Text="{Binding DriveCInfo.UsedPercentage, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0}'}"
+
+                            <TextBlock Text="{x:Bind ViewModel.DriveCInfo.UsedPercentage, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0}'}"
                                        FontFamily="{StaticResource Jura}"
                                        FontSize="14"
                                        Foreground="{ThemeResource Brush_Highlighted}"/>
@@ -394,7 +394,7 @@
                                        Foreground="{ThemeResource Brush_Highlighted}"/>
                         </StackPanel>
 
-                        <ProgressBar Value="{Binding DriveCInfo.UsedPercentage}"
+                        <ProgressBar Value="{x:Bind ViewModel.DriveCInfo.UsedPercentage, Mode=OneWay}"
                                      Maximum="100"
                                      Height="8"
                                      CornerRadius="4"
@@ -428,8 +428,8 @@
                                                Margin="0"/>
                                     
                                     <StackPanel Orientation="Horizontal">
-                                        
-                                        <TextBlock Text="{Binding DriveCInfo.UsedSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.##}'}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.DriveCInfo.UsedSpaceGB, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.##}'}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura-SemiBold}"
                                                    Margin="0,1,0,0"
@@ -465,8 +465,8 @@
                                                Margin="0"/>
                                     
                                     <StackPanel Orientation="Horizontal">
-                                        
-                                        <TextBlock Text="{Binding DriveCInfo.FreeSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.##}'}"
+
+                                        <TextBlock Text="{x:Bind ViewModel.DriveCInfo.FreeSpaceGB, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:0.##}'}"
                                                    Foreground="{ThemeResource Brush_Highlighted}"
                                                    FontFamily="{StaticResource Jura-SemiBold}"
                                                    Margin="0,1,0,0"
@@ -522,46 +522,46 @@
                                 <ListBox Name="ProcessExclusionList"
                                          FontFamily="{StaticResource Jura}"
                                          Grid.Row="0" Grid.ColumnSpan="2"
-                                         ItemsSource="{Binding ProcessExclusionList}"
+                                         ItemsSource="{x:Bind ViewModel.ProcessExclusionList, Mode=OneWay}"
                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
                                          Background="Transparent"
                                          BorderThickness="0"
                                          Margin="0,0,0,16"
                                          MinHeight="130">
-                                    
+
                                     <ListBox.ItemTemplate>
-                                        <DataTemplate>
+                                        <DataTemplate x:DataType="x:String">
                                             <Grid Margin="0,4">
-                                                
+
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                                
+
                                                 <Button Content="×"
-                                                        Command="{Binding ElementName=RootControl, Path=DataContext.RemoveProcessFromExclusionListCommand}"
-                                                        CommandParameter="{Binding}"
+                                                        Command="{x:Bind viewmodel:MaintenanceViewModel.Current.RemoveProcessFromExclusionListCommand}"
+                                                        CommandParameter="{x:Bind}"
                                                         Width="32"
                                                         Height="32"/>
-                                                
-                                                <TextBlock Text="{Binding}"
+
+                                                <TextBlock Text="{x:Bind}"
                                                            Grid.Column="1"
                                                            Margin="12,0,0,0"
                                                            Foreground="{ThemeResource Brush_Error}"
                                                            FontSize="14"
                                                            VerticalAlignment="Center"/>
-                                                
+
                                             </Grid>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
-                                    
+
                                 </ListBox>
 
                                 <ComboBox Grid.Row="1"
                                           Grid.Column="0"
-                                          ItemsSource="{Binding Processes}"
-                                          SelectedValue="{Binding SelectedProcess, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          ItemsSource="{x:Bind ViewModel.Processes, Mode=OneWay}"
+                                          SelectedValue="{x:Bind ViewModel.SelectedProcess, Mode=TwoWay}"
                                           Height="40"
                                           Margin="0,0,12,0"
                                           HorizontalAlignment="Stretch"/>
@@ -569,8 +569,8 @@
                                 <Button Grid.Row="1"
                                         Grid.Column="1"
                                         Content="+"
-                                        Command="{Binding AddProcessToExclusionListCommand}"
-                                        CommandParameter="{Binding SelectedProcess}"
+                                        Command="{x:Bind ViewModel.AddProcessToExclusionListCommand}"
+                                        CommandParameter="{x:Bind ViewModel.SelectedProcess, Mode=OneWay}"
                                         Width="40"
                                         Height="40" />
                                 
@@ -586,9 +586,9 @@
                             
                             <TextBlock Text="{helpers:ResourceString Key=txt_header_memory_areas}"
                                        Style="{StaticResource CardHeaderStyle}"/>
-                            
-                            <ItemsControl ItemsSource="{Binding MemoryAreaItems}">
-                                
+
+                            <ItemsControl ItemsSource="{x:Bind ViewModel.MemoryAreaItems, Mode=OneWay}">
+
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Orientation="Vertical"/>
@@ -622,9 +622,9 @@
                             
                             <TextBlock Text="{helpers:ResourceString Key=txt_header_system_cleanup}"
                                        Style="{StaticResource CardHeaderStyle}"/>
-                            
-                            <ItemsControl ItemsSource="{Binding SystemCleanupAreaItems}">
-                                
+
+                            <ItemsControl ItemsSource="{x:Bind ViewModel.SystemCleanupAreaItems, Mode=OneWay}">
+
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Orientation="Vertical"/>
@@ -661,23 +661,23 @@
                                 <Grid Width="24"
                                       Height="24"
                                       Margin="0,0,12,0">
-                                    
-                                    <Button Command="{Binding RefreshCleanupSpaceCommand}"
+
+                                    <Button Command="{x:Bind ViewModel.RefreshCleanupSpaceCommand}"
                                             Background="Transparent"
                                             BorderThickness="0"
                                             Padding="0"
-                                            Visibility="{Binding IsScanning, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                            Visibility="{x:Bind ViewModel.IsScanning, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                         
                                         <FontIcon Glyph="&#xE72C;"
                                                   Foreground="{ThemeResource Brush_Highlighted}"
                                                   FontSize="18"/>
                                     </Button>
-                                    
-                                    <ProgressRing IsActive="{Binding IsScanning}"
+
+                                    <ProgressRing IsActive="{x:Bind ViewModel.IsScanning, Mode=OneWay}"
                                                   Width="20"
                                                   Height="20"
                                                   Foreground="{ThemeResource MyDynamicAccentBrush}"
-                                                  Visibility="{Binding IsScanning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                  Visibility="{x:Bind ViewModel.IsScanning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </Grid>
                                 
                                 <TextBlock Text="{helpers:ResourceString Key=txt_total_estimated_space}"
@@ -685,8 +685,8 @@
                                            FontSize="14"
                                            Foreground="{ThemeResource Brush_Highlighted}"
                                            VerticalAlignment="Center"/>
-                                
-                                <TextBlock Text="{Binding TotalSpaceToFree}"
+
+                                <TextBlock Text="{x:Bind ViewModel.TotalSpaceToFree, Mode=OneWay}"
                                            FontFamily="{StaticResource Jura-Bold}"
                                            FontSize="14"
                                            Foreground="{ThemeResource Brush_Highlighted}"
@@ -703,7 +703,7 @@
                             
                             <TextBlock Text="{helpers:ResourceString Key=txt_header_auto_optimizations}" Style="{StaticResource CardHeaderStyle}"/>
 
-                            <TextBlock Text="{Binding AutoOptimizationMemoryIntervalDescription}"
+                            <TextBlock Text="{x:Bind ViewModel.AutoOptimizationMemoryIntervalDescription, Mode=OneWay}"
                                        Foreground="{ThemeResource Brush_Highlighted}"
                                        FontFamily="{StaticResource Jura}"
                                        FontSize="13"
@@ -712,11 +712,11 @@
                             <Slider x:Name="AutoOptimizationIntervalSlider"
                                     Minimum="0"
                                     Maximum="168"
-                                    Value="{Binding AutoOptimizationInterval, Mode=TwoWay}"
+                                    Value="{x:Bind ViewModel.AutoOptimizationInterval, Mode=TwoWay}"
                                     PointerPressed="OnSliderPointerPressed"
                                     Margin="0,0,0,24"/>
 
-                            <TextBlock Text="{Binding AutoOptimizationMemoryUsageDescription}"
+                            <TextBlock Text="{x:Bind ViewModel.AutoOptimizationMemoryUsageDescription, Mode=OneWay}"
                                        Foreground="{ThemeResource Brush_Highlighted}"
                                        FontFamily="{StaticResource Jura}"
                                        FontSize="13"
@@ -725,7 +725,7 @@
                             <Slider x:Name="AutoOptimizationMemoryUsageSlider"
                                     Minimum="0"
                                     Maximum="100"
-                                    Value="{Binding AutoOptimizationMemoryUsage, Mode=TwoWay}"
+                                    Value="{x:Bind ViewModel.AutoOptimizationMemoryUsage, Mode=TwoWay}"
                                     PointerPressed="OnSliderPointerPressed"
                                     Margin="0,0,0,8"/>
                         </StackPanel>
@@ -737,9 +737,9 @@
                         <StackPanel>
                             <TextBlock Text="{helpers:ResourceString Key=txt_header_settings}"
                                        Style="{StaticResource CardHeaderStyle}"/>
-                            
-                            <ItemsControl ItemsSource="{Binding SettingItems}">
-                                
+
+                            <ItemsControl ItemsSource="{x:Bind ViewModel.SettingItems, Mode=OneWay}">
+
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         
@@ -764,7 +764,7 @@
 
                     <Border Style="{StaticResource SettingsCardStyle}"
                             VerticalAlignment="Top"
-                            Visibility="{Binding Computer.OperatingSystem.HasHotkeyManager, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                            Visibility="{x:Bind ViewModel.Computer.OperatingSystem.HasHotkeyManager, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
                         
                         <StackPanel>
                             
@@ -773,7 +773,7 @@
 
                             <StackPanel Orientation="Vertical" Spacing="16">
 
-                                <ToggleSwitch IsOn="{Binding UseHotkey, Mode=TwoWay}"
+                                <ToggleSwitch IsOn="{x:Bind ViewModel.UseHotkey, Mode=TwoWay}"
                                               OnContent="Hotkey Enabled"
                                               OffContent="Hotkey Disabled"
                                               Margin="0"
@@ -781,11 +781,11 @@
                                               Foreground="{ThemeResource Brush_Highlighted}" />
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                                    
-                                    <ComboBox ItemsSource="{Binding KeyboardModifiers}"
-                                              SelectedValue="{Binding OptimizationModifiers, Mode=TwoWay}"
+
+                                    <ComboBox ItemsSource="{x:Bind ViewModel.KeyboardModifiers, Mode=OneWay}"
+                                              SelectedValue="{x:Bind ViewModel.OptimizationModifiers, Mode=TwoWay}"
                                               SelectedValuePath="Key"
-                                              IsEnabled="{Binding UseHotkey}"
+                                              IsEnabled="{x:Bind ViewModel.UseHotkey, Mode=OneWay}"
                                               MinWidth="120">
                                         
                                         <ComboBox.ItemTemplate>
@@ -802,9 +802,9 @@
                                                VerticalAlignment="Center"
                                                FontFamily="{StaticResource Jura-Bold}"/>
 
-                                    <ComboBox ItemsSource="{Binding KeyboardKeys}"
-                                              SelectedValue="{Binding OptimizationKey, Mode=TwoWay}"
-                                              IsEnabled="{Binding UseHotkey}"
+                                    <ComboBox ItemsSource="{x:Bind ViewModel.KeyboardKeys, Mode=OneWay}"
+                                              SelectedValue="{x:Bind ViewModel.OptimizationKey, Mode=TwoWay}"
+                                              IsEnabled="{x:Bind ViewModel.UseHotkey, Mode=OneWay}"
                                               MinWidth="80">
                                         
                                         <ComboBox.ItemTemplate>
@@ -821,7 +821,7 @@
                                            Foreground="{ThemeResource Brush_Error}"
                                            FontFamily="{StaticResource Jura}"
                                            FontSize="13"
-                                           Visibility="{Binding IsOptimizationKeyValid, Converter={StaticResource InverseBooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                           Visibility="{x:Bind ViewModel.IsOptimizationKeyValid, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                                 
                             </StackPanel>
                         </StackPanel>
@@ -1095,7 +1095,7 @@
                 </pa:FlowPanel>
             </ScrollViewer>
 
-            <Grid Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"
+            <Grid Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                   CornerRadius="8"
                   Opacity="0.95"
@@ -1103,7 +1103,7 @@
                 
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="650" Spacing="4">
 
-                    <ProgressBar Value="{Binding OptimizationProgressPercentage}"
+                    <ProgressBar Value="{x:Bind ViewModel.OptimizationProgressPercentage, Mode=OneWay}"
                                  Minimum="0"
                                  Maximum="100"
                                  Height="8"
@@ -1113,14 +1113,14 @@
                                  Background="{ThemeResource ControlFillColorTransparentBrush}"
                                  BorderThickness="0" HorizontalAlignment="Stretch"/>
 
-                    <TextBlock Text="{Binding OptimizationProgressStep}"
+                    <TextBlock Text="{x:Bind ViewModel.OptimizationProgressStep, Mode=OneWay}"
                                FontFamily="{StaticResource Jura-SemiBold}"
                                HorizontalAlignment="Center"
                                FontSize="16"
                                Foreground="{ThemeResource Brush_Highlighted}"
                                Margin="0,0,0,4"/>
-                    
-                    <TextBlock Text="{Binding OptimizationProgressValue}"
+
+                    <TextBlock Text="{x:Bind ViewModel.OptimizationProgressValue, Mode=OneWay}"
                                FontFamily="{StaticResource Jura}"
                                HorizontalAlignment="Center"
                                Foreground="{ThemeResource Brush_Highlighted}"
@@ -1137,8 +1137,8 @@
         <StackPanel Grid.Row="2" Background="Transparent" VerticalAlignment="Bottom" Margin="0,20,0,0">
             
             <Button Name="Optimize"
-                    Command="{Binding OptimizeCommand}"
-                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}"
+                    Command="{x:Bind ViewModel.OptimizeCommand}"
+                    IsEnabled="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
                     Content="{helpers:ResourceString Key=btn_clean_now}"
                     Height="48"
                     Width="400"

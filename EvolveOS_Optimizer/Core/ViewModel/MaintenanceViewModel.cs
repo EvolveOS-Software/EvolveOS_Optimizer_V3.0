@@ -77,7 +77,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             var drives = DiskInfoService.GetDrivesData();
 
-            // Safely grab Drive C, or fallback to the first available drive if C: is missing
             DriveCInfo = drives.FirstOrDefault(d => d.Name != null && d.Name.StartsWith("C", StringComparison.OrdinalIgnoreCase))
                          ?? drives.FirstOrDefault()!;
         }
@@ -258,6 +257,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged();
                 }
                 finally { IsBusy = false; }
+            }
+        }
+
+        public string? SelectedProcess
+        {
+            get => _selectedProcess;
+            set
+            {
+                // 1. THE GUARD: Break the infinite loop!
+                if (_selectedProcess == value) return;
+
+                _selectedProcess = value;
+                OnPropertyChanged();
+
+                // Update the Add button state
+                OnPropertyChanged(nameof(CanAddProcessToExclusionList));
             }
         }
 
@@ -544,28 +559,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             get
             {
-                var processes = new ObservableCollection<string>(Process.GetProcesses()
+                return new ObservableCollection<string>(Process.GetProcesses()
                     .Where(p => p != null && !p.ProcessName.Equals(App.Name) && !LocalMachineSettingsEngine.ProcessExclusionList.Contains(p.ProcessName, StringComparer.OrdinalIgnoreCase))
                     .Select(p => p.ProcessName.ToLower())
                     .Distinct()
                     .OrderBy(name => name));
-
-                if (!string.IsNullOrEmpty(SelectedProcess) && !processes.Contains(SelectedProcess, StringComparer.OrdinalIgnoreCase))
-                    SelectedProcess = processes.FirstOrDefault();
-
-                return processes;
             }
         }
 
         public ObservableCollection<string> ProcessExclusionList
         {
             get { return new ObservableCollection<string>(LocalMachineSettingsEngine.ProcessExclusionList); }
-        }
-
-        public string? SelectedProcess
-        {
-            get => _selectedProcess;
-            set { _selectedProcess = value; OnPropertyChanged(); }
         }
 
         public int AutoOptimizationInterval
@@ -632,6 +636,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     if (LocalMachineSettingsEngine.ProcessExclusionList.Add(process))
                     {
                         LocalMachineSettingsEngine.SaveExclusionList();
+
+                        SelectedProcess = null;
+
                         OnPropertyChanged(nameof(Processes));
                         OnPropertyChanged(nameof(ProcessExclusionList));
                         _dispatcherQueue?.TryEnqueue(() => OnAddProcessToExclusionListCommandCompleted?.Invoke());
