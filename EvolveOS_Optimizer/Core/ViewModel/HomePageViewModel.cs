@@ -267,6 +267,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             LoadDiskData();
 
             _ = FetchWeatherAsync(_weatherLocation, _cts.Token);
+
+            SetupTimer();
         }
 
         #endregion
@@ -358,7 +360,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Disk Data Error] Failed to load disk drives: {ex.Message}");
+                Debug.WriteLine($"[Disk Data Error] Failed to load disk drives: {ex.Message}");
             }
         }
 
@@ -461,6 +463,33 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             });
         }
+        #endregion
+
+        #region Background Statistics Timer
+
+        private void SetupTimer()
+        {
+            _statsTimer?.Stop();
+
+            _statsTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+
+            _statsTimer.Tick += StatsTimer_Tick;
+            _statsTimer.Start();
+        }
+
+        private async void StatsTimer_Tick(object? sender, object? e)
+        {
+            await SystemDiagnostics.GetGpuUsage();
+
+            RefreshStats(HardwareData.RunningProcessesCount, HardwareData.RunningServicesCount);
+
+            OnPropertyChanged(nameof(GpuUsageDisplay));
+            OnPropertyChanged(nameof(GpuUsagePercentage));
+        }
+
         #endregion
 
         #region Disposal

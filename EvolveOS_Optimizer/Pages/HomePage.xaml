@@ -77,8 +77,7 @@
                         <TextBlock Text="CPU" FontSize="11" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-2,0,0">
                             <TextBlock x:Name="CPUText" Text="{x:Bind ViewModel.CpuUsageText, Mode=OneWay}" FontSize="18" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}"/>
-                            <TextBlock Text="%" FontSize="13" Style="{StaticResource BodyTextBlockStyle}" 
-                   Foreground="{StaticResource Brush_Inactive}" Margin="1,2,0,0"/>
+                            <TextBlock Text="%" FontSize="13" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" Margin="1,2,0,0"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -94,8 +93,7 @@
                         <TextBlock Text="RAM" FontSize="11" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-2,0,0">
                             <TextBlock x:Name="RAMText" Text="{x:Bind ViewModel.RamUsageText, Mode=OneWay}" FontSize="18" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}"/>
-                            <TextBlock Text="%" FontSize="13" Style="{StaticResource BodyTextBlockStyle}" 
-                   Foreground="{StaticResource Brush_Inactive}" Margin="1,2,0,0"/>
+                            <TextBlock Text="%" FontSize="13" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" Margin="1,2,0,0"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -453,7 +451,7 @@
                         <StackPanel Spacing="4" Margin="0,-3,0,0">
                             <TextBlock Text="{helpers:ResourceString Key=title_gpu_liveinfo}" FontSize="12" Opacity="0.6"/>
                             <Grid ColumnDefinitions="*, Auto">
-                                <ProgressBar Value="{Binding GpuUsageDisplay}" Maximum="100" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                <ProgressBar Value="{Binding GpuUsageDisplay}" Maximum="100" Width="300" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                 <TextBlock Grid.Column="1"
                                            FontFamily="Jura Medium"
                                            Text="{Binding GpuUsageDisplay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}"
