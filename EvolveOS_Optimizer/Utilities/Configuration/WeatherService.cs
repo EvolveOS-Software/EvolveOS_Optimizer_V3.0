@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -10,7 +11,9 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 {
     public class WeatherService : IDisposable
     {
-        private static readonly HttpClient _client = new HttpClient();
+        #region Fields & HTTP Client Setup
+
+        private static readonly HttpClient _client;
         private readonly CancellationTokenSource _internalCts = new();
 
         private const string API_KEY = "6aa62b54867341f3b3925740250511";
@@ -20,23 +23,58 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         private string _location = string.Empty;
         public string Location => _location;
 
+        private static WeatherData? _cachedWeather;
+        private static DateTime _lastFetchTime = DateTime.MinValue;
+        private static string _lastRequestedLocation = string.Empty;
+        private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(15);
+
         static WeatherService()
         {
-            _client.DefaultRequestHeaders.Add("User-Agent", "EvolveOS_Optimizer/1.0 (Windows)");
+            var handler = new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(5),
+                ConnectTimeout = TimeSpan.FromSeconds(10),
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli
+            };
 
-            _client.Timeout = TimeSpan.FromSeconds(30);
+            _client = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromSeconds(20)
+            };
+
+            _client.DefaultRequestHeaders.Add("User-Agent", "EvolveOS_Optimizer/1.0 (Windows)");
+            _client.DefaultRequestHeaders.ConnectionClose = false;
         }
 
-        public async Task<WeatherData> GetWeatherAsync(string? locationOverride = null, CancellationToken token = default)
+        #endregion
+
+        #region API Fetch Logic
+
+        public async Task<WeatherData> GetWeatherAsync(string? locationOverride = null, CancellationToken token = default, bool forceRefresh = false)
         {
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, _internalCts.Token);
             var activeToken = linkedCts.Token;
 
-            if (string.IsNullOrEmpty(API_KEY) || API_KEY.Contains("CHANGE_ME")) return GetMockWeatherData();
+            if (string.IsNullOrEmpty(API_KEY) || API_KEY.Contains("CHANGE_ME"))
+                return GetMockWeatherData();
 
             string effectiveLocation = locationOverride ?? _location;
             if (string.IsNullOrEmpty(effectiveLocation)) effectiveLocation = SettingsEngine.LastLocation;
             if (string.IsNullOrEmpty(effectiveLocation)) effectiveLocation = "Paris";
+
+            if (!forceRefresh &&
+                _cachedWeather != null &&
+                string.Equals(_lastRequestedLocation, effectiveLocation, StringComparison.OrdinalIgnoreCase) &&
+                (DateTime.Now - _lastFetchTime) < CacheDuration)
+            {
+                Debug.WriteLine("[WeatherService] Serving weather from Memory Cache (Fast).");
+                return _cachedWeather;
+            }
+
+            if (forceRefresh)
+            {
+                Debug.WriteLine("[WeatherService] Force Refresh requested. Bypassing cache...");
+            }
 
             var url = $"{BASE_URL}?key={API_KEY}&q={Uri.EscapeDataString(effectiveLocation)}&days={FORECAST_DAYS}";
 
@@ -48,17 +86,17 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 currentAttempt++;
                 try
                 {
-                    using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
-                    cts.CancelAfter(TimeSpan.FromSeconds(10));
-
                     using var request = new HttpRequestMessage(HttpMethod.Get, url);
-                    var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+
+                    request.Version = new Version(2, 0);
+
+                    var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, activeToken);
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
-                            response.StatusCode == System.Net.HttpStatusCode.BadRequest ||
-                            response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                        if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                            response.StatusCode == HttpStatusCode.BadRequest ||
+                            response.StatusCode == HttpStatusCode.Forbidden)
                         {
                             Debug.WriteLine($"[Weather] Fatal API Error: {response.StatusCode}");
                             break;
@@ -67,7 +105,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         throw new HttpRequestException($"HTTP Error {response.StatusCode}");
                     }
 
-                    var content = await response.Content.ReadAsStringAsync(cts.Token);
+                    var content = await response.Content.ReadAsStringAsync(activeToken);
                     var apiResponse = JsonSerializer.Deserialize<ApiWeatherResponse>(content, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
@@ -80,7 +118,13 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                             _location = apiResponse.Location.Name;
                             SettingsEngine.LastLocation = _location;
                         }
-                        return MapApiToUiModel(apiResponse);
+
+                        var finalModel = MapApiToUiModel(apiResponse);
+                        _cachedWeather = finalModel;
+                        _lastRequestedLocation = effectiveLocation;
+                        _lastFetchTime = DateTime.Now;
+
+                        return finalModel;
                     }
                 }
                 catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException || ex is HttpRequestException || ex is JsonException)
@@ -89,7 +133,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
                     if (currentAttempt < maxRetries)
                     {
-                        await Task.Delay(currentAttempt * 1000, token);
+                        await Task.Delay(currentAttempt * 1000, activeToken);
                         continue;
                     }
                 }
@@ -100,8 +144,16 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 }
             }
 
+            if (_cachedWeather != null)
+            {
+                Debug.WriteLine("[WeatherService] Fetch failed, serving expired cache instead of breaking UI.");
+                return _cachedWeather;
+            }
+
             return GetMockWeatherData();
         }
+
+        #endregion
 
         #region Helpers & Mapping
 
@@ -174,7 +226,10 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             try
             {
-                _internalCts.Cancel();
+                if (!_internalCts.IsCancellationRequested)
+                {
+                    _internalCts.Cancel();
+                }
                 _internalCts.Dispose();
             }
             catch { }

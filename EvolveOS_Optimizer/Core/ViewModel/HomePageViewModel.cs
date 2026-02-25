@@ -381,14 +381,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Weather Service
-        public async Task FetchWeatherAsync(string? locationOverride = null, CancellationToken token = default)
+        public async Task FetchWeatherAsync(string? locationOverride = null, CancellationToken token = default, bool forceRefresh = false)
         {
             try
             {
                 string loc = locationOverride ?? WeatherLocation;
                 if (string.IsNullOrWhiteSpace(loc)) loc = "Paris";
 
-                WeatherData data = await _weatherService.GetWeatherAsync(loc, token);
+                WeatherData data = await _weatherService.GetWeatherAsync(loc, token, forceRefresh);
 
                 if (data == null || token.IsCancellationRequested) return;
 

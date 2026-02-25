@@ -39,7 +39,7 @@
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Padding="4,-38,24,0">
         <Grid>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Spacing="8" Margin="24,34,24,0" Canvas.ZIndex="100">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Spacing="8" Margin="24,34,0,0" Canvas.ZIndex="100">
                 <Button x:Name="BtnDownloadInstall" Background="Transparent" BorderThickness="0" Padding="8" Click="BtnDownloadInstall_Click">
                     <FontIcon x:Name="IconDownloadInstall" Glyph="&#xE896;" FontSize="18"/>
                     <ToolTipService.ToolTip>
@@ -136,7 +136,7 @@
                             <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPressed" Color="{ThemeResource TextFillColorSecondary}"/>
                         </ToggleButton.Resources>
 
-                        <FontIcon x:Name="ToggleCategoryIcon" Glyph="&#xE70D;" FontSize="14"/>
+                        <FontIcon x:Name="ToggleCategoryIcon" Glyph="&#xE70E;" FontSize="14"/>
                     </ToggleButton>
 
                     <StackPanel x:Name="CategoryCardsContainer" RenderTransformOrigin="0.5,0">

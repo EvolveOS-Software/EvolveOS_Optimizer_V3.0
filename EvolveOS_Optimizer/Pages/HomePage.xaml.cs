@@ -376,7 +376,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 btn.IsEnabled = false;
 
-                var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(RefreshIcon);
+                var visual = ElementCompositionPreview.GetElementVisual(RefreshIcon);
                 var compositor = visual.Compositor;
 
                 visual.RotationAngleInDegrees = 0f;
@@ -394,13 +394,13 @@ namespace EvolveOS_Optimizer.Pages
 
                 try
                 {
-                    await ViewModel.FetchWeatherAsync(ViewModel.WeatherLocation);
+                    await ViewModel.FetchWeatherAsync(ViewModel.WeatherLocation, forceRefresh: true);
 
                     await Task.Delay(500);
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[Refresh Error] {ex.Message}");
+                    Debug.WriteLine($"[Refresh Error] {ex.Message}");
                 }
                 finally
                 {

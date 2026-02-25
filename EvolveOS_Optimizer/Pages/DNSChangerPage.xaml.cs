@@ -526,13 +526,13 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (ToggleCategoryCards.IsChecked == true)
             {
-                ToggleCategoryIcon.Glyph = "\uE70D"; // Chevron Down
+                ToggleCategoryIcon.Glyph = "\uE70E";
                 CategoryCardsContainer.Visibility = Visibility.Visible;
                 ExpandCategoryCardsStoryboard.Begin();
             }
             else
             {
-                ToggleCategoryIcon.Glyph = "\uE76C"; // Chevron Left/Collapsed
+                ToggleCategoryIcon.Glyph = "\uE70D";
                 CollapseCategoryCardsStoryboard.Begin();
 
                 await Task.Delay(200);
