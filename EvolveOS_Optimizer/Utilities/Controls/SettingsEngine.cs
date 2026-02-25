@@ -60,7 +60,14 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["ScriptsPath"] = string.Empty,
             ["AllScriptsPaths"] = string.Empty,
             ["EnableIpBlur"] = true,
-            ["LastLocation"] = "Paris"
+            ["LastLocation"] = "Paris",
+
+            ["DashboardCardOrder"] = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk",
+            ["Dashboard_CardNetwork"] = true,
+            ["Dashboard_CardRam"] = true,
+            ["Dashboard_CardCpu"] = true,
+            ["Dashboard_CardGpu"] = true,
+            ["Dashboard_CardDisk"] = true
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -99,6 +106,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             }
         }
         internal static bool IsHiddenIpAddress { get => (bool)_cachedSettings["EnableIpBlur"]; set => ChangingParameters("EnableIpBlur", value); }
+        internal static string DashboardCardOrder { get => (string)_cachedSettings["DashboardCardOrder"]; set => ChangingParameters("DashboardCardOrder", value); }
+        internal static bool Dashboard_CardNetwork { get => (bool)_cachedSettings["Dashboard_CardNetwork"]; set => ChangingParameters("Dashboard_CardNetwork", value); }
+        internal static bool Dashboard_CardRam { get => (bool)_cachedSettings["Dashboard_CardRam"]; set => ChangingParameters("Dashboard_CardRam", value); }
+        internal static bool Dashboard_CardCpu { get => (bool)_cachedSettings["Dashboard_CardCpu"]; set => ChangingParameters("Dashboard_CardCpu", value); }
+        internal static bool Dashboard_CardGpu { get => (bool)_cachedSettings["Dashboard_CardGpu"]; set => ChangingParameters("Dashboard_CardGpu", value); }
+        internal static bool Dashboard_CardDisk { get => (bool)_cachedSettings["Dashboard_CardDisk"]; set => ChangingParameters("Dashboard_CardDisk", value); }
 
         private static void ChangingParameters(string key, object value)
         {

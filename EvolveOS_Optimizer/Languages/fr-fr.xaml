@@ -108,6 +108,9 @@
     <!-- region HomePage -->
     <sys:String x:Key="label_proc_sysinfo">Processus en cours :</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services :</sys:String>
+    <sys:String x:Key="button_reset_default">Rétablir les paramètres par défaut</sys:String>
+    <sys:String x:Key="text_customize_dashboard">Personnaliser le tableau de bord</sys:String>
+    <sys:String x:Key="tooltip_customize_layout">Personnaliser la disposition du tableau de bord</sys:String>
 
     <!-- Diskspace Card -->
     <sys:String x:Key="txt_header_disk_space_card">Espace disque :</sys:String>

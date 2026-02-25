@@ -64,7 +64,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,5">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,0,0,5">
 
                 <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,10,0">
                     <Ellipse Height="95" Width="95" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5"  VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>
@@ -134,7 +134,7 @@
                 </StackPanel>
             </Grid>
 
-            <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,20,0">
+            <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,30,0">
 
                 <Grid VerticalAlignment="Top" Margin="10,2,10,0">
                     <Ellipse Height="95" Width="95" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>
@@ -175,361 +175,288 @@
             </StackPanel>
         </Grid>
 
-        <ScrollViewer Grid.Row="1" Margin="0,5,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,-20">
+        <ScrollViewer Grid.Row="1" Margin="0,-25,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,-20">
 
-            <uc:DashboardFlowPanel x:Name="DashboardPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,0,0" HorizontalSpacing="10" VerticalSpacing="10">
+            <StackPanel>
+                <StackPanel HorizontalAlignment="Right" Margin="0,0,25,26">
+                    <Button Background="Transparent" BorderThickness="0" Padding="6" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_customize_layout}">
+                        <Button.Flyout>
+                            <Flyout>
+                                <StackPanel Spacing="10" MinWidth="200">
+                                    <TextBlock Text="{helpers:ResourceString Key=text_customize_dashboard}" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,0,5"/>
+                                    <ToggleSwitch x:Name="ToggleNetwork" Header="Network Status" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetwork"/>
+                                    <ToggleSwitch x:Name="ToggleRam" Header="RAM Usage" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRam"/>
+                                    <ToggleSwitch x:Name="ToggleCpu" Header="CPU Usage" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpu"/>
+                                    <ToggleSwitch x:Name="ToggleGpu" Header="GPU Usage" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpu"/>
+                                    <ToggleSwitch x:Name="ToggleDisk" Header="Disk Space" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDisk"/>
+                                    <MenuFlyoutSeparator Margin="0,5"/>
+                                    <Button Content="{helpers:ResourceString Key=button_reset_default}" Click="ResetDashboard_Click" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE713;" FontSize="14" Foreground="{StaticResource Brush_Inactive}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
 
-                <uc:DashboardFlowPanel.ChildrenTransitions>
-                    <TransitionCollection>
-                        <RepositionThemeTransition IsStaggeringEnabled="False"/>
-                    </TransitionCollection>
-                </uc:DashboardFlowPanel.ChildrenTransitions>
+                <uc:DashboardFlowPanel x:Name="DashboardPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,-22,0,0" HorizontalSpacing="10" VerticalSpacing="10">
+                    <uc:DashboardFlowPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                        </TransitionCollection>
+                    </uc:DashboardFlowPanel.ChildrenTransitions>
 
-                <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="290"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Grid Grid.Column="0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <Grid Grid.Row="0" VerticalAlignment="Top">
+                    <Border x:Name="CardWeather" Style="{StaticResource DashCard}" Padding="15" Margin="0" 
+                            AllowDrop="True" DragOver="DashCard_DragOver">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="290"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-
-                                    <StackPanel Grid.Row="0" VerticalAlignment="Top" Margin="0, 10, 0, 10">
-                                        <TextBlock Text="{x:Bind ViewModel.CurrentTime, Mode=OneWay}" FontSize="82" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Left"/>
-                                        <TextBlock Text="{x:Bind ViewModel.CurrentDate, Mode=OneWay}" FontSize="18" FontFamily="{ThemeResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="5,0,0,0"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Vertical" Margin="0,-5,0,0">
-                                        <Grid HorizontalAlignment="Right">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Image Grid.Column="0" Source="{x:Bind ViewModel.CurrentWeatherIcon, Mode=OneWay}" Width="70" Height="70" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{x:Bind ViewModel.WeatherTemperature, Mode=OneWay}" FontFamily="Jura Medium" Style="{StaticResource InfoValue}" FontSize="48" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,-5,10,0"/>
-                                            </StackPanel>
-                                        </Grid>
-
-                                        <StackPanel HorizontalAlignment="Right">
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
-                                                <TextBlock Text="{x:Bind ViewModel.WeatherLocation, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Brush_Highlighted}" VerticalAlignment="Center"/>
-
-                                                <Button x:Name="RefreshWeatherButton"
-                                                        Background="Transparent"
-                                                        BorderThickness="0"
-                                                        Padding="6"
-                                                        ToolTipService.ToolTip="Refresh Weather"
-                                                        Click="RefreshWeatherButton_Click">
-
-                                                    <SymbolIcon x:Name="RefreshIcon" Symbol="Refresh" Foreground="{ThemeResource Brush_Inactive}"/>
-                                                </Button>
-
-                                                <Button x:Name="LocationButton" Background="Transparent" BorderThickness="0" Margin="0,0,10,0" Padding="6" ToolTipService.ToolTip="{helpers:ResourceString Key=txt_select_location}">
-                                                    <Button.Flyout>
-                                                        <Flyout x:Name="LocationFlyout">
-                                                            <StackPanel Spacing="12" MinWidth="220">
-                                                                <TextBlock Text="{helpers:ResourceString Key=txt_select_location}" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                                                                <ComboBox x:Name="CityPicker" ItemsSource="{x:Bind ViewModel.AvailableCities, Mode=OneWay}" HorizontalAlignment="Stretch" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_city}" SelectionChanged="CityPicker_SelectionChanged"/>
-                                                                <TextBlock Text="Or enter custom:" Style="{StaticResource CaptionTextBlockStyle}"/>
-                                                                <TextBox x:Name="CustomLocationBox" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_location}" KeyDown="CustomLocationBox_KeyDown"/>
-                                                                <Button Content="{helpers:ResourceString Key=btn_update_location}" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Click="UpdateLocation_Click"/>
-                                                            </StackPanel>
-                                                        </Flyout>
-                                                    </Button.Flyout>
-                                                    <SymbolIcon Symbol="Map" Foreground="{ThemeResource Brush_Inactive}"/>
-                                                </Button>
-                                            </StackPanel>
-
-                                            <TextBlock Text="{x:Bind ViewModel.WeatherDescription, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="16" Foreground="{StaticResource Brush_Highlighted}" HorizontalAlignment="Right" Margin="0,5,10,0"/>
+                                    <Grid Grid.Row="0" VerticalAlignment="Top">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Grid.Row="0" VerticalAlignment="Top" Margin="0, 10, 0, 10">
+                                            <TextBlock Text="{x:Bind ViewModel.CurrentTime, Mode=OneWay}" FontSize="82" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{x:Bind ViewModel.CurrentDate, Mode=OneWay}" FontSize="18" FontFamily="{ThemeResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="5,0,0,0"/>
                                         </StackPanel>
+                                        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Vertical" Margin="0,-5,0,0">
+                                            <Grid HorizontalAlignment="Right">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Grid.Column="0" Source="{x:Bind ViewModel.CurrentWeatherIcon, Mode=OneWay}" Width="70" Height="70" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock Text="{x:Bind ViewModel.WeatherTemperature, Mode=OneWay}" FontFamily="Jura Medium" Style="{StaticResource InfoValue}" FontSize="48" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,-5,10,0"/>
+                                                </StackPanel>
+                                            </Grid>
+                                            <StackPanel HorizontalAlignment="Right">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                                                    <TextBlock Text="{x:Bind ViewModel.WeatherLocation, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Brush_Highlighted}" VerticalAlignment="Center"/>
+                                                    <Button x:Name="RefreshWeatherButton" Background="Transparent" BorderThickness="0" Padding="6" ToolTipService.ToolTip="Refresh Weather" Click="RefreshWeatherButton_Click">
+                                                        <SymbolIcon x:Name="RefreshIcon" Symbol="Refresh" Foreground="{ThemeResource Brush_Inactive}"/>
+                                                    </Button>
+                                                    <Button x:Name="LocationButton" Background="Transparent" BorderThickness="0" Margin="0,0,10,0" Padding="6" ToolTipService.ToolTip="{helpers:ResourceString Key=txt_select_location}">
+                                                        <Button.Flyout>
+                                                            <Flyout x:Name="LocationFlyout">
+                                                                <StackPanel Spacing="12" MinWidth="220">
+                                                                    <TextBlock Text="{helpers:ResourceString Key=txt_select_location}" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                                                    <ComboBox x:Name="CityPicker" ItemsSource="{x:Bind ViewModel.AvailableCities, Mode=OneWay}" HorizontalAlignment="Stretch" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_city}" SelectionChanged="CityPicker_SelectionChanged"/>
+                                                                    <TextBlock Text="Or enter custom:" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                                                    <TextBox x:Name="CustomLocationBox" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_location}" KeyDown="CustomLocationBox_KeyDown"/>
+                                                                    <Button Content="{helpers:ResourceString Key=btn_update_location}" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Click="UpdateLocation_Click"/>
+                                                                </StackPanel>
+                                                            </Flyout>
+                                                        </Button.Flyout>
+                                                        <SymbolIcon Symbol="Map" Foreground="{ThemeResource Brush_Inactive}"/>
+                                                    </Button>
+                                                </StackPanel>
+                                                <TextBlock Text="{x:Bind ViewModel.WeatherDescription, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="16" Foreground="{StaticResource Brush_Highlighted}" HorizontalAlignment="Right" Margin="0,5,10,0"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                    <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="0, 0, 0, -5">
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_weather_forecast}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" FontSize="16" Margin="0, 10, 0, 5"/>
+                                        <ItemsControl x:Name="ForecastList" ItemsSource="{x:Bind ViewModel.FiveDayForecast, Mode=OneWay}" HorizontalAlignment="Stretch">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <ui:UniformGrid Rows="1" Columns="5" HorizontalAlignment="Stretch"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="model:DailyForecast">
+                                                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                                        <TextBlock Text="{x:Bind Day}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                                        <Image Source="{x:Bind IconSource}" Width="32" Height="32" Margin="0, 5, 0, 0" />
+                                                        <TextBlock Text="{x:Bind MaxTemp}" Style="{StaticResource InfoValue}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                                        <TextBlock Text="{x:Bind MinTemp}" Style="{StaticResource InfoLabel}" HorizontalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
                                     </StackPanel>
                                 </Grid>
-
-                                <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="0, 0, 0, -5">
-                                    <TextBlock Text="{helpers:ResourceString Key=txt_weather_forecast}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" FontSize="16" Margin="0, 10, 0, 5"/>
-                                    <ItemsControl x:Name="ForecastList" ItemsSource="{x:Bind ViewModel.FiveDayForecast, Mode=OneWay}" HorizontalAlignment="Stretch">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <ui:UniformGrid Rows="1" Columns="5" HorizontalAlignment="Stretch"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="model:DailyForecast">
-                                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
-                                                    <TextBlock Text="{x:Bind Day}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                                    <Image Source="{x:Bind IconSource}" Width="32" Height="32" Margin="0, 5, 0, 0" />
-                                                    <TextBlock Text="{x:Bind MaxTemp}" Style="{StaticResource InfoValue}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                                    <TextBlock Text="{x:Bind MinTemp}" Style="{StaticResource InfoLabel}" HorizontalAlignment="Center"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+                                <Border Grid.Column="1" Width="1" Background="{StaticResource Brush_Inactive}" Opacity="0.3" Margin="10,0,20,0"/>
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                    <CalendarView VerticalAlignment="Center" Background="Transparent" MinWidth="230" Margin="-10,0,-5,0" HorizontalAlignment="Center" PointerEntered="Calendar_MouseEnter" PointerExited="Calendar_MouseLeave"/>
                                 </StackPanel>
                             </Grid>
+                        </Grid>
+                    </Border>
 
-                            <Border Grid.Column="1" Width="1" Background="{StaticResource Brush_Inactive}" Opacity="0.3" Margin="10,0,20,0"/>
+                    <Border x:Name="CardNetwork" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <FontIcon Glyph="&#xE839;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" Text="{helpers:ResourceString Key=title_netadapter_sysinfo}"/>
+                            </StackPanel>
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="{x:Bind ViewModel.NetworkName, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
+                                    <Grid Margin="0,5,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Style="{StaticResource InfoLabel}" Text="{helpers:ResourceString Key=title_ip_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,0,0,0"/>
+                                            <Grid Margin="10,0,0,10" MinHeight="30">
+                                                <TextBlock x:Name="IpAddress" Text="{x:Bind ViewModel.PublicIP, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
+                                                <Border x:Name="IpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
+                                                    <Border.Background>
+                                                        <LinearGradientBrush x:Name="IpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
+                                                            <GradientStop x:Name="Stop1" Color="Transparent" Offset="0.0" />
+                                                            <GradientStop x:Name="Stop2" Color="#B3000000" Offset="0.0" />
+                                                            <GradientStop x:Name="Stop3" Color="Transparent" Offset="1.0" />
+                                                        </LinearGradientBrush>
+                                                    </Border.Background>
+                                                    <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+                                            <TextBlock Text="{helpers:ResourceString Key=title_localip_sysinfo}" Style="{StaticResource InfoLabel}" FontFamily="Jura Medium" FontWeight="Normal" Margin="0,0,0,0"/>
+                                            <Grid Margin="10,0,0,0" MinHeight="30">
+                                                <TextBlock x:Name="LocalIpAddress" Text="{x:Bind ViewModel.LocalIPValue, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
+                                                <Border x:Name="LocalIpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
+                                                    <Border.Background>
+                                                        <LinearGradientBrush x:Name="LocalIpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
+                                                            <GradientStop x:Name="LocalStop1" Color="Transparent" Offset="0.0" />
+                                                            <GradientStop x:Name="LocalStop2" Color="#B3000000" Offset="0.0" />
+                                                            <GradientStop x:Name="LocalStop3" Color="Transparent" Offset="1.0" />
+                                                        </LinearGradientBrush>
+                                                    </Border.Background>
+                                                    <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+                                        </StackPanel>
+                                        <ToggleButton x:Name="BtnVision" Grid.Column="1" Margin="15,0,170,0" Width="26" Height="26" Visibility="{x:Bind ViewModel.VisionVisibility, Mode=OneWay}" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource TglVision}" IsChecked="{x:Bind ViewModel.IsVisionChecked, Mode=TwoWay}" PreviewKeyDown="BtnVision_PreviewKeyDown" Click="BtnVision_Click" />
+                                    </Grid>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
 
-                            <StackPanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                <CalendarView VerticalAlignment="Center" Background="Transparent" MinWidth="230" Margin="-10,0,-5,0" HorizontalAlignment="Center"/>
+                    <Border x:Name="CardRam" Style="{StaticResource DashCard}" Height="220" Padding="15" Margin="0"
+                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" Text="{helpers:ResourceString Key=title_ram_sysinfo}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,0">
+                                <TextBlock Text="{Binding [Memory].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
+                                <TextBlock Style="{StaticResource InfoLabel}" Text="{helpers:ResourceString Key=title_mtype_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                                <TextBlock Text="{Binding [Type].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" PointerPressed="HandleCopyingData_PointerPressed" />
                             </StackPanel>
                         </Grid>
-                    </Grid>
-                </Border>
+                    </Border>
 
-                <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <FontIcon Glyph="&#xE839;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" Text="{helpers:ResourceString Key=title_netadapter_sysinfo}"/>
+                    <Border x:Name="CardCpu" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE950;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=title_cpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                            </StackPanel>
+                            <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                                <TextBlock Text="{Binding [CPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22"/>
+                            </ScrollViewer>
                         </StackPanel>
+                    </Border>
 
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
-                            <StackPanel>
-                                <TextBlock Text="{x:Bind ViewModel.NetworkName, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
-
-                                <Grid Margin="0,5,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <StackPanel Grid.Column="0">
-
-                                        <TextBlock Style="{StaticResource InfoLabel}" Text="{helpers:ResourceString Key=title_ip_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,0,0,0"/>
-                                        <Grid Margin="10,0,0,10" MinHeight="30">
-                                            <TextBlock x:Name="IpAddress" Text="{x:Bind ViewModel.PublicIP, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
-
-                                            <Border x:Name="IpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
-                                                <Border.Background>
-                                                    <LinearGradientBrush x:Name="IpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop x:Name="Stop1" Color="Transparent" Offset="0.0" />
-                                                        <GradientStop x:Name="Stop2" Color="#B3000000" Offset="0.0" />
-                                                        <GradientStop x:Name="Stop3" Color="Transparent" Offset="1.0" />
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Border>
-                                        </Grid>
-
-                                        <TextBlock Text="{helpers:ResourceString Key=title_localip_sysinfo}" Style="{StaticResource InfoLabel}" FontFamily="Jura Medium" FontWeight="Normal" Margin="0,0,0,0"/>
-                                        <Grid Margin="10,0,0,0" MinHeight="30">
-                                            <TextBlock x:Name="LocalIpAddress" Text="{x:Bind ViewModel.LocalIPValue, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
-
-                                            <Border x:Name="LocalIpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
-                                                <Border.Background>
-                                                    <LinearGradientBrush x:Name="LocalIpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop x:Name="LocalStop1" Color="Transparent" Offset="0.0" />
-                                                        <GradientStop x:Name="LocalStop2" Color="#B3000000" Offset="0.0" />
-                                                        <GradientStop x:Name="LocalStop3" Color="Transparent" Offset="1.0" />
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Border>
-                                        </Grid>
-
-                                    </StackPanel>
-
-                                    <ToggleButton x:Name="BtnVision"
-                                                  Grid.Column="1"
-                                                  Margin="15,0,170,0"
-                                                  Width="26" Height="26"
-                                                  Visibility="{x:Bind ViewModel.VisionVisibility, Mode=OneWay}"
-                                                  HorizontalAlignment="Right"
-                                                  VerticalAlignment="Center"
-                                                  Style="{StaticResource TglVision}"
-                                                  IsChecked="{x:Bind ViewModel.IsVisionChecked, Mode=TwoWay}"
-                                                  PreviewKeyDown="BtnVision_PreviewKeyDown"
-                                                  Click="BtnVision_Click" />
+                    <Border x:Name="CardGpu" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xEC06;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=title_gpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                            </StackPanel>
+                            <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                                <TextBlock Text="{Binding [GPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22"/>
+                            </ScrollViewer>
+                            <StackPanel Spacing="4" Margin="0,-3,0,0">
+                                <TextBlock Text="{helpers:ResourceString Key=title_gpu_liveinfo}" FontSize="12" Opacity="0.6"/>
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <ProgressBar Value="{Binding GpuUsageDisplay}" Maximum="100" Width="300" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    <TextBlock Grid.Column="1" FontFamily="Jura Medium" Text="{Binding GpuUsageDisplay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="12"/>
                                 </Grid>
                             </StackPanel>
-                        </ScrollViewer>
-                    </Grid>
-                </Border>
-
-                <Border Style="{StaticResource DashCard}" Height="220" Padding="15" Margin="0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" Text="{helpers:ResourceString Key=title_ram_sysinfo}"/>
                         </StackPanel>
+                    </Border>
 
-                        <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,0">
-                            <TextBlock Text="{Binding [Memory].Data}"
-                                       Style="{StaticResource InfoValue}"
-                                       FontFamily="Jura Medium"
-                                       FontWeight="Normal"
-                                       TextAlignment="Left"
-                                       TextWrapping="Wrap"
-                                       Margin="0,0,0,10"
-                                       PointerPressed="HandleCopyingData_PointerPressed" />
-
-                            <TextBlock Style="{StaticResource InfoLabel}"
-                                       Text="{helpers:ResourceString Key=title_mtype_sysinfo}"
-                                       FontFamily="Jura Medium"
-                                       FontWeight="SemiBold"
-                                       Margin="0,10,0,5"/>
-
-                            <TextBlock Text="{Binding [Type].Data}"
-                                       Style="{StaticResource InfoValue}"
-                                       FontFamily="Jura Medium"
-                                       FontWeight="Normal"
-                                       TextAlignment="Left"
-                                       PointerPressed="HandleCopyingData_PointerPressed" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
-                    <StackPanel Spacing="12">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon Glyph="&#xE950;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                            <TextBlock Text="{helpers:ResourceString Key=title_cpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
-                        </StackPanel>
-
-                        <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
-
-                            <TextBlock Text="{Binding [CPU].Data}"
-                                       FontFamily="Jura Medium"
-                                       FontWeight="Normal"
-                                       TextWrapping="Wrap"
-                                       Opacity="0.85"
-                                       LineHeight="22"
-                                       IsTextSelectionEnabled="True"/>
-
-                        </ScrollViewer>
-                    </StackPanel>
-                </Border>
-
-                <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
-                    <StackPanel Spacing="12">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon Glyph="&#xEC06;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                            <TextBlock Text="{helpers:ResourceString Key=title_gpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
-                        </StackPanel>
-
-                        <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
-
-                            <TextBlock Text="{Binding [GPU].Data}"
-                                       FontFamily="Jura Medium"
-                                       FontWeight="Normal"
-                                       TextWrapping="Wrap"
-                                       Opacity="0.85"
-                                       LineHeight="22"
-                                       IsTextSelectionEnabled="True"/>
-
-                        </ScrollViewer>
-
-                        <StackPanel Spacing="4" Margin="0,-3,0,0">
-                            <TextBlock Text="{helpers:ResourceString Key=title_gpu_liveinfo}" FontSize="12" Opacity="0.6"/>
-                            <Grid ColumnDefinitions="*, Auto">
-                                <ProgressBar Value="{Binding GpuUsageDisplay}" Maximum="100" Width="300" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                <TextBlock Grid.Column="1"
-                                           FontFamily="Jura Medium"
-                                           Text="{Binding GpuUsageDisplay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}"
-                                           FontSize="12"/>
-                            </Grid>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-
-                <Border Style="{StaticResource DashCard}" Padding="15" Margin="0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <FontIcon Glyph="&#xEDA2;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16" Text="{helpers:ResourceString Key=txt_header_disk_space_card}"/>
-                        </StackPanel>
-
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,-4,-5,0">
-
-                            <ItemsControl x:Name="DiskDrivesList" ItemsSource="{Binding DiskDrives}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <ui:WrapPanel HorizontalSpacing="5" VerticalSpacing="5"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Width="150" Height="80" Margin="5" Background="Transparent" PointerEntered="DiskCard_PointerEntered" PointerExited="DiskCard_PointerExited">
-
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Grid Grid.Column="0" Width="60" Height="60" Margin="0,0,10,0">
-                                                <ProgressRing Value="{Binding UsedPercentage}"
-                                                              Maximum="100"
-                                                              IsIndeterminate="False"
-                                                              Foreground="{ThemeResource MyDynamicAccentBrush}"
-                                                              Width="55" Height="55"/>
-
-                                                <TextBlock HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"
-                                                           Foreground="{StaticResource Brush_Inactive}"
-                                                           FontFamily="Jura Medium"
-                                                           FontWeight="SemiBold"
-                                                           FontSize="12"
-                                                           Text="{Binding UsedPercentage, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N0}%'}"/>
-                                            </Grid>
-
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Style="{StaticResource InfoValue}" FontWeight="Bold" FontSize="12" TextTrimming="CharacterEllipsis">
-                                                    <Run Text="{Binding Name}"/>
-                                                    <Run Text=" - "/>
-                                                    <Run Text="{Binding VolumeLabel}"/>
-                                                </TextBlock>
-
-                                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                                    <TextBlock Style="{StaticResource InfoLabel}" Text="Free: " FontSize="10" VerticalAlignment="Center"/>
-                                                    <TextBlock Style="{StaticResource InfoValue}" FontSize="10" VerticalAlignment="Center" Text="{Binding FreeSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} GB'}"/>
+                    <Border x:Name="CardDisk" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <FontIcon Glyph="&#xEDA2;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16" Text="{helpers:ResourceString Key=txt_header_disk_space_card}"/>
+                            </StackPanel>
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,-4,-5,0">
+                                <ItemsControl x:Name="DiskDrivesList" ItemsSource="{Binding DiskDrives}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <ui:WrapPanel HorizontalSpacing="5" VerticalSpacing="5"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Width="150" Height="80" Margin="5" Background="Transparent" PointerEntered="DiskCard_PointerEntered" PointerExited="DiskCard_PointerExited">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0" Width="60" Height="60" Margin="0,0,10,0">
+                                                    <ProgressRing Value="{Binding UsedPercentage}" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}" Width="55" Height="55"/>
+                                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Brush_Inactive}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="12" Text="{Binding UsedPercentage, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N0}%'}"/>
+                                                </Grid>
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock Style="{StaticResource InfoValue}" FontWeight="Bold" FontSize="12" TextTrimming="CharacterEllipsis">
+                                                        <Run Text="{Binding Name}"/>
+                                                        <Run Text=" - "/>
+                                                        <Run Text="{Binding VolumeLabel}"/>
+                                                    </TextBlock>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                        <TextBlock Style="{StaticResource InfoLabel}" Text="Free: " FontSize="10" VerticalAlignment="Center"/>
+                                                        <TextBlock Style="{StaticResource InfoValue}" FontSize="10" VerticalAlignment="Center" Text="{Binding FreeSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} GB'}"/>
+                                                    </StackPanel>
                                                 </StackPanel>
-                                            </StackPanel>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
 
-                        </ScrollViewer>
-                    </Grid>
-                </Border>
-
-            </uc:DashboardFlowPanel>
-
+                </uc:DashboardFlowPanel>
+            </StackPanel>
         </ScrollViewer>
 
         <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,10">

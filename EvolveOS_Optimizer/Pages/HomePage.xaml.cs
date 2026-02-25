@@ -1,8 +1,10 @@
 using System.Net.NetworkInformation;
+using System.Reflection;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -32,6 +34,8 @@ namespace EvolveOS_Optimizer.Pages
         private long _lastUploadBytes = 0;
         private DateTime _lastUpdateTime = DateTime.Now;
         private bool _isFirstTick = true;
+
+        private UIElement? _draggedCard;
         #endregion
 
         public HomePageViewModel ViewModel { get; } = new();
@@ -53,6 +57,8 @@ namespace EvolveOS_Optimizer.Pages
         {
             ApplyElevationUI();
             LoadWeather();
+            LoadDashboardLayout();
+            DashboardDragCursor();
 
             SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
             SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
@@ -241,12 +247,15 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is UIElement element)
             {
-                var visual = ElementCompositionPreview.GetElementVisual(element);
-                var compositor = visual.Compositor;
-                var anim = compositor.CreateVector3KeyFrameAnimation();
-                anim.InsertKeyFrame(1.0f, new System.Numerics.Vector3(0, -5, 0));
-                anim.Duration = TimeSpan.FromMilliseconds(200);
-                visual.StartAnimation("Translation", anim);
+                if (element.TranslationTransition == null)
+                {
+                    element.TranslationTransition = new Microsoft.UI.Xaml.Vector3Transition()
+                    {
+                        Duration = TimeSpan.FromMilliseconds(200)
+                    };
+                }
+
+                element.Translation = new System.Numerics.Vector3(0, -5, 0);
             }
         }
 
@@ -254,12 +263,15 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is UIElement element)
             {
-                var visual = ElementCompositionPreview.GetElementVisual(element);
-                var compositor = visual.Compositor;
-                var anim = compositor.CreateVector3KeyFrameAnimation();
-                anim.InsertKeyFrame(1.0f, new System.Numerics.Vector3(0, 0, 0));
-                anim.Duration = TimeSpan.FromMilliseconds(200);
-                visual.StartAnimation("Translation", anim);
+                if (element.TranslationTransition == null)
+                {
+                    element.TranslationTransition = new Microsoft.UI.Xaml.Vector3Transition()
+                    {
+                        Duration = TimeSpan.FromMilliseconds(200)
+                    };
+                }
+
+                element.Translation = new System.Numerics.Vector3(0, 0, 0);
             }
         }
 
@@ -409,6 +421,187 @@ namespace EvolveOS_Optimizer.Pages
                     btn.IsEnabled = true;
                 }
             }
+        }
+
+        #endregion
+
+        #region Dashboard Customization (Drag, Drop, Visibility)
+
+        private void LoadDashboardLayout()
+        {
+            ToggleNetwork.IsOn = SettingsEngine.Dashboard_CardNetwork;
+            ToggleRam.IsOn = SettingsEngine.Dashboard_CardRam;
+            ToggleCpu.IsOn = SettingsEngine.Dashboard_CardCpu;
+            ToggleGpu.IsOn = SettingsEngine.Dashboard_CardGpu;
+            ToggleDisk.IsOn = SettingsEngine.Dashboard_CardDisk;
+
+            CardWeather.Visibility = Visibility.Visible;
+            CardNetwork.Visibility = ToggleNetwork.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardRam.Visibility = ToggleRam.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardCpu.Visibility = ToggleCpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardGpu.Visibility = ToggleGpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardDisk.Visibility = ToggleDisk.IsOn ? Visibility.Visible : Visibility.Collapsed;
+
+            string savedOrder = SettingsEngine.DashboardCardOrder;
+            if (!string.IsNullOrWhiteSpace(savedOrder))
+            {
+                var order = savedOrder.Split(',');
+                var currentCards = DashboardPanel.Children.OfType<FrameworkElement>().ToList();
+
+                DashboardPanel.Children.Clear();
+
+                var weatherCard = currentCards.FirstOrDefault(c => c.Name == "CardWeather");
+                if (weatherCard != null)
+                {
+                    DashboardPanel.Children.Add(weatherCard);
+                    currentCards.Remove(weatherCard);
+                }
+
+                foreach (var name in order)
+                {
+                    var card = currentCards.FirstOrDefault(c => c.Name == name);
+                    if (card != null)
+                    {
+                        DashboardPanel.Children.Add(card);
+                        currentCards.Remove(card);
+                    }
+                }
+
+                foreach (var card in currentCards)
+                {
+                    DashboardPanel.Children.Add(card);
+                }
+            }
+        }
+
+        private void SaveDashboardLayout()
+        {
+            var order = DashboardPanel.Children.OfType<FrameworkElement>()
+                .Where(c => c.Name != "CardWeather")
+                .Select(c => c.Name).ToList();
+
+            SettingsEngine.DashboardCardOrder = string.Join(",", order);
+
+            SettingsEngine.Dashboard_CardNetwork = ToggleNetwork.IsOn;
+            SettingsEngine.Dashboard_CardRam = ToggleRam.IsOn;
+            SettingsEngine.Dashboard_CardCpu = ToggleCpu.IsOn;
+            SettingsEngine.Dashboard_CardGpu = ToggleGpu.IsOn;
+            SettingsEngine.Dashboard_CardDisk = ToggleDisk.IsOn;
+        }
+
+        private void ToggleCard_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch ts && ts.Tag is string cardName)
+            {
+                var card = DashboardPanel.Children.OfType<FrameworkElement>().FirstOrDefault(c => c.Name == cardName);
+                if (card != null)
+                {
+                    card.Visibility = ts.IsOn ? Visibility.Visible : Visibility.Collapsed;
+                    SaveDashboardLayout();
+                }
+            }
+        }
+
+        private void DashCard_DragStarting(UIElement sender, DragStartingEventArgs args)
+        {
+            _draggedCard = sender;
+            args.AllowedOperations = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move;
+
+            if (sender is FrameworkElement card)
+            {
+                string cleanName = card.Name.Replace("Card", "");
+                args.Data.SetText($"Moving {cleanName}...");
+            }
+
+            sender.Opacity = 0.5;
+        }
+
+        private void DashCard_DragOver(object sender, DragEventArgs e)
+        {
+            if (_draggedCard != null && sender is FrameworkElement targetCard)
+            {
+                if (targetCard.Name == "CardWeather" || targetCard == _draggedCard)
+                {
+                    e.AcceptedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.None;
+                    e.Handled = true;
+                    return;
+                }
+
+                e.AcceptedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move;
+                e.Handled = true;
+            }
+        }
+
+        private void DashCard_Drop(object sender, DragEventArgs e)
+        {
+            if (_draggedCard != null && sender is FrameworkElement targetCard && targetCard.Name != "CardWeather")
+            {
+                int draggedIndex = DashboardPanel.Children.IndexOf(_draggedCard);
+                int targetIndex = DashboardPanel.Children.IndexOf(targetCard);
+
+                if (draggedIndex >= 0 && targetIndex > 0 && draggedIndex != targetIndex)
+                {
+                    DashboardPanel.Children.RemoveAt(draggedIndex);
+                    DashboardPanel.Children.Insert(targetIndex, _draggedCard);
+
+                    SaveDashboardLayout();
+                }
+            }
+        }
+
+        private void DashCard_DropCompleted(UIElement sender, DropCompletedEventArgs args)
+        {
+            sender.Opacity = 1.0;
+
+            _draggedCard = null;
+        }
+
+        private void SetCustomCursor(UIElement element, Microsoft.UI.Input.InputSystemCursorShape shape)
+        {
+            if (element == null) return;
+
+            var cursor = Microsoft.UI.Input.InputSystemCursor.Create(shape);
+            var cursorProperty = typeof(UIElement).GetProperty("ProtectedCursor", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            if (cursorProperty != null)
+            {
+                cursorProperty.SetValue(element, cursor);
+            }
+        }
+
+        private void DashboardDragCursor()
+        {
+            // Set the "Move" cursor for the draggable cards
+            SetCustomCursor(CardNetwork, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardRam, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardCpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardGpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardDisk, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+
+            // OVERRIDES: Set the standard Arrow (or Hand) cursor for clickable elements INSIDE the cards
+            SetCustomCursor(BtnVision, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+
+            // Text blocks with "PointerPressed" events to copy text. 
+            SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
+            SetCustomCursor(LocalIpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
+        }
+
+        private void ResetDashboard_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            SettingsEngine.DashboardCardOrder = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk";
+            SettingsEngine.Dashboard_CardNetwork = true;
+            SettingsEngine.Dashboard_CardRam = true;
+            SettingsEngine.Dashboard_CardCpu = true;
+            SettingsEngine.Dashboard_CardGpu = true;
+            SettingsEngine.Dashboard_CardDisk = true;
+
+            ToggleNetwork.IsOn = true;
+            ToggleRam.IsOn = true;
+            ToggleCpu.IsOn = true;
+            ToggleGpu.IsOn = true;
+            ToggleDisk.IsOn = true;
+
+            LoadDashboardLayout();
         }
 
         #endregion

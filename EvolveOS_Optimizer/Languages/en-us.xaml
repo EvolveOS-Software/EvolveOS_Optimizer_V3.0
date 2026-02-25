@@ -108,6 +108,9 @@
     <!-- region HomePage -->
     <sys:String x:Key="label_proc_sysinfo">Running processes:</sys:String>
     <sys:String x:Key="label_svc_sysinfo">services:</sys:String>
+    <sys:String x:Key="button_reset_default">Reset to Default</sys:String>
+    <sys:String x:Key="text_customize_dashboard">Customize Dashboard</sys:String>
+    <sys:String x:Key="tooltip_customize_layout">Customize Dashboard Layout</sys:String>
 
     <!-- Diskspace Card -->
     <sys:String x:Key="txt_header_disk_space_card">Disk Space:</sys:String>
