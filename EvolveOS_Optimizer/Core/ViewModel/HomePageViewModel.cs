@@ -15,6 +15,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly WeatherService _weatherService = new WeatherService();
 
         private DispatcherTimer? _statsTimer;
+        private DispatcherTimer? _weatherTimer;
+
         public int GpuUsageDisplay => HardwareData.Gpu.Usage;
         public int GpuUsagePercentage => HardwareData.Gpu.Usage;
 
@@ -478,6 +480,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _statsTimer.Tick += StatsTimer_Tick;
             _statsTimer.Start();
+
+            _weatherTimer?.Stop();
+            _weatherTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMinutes(15)
+            };
+            _weatherTimer.Tick += (s, e) =>
+            {
+                _ = FetchWeatherAsync(_weatherLocation, _cts.Token);
+            };
+            _weatherTimer.Start();
         }
 
         private async void StatsTimer_Tick(object? sender, object? e)
@@ -485,6 +498,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             await SystemDiagnostics.GetGpuUsage();
 
             RefreshStats(HardwareData.RunningProcessesCount, HardwareData.RunningServicesCount);
+
+            UpdateDateTime();
 
             OnPropertyChanged(nameof(GpuUsageDisplay));
             OnPropertyChanged(nameof(GpuUsagePercentage));
@@ -503,6 +518,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     _statsTimer.Stop();
                     _statsTimer = null;
+                }
+
+                if (_weatherTimer != null)
+                {
+                    _weatherTimer.Stop();
+                    _weatherTimer = null;
                 }
 
                 try

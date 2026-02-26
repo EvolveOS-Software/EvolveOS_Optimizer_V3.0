@@ -25,6 +25,9 @@ namespace EvolveOS_Optimizer.Core.Model
             [JsonPropertyName("temp_c")]
             public double TempC { get; set; }
 
+            [JsonPropertyName("is_day")]
+            public int Is_Day { get; set; }
+
             [JsonPropertyName("condition")]
             public ApiCondition? Condition { get; set; }
         }

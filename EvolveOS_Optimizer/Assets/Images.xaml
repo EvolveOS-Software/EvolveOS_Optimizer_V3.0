@@ -78,10 +78,43 @@
     <BitmapImage x:Key="Img_Xbox" UriSource="ms-appx:///Assets/ImagePackages/Xbox.png"/>
     <BitmapImage x:Key="Img_YandexMusic" UriSource="ms-appx:///Assets/ImagePackages/YandexMusic.png"/>
 
-    <BitmapImage x:Key="Sunny" UriSource="ms-appx:///Assets/ImagePackages/Sunny.png"/>
-    <BitmapImage x:Key="Rain" UriSource="ms-appx:///Assets/ImagePackages/Rain.png"/>
-    <BitmapImage x:Key="Wind" UriSource="ms-appx:///Assets/ImagePackages/Wind.png"/>
-    <BitmapImage x:Key="Cloudy" UriSource="ms-appx:///Assets/ImagePackages/Cloudy.png"/>
+    <BitmapImage x:Key="WeatherMist" UriSource="ms-appx:///Assets/ImagePackages/mist.png"/>
+    <BitmapImage x:Key="WeatherFog" UriSource="ms-appx:///Assets/ImagePackages/fog.png"/>
+    <BitmapImage x:Key="WeatherOvercast" UriSource="ms-appx:///Assets/ImagePackages/overcast.png"/>
+    <BitmapImage x:Key="WeatherCloudy" UriSource="ms-appx:///Assets/ImagePackages/cloudy.png"/>
+    <BitmapImage x:Key="WeatherAngryClouds" UriSource="ms-appx:///Assets/ImagePackages/angry_clouds.png"/>
+    <BitmapImage x:Key="WeatherTornado" UriSource="ms-appx:///Assets/ImagePackages/tornado.png"/>
+    <BitmapImage x:Key="WeatherWind" UriSource="ms-appx:///Assets/ImagePackages/wind.png"/>
+    <BitmapImage x:Key="WeatherThunder" UriSource="ms-appx:///Assets/ImagePackages/thunder.png"/>
+    <BitmapImage x:Key="WeatherRain" UriSource="ms-appx:///Assets/ImagePackages/rain.png"/>
+    <BitmapImage x:Key="WeatherSnow" UriSource="ms-appx:///Assets/ImagePackages/snow.png"/>
+    <BitmapImage x:Key="WeatherSleet" UriSource="ms-appx:///Assets/ImagePackages/sleet.png"/>
+    <BitmapImage x:Key="WeatherRainThunder" UriSource="ms-appx:///Assets/ImagePackages/rain_thunder.png"/>
+    <BitmapImage x:Key="WeatherSnowThunder" UriSource="ms-appx:///Assets/ImagePackages/snow_thunder.png"/>
+
+    <BitmapImage x:Key="WeatherDayClear" UriSource="ms-appx:///Assets/ImagePackages/day_clear.png"/>
+    <BitmapImage x:Key="WeatherDayPartialCloud" UriSource="ms-appx:///Assets/ImagePackages/day_partial_cloud.png"/>
+    <BitmapImage x:Key="WeatherDayRain" UriSource="ms-appx:///Assets/ImagePackages/day_rain.png"/>
+    <BitmapImage x:Key="WeatherDaySnow" UriSource="ms-appx:///Assets/ImagePackages/day_snow.png"/>
+    <BitmapImage x:Key="WeatherDaySleet" UriSource="ms-appx:///Assets/ImagePackages/day_sleet.png"/>
+    <BitmapImage x:Key="WeatherDayRainThunder" UriSource="ms-appx:///Assets/ImagePackages/day_rain_thunder.png"/>
+    <BitmapImage x:Key="WeatherDaySnowThunder" UriSource="ms-appx:///Assets/ImagePackages/day_snow_thunder.png"/>
+
+    <BitmapImage x:Key="WeatherNightFullMoonClear" UriSource="ms-appx:///Assets/ImagePackages/night_full_moon_clear.png"/>
+    <BitmapImage x:Key="WeatherNightFullMoonPartialCloud" UriSource="ms-appx:///Assets/ImagePackages/night_full_moon_partial_cloud.png"/>
+    <BitmapImage x:Key="WeatherNightFullMoonRain" UriSource="ms-appx:///Assets/ImagePackages/night_full_moon_rain.png"/>
+    <BitmapImage x:Key="WeatherNightFullMoonSnow" UriSource="ms-appx:///Assets/ImagePackages/night_full_moon_snow.png"/>
+    <BitmapImage x:Key="WeatherNightFullMoonSleet" UriSource="ms-appx:///Assets/ImagePackages/night_full_moon_sleet.png"/>
+    <BitmapImage x:Key="WeatherNightFullMoonRainThunder" UriSource="ms-appx:///Assets/ImagePackages/night_full_moon_rain_thunder.png"/>
+    <BitmapImage x:Key="WeatherNightFullMoonSnowThunder" UriSource="ms-appx:///Assets/ImagePackages/night_full_moon_snow_thunder.png"/>
+
+    <BitmapImage x:Key="WeatherNightHalfMoonClear" UriSource="ms-appx:///Assets/ImagePackages/night_half_moon_clear.png"/>
+    <BitmapImage x:Key="WeatherNightHalfMoonPartialCloud" UriSource="ms-appx:///Assets/ImagePackages/night_half_moon_partial_cloud.png"/>
+    <BitmapImage x:Key="WeatherNightHalfMoonRain" UriSource="ms-appx:///Assets/ImagePackages/night_half_moon_rain.png"/>
+    <BitmapImage x:Key="WeatherNightHalfMoonSnow" UriSource="ms-appx:///Assets/ImagePackages/night_half_moon_snow.png"/>
+    <BitmapImage x:Key="WeatherNightHalfMoonSleet" UriSource="ms-appx:///Assets/ImagePackages/night_half_moon_sleet.png"/>
+    <BitmapImage x:Key="WeatherNightHalfMoonRainThunder" UriSource="ms-appx:///Assets/ImagePackages/night_half_moon_rain_thunder.png"/>
+    <BitmapImage x:Key="WeatherNightHalfMoonSnowThunder" UriSource="ms-appx:///Assets/ImagePackages/night_half_moon_snow_thunder.png"/>
 
     <BitmapImage x:Key="Img_BatFile" UriSource="ms-appx:///Assets/ImageScriptsFiles/BatFile.png"/>
     <BitmapImage x:Key="Img_CmdFile" UriSource="ms-appx:///Assets/ImageScriptsFiles/CmdFile.png"/>

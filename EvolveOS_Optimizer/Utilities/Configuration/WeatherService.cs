@@ -157,33 +157,67 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         #region Helpers & Mapping
 
-        private string GetLocalIconPath(string? conditionText)
+        private string GetLocalIconPath(string? conditionText, bool isDay = true)
         {
-            if (string.IsNullOrEmpty(conditionText))
-                return "ms-appx:///Assets/ImagePackages/Sunny.png";
+            string lower = conditionText?.ToLowerInvariant() ?? "";
 
-            string lower = conditionText.ToLowerInvariant();
+            string nightPrefix = DateTime.Now.Day % 2 == 0 ? "night_full_moon_" : "night_half_moon_";
+            string prefix = isDay ? "day_" : nightPrefix;
 
-            if (lower.Contains("rain") || lower.Contains("drizzle") || lower.Contains("shower") ||
-                lower.Contains("snow") || lower.Contains("sleet") || lower.Contains("thunder"))
-                return "ms-appx:///Assets/ImagePackages/Rain.png";
+            // 1. EXTREME WEATHER (Neutral)
+            if (lower.Contains("tornado") || lower.Contains("hurricane") || lower.Contains("cyclone"))
+                return "ms-appx:///Assets/ImagePackages/tornado.png";
 
-            if (lower.Contains("cloud") || lower.Contains("overcast") || lower.Contains("fog") || lower.Contains("mist"))
-                return "ms-appx:///Assets/ImagePackages/Cloudy.png";
+            // 2. WIND (Neutral)
+            if (lower.Contains("wind") || lower.Contains("gale") || lower.Equals("breezy"))
+                return "ms-appx:///Assets/ImagePackages/wind.png";
 
-            if (lower.Contains("wind") || lower.Contains("storm") || lower.Contains("blizzard"))
-                return "ms-appx:///Assets/ImagePackages/Wind.png";
+            // 3. FOG & MIST (Neutral - completely blocks the sky)
+            if (lower.Contains("mist")) return "ms-appx:///Assets/ImagePackages/mist.png";
+            if (lower.Contains("fog")) return "ms-appx:///Assets/ImagePackages/fog.png";
 
-            return "ms-appx:///Assets/ImagePackages/Sunny.png";
+            // 4. OVERCAST & CLOUDS (Neutral - completely blocks the sky)
+            if (lower.Contains("overcast")) return "ms-appx:///Assets/ImagePackages/overcast.png";
+            if (lower.Equals("cloudy") || lower.Equals("clouds")) return "ms-appx:///Assets/ImagePackages/cloudy.png";
+            if (lower.Contains("angry") || lower.Contains("squall")) return "ms-appx:///Assets/ImagePackages/angry_clouds.png";
+
+            // 5. DRY THUNDERSTORMS (Neutral - Lightning without rain)
+            if (lower.Contains("thunder") && !lower.Contains("rain") && !lower.Contains("snow") && !lower.Contains("storm"))
+                return "ms-appx:///Assets/ImagePackages/thunder.png";
+
+            // 6. HEAVY PRECIPITATION (Neutral - Storms so thick they block the sun/moon)
+            if (lower.Contains("heavy") || lower.Contains("torrential") || lower.Contains("moderate"))
+            {
+                if (lower.Contains("thunder") && lower.Contains("snow")) return "ms-appx:///Assets/ImagePackages/snow_thunder.png";
+                if (lower.Contains("thunder") || lower.Contains("storm")) return "ms-appx:///Assets/ImagePackages/rain_thunder.png";
+                if (lower.Contains("sleet") || lower.Contains("ice") || lower.Contains("pellets")) return "ms-appx:///Assets/ImagePackages/sleet.png";
+                if (lower.Contains("snow") || lower.Contains("blizzard")) return "ms-appx:///Assets/ImagePackages/snow.png";
+                if (lower.Contains("rain") || lower.Contains("shower")) return "ms-appx:///Assets/ImagePackages/rain.png";
+            }
+
+            // 7. LIGHT / PATCHY PRECIPITATION (Prefix - Sun or Moon is visible)
+            if (lower.Contains("thunder") && lower.Contains("snow")) return $"ms-appx:///Assets/ImagePackages/{prefix}snow_thunder.png";
+            if (lower.Contains("thunder") || lower.Contains("storm")) return $"ms-appx:///Assets/ImagePackages/{prefix}rain_thunder.png";
+            if (lower.Contains("sleet") || lower.Contains("freezing") || lower.Contains("ice") || lower.Contains("pellets")) return $"ms-appx:///Assets/ImagePackages/{prefix}sleet.png";
+            if (lower.Contains("snow") || lower.Contains("blizzard") || lower.Contains("flurries")) return $"ms-appx:///Assets/ImagePackages/{prefix}snow.png";
+            if (lower.Contains("rain") || lower.Contains("drizzle") || lower.Contains("shower")) return $"ms-appx:///Assets/ImagePackages/{prefix}rain.png";
+
+            // 8. PARTIAL CLOUDS (Prefix - Sun/Moon peeking through)
+            if (lower.Contains("partly") || lower.Contains("cloud")) return $"ms-appx:///Assets/ImagePackages/{prefix}partial_cloud.png";
+
+            // 9. CLEAR SKIES (Fallback)
+            return $"ms-appx:///Assets/ImagePackages/{prefix}clear.png";
         }
 
         private WeatherData MapApiToUiModel(ApiWeatherResponse apiResponse)
         {
+            bool isDaytime = (apiResponse.Current?.Is_Day ?? 1) == 1;
+
             var uiModel = new WeatherData
             {
                 TempC = apiResponse.Current?.TempC ?? 0,
                 Description = apiResponse.Current?.Condition?.Text ?? "Unknown",
-                CurrentIconUrl = GetLocalIconPath(apiResponse.Current?.Condition?.Text)
+                CurrentIconUrl = GetLocalIconPath(apiResponse.Current?.Condition?.Text, isDaytime)
             };
 
             if (apiResponse.Forecast?.ForecastDay != null)
@@ -195,7 +229,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         uiModel.Forecast.Add(new DailyForecast
                         {
                             Day = date.DayOfWeek.ToString().Substring(0, 3).ToUpper(),
-                            IconSource = GetLocalIconPath(apiDay.Day?.Condition?.Text),
+                            IconSource = GetLocalIconPath(apiDay.Day?.Condition?.Text, true),
                             MaxTemp = $"{apiDay.Day?.MaxTempC ?? 0:F0}°",
                             MinTemp = $"{apiDay.Day?.MinTempC ?? 0:F0}°"
                         });
