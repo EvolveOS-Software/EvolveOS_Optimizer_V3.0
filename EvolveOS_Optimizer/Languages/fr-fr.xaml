@@ -1030,10 +1030,11 @@
     <sys:String x:Key="status_retrieving">Récupération...</sys:String>
     <sys:String x:Key="status_automatic_none">Automatique/Aucun</sys:String>
     <sys:String x:Key="status_failed_to_load">Échec du chargement de la configuration</sys:String>
+    <sys:String x:Key="tooltip_open_dns_page">Ouvrir la page du changeur/chiffrement DNS</sys:String>
     <!-- endregion DNS Changer -->
 
     <!-- region DNS Encryption -->
-    <sys:String x:Key="title_dns_encryption_more">Chiffrement DNS</sys:String>
+    <sys:String x:Key="title_dns_encryption">Chiffrement DNS</sys:String>
     <sys:String x:Key="btn_open_dns_encrypt">Ouvrir le chiffrement DNS</sys:String>
     <sys:String x:Key="text_dns_encryption_more">Chiffre et authentifie les communications entre le client DNS et le résolveur DNS. Cela empêche l'usurpation (spoofing) DNS.</sys:String>
 
@@ -1074,6 +1075,10 @@
     <sys:String x:Key="textbox_dns_primary_ip6">Entrez l'IPv6 primaire</sys:String>
     <sys:String x:Key="text_dns_secondary_ip6">IPv6 secondaire</sys:String>
     <sys:String x:Key="textbox_dns_secondary_ip6">Entrez l'IPv6 secondaire</sys:String>
+    <sys:String x:Key="header_core_dns">Services DNS de base</sys:String>
+    <sys:String x:Key="header_security_privacy">Paramètres de sécurité et de confidentialité</sys:String>
+    <sys:String x:Key="header_advanced_system">Options avancées et système</sys:String>
+    <sys:String x:Key="header_network_latency">Latence réseau et optimiseur</sys:String>
     <!-- endregion DNS Encryption -->
 
 </ResourceDictionary>

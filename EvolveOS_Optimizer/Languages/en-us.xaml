@@ -1033,10 +1033,11 @@
     <sys:String x:Key="status_retrieving">Retrieving...</sys:String>
     <sys:String x:Key="status_automatic_none">Automatic/None</sys:String>
     <sys:String x:Key="status_failed_to_load">Failed to load configuration</sys:String>
+    <sys:String x:Key="tooltip_open_dns_page">Open DNS Changer/Encryption page</sys:String>
     <!-- endregion DNS Changer -->
 
     <!-- region DNS Encryption -->
-    <sys:String x:Key="title_dns_encryption_more">DNS encryption</sys:String>
+    <sys:String x:Key="title_dns_encryption">DNS Encryption</sys:String> 
     <sys:String x:Key="btn_open_dns_encrypt">Open DNS encryption</sys:String>
     <sys:String x:Key="text_dns_encryption_more">Encrypt and authenticates communications between DNS client and DNS resolver. It prevents DNS spoofing.</sys:String>
 
@@ -1054,7 +1055,7 @@
     <sys:String x:Key="btn_debug_process">Debug process</sys:String>
     <sys:String x:Key="notif_dns_encrpyt_service_stopped">DnsCrypt service stopped successfully</sys:String>
     <sys:String x:Key="title_dns_encrypt">DNS Encryption</sys:String>
-    <sys:String x:Key="text_status">Currently nothing is running in the background</sys:String>
+    <sys:String x:Key="text_status">Nothing is running in the background</sys:String>
     <sys:String x:Key="text_combo_1">Use IPv4 servers:</sys:String>
     <sys:String x:Key="text_combo_2">Use IPv6 servers:</sys:String>
     <sys:String x:Key="text_combo_3">Use DNSCrypt protocol:</sys:String>
@@ -1077,6 +1078,10 @@
     <sys:String x:Key="textbox_dns_primary_ip6">Enter the primary ipv6</sys:String>
     <sys:String x:Key="text_dns_secondary_ip6">Secondary IPV6</sys:String>
     <sys:String x:Key="textbox_dns_secondary_ip6">Enter the secondary ipv6</sys:String>
+    <sys:String x:Key="header_core_dns">Core DNS Services</sys:String>
+    <sys:String x:Key="header_security_privacy">Security and Privacy Settings</sys:String>
+    <sys:String x:Key="header_advanced_system">Advanced and System Options</sys:String>
+    <sys:String x:Key="header_network_latency">Network Latency &amp; Optimizer</sys:String>
     <!-- endregion DNS Encryption -->
 
 </ResourceDictionary>

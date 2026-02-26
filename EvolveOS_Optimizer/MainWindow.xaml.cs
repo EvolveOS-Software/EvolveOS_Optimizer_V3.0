@@ -22,6 +22,8 @@ namespace EvolveOS_Optimizer
 {
     public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public static MainWindow? Instance { get; private set; }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue =
             Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
@@ -36,6 +38,8 @@ namespace EvolveOS_Optimizer
 
         public MainWindow()
         {
+            Instance = this;
+
             this.InitializeComponent();
             _permanentFrameReference = this.ContentFrame;
 
@@ -160,7 +164,7 @@ namespace EvolveOS_Optimizer
                                 HideDimOverlay.Begin();
                             }
 
-                            System.Diagnostics.Debug.WriteLine($"[DEBUG] Overlay Toggled: {vm.IsOverlayVisible}");
+                            Debug.WriteLine($"[DEBUG] Overlay Toggled: {vm.IsOverlayVisible}");
                         });
                     }
                 };
@@ -169,7 +173,7 @@ namespace EvolveOS_Optimizer
             }
         }
 
-        private void NavigateByTag(string tag)
+        public void NavigateByTag(string tag)
         {
             if (string.IsNullOrEmpty(tag) || ContentFrame == null) return;
 
@@ -218,6 +222,25 @@ namespace EvolveOS_Optimizer
             {
                 Debug.WriteLine($"[Critical] Swap Failed: {ex.Message}");
             }
+        }
+
+        public void SwitchPage(string tag)
+        {
+            if (this.RootGrid.DataContext is MainWinViewModel vm)
+            {
+                vm.CurrentViewTag = tag;
+            }
+            else
+            {
+                NavigateByTag(tag);
+            }
+
+            if (tag == "Utilities")
+            {
+                BtnNavUtilities.IsChecked = true;
+            }
+            // Fo adding more cards later, add: 
+            // else if (tag == "Security") { BtnNavSecurity.IsChecked = true; }
         }
         #endregion
 

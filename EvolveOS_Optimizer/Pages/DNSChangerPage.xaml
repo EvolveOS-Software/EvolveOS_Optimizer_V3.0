@@ -97,7 +97,7 @@
                                    Visibility="Visible"
                                    Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
 
-                        <TextBlock x:Name="statusLabel" Text="Nothing is running in the background" HorizontalAlignment="Center" FontFamily="{ThemeResource Jura}" Opacity="0.7"/>
+                        <TextBlock x:Name="statusLabel" Text="{helpers:ResourceString Key=text_status}" HorizontalAlignment="Center" FontFamily="{ThemeResource Jura}" Opacity="0.7"/>
                         <ProgressBar x:Name="progressBar" HorizontalAlignment="Stretch" Width="300" Height="4" IsEnabled="False"/>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,12,0,0">
@@ -159,7 +159,7 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Glyph="&#xE774;" FontSize="24" Margin="0,0,10,0" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-                                        <TextBlock Grid.Column="1" Text="Core DNS Services" FontSize="16" FontFamily="{ThemeResource Jura-Bold}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_core_dns}" FontSize="16" FontFamily="{ThemeResource Jura-Bold}" VerticalAlignment="Center"/>
                                     </Grid>
 
                                     <StackPanel Spacing="4">
@@ -189,7 +189,7 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Glyph="&#xE7EF;" FontSize="24" Margin="0,0,12,0" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-                                        <TextBlock Grid.Column="1" Text="Security and Privacy Settings" FontSize="16" FontFamily="{ThemeResource Jura-Bold}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_security_privacy}" FontSize="16" FontFamily="{ThemeResource Jura-Bold}" VerticalAlignment="Center"/>
                                     </Grid>
 
                                     <StackPanel Spacing="4">
@@ -223,7 +223,7 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Glyph="&#xE713;" FontSize="24" Margin="0,0,12,0" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-                                        <TextBlock Grid.Column="1" Text="Advanced and System Options" FontSize="16" FontFamily="{ThemeResource Jura-Bold}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_advanced_system}" FontSize="16" FontFamily="{ThemeResource Jura-Bold}" VerticalAlignment="Center"/>
                                     </Grid>
 
                                     <StackPanel Spacing="4">
@@ -277,7 +277,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <FontIcon Glyph="&#xE8B9;" FontSize="24" Margin="0,0,12,0" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-                                <TextBlock Grid.Column="1" Text="Network Latency &amp; Optimizer" FontSize="18" FontFamily="{ThemeResource Jura-SemiBold}" VerticalAlignment="Center" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_network_latency}" FontSize="18" FontFamily="{ThemeResource Jura-SemiBold}" VerticalAlignment="Center" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
                             </Grid>
 
                             <StackPanel Spacing="8">

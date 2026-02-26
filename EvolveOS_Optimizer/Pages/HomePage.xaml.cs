@@ -59,6 +59,7 @@ namespace EvolveOS_Optimizer.Pages
             LoadWeather();
             LoadDashboardLayout();
             DashboardDragCursor();
+            UpdateDnsCardUI();
 
             SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
             SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
@@ -434,6 +435,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleCpu.IsOn = SettingsEngine.Dashboard_CardCpu;
             ToggleGpu.IsOn = SettingsEngine.Dashboard_CardGpu;
             ToggleDisk.IsOn = SettingsEngine.Dashboard_CardDisk;
+            ToggleDns.IsOn = SettingsEngine.Dashboard_CardDns;
 
             CardWeather.Visibility = Visibility.Visible;
             CardNetwork.Visibility = ToggleNetwork.IsOn ? Visibility.Visible : Visibility.Collapsed;
@@ -441,6 +443,7 @@ namespace EvolveOS_Optimizer.Pages
             CardCpu.Visibility = ToggleCpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardGpu.Visibility = ToggleGpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDisk.Visibility = ToggleDisk.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardDns.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
 
             string savedOrder = SettingsEngine.DashboardCardOrder;
             if (!string.IsNullOrWhiteSpace(savedOrder))
@@ -487,6 +490,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardCpu = ToggleCpu.IsOn;
             SettingsEngine.Dashboard_CardGpu = ToggleGpu.IsOn;
             SettingsEngine.Dashboard_CardDisk = ToggleDisk.IsOn;
+            SettingsEngine.Dashboard_CardDns = ToggleDns.IsOn;
         }
 
         private void ToggleCard_Toggled(object sender, RoutedEventArgs e)
@@ -577,9 +581,13 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CardCpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardGpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardDisk, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardDns, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
 
             // OVERRIDES: Set the standard Arrow (or Hand) cursor for clickable elements INSIDE the cards
             SetCustomCursor(BtnVision, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenDnsPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnStartService, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnDebug, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
 
             // Text blocks with "PointerPressed" events to copy text. 
             SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
@@ -594,16 +602,129 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardCpu = true;
             SettingsEngine.Dashboard_CardGpu = true;
             SettingsEngine.Dashboard_CardDisk = true;
+            SettingsEngine.Dashboard_CardDns = true;
 
             ToggleNetwork.IsOn = true;
             ToggleRam.IsOn = true;
             ToggleCpu.IsOn = true;
             ToggleGpu.IsOn = true;
             ToggleDisk.IsOn = true;
+            ToggleDns.IsOn = true;
 
             LoadDashboardLayout();
         }
 
+        #endregion
+
+        #region DNS Card
+        private void BtnOpenDnsPage_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            if (MainWindow.Instance != null)
+            {
+                MainWindow.Instance.SwitchPage("Utilities");
+            }
+            else
+            {
+                Debug.WriteLine("❌ MainWindow.Instance is null!");
+            }
+        }
+
+        private void UpdateDnsCardUI()
+        {
+            if (!DNSCryptHelper.IsInstalled())
+            {
+                BtnStartService.IsEnabled = false;
+                BtnDebug.IsEnabled = false;
+                statusLabel.Text = "DNSCrypt is not installed.";
+                return;
+            }
+
+            BtnStartService.IsEnabled = true;
+            BtnDebug.IsEnabled = true;
+
+            bool isServiceRunning = DNSCryptHelper.IsRunning();
+
+            if (isServiceRunning)
+            {
+                IconServiceStopped.Visibility = Visibility.Collapsed;
+                ImgServiceRunning.Visibility = Visibility.Visible;
+                TxtServicesRunning.Visibility = Visibility.Visible;
+                ProgressRingRunServices.Visibility = Visibility.Visible;
+
+                statusLabel.Text = "DNSCrypt Service is running.";
+                statusLabel.Opacity = 1.0;
+
+                BtnStartService.Content = "Stop service";
+                BtnStartService.Style = (Style)Application.Current.Resources["DefaultButtonStyle"];
+            }
+            else
+            {
+
+                IconServiceStopped.Visibility = Visibility.Visible;
+                ImgServiceRunning.Visibility = Visibility.Collapsed;
+                TxtServicesRunning.Visibility = Visibility.Collapsed;
+                ProgressRingRunServices.Visibility = Visibility.Collapsed;
+
+                statusLabel.Text = "Nothing is running in the background";
+                statusLabel.Opacity = 0.7;
+
+                BtnStartService.Content = "Start service";
+                BtnStartService.Style = (Style)Application.Current.Resources["AccentButtonStyle"];
+            }
+        }
+
+        private async void BtnStartService_Click(object sender, RoutedEventArgs e)
+        {
+            BtnStartService.IsEnabled = false;
+
+            try
+            {
+                if (DNSCryptHelper.IsRunning())
+                {
+                    await DNSCryptHelper.StopService(progressBar, statusLabel);
+                }
+                else
+                {
+                    await DNSCryptHelper.StartService(progressBar, statusLabel);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Dashboard DNS] Error: {ex.Message}");
+                statusLabel.Text = "Service action failed.";
+            }
+            finally
+            {
+                UpdateDnsCardUI();
+                BtnStartService.IsEnabled = true;
+            }
+        }
+
+        private async void BtnDebug_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            BtnDebug.IsEnabled = false;
+
+            try
+            {
+                bool isConnected = await Task.Run(() => NetworkHelper.IsConnectedAsync());
+
+                if (!isConnected)
+                {
+                    statusLabel.Text = "Connection failed.";
+                    return;
+                }
+
+                await DNSCryptHelper.DebugProcess(progressBar, statusLabel);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Dashboard DNS Debug] Error: {ex.Message}");
+            }
+            finally
+            {
+                BtnDebug.IsEnabled = true;
+            }
+        }
         #endregion
 
         #region Admin & UI Helper Methods
@@ -615,7 +736,7 @@ namespace EvolveOS_Optimizer.Pages
                 AdminWarningBanner.Visibility = Visibility.Visible;
                 WallInfoBanner.Visibility = Visibility.Collapsed;
                 StatusLabel.Text = ResourceString.GetString("status_limited_optimization");
-                StatusLabel.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+                StatusLabel.Foreground = new SolidColorBrush(Colors.Red);
             }
             else
             {
@@ -625,7 +746,7 @@ namespace EvolveOS_Optimizer.Pages
                 if (Application.Current.Resources.TryGetValue("Brush_Success", out object brush))
                     StatusLabel.Foreground = (Brush)brush;
                 else
-                    StatusLabel.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
+                    StatusLabel.Foreground = new SolidColorBrush(Colors.Green);
             }
         }
 
@@ -646,7 +767,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void AnimateWallpaperChange(HomePageViewModel vm)
         {
-            var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(LogoPath);
+            var visual = ElementCompositionPreview.GetElementVisual(LogoPath);
             var compositor = visual.Compositor;
             var fadeAnimation = compositor.CreateScalarKeyFrameAnimation();
             fadeAnimation.InsertKeyFrame(0.0f, 0.0f);

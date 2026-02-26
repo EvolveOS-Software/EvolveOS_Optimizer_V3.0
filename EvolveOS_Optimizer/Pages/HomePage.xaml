@@ -189,6 +189,7 @@
                                     <ToggleSwitch x:Name="ToggleCpu" Header="CPU Usage" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpu"/>
                                     <ToggleSwitch x:Name="ToggleGpu" Header="GPU Usage" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpu"/>
                                     <ToggleSwitch x:Name="ToggleDisk" Header="Disk Space" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDisk"/>
+                                    <ToggleSwitch x:Name="ToggleDns" Header="DNS Encryption" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDns"/>
                                     <MenuFlyoutSeparator Margin="0,5"/>
                                     <Button Content="{helpers:ResourceString Key=button_reset_default}" Click="ResetDashboard_Click" HorizontalAlignment="Stretch" />
                                 </StackPanel>
@@ -452,6 +453,37 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </ScrollViewer>
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="CardDns" Style="{StaticResource DashCard}" Padding="16" Margin="0" CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted">
+                        <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+                            <Grid Grid.Row="0" Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE774;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_dns_encryption}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                                <Button x:Name="BtnOpenDnsPage" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDnsPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_dns_page}">
+                                    <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
+                                </Button>
+                            </Grid>
+                            <Grid Grid.Row="1" Height="120" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <FontIcon x:Name="IconServiceStopped" Glyph="&#xE7E8;" FontSize="50" Foreground="{ThemeResource Brush_Error}" Opacity="0.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image x:Name="ImgServiceRunning" Source="ms-appx:///Assets/PngImages/dns_secure.png" Width="75" Height="75" Margin="0,0,0,3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                <ProgressRing x:Name="ProgressRingRunServices" IsActive="True" Width="15" Height="15" Canvas.ZIndex="10" Margin="0,0,18,35" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                            </Grid>
+                            <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
+                                <TextBlock x:Name="TxtServicesRunning" Text="{helpers:ResourceString Key=text_services_running}" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="statusLabel" Text="{helpers:ResourceString Key=text_status}" HorizontalAlignment="Center" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
+                            </StackPanel>
+                            <ProgressBar x:Name="progressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8"/>
+                            <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="12" VerticalAlignment="Bottom">
+                                <Button x:Name="BtnDebug" Grid.Column="0" Content="{helpers:ResourceString Key=btn_debug_process}" HorizontalAlignment="Stretch" Click="BtnDebug_Click" FontFamily="Jura Medium"/>
+                                <Button x:Name="BtnStartService" Grid.Column="1" Content="{helpers:ResourceString Key=btn_start_service}" HorizontalAlignment="Stretch" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="Jura Medium"/>
+                            </Grid>
                         </Grid>
                     </Border>
 

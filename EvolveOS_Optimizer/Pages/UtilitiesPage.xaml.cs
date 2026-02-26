@@ -1,6 +1,7 @@
+using System;
+using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
 
 namespace EvolveOS_Optimizer.Pages
 {
