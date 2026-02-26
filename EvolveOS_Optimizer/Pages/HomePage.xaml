@@ -410,18 +410,40 @@
                         </StackPanel>
                     </Border>
 
-                    <Border x:Name="CardDisk" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted">
+                    <Border x:Name="CardDisk"
+                            Style="{StaticResource DashCard}"
+                            Padding="15"
+                            Margin="0"
+                            CanDrag="True"
+                            AllowDrop="True"
+                            DragStarting="DashCard_DragStarting"
+                            DragOver="DashCard_DragOver"
+                            Drop="DashCard_Drop"
+                            DropCompleted="DashCard_DropCompleted">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <FontIcon Glyph="&#xEDA2;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16" Text="{helpers:ResourceString Key=txt_header_disk_space_card}"/>
+
+                            <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10">
+
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <FontIcon Glyph="&#xEDA2;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                    <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,0" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16" Text="{helpers:ResourceString Key=txt_header_disk_space_card}"/>
+                                </StackPanel>
+
+                                <TextBlock Text="{Binding [Storage].Data}"
+                                           Style="{StaticResource InfoValue}"
+                                           FontFamily="Jura Medium"
+                                           FontWeight="Normal"
+                                           TextAlignment="Left"
+                                           TextWrapping="Wrap"
+                                           PointerPressed="HandleCopyingData_PointerPressed"
+                                           Opacity="0.8"/>
                             </StackPanel>
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,-4,-5,0">
+
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,-5,0">
                                 <ItemsControl x:Name="DiskDrivesList" ItemsSource="{Binding DiskDrives}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -435,10 +457,12 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
+
                                                 <Grid Grid.Column="0" Width="60" Height="60" Margin="0,0,10,0">
                                                     <ProgressRing Value="{Binding UsedPercentage}" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}" Width="55" Height="55"/>
                                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Brush_Inactive}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="12" Text="{Binding UsedPercentage, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N0}%'}"/>
                                                 </Grid>
+
                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                     <TextBlock Style="{StaticResource InfoValue}" FontWeight="Bold" FontSize="12" TextTrimming="CharacterEllipsis">
                                                         <Run Text="{Binding Name}"/>
@@ -457,7 +481,7 @@
                             </ScrollViewer>
                         </Grid>
                     </Border>
-
+                    
                     <Border x:Name="CardDns" Style="{StaticResource DashCard}" Padding="16" Margin="0" CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted">
                         <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
                             <Grid Grid.Row="0" Margin="0,0,0,10">
