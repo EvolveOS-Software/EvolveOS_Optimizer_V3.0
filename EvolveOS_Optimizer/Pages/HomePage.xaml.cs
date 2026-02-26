@@ -785,14 +785,14 @@ namespace EvolveOS_Optimizer.Pages
 
                 int penaltyScore = 0;
 
-                if (ramUsage > 90) penaltyScore += 2;
-                else if (ramUsage > 80) penaltyScore += 1;
+                if (ramUsage > 85) penaltyScore += 2;
+                else if (ramUsage > 60) penaltyScore += 1;
 
                 if (vRamUsage > 90) penaltyScore += 2;
-                else if (vRamUsage > 85) penaltyScore += 1;
+                else if (vRamUsage > 75) penaltyScore += 1;
 
-                if (junkGigabytes > 5.0) penaltyScore += 2;
-                else if (junkGigabytes > 2.0) penaltyScore += 1;
+                if (junkGigabytes > 10.0) penaltyScore += 2;
+                else if (junkGigabytes > 4.0) penaltyScore += 1;
 
                 string imagePath;
                 string statusText;
@@ -824,7 +824,7 @@ namespace EvolveOS_Optimizer.Pages
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
+                Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
                 TxtHealthStatus.Text = "Scan failed.";
             }
             finally

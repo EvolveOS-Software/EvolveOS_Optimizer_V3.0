@@ -760,16 +760,16 @@ namespace EvolveOS_Optimizer.Pages
             int penaltyScore = 0;
 
             double ramUsage = _sharedViewModel.Computer?.Memory?.Physical?.Used?.Percentage ?? 0;
-            if (ramUsage > 90) penaltyScore += 2;
-            else if (ramUsage > 80) penaltyScore += 1;
+            if (ramUsage > 85) penaltyScore += 2;
+            else if (ramUsage > 60) penaltyScore += 1;
 
             double vRamUsage = _sharedViewModel.Computer?.Memory?.Virtual?.Used?.Percentage ?? 0;
             if (vRamUsage > 90) penaltyScore += 2;
-            else if (vRamUsage > 85) penaltyScore += 1;
+            else if (vRamUsage > 75) penaltyScore += 1;
 
             double junkGigabytes = ParseSizeToGigabytes(_sharedViewModel.TotalSpaceToFree);
-            if (junkGigabytes > 5.0) penaltyScore += 2;
-            else if (junkGigabytes > 2.0) penaltyScore += 1;
+            if (junkGigabytes > 10.0) penaltyScore += 2;
+            else if (junkGigabytes > 4.0) penaltyScore += 1;
 
             string imagePath;
             string statusText;

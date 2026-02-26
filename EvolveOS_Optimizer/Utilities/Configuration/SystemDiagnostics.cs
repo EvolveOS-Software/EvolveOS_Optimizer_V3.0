@@ -773,7 +773,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         internal static double GetMemoryUsagePercentage()
         {
             MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
-            memStatus.dwLength = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+            memStatus.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
 
             if (GlobalMemoryStatusEx(ref memStatus))
             {
@@ -788,36 +788,61 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 long totalBytes = 0;
 
-                string[] tempFolders = new string[]
-                {
-            Path.GetTempPath(), // User Temp (%localappdata%\Temp)
-            Environment.GetFolderPath(Environment.SpecialFolder.Windows) + @"\Temp",
-            Environment.GetFolderPath(Environment.SpecialFolder.Windows) + @"\Prefetch"
-                };
+                List<string> foldersToCheck = new List<string>
+        {
+            Path.GetTempPath(),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Temp"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"SoftwareDistribution\Download")
+        };
 
-                foreach (string folder in tempFolders)
+                string? root = Path.GetPathRoot(Environment.SystemDirectory);
+                if (root != null)
                 {
-                    if (Directory.Exists(folder))
-                    {
-                        try
-                        {
-                            var files = new DirectoryInfo(folder).EnumerateFiles("*", SearchOption.AllDirectories);
-                            foreach (var file in files)
-                            {
-                                totalBytes += file.Length;
-                            }
-                        }
-                        catch
-                        {
-                            // Silently ignore access denied errors on locked system files
-                        }
-                    }
+                    foldersToCheck.Add(Path.Combine(root, "Windows.old"));
+                }
+
+                foreach (string folder in foldersToCheck)
+                {
+                    totalBytes += GetDirectorySizeSafe(folder, 0, 5);
                 }
 
                 double gigabytes = totalBytes / 1024.0 / 1024.0 / 1024.0;
-
                 return Math.Round(gigabytes, 2);
             });
+        }
+
+        private static long GetDirectorySizeSafe(string path, int currentDepth, int maxDepth)
+        {
+            if (string.IsNullOrEmpty(path) || currentDepth > maxDepth || !Directory.Exists(path))
+                return 0;
+
+            long size = 0;
+            try
+            {
+                string[] files = Directory.GetFiles(path);
+                foreach (string file in files)
+                {
+                    try { size += new FileInfo(file).Length; } catch { }
+                }
+
+                if (currentDepth < maxDepth)
+                {
+                    string[] dirs = Directory.GetDirectories(path);
+                    foreach (string dir in dirs)
+                    {
+                        try
+                        {
+                            FileAttributes attributes = File.GetAttributes(dir);
+                            if ((attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint) continue;
+                            size += GetDirectorySizeSafe(dir, currentDepth + 1, maxDepth);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+
+            return size;
         }
 
         internal static double GetVirtualMemoryUsagePercentage()
