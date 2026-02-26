@@ -820,6 +820,22 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             });
         }
 
+        internal static double GetVirtualMemoryUsagePercentage()
+        {
+            MEMORYSTATUSEX memex = new MEMORYSTATUSEX();
+            memex.dwLength = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+
+            if (GlobalMemoryStatusEx(ref memex))
+            {
+                double totalVirtual = memex.ullTotalPageFile;
+                double usedVirtual = totalVirtual - memex.ullAvailPageFile;
+
+                return Math.Round((usedVirtual / totalVirtual) * 100.0, 1);
+            }
+
+            return 0;
+        }
+
         internal new string GetWallpaperPath() => WallpaperPath ?? string.Empty;
 
         #region Disposal

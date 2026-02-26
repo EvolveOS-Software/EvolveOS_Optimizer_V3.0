@@ -64,7 +64,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,0,0,5">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,5">
 
                 <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,10,0">
                     <Ellipse Height="95" Width="95" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5"  VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>

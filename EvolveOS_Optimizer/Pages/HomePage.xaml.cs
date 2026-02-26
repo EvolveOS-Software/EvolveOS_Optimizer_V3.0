@@ -1,6 +1,5 @@
 using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Threading;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -746,7 +745,7 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
-        #region Maintenance Card
+        #region Heealth Card
         private void BtnOpenMaintenancePage_Click(object sender, RoutedEventArgs e)
         {
             if (MainWindow.Instance != null)
@@ -779,17 +778,21 @@ namespace EvolveOS_Optimizer.Pages
                 TxtHealthStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning System...";
 
                 double ramUsage = SystemDiagnostics.GetMemoryUsagePercentage();
+                double vRamUsage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
 
                 await Task.Delay(1500);
                 double junkGigabytes = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
 
                 int penaltyScore = 0;
 
-                if (ramUsage > 85) penaltyScore += 2;
-                else if (ramUsage > 70) penaltyScore += 1;
+                if (ramUsage > 90) penaltyScore += 2;
+                else if (ramUsage > 80) penaltyScore += 1;
+
+                if (vRamUsage > 90) penaltyScore += 2;
+                else if (vRamUsage > 85) penaltyScore += 1;
 
                 if (junkGigabytes > 5.0) penaltyScore += 2;
-                else if (junkGigabytes > 1.0) penaltyScore += 1;
+                else if (junkGigabytes > 2.0) penaltyScore += 1;
 
                 string imagePath;
                 string statusText;
@@ -810,7 +813,7 @@ namespace EvolveOS_Optimizer.Pages
                     statusText = ResourceString.GetString("Health_Good") ?? "Good - System is Healthy";
                 }
 
-                DashMaintenanceStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(imagePath));
+                DashMaintenanceStatusImage.Source = new BitmapImage(new Uri(imagePath));
                 TxtHealthStatus.Text = statusText;
 
                 string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
