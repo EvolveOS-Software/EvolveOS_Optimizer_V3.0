@@ -62,6 +62,7 @@ namespace EvolveOS_Optimizer.Pages
             DashboardDragCursor();
             UpdateDnsCardUI();
             await CalculateSystemHealthAsync();
+            await CalculateSecurityHealthAsync();
 
             SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
             SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
@@ -439,6 +440,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleDisk.IsOn = SettingsEngine.Dashboard_CardDisk;
             ToggleDns.IsOn = SettingsEngine.Dashboard_CardDns;
             ToggleHealth.IsOn = SettingsEngine.Dashboard_CardHealth;
+            ToggleSecurity.IsOn = SettingsEngine.Dashboard_CardSecurity;
 
             CardWeather.Visibility = Visibility.Visible;
             CardNetwork.Visibility = ToggleNetwork.IsOn ? Visibility.Visible : Visibility.Collapsed;
@@ -448,6 +450,7 @@ namespace EvolveOS_Optimizer.Pages
             CardDisk.Visibility = ToggleDisk.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDns.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardMaintenance.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardSecurity.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
 
             string savedOrder = SettingsEngine.DashboardCardOrder;
             if (!string.IsNullOrWhiteSpace(savedOrder))
@@ -496,6 +499,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardDisk = ToggleDisk.IsOn;
             SettingsEngine.Dashboard_CardDns = ToggleDns.IsOn;
             SettingsEngine.Dashboard_CardHealth = ToggleHealth.IsOn;
+            SettingsEngine.Dashboard_CardSecurity = ToggleSecurity.IsOn;
         }
 
         private void ToggleCard_Toggled(object sender, RoutedEventArgs e)
@@ -588,6 +592,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CardDisk, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardDns, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardMaintenance, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardSecurity, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
 
             // OVERRIDES: Set the standard Arrow (or Hand) cursor for clickable elements INSIDE the cards
             SetCustomCursor(BtnVision, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
@@ -596,6 +601,8 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnDebug, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenMaintenancePage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRefreshHealth, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenSecurityPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRefreshSecurity, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
 
             // Text blocks with "PointerPressed" events to copy text. 
             SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
@@ -612,6 +619,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardDisk = true;
             SettingsEngine.Dashboard_CardDns = true;
             SettingsEngine.Dashboard_CardHealth = true;
+            SettingsEngine.Dashboard_CardSecurity = true;
 
             ToggleNetwork.IsOn = true;
             ToggleRam.IsOn = true;
@@ -620,6 +628,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleDisk.IsOn = true;
             ToggleDns.IsOn = true;
             ToggleHealth.IsOn = true;
+            ToggleSecurity.IsOn = true;
 
             LoadDashboardLayout();
         }
@@ -819,6 +828,87 @@ namespace EvolveOS_Optimizer.Pages
             {
                 DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
                 BtnRefreshHealth.IsEnabled = true;
+            }
+        }
+        #endregion
+
+        #region Security Card
+        private void BtnOpenSecurityPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWindow.Instance != null)
+            {
+                MainWindow.Instance.SwitchPage("Security");
+            }
+            else
+            {
+                Debug.WriteLine("❌ MainWindow.Instance is null!");
+            }
+        }
+
+        private async void BtnRefreshSecurity_Click(object sender, RoutedEventArgs e)
+        {
+            await CalculateSecurityHealthAsync();
+        }
+
+        private async Task CalculateSecurityHealthAsync()
+        {
+            try
+            {
+                DashSecurityLoadingRing.Visibility = Visibility.Visible;
+                DashSecurityStatusImage.Visibility = Visibility.Collapsed;
+                TxtSecurityLastRefreshed.Visibility = Visibility.Collapsed;
+                BtnRefreshSecurity.IsEnabled = false;
+                TxtSecurityStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
+
+                int issuesCount = 0;
+
+                await Task.Run(async () =>
+                {
+                    var antivirusInfo = await SecurityDiagnostics.GetAntivirusInfoAsync();
+                    if (!antivirusInfo.IsEnabled) issuesCount++;
+
+                    if (!await SecurityDiagnostics.IsFirewallEnabledAsync()) issuesCount++;
+                    if (!await SecurityDiagnostics.IsRealTimeProtectionEnabledAsync()) issuesCount++;
+                    if (!await SecurityDiagnostics.IsUACEnabledAsync()) issuesCount++;
+                    if (!await SecurityDiagnostics.IsWindowsUpdateEnabledAsync()) issuesCount++;
+                    if (!await SecurityDiagnostics.IsTamperProtectionEnabledAsync()) issuesCount++;
+                });
+
+                string imagePath;
+                string statusText;
+
+                if (issuesCount >= 3)
+                {
+                    imagePath = "ms-appx:///Assets/PngImages/unsecure.png";
+                    statusText = $"{issuesCount} Critical Issues";
+                }
+                else if (issuesCount > 0)
+                {
+                    imagePath = "ms-appx:///Assets/PngImages/warning.png";
+                    statusText = $"{issuesCount} Warnings Found";
+                }
+                else
+                {
+                    imagePath = "ms-appx:///Assets/PngImages/secure.png";
+                    statusText = "System is Secure";
+                }
+
+                DashSecurityStatusImage.Source = new BitmapImage(new Uri(imagePath));
+                TxtSecurityStatus.Text = statusText;
+                TxtSecurityLastRefreshed.Text = $"Last checked: {DateTime.Now:t}";
+
+                DashSecurityStatusImage.Visibility = Visibility.Visible;
+                TxtSecurityLastRefreshed.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ [Security Check Error] {ex.Message}");
+                TxtSecurityStatus.Text = "Scan failed.";
+            }
+            finally
+            {
+                DashSecurityLoadingRing.Visibility = Visibility.Collapsed;
+                BtnRefreshSecurity.IsEnabled = true;
             }
         }
         #endregion

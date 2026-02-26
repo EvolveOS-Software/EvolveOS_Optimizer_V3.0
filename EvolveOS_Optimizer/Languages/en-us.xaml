@@ -112,6 +112,14 @@
     <sys:String x:Key="text_customize_dashboard">Customize Dashboard</sys:String>
     <sys:String x:Key="tooltip_customize_layout">Customize Dashboard Layout</sys:String>
 
+    <!-- Security Card -->
+    <sys:String x:Key="title_security_card">Security Status</sys:String>
+    <sys:String x:Key="tooltip_open_security">Open Security Hub</sys:String>
+    <sys:String x:Key="btn_quick_scan">Quick Scan</sys:String>
+    <sys:String x:Key="text_security_critical">Critical Issues</sys:String>
+    <sys:String x:Key="text_security_warning">Warnings Found</sys:String>
+    <sys:String x:Key="text_security_good">System is Secure</sys:String>
+
     <!-- System Health Card -->
     <sys:String x:Key="text_never_updated">Never updated</sys:String>
     <sys:String x:Key="tooltip_open_maintenance">Open Maintenance page</sys:String>

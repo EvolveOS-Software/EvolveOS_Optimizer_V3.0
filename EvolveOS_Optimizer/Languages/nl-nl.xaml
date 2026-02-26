@@ -112,6 +112,14 @@
     <sys:String x:Key="text_customize_dashboard">Dashboard aanpassen</sys:String>
     <sys:String x:Key="tooltip_customize_layout">Dashboard-indeling aanpassen</sys:String>
 
+    <!-- Security Card -->
+    <sys:String x:Key="title_security_card">État de la sécurité</sys:String>
+    <sys:String x:Key="tooltip_open_security">Ouvrir le centre de sécurité</sys:String>
+    <sys:String x:Key="btn_quick_scan">Analyse rapide</sys:String>
+    <sys:String x:Key="text_security_critical">Problèmes critiques</sys:String>
+    <sys:String x:Key="text_security_warning">Avertissements trouvés</sys:String>
+    <sys:String x:Key="text_security_good">Le système est sécurisé</sys:String>
+
     <!-- System Health Card -->
     <sys:String x:Key="text_never_updated">Nooit bijgewerkt</sys:String>
     <sys:String x:Key="tooltip_open_maintenance">Onderhoudspagina openen</sys:String>

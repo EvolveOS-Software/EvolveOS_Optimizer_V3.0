@@ -191,6 +191,7 @@
                                     <ToggleSwitch x:Name="ToggleDisk" Header="Disk Space" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDisk"/>
                                     <ToggleSwitch x:Name="ToggleDns" Header="DNS Encryption" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDns"/>
                                     <ToggleSwitch x:Name="ToggleHealth" Header="System Health" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardMaintenance"/>
+                                    <ToggleSwitch x:Name="ToggleSecurity" Header="System Security" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardSecurity"/>
                                     <MenuFlyoutSeparator Margin="0,5"/>
                                     <Button Content="{helpers:ResourceString Key=button_reset_default}" Click="ResetDashboard_Click" HorizontalAlignment="Stretch" />
                                 </StackPanel>
@@ -517,6 +518,50 @@
                                         <StackPanel Orientation="Horizontal" Spacing="8">
                                             <FontIcon Glyph="&#xE72C;" FontSize="14"/>
                                             <TextBlock Text="{helpers:ResourceString Key=btn_refresh_status}"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="CardSecurity" Style="{StaticResource DashCard}" Padding="16" Margin="0" CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted">
+                        <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+
+                            <Grid Grid.Row="0" Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <FontIcon Glyph="&#xE773;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_security_card}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+
+                                <Button x:Name="BtnOpenSecurityPage" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenSecurityPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_security}">
+                                    <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
+                                </Button>
+                            </Grid>
+
+                            <Grid Grid.Row="1" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ProgressRing x:Name="DashSecurityLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <Image x:Name="DashSecurityStatusImage" Width="80" Height="80" Source="ms-appx:///Assets/PngImages/secure.png" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
+                                <TextBlock x:Name="TxtSecurityStatus" Text="Scanning..." FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TxtSecurityLastRefreshed" FontSize="11" Opacity="0.6" HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <Grid Grid.Row="3" Height="4" Margin="4,8" Visibility="Collapsed"/>
+
+                            <Grid Grid.Row="4" VerticalAlignment="Bottom">
+                                <Button x:Name="BtnRefreshSecurity" HorizontalAlignment="Stretch" Click="BtnRefreshSecurity_Click" BorderThickness="0" FontFamily="Jura Medium">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon Glyph="&#xE72C;" FontSize="14"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=btn_quick_scan}"/>
                                         </StackPanel>
                                     </Button.Content>
                                 </Button>

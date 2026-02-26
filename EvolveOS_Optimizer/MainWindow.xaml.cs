@@ -12,9 +12,6 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Navigation;
-using Windows.System;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
@@ -239,8 +236,8 @@ namespace EvolveOS_Optimizer
             {
                 BtnNavUtilities.IsChecked = true;
             }
-            // Fo adding more cards later, add: 
-            // else if (tag == "Security") { BtnNavSecurity.IsChecked = true; }
+            else if (tag == "Maintenance") { BtnNavMaintenance.IsChecked = true; }
+            else if (tag == "Security") { BtnNavSecurity.IsChecked = true; }
         }
         #endregion
 

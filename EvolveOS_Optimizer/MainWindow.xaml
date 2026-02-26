@@ -134,7 +134,7 @@
                             <FontIcon Glyph="&#xE80F;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}"
+                        <RadioButton x:Name="BtnNavSecurity" Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Security"
                                      Tag="{x:Bind GetText('Nav_Security'),Mode=OneWay}">

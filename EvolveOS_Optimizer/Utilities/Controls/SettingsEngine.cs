@@ -62,14 +62,15 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableIpBlur"] = true,
             ["LastLocation"] = "Paris",
 
-            ["DashboardCardOrder"] = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk,CardDns,CardHealth",
+            ["DashboardCardOrder"] = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk,CardDns,CardHealth,CardSecurity",
             ["Dashboard_CardNetwork"] = true,
             ["Dashboard_CardRam"] = true,
             ["Dashboard_CardCpu"] = true,
             ["Dashboard_CardGpu"] = true,
             ["Dashboard_CardDisk"] = true,
             ["Dashboard_CardDns"] = true,
-            ["Dashboard_CardHealth"] = true
+            ["Dashboard_CardHealth"] = true,
+            ["Dashboard_CardSecurity"] = true
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -116,6 +117,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_CardDisk { get => (bool)_cachedSettings["Dashboard_CardDisk"]; set => ChangingParameters("Dashboard_CardDisk", value); }
         internal static bool Dashboard_CardDns { get => (bool)_cachedSettings["Dashboard_CardDns"]; set => ChangingParameters("Dashboard_CardDns", value); }
         internal static bool Dashboard_CardHealth { get => (bool)_cachedSettings["Dashboard_CardHealth"]; set => ChangingParameters("Dashboard_CardHealth", value); }
+        internal static bool Dashboard_CardSecurity { get => (bool)_cachedSettings["Dashboard_CardSecurity"]; set => ChangingParameters("Dashboard_CardSecurity", value); }
 
         private static void ChangingParameters(string key, object value)
         {
