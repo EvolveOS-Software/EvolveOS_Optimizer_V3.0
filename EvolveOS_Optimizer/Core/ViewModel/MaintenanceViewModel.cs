@@ -14,19 +14,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 {
     public class MaintenanceViewModel : ViewModelBase, IDisposable
     {
+        #region Singleton & Initialization
         private static MaintenanceViewModel? _instance;
         public static MaintenanceViewModel Current => _instance ??= CreateGlobalInstance();
 
         private static MaintenanceViewModel CreateGlobalInstance()
         {
-            // We create the services here so the App can start it without needing the Page
             IComputerService computerService = new EvolveOS_Optimizer.Utilities.Services.ComputerService();
             IHotkeyService? globalHotkeyService = App.GetService<IHotkeyService>();
 
             return new MaintenanceViewModel(computerService, globalHotkeyService!);
         }
+        #endregion
 
+        #region Fields
         private CancellationTokenSource? _cancellationTokenSource;
+        private CancellationTokenSource? _cleanupCts;
         private Computer? _computer;
         private readonly IComputerService _computerService;
         private readonly IHotkeyService _hotKeyService;
@@ -43,7 +46,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private string? _selectedProcess;
         private bool _isBusy;
         private bool _isUiActive = true;
+        private bool _isScanning;
+        private string _totalSpaceToFree = "0 MB";
+        private DriveSpaceInfo? _driveCInfo;
+        #endregion
 
+        #region Constructor
         public MaintenanceViewModel(IComputerService computerService, IHotkeyService hotKeyService)
         {
             _computerService = computerService;
@@ -81,9 +89,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             DriveCInfo = drives.FirstOrDefault(d => d.Name != null && d.Name.StartsWith("C", StringComparison.OrdinalIgnoreCase))
                          ?? drives.FirstOrDefault()!;
         }
+        #endregion
 
-        #region Properties
-
+        #region Core UI & State Properties
         public Computer? Computer
         {
             get => _computer;
@@ -96,24 +104,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             set { _isBusy = value; OnPropertyChanged(); }
         }
 
-        private DriveSpaceInfo? _driveCInfo;
         public DriveSpaceInfo? DriveCInfo
         {
             get => _driveCInfo;
-            set
-            {
-                _driveCInfo = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool CanAddProcessToExclusionList
-        {
-            get
-            {
-                return !string.IsNullOrWhiteSpace(SelectedProcess) &&
-                       !LocalMachineSettingsEngine.ProcessExclusionList.Contains(SelectedProcess);
-            }
+            set { _driveCInfo = value; OnPropertyChanged(); }
         }
 
         public bool IsOptimizationRunning
@@ -122,68 +116,59 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             set { _isOptimizationRunning = value; OnPropertyChanged(); }
         }
 
-        public bool CanOptimize
+        public bool CanOptimize => MemoryAreas != Enums.Memory.Areas.None && !IsOptimizationRunning;
+
+        public bool IsScanning
         {
-            get { return MemoryAreas != Enums.Memory.Areas.None && !IsOptimizationRunning; }
+            get => _isScanning;
+            set { _isScanning = value; OnPropertyChanged(); }
         }
 
-        public byte OptimizationProgressPercentage
+        public string TotalSpaceToFree
         {
-            get { return _optimizationProgressPercentage; }
-            set
+            get => _totalSpaceToFree;
+            set { _totalSpaceToFree = value; OnPropertyChanged(); }
+        }
+
+        public string VirtualMemoryHeader
+        {
+            get
             {
-                _optimizationProgressPercentage = value;
-                OnPropertyChanged();
+                if (Computer?.Memory?.Virtual?.Total == null) return ResourceString.GetString("txt_header_virtual_memory");
+                return string.Format("{0} ({1:0.#} {2})", ResourceString.GetString("txt_header_virtual_memory"), Computer.Memory.Virtual.Total.Value, Computer.Memory.Virtual.Total.Unit);
             }
         }
+        #endregion
 
-        public Action<Enums.Memory.Optimization.Reason, string>? OnOptimizeCommandCompleted;
+        #region Progress Properties
+        public byte OptimizationProgressPercentage
+        {
+            get => _optimizationProgressPercentage;
+            set { _optimizationProgressPercentage = value; OnPropertyChanged(); }
+        }
 
         public string OptimizationProgressStep
         {
-            get { return _optimizationProgressStep; }
-            set
-            {
-                _optimizationProgressStep = value;
-                OnPropertyChanged();
-            }
+            get => _optimizationProgressStep;
+            set { _optimizationProgressStep = value; OnPropertyChanged(); }
         }
 
         public byte OptimizationProgressTotal
         {
-            get { return _optimizationProgressTotal; }
-            set
-            {
-                _optimizationProgressTotal = value;
-                OnPropertyChanged();
-            }
+            get => _optimizationProgressTotal;
+            set { _optimizationProgressTotal = value; OnPropertyChanged(); }
         }
 
         public byte OptimizationProgressValue
         {
-            get { return _optimizationProgressValue; }
-            set
-            {
-                _optimizationProgressValue = value;
-                OnPropertyChanged();
-            }
+            get => _optimizationProgressValue;
+            set { _optimizationProgressValue = value; OnPropertyChanged(); }
         }
+        #endregion
 
-        public List<VirtualKey> KeyboardKeys
-        {
-            get
-            {
-                return _hotKeyService.Keys;
-            }
-        }
-
-        public Dictionary<VirtualKeyModifiers, string> KeyboardModifiers
-        {
-            get
-            {
-                return _hotKeyService.Modifiers;
-            }
-        }
+        #region Settings & Configuration Properties
+        public List<VirtualKey> KeyboardKeys => _hotKeyService.Keys;
+        public Dictionary<VirtualKeyModifiers, string> KeyboardModifiers => _hotKeyService.Modifiers;
 
         public VirtualKey OptimizationKey
         {
@@ -248,68 +233,37 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public bool ShowDiskSpace
         {
-            get { return LocalMachineSettingsEngine.ShowDiskSpace; }
+            get => LocalMachineSettingsEngine.ShowDiskSpace;
             set
             {
-                try
-                {
-                    IsBusy = true;
-                    LocalMachineSettingsEngine.ShowDiskSpace = value;
-                    OnPropertyChanged();
-                }
+                try { IsBusy = true; LocalMachineSettingsEngine.ShowDiskSpace = value; OnPropertyChanged(); }
                 finally { IsBusy = false; }
-            }
-        }
-
-        public string? SelectedProcess
-        {
-            get => _selectedProcess;
-            set
-            {
-                // 1. THE GUARD: Break the infinite loop!
-                if (_selectedProcess == value) return;
-
-                _selectedProcess = value;
-                OnPropertyChanged();
-
-                // Update the Add button state
-                OnPropertyChanged(nameof(CanAddProcessToExclusionList));
             }
         }
 
         public bool RestartExplorerAfterOptimization
         {
-            get { return LocalMachineSettingsEngine.RestartExplorerAfterOptimization; }
+            get => LocalMachineSettingsEngine.RestartExplorerAfterOptimization;
             set
             {
-                try
-                {
-                    IsBusy = true;
-                    LocalMachineSettingsEngine.RestartExplorerAfterOptimization = value;
-                    OnPropertyChanged();
-                }
+                try { IsBusy = true; LocalMachineSettingsEngine.RestartExplorerAfterOptimization = value; OnPropertyChanged(); }
                 finally { IsBusy = false; }
             }
         }
 
         public bool ShowVirtualMemory
         {
-            get { return LocalMachineSettingsEngine.ShowVirtualMemory; }
+            get => LocalMachineSettingsEngine.ShowVirtualMemory;
             set
             {
-                try
-                {
-                    IsBusy = true;
-                    LocalMachineSettingsEngine.ShowVirtualMemory = value;
-                    OnPropertyChanged();
-                }
+                try { IsBusy = true; LocalMachineSettingsEngine.ShowVirtualMemory = value; OnPropertyChanged(); }
                 finally { IsBusy = false; }
             }
         }
 
         public bool RunOnLowPriority
         {
-            get { return LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low; }
+            get => LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low;
             set
             {
                 try
@@ -326,146 +280,70 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public bool ShowOptimizationNotifications
         {
-            get { return LocalMachineSettingsEngine.ShowOptimizationNotifications; }
+            get => LocalMachineSettingsEngine.ShowOptimizationNotifications;
             set
             {
-                try
-                {
-                    IsBusy = true;
-                    LocalMachineSettingsEngine.ShowOptimizationNotifications = value;
-                    OnPropertyChanged();
-                }
+                try { IsBusy = true; LocalMachineSettingsEngine.ShowOptimizationNotifications = value; OnPropertyChanged(); }
                 finally { IsBusy = false; }
             }
         }
 
         public bool DisableAllOptimizationResults
         {
-            get { return LocalMachineSettingsEngine.DisableAllOptimizationResults; }
+            get => LocalMachineSettingsEngine.DisableAllOptimizationResults;
             set
             {
-                try
-                {
-                    IsBusy = true;
-                    LocalMachineSettingsEngine.DisableAllOptimizationResults = value;
-                    OnPropertyChanged();
-                }
+                try { IsBusy = true; LocalMachineSettingsEngine.DisableAllOptimizationResults = value; OnPropertyChanged(); OnPropertyChanged(nameof(SettingItems)); }
                 finally { IsBusy = false; }
             }
         }
 
-        private string _totalSpaceToFree = "0 MB";
-        public string TotalSpaceToFree
+        public int AutoOptimizationInterval
         {
-            get => _totalSpaceToFree;
-            set { _totalSpaceToFree = value; OnPropertyChanged(); }
-        }
-
-        private bool _isScanning;
-        public bool IsScanning
-        {
-            get => _isScanning;
-            set { _isScanning = value; OnPropertyChanged(); }
-        }
-
-        public System.Windows.Input.ICommand RefreshCleanupSpaceCommand => new RelayCommand(async (_) =>
-        {
-            TotalSpaceToFree = ResourceString.GetString("txt_scanning");
-            await CalculateCleanupSpaceAsync();
-        });
-
-        private CancellationTokenSource? _cleanupCts;
-
-        private async Task CalculateCleanupSpaceAsync()
-        {
-            _cleanupCts?.Cancel();
-            _cleanupCts = new CancellationTokenSource();
-            var token = _cleanupCts.Token;
-
-            IsScanning = true;
-
-            try
+            get => LocalMachineSettingsEngine.AutoOptimizationInterval;
+            set
             {
-                await Task.Delay(300, token);
-
-                long totalBytes = 0;
-                var areas = LocalMachineSettingsEngine.MemoryAreas;
-
-                await Task.Run(() =>
+                if (LocalMachineSettingsEngine.AutoOptimizationInterval != value)
                 {
-                    if (token.IsCancellationRequested) return;
-
-                    if ((areas & Enums.Memory.Areas.WindowsOld) != 0)
-                    {
-                        string? root = Path.GetPathRoot(Environment.SystemDirectory);
-                        if (root != null)
-                        {
-                            string winOldPath = Path.Combine(root, "Windows.old");
-                            totalBytes += GetDirectorySize(winOldPath);
-                        }
-                    }
-
-                    if (token.IsCancellationRequested) return;
-
-                    if ((areas & Enums.Memory.Areas.DiskCleanup) != 0)
-                    {
-                        totalBytes += GetDirectorySize(Path.GetTempPath());
-                        totalBytes += GetDirectorySize(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Temp"));
-                        totalBytes += GetDirectorySize(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "SoftwareDistribution\\Download"));
-                    }
-                }, token);
-
-                if (token.IsCancellationRequested) return;
-
-                var unitPair = totalBytes.ToMemoryUnit();
-                TotalSpaceToFree = totalBytes == 0 ? "0 MB" : string.Format("{0:0.##} {1}", unitPair.Key, unitPair.Value);
-            }
-            catch (TaskCanceledException) { }
-            catch (Exception e) { ErrorLogging.LogDebug(e); }
-            finally { IsScanning = false; }
-        }
-
-        private long GetDirectorySize(string path, int currentDepth = 0, int maxDepth = 5)
-        {
-            if (string.IsNullOrEmpty(path) || currentDepth > maxDepth || !Directory.Exists(path)) return 0;
-            long size = 0;
-            try
-            {
-                string[] files = Directory.GetFiles(path);
-                foreach (string file in files)
-                {
-                    try { size += new FileInfo(file).Length; } catch { }
-                }
-
-                if (currentDepth < maxDepth)
-                {
-                    string[] dirs = Directory.GetDirectories(path);
-                    foreach (string dir in dirs)
-                    {
-                        try
-                        {
-                            FileAttributes attributes = File.GetAttributes(dir);
-                            if ((attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint) continue;
-                            size += GetDirectorySize(dir, currentDepth + 1, maxDepth);
-                        }
-                        catch { }
-                    }
+                    LocalMachineSettingsEngine.AutoOptimizationInterval = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(AutoOptimizationMemoryIntervalDescription));
                 }
             }
-            catch (Exception ex) { Debug.WriteLine($"Error scanning {path}: {ex.Message}"); }
-            return size;
         }
 
-        public string VirtualMemoryHeader
+        public int AutoOptimizationMemoryUsage
+        {
+            get => LocalMachineSettingsEngine.AutoOptimizationMemoryUsage;
+            set
+            {
+                LocalMachineSettingsEngine.AutoOptimizationMemoryUsage = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AutoOptimizationMemoryUsageDescription));
+            }
+        }
+
+        public string AutoOptimizationMemoryIntervalDescription => ResourceHelper.GetPluralizedString("txt_auto_opt_interval", AutoOptimizationInterval);
+        public string AutoOptimizationMemoryUsageDescription => string.Format(ResourceString.GetString("txt_auto_opt_usage_limit"), AutoOptimizationMemoryUsage);
+        public string AutoOptimizationMemoryUsageWarning => ResourceString.GetString("txt_auto_opt_usage_warning");
+        public List<byte> MemoryUsageThresholds { get; private set; }
+        #endregion
+
+        #region Observable Collections & Memory Areas
+        public ObservableCollection<ObservableItem<bool>> SettingItems
         {
             get
             {
-                if (Computer?.Memory?.Virtual?.Total == null) return ResourceString.GetString("txt_header_virtual_memory");
-                return string.Format("{0} ({1:0.#} {2})", ResourceString.GetString("txt_header_virtual_memory"), Computer.Memory.Virtual.Total.Value, Computer.Memory.Virtual.Total.Unit);
+                return new ObservableCollection<ObservableItem<bool>>(new List<ObservableItem<bool>>
+                {
+                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_disk_space"), () => ShowDiskSpace, v => ShowDiskSpace = v, true, ResourceString.GetString("description_settings_items_show_disk_space")),
+                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_notification"), () => ShowOptimizationNotifications, v => ShowOptimizationNotifications = v, !DisableAllOptimizationResults, ResourceString.GetString("description_settings_items_show_notification")),
+                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_no_result"), () => DisableAllOptimizationResults, v => { DisableAllOptimizationResults = v; OnPropertyChanged(nameof(SettingItems)); }, true, ResourceString.GetString("description_settings_items_show_no_result")),
+                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_low_priority"), () => RunOnLowPriority, v => RunOnLowPriority = v, true, ResourceString.GetString("description_settings_items_low_priority")),
+                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_virtual_memory"), () => ShowVirtualMemory, v => ShowVirtualMemory = v, true, ResourceString.GetString("description_settings_items_show_virtual_memory"))
+                }.OrderBy(i => i.Name));
             }
         }
-
-        public List<byte> MemoryUsageThresholds { get; private set; }
 
         public ObservableCollection<ObservableItem<bool>> MemoryAreaItems
         {
@@ -564,6 +442,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 finally { IsBusy = false; }
             }
         }
+        #endregion
+
+        #region Process Exclusions
+        public string? SelectedProcess
+        {
+            get => _selectedProcess;
+            set
+            {
+                if (_selectedProcess == value) return;
+                _selectedProcess = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanAddProcessToExclusionList));
+            }
+        }
+
+        public bool CanAddProcessToExclusionList => !string.IsNullOrWhiteSpace(SelectedProcess) && !LocalMachineSettingsEngine.ProcessExclusionList.Contains(SelectedProcess);
 
         public ObservableCollection<string> Processes
         {
@@ -577,63 +471,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        public ObservableCollection<string> ProcessExclusionList
-        {
-            get { return new ObservableCollection<string>(LocalMachineSettingsEngine.ProcessExclusionList); }
-        }
-
-        public int AutoOptimizationInterval
-        {
-            get => LocalMachineSettingsEngine.AutoOptimizationInterval;
-            set
-            {
-                if (LocalMachineSettingsEngine.AutoOptimizationInterval != value)
-                {
-                    LocalMachineSettingsEngine.AutoOptimizationInterval = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(AutoOptimizationMemoryIntervalDescription));
-                }
-            }
-        }
-
-        public int AutoOptimizationMemoryUsage
-        {
-            get => LocalMachineSettingsEngine.AutoOptimizationMemoryUsage;
-            set
-            {
-                LocalMachineSettingsEngine.AutoOptimizationMemoryUsage = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(AutoOptimizationMemoryUsageDescription));
-            }
-        }
-
-        public string AutoOptimizationMemoryIntervalDescription => ResourceHelper.GetPluralizedString("txt_auto_opt_interval", AutoOptimizationInterval);
-        public string AutoOptimizationMemoryUsageDescription => string.Format(ResourceString.GetString("txt_auto_opt_usage_limit"), AutoOptimizationMemoryUsage);
-        public string AutoOptimizationMemoryUsageWarning => ResourceString.GetString("txt_auto_opt_usage_warning");
-
-        public System.Windows.Input.ICommand OptimizeCommand { get; }
-        public System.Windows.Input.ICommand AddProcessToExclusionListCommand { get; }
-        public System.Windows.Input.ICommand RemoveProcessFromExclusionListCommand { get; }
-
-        #endregion
-
-        public ObservableCollection<ObservableItem<bool>> SettingItems
-        {
-            get
-            {
-                return new ObservableCollection<ObservableItem<bool>>(new List<ObservableItem<bool>>
-                {
-                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_disk_space"), () => ShowDiskSpace, v => ShowDiskSpace = v, true, ResourceString.GetString("description_settings_items_show_disk_space")),
-                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_notification"), () => ShowOptimizationNotifications, v => ShowOptimizationNotifications = v, !DisableAllOptimizationResults, ResourceString.GetString("description_settings_items_show_notification")),
-                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_no_result"), () => DisableAllOptimizationResults, v => { DisableAllOptimizationResults = v; OnPropertyChanged(nameof(SettingItems)); }, true, ResourceString.GetString("description_settings_items_show_no_result")),
-                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_low_priority"), () => RunOnLowPriority, v => RunOnLowPriority = v, true, ResourceString.GetString("description_settings_items_low_priority")),
-                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_virtual_memory"), () => ShowVirtualMemory, v => ShowVirtualMemory = v, true, ResourceString.GetString("description_settings_items_show_virtual_memory"))
-                }.OrderBy(i => i.Name));
-            }
-        }
-
-        public event Action? OnAddProcessToExclusionListCommandCompleted;
-        public event Action? OnRemoveProcessFromExclusionListCommandCompleted;
+        public ObservableCollection<string> ProcessExclusionList => new ObservableCollection<string>(LocalMachineSettingsEngine.ProcessExclusionList);
 
         private void AddProcessToExclusionList(string? process)
         {
@@ -646,9 +484,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     if (LocalMachineSettingsEngine.ProcessExclusionList.Add(process))
                     {
                         LocalMachineSettingsEngine.SaveExclusionList();
-
                         SelectedProcess = null;
-
                         OnPropertyChanged(nameof(Processes));
                         OnPropertyChanged(nameof(ProcessExclusionList));
                         _dispatcherQueue?.TryEnqueue(() => OnAddProcessToExclusionListCommandCompleted?.Invoke());
@@ -674,7 +510,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             finally { IsBusy = false; }
         }
+        #endregion
 
+        #region Commands & Events
+        public System.Windows.Input.ICommand OptimizeCommand { get; }
+        public System.Windows.Input.ICommand AddProcessToExclusionListCommand { get; }
+        public System.Windows.Input.ICommand RemoveProcessFromExclusionListCommand { get; }
+        public System.Windows.Input.ICommand RefreshCleanupSpaceCommand => new RelayCommand(async (_) =>
+        {
+            TotalSpaceToFree = ResourceString.GetString("txt_scanning");
+            await CalculateCleanupSpaceAsync();
+        });
+
+        public Action<Enums.Memory.Optimization.Reason, string>? OnOptimizeCommandCompleted;
+        public event Action? OnAddProcessToExclusionListCommandCompleted;
+        public event Action? OnRemoveProcessFromExclusionListCommandCompleted;
+        #endregion
+
+        #region Monitoring & Background Scans
         private void MonitorLoop()
         {
             var cts = _cancellationTokenSource;
@@ -792,6 +645,88 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
+        private async Task CalculateCleanupSpaceAsync()
+        {
+            _cleanupCts?.Cancel();
+            _cleanupCts = new CancellationTokenSource();
+            var token = _cleanupCts.Token;
+
+            IsScanning = true;
+
+            try
+            {
+                await Task.Delay(300, token);
+
+                long totalBytes = 0;
+                var areas = LocalMachineSettingsEngine.MemoryAreas;
+
+                await Task.Run(() =>
+                {
+                    if (token.IsCancellationRequested) return;
+
+                    if ((areas & Enums.Memory.Areas.WindowsOld) != 0)
+                    {
+                        string? root = Path.GetPathRoot(Environment.SystemDirectory);
+                        if (root != null)
+                        {
+                            string winOldPath = Path.Combine(root, "Windows.old");
+                            totalBytes += GetDirectorySize(winOldPath);
+                        }
+                    }
+
+                    if (token.IsCancellationRequested) return;
+
+                    if ((areas & Enums.Memory.Areas.DiskCleanup) != 0)
+                    {
+                        totalBytes += GetDirectorySize(Path.GetTempPath());
+                        totalBytes += GetDirectorySize(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Temp"));
+                        totalBytes += GetDirectorySize(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "SoftwareDistribution\\Download"));
+                    }
+                }, token);
+
+                if (token.IsCancellationRequested) return;
+
+                var unitPair = totalBytes.ToMemoryUnit();
+                TotalSpaceToFree = totalBytes == 0 ? "0 MB" : string.Format("{0:0.##} {1}", unitPair.Key, unitPair.Value);
+            }
+            catch (TaskCanceledException) { }
+            catch (Exception e) { ErrorLogging.LogDebug(e); }
+            finally { IsScanning = false; }
+        }
+
+        private long GetDirectorySize(string path, int currentDepth = 0, int maxDepth = 5)
+        {
+            if (string.IsNullOrEmpty(path) || currentDepth > maxDepth || !Directory.Exists(path)) return 0;
+            long size = 0;
+            try
+            {
+                string[] files = Directory.GetFiles(path);
+                foreach (string file in files)
+                {
+                    try { size += new FileInfo(file).Length; } catch { }
+                }
+
+                if (currentDepth < maxDepth)
+                {
+                    string[] dirs = Directory.GetDirectories(path);
+                    foreach (string dir in dirs)
+                    {
+                        try
+                        {
+                            FileAttributes attributes = File.GetAttributes(dir);
+                            if ((attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint) continue;
+                            size += GetDirectorySize(dir, currentDepth + 1, maxDepth);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine($"Error scanning {path}: {ex.Message}"); }
+            return size;
+        }
+        #endregion
+
+        #region Optimization Engine
         private void OnOptimizeProgressUpdate(byte value, string step)
         {
             if (_dispatcherQueue == null) return;
@@ -805,6 +740,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 OptimizationProgressPercentage = (byte)calcPercentage;
                 OptimizationProgressValue = value;
             });
+        }
+
+        private async Task OptimizeAsync(Enums.Memory.Optimization.Reason reason)
+        {
+            if (IsOptimizationRunning) return;
+            try
+            {
+                OptimizationProgressStep = ResourceString.GetString("txt_progress_step");
+                OptimizationProgressValue = 0;
+                OptimizationProgressTotal = 4;
+                await Task.Run(() => Optimize(reason));
+            }
+            catch (Exception e) { ErrorLogging.LogDebug(e); }
         }
 
         private async Task Optimize(Enums.Memory.Optimization.Reason reason)
@@ -937,19 +885,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        private async Task OptimizeAsync(Enums.Memory.Optimization.Reason reason)
-        {
-            if (IsOptimizationRunning) return;
-            try
-            {
-                OptimizationProgressStep = ResourceString.GetString("txt_progress_step");
-                OptimizationProgressValue = 0;
-                OptimizationProgressTotal = 4;
-                await Task.Run(() => Optimize(reason));
-            }
-            catch (Exception e) { ErrorLogging.LogDebug(e); }
-        }
-
         private async void ResetProgressAfterDelay(int milliseconds)
         {
             await Task.Delay(milliseconds);
@@ -960,7 +895,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 OptimizationProgressStep = ResourceString.GetString("txt_progress_step");
             });
         }
+        #endregion
 
+        #region Lifecycle & Hotkey Management
         private void OnHotkeySettingsChanged(object? sender, EventArgs e)
         {
             OnPropertyChanged(nameof(OptimizationKey));
@@ -1011,41 +948,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 App.HotkeySettingsChanged -= OnHotkeySettingsChanged;
 
                 _cancellationTokenSource?.Cancel();
-
                 _cancellationTokenSource?.Dispose();
-
                 _cancellationTokenSource = null;
 
                 _computerService.OnOptimizeProgressUpdate -= OnOptimizeProgressUpdate;
             }
             base.Dispose(disposing);
-        }
-
-        #region ObservableItem<T> class
-        public class ObservableItem<T> : ObservableObject
-        {
-            private bool _isEnabled;
-            private string _tooltip;
-
-            public ObservableItem(string name, Func<T> getter, Action<T> setter, bool isEnabled = true, string tooltip = "")
-            {
-                Getter = getter;
-                _isEnabled = isEnabled;
-                Name = name;
-                Setter = setter;
-                _tooltip = tooltip;
-            }
-
-            public Func<T> Getter { get; private set; }
-            public string Name { get; private set; }
-            public Action<T> Setter { get; private set; }
-            public string Tooltip { get => _tooltip; set { _tooltip = value; OnPropertyChanged(); } }
-            public bool IsEnabled { get => _isEnabled; set { _isEnabled = value; OnPropertyChanged(); } }
-            public T Value
-            {
-                get { return Getter != null ? Getter() : default(T)!; }
-                set { if (Setter != null) { Setter(value); OnPropertyChanged(); } }
-            }
         }
         #endregion
     }
