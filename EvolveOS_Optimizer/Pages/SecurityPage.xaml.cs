@@ -4,6 +4,7 @@ using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -13,6 +14,8 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private CancellationTokenSource? _cancellationTokenSource;
     private bool _isCheckInProgress;
     private string? _pendingScrollTarget;
+
+    private bool _isUacSliderUpdating = false;
 
     public SecurityPage()
     {
@@ -75,7 +78,6 @@ public sealed partial class SecurityPage : Page, IPurgeable
         {
             var results = await Task.Run(async () =>
             {
-                // Hooked up to the new shared SecurityDiagnostics engine!
                 var antivirusInfo = await SecurityDiagnostics.GetAntivirusInfoAsync(cancellationToken).ConfigureAwait(false);
                 var firewallProtection = await SecurityDiagnostics.IsFirewallEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var windowsUpdate = await SecurityDiagnostics.IsWindowsUpdateEnabledAsync(cancellationToken).ConfigureAwait(false);
@@ -99,7 +101,45 @@ public sealed partial class SecurityPage : Page, IPurgeable
             UpdateStatusCard(WindowsUpdateStatus, WindowsUpdateLink, results.windowsUpdate);
             UpdateStatusCard(SmartScreenStatus, SmartScreenLink, results.smartscreen);
             UpdateStatusCard(RealTimeProtectionStatus, RealTimeProtectionLink, results.realTimeProtection);
-            UpdateStatusCard(UACStatus, UACLink, results.uac);
+
+            _isUacSliderUpdating = true;
+            UacSlider.IsEnabled = true;
+
+            try
+            {
+                using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
+                int consentBehavior = (int)(key?.GetValue("ConsentPromptBehaviorAdmin") ?? 5);
+                int secureDesktop = (int)(key?.GetValue("PromptOnSecureDesktop") ?? 1);
+
+                if (consentBehavior == 2 && secureDesktop == 1)
+                {
+                    UacSlider.Value = 3;
+                    UacLevelDescription.Text = ResourceString.GetString("UAC_Level3") ?? "Always notify me";
+                }
+                else if (consentBehavior == 5 && secureDesktop == 1)
+                {
+                    UacSlider.Value = 2;
+                    UacLevelDescription.Text = ResourceString.GetString("UAC_Level2") ?? "Notify me only when apps try to make changes (default)";
+                }
+                else if (consentBehavior == 5 && secureDesktop == 0)
+                {
+                    UacSlider.Value = 1;
+                    UacLevelDescription.Text = ResourceString.GetString("UAC_Level1") ?? "Notify me only when apps try to make changes (do not dim desktop)";
+                }
+                else
+                {
+                    UacSlider.Value = 0;
+                    UacLevelDescription.Text = ResourceString.GetString("UAC_Level0") ?? "Never notify me (Not recommended)";
+                }
+            }
+            catch
+            {
+                UacSlider.IsEnabled = false;
+                UacLevelDescription.Text = "Access denied reading UAC status.";
+            }
+
+            _isUacSliderUpdating = false;
+
             UpdateStatusCard(TamperProtectionStatus, TamperProtectionLink, results.tamperProtection);
             UpdateStatusCard(ControlledFolderAccessStatus, ControlledFolderAccessLink, results.controlledFolderAccess);
             UpdateStatusCard(BitLockerStatus, BitLockerLink, results.bitLockerEnabled);
@@ -265,7 +305,6 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private void WindowsUpdateLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("ms-settings:windowsupdate");
     private void SmartScreenLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://smartscreenpua/");
     private void RealTimeProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
-    private void UACLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("ms-settings:useraccounts");
     private void TamperProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
     private void ControlledFolderAccessLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://ransomwareprotection/");
 
@@ -276,6 +315,55 @@ public sealed partial class SecurityPage : Page, IPurgeable
         {
             try { Process.Start(new ProcessStartInfo { FileName = "control.exe", Arguments = "/name Microsoft.BitLockerDriveEncryption", UseShellExecute = true }); }
             catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+        }
+    }
+
+    private void UacSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        if (_isUacSliderUpdating) return;
+
+        try
+        {
+            using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true);
+            if (key != null)
+            {
+                // Level 3: Always Notify
+                if (e.NewValue == 3)
+                {
+                    key.SetValue("ConsentPromptBehaviorAdmin", 2, RegistryValueKind.DWord);
+                    key.SetValue("PromptOnSecureDesktop", 1, RegistryValueKind.DWord);
+                    UacLevelDescription.Text = ResourceString.GetString("UAC_Level3") ?? "Always notify me";
+                }
+                // Level 2: Default
+                else if (e.NewValue == 2)
+                {
+                    key.SetValue("ConsentPromptBehaviorAdmin", 5, RegistryValueKind.DWord);
+                    key.SetValue("PromptOnSecureDesktop", 1, RegistryValueKind.DWord);
+                    UacLevelDescription.Text = ResourceString.GetString("UAC_Level2") ?? "Notify me only when apps try to make changes (default)";
+                }
+                // Level 1: Don't dim desktop
+                else if (e.NewValue == 1)
+                {
+                    key.SetValue("ConsentPromptBehaviorAdmin", 5, RegistryValueKind.DWord);
+                    key.SetValue("PromptOnSecureDesktop", 0, RegistryValueKind.DWord);
+                    UacLevelDescription.Text = ResourceString.GetString("UAC_Level1") ?? "Notify me only when apps try to make changes (do not dim desktop)";
+                }
+                // Level 0: Never notify
+                else if (e.NewValue == 0)
+                {
+                    key.SetValue("ConsentPromptBehaviorAdmin", 0, RegistryValueKind.DWord);
+                    key.SetValue("PromptOnSecureDesktop", 0, RegistryValueKind.DWord);
+                    UacLevelDescription.Text = ResourceString.GetString("UAC_Level0") ?? "Never notify me (Not recommended)";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+
+            _isUacSliderUpdating = true;
+            UacSlider.Value = e.OldValue;
+            _isUacSliderUpdating = false;
         }
     }
 

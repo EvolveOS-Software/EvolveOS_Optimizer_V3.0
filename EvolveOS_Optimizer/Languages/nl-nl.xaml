@@ -217,6 +217,11 @@
     <sys:String x:Key="None">Geen</sys:String>
     <sys:String x:Key="Enabled">Ingeschakeld</sys:String>
     <sys:String x:Key="Disabled">Uitgeschakeld</sys:String>
+
+    <sys:String x:Key="UAC_Level3">Altijd waarschuwen</sys:String>
+    <sys:String x:Key="UAC_Level2">Alleen waarschuwen als apps wijzigingen proberen aan te brengen (standaard)</sys:String>
+    <sys:String x:Key="UAC_Level1">Alleen waarschuwen als apps wijzigingen proberen aan te brengen (bureaublad niet dimmen)</sys:String>
+    <sys:String x:Key="UAC_Level0">Nooit waarschuwen (Niet aanbevolen)</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->

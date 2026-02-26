@@ -217,6 +217,11 @@
     <sys:String x:Key="None">Aucun</sys:String>
     <sys:String x:Key="Enabled">Activé</sys:String>
     <sys:String x:Key="Disabled">Désactivé</sys:String>
+
+    <sys:String x:Key="UAC_Level3">Toujours m'avertir</sys:String>
+    <sys:String x:Key="UAC_Level2">M'avertir uniquement quand des applications tentent d'apporter des modifications (par défaut)</sys:String>
+    <sys:String x:Key="UAC_Level1">M'avertir uniquement quand des applications tentent d'apporter des modifications (ne pas estomper le bureau)</sys:String>
+    <sys:String x:Key="UAC_Level0">Ne jamais m'avertir (Non recommandé)</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->

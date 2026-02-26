@@ -218,6 +218,11 @@
     <sys:String x:Key="None">None</sys:String>
     <sys:String x:Key="Enabled">Enabled</sys:String>
     <sys:String x:Key="Disabled">Disabled</sys:String>
+
+    <sys:String x:Key="UAC_Level3">Always notify me</sys:String>
+    <sys:String x:Key="UAC_Level2">Notify me only when apps try to make changes (default)</sys:String>
+    <sys:String x:Key="UAC_Level1">Notify me only when apps try to make changes (do not dim desktop)</sys:String>
+    <sys:String x:Key="UAC_Level0">Never notify me (Not recommended)</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->
