@@ -69,6 +69,8 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void MaintenancePage_Loaded(object sender, RoutedEventArgs e)
         {
+            MaintenanceViewModel.Current.ResumeUiUpdates();
+
             Optimize.Focus(FocusState.Programmatic);
 
             await CalculateSystemHealthAsync();
@@ -99,6 +101,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void MaintenancePage_Unloaded(object sender, RoutedEventArgs e)
         {
+            MaintenanceViewModel.Current.PauseUiUpdates();
             Purge();
         }
         #endregion

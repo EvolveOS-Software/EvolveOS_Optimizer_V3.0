@@ -42,6 +42,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private byte _optimizationProgressValue = byte.MinValue;
         private string? _selectedProcess;
         private bool _isBusy;
+        private bool _isUiActive = true;
 
         public MaintenanceViewModel(IComputerService computerService, IHotkeyService hotKeyService)
         {
@@ -519,17 +520,26 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             get
             {
                 if (Computer == null) return LocalMachineSettingsEngine.MemoryAreas;
-                if (!Computer.OperatingSystem.HasCombinedPageList) LocalMachineSettingsEngine.MemoryAreas &= ~Enums.Memory.Areas.CombinedPageList;
-                if (!Computer.OperatingSystem.HasModifiedPageList) LocalMachineSettingsEngine.MemoryAreas &= ~Enums.Memory.Areas.ModifiedPageList;
-                if (!Computer.OperatingSystem.HasRegistryHive) LocalMachineSettingsEngine.MemoryAreas &= ~Enums.Memory.Areas.RegistryCache;
-                if (!Computer.OperatingSystem.HasStandbyList) { LocalMachineSettingsEngine.MemoryAreas &= ~Enums.Memory.Areas.StandbyList; LocalMachineSettingsEngine.MemoryAreas &= ~Enums.Memory.Areas.StandbyListLowPriority; }
-                if (!Computer.OperatingSystem.HasSystemFileCache) LocalMachineSettingsEngine.MemoryAreas &= ~Enums.Memory.Areas.SystemFileCache;
-                if (!Computer.OperatingSystem.HasWorkingSet) LocalMachineSettingsEngine.MemoryAreas &= ~Enums.Memory.Areas.WorkingSet;
+
+                var currentAreas = LocalMachineSettingsEngine.MemoryAreas;
+                var originalAreas = currentAreas;
+
+                if (!Computer.OperatingSystem.HasCombinedPageList) currentAreas &= ~Enums.Memory.Areas.CombinedPageList;
+                if (!Computer.OperatingSystem.HasModifiedPageList) currentAreas &= ~Enums.Memory.Areas.ModifiedPageList;
+                if (!Computer.OperatingSystem.HasRegistryHive) currentAreas &= ~Enums.Memory.Areas.RegistryCache;
+                if (!Computer.OperatingSystem.HasStandbyList) { currentAreas &= ~Enums.Memory.Areas.StandbyList; currentAreas &= ~Enums.Memory.Areas.StandbyListLowPriority; }
+                if (!Computer.OperatingSystem.HasSystemFileCache) currentAreas &= ~Enums.Memory.Areas.SystemFileCache;
+                if (!Computer.OperatingSystem.HasWorkingSet) currentAreas &= ~Enums.Memory.Areas.WorkingSet;
 
                 string? root = Path.GetPathRoot(Environment.SystemDirectory);
-                if (root == null || !Directory.Exists(Path.Combine(root, "Windows.old"))) LocalMachineSettingsEngine.MemoryAreas &= ~Enums.Memory.Areas.WindowsOld;
+                if (root == null || !Directory.Exists(Path.Combine(root, "Windows.old"))) currentAreas &= ~Enums.Memory.Areas.WindowsOld;
 
-                return LocalMachineSettingsEngine.MemoryAreas;
+                if (currentAreas != originalAreas)
+                {
+                    LocalMachineSettingsEngine.MemoryAreas = currentAreas;
+                }
+
+                return currentAreas;
             }
             set
             {
@@ -679,7 +689,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     _dispatcherQueue?.TryEnqueue(() =>
                     {
-                        if (Computer != null)
+                        if (Computer != null && _isUiActive)
                         {
                             Computer.Memory = currentMemory;
                             OnPropertyChanged(nameof(Computer));
@@ -766,7 +776,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     _dispatcherQueue?.TryEnqueue(() =>
                     {
-                        if (Computer != null)
+                        if (Computer != null && _isUiActive)
                         {
                             Computer.Memory = mem;
                             OnPropertyChanged(nameof(Computer));
@@ -982,6 +992,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch { }
             finally { _isReiniziliating = false; }
+        }
+
+        public void PauseUiUpdates()
+        {
+            _isUiActive = false;
+        }
+
+        public void ResumeUiUpdates()
+        {
+            _isUiActive = true;
         }
 
         protected override void Dispose(bool disposing)
