@@ -112,6 +112,24 @@
     <sys:String x:Key="text_customize_dashboard">Dashboard aanpassen</sys:String>
     <sys:String x:Key="tooltip_customize_layout">Dashboard-indeling aanpassen</sys:String>
 
+    <!-- System Health Card -->
+    <sys:String x:Key="text_never_updated">Nooit bijgewerkt</sys:String>
+    <sys:String x:Key="tooltip_open_maintenance">Onderhoudspagina openen</sys:String>
+    <sys:String x:Key="btn_refresh_status">Status vernieuwen</sys:String>
+    <sys:String x:Key="text_scanning_system">Systeem scannen...</sys:String>
+    <sys:String x:Key="Health_Poor">Slecht - Actie vereist</sys:String>
+    <sys:String x:Key="Health_Warning">Redelijk - Optimalisatie aanbevolen</sys:String>
+    <sys:String x:Key="Health_Good">Goed - Systeem is gezond</sys:String>
+    <sys:String x:Key="text_last_checked">Laatst gecontroleerd</sys:String>
+
+    <!-- Dns Card Card -->
+    <sys:String x:Key="tooltip_open_dns_page">Open de pagina voor DNS-wisselaar/versleuteling</sys:String>
+    <sys:String x:Key="title_dns_encryption">DNS-Versleuteling</sys:String>
+    <sys:String x:Key="header_core_dns">Core DNS-services</sys:String>
+    <sys:String x:Key="header_security_privacy">Beveiligings- en privacyinstellingen</sys:String>
+    <sys:String x:Key="header_advanced_system">Geavanceerde en systeemopties</sys:String>
+    <sys:String x:Key="header_network_latency">Netwerklatentie en optimizer</sys:String>
+
     <!-- Diskspace Card -->
     <sys:String x:Key="txt_header_disk_space_card">Schijfruimte:</sys:String>
 
@@ -1025,11 +1043,9 @@
     <sys:String x:Key="status_retrieving">Ophalen...</sys:String>
     <sys:String x:Key="status_automatic_none">Automatisch/Geen</sys:String>
     <sys:String x:Key="status_failed_to_load">Laden van configuratie mislukt</sys:String>
-    <sys:String x:Key="tooltip_open_dns_page">Open de pagina voor DNS-wisselaar/versleuteling</sys:String>
     <!-- endregion DNS Changer -->
 
     <!-- region DNS Encryption -->
-    <sys:String x:Key="title_dns_encryption">DNS-Versleuteling</sys:String>
     <sys:String x:Key="btn_open_dns_encrypt">Open DNS-versleuteling</sys:String>
     <sys:String x:Key="text_dns_encryption_more">Versleutelt en authenticeert communicatie tussen de DNS-client en DNS-resolver. Het voorkomt DNS-spoofing.</sys:String>
 
@@ -1070,10 +1086,6 @@
     <sys:String x:Key="textbox_dns_primary_ip6">Voer de primaire IPv6 in</sys:String>
     <sys:String x:Key="text_dns_secondary_ip6">Secundaire IPv6</sys:String>
     <sys:String x:Key="textbox_dns_secondary_ip6">Voer de secundaire IPv6 in</sys:String>
-    <sys:String x:Key="header_core_dns">Core DNS-services</sys:String>
-    <sys:String x:Key="header_security_privacy">Beveiligings- en privacyinstellingen</sys:String>
-    <sys:String x:Key="header_advanced_system">Geavanceerde en systeemopties</sys:String>
-    <sys:String x:Key="header_network_latency">Netwerklatentie en optimizer</sys:String>
     <!-- endregion DNS Encryption -->
 
 </ResourceDictionary>

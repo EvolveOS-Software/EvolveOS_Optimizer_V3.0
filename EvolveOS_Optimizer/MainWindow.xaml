@@ -204,7 +204,7 @@
                             <FontIcon Glyph="&#xEDA2;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}"
+                        <RadioButton x:Name="BtnNavMaintenance" Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Maintenance"
                                      Tag="{x:Bind GetText('Nav_Maintenance'), Mode=OneWay}">

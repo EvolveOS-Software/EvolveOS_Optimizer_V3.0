@@ -1,5 +1,6 @@
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Threading;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -53,13 +54,14 @@ namespace EvolveOS_Optimizer.Pages
             this.Unloaded += Page_Unloaded;
         }
 
-        private void HomePage_Loaded(object sender, RoutedEventArgs e)
+        private async void HomePage_Loaded(object sender, RoutedEventArgs e)
         {
             ApplyElevationUI();
             LoadWeather();
             LoadDashboardLayout();
             DashboardDragCursor();
             UpdateDnsCardUI();
+            await CalculateSystemHealthAsync();
 
             SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
             SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
@@ -436,6 +438,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleGpu.IsOn = SettingsEngine.Dashboard_CardGpu;
             ToggleDisk.IsOn = SettingsEngine.Dashboard_CardDisk;
             ToggleDns.IsOn = SettingsEngine.Dashboard_CardDns;
+            ToggleHealth.IsOn = SettingsEngine.Dashboard_CardHealth;
 
             CardWeather.Visibility = Visibility.Visible;
             CardNetwork.Visibility = ToggleNetwork.IsOn ? Visibility.Visible : Visibility.Collapsed;
@@ -444,6 +447,7 @@ namespace EvolveOS_Optimizer.Pages
             CardGpu.Visibility = ToggleGpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDisk.Visibility = ToggleDisk.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDns.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardMaintenance.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
 
             string savedOrder = SettingsEngine.DashboardCardOrder;
             if (!string.IsNullOrWhiteSpace(savedOrder))
@@ -491,6 +495,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardGpu = ToggleGpu.IsOn;
             SettingsEngine.Dashboard_CardDisk = ToggleDisk.IsOn;
             SettingsEngine.Dashboard_CardDns = ToggleDns.IsOn;
+            SettingsEngine.Dashboard_CardHealth = ToggleHealth.IsOn;
         }
 
         private void ToggleCard_Toggled(object sender, RoutedEventArgs e)
@@ -582,12 +587,15 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CardGpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardDisk, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardDns, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardMaintenance, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
 
             // OVERRIDES: Set the standard Arrow (or Hand) cursor for clickable elements INSIDE the cards
             SetCustomCursor(BtnVision, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenDnsPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnStartService, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnDebug, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenMaintenancePage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRefreshHealth, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
 
             // Text blocks with "PointerPressed" events to copy text. 
             SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
@@ -603,6 +611,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardGpu = true;
             SettingsEngine.Dashboard_CardDisk = true;
             SettingsEngine.Dashboard_CardDns = true;
+            SettingsEngine.Dashboard_CardHealth = true;
 
             ToggleNetwork.IsOn = true;
             ToggleRam.IsOn = true;
@@ -610,6 +619,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleGpu.IsOn = true;
             ToggleDisk.IsOn = true;
             ToggleDns.IsOn = true;
+            ToggleHealth.IsOn = true;
 
             LoadDashboardLayout();
         }
@@ -723,6 +733,92 @@ namespace EvolveOS_Optimizer.Pages
             finally
             {
                 BtnDebug.IsEnabled = true;
+            }
+        }
+        #endregion
+
+        #region Maintenance Card
+        private void BtnOpenMaintenancePage_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWindow.Instance != null)
+            {
+                MainWindow.Instance.SwitchPage("Maintenance");
+            }
+            else
+            {
+                Debug.WriteLine("❌ MainWindow.Instance is null!");
+            }
+        }
+
+        private async void BtnRefreshHealth_Click(object sender, RoutedEventArgs e)
+        {
+            DashMaintenanceLoadingRing.Visibility = Visibility.Visible;
+            DashMaintenanceStatusImage.Visibility = Visibility.Collapsed;
+
+            await CalculateSystemHealthAsync();
+        }
+
+        private async Task CalculateSystemHealthAsync()
+        {
+            try
+            {
+                DashMaintenanceLoadingRing.Visibility = Visibility.Visible;
+                DashMaintenanceStatusImage.Visibility = Visibility.Collapsed;
+                TxtLastRefreshed.Visibility = Visibility.Collapsed;
+                BtnRefreshHealth.IsEnabled = false;
+
+                TxtHealthStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning System...";
+
+                double ramUsage = SystemDiagnostics.GetMemoryUsagePercentage();
+
+                await Task.Delay(1500);
+                double junkGigabytes = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
+
+                int penaltyScore = 0;
+
+                if (ramUsage > 85) penaltyScore += 2;
+                else if (ramUsage > 70) penaltyScore += 1;
+
+                if (junkGigabytes > 5.0) penaltyScore += 2;
+                else if (junkGigabytes > 1.0) penaltyScore += 1;
+
+                string imagePath;
+                string statusText;
+
+                if (penaltyScore >= 4)
+                {
+                    imagePath = "ms-appx:///Assets/PngImages/health_critical.png";
+                    statusText = ResourceString.GetString("Health_Poor") ?? "Poor - Action Required";
+                }
+                else if (penaltyScore >= 2)
+                {
+                    imagePath = "ms-appx:///Assets/PngImages/health_warning.png";
+                    statusText = ResourceString.GetString("Health_Warning") ?? "Fair - Optimization Recommended";
+                }
+                else
+                {
+                    imagePath = "ms-appx:///Assets/PngImages/health_good.png";
+                    statusText = ResourceString.GetString("Health_Good") ?? "Good - System is Healthy";
+                }
+
+                DashMaintenanceStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(imagePath));
+                TxtHealthStatus.Text = statusText;
+
+                string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
+                TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
+
+                DashMaintenanceStatusImage.Visibility = Visibility.Visible;
+                TxtLastRefreshed.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
+                TxtHealthStatus.Text = "Scan failed.";
+            }
+            finally
+            {
+                DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
+                BtnRefreshHealth.IsEnabled = true;
             }
         }
         #endregion

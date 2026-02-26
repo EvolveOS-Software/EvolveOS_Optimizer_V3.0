@@ -770,6 +770,56 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             });
         }
 
+        internal static double GetMemoryUsagePercentage()
+        {
+            MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
+            memStatus.dwLength = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+
+            if (GlobalMemoryStatusEx(ref memStatus))
+            {
+                return (double)memStatus.dwMemoryLoad;
+            }
+            return 0.0;
+        }
+
+        internal static async Task<double> GetQuickJunkSizeGigabytesAsync()
+        {
+            return await Task.Run(() =>
+            {
+                long totalBytes = 0;
+
+                string[] tempFolders = new string[]
+                {
+            Path.GetTempPath(), // User Temp (%localappdata%\Temp)
+            Environment.GetFolderPath(Environment.SpecialFolder.Windows) + @"\Temp",
+            Environment.GetFolderPath(Environment.SpecialFolder.Windows) + @"\Prefetch"
+                };
+
+                foreach (string folder in tempFolders)
+                {
+                    if (Directory.Exists(folder))
+                    {
+                        try
+                        {
+                            var files = new DirectoryInfo(folder).EnumerateFiles("*", SearchOption.AllDirectories);
+                            foreach (var file in files)
+                            {
+                                totalBytes += file.Length;
+                            }
+                        }
+                        catch
+                        {
+                            // Silently ignore access denied errors on locked system files
+                        }
+                    }
+                }
+
+                double gigabytes = totalBytes / 1024.0 / 1024.0 / 1024.0;
+
+                return Math.Round(gigabytes, 2);
+            });
+        }
+
         internal new string GetWallpaperPath() => WallpaperPath ?? string.Empty;
 
         #region Disposal
