@@ -40,6 +40,8 @@
                            Visibility="Collapsed"/>
                 </Grid>
 
+                <TextBlock x:Name="TxtSecurityStatus" Text="Scanning..." FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+
                 <TextBlock x:Name="LastRefreshedText" 
                            HorizontalAlignment="Center" 
                            Margin="0,0,0,10"
@@ -93,9 +95,9 @@
                                 </TransitionCollection>
                             </controls:WrapPanel.ChildrenTransitions>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="VirusThreatProtectionLink_Click">
                                 <Grid>
-                                    <FontIcon Glyph="&#xEA18;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <FontIcon Glyph="&#xEA18;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
                                         <TextBlock x:Name="VirusThreatProtectionStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="VirusThreatProtectionLink" 
@@ -111,9 +113,9 @@
                                 </Grid>
                             </Button>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="RealTimeProtectionLink_Click">
                                 <Grid>
-                                    <FontIcon Glyph="&#xE7EF;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <FontIcon Glyph="&#xE7EF;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
                                         <TextBlock x:Name="RealTimeProtectionStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="RealTimeProtectionLink" 
@@ -128,9 +130,9 @@
                                 </Grid>
                             </Button>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="FirewallLink_Click">
                                 <Grid>
-                                    <FontIcon Glyph="&#xE964;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <FontIcon Glyph="&#xE964;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
                                         <TextBlock x:Name="FirewallStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="FirewallLink" 
@@ -145,9 +147,9 @@
                                 </Grid>
                             </Button>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="WindowsUpdateLink_Click">
                                 <Grid>
-                                    <FontIcon Glyph="&#xE895;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <FontIcon Glyph="&#xE895;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
                                         <TextBlock x:Name="WindowsUpdateStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="WindowsUpdateLink" 
@@ -162,9 +164,9 @@
                                 </Grid>
                             </Button>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="SmartScreenLink_Click">
                                 <Grid>
-                                    <FontIcon Glyph="&#xF8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <FontIcon Glyph="&#xF8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
                                         <TextBlock x:Name="SmartScreenStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="SmartScreenLink" 
@@ -216,9 +218,9 @@
                                 </Grid>
                             </Border>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="TamperProtectionLink_Click">
                                 <Grid>
-                                    <FontIcon Glyph="&#xE72E;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <FontIcon Glyph="&#xE72E;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
                                         <TextBlock x:Name="TamperProtectionStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="TamperProtectionLink" 
@@ -233,9 +235,9 @@
                                 </Grid>
                             </Button>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="ControlledFolderAccessLink_Click">
                                 <Grid>
-                                    <FontIcon Glyph="&#xE8B7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <FontIcon Glyph="&#xE8B7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
                                         <TextBlock x:Name="ControlledFolderAccessStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="ControlledFolderAccessLink" 
@@ -250,9 +252,9 @@
                                 </Grid>
                             </Button>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="BitLockerLink_Click">
                                 <Grid>
-                                    <FontIcon Glyph="&#xE8D7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <FontIcon Glyph="&#xE8D7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
                                         <TextBlock x:Name="BitLockerStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="BitLockerLink" 
@@ -267,9 +269,9 @@
                                 </Grid>
                             </Button>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="DefenderServiceLink_Click">
                                 <Grid>
-                                    <FontIcon Glyph="&#xE9F5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <FontIcon Glyph="&#xE9F5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
                                         <TextBlock x:Name="DefenderServiceStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="DefenderServiceLink" 

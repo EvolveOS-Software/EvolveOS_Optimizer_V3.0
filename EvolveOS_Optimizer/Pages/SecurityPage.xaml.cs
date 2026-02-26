@@ -76,6 +76,8 @@ public sealed partial class SecurityPage : Page, IPurgeable
 
         try
         {
+            TxtSecurityStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
+
             var results = await Task.Run(async () =>
             {
                 var antivirusInfo = await SecurityDiagnostics.GetAntivirusInfoAsync(cancellationToken).ConfigureAwait(false);
@@ -157,10 +159,43 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 SignatureUpdateText.Visibility = Visibility.Collapsed;
             }
 
-            UpdateSecurityImage(results.antivirusInfo.IsEnabled, results.firewallProtection, results.windowsUpdate,
-                results.smartscreen, results.uac, results.realTimeProtection, results.tamperProtection, results.defenderServiceEnabled);
+            int issuesCount = 0;
+            if (!results.antivirusInfo.IsEnabled) issuesCount++;
+            if (!results.firewallProtection) issuesCount++;
+            if (!results.realTimeProtection) issuesCount++;
+            if (!results.uac) issuesCount++;
+            if (!results.windowsUpdate) issuesCount++;
+            if (!results.tamperProtection) issuesCount++;
+
+            string imageUri;
+            string statusText;
+
+            if (issuesCount >= 3)
+            {
+                imageUri = "ms-appx:///Assets/PngImages/UnSecure.png";
+                statusText = $"{issuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
+            }
+            else if (issuesCount > 0)
+            {
+                imageUri = "ms-appx:///Assets/PngImages/Warning.png";
+                statusText = $"{issuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
+            }
+            else
+            {
+                imageUri = "ms-appx:///Assets/PngImages/Secure.png";
+                statusText = ResourceString.GetString("text_security_good") ?? "System is Secure";
+            }
+
+            SecurityStatusImage.Source = new BitmapImage(new Uri(imageUri));
+            TxtSecurityStatus.Text = statusText;
+
+            SecurityStatusLoadingRing.IsActive = false;
+            SecurityStatusLoadingRing.Visibility = Visibility.Collapsed;
+            SecurityStatusImage.Visibility = Visibility.Visible;
+            TxtSecurityStatus.Visibility = Visibility.Visible;
 
             LastRefreshedText.Text = $"{ResourceString.GetString("SecurityPage_LastRefreshed")}: {DateTime.Now:T}";
+            LastRefreshedText.Visibility = Visibility.Visible;
         }
         catch (OperationCanceledException)
         {
@@ -169,6 +204,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
         catch (Exception ex)
         {
             ErrorLogging.LogDebug(ex);
+            TxtSecurityStatus.Text = "Scan failed.";
         }
         finally
         {
