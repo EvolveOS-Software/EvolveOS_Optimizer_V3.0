@@ -1,10 +1,13 @@
 using System.ComponentModel;
 using System.Reflection;
+using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Services;
+using Microsoft.UI.Windowing;
 using Windows.System;
+using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -17,6 +20,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private string? _displayProfileName;
         private bool _isNeedUpdate;
         private bool _isOverlayVisible;
+
+        private bool _isWindowVisible = !App.IsStartedHidden;
 
         public IEnumerable<VirtualKeyModifiers> AvailableModifiers { get; } = new[]
         {
@@ -136,6 +141,32 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
+        public bool IsRunOnStartUp
+        {
+            get => SettingsEngine.IsRunOnStartUp;
+            set
+            {
+                if (SettingsEngine.IsRunOnStartUp != value)
+                {
+                    SettingsEngine.IsRunOnStartUp = value;
+                    OnPropertyChanged(nameof(IsRunOnStartUp));
+                }
+            }
+        }
+
+        public bool IsStartMinimized
+        {
+            get => SettingsEngine.IsStartMinimized;
+            set
+            {
+                if (SettingsEngine.IsStartMinimized != value)
+                {
+                    SettingsEngine.IsStartMinimized = value;
+                    OnPropertyChanged(nameof(IsStartMinimized));
+                }
+            }
+        }
+
         public string DisplayTweakVersion =>
             (Assembly.GetEntryAssembly() ?? throw new InvalidOperationException())
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "Unknown Version";
@@ -143,12 +174,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Commands
         public RelayCommand<string> ExecuteNavigateCommand { get; }
+
+        public ICommand MaximizeCommand { get; }
+        public ICommand MinimizeCommand { get; }
+        public ICommand CloseCommand { get; }
+        public ICommand ToggleWindowVisibilityCommand { get; }
         #endregion
 
         #region Constructor
         public MainWinViewModel()
         {
             ExecuteNavigateCommand = new RelayCommand<string>(ExecuteNavigate);
+
+            MaximizeCommand = new RelayCommand<object>(_ => ExecuteMaximize());
+            MinimizeCommand = new RelayCommand<object>(_ => ExecuteMinimize());
+            CloseCommand = new RelayCommand<object>(_ => ExecuteClose());
+            ToggleWindowVisibilityCommand = new RelayCommand<object>(_ => ExecuteToggleVisibility());
 
             LocalizationService.Instance.PropertyChanged += OnLocalizationPropertyChanged;
 
@@ -180,6 +221,52 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
 
             base.Dispose(disposing);
+        }
+
+        private void ExecuteMaximize()
+        {
+            var window = App.Current.MainWindow;
+            if (window == null) return;
+
+            var hwnd = WindowNative.GetWindowHandle(window);
+            var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            var appWindow = AppWindow.GetFromWindowId(windowId);
+
+            appWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
+
+            appWindow.Show();
+            window.Activate();
+            _isWindowVisible = true;
+        }
+
+        private void ExecuteMinimize()
+        {
+            var window = App.Current.MainWindow;
+            if (window == null) return;
+
+            var hwnd = WindowNative.GetWindowHandle(window);
+            var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            var appWindow = AppWindow.GetFromWindowId(windowId);
+
+            appWindow.Hide(); // Hides it from the screen and taskbar
+            _isWindowVisible = false;
+        }
+
+        private void ExecuteToggleVisibility()
+        {
+            if (_isWindowVisible)
+            {
+                ExecuteMinimize();
+            }
+            else
+            {
+                ExecuteMaximize();
+            }
+        }
+
+        private void ExecuteClose()
+        {
+            Application.Current.Exit();
         }
         #endregion
     }

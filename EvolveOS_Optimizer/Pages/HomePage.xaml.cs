@@ -1031,22 +1031,38 @@ namespace EvolveOS_Optimizer.Pages
 
         private void StartShimmer(LinearGradientBrush brush, string stopName)
         {
+            if (brush == null) return;
+
+            TranslateTransform transform = new TranslateTransform { X = -1.0 };
+            brush.RelativeTransform = transform;
+
             Storyboard storyboard = new Storyboard();
 
             DoubleAnimation animation = new DoubleAnimation
             {
-                From = -0.5,
+                From = -1.5,
                 To = 1.5,
                 Duration = new Duration(TimeSpan.FromSeconds(2)),
                 RepeatBehavior = RepeatBehavior.Forever,
                 AutoReverse = false
             };
 
-            Storyboard.SetTarget(animation, brush.GradientStops[1]);
-            Storyboard.SetTargetProperty(animation, "Offset");
+            if (transform != null)
+            {
+                Storyboard.SetTarget(animation, transform);
+                Storyboard.SetTargetProperty(animation, "X");
 
-            storyboard.Children.Add(animation);
-            storyboard.Begin();
+                storyboard.Children.Add(animation);
+
+                try
+                {
+                    storyboard.Begin();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Shimmer failed to start: {ex.Message}");
+                }
+            }
         }
         #endregion
 

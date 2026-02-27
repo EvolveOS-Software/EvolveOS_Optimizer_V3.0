@@ -43,6 +43,11 @@ namespace EvolveOS_Optimizer
             NotificationManager.Initialize(this);
             _hWnd = WindowNative.GetWindowHandle(this);
 
+            if (App.IsStartedHidden)
+            {
+                Win32Helper.ShowWindow(_hWnd, 0);
+            }
+
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
 
@@ -55,6 +60,9 @@ namespace EvolveOS_Optimizer
             UIHelper.RegisterPageTransition(ContentFrame, RootGrid);
 
             this.Activated += MainWindow_Activated;
+
+            this.AppWindow.Closing += AppWindow_Closing;
+            this.SizeChanged += MainWindow_SizeChanged;
 
             LocalizationService.Instance.PropertyChanged += (s, e) =>
             {
@@ -130,6 +138,41 @@ namespace EvolveOS_Optimizer
             if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
             {
                 this.DispatcherQueue.TryEnqueue(() => AnimateUpdateBanner(true));
+            }
+        }
+
+        private void AppWindow_Closing(Microsoft.UI.Windowing.AppWindow sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs args)
+        {
+            if (SettingsEngine.IsCloseToTrayEnabled)
+            {
+                args.Cancel = true;
+
+                if (RootGrid.DataContext is MainWinViewModel vm)
+                {
+                    vm.MinimizeCommand.Execute(null);
+                }
+            }
+            else
+            {
+                App.ExitApp();
+            }
+        }
+
+        private void MainWindow_SizeChanged(object sender, WindowSizeChangedEventArgs args)
+        {
+            var hwnd = WindowNative.GetWindowHandle(this);
+            var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            var appWindow = AppWindow.GetFromWindowId(windowId);
+
+            if (appWindow.Presenter is OverlappedPresenter presenter)
+            {
+                if (presenter.State == OverlappedPresenterState.Minimized)
+                {
+                    if (RootGrid.DataContext is MainWinViewModel vm)
+                    {
+                        vm.MinimizeCommand.Execute(null);
+                    }
+                }
             }
         }
         #endregion

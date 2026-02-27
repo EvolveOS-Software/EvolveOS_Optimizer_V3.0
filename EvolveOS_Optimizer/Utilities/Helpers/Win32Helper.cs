@@ -314,6 +314,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool GetExitCodeProcess(IntPtr hProcess, out uint lpExitCode);
 
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
         #endregion
 
         #region Delegates & Private Fields

@@ -16,6 +16,8 @@ namespace EvolveOS_Optimizer
         public const string Name = "EvolveOS Optimizer";
 
         public Window? MainWindow { get; set; }
+        public static bool IsStartedHidden { get; private set; }
+
         private static Mutex? _mutex;
 
         private static IHotkeyService? _hotkeyService;
@@ -36,6 +38,10 @@ namespace EvolveOS_Optimizer
             _mutex = new Mutex(true, "EvolveOS_Optimizer_SingleInstance", out bool isNewInstance);
             if (!isNewInstance) { Environment.Exit(0); return; }
 
+            bool startHidden = Environment.CommandLine.Contains("-hidden", StringComparison.OrdinalIgnoreCase);
+
+            IsStartedHidden = startHidden;
+
             if (!IsRunningAsAdmin())
             {
                 ElevateToAdmin();
@@ -54,8 +60,7 @@ namespace EvolveOS_Optimizer
 
                 if (result == Win32Helper.IDYES)
                 {
-                    _ =  WindowsDefender.Recovery();
-
+                    _ = WindowsDefender.Recovery();
                     return;
                 }
             }
@@ -68,11 +73,23 @@ namespace EvolveOS_Optimizer
             App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
 
             _ = Core.ViewModel.MaintenanceViewModel.Current;
-            var loadingWindow = new LoadingWindow();
-            MainWindow = loadingWindow;
 
             SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
-            MainWindow.Activate();
+
+            if (IsStartedHidden)
+            {
+                MainWindow = new LoadingWindow();
+
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
+                Win32Helper.ShowWindow(hwnd, 0);
+
+                MainWindow.Activate();
+            }
+            else
+            {
+                MainWindow = new LoadingWindow();
+                MainWindow.Activate();
+            }
 
             MainWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
             {
@@ -225,9 +242,12 @@ namespace EvolveOS_Optimizer
             string? exePath = Environment.ProcessPath;
             if (exePath != null)
             {
+                string args = string.Join(" ", Environment.GetCommandLineArgs().Skip(1));
+
                 ProcessStartInfo proc = new ProcessStartInfo
                 {
                     FileName = exePath,
+                    Arguments = args,
                     UseShellExecute = true,
                     Verb = "runas"
                 };

@@ -194,7 +194,6 @@ namespace EvolveOS_Optimizer.Views
 
                     Report(20);
 
-                    //_ = Task.Run(async () =>
                     Task weatherTask = Task.Run(async () =>
                     {
                         try
@@ -288,18 +287,28 @@ namespace EvolveOS_Optimizer.Views
             try
             {
                 var mainDash = new global::EvolveOS_Optimizer.MainWindow();
-
                 mainDash.Closed += (s, e) => { App.ExitApp(); };
 
                 if (Application.Current is App myApp)
                 {
                     myApp.MainWindow = mainDash;
-                    SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
-                    myApp.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
                 }
 
-                UIHelper.ApplyBackdrop(mainDash, SettingsEngine.Backdrop);
-                mainDash.Activate();
+                if (App.IsStartedHidden)
+                {
+                    IntPtr hWnd = global::WinRT.Interop.WindowNative.GetWindowHandle(mainDash);
+                    var appWin = mainDash.AppWindow;
+
+                    Win32Helper.ShowWindow(hWnd, 0);
+                    appWin.Hide();
+
+                    Debug.WriteLine("[LoadingWindow] MainWindow initialized silently in the tray.");
+                }
+                else
+                {
+                    UIHelper.ApplyBackdrop(mainDash, SettingsEngine.Backdrop);
+                    mainDash.Activate();
+                }
 
                 _cts.Cancel();
                 this.Close();
@@ -313,7 +322,15 @@ namespace EvolveOS_Optimizer.Views
                     a.MainWindow = fallback;
                     SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
                 }
-                fallback.Activate();
+
+                if (!App.IsStartedHidden)
+                {
+                    fallback.Activate();
+                }
+                else
+                {
+                    fallback.AppWindow.Hide();
+                }
                 this.Close();
             }
         }

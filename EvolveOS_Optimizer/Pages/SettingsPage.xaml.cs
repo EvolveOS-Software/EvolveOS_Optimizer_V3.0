@@ -266,6 +266,61 @@ namespace EvolveOS_Optimizer.Pages
             btn.Content = ResourceString.GetString("Settings_Update_CheckButton");
         }
 
+        private void BtnStartMinimized_ChangedState(object sender, RoutedEventArgs e)
+        {
+            if (sender is Microsoft.UI.Xaml.Controls.ToggleSwitch toggleSwitch)
+            {
+                SettingsEngine.IsStartMinimized = toggleSwitch.IsOn;
+            }
+        }
+
+        private void BtnRunOnStartUp_ChangedState(object sender, RoutedEventArgs e)
+        {
+            if (sender is Microsoft.UI.Xaml.Controls.ToggleSwitch toggleSwitch)
+            {
+                SettingsEngine.IsRunOnStartUp = toggleSwitch.IsOn;
+            }
+        }
+
+        public bool IsRunOnStartUp
+        {
+            get => SettingsEngine.IsRunOnStartUp;
+            set
+            {
+                if (SettingsEngine.IsRunOnStartUp != value)
+                {
+                    SettingsEngine.IsRunOnStartUp = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsCloseToTray
+        {
+            get => SettingsEngine.IsCloseToTrayEnabled;
+            set
+            {
+                if (SettingsEngine.IsCloseToTrayEnabled != value)
+                {
+                    SettingsEngine.IsCloseToTrayEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsStartMinimized
+        {
+            get => SettingsEngine.IsStartMinimized;
+            set
+            {
+                if (SettingsEngine.IsStartMinimized != value)
+                {
+                    SettingsEngine.IsStartMinimized = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private void OnPropertyChanged([CallerMemberName] string? name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 

@@ -103,6 +103,20 @@
     <sys:String x:Key="Settings_Theme_Default">System Default</sys:String>
     <sys:String x:Key="Settings_Theme_Light">Light</sys:String>
     <sys:String x:Key="Settings_Theme_Dark">Dark</sys:String>
+
+    <sys:String x:Key="Settings_System_Title">System Behavior</sys:String>
+
+    <sys:String x:Key="Settings_Startup_Title">Run on Startup</sys:String>
+    <sys:String x:Key="Settings_Startup_Subtitle">Automatically launch EvolveOS Optimizer silently in the system tray when Windows starts.</sys:String>
+
+    <sys:String x:Key="Settings_CloseToTray_Title">Close to System Tray</sys:String>
+    <sys:String x:Key="Settings_CloseToTray_Subtitle">Keep the application running in the background when the window is closed.</sys:String>
+
+    <sys:String x:Key="Settings_StartMinimized_Title">Start Minimized</sys:String>
+    <sys:String x:Key="Settings_StartMinimized_Subtitle">Launch the application directly to the system tray without showing the main window.</sys:String>
+
+    <sys:String x:Key="Settings_ToggleOn">On</sys:String>
+    <sys:String x:Key="Settings_ToggleOff">Off</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
@@ -1108,5 +1122,19 @@
     <sys:String x:Key="text_dns_secondary_ip6">Secondary IPV6</sys:String>
     <sys:String x:Key="textbox_dns_secondary_ip6">Enter the secondary ipv6</sys:String>
     <!-- endregion DNS Encryption -->
+
+    <!--#region System TrayIcon -->
+    <sys:String x:Key="systray_show_window">Show Window</sys:String>
+    <sys:String x:Key="systray_hide_window">Hide Window</sys:String>
+    <sys:String x:Key="systray_close_window">Exit</sys:String>
+    <sys:String x:Key="systray_run_startup">Run on Startup</sys:String>
+    <sys:String x:Key="systray_click_show">Click to show</sys:String>
+    <sys:String x:Key="systray_clear_memory">Clear Memory</sys:String>
+    <!--#endregion-->
+
+    <!--#region Run On StartUp -->
+    <sys:String x:Key="text_run_startup">Run on Startup</sys:String>
+    <sys:String x:Key="tooltip_run_startup">Enable or disable launching the program on Windows Startup.</sys:String>
+    <!--#endregion-->
 
 </ResourceDictionary>

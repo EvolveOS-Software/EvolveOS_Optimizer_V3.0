@@ -3,6 +3,7 @@ using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
+using Microsoft.Win32.TaskScheduler;
 using Windows.System;
 
 namespace EvolveOS_Optimizer.Utilities.Controls
@@ -61,6 +62,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["AllScriptsPaths"] = string.Empty,
             ["EnableIpBlur"] = true,
             ["LastLocation"] = "Paris",
+            ["EnableRunOnStartup"] = false,
+            ["EnableCloseToTray"] = true,
+            ["EnableStartMinimized"] = false,
 
             ["DashboardCardOrder"] = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk,CardDns,CardHealth,CardSecurity",
             ["Dashboard_CardNetwork"] = true,
@@ -87,6 +91,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool IsSelectionGlowEnabled { get => (bool)_cachedSettings["EnableSelectionGlow"]; set => ChangingParameters("EnableSelectionGlow", value); }
         internal static string UserScriptsPath { get => (string)_cachedSettings["ScriptsPath"]; set => ChangingParameters("ScriptsPath", value); }
         internal static string LastLocation { get => (string)_cachedSettings["LastLocation"]; set => ChangingParameters("LastLocation", value); }
+        internal static bool IsRunOnStartUp { get => (bool)_cachedSettings["EnableRunOnStartup"]; set { if ((bool)_cachedSettings["EnableRunOnStartup"] != value) { ChangingParameters("EnableRunOnStartup", value); ToggleStartup(value, IsStartMinimized); } } }
+        internal static bool IsCloseToTrayEnabled { get => (bool)_cachedSettings["EnableCloseToTray"]; set => ChangingParameters("EnableCloseToTray", value); }
+        internal static bool IsStartMinimized { get => (bool)_cachedSettings["EnableStartMinimized"]; set { if ((bool)_cachedSettings["EnableStartMinimized"] != value) { ChangingParameters("EnableStartMinimized", value); if (IsRunOnStartUp) { ToggleStartup(true, value); } } } }
         internal static List<string> AllUserScriptsPaths
         {
             get
@@ -243,6 +250,104 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             {
                 target.SetBackdropByName(Backdrop);
             }
+        }
+
+
+        public static void ToggleStartup(bool enable, bool startHidden)
+        {
+            string exePath = Environment.ProcessPath ?? AppContext.BaseDirectory;
+
+            if (enable)
+            {
+                bool registrySuccess = false;
+                try
+                {
+                    using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
+                    {
+                        if (key != null)
+                        {
+                            string command = $"\"{exePath}\"{(startHidden ? " -hidden" : "")}";
+                            key.SetValue(AppName, command);
+                            registrySuccess = true;
+
+                            DisableTask();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Registry Write Failed: " + e.Message);
+                    registrySuccess = false;
+                }
+
+                if (!registrySuccess)
+                {
+                    RemoveRegistryKey();
+                    EnableTask(exePath, startHidden);
+                }
+            }
+            else
+            {
+                RemoveRegistryKey();
+                DisableTask();
+            }
+        }
+
+        private static void EnableTask(string exePath, bool startHidden)
+        {
+            try
+            {
+                using (TaskService taskService = new TaskService())
+                {
+                    TaskDefinition td = taskService.NewTask();
+                    td.RegistrationInfo.Description = "Runs EvolveOS Optimizer on startup.";
+                    td.Principal.RunLevel = TaskRunLevel.Highest;
+                    td.Triggers.Add(new LogonTrigger());
+
+                    string arguments = startHidden ? "-hidden" : "";
+                    td.Actions.Add(new ExecAction(exePath, arguments));
+
+                    td.Settings.DisallowStartIfOnBatteries = false;
+                    td.Settings.StopIfGoingOnBatteries = false;
+                    td.Settings.ExecutionTimeLimit = TimeSpan.Zero;
+
+                    taskService.RootFolder.RegisterTaskDefinition(ScheduledTaskName, td);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Task Scheduler Enable Failed: " + e.Message);
+            }
+        }
+
+        private static void DisableTask()
+        {
+            try
+            {
+                using (TaskService taskService = new TaskService())
+                {
+                    if (taskService.FindTask(ScheduledTaskName) != null)
+                    {
+                        taskService.RootFolder.DeleteTask(ScheduledTaskName);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Task Scheduler Disable Failed: " + e.Message);
+            }
+        }
+
+        private static void RemoveRegistryKey()
+        {
+            try
+            {
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RunKeyPath, true))
+                {
+                    key?.DeleteValue(AppName, false);
+                }
+            }
+            catch { }
         }
     }
     #endregion

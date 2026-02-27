@@ -8,12 +8,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:vm="using:EvolveOS_Optimizer.Core.ViewModel"
+    xmlns:tb="using:H.NotifyIcon"
     mc:Ignorable="d" 
     d:Height="870" 
     d:Width="1575"
     Title="EvolveOS Optimizer">
 
     <Grid x:Name="RootGrid" x:FieldModifier="public" Background="Transparent">
+
         <Grid.Resources>
             <Storyboard x:Name="ShowDimOverlay">
                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="WindowDimOverlay" Storyboard.TargetProperty="Visibility">
@@ -51,6 +53,43 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <tb:TaskbarIcon ToolTipText="EvolveOS Optimizer"
+                        IconSource="/Assets/EvolveOS_Optimizer.ico"
+                        MenuActivation="RightClick"
+                        DataContext="{Binding ElementName=RootGrid, Path=DataContext}"
+                        DoubleClickCommand="{Binding ToggleWindowVisibilityCommand}">
+
+            <tb:TaskbarIcon.ContextFlyout>
+                <MenuFlyout>
+
+                    <MenuFlyoutItem Text="Show Optimizer" Command="{Binding MaximizeCommand}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE922;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutItem Text="Hide Optimizer" Command="{Binding MinimizeCommand}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE921;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutSeparator />
+
+                    <ToggleMenuFlyoutItem Text="Run on Startup" 
+                                  IsChecked="{Binding IsRunOnStartUp, Mode=TwoWay}" />
+
+                    <MenuFlyoutItem Text="Quit EvolveOS" Command="{Binding CloseCommand}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE711;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                </MenuFlyout>
+            </tb:TaskbarIcon.ContextFlyout>
+
+        </tb:TaskbarIcon>
 
         <Grid x:Name="AppTitleBar" Height="45" Visibility="Visible" VerticalAlignment="Top">
 

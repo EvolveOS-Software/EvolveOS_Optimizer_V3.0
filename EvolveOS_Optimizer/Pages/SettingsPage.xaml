@@ -291,8 +291,67 @@
             </StackPanel>
 
             <StackPanel Spacing="12">
-                <TextBlock Text="{x:Bind GetText('Settings_Update_SectionTitle'), Mode=OneWay}" 
-   FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock Text="{x:Bind GetText('Settings_System_Title'), Mode=OneWay, FallbackValue='System Behavior'}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="{x:Bind GetText('Settings_Startup_Title'), Mode=OneWay, FallbackValue='Run on Startup'}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_Startup_Subtitle'), Mode=OneWay, FallbackValue='Automatically launch EvolveOS Optimizer silently in the system tray when Windows starts.'}"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <ToggleSwitch Grid.Column="1" 
+                      IsOn="{x:Bind IsRunOnStartUp, Mode=TwoWay}" 
+                      OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
+                      OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                    </Grid>
+                </Border>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="{x:Bind GetText('Settings_CloseToTray_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_CloseToTray_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <ToggleSwitch Grid.Column="1" IsOn="{x:Bind IsCloseToTray, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
+                    </Grid>
+                </Border>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="{x:Bind GetText('Settings_StartMinimized_Title'), Mode=OneWay, FallbackValue='Start Minimized'}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_StartMinimized_Subtitle'), Mode=OneWay, FallbackValue='Launch the application directly to the system tray without showing the main window.'}" 
+                                       Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <ToggleSwitch Grid.Column="1" 
+                      IsOn="{x:Bind IsStartMinimized, Mode=TwoWay}" 
+                      OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
+                      OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Spacing="12">
+                <TextBlock Text="{x:Bind GetText('Settings_Update_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
@@ -303,13 +362,9 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                 <TextBlock Text="{x:Bind GetText('Settings_Update_AutoTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_Update_AutoSubtitle'), Mode=OneWay}" 
-                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_AutoSubtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
-                            <ToggleSwitch Grid.Column="1" 
-                  IsOn="{x:Bind IsUpdateCheckRequired, Mode=TwoWay}" 
-                  OnContent="{x:Bind GetText('Settings_Update_ToggleOn'), Mode=OneWay}" 
-                  OffContent="{x:Bind GetText('Settings_Update_ToggleOff'), Mode=OneWay}"/>
+                            <ToggleSwitch Grid.Column="1" IsOn="{x:Bind IsUpdateCheckRequired, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_Update_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_Update_ToggleOff'), Mode=OneWay}"/>
                         </Grid>
 
                         <MenuFlyoutSeparator/>
@@ -321,14 +376,9 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                 <TextBlock Text="{x:Bind GetText('Settings_Update_ManualTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
-                                <TextBlock Text="{x:Bind GetText('Settings_Update_ManualSubtitle'), Mode=OneWay}" 
-                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_ManualSubtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
-                            <Button Grid.Column="1" 
-            Content="{x:Bind GetText('Settings_Update_CheckButton'), Mode=OneWay}" 
-            Width="200" 
-            Click="ManualUpdateCheck_Click" 
-            Style="{StaticResource AccentButtonStyle}"/>
+                            <Button Grid.Column="1" Content="{x:Bind GetText('Settings_Update_CheckButton'), Mode=OneWay}" Width="200" Click="ManualUpdateCheck_Click" Style="{StaticResource AccentButtonStyle}"/>
                         </Grid>
                     </StackPanel>
                 </Border>
