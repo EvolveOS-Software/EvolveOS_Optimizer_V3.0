@@ -145,9 +145,20 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                 if (_mainWindow == null) return;
 
                 bool isMinimized = false;
+
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_mainWindow);
+                bool isActuallyVisible = Win32Helper.IsWindowVisible(hwnd);
+
                 if (_mainWindow.AppWindow != null && _mainWindow.AppWindow.Presenter is OverlappedPresenter presenter)
                 {
                     isMinimized = presenter.State == OverlappedPresenterState.Minimized;
+                }
+
+                if (!isActuallyVisible)
+                {
+                    Debug.WriteLine("[NotifyLog] Win32 confirms window is HIDDEN. Sending Toast.");
+                    SendNativeToast(_title, _text);
+                    return;
                 }
 
                 if (isMinimized)
@@ -349,6 +360,57 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                 ProcessQueue();
             };
             batch.End();
+        }
+
+        private static void SendNativeToast(string title, string message)
+        {
+            try
+            {
+                string aumid = "EvolveOS.Optimizer.App";
+
+                string xmlPayload = $@"
+                <toast scenario='reminder' launch='action=wakeup'>
+                    <visual>
+                        <binding template='ToastGeneric'>
+                            <text>{title}</text>
+                            <text>{message}</text>
+                        </binding>
+                    </visual>
+                </toast>";
+
+                var xmlDoc = new Windows.Data.Xml.Dom.XmlDocument();
+                xmlDoc.LoadXml(xmlPayload);
+
+                var toast = new Windows.UI.Notifications.ToastNotification(xmlDoc)
+                {
+                    Tag = "Maintenance",
+                    Group = "Optimizer"
+                };
+
+                toast.Activated += (sender, args) =>
+                {
+                    App.UIThreadDispatcher?.TryEnqueue(() =>
+                    {
+                        if (App.Current.MainWindow != null)
+                        {
+                            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
+
+                            Win32Helper.ShowWindow(hwnd, 5);
+                            Win32Helper.ShowWindow(hwnd, 9);
+                            Win32Helper.SetForegroundWindow(hwnd);
+
+                            System.Diagnostics.Debug.WriteLine("[NotifyLog] Toast clicked! Window restored.");
+                        }
+                    });
+                };
+
+                Windows.UI.Notifications.ToastNotificationManager.CreateToastNotifier(aumid).Show(toast);
+                Debug.WriteLine("[NotifyLog] Raw WinRT Toast sent and listening for clicks.");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.WriteLine($"[NotifyLog] WinRT Toast Error: {ex.Message}");
+            }
         }
 
         #endregion

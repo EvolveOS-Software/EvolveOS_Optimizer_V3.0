@@ -254,7 +254,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
             var appWindow = AppWindow.GetFromWindowId(windowId);
 
-            appWindow.Hide(); // Hides it from the screen and taskbar
+            appWindow.Hide();
             _isWindowVisible = false;
         }
 

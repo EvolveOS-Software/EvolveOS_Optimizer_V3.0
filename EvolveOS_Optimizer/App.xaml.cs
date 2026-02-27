@@ -8,6 +8,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
+using Microsoft.Windows.AppNotifications;
 
 namespace EvolveOS_Optimizer
 {
@@ -17,6 +18,8 @@ namespace EvolveOS_Optimizer
 
         public Window? MainWindow { get; set; }
         public static bool IsStartedHidden { get; private set; }
+
+        public static Microsoft.UI.Dispatching.DispatcherQueue? UIThreadDispatcher { get; private set; }
 
         private static Mutex? _mutex;
 
@@ -35,8 +38,44 @@ namespace EvolveOS_Optimizer
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
+            string aumid = "EvolveOS.Optimizer.App";
+            SetCurrentProcessAppId(aumid);
+
+            UIThreadDispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+            try
+            {
+                var dummy = Windows.ApplicationModel.Package.Current.Id;
+            }
+            catch (InvalidOperationException)
+            {
+                AppNotificationManager.Default.Register();
+            }
+
+            EnsureShortcutWithAumid();
+
             _mutex = new Mutex(true, "EvolveOS_Optimizer_SingleInstance", out bool isNewInstance);
-            if (!isNewInstance) { Environment.Exit(0); return; }
+
+            if (!isNewInstance)
+            {
+                IntPtr hwnd = Win32Helper.FindWindow("WinUIDesktopWin32WindowClass", "EvolveOS Optimizer");
+
+                if (hwnd == IntPtr.Zero) hwnd = Win32Helper.FindWindow(null!, "EvolveOS Optimizer");
+
+                if (hwnd != IntPtr.Zero)
+                {
+                    Win32Helper.ShowWindow(hwnd, 5);
+                    Win32Helper.ShowWindow(hwnd, 9);
+                    Win32Helper.SetForegroundWindow(hwnd);
+                }
+                else
+                {
+                    Win32Helper.MessageBox(IntPtr.Zero, "Failed to find the hidden window. Check the Title!", "Debug", 0);
+                }
+
+                Environment.Exit(0);
+                return;
+            }
 
             bool startHidden = Environment.CommandLine.Contains("-hidden", StringComparison.OrdinalIgnoreCase);
 
@@ -103,6 +142,10 @@ namespace EvolveOS_Optimizer
         }
 
         #region System & Process Utilities
+        private static void SetCurrentProcessAppId(string appId)
+        {
+            Win32Helper.SetCurrentProcessExplicitAppUserModelID(appId);
+        }
 
         public static void SetPriority(Enums.Priority priority)
         {
@@ -199,13 +242,10 @@ namespace EvolveOS_Optimizer
             {
                 Core.ViewModel.MaintenanceViewModel.Current.OptimizeCommand.Execute(null);
 
-                if (Current.MainWindow?.DispatcherQueue != null)
+                App.UIThreadDispatcher?.TryEnqueue(() =>
                 {
-                    Current.MainWindow.DispatcherQueue.TryEnqueue(() =>
-                    {
-                        ShowNotification("Optimizer", "Memory successfully cleaned via Global Hotkey!", InfoBarSeverity.Success, 3000);
-                    });
-                }
+                    ShowNotification("Optimizer", "Memory successfully cleaned!", InfoBarSeverity.Success, 3000);
+                });
             }
         }
 
@@ -256,6 +296,24 @@ namespace EvolveOS_Optimizer
                 catch (Exception ex) { Debug.WriteLine($"[App] Elevation failed: {ex.Message}"); }
             }
             Environment.Exit(0);
+        }
+
+        private void EnsureShortcutWithAumid()
+        {
+            string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "EvolveOS Optimizer.lnk");
+
+            if (File.Exists(shortcutPath))
+            {
+                File.Delete(shortcutPath);
+            }
+
+            ShortcutHelper.CreateShortcut();
+
+            if (File.Exists(shortcutPath))
+            {
+                File.SetLastWriteTime(shortcutPath, DateTime.Now);
+                Debug.WriteLine("[App] Shortcut recreated and timestamped in CommonPrograms.");
+            }
         }
 
         private async Task StartBackgroundServices()

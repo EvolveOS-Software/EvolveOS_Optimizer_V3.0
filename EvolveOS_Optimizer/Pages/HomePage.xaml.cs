@@ -789,10 +789,10 @@ namespace EvolveOS_Optimizer.Pages
                 else if (ramUsage > 60) penaltyScore += 1;
 
                 if (vRamUsage > 90) penaltyScore += 2;
-                else if (vRamUsage > 75) penaltyScore += 1;
+                else if (vRamUsage > 85) penaltyScore += 1;
 
-                if (junkGigabytes > 10.0) penaltyScore += 2;
-                else if (junkGigabytes > 4.0) penaltyScore += 1;
+                if (junkGigabytes > 15.0) penaltyScore += 2;
+                else if (junkGigabytes > 6.0) penaltyScore += 1;
 
                 string imagePath;
                 string statusText;

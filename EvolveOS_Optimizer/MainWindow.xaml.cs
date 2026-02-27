@@ -38,6 +38,8 @@ namespace EvolveOS_Optimizer
             Instance = this;
 
             this.InitializeComponent();
+            this.Title = "EvolveOS Optimizer";
+
             _permanentFrameReference = this.ContentFrame;
 
             NotificationManager.Initialize(this);

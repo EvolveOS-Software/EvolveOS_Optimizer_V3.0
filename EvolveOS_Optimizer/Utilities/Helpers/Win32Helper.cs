@@ -67,7 +67,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         public static class File
         {
-            public const int FlagsNoBuffering = 536870912; // 0x20000000 - FILE_FLAG_NO_BUFFERING
+            public const int FlagsNoBuffering = 536870912;
         }
 
         public static class Registry
@@ -81,10 +81,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         public static class SystemInformationClass
         {
-            public const int SystemCombinePhysicalMemoryInformation = 130; // 0x82
-            public const int SystemFileCacheInformation = 21; // 0x15
-            public const int SystemMemoryListInformation = 80; // 0x50
-            public const int SystemRegistryReconciliationInformation = 155; // 0x9B
+            public const int SystemCombinePhysicalMemoryInformation = 130;
+            public const int SystemFileCacheInformation = 21;
+            public const int SystemMemoryListInformation = 80;
+            public const int SystemRegistryReconciliationInformation = 155;
         }
 
         public static class SystemMemoryListCommand
@@ -97,13 +97,13 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         public static class SystemErrorCode
         {
-            public const int ErrorAccessDenied = 5; // (ERROR_ACCESS_DENIED) Access is denied
-            public const int ErrorSuccess = 0; // (ERROR_SUCCESS) The operation completed successfully
+            public const int ErrorAccessDenied = 5;
+            public const int ErrorSuccess = 0;
         }
 
         public static class Keyboard
         {
-            public const int WmHotkey = 786; // 0x312
+            public const int WmHotkey = 786;
         }
 
         public const int GWL_STYLE = -16;
@@ -114,7 +114,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         public const uint SWP_NOSIZE = 0x0001;
         public const uint SWP_NOMOVE = 0x0002;
         public const uint SWP_NOZORDER = 0x0004;
-        public const uint SWP_FRAMECHANGED = 0x0020; // This is the magic flag
+        public const uint SWP_FRAMECHANGED = 0x0020;
         public const uint SWP_SHOWWINDOW = 0x0040;
 
         public const int WM_HOTKEY = 0x0312;
@@ -128,6 +128,15 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         public const uint EXTENDED_STARTUPINFO_PRESENT = 0x00080000;
         public const int PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE = 0x00020016;
+
+        // Common ShowWindow commands
+        public const int SW_HIDE = 0;
+        public const int SW_SHOWNORMAL = 1;
+        public const int SW_SHOWMINIMIZED = 2;
+        public const int SW_SHOWMAXIMIZED = 3;
+        public const int SW_SHOW = 5;
+        public const int SW_MINIMIZE = 6;
+        public const int SW_RESTORE = 9;
 
         #endregion
 
@@ -167,7 +176,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         internal static extern bool EmptyWorkingSet(IntPtr hProcess);
 
         [DllImport("user32", SetLastError = true, CharSet = CharSet.Unicode)]
-        internal static extern IntPtr FindWindow(string lpClassName, string? lpWindowName);
+        internal static extern IntPtr FindWindow(string? lpClassName, string? lpWindowName);
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -316,6 +325,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("shell32.dll", SetLastError = true)]
+        public static extern int SetCurrentProcessExplicitAppUserModelID([MarshalAs(UnmanagedType.LPWStr)] string AppID);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern void SHChangeNotify(int wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
 
         #endregion
 
