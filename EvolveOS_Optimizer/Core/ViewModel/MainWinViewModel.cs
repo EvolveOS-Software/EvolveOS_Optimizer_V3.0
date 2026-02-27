@@ -179,6 +179,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public ICommand MinimizeCommand { get; }
         public ICommand CloseCommand { get; }
         public ICommand ToggleWindowVisibilityCommand { get; }
+        public ICommand ToggleRunOnStartupCommand { get; }
         #endregion
 
         #region Constructor
@@ -192,6 +193,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             ToggleWindowVisibilityCommand = new RelayCommand<object>(_ => ExecuteToggleVisibility());
 
             LocalizationService.Instance.PropertyChanged += OnLocalizationPropertyChanged;
+
+            ToggleRunOnStartupCommand = new RelayCommand(_ =>
+            {
+                IsRunOnStartUp = !IsRunOnStartUp;
+            });
 
             ExecuteNavigate("Home");
         }

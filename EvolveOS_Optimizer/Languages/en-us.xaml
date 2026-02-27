@@ -1124,13 +1124,13 @@
     <!-- endregion DNS Encryption -->
 
     <!--#region System TrayIcon -->
-    <sys:String x:Key="systray_show_window">Show Window</sys:String>
-    <sys:String x:Key="systray_hide_window">Hide Window</sys:String>
-    <sys:String x:Key="systray_close_window">Exit</sys:String>
+    <sys:String x:Key="systray_show_window">Show Optimizer</sys:String>
+    <sys:String x:Key="systray_hide_window">Hide Optimizer</sys:String>
     <sys:String x:Key="systray_run_startup">Run on Startup</sys:String>
-    <sys:String x:Key="systray_click_show">Click to show</sys:String>
-    <sys:String x:Key="systray_clear_memory">Clear Memory</sys:String>
-    <!--#endregion-->
+    <sys:String x:Key="systray_close_window">Quit EvolveOS</sys:String>
+    <sys:String x:Key="systray_click_show">Double-click to open EvolveOS Optimizer</sys:String>
+
+        <!--#endregion-->
 
     <!--#region Run On StartUp -->
     <sys:String x:Key="text_run_startup">Run on Startup</sys:String>
