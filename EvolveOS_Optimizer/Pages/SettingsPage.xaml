@@ -36,9 +36,10 @@
                                    Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                     </StackPanel>
                     <ComboBox x:Name="LanguageSelector" Grid.Column="1" Width="200" SelectionChanged="LanguageSelector_SelectionChanged">
-                        <ComboBoxItem Content="English" Tag="en-us"/>
-                        <ComboBoxItem Content="Français" Tag="fr-fr"/>
-                        <ComboBoxItem Content="Nederlands" Tag="nl-nl"/>
+                        <ComboBoxItem Content="English (EN)" Tag="en-us"/>
+                        <ComboBoxItem Content="Français (FR)" Tag="fr-fr"/>
+                        <ComboBoxItem Content="German (DE)" Tag="de-de"/>
+                        <ComboBoxItem Content="Nederlands (NL)" Tag="nl-nl"/>
                     </ComboBox>
                 </Grid>
             </Border>

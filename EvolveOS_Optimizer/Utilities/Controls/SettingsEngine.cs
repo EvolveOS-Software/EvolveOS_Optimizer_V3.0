@@ -221,6 +221,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             if (safeCode == "en") safeCode = "en-us";
             if (safeCode == "fr") safeCode = "fr-fr";
             if (safeCode == "nl") safeCode = "nl-nl";
+            if (safeCode == "de") safeCode = "de-de";
 
             LocalizationService.Instance.LoadLanguage(safeCode);
 

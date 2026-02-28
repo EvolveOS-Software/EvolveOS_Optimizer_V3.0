@@ -1,0 +1,1144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="using:System">
+
+    <!-- region Default Description Block String(s) -->
+    <sys:String x:Key="defaultDescriptionApp">Fahren Sie mit der Maus über eine App, um deren Beschreibung anzuzeigen.</sys:String>
+    <sys:String x:Key="defaultDescription">Fahren Sie mit der Maus über einen Tweak, um dessen Beschreibung zu erhalten.</sys:String>
+    <!-- endregion Description Block -->
+
+    <!-- region Safe Mode -->
+    <sys:String x:Key="title_recovery">EvolveOS Optimizer - Wiederherstellungsmodus</sys:String>
+    <sys:String x:Key="msg_safemode_detected">Abgesicherter Modus erkannt! Ihr System befindet sich derzeit in einem eingeschränkten Zustand. Dies ist ein kritischer Zustand für Windows 25H2. Möchten Sie eine Wiederherstellung versuchen und in den normalen Modus neu starten?</sys:String>
+    <!-- endregion Safe Mode -->
+
+    <!-- region Loading Window -->
+    <sys:String x:Key="loading_message">EvolveOS Optimizer wird geladen</sys:String>
+    <sys:String x:Key="step1_load">Trusted Installer-Dienst wird gestartet...</sys:String>
+    <sys:String x:Key="step2_load">Windows-Lizenzstatus wird überprüft...</sys:String>
+    <sys:String x:Key="step3_load">Hardware-Diagnosedaten werden gesammelt...</sys:String>
+    <sys:String x:Key="step4_load">Versionsupdates werden validiert...</sys:String>
+    <sys:String x:Key="step5_load">Installierte Pakete werden gescannt...</sys:String>
+    <sys:String x:Key="step6_load">Defender-Ausschlüsse werden überprüft...</sys:String>
+    <sys:String x:Key="step7_load">Status des lokalen Kontos wird verifiziert...</sys:String>
+    <sys:String x:Key="step8_load">Netsh-Netzwerkstatus wird analysiert...</sys:String>
+    <sys:String x:Key="step9_load">Bluetooth- und Tick-Konfiguration werden überprüft...</sys:String>
+    <sys:String x:Key="step10_load">Alle Systeme bereit!</sys:String>
+    <!-- endregion Loading Window -->
+
+    <!-- region Notification Manager -->
+    <sys:String x:Key="click_to_copy_noty">Klicken zum Kopieren</sys:String>
+    <sys:String x:Key="copied_to_clipboard_noty">In die Zwischenablage kopiert!</sys:String>
+    <sys:String x:Key="noty_warn_title">Warnung</sys:String>
+    <sys:String x:Key="noty_sys_title">System</sys:String>
+    <sys:String x:Key="noty_sys_restart">Ein Neustart ist erforderlich, um die Änderungen zu übernehmen.</sys:String>
+    <sys:String x:Key="noty_acc_title">Konto</sys:String>
+    <sys:String x:Key="noty_acc_logout">Melden Sie sich ab und wieder an, um die Änderungen zu übernehmen.</sys:String>
+    <!-- endregion Notification Manager -->
+
+    <!-- region App Updates -->
+    <sys:String x:Key="Update_Banner_Message">Ein neues Update ist für den EvolveOS Optimizer verfügbar!</sys:String>
+    <sys:String x:Key="Update_Banner_ConfirmButton">Jetzt aktualisieren</sys:String>
+
+    <sys:String x:Key="Settings_Update_SectionTitle">Software-Updates</sys:String>
+    <sys:String x:Key="Settings_Update_AutoTitle">Automatisch nach Updates suchen</sys:String>
+    <sys:String x:Key="Settings_Update_AutoSubtitle">Aktivieren oder deaktivieren Sie die Update-Suche beim Programmstart</sys:String>
+    <sys:String x:Key="Settings_Update_ToggleOn">Ein</sys:String>
+    <sys:String x:Key="Settings_Update_ToggleOff">Aus</sys:String>
+    <sys:String x:Key="Settings_Update_ManualTitle">Manuell nach Updates suchen</sys:String>
+    <sys:String x:Key="Settings_Update_ManualSubtitle">Neueste Version vom EvolveOS GitHub abfragen</sys:String>
+    <sys:String x:Key="Settings_Update_CheckButton">Jetzt prüfen</sys:String>
+    <sys:String x:Key="Settings_Update_Checking">Wird geprüft...</sys:String>
+    <sys:String x:Key="Settings_Update_UpToDate">Auf dem neuesten Stand!</sys:String>
+    <!-- endregion App Updates -->
+
+    <!-- region Main Window -->
+    <sys:String x:Key="Nav_Home">Startseite</sys:String>
+    <sys:String x:Key="Nav_Security">Sicherheit</sys:String>
+    <sys:String x:Key="Nav_Utilities">Dienstprogramme</sys:String>
+    <sys:String x:Key="Nav_Privacy">Datenschutz</sys:String>
+    <sys:String x:Key="Nav_Interface">Benutzeroberfläche</sys:String>
+    <sys:String x:Key="Nav_Software_Center">Software-Center</sys:String>
+    <sys:String x:Key="Nav_System_Manager">System-Manager</sys:String>
+    <sys:String x:Key="Nav_GroupPolicy">Richtlinien</sys:String>
+    <sys:String x:Key="Nav_Services">Dienst-Tweaks</sys:String>
+    <sys:String x:Key="Nav_System">System</sys:String>
+    <sys:String x:Key="Nav_Maintenance">Wartung</sys:String>
+    <sys:String x:Key="Nav_Scripts">Skripte</sys:String>
+    <sys:String x:Key="Nav_Settings">Einstellungen</sys:String>
+
+    <sys:String x:Key="Tab_DNSChanger">DNS-Wechsler</sys:String>
+    <sys:String x:Key="Tab_Advanced">Erweitert</sys:String>
+    <!-- endregion Main Window -->
+
+    <!-- region Settings -->
+    <sys:String x:Key="Settings_Appearance_Title">Erscheinungsbild</sys:String>
+    <sys:String x:Key="Settings_Appearance_Subtitle">Passen Sie das Aussehen des EvolveOS Optimizers auf Ihrem Gerät an</sys:String>
+
+    <sys:String x:Key="Settings_Backdrop_Title">System-Hintergrund</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Subtitle">Wählen Sie den Transparenzeffekt für das Fenster</sys:String>
+
+    <sys:String x:Key="Settings_AccentColor_Title">Akzentfarbe</sys:String>
+    <sys:String x:Key="Settings_AccentColor_Subtitle">Wählen Sie eine Farbe, die zu Ihrem Stil passt</sys:String>
+
+    <sys:String x:Key="Settings_CustomColor_Header">Eigene Farbe</sys:String>
+    <sys:String x:Key="Settings_ApplyColor_Button">Eigene Farbe anwenden</sys:String>
+
+    <sys:String x:Key="Settings_Language_Title">Sprache</sys:String>
+    <sys:String x:Key="Settings_Language_Subtitle">Wählen Sie Ihre bevorzugte Sprache</sys:String>
+
+    <sys:String x:Key="Settings_Animations_Title">UI-Animationen</sys:String>
+    <sys:String x:Key="Settings_Animations_Subtitle">Aktivieren oder deaktivieren Sie Panel-Übergänge und Honeycomb-Effekte.</sys:String>
+
+    <sys:String x:Key="Settings_Backdrop_None">Keine (Einfarbig)</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Mica">Mica</sys:String>
+    <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt</sys:String>
+    <sys:String x:Key="Settings_Backdrop_Acrylic">Acryl</sys:String>
+    <sys:String x:Key="Settings_Backdrop_AcrylicThin">Acryl (Dünn)</sys:String>
+
+    <sys:String x:Key="Settings_Theme_Title">App-Design</sys:String>
+    <sys:String x:Key="Settings_Theme_Subtitle">Wählen Sie zwischen hellen, dunklen oder System-Designs</sys:String>
+    <sys:String x:Key="Settings_Theme_Default">Systemstandard</sys:String>
+    <sys:String x:Key="Settings_Theme_Light">Hell</sys:String>
+    <sys:String x:Key="Settings_Theme_Dark">Dunkel</sys:String>
+
+    <sys:String x:Key="Settings_System_Title">Systemverhalten</sys:String>
+
+    <sys:String x:Key="Settings_Startup_Title">Beim Systemstart ausführen</sys:String>
+    <sys:String x:Key="Settings_Startup_Subtitle">Startet den EvolveOS Optimizer automatisch im Hintergrund (Infobereich), wenn Windows hochfährt.</sys:String>
+
+    <sys:String x:Key="Settings_CloseToTray_Title">In den Infobereich minimieren</sys:String>
+    <sys:String x:Key="Settings_CloseToTray_Subtitle">Lässt die Anwendung im Hintergrund weiterlaufen, wenn das Fenster geschlossen wird.</sys:String>
+
+    <sys:String x:Key="Settings_StartMinimized_Title">Minimiert starten</sys:String>
+    <sys:String x:Key="Settings_StartMinimized_Subtitle">Startet die Anwendung direkt in den Infobereich, ohne das Hauptfenster anzuzeigen.</sys:String>
+
+    <sys:String x:Key="Settings_ToggleOn">Ein</sys:String>
+    <sys:String x:Key="Settings_ToggleOff">Aus</sys:String>
+    <!-- endregion Settings -->
+
+    <!-- region HomePage -->
+    <sys:String x:Key="label_proc_sysinfo">Laufende Prozesse:</sys:String>
+    <sys:String x:Key="label_svc_sysinfo">Dienste:</sys:String>
+    <sys:String x:Key="button_reset_default">Auf Standard zurücksetzen</sys:String>
+    <sys:String x:Key="text_customize_dashboard">Dashboard anpassen</sys:String>
+    <sys:String x:Key="tooltip_customize_layout">Dashboard-Layout anpassen</sys:String>
+
+    <!-- Security Card -->
+    <sys:String x:Key="title_security_card">Sicherheitsstatus</sys:String>
+    <sys:String x:Key="tooltip_open_security">Sicherheitscenter öffnen</sys:String>
+    <sys:String x:Key="btn_quick_scan">Schnellüberprüfung</sys:String>
+    <sys:String x:Key="text_security_critical">Kritische Probleme</sys:String>
+    <sys:String x:Key="text_security_warning">Warnungen gefunden</sys:String>
+    <sys:String x:Key="text_security_good">System ist sicher</sys:String>
+
+    <!-- System Health Card -->
+    <sys:String x:Key="text_never_updated">Nie aktualisiert</sys:String>
+    <sys:String x:Key="tooltip_open_maintenance">Wartungsseite öffnen</sys:String>
+    <sys:String x:Key="btn_refresh_status">Status aktualisieren</sys:String>
+    <sys:String x:Key="text_scanning_system">System wird gescannt...</sys:String>
+    <sys:String x:Key="Health_Poor">Schlecht - Handlung erforderlich</sys:String>
+    <sys:String x:Key="Health_Warning">Ausreichend - Optimierung empfohlen</sys:String>
+    <sys:String x:Key="Health_Good">Gut - System ist gesund</sys:String>
+    <sys:String x:Key="text_last_checked">Zuletzt geprüft</sys:String>
+
+    <!-- Dns Card Card -->
+    <sys:String x:Key="tooltip_open_dns_page">DNS-Wechsler/Verschlüsselungsseite öffnen</sys:String>
+    <sys:String x:Key="title_dns_encryption">DNS-Verschlüsselung</sys:String>
+    <sys:String x:Key="header_core_dns">Kern-DNS-Dienste</sys:String>
+    <sys:String x:Key="header_security_privacy">Sicherheits- und Datenschutzeinstellungen</sys:String>
+    <sys:String x:Key="header_advanced_system">Erweiterte und Systemoptionen</sys:String>
+    <sys:String x:Key="header_network_latency">Netzwerklatenz &amp; Optimierer</sys:String>
+
+    <!-- Diskspace Card -->
+    <sys:String x:Key="txt_header_disk_space_card">Speicherplatz:</sys:String>
+
+    <!-- Cpu/Gpu Card -->
+    <sys:String x:Key="title_cpu_sysinfo">CPU-Informationen:</sys:String>
+    <sys:String x:Key="title_gpu_sysinfo">GPU-Informationen:</sys:String>
+    <sys:String x:Key="title_gpu_liveinfo">Live-Auslastung:</sys:String>
+
+    <!-- Memory Card -->
+    <sys:String x:Key="title_ram_sysinfo">Arbeitsspeicher:</sys:String>
+    <sys:String x:Key="title_mtype_sysinfo">Speichertyp:</sys:String>
+
+    <!-- Network Card -->
+    <sys:String x:Key="title_netadapter_sysinfo">Netzwerkadapter:</sys:String>
+    <sys:String x:Key="title_ip_sysinfo">Öffentliche IP-Adresse:</sys:String>
+    <sys:String x:Key="title_localip_sysinfo">Lokale IP-Adresse:</sys:String>
+
+    <!-- Weather Card -->
+    <sys:String x:Key="txt_header_weather_card">Uhrzeit, Datum und Wetter</sys:String>
+    <sys:String x:Key="txt_greeting_evening">Guten Abend</sys:String>
+    <sys:String x:Key="txt_weather_forecast">5-Tage-Vorhersage</sys:String>
+    <sys:String x:Key="txt_select_location">Wetter-Standort auswählen</sys:String>
+    <sys:String x:Key="btn_update_location">Standort aktualisieren</sys:String>
+    <sys:String x:Key="txt_placeholder_location">z.B. Berlin, DE</sys:String>
+    <sys:String x:Key="txt_placeholder_city">Stadt auswählen...</sys:String>
+
+    <!-- Elevation Mode -->
+    <sys:String x:Key="btn_restart_admin">Als Administrator neustarten</sys:String>
+    <sys:String x:Key="label_admin_notice">Als Admin ausführen für volle Optimierung (Dienste &amp; RAM)</sys:String>
+    <sys:String x:Key="label_limited_mode">Eingeschränkter Modus:</sys:String>
+    <sys:String x:Key="label_status_checking">Status: Wird geprüft...</sys:String>
+
+    <sys:String x:Key="status_elevated_active">Erweiterte Rechte: Alle Funktionen aktiv</sys:String>
+    <sys:String x:Key="status_limited_optimization">Eingeschränkter Modus: Für volle Optimierung als Admin ausführen</sys:String>
+    <sys:String x:Key="msg_elevation_declined_title">Rechteausweitung abgelehnt</sys:String>
+    <sys:String x:Key="msg_elevation_declined_body">Die Anwendung benötigt Administratorrechte, um systemweite Optimierungen anzuwenden.</sys:String>
+    <!-- endregion HomePage -->
+
+    <!-- region SecurityPage -->
+    <sys:String x:Key="SecurityPage_RefreshButton">Aktualisieren</sys:String>
+    <sys:String x:Key="SecurityPage_OpenWindowsSecurity">Windows-Sicherheit öffnen</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScan">Schnellüberprüfung</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanTitle">Schnellüberprüfung</sys:String>
+    <sys:String x:Key="SecurityPage_UpdateDefinitions">Definitionen aktualisieren</sys:String>
+    <sys:String x:Key="SecurityPage_UpdateDefinitionsTitle">Definitionen aktualisieren</sys:String>
+    <sys:String x:Key="SecurityPage_Enable">Aktivieren</sys:String>
+
+    <sys:String x:Key="SecurityPage_Status">Sicherheitsstatus</sys:String>
+    <sys:String x:Key="SecurityPage_Details">Sicherheitsdetails</sys:String>
+    <sys:String x:Key="SecurityPage_VirusThreatProtection">Viren- &amp; Bedrohungsschutz</sys:String>
+    <sys:String x:Key="SecurityPage_RealTimeProtection">Echtzeitschutz</sys:String>
+    <sys:String x:Key="SecurityPage_FirewallNetworkProtection">Firewall- &amp; Netzwerkschutz</sys:String>
+    <sys:String x:Key="SecurityPage_WindowsUpdate">Windows Update</sys:String>
+    <sys:String x:Key="SecurityPage_SmartScreen">Microsoft Defender SmartScreen</sys:String>
+    <sys:String x:Key="SecurityPage_UAC">Benutzerkontensteuerung (UAC)</sys:String>
+    <sys:String x:Key="SecurityPage_TamperProtection">Manipulationsschutz</sys:String>
+    <sys:String x:Key="SecurityPage_ControlledFolderAccess">Überwachter Ordnerzugriff</sys:String>
+    <sys:String x:Key="SecurityPage_BitLockerEncryption">BitLocker-Laufwerksverschlüsselung</sys:String>
+    <sys:String x:Key="SecurityPage_WindowsDefenderService">Microsoft Defender-Dienst</sys:String>
+
+    <sys:String x:Key="SecurityPage_ActiveMalwareScanning">Aktives Malware-Scannen</sys:String>
+    <sys:String x:Key="SecurityPage_BlocksUnauthorizedAccess">Blockiert unbefugten Netzwerkzugriff</sys:String>
+    <sys:String x:Key="SecurityPage_SecurityPatchesAndUpdates">Sicherheitspatches und Funktionsupdates</sys:String>
+    <sys:String x:Key="SecurityPage_WebAndAppProtection">Web- und App-Schutz</sys:String>
+    <sys:String x:Key="SecurityPage_AdministrativeAccessControl">Steuert Eingabeaufforderungen für Administratorzugriff</sys:String>
+    <sys:String x:Key="SecurityPage_PreventsUnauthorizedChanges">Verhindert unbefugte Änderungen an Sicherheitseinstellungen</sys:String>
+    <sys:String x:Key="SecurityPage_RansomwareProtection">Schützt Ordner vor unbefugten Änderungen (Ransomware-Schutz)</sys:String>
+    <sys:String x:Key="SecurityPage_DriveEncryptionStatus">Status der Laufwerksverschlüsselung</sys:String>
+    <sys:String x:Key="SecurityPage_CoreSecurityService">Status des Kernsicherheitsdienstes</sys:String>
+
+    <sys:String x:Key="SecurityPage_LastUpdated">Zuletzt aktualisiert</sys:String>
+    <sys:String x:Key="SecurityPage_LastRefreshed">Zuletzt aktualisiert</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanCompleted">Schnellüberprüfung abgeschlossen</sys:String>
+    <sys:String x:Key="SecurityPage_QuickScanFailed">Schnellüberprüfung fehlgeschlagen</sys:String>
+    <sys:String x:Key="SecurityPage_DefinitionsUpdated">Definitionen aktualisiert</sys:String>
+    <sys:String x:Key="SecurityPage_DefinitionsUpdateFailed">Aktualisierung der Definitionen fehlgeschlagen</sys:String>
+    <sys:String x:Key="None">Keine</sys:String>
+    <sys:String x:Key="Enabled">Aktiviert</sys:String>
+    <sys:String x:Key="Disabled">Deaktiviert</sys:String>
+
+    <sys:String x:Key="UAC_Level3">Immer benachrichtigen</sys:String>
+    <sys:String x:Key="UAC_Level2">Nur benachrichtigen, wenn Apps Änderungen vornehmen wollen (Standard)</sys:String>
+    <sys:String x:Key="UAC_Level1">Nur benachrichtigen, wenn Apps Änderungen vornehmen wollen (Desktop nicht abblenden)</sys:String>
+    <sys:String x:Key="UAC_Level0">Nie benachrichtigen (Nicht empfohlen)</sys:String>
+    <!-- endregion SecurityPage -->
+
+    <!-- region GroupPolicy Page -->
+    <sys:String x:Key="GroupPolicyPage_Warning">Diese Funktion erkennt nur richtlinienbasierte Registrierungseinträge. Dienständerungen oder nicht richtlinienbezogene Registry-Tweaks werden nicht erkannt.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoMessage">Diese Seite erkennt lokale Gruppenrichtlinien-Überschreibungen und ermöglicht es Ihnen, diese zu entfernen. Das Entfernen setzt die Richtlinie auf den Status 'Nicht konfiguriert' zurück.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummary">Richtlinien-Zusammenfassung</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPolicies">Konfigurierte Richtlinien</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Categories">Kategorien</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSelected">Ausgewählte entfernen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyList">Detaillierte Richtlinienliste</sys:String>
+    <sys:String x:Key="GroupPolicyPage_GroupPolicy_Content">Richtlinien</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveOverrides">Überschreibungen entfernen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NoPoliciesDetected">Keine Richtlinienüberschreibungen erkannt.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveAllOverrides">Alle Überschreibungen entfernen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Title">Erkennung von Gruppenrichtlinien-Überschreibungen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanningPolicies">Richtlinien werden gescannt...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Refresh">Aktualisieren</sys:String>
+    <sys:String x:Key="GroupPolicyPage_CategoriesHeader">Kategorien</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSelectedText">Ausgewählte entfernen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanningText">Richtlinien werden gescannt...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NoPoliciesText">Keine Richtlinienüberschreibungen erkannt.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Header">Richtlinien-Zusammenfassung</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoBanner_Title">Information</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RefreshText">Aktualisieren</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesHeader">Konfigurierte Richtlinien</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Description">Anzeigen und Verwalten einzelner Richtlinienüberschreibungen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InfoBanner_Message">Diese Seite erkennt lokale Gruppenrichtlinien-Überschreibungen und ermöglicht es Ihnen, diese zu entfernen. Das Entfernen setzt die Richtlinie auf den Standardstatus zurück.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PolicySummaryExpander_Description">Übersicht der erkannten Richtlinienüberschreibungen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_DetailedPolicyListExpander_Header">Detaillierte Richtlinienliste</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredCount">{0} konfiguriert</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanError">Fehler beim Scannen der Richtlinien: {0}</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveErrorTitle">Entfernen fehlgeschlagen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSuccessContent">Erfolgreich {0} Richtlinienüberschreibung(en) entfernt.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveCategoryTitle">Kategorie-Richtlinien entfernen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_NotConfigured">Nicht konfiguriert</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveSuccessTitle">Richtlinien entfernt</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} konfigurierte Richtlinien</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartNow">Jetzt neustarten</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Later">Später</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedContent">Sind Sie sicher, dass Sie die {0} ausgewählte(n) Richtlinienüberschreibung(en) entfernen möchten?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemoveErrorContent">Beim Entfernen von Richtlinienüberschreibungen ist ein Fehler aufgetreten: {0}</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveCategoryContent">Sind Sie sicher, dass Sie alle {0} Richtlinienüberschreibungen in der Kategorie '{1}' entfernen möchten?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllContent">Sind Sie sicher, dass Sie alle {0} Richtlinienüberschreibungen entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovePartialTitle">Teilweises Entfernen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Remove">Entfernen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovingPolicies">Richtlinien werden entfernt...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RemovePartialContent">{0} von {1} Richtlinienüberschreibungen wurden entfernt. Einige Richtlinien konnten nicht entfernt werden.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartExplorerTitle">Explorer neustarten</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RestartExplorerContent">Einige Richtlinienänderungen erfordern einen Neustart des Windows Explorers, um wirksam zu werden. Möchten Sie den Explorer jetzt neustarten?</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Alle Richtlinienüberschreibungen entfernen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Ausgewählte Richtlinien entfernen</sys:String>
+    <!-- endregion GroupPolicy Page -->
+
+    <!-- region Software Center Page (Tabbed) -->
+    <sys:String x:Key="Tab_Recommended">Empfohlenes Debloat</sys:String>
+    <sys:String x:Key="Tab_Installed">Installierte Apps</sys:String>
+    <sys:String x:Key="Tab_WinGet">App-Store (WinGet)</sys:String>
+    <!-- endregion Software Center Page (Tabbed) -->
+
+    <!-- region Windows Packages (Tab 1) -->
+    <sys:String x:Key="warn_part1_pkg">Apps werden</sys:String>
+    <sys:String x:Key="warn_part2_pkg">für immer gelöscht,</sys:String>
+    <sys:String x:Key="warn_part3_pkg">doppelklicken Sie auf ein Symbol, um es zu entfernen, oder verwenden Sie die Mehrfachauswahl für das massenhafte Löschen.</sys:String>
+
+    <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
+    <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
+    <sys:String x:Key="OneNote_pkg">Microsoft Office OneNote</sys:String>
+    <sys:String x:Key="MicrosoftOfficeHub_pkg">Microsoft Office Hub</sys:String>
+    <sys:String x:Key="MicrosoftSolitaireCollection_pkg">Microsoft Solitaire Collection</sys:String>
+    <sys:String x:Key="MixedReality_pkg">Mixed Reality</sys:String>
+    <sys:String x:Key="BingWeather_pkg">Bing Wetter</sys:String>
+    <sys:String x:Key="Microsoft3D_pkg">Microsoft 3D Viewer</sys:String>
+    <sys:String x:Key="SkypeApp_pkg">Microsoft Skype</sys:String>
+    <sys:String x:Key="OneDrive_pkg">OneDrive</sys:String>
+    <sys:String x:Key="Cortana_pkg">Cortana</sys:String>
+    <sys:String x:Key="MicrosoftTeams_pkg">Microsoft Teams</sys:String>
+    <sys:String x:Key="Music_pkg">Windows Media Player</sys:String>
+    <sys:String x:Key="Video_pkg">Filme &amp; TV</sys:String>
+    <sys:String x:Key="SoundRecorder_pkg">Audiorecorder</sys:String>
+    <sys:String x:Key="FeedbackHub_pkg">Feedback-Hub</sys:String>
+    <sys:String x:Key="Mail_pkg">Mail</sys:String>
+    <sys:String x:Key="Widgets_pkg">Widgets</sys:String>
+    <sys:String x:Key="Photos_pkg">Windows Fotos</sys:String>
+    <sys:String x:Key="ScreenSketch_pkg">Ausschneiden und Skizzieren</sys:String>
+    <sys:String x:Key="ClipChamp_pkg">Microsoft Clipchamp</sys:String>
+    <sys:String x:Key="GetHelp_pkg">Hilfe anfordern</sys:String>
+    <sys:String x:Key="MicrosoftStickyNotes_pkg">Microsoft Kurznotizen</sys:String>
+    <sys:String x:Key="Maps_pkg">Windows Karten</sys:String>
+    <sys:String x:Key="Camera_pkg">Windows Kamera</sys:String>
+    <sys:String x:Key="Paint3D_pkg">Paint 3D</sys:String>
+    <sys:String x:Key="PowerAutomateDesktop_pkg">Power Automate</sys:String>
+    <sys:String x:Key="People_pkg">Kontakte</sys:String>
+    <sys:String x:Key="BingNews_pkg">Microsoft News</sys:String>
+    <sys:String x:Key="Todos_pkg">Microsoft To Do</sys:String>
+    <sys:String x:Key="Alarms_pkg">Windows Uhr</sys:String>
+    <sys:String x:Key="Phone_pkg">Ihr Smartphone</sys:String>
+    <sys:String x:Key="Outlook_pkg">Outlook für Windows</sys:String>
+    <sys:String x:Key="BingSports_pkg">Bing Sport</sys:String>
+    <sys:String x:Key="BingFinance_pkg">Bing Finanzen</sys:String>
+    <sys:String x:Key="MicrosoftFamily_pkg">Microsoft Family Safety</sys:String>
+    <sys:String x:Key="BingSearch_pkg">Bing Suche</sys:String>
+    <sys:String x:Key="QuickAssist_pkg">Remotehilfe</sys:String>
+    <sys:String x:Key="DevHome_pkg">Dev Home</sys:String>
+    <sys:String x:Key="WindowsTerminal_pkg">Terminal</sys:String>
+    <sys:String x:Key="LinkedIn_pkg">LinkedIn</sys:String>
+    <sys:String x:Key="WebMediaExtensions_pkg">Web-Media-Erweiterungen</sys:String>
+    <sys:String x:Key="OneConnect_pkg">Mobilfunktarife</sys:String>
+    <sys:String x:Key="Edge_pkg">Microsoft Edge</sys:String>
+    <sys:String x:Key="Edge_DevTools_pkg">Microsoft Edge DevTools</sys:String>
+    <sys:String x:Key="Notepad_pkg">Editor</sys:String>
+    <sys:String x:Key="Calculator_pkg">Rechner</sys:String>
+    <sys:String x:Key="Paint_pkg">Microsoft Paint</sys:String>
+    <sys:String x:Key="Copilot_pkg">Copilot</sys:String>
+    <sys:String x:Key="WhiteBoard_pkg">Microsoft Whiteboard</sys:String>
+    <sys:String x:Key="Wallet_pkg">Microsoft Wallet</sys:String>
+    <sys:String x:Key="Spotify_pkg">Spotify</sys:String>
+    <sys:String x:Key="WhatsApp_pkg">WhatsApp</sys:String>
+    <sys:String x:Key="Facebook_pkg">Facebook</sys:String>
+    <sys:String x:Key="Hulu_pkg">Hulu</sys:String>
+    <sys:String x:Key="Disney_pkg">Disney+</sys:String>
+    <sys:String x:Key="Instagram_pkg">Instagram</sys:String>
+    <sys:String x:Key="Twitter_pkg">Twitter - X</sys:String>
+    <sys:String x:Key="TikTok_pkg">TikTok</sys:String>
+    <sys:String x:Key="MicrosoftSway_pkg">Microsoft Sway</sys:String>
+    <sys:String x:Key="Builder3D_pkg">Microsoft 3D-Builder</sys:String>
+    <sys:String x:Key="Netflix_pkg">Netflix</sys:String>
+    <sys:String x:Key="YandexMusic_pkg">Yandex.Music</sys:String>
+    <sys:String x:Key="Viber_pkg">Viber</sys:String>
+    <sys:String x:Key="Messaging_pkg">Microsoft Nachrichten</sys:String>
+    <sys:String x:Key="Picsart_pkg">Picsart AI Photo Editor</sys:String>
+    <sys:String x:Key="Plex_pkg">Plex für Windows</sys:String>
+    <sys:String x:Key="PrimeVideo_pkg">Amazon Prime Video</sys:String>
+    <sys:String x:Key="Shazam_pkg">Shazam</sys:String>
+    <sys:String x:Key="TuneInRadio_pkg">TuneIn Radio</sys:String>
+    <sys:String x:Key="iHeartRadio_pkg">iHeart: Radio, Music, Podcasts</sys:String>
+    <sys:String x:Key="Pandora_pkg">Pandora</sys:String>
+    <sys:String x:Key="DolbyAccess_pkg">Dolby Access</sys:String>
+    <sys:String x:Key="MicrosoftJournal_pkg">Microsoft Journal</sys:String>
+    <sys:String x:Key="PowerToys_pkg">Microsoft PowerToys</sys:String>
+
+    <sys:String x:Key="MicrosoftStore_desc">Die primäre digitale Vertriebsplattform für Windows-Apps und -Spiele.</sys:String>
+    <sys:String x:Key="Xbox_desc">Greifen Sie auf das Xbox-Ökosystem zu, einschließlich Game Pass, sozialen Funktionen und Remote Play.</sys:String>
+    <sys:String x:Key="OneNote_desc">Ein digitales Notizbuch zum Erfassen und Organisieren von Notizen auf all Ihren Geräten.</sys:String>
+    <sys:String x:Key="MicrosoftOfficeHub_desc">Ein zentrales Portal für den Zugriff auf Ihre Office-Dokumente, Apps und Abonnementdetails.</sys:String>
+    <sys:String x:Key="MicrosoftSolitaireCollection_desc">Die klassische Suite von Kartenspielen einschließlich Klondike, Spider und FreeCell.</sys:String>
+    <sys:String x:Key="MixedReality_desc">Aktiviert die Unterstützung für Virtual- und Augmented-Reality-Hardware und -Erlebnisse.</sys:String>
+    <sys:String x:Key="BingWeather_desc">Bietet lokale Wettervorhersagen in Echtzeit, Radarkarten und Unwetterwarnungen.</sys:String>
+    <sys:String x:Key="Microsoft3D_desc">Ein ressourcenschonender Viewer für 3D-Modelle und Mixed-Reality-Objekte.</sys:String>
+    <sys:String x:Key="SkypeApp_desc">Instant-Messaging-, Sprach- und Videoanruf-Anwendung für den privaten Gebrauch.</sys:String>
+    <sys:String x:Key="OneDrive_desc">Cloud-Speicherdienst zum Sichern von Dateien und Synchronisieren von Dokumenten über Geräte hinweg.</sys:String>
+    <sys:String x:Key="Cortana_desc">Microsofts alter Sprachassistent und Produktivitätshelfer.</sys:String>
+    <sys:String x:Key="MicrosoftTeams_desc">Einheitliche Kommunikations- und Kollaborationsplattform für Chat, Meetings und Dateifreigabe.</sys:String>
+    <sys:String x:Key="Music_desc">Moderner Media Player zur Verwaltung und Wiedergabe Ihrer lokalen Audiosammlung.</sys:String>
+    <sys:String x:Key="Video_desc">App zum Abspielen lokaler Videodateien sowie zum Kaufen/Ausleihen von Filmen und TV-Shows.</sys:String>
+    <sys:String x:Key="SoundRecorder_desc">Einfaches Tool zur Audioaufnahme über Ihr Mikrofon oder die Systemausgabe.</sys:String>
+    <sys:String x:Key="FeedbackHub_desc">Ermöglicht Benutzern das Melden von Fehlern und Vorschlagen neuer Funktionen direkt an Microsoft.</sys:String>
+    <sys:String x:Key="Mail_desc">E-Mail-Client, der Outlook, Gmail und andere IMAP/POP-Konten unterstützt.</sys:String>
+    <sys:String x:Key="Widgets_desc">Personalisierter Feed mit Nachrichten, Wetter und Kalenderinfos in der Taskleiste.</sys:String>
+    <sys:String x:Key="Photos_desc">Viewer und Editor zum Organisieren und Verbessern Ihrer persönlichen Fotobibliothek.</sys:String>
+    <sys:String x:Key="ScreenSketch_desc">Dienstprogramm zum Aufnehmen, Zuschneiden und Beschriften von Screenshots Ihres Desktops.</sys:String>
+    <sys:String x:Key="ClipChamp_desc">Cloud-basierter Video-Editor mit professionellen Funktionen und Vorlagen.</sys:String>
+    <sys:String x:Key="GetHelp_desc">Selbsthilfe-Portal zur Fehlerbehebung bei Windows-Problemen und zur Kontaktaufnahme mit dem Support.</sys:String>
+    <sys:String x:Key="MicrosoftStickyNotes_desc">Schnelle digitale Notizen, die als Erinnerungen auf Ihrem Desktop schweben.</sys:String>
+    <sys:String x:Key="Maps_desc">Detaillierte Navigation, Straßenansichten und 3D-Karten mit Offline-Unterstützung.</sys:String>
+    <sys:String x:Key="Camera_desc">Die offizielle Anwendung zum Aufnehmen von Fotos und Videos mit Ihrer Webcam.</sys:String>
+    <sys:String x:Key="Paint3D_desc">Weiterentwicklung von Paint mit 3D-Modellierungstools und kreativen Effekten.</sys:String>
+    <sys:String x:Key="PowerAutomateDesktop_desc">Automatisiert wiederkehrende Aufgaben in Ihren Desktop- und Web-Anwendungen.</sys:String>
+    <sys:String x:Key="People_desc">Ressourcenschonende Kontaktverwaltungs-App zum Organisieren von Freunden und Kollegen.</sys:String>
+    <sys:String x:Key="BingNews_desc">Kuratierter Nachrichten-Aggregator aus globalen und lokalen Quellen.</sys:String>
+    <sys:String x:Key="Todos_desc">Aufgabenverwaltungs-App zum Erstellen von Tageslisten und Verfolgen von Erfolgen.</sys:String>
+    <sys:String x:Key="Alarms_desc">Verwalten Sie Weltuhren, Timer, Stoppuhren und tägliche Alarme.</sys:String>
+    <sys:String x:Key="Phone_desc">Synchronisiert Ihr Smartphone mit Ihrem PC, um Benachrichtigungen zu sehen und SMS zu senden.</sys:String>
+    <sys:String x:Key="Outlook_desc">Moderner Ersatz für Mail, bietet einen einheitlichen Posteingang für alle Konten.</sys:String>
+    <sys:String x:Key="BingSports_desc">Verfolgen Sie Ihre Lieblingsteams, Ergebnisse und Sportnachrichten.</sys:String>
+    <sys:String x:Key="BingFinance_desc">Überwachen Sie Aktienmärkte, Wechselkurse und Wirtschaftsnachrichten.</sys:String>
+    <sys:String x:Key="MicrosoftFamily_desc">Kindersicherung zur Verwaltung der Bildschirmzeit und App-Nutzung für Familienmitglieder.</sys:String>
+    <sys:String x:Key="BingSearch_desc">Integrierte Websuche in der gesamten Windows-Benutzeroberfläche.</sys:String>
+    <sys:String x:Key="QuickAssist_desc">Ermöglicht Benutzern, ihren Bildschirm mit dem Support zu teilen, um Fernhilfe zu erhalten.</sys:String>
+    <sys:String x:Key="DevHome_desc">Kontrollzentrum für Entwickler zum Einrichten von Umgebungen und Verfolgen von GitHub-Aufgaben.</sys:String>
+    <sys:String x:Key="WindowsTerminal_desc">Ein moderner Host für Kommandozeilen-Tools wie Command Prompt, PowerShell und WSL.</sys:String>
+    <sys:String x:Key="LinkedIn_desc">Professionelle Networking-Verknüpfung zur Verwaltung Ihres Profils und Ihrer Jobsuche.</sys:String>
+    <sys:String x:Key="WebMediaExtensions_desc">Fügt Unterstützung für moderne Webformate wie OGG, Vorbis und Theora hinzu.</sys:String>
+    <sys:String x:Key="OneConnect_desc">Tool zum Finden von und Verbinden mit Mobilfunktarifen von Ihrem Gerät aus.</sys:String>
+    <sys:String x:Key="Edge_desc">Der standardmäßige, auf Chromium basierende Webbrowser für schnelles und sicheres Surfen.</sys:String>
+    <sys:String x:Key="Edge_DevTools_desc">Ein eigenständiges Entwickler-Toolset zum Debuggen und Inspizieren von Webinhalten innerhalb von Microsoft Edge.</sys:String>
+    <sys:String x:Key="Notepad_desc">Der klassische, leichte Texteditor für einfaches Programmieren und Notizen.</sys:String>
+    <sys:String x:Key="Calculator_desc">Fortschrittliches Tool für grundlegende, wissenschaftliche und programmiertechnische Berechnungen.</sys:String>
+    <sys:String x:Key="Paint_desc">Klassischer Windows-Grafikeditor für einfaches Zeichnen, Bildbetrachtung und einfache Anpassungen.</sys:String>
+    <sys:String x:Key="Copilot_desc">KI-gestützter Assistent zur Beantwortung von Fragen und Automatisierung von Systemaufgaben.</sys:String>
+    <sys:String x:Key="WhiteBoard_desc">Unendliche digitale Leinwand für kollaboratives Brainstorming und Ideenfindung.</sys:String>
+    <sys:String x:Key="Wallet_desc">Speichern Sie digitale Pässe, Treuekarten und Zahlungsinformationen sicher.</sys:String>
+    <sys:String x:Key="Spotify_desc">Streamen Sie Millionen von Songs und Podcasts von Ihrem Desktop aus.</sys:String>
+    <sys:String x:Key="WhatsApp_desc">Desktop-Version der beliebten Messaging-App für verschlüsselte Chats und Anrufe.</sys:String>
+    <sys:String x:Key="Facebook_desc">Der offizielle Facebook-Client. Er führt häufig Hintergrunddienste für Benachrichtigungen und Synchronisierungen aus, die Systemspeicher und Akku verbrauchen können.</sys:String>
+    <sys:String x:Key="Hulu_desc">Streaming-Service-App für Filme und TV-Shows. Wenn Sie lieber über einen Webbrowser streamen, kann diese App bedenkenlos entfernt werden, um Speicherplatz freizugeben.</sys:String>
+    <sys:String x:Key="Disney_desc">Offizielle App für Disney+ Streaming. Kann sicher deinstalliert werden, wenn Sie kein Abonnement haben oder das Streaming über den Browser bevorzugen.</sys:String>
+    <sys:String x:Key="Instagram_desc">Social-Media-Client für Foto- und Video-Sharing. Wie andere Meta-Apps bleibt sie oft im Hintergrund aktiv, um Updates abzurufen.</sys:String>
+    <sys:String x:Key="Twitter_desc">Der offizielle X (Twitter)-Client für Windows. Bietet Echtzeitbenachrichtigungen, kann jedoch durch die Webversion ersetzt werden, um Hintergrundprozesse zu reduzieren.</sys:String>
+    <sys:String x:Key="TikTok_desc">Offizieller TikTok-Client. Bekannt für hohen Ressourcenverbrauch während der Videowiedergabe und die Aufrechterhaltung permanenter Hintergrund-Datenverbindungen.</sys:String>
+    <sys:String x:Key="MicrosoftSway_desc">Eine Microsoft Office-App zum Erstellen interaktiver Berichte und Präsentationen. Kann sicher entfernt werden, wenn Sie die Webversion oder normales PowerPoint verwenden.</sys:String>
+    <sys:String x:Key="Builder3D_desc">Ein Tool zum Betrachten, Vorbereiten und Drucken von 3D-Modellen. Sofern Sie nicht in 3D-Modellierung oder 3D-Druck involviert sind, wird diese App selten benötigt.</sys:String>
+    <sys:String x:Key="Netflix_desc">Offizielle Netflix-Anwendung. Obwohl sie Offline-Downloads unterstützt, nimmt sie viel Platz ein und bleibt für Hintergrundaktualisierungen aktiv.</sys:String>
+    <sys:String x:Key="YandexMusic_desc">Streaming-Musikclient für Yandex. Es wird empfohlen, dies zur Freigabe von Speicherplatz zu entfernen, wenn Sie alternative Streaming-Dienste nutzen.</sys:String>
+    <sys:String x:Key="Viber_desc">VoIP- und Instant-Messaging-Anwendung. Ist oft so konfiguriert, dass sie mit Windows startet und dabei Startup-Ressourcen sowie System-RAM verbraucht.</sys:String>
+    <sys:String x:Key="Messaging_desc">Eine veraltete Microsoft-App für grundlegende Textnachrichten auf Geräten mit mobilen Daten. Für die meisten PC-Nutzer ist diese App völlig überflüssig.</sys:String>
+    <sys:String x:Key="Picsart_desc">KI-gestützter Foto- und Video-Editor. Hat einen großen Installationsfußabdruck und beinhaltet mehrere Hintergrundaufgaben für die Cloud-Synchronisation.</sys:String>
+    <sys:String x:Key="Plex_desc">Media Player für Plex-Server. Wenn Sie keine lokale Medienbibliothek verwalten oder einen Plex-Server nutzen, erfüllt diese App keinen Zweck.</sys:String>
+    <sys:String x:Key="PrimeVideo_desc">Amazons Streaming-Client. Die Deinstallation ist unbedenklich für Benutzer, die die Browser-Oberfläche bevorzugen oder Amazon Prime nicht nutzen.</sys:String>
+    <sys:String x:Key="Shazam_desc">Musikerkennungstool. Da Musikerkennung oft in Browsern und virtuellen Assistenten integriert ist, ist diese separate App meist unnötig.</sys:String>
+    <sys:String x:Key="TuneInRadio_desc">Globale Radio-Streaming-App. Kann zur Systembereinigung sicher entfernt werden, wenn Sie Musik über andere Plattformen hören.</sys:String>
+    <sys:String x:Key="iHeartRadio_desc">Radio- und Podcast-Plattform. Unterhält einen großen Cache und kann die Netzwerkleistung durch das Vorladen von Inhalten im Hintergrund beeinträchtigen.</sys:String>
+    <sys:String x:Key="Pandora_desc">Personalisierter Radio-Dienst. Die Entfernung wird empfohlen, wenn der Dienst in Ihrer Region nicht verfügbar ist oder wenn Sie Spotify/YouTube Music nutzen.</sys:String>
+    <sys:String x:Key="DolbyAccess_desc">Wird verwendet, um Dolby Atmos für Kopfhörer oder Heimkinos zu konfigurieren. Nur entfernen, wenn Sie keine kompatible Hardware oder eine Dolby-Lizenz besitzen.</sys:String>
+    <sys:String x:Key="MicrosoftJournal_desc">Eine auf Tinte ausgerichtete Notizen-App, die für Touch- und Stift-Geräte entwickelt wurde.</sys:String>
+    <sys:String x:Key="PowerToys_desc">Erweiterte System-Dienstprogramme. Kann aufgrund mehrerer aktiver Prozesse die Hintergrund-RAM-Auslastung und CPU-Aufwachvorgänge erhöhen.</sys:String>
+
+    <sys:String x:Key="title_over_pkg">Bestätigung der Deinstallation</sys:String>
+    <sys:String x:Key="text_over_pkg" xml:space="preserve">Sie sind dabei, den Microsoft Edge-Browser zu deinstallieren. Dadurch wird auch die EdgeWebView-Komponente entfernt, die zum Anzeigen von Webinhalten in verschiedenen Anwendungen verwendet wird — wie z.B. in Microsoft Office (z.B. Besprechungseinblicke, Raumsuche), der Fotos-App (die neue Version verwendet WebView2), einigen Telegram-Bots und anderen Programmen, die auf eingebettetes WebView angewiesen sind. Bevor Sie fortfahren, stellen Sie sicher, dass Sie diese Komponente nicht benötigen. 
+       In aktuellen Builds von Windows 11 wird Copilot über EdgeWebView als PWA oder System-Wrapper implementiert. Wenn Edge deinstalliert wird, wird auch Copilot entfernt, da es als Web-Wrapper fungiert.</sys:String>
+    <sys:String x:Key="question_over_pkg">Möchten Sie mit dem Löschen zusammen mit EdgeWebView fortfahren?</sys:String>
+    <sys:String x:Key="msg_uninstall_bulk">Sie sind dabei, die {0} ausgewählten Pakete zu entfernen. Diese Aktion kann nicht rückgängig gemacht werden.</sys:String>
+    <sys:String x:Key="question_uninstall">Möchten Sie mit dem Löschen fortfahren?</sys:String>
+    <sys:String x:Key="notif_bulk_completed">Massen-Deinstallation abgeschlossen</sys:String>
+    <sys:String x:Key="btn_сancel">Abbrechen</sys:String>
+    <sys:String x:Key="btn_delete">Löschen</sys:String>
+    <sys:String x:Key="text_settings">Einstellungen</sys:String>
+    <sys:String x:Key="text_multi_select">Mehrfachauswahl</sys:String>
+    <sys:String x:Key="text_select_all_packages">Alle Pakete auswählen</sys:String>
+    <sys:String x:Key="text_deselect_all">Alle abwählen</sys:String>
+    <sys:String x:Key="tt_remove_selected">Ausgewählte Pakete entfernen</sys:String>
+    <sys:String x:Key="text_status_active">Aktiv</sys:String>
+    <sys:String x:Key="title_uninstall">Deinstallation bestätigen</sys:String>
+    <!-- endregion Windows Packages -->
+
+    <!-- region Installed Apps (Tab 2) -->
+    <sys:String x:Key="Debloat">Debloat</sys:String>
+    <sys:String x:Key="SystemAppsPage_NotificationBody">Die Deinstallation einiger dieser Apps entfernt sie möglicherweise nicht vollständig.</sys:String>
+    <sys:String x:Key="SystemAppsPage_TempButton">System-Temp leeren</sys:String>
+    <sys:String x:Key="SystemAppsPage_FetchingInstalledApps">Daten der installierten Apps werden abgerufen...</sys:String>
+    <sys:String x:Key="SystemAppsPage_AppsFilter">Filtern nach:</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallButton">Ausgewählte App(s) deinstallieren</sys:String>
+    <sys:String x:Key="Done">Erledigt</sys:String>
+    <sys:String x:Key="SystemAppsPage_Close">Schließen</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallTip">Wählen Sie Apps aus, die Sie entfernen möchten, und klicken Sie auf Deinstallieren</sys:String>
+    <sys:String x:Key="SystemAppsPage_NoAppFound">Keine Apps entsprechen Ihrer Suche</sys:String>
+    <sys:String x:Key="SystemAppsPage_SearchBar">Apps suchen...</sys:String>
+    <sys:String x:Key="SystemAppsPage_StandardApps">Standard-Apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_AllApps">Alle Apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_Win32Apps">Win32-Apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_TotalApps">Gesamt: {0} App(s)</sys:String>
+    <sys:String x:Key="SystemAppsPage_UnInstall">Deinstallieren</sys:String>
+    <sys:String x:Key="SystemAppsPage_Uninstalling">Wird deinstalliert</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallationError">Fehler beim Deinstallieren der folgenden App(s)</sys:String>
+    <sys:String x:Key="SystemAppsPage_UninstallationSuccess">Die folgenden App(s) wurden erfolgreich deinstalliert</sys:String>
+    <sys:String x:Key="SystemAppsPage_DeletingTemp">Temporäre Dateien werden gelöscht</sys:String>
+    <sys:String x:Key="SystemAppsPage_TempDelSucc">Temporäre Dateien erfolgreich gelöscht!</sys:String>
+    <sys:String x:Key="SystemAppsPage_ErrTempDel">Fehler beim Löschen temporärer Dateien</sys:String>
+    <sys:String x:Key="SystemAppsPage_ConfirmRemoveApps">Sie sind dabei, die folgenden Apps vollständig von Ihrem System zu entfernen:</sys:String>
+    <sys:String x:Key="SystemAppsPage_ConfirmContinue">Sind Sie sicher, dass Sie fortfahren möchten?</sys:String>
+    <sys:String x:Key="SystemAppsPage_Continue">Fortfahren</sys:String>
+    <!-- endregion Installed Apps -->
+
+    <!-- region System Page -->
+    <sys:String x:Key="SystemPage_BatterySection">Akku &amp; Energie</sys:String>
+    <sys:String x:Key="SystemPage_BasicOptimization">Grundlegende Systemoptimierungen</sys:String>
+    <sys:String x:Key="SystemPage_AdvancedOptimization">Erweiterte Systemoptimierungen</sys:String>
+    <sys:String x:Key="OtherSettings">Weitere Einstellungen</sys:String>
+
+    <sys:String x:Key="slider1_sys">Mauszeigergeschwindigkeit:</sys:String>
+    <sys:String x:Key="slider2_sys">Tastaturverzögerung:</sys:String>
+    <sys:String x:Key="slider3_sys">Tastaturwiederholrate:</sys:String>
+    <sys:String x:Key="text_sys">Tippen Sie hier, um Ihre Tastatureinstellungen zu testen</sys:String>
+    <sys:String x:Key="tgl1_sys">Zeigerbeschleunigung verbessern</sys:String>
+    <sys:String x:Key="tgl2_sys">Einrastfunktion und Anschlagverzögerung</sys:String>
+    <sys:String x:Key="tgl3_sys">Defender, Antimalware, SmartScreen und VBS</sys:String>
+    <sys:String x:Key="tgl4_sys">UAC (Benutzerkontensteuerung)</sys:String>
+    <sys:String x:Key="tgl5_sys">Sicherheitswarnungen aus dem Info-Center</sys:String>
+    <sys:String x:Key="tgl6_sys">Automatische App-Updates aus dem Microsoft Store</sys:String>
+    <sys:String x:Key="tgl7_sys">Soundverzögerung im Realtek Sound-Treiber</sys:String>
+    <sys:String x:Key="tgl8_sys">Zeitlimit für Bildschirmabschaltung auf der Sperrbildschirm-Konsole</sys:String>
+    <sys:String x:Key="tgl9_sys">«Ruhezustand» und «Schnellstart» Technologie</sys:String>
+    <sys:String x:Key="tgl10_sys">Warnungsdialog beim Herunterfahren</sys:String>
+    <sys:String x:Key="tgl11_sys">Warnungen beim Ausführen jeglicher exe-Dateien</sys:String>
+    <sys:String x:Key="tgl12_sys">Automatische Speicherdiagnose</sys:String>
+    <sys:String x:Key="tgl13_sys">Teredo-, ISATAP- und IPv6-Protokolle</sys:String>
+    <sys:String x:Key="tgl14_sys">Standardgröße des Dateisystem-Caches</sys:String>
+    <sys:String x:Key="tgl15_sys">Verlangsamung von Windows und Programmstarts</sys:String>
+    <sys:String x:Key="tgl16_sys">Nutzungsverlauf für den Schnellzugriff</sys:String>
+    <sys:String x:Key="tgl17_sys">Automatisches Ausführen von Wechselmedien</sys:String>
+    <sys:String x:Key="tgl18_sys">EvolveOS-Leistungsplan importieren</sys:String>
+    <sys:String x:Key="tgl19_sys">Funktion «Bluetooth und Geräte» verwenden</sys:String>
+    <sys:String x:Key="tgl20_sys">Windows Defender Firewall</sys:String>
+    <sys:String x:Key="tgl21_sys">Funktion «Spielmodus» verwenden</sys:String>
+    <sys:String x:Key="tgl22_sys">Funktion «Game Bar» verwenden</sys:String>
+    <sys:String x:Key="tgl23_sys">Apps im Hintergrund ausführen</sys:String>
+    <sys:String x:Key="tgl24_sys">Reservierter Speicherplatz in Windows</sys:String>
+    <sys:String x:Key="tgl25_sys">Dynamischer und hochpräziser Ereignis-Timer (HPET)</sys:String>
+    <sys:String x:Key="tgl26_sys">«PC Integritätsprüfung» vom Updatesystem verbergen</sys:String>
+    <sys:String x:Key="tgl27_sys">Hintergrundaufgaben der Windows Insider</sys:String>
+    <sys:String x:Key="tgl28_sys">Systemlaufwerk-Defragmentierung</sys:String>
+
+    <sys:String x:Key="Feature_AddUltimatePowerPlan_Button">Plan hinzufügen</sys:String>
+    <sys:String x:Key="Feature_CompressOSButton_Content">Kompression prüfen</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Default_Content">Standard</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Security_Content">Nur Sicherheit</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Manually_Content">Manuell</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Disabled_Content">Deaktiviert</sys:String>
+    <sys:String x:Key="Feature_CreatePowerPlanButton_Header">Neu erstellen</sys:String>
+    <sys:String x:Key="Feature_PowerMode_Header">Energiestatus</sys:String>
+    <sys:String x:Key="Feature_AddUltimatePowerPlan_Header">Ultimativen Leistungsplan hinzufügen</sys:String>
+    <sys:String x:Key="Feature_MenuShowDelay_Header">Menü-Anzeigeverzögerung deaktivieren</sys:String>
+    <sys:String x:Key="Feature_MouseHoverTime_Header">Maus-Hover-Zeit deaktivieren</sys:String>
+    <sys:String x:Key="Feature_BackgroundApps_Header">Hintergrund-Apps deaktivieren</sys:String>
+    <sys:String x:Key="Feature_AutoComplete_Header">Autovervollständigen deaktivieren</sys:String>
+    <sys:String x:Key="Feature_CrashDump_Header">Absturzabbild (Crash Dump) deaktivieren</sys:String>
+    <sys:String x:Key="Feature_RemoteAssistance_Header">Remoteunterstützung deaktivieren</sys:String>
+    <sys:String x:Key="Feature_WindowShake_Header">Fenster-Schütteln (Aero Shake) deaktivieren</sys:String>
+    <sys:String x:Key="Feature_CopyMoveContextMenu_Header">Kopieren/Verschieben zum Kontextmenü hinzufügen</sys:String>
+    <sys:String x:Key="Feature_TaskTimeouts_Header">Aufgaben-Timeouts anpassen</sys:String>
+    <sys:String x:Key="Feature_LowDiskSpaceChecks_Header">Warnung bei wenig Speicherplatz aktivieren</sys:String>
+    <sys:String x:Key="Feature_LinkResolve_Header">Verknüpfungsauflösung deaktivieren</sys:String>
+    <sys:String x:Key="Feature_ServiceTimeouts_Header">Dienst-Timeouts verringern</sys:String>
+    <sys:String x:Key="Feature_RemoteRegistry_Header">Remote-Registrierung deaktivieren</sys:String>
+    <sys:String x:Key="Feature_FileExtensionsAndHiddenFiles_Header">Dateierweiterungen und versteckte Dateien verbergen</sys:String>
+    <sys:String x:Key="Feature_SystemProfile_Header">Systemprofil optimieren</sys:String>
+    <sys:String x:Key="Feature_DisableSysMain_Header">SysMain deaktivieren</sys:String>
+    <sys:String x:Key="Feature_EnableGamingMode_Header">Spielmodus aktivieren</sys:String>
+    <sys:String x:Key="Feature_ExcludeDriversFromWindowsUpdates_Header">Treiber von Windows-Updates ausschließen</sys:String>
+    <sys:String x:Key="Feature_Page_CompressOS_Content">OS komprimieren</sys:String>
+    <sys:String x:Key="Feature_ServiceHostSplitting_Header">Service Host Splitting deaktivieren</sys:String>
+    <sys:String x:Key="Feature_LegacyBootMenu_Header">Altes Boot-Menü aktivieren</sys:String>
+    <sys:String x:Key="Feature_OptimizeNTFS_Header">NTFS-Einstellungen optimieren</sys:String>
+    <sys:String x:Key="Feature_PrioritizeForegroundApplications_Header">Vordergrund-Apps priorisieren</sys:String>
+    <sys:String x:Key="Feature_WPBT_Header">WPBT-Ausführung deaktivieren</sys:String>
+    <sys:String x:Key="Feature_DisableSystemRestore_Header">Systemwiederherstellung deaktivieren</sys:String>
+    <sys:String x:Key="Feature_DisableCortana_Header">Cortana deaktivieren</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Header">Windows-Updates</sys:String>
+    <sys:String x:Key="Feature_DisableSmartScreen_Header">SmartScreen deaktivieren</sys:String>
+
+    <sys:String x:Key="settings_card_effects">Karten-Effekte</sys:String>
+    <sys:String x:Key="settings_hover_glow">Hover-Leuchteffekt</sys:String>
+    <sys:String x:Key="settings_selection_glow">Auswahl-Leuchten umschalten</sys:String>
+
+    <sys:String x:Key="CreatePowerPlanTitle">Energiesparplan erstellen</sys:String>
+    <sys:String x:Key="PowerPlanNameLabel">Name des Energiesparplans</sys:String>
+    <sys:String x:Key="PowerPlanNamePlaceholder">Geben Sie den Namen des Energiesparplans ein</sys:String>
+    <sys:String x:Key="BasePowerPlanLabel">Basis-Energiesparplan</sys:String>
+    <sys:String x:Key="Create">Erstellen</sys:String>
+    <sys:String x:Key="Cancel">Abbrechen</sys:String>
+
+    <sys:String x:Key="slider_desc_sys">Passen Sie die Mauszeigerempfindlichkeit und die Reaktionsfähigkeit der Tastatur an, einschließlich Wiederholungsverzögerung und -raten</sys:String>
+    <sys:String x:Key="slider1_desc_sys">Ändert die Geschwindigkeit des Mauszeigers, so sparen Sie Zeit bei der Suche nach den Mausparametern.</sys:String>
+    <sys:String x:Key="slider2_desc_sys">Ändert die Verzögerung, bevor das eingegebene Zeichen wiederholt wird, der empfohlene Wert ist 0.</sys:String>
+    <sys:String x:Key="slider3_desc_sys">Ändert die Wiederholungsrate des eingegebenen Zeichens, der empfohlene Wert ist 31.</sys:String>
+    <sys:String x:Key="tgl1_desc_sys">Standardmäßig beschleunigt die Mausbeschleunigung die Mausbewegung. Es wird empfohlen, sie auszuschalten, da bei aktivierter Beschleunigung gleichmäßige Bewegungen und Zielgenauigkeit zu wünschen übrig lassen.</sys:String>
+    <sys:String x:Key="tgl2_desc_sys">Wenn Sie nicht möchten, dass gelegentlich ein Fenster erscheint, das Ihnen vorschlägt, die Einrastfunktion oder Tastenfilterung zu aktivieren, und nach Beantwortung mit «Nein» nach einiger Zeit wieder erscheint, dann deaktivieren Sie diese Funktion. Außerdem beeinflusst die Eingabefilterung die Wiederholrate der Tastatur und das Überspringen wiederholter Tasten.</sys:String>
+    <sys:String x:Key="tgl3_desc_sys">Dieser Tweak deaktiviert und stoppt Windows Defender, SmartScreen, unverhältnismäßig hohe Belastungen des Antimalware-Prozessors und die virtualisierungsbasierte Sicherheit (VBS). Damit die Änderungen vollständig übernommen werden, startet das System automatisch in den abgesicherten Modus neu. Es sind keine Aktionen erforderlich - das Dienstprogramm erledigt alles automatisch.</sys:String>
+    <sys:String x:Key="tgl4_desc_sys">Der Tweak deaktiviert UAС (Benutzerkontensteuerung) vollständig und beseitigt Schild-Symbole, Sicherheitsbenachrichtigungen und anderes. UAC ist kein vollwertiges Schutzprogramm.</sys:String>
+    <sys:String x:Key="tgl5_desc_sys">Wenn Sie etwas in Bezug auf Sicherheit oder Schutz deaktivieren, erhalten Sie ständig Benachrichtigungen darüber. Dieser Tweak deaktiviert Sicherheitsbenachrichtigungen aus dem Info-Center.</sys:String>
+    <sys:String x:Key="tgl6_desc_sys">Wenn Sie Ihre Apps aus dem Microsoft Store lieber selbst aktualisieren möchten, müssen Sie die automatische Update-Funktion deaktivieren. Dadurch sinkt die Netzwerkauslastung.</sys:String>
+    <sys:String x:Key="tgl7_desc_sys">Einige Versionen der Realtek High Definition Audio-Treiber können ein Problem mit der Tonverzögerung aufweisen. Dieser Tweak behebt diese Fehlfunktion. Es wird jedoch nicht empfohlen, ihn zu verwenden, wenn Sie keine Verzögerung bemerken oder wenn Sie sich nicht sicher sind, ob der installierte Treiber tatsächlich von Realtek ist.</sys:String>
+    <sys:String x:Key="tgl8_desc_sys">Standardmäßig zeigt Windows den Sperrbildschirm 1 Minute lang an, danach schaltet sich der Bildschirm aus. Dies ist unabhängig davon, ob Sie im Akku- oder Netzbetrieb arbeiten. Dieser Tweak entfernt diese Einschränkungen.</sys:String>
+    <sys:String x:Key="tgl9_desc_sys">Theoretisch benötigt ein Schnellstart weniger Zeit als das Beenden des Ruhezustands, aber in der Praxis ist dies möglicherweise nicht wahrnehmbar. Wenn Sie weder den Schnellstart noch den Ruhezustand verwenden, können Sie diese auch deaktivieren. Auf diese Weise können Sie zusätzlichen Speicherplatz auf Ihrer Festplatte freigeben.</sys:String>
+    <sys:String x:Key="tgl10_desc_sys">Mit dem Tweak können Sie die Systemmeldung deaktivieren, die Sie darüber informiert, dass geöffnete Programme zwangsweise beendet werden, wenn Sie den Computer ausschalten oder neu starten.</sys:String>
+    <sys:String x:Key="tgl11_desc_sys">Windows-Sicherheitswarnung, wenn Sie exe-, msi-, bat-, cmd- oder andere ausführbare Dateien ausführen, die über das Internet heruntergeladen wurden. Das ständige Bestätigen des Starts solcher Dateien kann ziemlich schnell nervig werden, dieser Tweak deaktiviert diese Warnung.</sys:String>
+    <sys:String x:Key="tgl12_desc_sys">Dieser Tweak deaktiviert den automatischen Start der Windows-Speicherdiagnose, indem die geplante Aufgabe ausgeschaltet wird. Infolgedessen bootet das System schneller, da unnötige Prüfungen entfallen, während Sie weiterhin die Möglichkeit behalten, die Diagnose bei Bedarf manuell auszuführen.</sys:String>
+    <sys:String x:Key="tgl13_desc_sys">Dieser Tweak deaktiviert die Teredo-, ISATAP- und IPv6-Protokolle, die in der Regel von der Mehrheit der Benutzer nicht benötigt werden. Es ist jedoch nicht ratsam, ihn auf Arbeits- oder Firmengeräten anzuwenden: Dies kann zu Netzwerkproblemen oder Fehlfunktionen einiger Dienste führen.</sys:String>
+    <sys:String x:Key="tgl14_desc_sys">Dieser Tweak beinhaltet die Unterstützung für einen großen Dateisystem-Cache. Das Vergrößern des Dateisystem-Caches verbessert im Allgemeinen die Computerleistung, verringert jedoch im Gegenzug den physischen Speicherplatz, der für Anwendungen und Dienste verfügbar ist.</sys:String>
+    <sys:String x:Key="tgl15_desc_sys">Standardmäßig verfügt Windows über einen integrierten Mechanismus zur Verlangsamung von Startprogrammen. Diese Lösung funktioniert auf älteren Computern mit HDD recht gut, verlangsamt aber auf modernen PCs mit SSD den Systemstart mit Programmen unnötig.</sys:String>
+    <sys:String x:Key="tgl16_desc_sys">Der Tweak deaktiviert die Aufzeichnung des Nutzungsverlaufs von Dateien und Ordnern, die in der Schnellzugriffsleiste angezeigt werden. Mit anderen Worten, das System wird die zuletzt aktiven Elemente nicht mehr automatisch speichern und anzeigen.</sys:String>
+    <sys:String x:Key="tgl17_desc_sys">Der Tweak deaktiviert den automatischen Start (Autorun) für verschiedene an den Computer angeschlossene Wechselmedien, die der Explorer zu öffnen versucht. Auf diese Weise öffnet sich ein Ihnen unbekanntes Programm nicht automatisch auf einem Medium, dessen Zuverlässigkeit Sie nicht sicher sind.</sys:String>
+    <sys:String x:Key="tgl18_desc_sys">Fügt das «Ultimative Leistung» Energieprofil hinzu, oder wechselt einfach zum bestehenden Energieprofil, falls vorhanden. Darüber hinaus schaltet es die Einstellung der maximalen Prozessorfrequenz in den Energieverwaltungsoptionen des Prozessors frei.</sys:String>
+    <sys:String x:Key="tgl19_desc_sys">Wenn Sie kein Bluetooth benötigen und Ihre Geräte nicht über Bluetooth nutzen möchten, schalten Sie es aus, was auch das Symbol im Infobereich (Tray) entfernt.</sys:String>
+    <sys:String x:Key="tgl20_desc_sys">Die Firewall ermöglicht es Ihnen, den Internetzugang von Programmen zu regulieren, indem sie deren Verbindungen erlaubt oder blockiert und den Datenverkehr kontrolliert. Wenn Sie sich Ihrer Handlungen sicher sind und verstehen, was Sie tun, können Sie die Firewall deaktivieren; für die meisten Benutzer wird jedoch empfohlen, sie aktiviert zu lassen.</sys:String>
+    <sys:String x:Key="tgl21_desc_sys">Der Spielmodus hat auf leistungsstarken Systemen keine großen Auswirkungen. Wenn jedoch viele Prozesse im Hintergrund laufen, stellt der Modus sicher, dass Hintergrundprozesse den Betrieb des Spiels nicht beeinträchtigen.</sys:String>
+    <sys:String x:Key="tgl22_desc_sys">Eine Funktion zum Aufzeichnen Ihrer Spiele. Im Großen und Ganzen verbraucht es die Ressourcen Ihres Systems. Es gibt viele bessere Alternativen, die sich außerdem nicht spontan öffnen.</sys:String>
+    <sys:String x:Key="tgl23_desc_sys">Einige Anwendungen erlauben es Ihnen, die Hintergrundaktivität zu verwalten, was bestimmt, was sie tun dürfen, wenn sie im Hintergrund sind und nicht aktiv genutzt werden. Generell hilft das Deaktivieren von Hintergrundanwendungen, die Netzwerkauslastung, sowie die CPU-Last und den Stromverbrauch zu reduzieren, was für Laptops nützlich ist, da es die Akkulaufzeit verlängert.</sys:String>
+    <sys:String x:Key="tgl24_desc_sys">Reservierter Speicher ist so konzipiert, dass eine vorhersehbare Zuweisung von freiem Speicherplatz erfolgt, der von Updates, Anwendungen, temporären Dateien und dem System-Cache verwendet wird. Durch das Deaktivieren kann eine beträchtliche Menge an Speicherplatz freigegeben werden. Wenn Sie jedoch über ausreichend freien Speicherplatz verfügen, wird dies nicht empfohlen, Sie erhalten keine zusätzlichen Vorteile.</sys:String>
+    <sys:String x:Key="tgl25_desc_sys">Das Deaktivieren des dynamischen Timers und von HPET kann die Systemreaktionsfähigkeit verbessern, indem Mikroruckler reduziert werden, und kann einen leichten Leistungsschub bewirken. Der Effekt hängt jedoch von der Konfiguration ab: In einigen Fällen kann das System anstatt schneller zu werden, verlangsamen und laggen. Wenn Sie einen Laptop verwenden, beachten Sie, dass dies auch den Stromverbrauch leicht erhöhen kann, da die CPU auch im Leerlauf aktiver bleibt.</sys:String>
+    <sys:String x:Key="tgl26_desc_sys">Der Tweak blockiert die aufdringliche automatische Installation der PC-Integritätsprüfung - einem Microsoft-Dienstprogramm, das sich über Windows Update ohne Erlaubnis zwangsweise installiert. Einmal installiert, nervt das Programm ständig mit einer «Überprüfung der Windows 11-Bereitschaft» und drängt unaufgeforderte «Optimierungsempfehlungen» auf.</sys:String>
+    <sys:String x:Key="tgl27_desc_sys">Für Teilnehmer am Windows Insider Programm sollten diese Aufgaben aktiviert bleiben. Wenn Sie jedoch nicht an dem Programm teilnehmen, werden alle zugehörigen Aufgaben zu einem unnötigen Overhead: Sie verbrauchen Systemressourcen, erzeugen nutzlose Protokolle und initiieren möglicherweise Telemetrieverbindungen, ohne einen Nutzen zu bieten. Das Deaktivieren kann die Startzeit und die allgemeine Systemleistung verbessern, während gleichzeitig unnötige Kanäle zur experimentellen Datensammlung eliminiert werden.</sys:String>
+    <sys:String x:Key="tgl28_desc_sys">Wenn Sie eine SSD haben, hilft die Deaktivierung von Defragmentierung und der Startdatei-Optimierung, die nur für Festplatten (HDD) effektiv sind, die Lebensdauer Ihres Laufwerks zu verlängern. Gleichzeitig arbeitet die TRIM-Optimierungsfunktion weiter: Sie teilt dem SSD-Controller mit, welche Datenblöcke nicht mehr verwendet werden und löscht sie, um eine stabile Geschwindigkeit und Langlebigkeit des Laufwerks aufrechtzuerhalten.</sys:String>
+
+    <sys:String x:Key="powerplangroup_desc_sys">Wählen Sie einen Energiesparplan oder fügen Sie einen hinzu, um Leistung und Energieverbrauch auszugleichen</sys:String>
+    <sys:String x:Key="addultimatepowerplan_desc_sys">Fügt das versteckte «Ultimative Leistung»-Energieprofil für maximale Performance zu Ihrem System hinzu.</sys:String>
+    <sys:String x:Key="menushowdelay_desc_sys">Steuert die Verzögerung, bevor Menüs beim Überfahren mit der Maus erscheinen. Die Deaktivierung dieser Funktion lässt Menüs sofort öffnen, was die Reaktionsgeschwindigkeit verbessert, aber die Benutzerkontrolle verringern könnte.</sys:String>
+    <sys:String x:Key="mousehovertime_desc_sys">Passt die Zeit an, die das System wartet, bevor ein Hover-Ereignis ausgelöst wird. Das Deaktivieren kann Interaktionen beschleunigen, aber zu unbeabsichtigten Aktivierungen führen.</sys:String>
+    <sys:String x:Key="backgroundapps_desc_sys">Verhindert, dass Apps im Hintergrund laufen, was in einigen Fällen zu einer verbesserten Leistung führt.</sys:String>
+    <sys:String x:Key="autocomplete_desc_sys">Deaktiviert automatische Vorschläge bei der Eingabe in bestimmten Feldern wie Suchfeldern und Formulareingaben. Die Deaktivierung kann Ablenkungen reduzieren, den Workflow jedoch verlangsamen.</sys:String>
+    <sys:String x:Key="crashdump_desc_sys">Legt fest, ob Absturzberichte und Speicherabbilder erstellt werden, wenn Anwendungen abstürzen. Die Deaktivierung kann Speicherplatz sparen, erschwert aber die Diagnose von Anwendungsproblemen.</sys:String>
+    <sys:String x:Key="remoteassistance_desc_sys">Deaktiviert Remote-Support-Funktionen, die es anderen ermöglichen, Ihnen über Remote-Desktop zu helfen. Die Deaktivierung verbessert die Sicherheit, schränkt jedoch die Support-Möglichkeiten ein.</sys:String>
+    <sys:String x:Key="windowshake_desc_sys">Deaktiviert die Funktion 'Aero Shake', die alle offenen Fenster minimiert, wenn Sie ein Fenster schütteln. Die Deaktivierung verbessert den Fokus, entfernt jedoch ein praktisches Fensterverwaltungstool.</sys:String>
+    <sys:String x:Key="copymovecontextmenu_desc_sys">Fügt zusätzliche Optionen im Dateikontextmenü hinzu, um Dateien einfach an einen neuen Ort zu kopieren oder zu verschieben. Dies vereinfacht die Dateiverwaltung durch direkten Zugriff über das Rechtsklick-Menü.</sys:String>
+    <sys:String x:Key="tasktimeouts_desc_sys">Ändert die Timeout-Einstellungen für Systemaufgaben. Eine Anpassung kann in einigen Szenarien die Leistung verbessern, kann aber dazu führen, dass Aufgaben unter bestimmten Bedingungen abbrechen.</sys:String>
+    <sys:String x:Key="lowdiskspacechecks_desc_sys">Aktiviert automatische Überprüfungen auf geringen Speicherplatz, um Leistungsprobleme zu vermeiden. Das Deaktivieren verringert Benachrichtigungen, Sie könnten jedoch kritische Speicherwarnungen verpassen.</sys:String>
+    <sys:String x:Key="linkresolve_desc_sys">Deaktiviert die Auflösung von fehlerhaften Verknüpfungen (Links) in Dateien und Ordnern. Das Deaktivieren kann Vorgänge beschleunigen, kann jedoch veraltete Verknüpfungen ungelöst lassen.</sys:String>
+    <sys:String x:Key="servicetimeouts_desc_sys">Passt die Timeouts für Systemdienste an. Eine Verkürzung kann die Leistung verbessern, kann aber dazu führen, dass Dienste vorzeitig beendet werden.</sys:String>
+    <sys:String x:Key="remoteregistry_desc_sys">Deaktiviert den Remote-Zugriff auf die Registrierung (Registry). Dies erhöht die Sicherheit, verhindert jedoch die Remote-Konfiguration von Registrierungseinstellungen.</sys:String>
+    <sys:String x:Key="fileextensionsandhiddenfiles_desc_sys">Steuert die Sichtbarkeit von Dateierweiterungen und versteckten Dateien. Eine Aktivierung reduziert Unordnung, verbirgt aber wichtige Dateidetails.</sys:String>
+    <sys:String x:Key="systemprofile_desc_sys">Verbessert die Systemleistung durch Anpassung von Systemprofil-Einstellungen. Diese Funktion priorisiert Geschwindigkeit und Effizienz und verbessert so die Gesamtreaktionszeit und das Ressourcenmanagement.</sys:String>
+    <sys:String x:Key="sysmain_desc_sys">Schaltet SysMain aus, das häufig verwendete Anwendungen für einen schnelleren Start vorlädt. Kann bei Verwendung einer HDD die Startzeiten für einige Programme beeinträchtigen.</sys:String>
+    <sys:String x:Key="enablegamingmode_desc_sys">Aktiviert den Spielmodus, der Systemressourcen für ein flüssigeres Spielerlebnis optimiert. Kann Auswirkungen auf Hintergrundprozesse haben.</sys:String>
+    <sys:String x:Key="drivers_desc_sys">Schließt Treiber-Updates von Windows Update aus. Kann zu veralteten Treibern mit potenziellen Sicherheitsrisiken oder Kompatibilitätsproblemen führen. Mit Vorsicht verwenden.</sys:String>
+    <sys:String x:Key="compressosgroup_desc_sys">Aktiviert die Betriebssystemkomprimierung (CompactOS), um den Speicherplatzbedarf zu reduzieren. Diese Funktion ist besonders nützlich für Geräte mit begrenzter Speicherkapazität, kann aber die Systemleistung auf Low-End-Hardware leicht beeinträchtigen.</sys:String>
+    <sys:String x:Key="servicehostsplitting_desc_sys">Deaktiviert das Service Host Splitting für viel geringere RAM-Auslastung und Prozessanzahl.</sys:String>
+    <sys:String x:Key="legacybootmenu_desc_sys">Wechselt zum alten (klassischen) Boot-Menü für einen schnelleren Start.</sys:String>
+    <sys:String x:Key="optimizentfs_desc_sys">Passt NTFS-Einstellungen an, um die Leistung zu verbessern und den Datenschutz zu erhöhen.</sys:String>
+    <sys:String x:Key="prioritizeforegroundapplications_desc_sys">Steigert die Leistung für aktive Anwendungen, indem Vordergrundaufgaben priorisiert werden.</sys:String>
+    <sys:String x:Key="wpbt_desc_sys">Verhindert, dass die Firmware Programme (z. B. OEM-Bloatware) während des Starts ausführt.</sys:String>
+    <sys:String x:Key="systemrestore_desc_sys">Deaktiviert die Systemwiederherstellung, welche Wiederherstellungspunkte erstellt, um das System bei Problemen auf einen früheren Zustand zurückzusetzen. Nicht empfohlen. Durch Deaktivieren dieser Funktion wird die Möglichkeit entfernt, sich einfach von potenziellen Systemproblemen zu erholen.</sys:String>
+    <sys:String x:Key="cortana_desc_sys">Deaktiviert Cortana, den virtuellen Assistenten, der Fragen beantworten und Aufgaben ausführen kann. Kann sich auf die Sprachsuche und einige Produktivitätsfunktionen auswirken.</sys:String>
+    <sys:String x:Key="windowsupdatesgroup_desc_sys">Konfigurieren Sie, wie Windows mit automatischen Updates umgeht. Wählen Sie zwischen automatischen Updates, Nur-Sicherheit, manueller Kontrolle oder vollständig deaktiviert.</sys:String>
+    <sys:String x:Key="smartscreen_desc_sys">Schaltet den SmartScreen-Filter aus, der vor potenziell unsicheren aus dem Internet heruntergeladenen Apps und Dateien warnt. Die Deaktivierung dieser Funktion erhöht das Risiko einer Malware-Infektion.</sys:String>
+    <!-- endregion System Page-->
+
+    <!-- region Services Page -->
+    <sys:String x:Key="tgl1_svc">Dienste im Zusammenhang mit der Windows-Suche</sys:String>
+    <sys:String x:Key="tgl2_svc">Dienste im Zusammenhang mit Xbox</sys:String>
+    <sys:String x:Key="tgl3_svc">Dienste im Zusammenhang mit Windows Update</sys:String>
+    <sys:String x:Key="tgl4_svc">Dienste im Zusammenhang mit dem Windows Store</sys:String>
+    <sys:String x:Key="tgl5_svc">Leistungsindikator-Dienste</sys:String>
+    <sys:String x:Key="tgl6_svc">Windows-Biometriedienst</sys:String>
+    <sys:String x:Key="tgl7_svc">Dienste im Zusammenhang mit Bluetooth</sys:String>
+    <sys:String x:Key="tgl8_svc">Dienste im Zusammenhang mit Druckern</sys:String>
+    <sys:String x:Key="tgl9_svc">Dienst im Zusammenhang mit dem Betrieb des Scanners</sys:String>
+    <sys:String x:Key="tgl10_svc">Dienste im Zusammenhang mit Fax</sys:String>
+    <sys:String x:Key="tgl11_svc">Dienste im Zusammenhang mit der Nutzung des Tablet-/Smartphone-Modus</sys:String>
+    <sys:String x:Key="tgl12_svc">Dienste im Zusammenhang mit dem Betrieb zusätzlicher Monitore</sys:String>
+    <sys:String x:Key="tgl13_svc">Dienst im Zusammenhang mit Systemkomponenten</sys:String>
+    <sys:String x:Key="tgl14_svc">Dienste im Zusammenhang mit dem Betrieb des lokalen Netzwerks</sys:String>
+    <sys:String x:Key="tgl15_svc">Dienste im Zusammenhang mit USB-Modems und -Routern</sys:String>
+    <sys:String x:Key="tgl16_svc">Dienste im Zusammenhang mit VPN-Clients</sys:String>
+    <sys:String x:Key="tgl17_svc">Dienste im Zusammenhang mit dem Betrieb von Windows Media</sys:String>
+    <sys:String x:Key="tgl18_svc">Dienste im Zusammenhang mit Remotedesktop</sys:String>
+    <sys:String x:Key="tgl19_svc">Dienste, die Fehler und Ereignisprotokolle sammeln</sys:String>
+    <sys:String x:Key="tgl20_svc">WebDAV-Dienst zur Remotedateiverwaltung</sys:String>
+    <sys:String x:Key="tgl21_svc">Dienste im Zusammenhang mit dem Betrieb einer Smartcard</sys:String>
+    <sys:String x:Key="tgl22_svc">Dienste im Zusammenhang mit dem Betrieb des Windows-Kiosks</sys:String>
+    <sys:String x:Key="tgl23_svc">Dienste im Zusammenhang mit der Dateiverschlüsselung</sys:String>
+    <sys:String x:Key="tgl24_svc">Dienst im Zusammenhang mit der Windows-Lokalisierung</sys:String>
+    <sys:String x:Key="tgl25_svc">Dienste im Zusammenhang mit Hintergrund-Sicherheitsüberprüfungen</sys:String>
+    <sys:String x:Key="tgl26_svc">Dienste im Zusammenhang mit Hintergrunddiagnosen</sys:String>
+    <sys:String x:Key="tgl27_svc">Dienste im Zusammenhang mit Unternehmens-Tools</sys:String>
+    <sys:String x:Key="tgl28_svc">Dienst im Zusammenhang mit dem Betrieb von Hyper-V</sys:String>
+    <sys:String x:Key="tgl29_svc">Dienste im Zusammenhang mit Push-Benachrichtigungen</sys:String>
+    <sys:String x:Key="tgl30_svc">Dienste im Zusammenhang mit dem Store Demo Modus</sys:String>
+
+    <sys:String x:Key="tgl1_desc_svc">Deaktivieren Sie dies, wenn Sie den Dateiversionsverlauf und die Inhaltsindizierung nicht verwenden.</sys:String>
+    <sys:String x:Key="tgl2_desc_svc">Deaktivieren Sie dies, wenn Sie keine Xbox und Microsoft-Gamepads verwenden.</sys:String>
+    <sys:String x:Key="tgl3_desc_svc">Deaktivieren, wenn Sie nicht vorhaben, Windows zu aktualisieren. Zusätzlich zu den Diensten ändert der Tweak die für Windows-Updates verantwortlichen Dateien. Dadurch wird das Update Center selbst bei aktivierten Diensten nicht funktionieren. Bitte beachten Sie, dass der Tweak auch das Herunterladen und Aktualisieren von Apps aus dem Windows Store beeinträchtigt.</sys:String>
+    <sys:String x:Key="tgl4_desc_svc">Deaktivieren, wenn Sie den Windows Store und seine UWP-Apps nicht verwenden.</sys:String>
+    <sys:String x:Key="tgl5_desc_svc">Deaktivieren, wenn Sie nicht möchten, dass Dienste die Leistung Ihres Systems analysieren.</sys:String>
+    <sys:String x:Key="tgl6_desc_svc">Deaktivieren Sie dies, wenn Sie sich nicht mit PIN, Fingerabdruck, Gesichtserkennung oder anderen Windows Hello-Methoden anmelden. Wenn eine Anmeldemethode bereits eingerichtet wurde, wird sie weiterhin funktionieren, aber Sie müssen Windows Hello wieder aktivieren, um sie zu ändern oder zu entfernen.</sys:String>
+    <sys:String x:Key="tgl7_desc_svc">Deaktivieren Sie dies, wenn Sie Bluetooth und Geräte, deren Funktion mit Bluetooth verbunden ist, nicht verwenden.</sys:String>
+    <sys:String x:Key="tgl8_desc_svc">Deaktivieren, wenn Sie keinen Drucker haben.</sys:String>
+    <sys:String x:Key="tgl9_desc_svc">Deaktivieren, wenn Sie keinen Scanner haben.</sys:String>
+    <sys:String x:Key="tgl10_desc_svc">Deaktivieren, wenn Sie kein Faxgerät haben.</sys:String>
+    <sys:String x:Key="tgl11_desc_svc">Deaktivieren Sie dies, wenn Sie einen stationären PC, Laptop oder Netbook besitzen.</sys:String>
+    <sys:String x:Key="tgl12_desc_svc">Deaktivieren, wenn Sie nur einen Monitor haben und nicht vorhaben, weitere anzuschließen.</sys:String>
+    <sys:String x:Key="tgl13_desc_svc">Deaktivieren Sie dies, wenn Sie diese Apps nicht verwenden: «Virtuelle Desktops», «Ihr Smartphone» und «Nachtmodus». Dieser Dienst verarbeitet Benutzerdaten und synchronisiert sie mit Microsoft-Servern. Er ist für den Betrieb des Systems nicht zwingend erforderlich; jedoch können einige Funktionen wie z.B. «Nachtmodus» in Windows 10 teilweise oder vollständig nicht mehr funktionieren, wenn er deaktiviert wird.</sys:String>
+    <sys:String x:Key="tgl14_desc_svc">Deaktivieren, wenn Sie kein lokales Netzwerk verwenden oder planen zu verwenden.</sys:String>
+    <sys:String x:Key="tgl15_desc_svc">Deaktivieren, wenn Sie über Kabel oder Wi-Fi mit dem Internet verbunden sind.</sys:String>
+    <sys:String x:Key="tgl16_desc_svc">Deaktivieren, wenn Sie keine VPN-Clients verwenden. Kann den Betrieb der Xbox beeinträchtigen.</sys:String>
+    <sys:String x:Key="tgl17_desc_svc">Deaktivieren, wenn Sie keine Dateisynchronisation und keinen lokalen Netzwerkzugriff für den Windows Media Player benötigen. Diese Dienste sind nicht kritisch, Sie können den Player weiterhin verwenden.</sys:String>
+    <sys:String x:Key="tgl18_desc_svc">Deaktivieren, wenn Sie keinen Remote-Desktop und keine Serververbindung zu diesen nutzen.</sys:String>
+    <sys:String x:Key="tgl19_desc_svc">Deaktivieren, wenn Sie nicht möchten, dass die Dienste Ihren PC belasten, während sie Fehler verarbeiten.</sys:String>
+    <sys:String x:Key="tgl20_desc_svc">Deaktivieren, wenn Sie Dateien nicht aus der Ferne über die Dateifreigabe oder mittels WebDAV verwalten.</sys:String>
+    <sys:String x:Key="tgl21_desc_svc">Deaktivieren, wenn Sie keine Smartcards verwenden. Eine Smartcard ist eine Art elektronischer Identifikator oder Plastikkarte mit Chip. Vom Aussehen her wie eine «Bankkarte». Für den täglichen Gebrauch von Windows wird der Dienst nicht benötigt und Sie werden ihn nie brauchen.</sys:String>
+    <sys:String x:Key="tgl22_desc_svc">Deaktivieren, wenn Sie den Windows-Kioskmodus nicht nutzen. Dieser Modus minimiert die Benutzeroberfläche: nur eine einzige UWP-App läuft im Vollbild, und alle anderen Funktionen sind blockiert. Beachten Sie, dass dies die Installation von Windows-Updates und Programmen über den Windows Installer stören kann, da dies auch die Einrichtung und Initialisierung von Systemdaten und Anwendungen bei der ersten Anmeldung deaktiviert.</sys:String>
+    <sys:String x:Key="tgl23_desc_svc">Deaktivieren, wenn Sie keine BitLocker-Laufwerksverschlüsselung und keine EFS-Datei- oder Ordnerverschlüsselung verwenden.</sys:String>
+    <sys:String x:Key="tgl24_desc_svc">Deaktivieren, wenn Sie alle Sprachen konfiguriert haben, die Sie verwenden werden, und nicht vorhaben, neue hinzuzufügen.</sys:String>
+    <sys:String x:Key="tgl25_desc_svc">Deaktivieren, wenn Sie Windows Defender und jegliche zusätzliche Windows-Sicherheit nicht verwenden.</sys:String>
+    <sys:String x:Key="tgl26_desc_svc">Deaktivieren, wenn Sie nicht möchten, dass Windows das System mit seinen nutzlosen Diagnosen im Hintergrund belastet.</sys:String>
+    <sys:String x:Key="tgl27_desc_svc">Deaktivieren, wenn Sie keine Remoteverwaltung von Unternehmensanwendungen nutzen und keinen Remote-Server haben, mit dem Ihr PC kommuniziert.</sys:String>
+    <sys:String x:Key="tgl28_desc_svc">Deaktivieren, wenn Sie das eingebaute Virtualisierungssystem nicht nutzen. Dies beeinträchtigt die Funktion von VirtualBox und dergleichen in keiner Weise.</sys:String>
+    <sys:String x:Key="tgl29_desc_svc">Deaktivieren, wenn Sie keine gekoppelten Geräte verwenden und keine Apps aus dem Windows Store aus der Ferne installieren. Diese Dienste steuern das Info-Center mit gekoppelten Geräten, verarbeiten Push-Anfragen, erlauben Windows, Ihr Smartphone für die «Ihr Smartphone» App zu erkennen, sich automatisch damit zu verbinden und dessen Nachrichten und Ereignisse im Action Center anzuzeigen. In Windows 10 kann es nach deren Deaktivierung dazu kommen, dass sich das Info-Center nicht mehr öffnet.</sys:String>
+    <sys:String x:Key="tgl30_desc_svc">Deaktivieren, wenn Sie das Gerät nicht in einem Geschäft verwenden, um Windows-Funktionen zu demonstrieren. Der Store Demo-Dienst verwaltet die Anzeige von Demo-Inhalten und interaktiven Funktionen, die nur für Displays in Geschäften und zu Testzwecken gedacht sind. Dieser Dienst wird für den alltäglichen Gebrauch des Computers nicht benötigt.</sys:String>
+    <!-- endregion Services Page-->
+
+    <!-- region Interface Page -->
+    <sys:String x:Key="tgl1_intf">Standardfarben-Cursor-Auswahl</sys:String>
+    <sys:String x:Key="tgl2_intf">Standardfarbe des Tooltips (QuickInfo)</sys:String>
+    <sys:String x:Key="tgl3_intf">Standardgröße der Systemschaltflächen</sys:String>
+    <sys:String x:Key="tgl4_intf">Standard-Cursor-Blinkfrequenz</sys:String>
+    <sys:String x:Key="tgl5_intf">Standard-Größe der Bildlaufleiste</sys:String>
+    <sys:String x:Key="tgl6_intf">Transparenzeffekt der Taskleiste</sys:String>
+    <sys:String x:Key="tgl7_intf">Dunkles Taskleisten-Design</sys:String>
+    <sys:String x:Key="tgl8_intf">Dunkles Design von Anwendungen und Explorer</sys:String>
+    <sys:String x:Key="tgl9_intf">Verzögerung beim Aufruf des Kontextmenüs</sys:String>
+    <sys:String x:Key="tgl10_intf">Verzögerung beim Erscheinen der Vorschauen in der Taskleiste</sys:String>
+    <sys:String x:Key="tgl11_intf">Pfeile für Verknüpfungen auf Dateien, Ordner oder Programme</sys:String>
+    <sys:String x:Key="tgl12_intf">Präfix «Verknüpfung mit...» / Postfix «- Verknüpfung»</sys:String>
+    <sys:String x:Key="tgl13_intf">«Dieser PC» Symbol auf dem Desktop</sys:String>
+    <sys:String x:Key="tgl14_intf">«Papierkorb» Symbol auf dem Desktop</sys:String>
+    <sys:String x:Key="tgl15_intf">Taskleisten-Ausrichtung</sys:String>
+    <sys:String x:Key="tgl16_intf">Standard-Layout des «Start»-Menüs</sys:String>
+    <sys:String x:Key="tgl17_intf">Abgespecktes Kontextmenü</sys:String>
+    <sys:String x:Key="tgl18_intf">Tipps und Vorschläge anzeigen</sys:String>
+    <sys:String x:Key="tgl19_intf">Kompakten Explorer-Modus verwenden</sys:String>
+    <sys:String x:Key="tgl20_intf">Assistenten «Copilot» und «Recall»</sys:String>
+    <sys:String x:Key="tgl21_intf">«Task beenden» mit RMT (Rechte Maustaste) auf die Anwendung</sys:String>
+    <sys:String x:Key="tgl22_intf">Fenster-Andockvorschläge anzeigen</sys:String>
+    <sys:String x:Key="tgl23_intf">Symbole und Schaltflächen in der Taskleiste</sys:String>
+    <sys:String x:Key="tgl24_intf">Personalisierte Werbung anzeigen</sys:String>
+    <sys:String x:Key="tgl25_intf">Vorherige Ordnerfenster bei der Anmeldung wiederherstellen</sys:String>
+    <sys:String x:Key="tgl26_intf">Benachrichtigungen mit Windows-Tipps und -Vorschlägen</sys:String>
+    <sys:String x:Key="tgl27_intf">Ordner in «Dieser PC»</sys:String>
+    <sys:String x:Key="tgl28_intf">«3D-Objekte» im Explorer</sys:String>
+    <sys:String x:Key="tgl29_intf">Kompression des .JPEG-Formats beim Desktop-Hintergrundbild</sys:String>
+    <sys:String x:Key="tgl30_intf">Tooltips für Desktop-Elemente</sys:String>
+    <sys:String x:Key="tgl31_intf">Suchanfragen mit «Bing»-Integration im Startmenü</sys:String>
+    <sys:String x:Key="tgl32_intf">«Schnellzugriff» anstelle von «Dieser PC» öffnen</sys:String>
+    <sys:String x:Key="tgl33_intf">Anzeige von Dateierweiterungen im Explorer</sys:String>
+    <sys:String x:Key="tgl34_intf">Acryl-Unschärfeeffekt auf dem Anmeldebildschirm deaktivieren</sys:String>
+    <sys:String x:Key="tgl35_intf">Katalog im Navigationsbereich des Datei-Explorers</sys:String>
+    <sys:String x:Key="tgl36_intf">Startseite im Navigationsbereich des Datei-Explorers</sys:String>
+    <sys:String x:Key="tgl37_intf">Doppelte Wechseldatenträger aus dem Navigationsbereich des Datei-Explorers ausblenden</sys:String>
+    <sys:String x:Key="tgl38_intf">Anzeige versteckter Dateien und Ordner im Explorer</sys:String>
+    <sys:String x:Key="tgl39_intf">Snap Bar (Windows 11)</sys:String>
+    <sys:String x:Key="tgl40_intf">Sekunden auf der Taskleistenuhr anzeigen</sys:String>
+
+    <sys:String x:Key="tgl1_desc_intf">Ändert die Farbe der Cursorauswahl von blau auf grau «nasser Asphalt».</sys:String>
+    <sys:String x:Key="tgl2_desc_intf">Ändert die Farbe der QuickInfo in einigen Programmen von gelb auf hellblau «azurblau».</sys:String>
+    <sys:String x:Key="tgl3_desc_intf">Ein Tweak reduziert die Größe der Minimieren-, Maximieren- und Schließen-Schaltflächen und macht sie weniger sperrig. Er passt die Größe für alle Fenster an, einschließlich Datei-Explorer, Fotos, Browser und andere vertraute Programme.</sys:String>
+    <sys:String x:Key="tgl4_desc_intf">Ein Tweak erhöht die Frequenz, mit der der Text-Cursor blinkt. Standardmäßig blinkt der Cursor alle 530 Millisekunden.</sys:String>
+    <sys:String x:Key="tgl5_desc_intf">Ein Tweak reduziert die Dicke der Bildlaufleisten in klassischen Windows-Anwendungen, einschließlich des Datei-Explorers, Browsern und anderer älterer Programme. Dies betrifft jedoch keine modernen Oberflächen, da diese ihre eigenen Steuerelemente unabhängig von den Systemeinstellungen verwenden.</sys:String>
+    <sys:String x:Key="tgl6_desc_intf">Der Tweak deaktiviert oder aktiviert den Transparenzeffekt. Transluzente Fenster und Oberflächen.</sys:String>
+    <sys:String x:Key="tgl7_desc_intf">Ändert das Taskleisten-Design auf hell oder dunkel. Achtung, der Bildschirm könnte flackern.</sys:String>
+    <sys:String x:Key="tgl8_desc_intf">Der Tweak ändert das Explorer-Design auf hell oder dunkel, einschließlich Browser und anderer Programme, die das Geräte-Design unterstützen. Achtung der Bildschirm könnte flackern.</sys:String>
+    <sys:String x:Key="tgl9_desc_intf">Standardmäßig erscheinen zusätzliche Kontextmenüeinträge mit einer Verzögerung von 400 Millisekunden. Wenn es schneller gehen soll, können Sie diese Verzögerung verringern.</sys:String>
+    <sys:String x:Key="tgl10_desc_intf">Standardmäßig zeigt die Taskleistenvorschau die Vorschau laufender Anwendungen zu lange an. Um die Vorschau schneller anzeigen zu lassen, wenden Sie diesen Tweak an.</sys:String>
+    <sys:String x:Key="tgl11_desc_intf">Der Tweak entfernt Pfeile von Verknüpfungen, indem er die Pfeildatei ersetzt.</sys:String>
+    <sys:String x:Key="tgl12_desc_intf">Entfernen der allzu intuitiven Präfix-Postfix-Namensgebung für Verknüpfungen.</sys:String>
+    <sys:String x:Key="tgl13_desc_intf">Das PC-Symbol ist im Gegensatz zur PC-Verknüpfung besser, da es die erforderlichen Eigenschaften des Kontextmenüs besitzt und frei von unnötigen ist.</sys:String>
+    <sys:String x:Key="tgl14_desc_intf">Wenn Sie das Papierkorb-Symbol auf dem Desktop nicht benötigen und keine Zeit mit der Suche nach einer Abschaltung verschwenden möchten, können Sie Tweaks verwenden.</sys:String>
+    <sys:String x:Key="tgl15_desc_intf">Wählen Sie, wo die Symbole in der Taskleiste angezeigt werden sollen, zentriert oder links</sys:String>
+    <sys:String x:Key="tgl16_desc_intf">Ändert das Layout des Startmenüs, indem der Bereich für angeheftete Apps erweitert wird. Außerdem wird, außer in der Windows Home-Edition, der Bereich «Empfohlen» aus dem Startmenü entfernt.</sys:String>
+    <sys:String x:Key="tgl17_desc_intf">Dieser Tweak bringt Sie zum üblichen klassischen Kontextmenü für den Desktop und «Explorer» zurück. Achtung der Bildschirm könnte flackern.</sys:String>
+    <sys:String x:Key="tgl18_desc_intf">Windows 11 zeigt manchmal Hinweise, wie eine bestimmte Funktion genutzt wird, zum Beispiel das neue «Start»-Menü oder die «Schnelleinstellungen». Diese sind nützlich, wenn Sie Windows 11 zum ersten Mal sehen, ansonsten ist es nutzloser Ballast.</sys:String>
+    <sys:String x:Key="tgl19_desc_intf">Standardmäßig fügt Windows Abstände zwischen den Elementen im Explorer hinzu. Dies ist eine neue Funktion, die für Touchscreens entwickelt wurde. Dieser Tweak stellt das klassische Layout des Dateiexplorers wieder her, entfernt die Einrückung zwischen den Elementen und erspart Ihnen die Suche nach Einstellungen.</sys:String>
+    <sys:String x:Key="tgl20_desc_intf">Der Tweak deaktiviert und versteckt nach Möglichkeit die Copilot-Symbole in der Taskleiste, im «Startmenü», in Edge und im Editor, blockiert dessen Funktionalität und deaktiviert zudem Recall. Dabei bleibt die Kernanwendung Copilot selbst unberührt, im System erhalten und kann bei Bedarf genutzt werden. Copilot kann nur zusammen mit Microsoft Edge vollständig entfernt werden. Wenn diese KI-Funktionen anfangs in Ihrem Windows nicht vorhanden sind, ist die Nutzung dieses Tweaks sinnlos.</sys:String>
+    <sys:String x:Key="tgl21_desc_intf">Mit diesem Tweak können Sie die Option «Task beenden» zum Kontextmenü hinzufügen, wenn Sie mit der rechten Maustaste auf die Anwendung in der Taskleiste klicken. Dies beschleunigt das Beenden von Prozessen, ohne den Task-Manager öffnen zu müssen. Achtung der Bildschirm könnte flackern.</sys:String>
+    <sys:String x:Key="tgl22_desc_intf">Wenn Sie beim Daraufzeigen auf die Schaltfläche «Maximieren» die Vorschläge für die Fensteranordnung (Snap Layouts) nicht sehen möchten, können Sie diese Option deaktivieren.</sys:String>
+    <sys:String x:Key="tgl23_desc_intf">Dieser Tweak entfernt die Symbole «Suche», «Aktive Anwendungen» und «Chat» und versteckt das Element «Erfahren Sie mehr über dieses Bild». In älteren Builds von Windows 11 wird auch das Copilot-Symbol entfernt. Für Windows 10-Benutzer werden zusätzlich «Neuigkeiten und Interessen» sowie Cortana deaktiviert. Achtung der Bildschirm könnte flackern.</sys:String>
+    <sys:String x:Key="tgl24_desc_intf">Standardmäßig verwendet Windows die gesammelten Informationen zur Zielwerbung, d.h., um Ihnen Werbung anzuzeigen, die Ihren Interessen entspricht. Und im wahrsten Sinne des Wortes befindet sich diese Werbung überall dort, wo freier Platz für die Anzeige vorhanden ist. Wenn Sie nicht möchten, dass Windows personalisierte Werbung in allen Store-Apps, im Explorer, in den Optionen und im Startmenü anzeigt, dann können Sie diesen Müll deaktivieren.</sys:String>
+    <sys:String x:Key="tgl25_desc_intf">Standardmäßig speichert Windows nicht die Positionen der Fenster, sowie ihren Zustand beim Ausschalten. Mit diesem Tweak können Sie die Art der geöffneten Ordner speichern, um sie nach dem Abmelden, Neustart und Herunterfahren wiederherzustellen.</sys:String>
+    <sys:String x:Key="tgl26_desc_intf">Mit diesem Tweak können Sie alle Windows-Tipps und -Benachrichtigungen deaktivieren, einschließlich Online-Hinweise in den Einstellungen, sowie das Deaktivieren der Second Chance Out of Box Experience (SCOOBE) für Windows 11-Benutzer. SCOOBE ist ein plötzlich erscheinendes Pop-up, das den Benutzer aggressiv dazu auffordert, «die Geräteeinrichtung dringend abzuschließen» und sich bei einem Microsoft-Konto anzumelden.</sys:String>
+    <sys:String x:Key="tgl27_desc_intf">Der Tweak blendet Ordner unter «Dieser PC» aus: Desktop, Videos, Dokumente, Downloads, Bilder, Musik. Achtung der Bildschirm könnte flackern.</sys:String>
+    <sys:String x:Key="tgl28_desc_intf">Entfernt das Element 3D-Objekte aus der Explorer-Übersicht in der linken Menüliste (aus dem Explorer-Listenbaum). Achtung der Bildschirm könnte flackern.</sys:String>
+    <sys:String x:Key="tgl29_desc_intf">Wenn Sie ein JPEG-Bild als Desktop-Hintergrund festlegen, verringert Windows standardmäßig automatisch dessen Qualität auf 85 %. Mit diesem Tweak wird die JPEG-Hintergrundbildqualität auf 100 % gesetzt.</sys:String>
+    <sys:String x:Key="tgl30_desc_intf">Der Tweak deaktiviert Tooltips für Desktop-Elemente, wenn Sie mit der Maus darüber fahren.</sys:String>
+    <sys:String x:Key="tgl31_desc_intf">Standardmäßig sendet Windows alles, wonach Sie im «Start»-Menü suchen, an seine Server, um Ihnen Bing-Suchergebnisse bereitzustellen. Wenn Sie die Bing-Integration im «Start»-Menü nicht benötigen, können Sie diesen Tweak anwenden, um die Websuche zu deaktivieren. Achtung der Bildschirm könnte flackern.</sys:String>
+    <sys:String x:Key="tgl32_desc_intf">Standardmäßig ist die erste Registerkarte beim Öffnen des Explorers «Schnellzugriff». Und um ein beliebiges Laufwerk zu öffnen, müssen Sie unnötige Klicks ausführen. Durch diesen Tweak öffnet sich «Dieser PC» anstelle von «Schnellzugriff».</sys:String>
+    <sys:String x:Key="tgl33_desc_intf">Standardmäßig verbirgt Windows Dateierweiterungen, wodurch die Ansicht des Dateiexplorers übersichtlicher wird. Wenn nötig, können Sie die Anzeige von Dateierweiterungen mit diesem Tweak aktivieren, wodurch Sie Zeit bei der Suche sparen. Achtung der Bildschirm könnte flackern.</sys:String>
+    <sys:String x:Key="tgl34_desc_intf">Standardmäßig verfügt das Hintergrundbild des Anmeldebildschirms über einen Acryl-Unschärfeeffekt als Teil der Transparenzeffekte von Windows 11.</sys:String>
+    <sys:String x:Key="tgl35_desc_intf">Anzeigen oder Ausblenden des Katalogs im Navigationsbereich des Datei-Explorers.</sys:String>
+    <sys:String x:Key="tgl36_desc_intf">Anzeigen oder Ausblenden der Startseite im Navigationsbereich des Datei-Explorers.</sys:String>
+    <sys:String x:Key="tgl37_desc_intf">Standardmäßig kann es vorkommen, dass beim Anschließen eines Wechseldatenträgers an den Computer das Laufwerk zweimal im Datei-Explorer angezeigt wird. Mit diesem Tweak können Sie die doppelten Wechseldatenträger im Navigationsbereich des Datei-Explorers ausblenden.</sys:String>
+    <sys:String x:Key="tgl38_desc_intf">Standardmäßig blendet Windows Dateien und Ordner aus. Benutzer möchten jedoch möglicherweise auf versteckte Dateien zugreifen, um ihre Systemeinstellungen anzupassen, z.B. System-Designs, Symbole oder Start-Einstellungen. Versteckte Ordner wie “AppData” enthalten benutzerspezifische Anwendungsdaten und Einstellungen, die es Benutzern ermöglichen, ihr Windows 11-Erlebnis nach ihren Wünschen zu gestalten.</sys:String>
+    <sys:String x:Key="tgl39_desc_intf">In Windows 11 erscheint standardmäßig die Snap Bar (Andockleiste), wenn Sie ein Fenster an den oberen Bildschirmrand ziehen. Der Tweak ermöglicht es Ihnen, die Snap Bar zu deaktivieren.</sys:String>
+    <sys:String x:Key="tgl40_desc_intf">Wählen Sie aus, ob Sekunden auf der Uhr in der Taskleiste angezeigt werden sollen. Standardmäßig zeigt Windows die Sekunden in der Taskleistenuhr nicht an.</sys:String>
+    <!-- endregion Interface Page-->
+
+    <!-- region Privacy Page -->
+    <sys:String x:Key="tgl1_conf">Werbekennung und gezielte Werbung</sys:String>
+    <sys:String x:Key="tgl2_conf">Alle Arten der Datensynchronisierung</sys:String>
+    <sys:String x:Key="tgl3_conf">Sammlung und Überwachung von Windows-Telemetrie</sys:String>
+    <sys:String x:Key="tgl4_conf">Datensammlung über Scheduler-Ereignisse</sys:String>
+    <sys:String x:Key="tgl5_conf">Sammeln von Daten über installierte Anwendungen</sys:String>
+    <sys:String x:Key="tgl6_conf">Sammeln von Anwendungs-Nutzungsstatistiken</sys:String>
+    <sys:String x:Key="tgl7_conf">Sammeln und Senden von Handschriftdaten</sys:String>
+    <sys:String x:Key="tgl8_conf">Sammeln von Hardwarekonfigurationsdaten</sys:String>
+    <sys:String x:Key="tgl9_conf">Netzwerkzugriff auf Spy-Domains von Microsoft</sys:String>
+    <sys:String x:Key="tgl10_conf">Ermittlung des Standorts des Benutzers</sys:String>
+    <sys:String x:Key="tgl11_conf">Anfragen über Feedback-Hub überprüfen</sys:String>
+    <sys:String x:Key="tgl12_conf">Versteckte Hintergrund-Updates für Sprachsynthese</sys:String>
+    <sys:String x:Key="tgl13_conf">Verdeckte Überwachung Ihres Systems</sys:String>
+    <sys:String x:Key="tgl14_conf">Versteckte Experimente auf Ihrem System</sys:String>
+    <sys:String x:Key="tgl15_conf">Dienste zur verdeckten Datenerfassung und -übertragung</sys:String>
+    <sys:String x:Key="tgl16_conf">«Protokollieren» von Windows-Ereignissen</sys:String>
+    <sys:String x:Key="tgl17_conf">Sammlung und Überwachung der NVIDIA-Telemetrie</sys:String>
+    <sys:String x:Key="tgl18_conf">Aufzeichnung des Benutzerverhaltens führen</sys:String>
+    <sys:String x:Key="tgl19_conf">Datensammlung und Hintergrund-Updates von Offline-Karten</sys:String>
+    <sys:String x:Key="tgl20_conf">Sammlung und Überwachung der Intel-Telemetrie</sys:String>
+
+    <sys:String x:Key="tgl1_desc_conf">Windows erstellt für jeden Benutzer eine eindeutige Werbekennung, um Ihre Aktionen zu verfolgen. Diese wird von App-Entwicklern und Windows selbst für eigene Zwecke verwendet, einschließlich um Ihnen bestimmte Werbung in Apps anzubieten.</sys:String>
+    <sys:String x:Key="tgl2_desc_conf">Selbst wenn Sie ein lokales Konto verwenden, versucht Windows immer, Ihre Daten mit den Microsoft-Servern zu synchronisieren. Dies umfasst insbesondere: Designs, Passwörter, Windows-Einstellungen, Browser-Einstellungen, Einstellungen der Sprachleiste, Einstellungen für erleichterte Bedienung, zusätzliche Einstellungen.</sys:String>
+    <sys:String x:Key="tgl3_desc_conf">Telemetrie (Diagnosedaten) sind Daten, die Windows automatisch sammelt, um sie an die Microsoft-Server zu senden, oder kurz gesagt: "Was? Wo? Warum und wann nutzen Sie es?". Microsoft behauptet, dass die Daten anonymisiert sind und dem Unternehmen bei der Weiterentwicklung von Windows helfen. Selbst wenn Sie sich nicht an der Tatsache stören, dass Informationen gesammelt werden, kann ein anderes Problem auftreten - eine übermäßige Auslastung des Prozessors, was wiederum das System verlangsamt.</sys:String>
+    <sys:String x:Key="tgl4_desc_conf">Im «Aufgabenplaner» gibt es Dienste, die nach ihrer Arbeit Daten über ihre Ausführung sammeln und diese an den Microsoft-Server senden.</sys:String>
+    <sys:String x:Key="tgl5_desc_conf">Microsoft sammelt Daten über Ihre Software. Diese Informationen werden von Microsoft verwendet, um Kompatibilitätsprobleme zu diagnostizieren. Sie helfen Microsoft jedoch nicht dabei, die Kompatibilität in neuen Windows-Versionen zu verbessern, da diese Informationen nur für eigennützige Zwecke von Microsoft verwendet werden. Durch Deaktivieren dieser Funktion wird das Senden potenziell sensibler Informationen verhindert.</sys:String>
+    <sys:String x:Key="tgl6_desc_conf">Der Tweak deaktiviert die Überwachungsfunktion für die App-Nutzung und eliminiert die Erfassung von Daten zu Nutzungshäufigkeit, Arbeitsdauer und anderen Produktivitätsmetriken. Das System hört auf, Ihren Arbeitsprozess zu analysieren, und sorgt so für den Schutz Ihrer vertraulichen Informationen.</sys:String>
+    <sys:String x:Key="tgl7_desc_conf">Dieser Tweak deaktiviert den Datensammlungsmechanismus, den Microsoft zur Verbesserung seiner Handschrifterkennungstechnologie verwendet. Unabhängig davon, ob Sie diese Funktion nutzen oder nicht, verfolgte das System Ihre Aktivitäten, um die Erkennungsgenauigkeit zu verbessern. Die implementierten Änderungen verhindern eine solche Datensammlung und helfen, die Privatsphäre zu wahren.</sys:String>
+    <sys:String x:Key="tgl8_desc_conf">Das Programm zur Verbesserung der Benutzerfreundlichkeit (CEIP) ist eine separate Funktion, die Informationen über die Konfiguration Ihrer Hardware und darüber sammelt, wie Sie die Software und Dienste nutzen. Das Programm lädt außerdem regelmäßig eine Datei herunter, um Informationen über Probleme zu sammeln, die Sie möglicherweise mit Windows haben. Das Programm ist freiwillig, und Sie müssen Ihre Daten nicht an Microsoft senden, was Ihre Privatsphäre verletzen würde.</sys:String>
+    <sys:String x:Key="tgl9_desc_conf">Dieser Tweak modifiziert die hosts-Datei, indem er bestimmten Domainnamen die Adresse 0.0.0.0 voranstellt und diese effektiv blockiert. Außerdem passt er die Einstellungen der Windows-Firewall an, um Verbindungen zu mehreren IP-Adressen zu blockieren, die mit Microsofts Datensammlungsdiensten in Verbindung stehen.</sys:String>
+    <sys:String x:Key="tgl10_desc_conf">Die Deaktivierung von Ortungsdiensten reduziert das Potenzial, Standortdaten für Werbezwecke zu nutzen, erheblich – der Zugriff auf diese Informationen wird nicht nur für Microsoft-Dienste, sondern auch für Anwendungen und Skripte von Drittanbietern eingeschränkt.</sys:String>
+    <sys:String x:Key="tgl11_desc_conf">Der Tweak blockiert die Sammlung von Feedback und dessen Benachrichtigungen in Windows, was verhindert, dass Daten ohne Ihre Zustimmung übertragen werden. In der Zwischenzeit protokolliert Microsoft, selbst wenn Sie die «Feedback»-Funktion nicht nutzen, immer noch, wie oft Sie den offiziellen Support kontaktieren.</sys:String>
+    <sys:String x:Key="tgl12_desc_conf">Windows ist in der Lage, Sprache mithilfe eines speziellen Spracherkennungs- und Synthesemoduls zu erkennen. Selbst wenn Sie Cortana oder «Erleichterte Bedienung» nicht nutzen, sucht Ihr Betriebssystem standardmäßig immer nach Updates für seine Spracherkennungs-Engine.</sys:String>
+    <sys:String x:Key="tgl13_desc_conf">Eine Funktion, die Zugriff auf jegliche Benutzerdaten hat. Sie tauscht einige Informationen mit Microsoft-Servern aus und hat keinerlei Auswirkungen auf den Betrieb des Betriebssystems oder von Anwendungen. Es hilft dem Benutzer in keiner Weise, was es nutzlos macht.</sys:String>
+    <sys:String x:Key="tgl14_desc_conf">Microsoft führt regelmäßig Experimente mit Windows-Benutzern durch, um festzustellen, ob eine Funktion häufig genutzt wird, oder ob eine Änderung an einer Funktion diese nützlicher macht. Im Gegenzug ist dies jedoch eine Verletzung der Vertraulichkeit.</sys:String>
+    <sys:String x:Key="tgl15_desc_conf">Die Dienste DiagTrack, dmwappushservice und diagsvc fungieren als Keylogger — sie zeichnen jede Benutzeraktivität auf, einschließlich Tastenanschläge, und senden diese Daten ohne Zustimmung des Benutzers an die Server von Microsoft. Bei der Verwendung von UWF (Unified Write Filter) hängt der stabile Betrieb des Systems vom Dienst dmwappushservice ab. Wenn Sie jedoch nicht wissen, was das ist, oder wenn Sie ein alternatives Tool haben, ist es sinnvoll, diese Keylogger loszuwerden.</sys:String>
+    <sys:String x:Key="tgl16_desc_conf">Ein Ereignisprotokoll, das Systemdiagnoseinformationen sammelt und verarbeitet und so die Ressourcen Ihres Computers verschwendet. Der Dienst bringt Ihnen nichts Gutes, es ist besser, ihn zu deaktivieren, damit Sie das Versenden von vertraulichen Informationen verhindern.</sys:String>
+    <sys:String x:Key="tgl17_desc_conf">Der Dienst, der für das Sammeln und Übertragen von Daten über das System und dessen Nutzung verantwortlich ist, oder eine Funktion, die nicht mit dem Betrieb des Grafiktreibers zusammenhängt, ist nutzlos. Warum und welche Art von Informationen NVIDIA sammelt, ist nur ihnen selbst bekannt. Dass dies dem Endbenutzer jedoch keinen Nutzen bringt, ist ziemlich offensichtlich.</sys:String>
+    <sys:String x:Key="tgl18_desc_conf">Der Tweak deaktiviert die UAR (User Activity Recording)-Funktion – ein System, das jede von Ihnen auf Ihrem Computer ausgeführte Aktion fortlaufend protokolliert: vom Erstellen von Screenshots und der Texteingabe bis hin zum Starten von Programmen und sogar dem Gewähren von Zugriff auf die Webcam, während der Bildschirm gesperrt ist, und vielem mehr.</sys:String>
+    <sys:String x:Key="tgl19_desc_conf">Windows aktualisiert regelmäßig Offline-Karten und sendet Benachrichtigungen über neue Daten im Hintergrund. Diese Prozesse können Informationen über Ihren Standort, Ihre Routen und Ihre Kartennutzung sammeln. Wenn Sie keine Offline-Karten verwenden, empfiehlt es sich, diese zu deaktivieren, um versteckte Updates und die Datenübertragung an Microsoft-Server ohne Ihr direktes Zutun zu vermeiden.</sys:String>
+    <sys:String x:Key="tgl20_desc_conf">Das Intel-Modul, das im Hintergrund zur Datenerfassung und -übertragung arbeitet, wird als Tool zur Verbesserung der Produkte des Unternehmens positioniert. Für den durchschnittlichen Benutzer bietet es jedoch kaum einen praktischen Nutzen, und die Deaktivierung dieser Funktion kann Hintergrundaktivitäten reduzieren und unnötige Datenübertragungen verhindern.</sys:String>
+    <!-- endregion Privacy Page -->
+
+    <!-- region Scripts Page -->
+    <sys:String x:Key="btn_open_dir">Verzeichnis öffnen</sys:String>
+    <sys:String x:Key="btn_refresh">Liste aktualisieren</sys:String>
+    <sys:String x:Key="chk_run_ti_scripts">Als TrustedInstaller ausführen</sys:String>
+    <sys:String x:Key="search_scripts_placeholder">Skripte suchen...</sys:String>
+    <sys:String x:Key="btn_sort_by">Sortieren nach</sys:String>
+    <sys:String x:Key="sort_name">Name</sys:String>
+    <sys:String x:Key="sort_extension">Dateierweiterung</sys:String>
+    <sys:String x:Key="btn_toggle_sort_tip">Aufsteigend / Absteigend umschalten</sys:String>
+    <sys:String x:Key="text_info_scripts">Keine Skripte gefunden, bereit für den Import</sys:String>
+    <sys:String x:Key="scripts_info_scripts">Wählen Sie Ordner und Skripte (.ps1, .cmd, .bat oder .reg) aus oder ziehen Sie diese per Drag-and-Drop hierher, um zu beginnen.</sys:String>
+    <sys:String x:Key="lbl_terminal_title">Skriptausführung</sys:String>
+    <sys:String x:Key="btn_run_selected_scripts">Ausgewählte Skripte ausführen</sys:String>
+    <sys:String x:Key="btn_clear_selected_scripts">Alle Auswahlen aufheben</sys:String>
+    <sys:String x:Key="btn_clear_path_scripts">Aktuellen Pfad leeren</sys:String>
+    <sys:String x:Key="lbl_terminal_subtitle">Skriptausgabe wird in Echtzeit verarbeitet. Bitte warten Sie auf den Abschluss.</sys:String>
+    <sys:String x:Key="lbl_terminal_finished">Ausführung beendet.</sys:String>
+    <sys:String x:Key="tt_terminal_clipboard">Protokolle in die Zwischenablage kopieren.</sys:String>
+    <sys:String x:Key="noty_terminal_clipboard">Protokolle in die Zwischenablage kopiert</sys:String>
+    <sys:String x:Key="text_drop_valid">Loslassen, um Skripte hinzuzufügen</sys:String>
+    <sys:String x:Key="btn_card_file_explorer">Ordner im Explorer öffnen</sys:String>
+    <sys:String x:Key="text_drop_invalid">Ungültiger Dateityp (Verwenden Sie .ps1, .bat, .cmd oder .reg)</sys:String>
+    <sys:String x:Key="text_drop_zone_info">Ordner oder Skripte hier ablegen</sys:String>
+    <sys:String x:Key="tt_doubletapped_script">Doppelklicken, um Skript auszuführen</sys:String>
+    <sys:String x:Key="warn_invalid_script_ext">Eine oder mehrere Dateien wurden ignoriert. Unterstützte Typen: .ps1, .bat, .cmd, .reg</sys:String>
+    <!-- endregion Scripts Page -->
+
+    <!-- region Service Manager Page -->
+    <sys:String x:Key="service_manager_page_search_placeholder">Dienste suchen...</sys:String>
+    <sys:String x:Key="service_manager_page_start_tooltip">Dienst starten</sys:String>
+    <sys:String x:Key="service_manager_page_stop_tooltip">Dienst anhalten</sys:String>
+    <sys:String x:Key="service_manager_page_restart_tooltip">Dienst neu starten</sys:String>
+
+    <sys:String x:Key="service_manager_page_all">Alle</sys:String>
+    <sys:String x:Key="service_manager_page_running">Wird ausgeführt</sys:String>
+    <sys:String x:Key="service_manager_page_stopped">Beendet</sys:String>
+
+    <sys:String x:Key="service_manager_page_automatic">Automatisch</sys:String>
+    <sys:String x:Key="service_manager_page_manual">Manuell</sys:String>
+    <sys:String x:Key="service_manager_page_disabled">Deaktiviert</sys:String>
+
+    <sys:String x:Key="service_manager_page_total_services">Gesamte Dienste</sys:String>
+    <sys:String x:Key="service_manager_page_running_services">Laufende Dienste</sys:String>
+    <sys:String x:Key="service_manager_page_stopped_services">Beendete Dienste</sys:String>
+
+    <sys:String x:Key="service_manager_page_startup">Starttyp</sys:String>
+    <sys:String x:Key="service_manager_page_actions">Aktionen</sys:String>
+
+    <sys:String x:Key="service_manager_page_service_name">Dienstname</sys:String>
+    <sys:String x:Key="service_manager_page_status">Status</sys:String>
+    <!-- endregion Service Manager Page -->
+
+    <!-- region Process Manager Page -->
+    <sys:String x:Key="process_manager_page_total_processes">Gesamte Prozesse</sys:String>
+    <sys:String x:Key="process_manager_page_total_memory">Gesamtspeicher</sys:String>
+    <sys:String x:Key="process_manager_page_total_threads">Gesamte Threads</sys:String>
+
+    <sys:String x:Key="process_manager_page_name">Name</sys:String>
+    <sys:String x:Key="process_manager_page_memory">Arbeitsspeicher</sys:String>
+    <sys:String x:Key="process_manager_page_threads">Threads</sys:String>
+    <sys:String x:Key="process_manager_page_pid">PID</sys:String>
+    <sys:String x:Key="process_manager_page_actions">Aktionen</sys:String>
+
+    <sys:String x:Key="process_manager_page_end_task">Task beenden</sys:String>
+    <sys:String x:Key="process_manager_page_end_task_tooltip">Task beenden</sys:String>
+
+    <sys:String x:Key="process_manager_page_refresh">Aktualisieren</sys:String>
+    <sys:String x:Key="process_manager_page_search_placeholder">Prozesse suchen...</sys:String>
+    <!-- endregion Process Manager Page -->
+
+    <!-- region System Optimizer -->
+    <sys:String x:Key="title_system_health_status">Integritätsstatus</sys:String>
+    <sys:String x:Key="text_system_optimizer_description">Steigern Sie die Reaktionsfähigkeit des Systems, indem Sie fehlverwalteten Speicher zurückgewinnen und überflüssige Dateien löschen. Zielt effizient auf Speicherlecks ab, leert DNS-Caches und entfernt temporäre Daten, um die Spitzenleistung wiederherzustellen.</sys:String>
+    <sys:String x:Key="btn_open_system_optimizer">System Optimierer öffnen</sys:String>
+
+    <sys:String x:Key="txt_header_physical_memory">Physischer Speicher</sys:String>
+    <sys:String x:Key="txt_physical_memory_used">Verwendet:</sys:String>
+    <sys:String x:Key="txt_physical_memory_free">Frei:</sys:String>
+    <sys:String x:Key="txt_header_virtual_memory">Virtueller Speicher</sys:String>
+    <sys:String x:Key="txt_virtual_memory_used">Verwendet:</sys:String>
+    <sys:String x:Key="txt_virtual_memory_free">Frei:</sys:String>
+    <sys:String x:Key="txt_header_process_exlusions">Prozessausschlüsse</sys:String>
+    <sys:String x:Key="txt_header_cleaning_targets">Bereinigungsziele</sys:String>
+    <sys:String x:Key="txt_header_auto_optimizations">Automatische Optimierungen</sys:String>
+    <sys:String x:Key="txt_header_optimization_hotkey">Optimierungs-Hotkey</sys:String>
+    <sys:String x:Key="txt_header_settings">Einstellungen</sys:String>
+    <sys:String x:Key="btn_clean_now">Jetzt bereinigen</sys:String>
+    <sys:String x:Key="notify_mem_clean_successfull">Speicherbereinigung erfolgreich</sys:String>
+    <sys:String x:Key="txt_progress_step">Optimieren</sys:String>
+    <sys:String x:Key="txt_virtual_memory_header">Virtueller Speicher</sys:String>
+    <sys:String x:Key="title_memory_areas_combined_page_list">Kombinierte Seitenliste</sys:String>
+    <sys:String x:Key="description_memory_areas_combined_page_list">Verschiebt Seiten mit identischem Inhalt in die Standby-Liste.</sys:String>
+    <sys:String x:Key="title_memory_areas_modified_file_cache">Modifizierter Datei-Cache</sys:String>
+    <sys:String x:Key="description_memory_system_file_cache">Leert den modifizierten Datei-Cache auf die Festplatte.</sys:String>
+    <sys:String x:Key="title_memory_areas_modified_page_list">Modifizierte Seitenliste</sys:String>
+    <sys:String x:Key="description_memory_areas_modified_page_list">Verschiebt Speicher aus der modifizierten Liste in die Standby-Liste.</sys:String>
+    <sys:String x:Key="title_memory_areas_registry_cache">Registry-Cache</sys:String>
+    <sys:String x:Key="description_memory_areas_registry_cache">Reduziert das Working Set der Registry-Struktur.</sys:String>
+    <sys:String x:Key="title_memory_areas_standby_list">Standby-Liste</sys:String>
+    <sys:String x:Key="description_memory_areas_standby_list">Verwirft alle Seiten aus der Standby-Liste.</sys:String>
+    <sys:String x:Key="title_memory_areas_standby_list_low_priority">Standby-Liste (Niedrige Priorität)</sys:String>
+    <sys:String x:Key="description_memory_areas_standby_list_low_priority">Verwirft nur Seiten mit niedriger Priorität aus der Standby-Liste.</sys:String>
+    <sys:String x:Key="title_memory_areas_system_file_cache">System-Datei-Cache</sys:String>
+    <sys:String x:Key="description_memory_areas_system_file_cache">Reduziert das systemweite Working Set.</sys:String>
+    <sys:String x:Key="title_memory_areas_working_set">Working Set</sys:String>
+    <sys:String x:Key="description_memory_areas_working_set">Reduziert die Working Sets aller Prozesse.</sys:String>
+    <sys:String x:Key="title_settings_items_show_disk_space">Speicherplatz</sys:String>
+    <sys:String x:Key="description_settings_items_show_disk_space">Schaltet die Anzeige der Speicherplatz-Statistiken im Haupt-Dashboard um.</sys:String>
+    <sys:String x:Key="title_settings_items_show_notification">Optimierungsbenachrichtigungen anzeigen</sys:String>
+    <sys:String x:Key="description_settings_items_show_notification">Zeigt nach Abschluss der Optimierung eine Benachrichtigung im Info-Bereich (Tray) anstelle eines Meldungsfensters an.</sys:String>
+    <sys:String x:Key="title_settings_items_show_no_result">Alle Optimierungsergebnisse deaktivieren</sys:String>
+    <sys:String x:Key="description_settings_items_show_no_result">Weder Benachrichtigung noch Meldungsfenster anzeigen, wenn die Optimierung abgeschlossen ist.</sys:String>
+    <sys:String x:Key="title_settings_items_low_priority">Mit niedriger Priorität ausführen</sys:String>
+    <sys:String x:Key="description_settings_items_low_priority">Setzt den Optimierungsprozess auf eine niedrigere CPU-Priorität, um Systemverzögerungen während der Bereinigung zu vermeiden.</sys:String>
+    <sys:String x:Key="title_settings_items_show_virtual_memory">Virtueller Speicher</sys:String>
+    <sys:String x:Key="description_settings_items_show_virtual_memory">Schaltet die Anzeige der Statistiken zu Auslagerungsdatei und virtuellem Speicher im Haupt-Dashboard um.</sys:String>
+    <sys:String x:Key="title_settings_items_restart_explorer">Windows Explorer neu starten</sys:String>
+    <sys:String x:Key="description_settings_items_restart_explorer">Startet die Shell neu, um die Bereinigung des Icon-Caches vollständig anzuwenden und den Info-Bereich (Tray) zu aktualisieren. Dies kann dazu führen, dass die Taskleiste für einige Sekunden verschwindet.</sys:String>
+    <sys:String x:Key="txt_auto_opt_interval_singular">Jede {0} Stunde</sys:String>
+    <sys:String x:Key="txt_auto_opt_interval_plural">Alle {0} Stunden</sys:String>
+    <sys:String x:Key="txt_disabled">Deaktiviert</sys:String>
+    <sys:String x:Key="txt_auto_opt_usage_limit">Wenn Auslastung {0}% übersteigt</sys:String>
+    <sys:String x:Key="txt_auto_opt_usage_warning">Automatische Optimierung kann nur einmal alle paar Minuten ausgeführt werden, um Endlosschleifen zu vermeiden.</sys:String>
+    <sys:String x:Key="msg_hotkey_in_use">Der Hotkey ({0}) wird bereits vom Betriebssystem verwendet</sys:String>
+    <sys:String x:Key="msg_mem_optimized">SPEICHER OPTIMIERT:</sys:String>
+    <sys:String x:Key="optimizations_step_working_set">Working Set</sys:String>
+    <sys:String x:Key="optimizations_step_system_file_cache">System-Datei-Cache</sys:String>
+    <sys:String x:Key="optimizations_step_modified_page_list">Modifizierte Seitenliste</sys:String>
+    <sys:String x:Key="optimizations_step_standby_list">Standby-Liste</sys:String>
+    <sys:String x:Key="optimizations_step_standby_list_lp">Standby-Liste (niedrige Priorität)</sys:String>
+    <sys:String x:Key="optimizations_step_combined_page_list">Kombinierte Seitenliste</sys:String>
+    <sys:String x:Key="optimizations_step_registry_cache">Registry-Cache</sys:String>
+    <sys:String x:Key="optimizations_step_modified_file_cache">Modifizierter Datei-Cache</sys:String>
+    <sys:String x:Key="optimizations_step_modified_garbage_collector">Garbage Collector</sys:String>
+    <sys:String x:Key="title_warning_priority">Sicherheits- &amp; Leistungswarnung</sys:String>
+    <sys:String x:Key="msg_warning_windows_old_deletion">Warnung: Das Löschen von Windows.old ist endgültig. Sie können NICHT auf eine vorherige Windows-Version zurückkehren, falls Probleme auftreten. Möchten Sie fortfahren?</sys:String>
+    <sys:String x:Key="optimizations_step_disk_cleanup">Temporäre Dateien werden bereinigt...</sys:String>
+    <sys:String x:Key="optimizations_step_windows_old">Windows.old wird entfernt (Berechtigungen werden angepasst)...</sys:String>
+    <sys:String x:Key="optimizations_step_update_cache">Windows Update-Cache wird bereinigt...</sys:String>
+    <sys:String x:Key="label_disk_recovered">Speicherplatz zurückgewonnen</sys:String>
+    <sys:String x:Key="title_memory_areas_disk_cleanup">Datenträgerbereinigung (Temporäre Dateien)</sys:String>
+    <sys:String x:Key="title_memory_areas_windows_old">Windows.old Ordner</sys:String>
+    <sys:String x:Key="description_memory_areas_disk_cleanup">Bereinigt temporäre Dateien, Prefetch- und Thumbnail-Caches, um Speicherplatz freizugeben.</sys:String>
+    <sys:String x:Key="description_memory_areas_windows_old">Entfernt Sicherungen früherer Windows-Installationen. WARNUNG: Dieser Vorgang ist dauerhaft und verhindert System-Rollbacks.</sys:String>
+    <sys:String x:Key="title_memory_areas_flush_dns">DNS-Cache leeren</sys:String>
+    <sys:String x:Key="description_memory_areas_flush_dns">Leert den DNS-Resolver-Cache, um Verbindungsprobleme zu beheben und Domänenzuordnungen zu aktualisieren.</sys:String>
+    <sys:String x:Key="optimizations_step_flush_dns">DNS-Cache wird geleert</sys:String>
+    <sys:String x:Key="txt_total_estimated_space">Geschätzter Gesamtspeicherplatz:</sys:String>
+    <sys:String x:Key="tooltip_refresh_space">Bereinigungsgröße neu berechnen</sys:String>
+    <sys:String x:Key="txt_scanning">Wird gescannt...</sys:String>
+    <sys:String x:Key="txt_header_memory_areas">Speicheroptimierung</sys:String>
+    <sys:String x:Key="txt_header_system_cleanup">Systembereinigung</sys:String>
+    <sys:String x:Key="txt_progress_preparing">Systemanalyse wird vorbereitet...</sys:String>
+    <sys:String x:Key="txt_progress_optimizing">Speicheroptimierung wird ausgeführt...</sys:String>
+    <sys:String x:Key="txt_progress_finalizing">Wird abgeschlossen und Metriken aktualisiert...</sys:String>
+    <sys:String x:Key="txt_optimization_completed">Optimierung erfolgreich abgeschlossen!</sys:String>
+    <sys:String x:Key="UnexpectedError">Es ist ein unerwarteter Fehler aufgetreten</sys:String>
+    <sys:String x:Key="Repair">Reparieren</sys:String>
+    <sys:String x:Key="OperationStopped">Vorgang gestoppt</sys:String>
+    <sys:String x:Key="OperationCompleted">Vorgang abgeschlossen</sys:String>
+    <sys:String x:Key="BatteryStatus">Akku-Status</sys:String>
+    <sys:String x:Key="ReportSaved">Bericht auf dem Desktop gespeichert</sys:String>
+    <sys:String x:Key="MemoryDiagnosticDialogTitle">Speicherdiagnose</sys:String>
+    <sys:String x:Key="MemoryDiagnosticDialogText">Speicherprobleme können dazu führen, dass Ihr Computer Informationen verliert oder nicht mehr funktioniert.</sys:String>
+    <sys:String x:Key="RestartNow">Jetzt neustarten</sys:String>
+    <sys:String x:Key="ScheduleLater">Für später planen</sys:String>
+    <sys:String x:Key="ScheduledLater">Für nächsten Neustart geplant</sys:String>
+    <sys:String x:Key="ScanInProgress">{0} / {1}: {2} Scan läuft...</sys:String>
+    <sys:String x:Key="RepairInProgress">{0} / {1}: {2} Reparatur läuft...</sys:String>
+    <sys:String x:Key="Health_Poor">Schlecht - Handlung erforderlich</sys:String>
+    <sys:String x:Key="Health_Warning">Ausreichend - Optimierung empfohlen</sys:String>
+    <sys:String x:Key="Health_Good">Gut - System ist gesund</sys:String>
+    <sys:String x:Key="txt_header_drive_c_space">Systemlaufwerk (C:)</sys:String>
+    <sys:String x:Key="txt_drive_c_used">Verwendeter Speicher:</sys:String>
+    <sys:String x:Key="txt_drive_c_free">Freier Speicher:</sys:String>
+    <sys:String x:Key="txt_header_system_repair">Systemreparatur</sys:String>
+    <sys:String x:Key="txt_dism">DISM</sys:String>
+    <sys:String x:Key="txt_sfc">SFC</sys:String>
+    <sys:String x:Key="txt_chkdsk">CHKDSK</sys:String>
+    <sys:String x:Key="btn_scan">Scannen</sys:String>
+    <sys:String x:Key="btn_repair">Reparieren</sys:String>
+    <sys:String x:Key="btn_stop">Stopp</sys:String>
+    <sys:String x:Key="txt_header_diagnostic_options">Diagnoseoptionen</sys:String>
+    <sys:String x:Key="txt_battery_health">Akkuzustand</sys:String>
+    <sys:String x:Key="btn_generate">Generieren</sys:String>
+    <sys:String x:Key="txt_disk_optimizations">Festplattenoptimierungen</sys:String>
+    <sys:String x:Key="btn_optimize">Optimieren</sys:String>
+    <sys:String x:Key="txt_event_viewer">Ereignisanzeige</sys:String>
+    <sys:String x:Key="txt_memory_diagnostic">Speicherdiagnose</sys:String>
+    <sys:String x:Key="btn_check">Prüfen</sys:String>
+    <sys:String x:Key="txt_ready">Bereit</sys:String>
+    <sys:String x:Key="txt_invalid">Ungültig</sys:String>
+    <sys:String x:Key="toast_btn_optimize">Jetzt optimieren</sys:String>
+    <sys:String x:Key="toast_btn_ignore">Ignorieren</sys:String>
+    <sys:String x:Key="toast_optimization_complete_title">Optimierung abgeschlossen</sys:String>
+    <sys:String x:Key="toast_optimization_complete_msg">Systemressourcen wurden erfolgreich freigegeben und optimiert.</sys:String>
+    <sys:String x:Key="toast_health_critical_title">Systemintegrität kritisch</sys:String>
+    <sys:String x:Key="toast_health_critical_msg">Systemressourcen sind stark belastet oder es ist wenig Speicherplatz vorhanden. Klicken Sie hier zum Optimieren.</sys:String>
+    <!-- endregion System Optimizer -->
+
+    <!-- Resource Helper -->
+    <sys:String x:Key="unit_B">B</sys:String>
+    <sys:String x:Key="unit_KB">KB</sys:String>
+    <sys:String x:Key="unit_MB">MB</sys:String>
+    <sys:String x:Key="unit_GB">GB</sys:String>
+    <!--#endregion-->
+
+    <!-- region DNS Changer -->
+    <sys:String x:Key="title_dns_changer">DNS-Wechsler</sys:String>
+    <sys:String x:Key="text_dns_changer">Wechseln Sie schnell zwischen beliebten DNS-Anbietern wie Google, Cloudflare oder benutzerdefinierten Konfigurationen, um möglicherweise die Surfgeschwindigkeit und Sicherheit zu verbessern.</sys:String>
+    <sys:String x:Key="btn_open_changer">Wechsler öffnen</sys:String>
+    <sys:String x:Key="popup_title_dns_changer">DNS-Einstellungen konfigurieren</sys:String>
+    <sys:String x:Key="text_ipv4_primary">IPv4 Primärer DNS</sys:String>
+    <sys:String x:Key="text_ipv4_secondary">IPv4 Sekundärer DNS</sys:String>
+    <sys:String x:Key="text_ipv6_primary">IPv6 Primärer DNS</sys:String>
+    <sys:String x:Key="text_ipv6_secondary">IPv6 Sekundärer DNS</sys:String>
+    <sys:String x:Key="btn_apply">Einstellungen anwenden</sys:String>
+    <sys:String x:Key="btn_close">Schließen</sys:String>
+    <sys:String x:Key="text_current_dns_label">Aktuelle System-DNS-Server:</sys:String>
+    <sys:String x:Key="noty_apply_dns_settings">DNS-Einstellungen werden angewendet...</sys:String>
+    <sys:String x:Key="noty_dns_set_successful">DNS-Einstellungen erfolgreich angewendet und Cache geleert.</sys:String>
+    <sys:String x:Key="msg_dns_unexpected_error">Während der DNS-Anwendung ist ein unerwarteter Fehler aufgetreten.</sys:String>
+    <sys:String x:Key="txt_dns_server">DNS-Server</sys:String>
+    <sys:String x:Key="txt_latency_test">Latenztest</sys:String>
+    <sys:String x:Key="btn_test_latency">Latenz testen</sys:String>
+    <sys:String x:Key="btn_find_best_dns">Optimieren &amp; Besten DNS finden</sys:String>
+    <sys:String x:Key="status_pinging">Ping wird gesendet...</sys:String>
+    <sys:String x:Key="status_ping_timeout">Zeitüberschreitung</sys:String>
+    <sys:String x:Key="noty_best_dns_found">Bester DNS gefunden: {0} ({1} ms)</sys:String>
+    <sys:String x:Key="msg_best_dns_error_title">Ping-Fehler</sys:String>
+    <sys:String x:Key="msg_best_dns_error_body">Der beste Server konnte nicht ermittelt werden. Bitte überprüfen Sie Ihre Internetverbindung.</sys:String>
+    <sys:String x:Key="msg_dns_set_error">Beim Anwenden der DNS-Einstellungen ist ein Fehler aufgetreten. Bitte stellen Sie sicher, dass Sie über Administratorrechte verfügen.</sys:String>
+    <sys:String x:Key="msg_dns_set_failed_ipv4">Festlegen der IPv4-Adressen fehlgeschlagen.</sys:String>
+    <sys:String x:Key="msg_dns_set_failed_ipv6">Festlegen der IPv6-Adressen fehlgeschlagen.</sys:String>
+    <sys:String x:Key="label_ipv4_status">IPv4: {0}</sys:String>
+    <sys:String x:Key="label_ipv6_status">IPv6: {0}</sys:String>
+    <sys:String x:Key="status_loading">Laden...</sys:String>
+    <sys:String x:Key="status_retrieving">Wird abgerufen...</sys:String>
+    <sys:String x:Key="status_automatic_none">Automatisch/Keine</sys:String>
+    <sys:String x:Key="status_failed_to_load">Konfiguration konnte nicht geladen werden</sys:String>
+    <!-- endregion DNS Changer -->
+
+    <!-- region DNS Encryption -->
+    <sys:String x:Key="btn_open_dns_encrypt">DNS-Verschlüsselung öffnen</sys:String>
+    <sys:String x:Key="text_dns_encryption_more">Verschlüsselt und authentifiziert die Kommunikation zwischen DNS-Client und DNS-Resolver. Es verhindert DNS-Spoofing.</sys:String>
+
+    <sys:String x:Key="btn_default">Standard</sys:String>
+    <sys:String x:Key="btn_dns_clear">Leeren</sys:String>
+    <sys:String x:Key="btn_save_config">Speichern</sys:String>
+    <sys:String x:Key="btn_load_config">Laden</sys:String>
+    <sys:String x:Key="btn_balanced_config">Ausgewogen</sys:String>
+    <sys:String x:Key="btn_privacy_config">Datenschutz</sys:String>
+    <sys:String x:Key="btn_download_install">Skript installieren (DNSCrypt v2.1.15)</sys:String>
+    <sys:String x:Key="btn_uninstall_script">Skript deinstallieren</sys:String>
+    <sys:String x:Key="btn_open_configfile">Konfig-Datei öffnen</sys:String>
+    <sys:String x:Key="btn_start_service">Dienst starten</sys:String>
+    <sys:String x:Key="text_services_running">Dienst läuft...</sys:String>
+    <sys:String x:Key="btn_debug_process">Prozess debuggen</sys:String>
+    <sys:String x:Key="notif_dns_encrpyt_service_stopped">DNSCrypt-Dienst erfolgreich gestoppt</sys:String>
+    <sys:String x:Key="title_dns_encrypt">DNS-Verschlüsselung</sys:String>
+    <sys:String x:Key="text_status">Es läuft nichts im Hintergrund</sys:String>
+    <sys:String x:Key="text_combo_1">IPv4-Server verwenden:</sys:String>
+    <sys:String x:Key="text_combo_2">IPv6-Server verwenden:</sys:String>
+    <sys:String x:Key="text_combo_3">DNSCrypt-Protokoll verwenden:</sys:String>
+    <sys:String x:Key="text_combo_4">DOH-Protokoll verwenden:</sys:String>
+    <sys:String x:Key="text_combo_5">DNSSEC erforderlich:</sys:String>
+    <sys:String x:Key="text_combo_6">NOLOG erforderlich:</sys:String>
+    <sys:String x:Key="text_combo_7">NOFILTER erforderlich:</sys:String>
+    <sys:String x:Key="text_combo_8">Bootstrap-Resolver:</sys:String>
+    <sys:String x:Key="text_combo_9">Schlüsselwiederverwendung deaktivieren:</sys:String>
+    <sys:String x:Key="text_combo_10">Sitzungstickets deaktivieren:</sys:String>
+    <sys:String x:Key="text_combo_11">Netprobe-Timeout:</sys:String>
+    <sys:String x:Key="text_combo_12">Netprobe-Adresse:</sys:String>
+    <sys:String x:Key="text_combo_13">IPv6-Anfragen blockieren:</sys:String>
+    <sys:String x:Key="text_combo_14">Antwort-TTL blockieren:</sys:String>
+    <sys:String x:Key="text_dns_primary_ip4">Primärer IPv4</sys:String>
+    <sys:String x:Key="textbox_dns_primary_ip4">Geben Sie den primären IPv4 ein</sys:String>
+    <sys:String x:Key="text_dns_secondary_ip4">Sekundärer IPv4</sys:String>
+    <sys:String x:Key="textbox_dns_secondary_ip4">Geben Sie den sekundären IPv4 ein</sys:String>
+    <sys:String x:Key="text_dns_primary_ip6">Primärer IPv6</sys:String>
+    <sys:String x:Key="textbox_dns_primary_ip6">Geben Sie den primären IPv6 ein</sys:String>
+    <sys:String x:Key="text_dns_secondary_ip6">Sekundärer IPv6</sys:String>
+    <sys:String x:Key="textbox_dns_secondary_ip6">Geben Sie den sekundären IPv6 ein</sys:String>
+    <!-- endregion DNS Encryption -->
+
+    <!--#region System TrayIcon -->
+    <sys:String x:Key="systray_show_window">Optimizer anzeigen</sys:String>
+    <sys:String x:Key="systray_hide_window">Optimizer verbergen</sys:String>
+    <sys:String x:Key="systray_run_startup">Beim Systemstart ausführen</sys:String>
+    <sys:String x:Key="systray_close_window">EvolveOS beenden</sys:String>
+    <sys:String x:Key="systray_click_show">Doppelklicken, um den EvolveOS Optimizer zu öffnen</sys:String>
+    <!-- endregion System TrayIcon -->
+
+    <!-- region Run On StartUp -->
+    <sys:String x:Key="text_run_startup">Beim Systemstart ausführen</sys:String>
+    <sys:String x:Key="tooltip_run_startup">Aktivieren oder deaktivieren Sie den Start des Programms beim Windows-Start.</sys:String>
+    <!-- endregion Run On StartUp -->
+    
+</ResourceDictionary>
