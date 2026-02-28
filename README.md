@@ -74,6 +74,10 @@ Whether running actively on your dashboard or silently in your system tray, Evol
     <img src="https://cdn-icons-png.flaticon.com/128/197/197571.png" alt="German Flag" width="40">
 </a>
 
+<a href="https://github.com/EvolveOS-Software/EvolveOS-Optimizer/blob/master/README.md">
+    <img src="https://cdn-icons-png.flaticon.com/128/9906/9906483.png" alt="Italian Flag" width="40">
+</a>
+
 </div>
 
 ---

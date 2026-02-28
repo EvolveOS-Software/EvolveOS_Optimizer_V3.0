@@ -39,6 +39,7 @@
                         <ComboBoxItem Content="English (EN)" Tag="en-us"/>
                         <ComboBoxItem Content="Français (FR)" Tag="fr-fr"/>
                         <ComboBoxItem Content="German (DE)" Tag="de-de"/>
+                        <ComboBoxItem Content="Italian (IT)" Tag="it-it"/>
                         <ComboBoxItem Content="Nederlands (NL)" Tag="nl-nl"/>
                     </ComboBox>
                 </Grid>

@@ -218,10 +218,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         public static void SetAppLanguage(string langCode)
         {
             string safeCode = langCode.ToLower().Trim();
+            if (safeCode == "de") safeCode = "de-de";
             if (safeCode == "en") safeCode = "en-us";
             if (safeCode == "fr") safeCode = "fr-fr";
+            if (safeCode == "it") safeCode = "it-it";
             if (safeCode == "nl") safeCode = "nl-nl";
-            if (safeCode == "de") safeCode = "de-de";
 
             LocalizationService.Instance.LoadLanguage(safeCode);
 
