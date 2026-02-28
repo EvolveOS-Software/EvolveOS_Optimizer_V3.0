@@ -842,41 +842,51 @@ namespace EvolveOS_Optimizer.Pages
                 TxtSecurityStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
 
                 int issuesCount = 0;
+                bool isCoreProtected = false;
 
                 await Task.Run(async () =>
                 {
+                    // Gather all statuses
                     var antivirusInfo = await SecurityDiagnostics.GetAntivirusInfoAsync();
-                    if (!antivirusInfo.IsEnabled) issuesCount++;
+                    bool isAvEnabled = antivirusInfo.IsEnabled;
+                    bool isFwEnabled = await SecurityDiagnostics.IsFirewallEnabledAsync();
+                    bool isRtEnabled = await SecurityDiagnostics.IsRealTimeProtectionEnabledAsync();
+                    bool isUacEnabled = await SecurityDiagnostics.IsUACEnabledAsync();
+                    bool isWuEnabled = await SecurityDiagnostics.IsWindowsUpdateEnabledAsync();
+                    bool isTpEnabled = await SecurityDiagnostics.IsTamperProtectionEnabledAsync();
 
-                    if (!await SecurityDiagnostics.IsFirewallEnabledAsync()) issuesCount++;
-                    if (!await SecurityDiagnostics.IsRealTimeProtectionEnabledAsync()) issuesCount++;
-                    if (!await SecurityDiagnostics.IsUACEnabledAsync()) issuesCount++;
-                    if (!await SecurityDiagnostics.IsWindowsUpdateEnabledAsync()) issuesCount++;
-                    if (!await SecurityDiagnostics.IsTamperProtectionEnabledAsync()) issuesCount++;
+                    if (!isAvEnabled) issuesCount++;
+                    if (!isFwEnabled) issuesCount++;
+                    if (!isRtEnabled) issuesCount++;
+                    if (!isUacEnabled) issuesCount++;
+                    if (!isWuEnabled) issuesCount++;
+                    if (!isTpEnabled) issuesCount++;
+
+                    isCoreProtected = isAvEnabled && isFwEnabled && isRtEnabled;
                 });
 
                 string imagePath;
                 string statusText;
 
-                if (issuesCount >= 3)
+                if (!isCoreProtected)
                 {
                     imagePath = "ms-appx:///Assets/PngImages/unsecure.png";
-                    statusText = $"{issuesCount} Critical Issues";
+                    statusText = $"{issuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
                 }
                 else if (issuesCount > 0)
                 {
-                    imagePath = "ms-appx:///Assets/PngImages/warning.png";
-                    statusText = $"{issuesCount} Warnings Found";
+                    imagePath = "ms-appx:///Assets/PngImages/secure.png";
+                    statusText = $"{issuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
                 }
                 else
                 {
                     imagePath = "ms-appx:///Assets/PngImages/secure.png";
-                    statusText = "System is Secure";
+                    statusText = ResourceString.GetString("text_security_good") ?? "System is Secure";
                 }
 
                 DashSecurityStatusImage.Source = new BitmapImage(new Uri(imagePath));
                 TxtSecurityStatus.Text = statusText;
-                TxtSecurityLastRefreshed.Text = $"Last checked: {DateTime.Now:t}";
+                TxtSecurityLastRefreshed.Text = $"{ResourceString.GetString("text_last_checked") ?? "Last checked"}: {DateTime.Now:t}";
 
                 DashSecurityStatusImage.Visibility = Visibility.Visible;
                 TxtSecurityLastRefreshed.Visibility = Visibility.Visible;

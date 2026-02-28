@@ -175,17 +175,21 @@ public sealed partial class SecurityPage : Page, IPurgeable
             if (!results.windowsUpdate) issuesCount++;
             if (!results.tamperProtection) issuesCount++;
 
+            bool isCoreProtected = results.antivirusInfo.IsEnabled &&
+                                   results.firewallProtection &&
+                                   results.realTimeProtection;
+
             string imageUri;
             string statusText;
 
-            if (issuesCount >= 3)
+            if (!isCoreProtected)
             {
                 imageUri = "ms-appx:///Assets/PngImages/UnSecure.png";
                 statusText = $"{issuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
             }
             else if (issuesCount > 0)
             {
-                imageUri = "ms-appx:///Assets/PngImages/Warning.png";
+                imageUri = "ms-appx:///Assets/PngImages/Secure.png";
                 statusText = $"{issuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
             }
             else
