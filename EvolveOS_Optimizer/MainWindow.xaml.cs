@@ -29,7 +29,6 @@ namespace EvolveOS_Optimizer
 
         private AppWindow? _appWindow;
         private IntPtr _hWnd;
-        private bool _isBackdropInitialized = false;
 
         public string GetText(string key) => LocalizationService.Instance[key];
 
@@ -117,23 +116,38 @@ namespace EvolveOS_Optimizer
         #region Window Lifecycle Events
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
-            if (!_isBackdropInitialized && args.WindowActivationState != WindowActivationState.Deactivated)
-            {
-                _isBackdropInitialized = true;
+            if (App.IsStartedHidden) return;
 
-                this.DispatcherQueue.TryEnqueue(async () =>
-                {
-                    await Task.Delay(500);
-                    try
-                    {
-                        UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
-                    }
-                    catch (Exception ex) { Debug.WriteLine($"[Backdrop] COM Exception caught: {ex.Message}"); }
-                });
+            if (args.WindowActivationState != WindowActivationState.Deactivated)
+            {
+                ForceToForeground();
             }
         }
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        public void ForceToForeground()
+        {
+            var hwnd = WindowNative.GetWindowHandle(this);
+            if (hwnd == IntPtr.Zero) return;
+
+            uint foregroundThreadId = Win32Helper.GetWindowThreadProcessId(Win32Helper.GetForegroundWindow(), IntPtr.Zero);
+            uint appThreadId = Win32Helper.GetCurrentThreadId();
+
+            Win32Helper.ShowWindow(hwnd, 5);
+            Win32Helper.ShowWindow(hwnd, 9);
+
+            if (foregroundThreadId != appThreadId)
+            {
+                Win32Helper.AttachThreadInput(appThreadId, foregroundThreadId, true);
+                Win32Helper.SetForegroundWindow(hwnd);
+                Win32Helper.AttachThreadInput(appThreadId, foregroundThreadId, false);
+            }
+            else
+            {
+                Win32Helper.SetForegroundWindow(hwnd);
+            }
+        }
+
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             SetupNavigationObserver();
 

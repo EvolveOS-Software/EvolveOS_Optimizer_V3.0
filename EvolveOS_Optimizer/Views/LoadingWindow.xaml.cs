@@ -302,16 +302,29 @@ namespace EvolveOS_Optimizer.Views
                     Win32Helper.ShowWindow(hWnd, 0);
                     appWin.Hide();
 
+                    this.Close();
                     Debug.WriteLine("[LoadingWindow] MainWindow initialized silently in the tray.");
                 }
                 else
                 {
                     UIHelper.ApplyBackdrop(mainDash, SettingsEngine.Backdrop);
+
+                    if (this.AppWindow.Presenter is OverlappedPresenter presenter)
+                        presenter.IsAlwaysOnTop = false;
+
                     mainDash.Activate();
+
+                    _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+                    {
+                        //await Task.Delay(100);
+
+                        mainDash.ForceToForeground();
+
+                        this.Close();
+                    });
                 }
 
                 _cts.Cancel();
-                this.Close();
             }
             catch (Exception ex)
             {
