@@ -75,18 +75,18 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 string ignoreBtnText = ResourceString.GetString("toast_btn_ignore") ?? "Ignore";
 
                 string xmlPayload = $@"
-        <toast scenario='reminder' launch='action=wakeup'>
-            <visual>
-                <binding template='ToastGeneric'>
-                    <text>{title}</text>
-                    <text>{message}</text>
-                </binding>
-            </visual>
-            <actions>
-                <action content='{optimizeBtnText}' arguments='optimize' activationType='background'/>
-                <action content='{ignoreBtnText}' arguments='ignore' activationType='background'/>
-            </actions>
-        </toast>";
+                <toast scenario='reminder' launch='action=wakeup'>
+                    <visual>
+                        <binding template='ToastGeneric'>
+                            <text>{title}</text>
+                            <text>{message}</text>
+                        </binding>
+                    </visual>
+                    <actions>
+                        <action content='{optimizeBtnText}' arguments='optimize' activationType='background'/>
+                        <action content='{ignoreBtnText}' arguments='ignore' activationType='background'/>
+                    </actions>
+                </toast>";
 
                 var xmlDoc = new Windows.Data.Xml.Dom.XmlDocument();
                 xmlDoc.LoadXml(xmlPayload);
@@ -99,19 +99,13 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
                 toast.Activated += (sender, args) =>
                 {
-                    var toastArgs = args as Windows.UI.Notifications.ToastActivatedEventArgs;
-                    string clickedArgument = toastArgs?.Arguments ?? "action=wakeup";
+                    if (args is not Windows.UI.Notifications.ToastActivatedEventArgs toastArgs) return;
 
-                    if (clickedArgument == "ignore")
-                    {
-                        System.Diagnostics.Debug.WriteLine("[NotifyLog] User clicked Ignore.");
-                        return;
-                    }
+                    string clickedArgument = toastArgs.Arguments ?? "action=wakeup";
+                    if (clickedArgument == "ignore") return;
 
-                    // Route EVERYTHING through the UI Thread
                     App.UIThreadDispatcher?.TryEnqueue(async () =>
                     {
-                        // 1. Restore the Window so the Progress UI and Dialogs are visible
                         if (App.Current.MainWindow != null)
                         {
                             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
@@ -120,30 +114,41 @@ namespace EvolveOS_Optimizer.Utilities.Services
                             Win32Helper.SetForegroundWindow(hwnd);
                         }
 
-                        // 2. Run the FULL Optimization
-                        if (clickedArgument == "optimize")
+                        if (clickedArgument == "optimize" && sharedViewModel != null)
                         {
-                            System.Diagnostics.Debug.WriteLine("[NotifyLog] Starting FULL optimization via ViewModel...");
+                            // 1. Match the actual signature: Action<Reason, string>
+                            // Note: Use the full namespace for 'Reason' if it's not imported
+                            Action<Enums.Memory.Optimization.Reason, string>? resultHandler = null;
 
-                            // Call your actual, comprehensive Optimize method!
-                            // (Ensure you pass the correct Enum reason your app expects, like Manual or Automatic)
-                            if (sharedViewModel != null)
+                            resultHandler = (reason, resultMessage) =>
                             {
-                                await sharedViewModel.Optimize(Enums.Memory.Optimization.Reason.Manual);
+                                // 2. Unsubscribe using the same signature
+                                if (resultHandler != null)
+                                {
+                                    sharedViewModel!.OnOptimizeCommandCompleted -= resultHandler;
+                                }
 
-                                // Note: You no longer need to send a "Success" toast here, 
-                                // because your Optimize method already handles its own completion messages!
-                            }
+                                string summaryTitle = ResourceString.GetString("toast_optimization_complete_title") ?? "Optimization Complete";
+                                string finalMsg = resultMessage ?? string.Empty;
+
+                                NotificationManager.SendNativeToast(summaryTitle, finalMsg);
+                            };
+
+                            // 3. Subscribe
+                            sharedViewModel!.OnOptimizeCommandCompleted += resultHandler;
+
+                            // 4. Start the Full Optimization
+                            await sharedViewModel.Optimize(Enums.Memory.Optimization.Reason.Manual);
                         }
                     });
                 };
 
                 Windows.UI.Notifications.ToastNotificationManager.CreateToastNotifier(aumid).Show(toast);
-                System.Diagnostics.Debug.WriteLine("[NotifyLog] Raw Health Toast with buttons sent.");
+                Debug.WriteLine("[NotifyLog] Raw Health Toast with buttons sent.");
             }
             catch (System.Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[NotifyLog] WinRT Toast Error: {ex.Message}");
+                Debug.WriteLine($"[NotifyLog] WinRT Toast Error: {ex.Message}");
             }
         }
 

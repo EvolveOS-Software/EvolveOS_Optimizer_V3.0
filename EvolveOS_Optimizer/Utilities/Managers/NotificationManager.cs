@@ -368,12 +368,24 @@ namespace EvolveOS_Optimizer.Utilities.Managers
             {
                 string aumid = "EvolveOS.Optimizer.App";
 
+                var stats = message.Split(new[] { " | ", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+                string textLinesXml = "";
+                foreach (var stat in stats)
+                {
+                    textLinesXml += $"<text hint-style='body'>{stat.Trim()}</text>";
+                }
+
                 string xmlPayload = $@"
-                <toast scenario='reminder' launch='action=wakeup'>
+                <toast scenario='reminder'>
                     <visual>
                         <binding template='ToastGeneric'>
                             <text>{title}</text>
-                            <text>{message}</text>
+                            <group>
+                                <subgroup>
+                                    {textLinesXml}
+                                </subgroup>
+                            </group>
                         </binding>
                     </visual>
                 </toast>";
@@ -394,25 +406,20 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                         if (App.Current.MainWindow != null)
                         {
                             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
-
                             Win32Helper.ShowWindow(hwnd, 5);
                             Win32Helper.ShowWindow(hwnd, 9);
                             Win32Helper.SetForegroundWindow(hwnd);
-
-                            Debug.WriteLine("[NotifyLog] Toast clicked! Window restored.");
                         }
                     });
                 };
 
                 Windows.UI.Notifications.ToastNotificationManager.CreateToastNotifier(aumid).Show(toast);
-                Debug.WriteLine("[NotifyLog] Raw WinRT Toast sent and listening for clicks.");
             }
             catch (System.Exception ex)
             {
                 Debug.WriteLine($"[NotifyLog] WinRT Toast Error: {ex.Message}");
             }
         }
-
         #endregion
     }
 }
