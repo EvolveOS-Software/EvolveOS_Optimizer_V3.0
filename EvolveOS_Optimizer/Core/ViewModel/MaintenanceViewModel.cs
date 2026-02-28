@@ -755,7 +755,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             catch (Exception e) { ErrorLogging.LogDebug(e); }
         }
 
-        private async Task Optimize(Enums.Memory.Optimization.Reason reason)
+        public async Task Optimize(Enums.Memory.Optimization.Reason reason)
         {
             if ((LocalMachineSettingsEngine.MemoryAreas & Enums.Memory.Areas.WindowsOld) != 0)
             {

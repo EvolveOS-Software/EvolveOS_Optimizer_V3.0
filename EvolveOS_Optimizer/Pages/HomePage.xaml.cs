@@ -777,44 +777,22 @@ namespace EvolveOS_Optimizer.Pages
 
                 TxtHealthStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning System...";
 
-                double ramUsage = SystemDiagnostics.GetMemoryUsagePercentage();
-                double vRamUsage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
+                double ramPercentage = SystemDiagnostics.GetMemoryUsagePercentage();
+                double vRamPercentage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
 
                 await Task.Delay(1500);
                 double junkGigabytes = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
 
-                int penaltyScore = 0;
+                double totalRamGb = SystemDiagnostics.GetTotalPhysicalMemoryGigabytes();
+                double totalVRamGb = SystemDiagnostics.GetTotalVirtualMemoryGigabytes();
 
-                if (ramUsage > 85) penaltyScore += 2;
-                else if (ramUsage > 60) penaltyScore += 1;
+                var healthResult = SystemHealthHelper.EvaluateHealth(
+                    ramPercentage, totalRamGb,
+                    vRamPercentage, totalVRamGb,
+                    junkGigabytes);
 
-                if (vRamUsage > 90) penaltyScore += 2;
-                else if (vRamUsage > 85) penaltyScore += 1;
-
-                if (junkGigabytes > 15.0) penaltyScore += 2;
-                else if (junkGigabytes > 6.0) penaltyScore += 1;
-
-                string imagePath;
-                string statusText;
-
-                if (penaltyScore >= 4)
-                {
-                    imagePath = "ms-appx:///Assets/PngImages/health_critical.png";
-                    statusText = ResourceString.GetString("Health_Poor") ?? "Poor - Action Required";
-                }
-                else if (penaltyScore >= 2)
-                {
-                    imagePath = "ms-appx:///Assets/PngImages/health_warning.png";
-                    statusText = ResourceString.GetString("Health_Warning") ?? "Fair - Optimization Recommended";
-                }
-                else
-                {
-                    imagePath = "ms-appx:///Assets/PngImages/health_good.png";
-                    statusText = ResourceString.GetString("Health_Good") ?? "Good - System is Healthy";
-                }
-
-                DashMaintenanceStatusImage.Source = new BitmapImage(new Uri(imagePath));
-                TxtHealthStatus.Text = statusText;
+                DashMaintenanceStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(healthResult.ImagePath));
+                TxtHealthStatus.Text = healthResult.StatusText;
 
                 string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
                 TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
@@ -824,7 +802,7 @@ namespace EvolveOS_Optimizer.Pages
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
                 TxtHealthStatus.Text = "Scan failed.";
             }
             finally

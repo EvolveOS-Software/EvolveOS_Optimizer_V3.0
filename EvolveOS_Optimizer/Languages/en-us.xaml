@@ -1036,6 +1036,12 @@
     <sys:String x:Key="btn_check">Check</sys:String>
     <sys:String x:Key="txt_ready">Ready</sys:String>
     <sys:String x:Key="txt_invalid">Invalid</sys:String>
+    <sys:String x:Key="toast_btn_optimize">Optimize Now</sys:String>
+    <sys:String x:Key="toast_btn_ignore">Ignore</sys:String>
+    <sys:String x:Key="toast_optimization_complete_title">Optimization Complete</sys:String>
+    <sys:String x:Key="toast_optimization_complete_msg">System resources have been successfully freed and optimized.</sys:String>
+    <sys:String x:Key="toast_health_critical_title">System Health Critical</sys:String>
+    <sys:String x:Key="toast_health_critical_msg">System resources are heavily loaded or disk space is low. Click to optimize.</sys:String>
     <!-- endregion System Optimizer -->
 
     <!-- Resource Helper -->
@@ -1129,12 +1135,11 @@
     <sys:String x:Key="systray_run_startup">Run on Startup</sys:String>
     <sys:String x:Key="systray_close_window">Quit EvolveOS</sys:String>
     <sys:String x:Key="systray_click_show">Double-click to open EvolveOS Optimizer</sys:String>
+    <!-- endregion System TrayIcon -->
 
-        <!--#endregion-->
-
-    <!--#region Run On StartUp -->
+    <!-- region Run On StartUp -->
     <sys:String x:Key="text_run_startup">Run on Startup</sys:String>
     <sys:String x:Key="tooltip_run_startup">Enable or disable launching the program on Windows Startup.</sys:String>
-    <!--#endregion-->
+    <!-- endregion Run On StartUp -->
 
 </ResourceDictionary>

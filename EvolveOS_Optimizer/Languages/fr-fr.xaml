@@ -1020,6 +1020,12 @@
     <sys:String x:Key="btn_check">Vérifier</sys:String>
     <sys:String x:Key="txt_ready">Prêt</sys:String>
     <sys:String x:Key="txt_invalid">Invalide</sys:String>
+    <sys:String x:Key="toast_btn_optimize">Optimiser maintenant</sys:String>
+    <sys:String x:Key="toast_btn_ignore">Ignorer</sys:String>
+    <sys:String x:Key="toast_optimization_complete_title">Optimisation terminée</sys:String>
+    <sys:String x:Key="toast_optimization_complete_msg">Les ressources système ont été libérées et optimisées avec succès.</sys:String>
+    <sys:String x:Key="toast_health_critical_title">État du système critique</sys:String>
+    <sys:String x:Key="toast_health_critical_msg">Les ressources système sont fortement sollicitées ou l'espace disque est faible. Cliquez pour optimiser.</sys:String>
     <!--#endregion-->
 
     <!-- Resource Helper -->

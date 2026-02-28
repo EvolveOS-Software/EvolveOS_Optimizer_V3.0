@@ -1015,6 +1015,12 @@
     <sys:String x:Key="btn_check">Controleren</sys:String>
     <sys:String x:Key="txt_ready">Klaar</sys:String>
     <sys:String x:Key="txt_invalid">Ongeldig</sys:String>
+    <sys:String x:Key="toast_btn_optimize">Nu optimaliseren</sys:String>
+    <sys:String x:Key="toast_btn_ignore">Negeren</sys:String>
+    <sys:String x:Key="toast_optimization_complete_title">Optimalisatie voltooid</sys:String>
+    <sys:String x:Key="toast_optimization_complete_msg">Systeembronnen zijn met succes vrijgemaakt en geoptimaliseerd.</sys:String>
+    <sys:String x:Key="toast_health_critical_title">Systeemstatus kritiek</sys:String>
+    <sys:String x:Key="toast_health_critical_msg">Systeembronnen zijn zwaar belast of de schijfruimte is bijna op. Klik om te optimaliseren.</sys:String>
     <!--#endregion-->
 
     <!-- Resource Helper -->

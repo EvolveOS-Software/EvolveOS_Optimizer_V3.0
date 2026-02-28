@@ -757,49 +757,29 @@ namespace EvolveOS_Optimizer.Pages
                 await Task.Delay(250);
             }
 
-            int penaltyScore = 0;
+            double ramPercentage = _sharedViewModel.Computer?.Memory?.Physical?.Used?.Percentage ?? 0;
+            double totalRamGb = _sharedViewModel.Computer?.Memory?.Physical?.Total?.Gigabytes ?? 16.0;
 
-            double ramUsage = _sharedViewModel.Computer?.Memory?.Physical?.Used?.Percentage ?? 0;
-            if (ramUsage > 85) penaltyScore += 2;
-            else if (ramUsage > 60) penaltyScore += 1;
-
-            double vRamUsage = _sharedViewModel.Computer?.Memory?.Virtual?.Used?.Percentage ?? 0;
-            if (vRamUsage > 90) penaltyScore += 2;
-            else if (vRamUsage > 85) penaltyScore += 1;
+            double vRamPercentage = _sharedViewModel.Computer?.Memory?.Virtual?.Used?.Percentage ?? 0;
+            double totalVRamGb = _sharedViewModel.Computer?.Memory?.Virtual?.Total?.Gigabytes ?? 16.0;
 
             double junkGigabytes = ParseSizeToGigabytes(_sharedViewModel.TotalSpaceToFree);
-            if (junkGigabytes > 15.0) penaltyScore += 2;
-            else if (junkGigabytes > 6.0) penaltyScore += 1;
 
-            string imagePath;
-            string statusText;
-
-            if (penaltyScore >= 4)
-            {
-                imagePath = "ms-appx:///Assets/PngImages/health_critical.png";
-                statusText = ResourceString.GetString("Health_Poor") ?? "Poor - Action Required";
-            }
-            else if (penaltyScore >= 2)
-            {
-                imagePath = "ms-appx:///Assets/PngImages/health_warning.png";
-                statusText = ResourceString.GetString("Health_Warning") ?? "Fair - Optimization Recommended";
-            }
-            else
-            {
-                imagePath = "ms-appx:///Assets/PngImages/health_good.png";
-                statusText = ResourceString.GetString("Health_Good") ?? "Good - System is Healthy";
-            }
+            var healthResult = SystemHealthHelper.EvaluateHealth(
+                ramPercentage, totalRamGb,
+                vRamPercentage, totalVRamGb,
+                junkGigabytes);
 
             try
             {
-                MaintenanceStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(imagePath));
+                MaintenanceStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(healthResult.ImagePath));
             }
             catch (Exception ex)
             {
                 ErrorLogging.LogDebug($"Failed to load health image: {ex.Message}");
             }
 
-            LastRefreshedText.Text = $"{statusText} • Last checked: {DateTime.Now:t}";
+            LastRefreshedText.Text = $"{healthResult.StatusText} • Last checked: {DateTime.Now:t}";
 
             MaintenanceStatusLoadingRing.Visibility = Visibility.Collapsed;
             MaintenanceStatusImage.Visibility = Visibility.Visible;
@@ -897,21 +877,33 @@ namespace EvolveOS_Optimizer.Pages
 
                 /* WE DO NOT DISPOSE THE VIEWMODEL *\
                 if (_sharedViewModel is IDisposable disposable) disposable.Dispose(); */
-            //}
+        //}
 
-            /*foreach (var result in _scanResults.Values)
-            {
-                result.Clear();
-            }
-            _scanResults.Clear();
+        /*foreach (var result in _scanResults.Values)
+        {
+            result.Clear();
+        }
+        _scanResults.Clear();
 
-            this.Loaded -= MaintenancePage_Loaded;
-            this.Unloaded -= MaintenancePage_Unloaded;
+        this.Loaded -= MaintenancePage_Loaded;
+        this.Unloaded -= MaintenancePage_Unloaded;
 
-            this.DataContext = null;
-            this.Content = null;
+        this.DataContext = null;
+        this.Content = null;
 
-            Debug.WriteLine("[MaintenancePage] Purge Complete.");
+        Debug.WriteLine("[MaintenancePage] Purge Complete.");
+    }*/
+        #endregion
+
+        #region Notification Testing Method
+        /*private void TestToastButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            if (_sharedViewModel == null) return;
+
+            string title = ResourceString.GetString("toast_health_critical_title") ?? "System Health Critical";
+            string message = ResourceString.GetString("toast_health_critical_msg") ?? "System resources are heavily loaded or disk space is low. Click to optimize.";
+
+            BackgroundHealthMonitor.SendCriticalHealthToast(title, message, _sharedViewModel);
         }*/
         #endregion
     }

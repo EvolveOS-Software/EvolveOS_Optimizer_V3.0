@@ -861,6 +861,30 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             return 0;
         }
 
+        public static double GetTotalPhysicalMemoryGigabytes()
+        {
+            MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
+            memStatus.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+
+            if (GlobalMemoryStatusEx(ref memStatus))
+            {
+                return memStatus.ullTotalPhys / (1024.0 * 1024.0 * 1024.0);
+            }
+            return 16.0;
+        }
+
+        public static double GetTotalVirtualMemoryGigabytes()
+        {
+            MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
+            memStatus.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+
+            if (GlobalMemoryStatusEx(ref memStatus))
+            {
+                return memStatus.ullTotalPageFile / (1024.0 * 1024.0 * 1024.0);
+            }
+            return 16.0;
+        }
+
         internal new string GetWallpaperPath() => WallpaperPath ?? string.Empty;
 
         #region Disposal

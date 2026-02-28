@@ -362,7 +362,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
             batch.End();
         }
 
-        private static void SendNativeToast(string title, string message)
+        public static void SendNativeToast(string title, string message)
         {
             try
             {
@@ -399,7 +399,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                             Win32Helper.ShowWindow(hwnd, 9);
                             Win32Helper.SetForegroundWindow(hwnd);
 
-                            System.Diagnostics.Debug.WriteLine("[NotifyLog] Toast clicked! Window restored.");
+                            Debug.WriteLine("[NotifyLog] Toast clicked! Window restored.");
                         }
                     });
                 };

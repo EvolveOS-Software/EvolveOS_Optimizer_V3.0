@@ -19,6 +19,8 @@ namespace EvolveOS_Optimizer.Core.Model.MemoryModel
         public Enums.Memory.Unit Unit { get; private set; }
         public double Value { get; private set; }
 
+        public double Gigabytes => Bytes / (1024.0 * 1024.0 * 1024.0);
+
         public override string ToString()
         {
             return string.Format("{0:0.#} {1} ({2}%)", Value, Unit, Percentage);
