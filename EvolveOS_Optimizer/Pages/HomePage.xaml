@@ -508,12 +508,12 @@
                             </Grid>
                             <Grid Grid.Row="1" Height="120" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <FontIcon x:Name="IconServiceStopped" Glyph="&#xE7E8;" FontSize="50" Foreground="{ThemeResource Brush_Error}" Opacity="0.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <Image x:Name="ImgServiceRunning" Source="ms-appx:///Assets/PngImages/dns_secure.png" Width="75" Height="75" Margin="0,0,0,3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
-                                <ProgressRing x:Name="ProgressRingRunServices" IsActive="True" Width="15" Height="15" Canvas.ZIndex="10" Margin="0,0,18,35" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                <Image x:Name="ImgServiceRunning" Source="ms-appx:///Assets/PngImages/secure.png" Width="80" Height="80" Margin="0,0,0,3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                <ProgressRing x:Name="ProgressRingRunServices" IsActive="True" Width="15" Height="15" Canvas.ZIndex="10" Margin="0,0,16,28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                             </Grid>
-                            <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
+                            <StackPanel Grid.Row="2" Spacing="2" Margin="0,0">
                                 <TextBlock x:Name="TxtServicesRunning" Text="{helpers:ResourceString Key=text_services_running}" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="statusLabel" Text="{helpers:ResourceString Key=text_status}" HorizontalAlignment="Center" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
+                                <TextBlock x:Name="statusLabel" Text="{helpers:ResourceString Key=text_status}" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
                             </StackPanel>
                             <ProgressBar x:Name="progressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8"/>
                             <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="12" VerticalAlignment="Bottom">
@@ -544,7 +544,7 @@
                             </Grid>
                             <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
                                 <TextBlock x:Name="TxtHealthStatus" Text="{helpers:ResourceString Key=text_scanning_system}" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="TxtLastRefreshed" Text="{helpers:ResourceString Key=text_never_updated}" HorizontalAlignment="Center" FontFamily="Jura Medium" Opacity="0.6" FontSize="11"/>
+                                <TextBlock x:Name="TxtLastRefreshed" Text="{helpers:ResourceString Key=text_never_updated}" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="1" FontSize="11"/>
                             </StackPanel>
                             <ProgressBar x:Name="MaintenanceProgressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8" Visibility="Collapsed"/>
                             <Grid Grid.Row="4" VerticalAlignment="Bottom">
@@ -587,7 +587,7 @@
 
                             <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
                                 <TextBlock x:Name="TxtSecurityStatus" Text="Scanning..." FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="TxtSecurityLastRefreshed" FontSize="11" Opacity="0.6" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="TxtSecurityLastRefreshed" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" HorizontalAlignment="Center"/>
                             </StackPanel>
 
                             <Grid Grid.Row="3" Height="4" Margin="4,8" Visibility="Collapsed"/>

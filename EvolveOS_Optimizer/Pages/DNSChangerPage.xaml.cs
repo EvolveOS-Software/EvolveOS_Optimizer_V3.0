@@ -1,3 +1,8 @@
+// Copyright (c) 2026 EvolveOS Software
+//
+// Licensed under the MIT License. 
+// See the LICENSE file in the project root for more information.
+
 using System.Net.NetworkInformation;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;

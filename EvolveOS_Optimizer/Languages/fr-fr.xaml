@@ -1073,6 +1073,7 @@
     <sys:String x:Key="status_retrieving">Récupération...</sys:String>
     <sys:String x:Key="status_automatic_none">Automatique/Aucun</sys:String>
     <sys:String x:Key="status_failed_to_load">Échec du chargement de la configuration</sys:String>
+    <sys:String x:Key="txt_dns_settings">Paramètres DNS</sys:String>
     <!-- endregion DNS Changer -->
 
     <!-- region DNS Encryption -->

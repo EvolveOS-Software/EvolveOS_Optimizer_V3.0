@@ -1090,6 +1090,7 @@
     <sys:String x:Key="status_retrieving">Retrieving...</sys:String>
     <sys:String x:Key="status_automatic_none">Automatic/None</sys:String>
     <sys:String x:Key="status_failed_to_load">Failed to load configuration</sys:String>
+    <sys:String x:Key="txt_dns_settings">DNS Settings</sys:String>
     <!-- endregion DNS Changer -->
 
     <!-- region DNS Encryption -->

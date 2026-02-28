@@ -112,9 +112,17 @@
                         <Button Content="{helpers:ResourceString Key=btn_load_config}" x:Name="BtnLoadConfig" Click="BtnLoadConfig_Click" FontFamily="{ThemeResource Jura}" Width="160"/>
                         <Button Content="{helpers:ResourceString Key=btn_save_config}" x:Name="BtnSaveConfig" Click="BtnSaveConfig_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="{ThemeResource Jura-Bold}" Width="160"/>
                     </controls:WrapPanel>
+
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,-15,0,0">
+                <TextBlock Text="{helpers:ResourceString Key=txt_dns_settings}"
+                           FontFamily="{ThemeResource Jura}"
+                           FontSize="18"
+                           Style="{StaticResource TitleTextBlockStyle}"
+                           HorizontalAlignment="Left"
+                           Margin="5,-10,0,-5" />
+
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,-72,0,0">
                     <ToggleButton x:Name="ToggleCategoryCards"
                                   HorizontalAlignment="Right"
                                   Margin="0,3,0,10"
@@ -253,9 +261,7 @@
                     </StackPanel>
                 </StackPanel>
 
-
-
-                <Grid ColumnSpacing="10" HorizontalAlignment="Stretch" Margin="0,-10,0,48">
+                <Grid ColumnSpacing="10" HorizontalAlignment="Stretch" Margin="0,-38,0,48">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>

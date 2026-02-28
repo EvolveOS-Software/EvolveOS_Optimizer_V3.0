@@ -1089,6 +1089,7 @@
     <sys:String x:Key="status_retrieving">Recupero in corso...</sys:String>
     <sys:String x:Key="status_automatic_none">Automatico/Nessuno</sys:String>
     <sys:String x:Key="status_failed_to_load">Impossibile caricare la configurazione</sys:String>
+    <sys:String x:Key="txt_dns_settings">Impostazioni DNS</sys:String>
     <!-- endregion DNS Changer -->
 
     <!-- region DNS Encryption -->

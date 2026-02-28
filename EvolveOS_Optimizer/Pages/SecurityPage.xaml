@@ -116,23 +116,6 @@
                                 </Grid>
                             </Button>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="RealTimeProtectionLink_Click">
-                                <Grid>
-                                    <FontIcon Glyph="&#xE7EF;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="RealTimeProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
-                                        <HyperlinkButton x:Name="RealTimeProtectionLink"
-                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
-                                                         Click="RealTimeProtectionLink_Click"
-                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
-                                    </StackPanel>
-                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_RealTimeProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_ActiveMalwareScanning}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Button>
-
                             <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="FirewallLink_Click">
                                 <Grid>
                                     <FontIcon Glyph="&#xE964;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -146,6 +129,23 @@
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
                                         <TextBlock Text="{helpers:ResourceString Key=SecurityPage_FirewallNetworkProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
                                         <TextBlock Text="{helpers:ResourceString Key=SecurityPage_BlocksUnauthorizedAccess}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="AccountProtectionLink_Click">
+                                <Grid>
+                                    <FontIcon Glyph="&#xE77B;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                                        <TextBlock x:Name="AccountProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <HyperlinkButton x:Name="AccountProtectionLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="AccountProtectionLink_Click"
+                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
+                                    </StackPanel>
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_AccountProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_AccountProtectionDesc}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -167,26 +167,9 @@
                                 </Grid>
                             </Button>
 
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="SmartScreenLink_Click">
-                                <Grid>
-                                    <FontIcon Glyph="&#xF8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="SmartScreenStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
-                                        <HyperlinkButton x:Name="SmartScreenLink"
-                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
-                                                         Click="SmartScreenLink_Click"
-                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
-                                    </StackPanel>
-                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_SmartScreen}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_WebAndAppProtection}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Button>
-
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1" CornerRadius="8" 
+                                    BorderThickness="1" CornerRadius="8"
                                     Width="476" Height="155" Padding="14">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -221,6 +204,23 @@
                                 </Grid>
                             </Border>
 
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="RealTimeProtectionLink_Click">
+                                <Grid>
+                                    <FontIcon Glyph="&#xE7EF;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                                        <TextBlock x:Name="RealTimeProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <HyperlinkButton x:Name="RealTimeProtectionLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="RealTimeProtectionLink_Click"
+                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
+                                    </StackPanel>
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_RealTimeProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_ActiveMalwareScanning}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
                             <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="TamperProtectionLink_Click">
                                 <Grid>
                                     <FontIcon Glyph="&#xE72E;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -234,40 +234,6 @@
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
                                         <TextBlock Text="{helpers:ResourceString Key=SecurityPage_TamperProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
                                         <TextBlock Text="{helpers:ResourceString Key=SecurityPage_PreventsUnauthorizedChanges}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Button>
-
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="ControlledFolderAccessLink_Click">
-                                <Grid>
-                                    <FontIcon Glyph="&#xE8B7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="ControlledFolderAccessStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
-                                        <HyperlinkButton x:Name="ControlledFolderAccessLink"
-                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
-                                                         Click="ControlledFolderAccessLink_Click"
-                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
-                                    </StackPanel>
-                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_ControlledFolderAccess}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_RansomwareProtection}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Button>
-
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="BitLockerLink_Click">
-                                <Grid>
-                                    <FontIcon Glyph="&#xE8D7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="BitLockerStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
-                                        <HyperlinkButton x:Name="BitLockerLink"
-                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
-                                                         Click="BitLockerLink_Click"
-                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
-                                    </StackPanel>
-                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_BitLockerEncryption}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_DriveEncryptionStatus}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -289,6 +255,57 @@
                                 </Grid>
                             </Button>
 
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="BitLockerLink_Click">
+                                <Grid>
+                                    <FontIcon Glyph="&#xE8D7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                                        <TextBlock x:Name="BitLockerStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <HyperlinkButton x:Name="BitLockerLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="BitLockerLink_Click"
+                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
+                                    </StackPanel>
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_BitLockerEncryption}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_DriveEncryptionStatus}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="ControlledFolderAccessLink_Click">
+                                <Grid>
+                                    <FontIcon Glyph="&#xE8B7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                                        <TextBlock x:Name="ControlledFolderAccessStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <HyperlinkButton x:Name="ControlledFolderAccessLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="ControlledFolderAccessLink_Click"
+                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
+                                    </StackPanel>
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_ControlledFolderAccess}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_RansomwareProtection}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+                            
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="SmartScreenLink_Click">
+                                <Grid>
+                                    <FontIcon Glyph="&#xF8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                                        <TextBlock x:Name="SmartScreenStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <HyperlinkButton x:Name="SmartScreenLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="SmartScreenLink_Click"
+                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
+                                    </StackPanel>
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_SmartScreen}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_WebAndAppProtection}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
                             <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="DefenderServiceLink_Click">
                                 <Grid>
                                     <FontIcon Glyph="&#xE9F5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -302,23 +319,6 @@
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
                                         <TextBlock Text="{helpers:ResourceString Key=SecurityPage_WindowsDefenderService}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
                                         <TextBlock Text="{helpers:ResourceString Key=SecurityPage_CoreSecurityService}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Button>
-
-                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="AccountProtectionLink_Click">
-                                <Grid>
-                                    <FontIcon Glyph="&#xE77B;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="AccountProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
-                                        <HyperlinkButton x:Name="AccountProtectionLink"
-                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
-                                                         Click="AccountProtectionLink_Click"
-                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
-                                    </StackPanel>
-                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_AccountProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_AccountProtectionDesc}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>

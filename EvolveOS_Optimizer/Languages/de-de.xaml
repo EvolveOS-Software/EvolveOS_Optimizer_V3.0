@@ -1089,6 +1089,7 @@
     <sys:String x:Key="status_retrieving">Wird abgerufen...</sys:String>
     <sys:String x:Key="status_automatic_none">Automatisch/Keine</sys:String>
     <sys:String x:Key="status_failed_to_load">Konfiguration konnte nicht geladen werden</sys:String>
+    <sys:String x:Key="txt_dns_settings">DNS-Einstellungen</sys:String>
     <!-- endregion DNS Changer -->
 
     <!-- region DNS Encryption -->

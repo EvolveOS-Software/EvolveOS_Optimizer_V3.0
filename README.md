@@ -1,6 +1,6 @@
 <div align="center">
 <img src="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/Assets/EvolveOS_Optimizer.png"/><br/>
-<img src="https://github.com/none/EvolveOS_Optimizer/blob/main/.github/Preview.gif"/><br/><br/>
+<img src="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/.github/Screenshots/preview.gif"/><br/><br/>
  
 <div align="center" style="margin: 20px 0; text-align: center;">
  
@@ -25,9 +25,11 @@
 
 ## 📖 About The Project
 
+The inspiration for this project came from navigating the current landscape of Windows optimizers and debloat utilities. While many of these tools are useful, I wanted to build an application that perfectly aligned with my own vision of an optimization hub. The result is a tool designed from the ground up to offer a refined interface, fluid usability, and powerful under-the-hood tweaks that significantly elevate the Windows experience.
+
 EvolveOS Optimizer is a premium, open-source system maintenance utility designed to keep your Windows environment running at peak performance. Built on the modern **WinUI 3** framework, it features a deeply integrated background health monitor, native OS notifications, and a highly customizable, gorgeous UI. 
 
-Experience a dynamic dashboard where you can effortlessly drag and drop cards like System Health, System Security, and DNS Encryption service to fit your workflow. The interface is brought to life with smooth fluent animations, full Light and Dark theme support, and advanced window backdrops (Mica, Mica Alt, Acrylic, and Acrylic Thin) complete with precise color and translucency sliders.
+Experience a dynamic dashboard where you can effortlessly drag and drop cards like System Health, System Security, and DNS Encryption to fit your workflow. The interface is brought to life with smooth Fluent animations, full Light and Dark theme support, and advanced window backdrops (Mica, Mica Alt, Acrylic, and Acrylic Thin) complete with precise color and translucency sliders.
 
 Whether running actively on your dashboard or silently in your system tray, EvolveOS Optimizer continuously protects your system from memory leaks, cache bloat, and resource exhaustion without interrupting your workflow.
 
@@ -84,12 +86,12 @@ Whether running actively on your dashboard or silently in your system tray, Evol
 
 ## 📸 Screenshots
 
-*(Add your screenshots to an `assets` folder in your repo and update these links!)*
-
-| Dashboard | Maintenance | Background Notifications |
+| Dashboard | Maintenance | Security |
 |:---:|:---:|:---:|
-| <img src="https://via.placeholder.com/300x200.png?text=Dashboard+UI" alt="EvolveOS Optimizer Dashboard" width="300"/> | <img src="https://via.placeholder.com/300x200.png?text=Maintenance+Menu" alt="Memory Automation Sliders" width="300"/> | <img src="https://via.placeholder.com/300x200.png?text=Native+Toast" alt="Windows Native Toast Notification" width="300"/> |
-
+| <img src="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/.github/Screenshots/HomePage.png" alt="EvolveOS Optimizer Dashboard" width="300"/> | <img src="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/.github/Screenshots/MaintenancePage.png" alt="EvolveOS Security Maintenance" width="300"/> | <img src="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/.github/Screenshots/SecurityPage.png" alt="EvolveOS Security Center" width="300"/> |
+| Dns Changer | Settings | Other |
+|:---:|:---:|:---:|
+ <img src="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/.github/Screenshots/DnsPage.png" alt="EvolveOS Optimizer Dashboard" width="300"/> | <img src="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/.github/Screenshots/SettingsPage.png" alt="EvolveOS Security Maintenance" width="300"/> | <img src="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/.github/Screenshots/SettingsPage.png" alt="EvolveOS Security Center" width="300"/> |
 ---
 
 ## 🚀 Installation & Usage
