@@ -141,7 +141,14 @@ namespace EvolveOS_Optimizer.Pages
         private void LanguageSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_isInitialized && LanguageSelector.SelectedItem is ComboBoxItem item)
+            {
                 SettingsEngine.Language = item.Tag?.ToString() ?? "en-us";
+
+                if (App.Current.MainWindow is MainWindow mainWindow)
+                {
+                    mainWindow.RefreshTrayIconLanguage();
+                }
+            }
         }
 
         private void BackdropSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)

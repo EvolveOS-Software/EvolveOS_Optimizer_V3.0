@@ -53,10 +53,11 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <tb:TaskbarIcon Style="{StaticResource EvolveOSTrayIconStyle}"
-                DataContext="{Binding DataContext, ElementName=RootGrid}"
-                DoubleClickCommand="{Binding ToggleWindowVisibilityCommand}"
-                ContextMenuMode="SecondWindow" />
+        <tb:TaskbarIcon x:Name="TrayIcon" 
+                        Style="{StaticResource EvolveOSTrayIconStyle}"
+                        DataContext="{Binding DataContext, ElementName=RootGrid}"
+                        DoubleClickCommand="{Binding ToggleWindowVisibilityCommand}"
+                        ContextMenuMode="SecondWindow" />
 
         <Grid x:Name="AppTitleBar" Height="45" Visibility="Visible" VerticalAlignment="Top">
 

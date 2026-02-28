@@ -67,7 +67,8 @@
                         </MenuFlyoutItem.Template>
                     </MenuFlyoutItem>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_show_window}"
+                    <MenuFlyoutItem x:Name="TrayMenu_Show"
+                                    Text="{helpers:ResourceString Key=systray_show_window}"
                                     Command="{Binding MaximizeCommand}"
                                     FontFamily="{StaticResource Jura-Regular}">
                         <MenuFlyoutItem.Icon>
@@ -75,7 +76,8 @@
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_hide_window}"
+                    <MenuFlyoutItem x:Name="TrayMenu_Hide"
+                                    Text="{helpers:ResourceString Key=systray_hide_window}"
                                     Command="{Binding MinimizeCommand}"
                                     FontFamily="{StaticResource Jura-Regular}">
                         <MenuFlyoutItem.Icon>
@@ -85,7 +87,8 @@
 
                     <MenuFlyoutSeparator Opacity="0.5"/>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_run_startup}"
+                    <MenuFlyoutItem x:Name="TrayMenu_RunStartup"
+                                    Text="{helpers:ResourceString Key=systray_run_startup}"
                                     Command="{Binding ToggleRunOnStartupCommand}"
                                     FontFamily="{StaticResource Jura-Regular}">
                         <MenuFlyoutItem.Icon>
@@ -98,7 +101,8 @@
 
                     <MenuFlyoutSeparator Opacity="0.5"/>
 
-                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_close_window}"
+                    <MenuFlyoutItem x:Name="TrayMenu_Close"
+                                    Text="{helpers:ResourceString Key=systray_close_window}"
                                     Command="{Binding CloseCommand}"
                                     Foreground="#FF5555"
                                     FontFamily="{StaticResource Jura-Regular}">

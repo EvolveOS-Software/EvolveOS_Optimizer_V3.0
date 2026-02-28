@@ -1112,4 +1112,17 @@
     <sys:String x:Key="textbox_dns_secondary_ip6">Entrez l'IPv6 secondaire</sys:String>
     <!-- endregion DNS Encryption -->
 
+    <!--#region System TrayIcon -->
+    <sys:String x:Key="systray_show_window">Afficher l'Optimizer</sys:String>
+    <sys:String x:Key="systray_hide_window">Masquer l'Optimizer</sys:String>
+    <sys:String x:Key="systray_run_startup">Exécuter au démarrage</sys:String>
+    <sys:String x:Key="systray_close_window">Quitter EvolveOS</sys:String>
+    <sys:String x:Key="systray_click_show">Double-cliquez pour ouvrir EvolveOS Optimizer</sys:String>
+    <!-- endregion System TrayIcon -->
+
+    <!-- region Run On StartUp -->
+    <sys:String x:Key="text_run_startup">Exécuter au démarrage</sys:String>
+    <sys:String x:Key="tooltip_run_startup">Activez ou désactivez le lancement du programme au démarrage de Windows.</sys:String>
+    <!-- endregion Run On StartUp -->
+
 </ResourceDictionary>

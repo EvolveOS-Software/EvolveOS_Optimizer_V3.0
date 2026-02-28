@@ -9,6 +9,7 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
+using H.NotifyIcon.Core;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
@@ -144,6 +145,32 @@ namespace EvolveOS_Optimizer
             else
             {
                 Win32Helper.SetForegroundWindow(hwnd);
+            }
+        }
+
+        public void RefreshTrayIconLanguage()
+        {
+            if (TrayIcon.ContextFlyout is MenuFlyout flyout)
+            {
+                TrayIcon.ToolTipText = ResourceString.GetString("systray_click_show");
+
+                foreach (var item in flyout.Items)
+                {
+                    if (item is MenuFlyoutItem menuItem)
+                    {
+                        if (menuItem.Name == "TrayMenu_Show")
+                            menuItem.Text = ResourceString.GetString("systray_show_window");
+
+                        else if (menuItem.Name == "TrayMenu_Hide")
+                            menuItem.Text = ResourceString.GetString("systray_hide_window");
+
+                        else if (menuItem.Name == "TrayMenu_RunStartup")
+                            menuItem.Text = ResourceString.GetString("systray_run_startup");
+
+                        else if (menuItem.Name == "TrayMenu_Close")
+                            menuItem.Text = ResourceString.GetString("systray_close_window");
+                    }
+                }
             }
         }
 
