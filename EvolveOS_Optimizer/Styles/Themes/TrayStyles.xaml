@@ -26,7 +26,7 @@
                            Foreground="{ThemeResource MyDynamicAccentBrush}"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"
-                           FontFamily="{StaticResource Jura-Regular}"/>
+                           FontFamily="{StaticResource Jura}"/>
             </Grid>
             <MenuFlyoutSeparator Background="{ThemeResource MyDynamicAccentBrush}" Height="1" Opacity="0.15"/>
         </StackPanel>

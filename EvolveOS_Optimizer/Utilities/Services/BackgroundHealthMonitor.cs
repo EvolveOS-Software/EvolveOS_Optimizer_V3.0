@@ -2,7 +2,6 @@ using System.Threading;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Managers;
 
 namespace EvolveOS_Optimizer.Utilities.Services
@@ -65,7 +64,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             }
         }
 
-        public static void SendCriticalHealthToast(string title, string message, dynamic sharedViewModel)
+        public static void SendCriticalHealthToast(string title, string message, Core.ViewModel.MaintenanceViewModel sharedViewModel)
         {
             try
             {
@@ -116,35 +115,12 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
                         if (clickedArgument == "optimize" && sharedViewModel != null)
                         {
-                            // 1. Match the actual signature: Action<Reason, string>
-                            // Note: Use the full namespace for 'Reason' if it's not imported
-                            Action<Enums.Memory.Optimization.Reason, string>? resultHandler = null;
-
-                            resultHandler = (reason, resultMessage) =>
-                            {
-                                // 2. Unsubscribe using the same signature
-                                if (resultHandler != null)
-                                {
-                                    sharedViewModel!.OnOptimizeCommandCompleted -= resultHandler;
-                                }
-
-                                string summaryTitle = ResourceString.GetString("toast_optimization_complete_title") ?? "Optimization Complete";
-                                string finalMsg = resultMessage ?? string.Empty;
-
-                                NotificationManager.SendNativeToast(summaryTitle, finalMsg);
-                            };
-
-                            // 3. Subscribe
-                            sharedViewModel!.OnOptimizeCommandCompleted += resultHandler;
-
-                            // 4. Start the Full Optimization
-                            await sharedViewModel.Optimize(Enums.Memory.Optimization.Reason.Manual);
+                            await NotificationManager.ExecuteBackgroundOptimizationAsync(sharedViewModel);
                         }
                     });
                 };
 
                 Windows.UI.Notifications.ToastNotificationManager.CreateToastNotifier(aumid).Show(toast);
-                Debug.WriteLine("[NotifyLog] Raw Health Toast with buttons sent.");
             }
             catch (System.Exception ex)
             {

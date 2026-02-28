@@ -3,6 +3,7 @@ using System.Security.Principal;
 using System.Threading;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
@@ -222,7 +223,7 @@ namespace EvolveOS_Optimizer
 
                 bool success = service.Register(hotkey, () =>
                 {
-                    Task.Run(() => RunGlobalOptimization());
+                    Task.Run(() => RunGlobalOptimizationAsync());
                 });
 
                 if (!success)
@@ -236,16 +237,13 @@ namespace EvolveOS_Optimizer
             return true;
         }
 
-        private static void RunGlobalOptimization()
+        private static async Task RunGlobalOptimizationAsync()
         {
-            if (Core.ViewModel.MaintenanceViewModel.Current.OptimizeCommand.CanExecute(null))
-            {
-                Core.ViewModel.MaintenanceViewModel.Current.OptimizeCommand.Execute(null);
+            var sharedViewModel = MaintenanceViewModel.Current;
 
-                App.UIThreadDispatcher?.TryEnqueue(() =>
-                {
-                    ShowNotification("Optimizer", "Memory successfully cleaned!", InfoBarSeverity.Success, 3000);
-                });
+            if (sharedViewModel != null)
+            {
+                await NotificationManager.ExecuteBackgroundOptimizationAsync(sharedViewModel);
             }
         }
 

@@ -1,4 +1,5 @@
 using System.Threading;
+using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Views;
 using Microsoft.UI.Windowing;
@@ -360,6 +361,37 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                 ProcessQueue();
             };
             batch.End();
+        }
+
+        public static async Task ExecuteBackgroundOptimizationAsync(Core.ViewModel.MaintenanceViewModel sharedViewModel)
+        {
+            if (sharedViewModel == null) return;
+
+            try
+            {
+                Action<Enums.Memory.Optimization.Reason, string>? resultHandler = null;
+
+                resultHandler = (reason, resultMessage) =>
+                {
+                    if (resultHandler != null)
+                    {
+                        sharedViewModel.OnOptimizeCommandCompleted -= resultHandler;
+                    }
+
+                    string summaryTitle = ResourceString.GetString("toast_optimization_complete_title") ?? "Optimization Complete";
+                    string finalMsg = resultMessage ?? string.Empty;
+
+                    SendNativeToast(summaryTitle, finalMsg);
+                };
+
+                sharedViewModel.OnOptimizeCommandCompleted += resultHandler;
+
+                await sharedViewModel.Optimize(Enums.Memory.Optimization.Reason.Manual);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[BackgroundOpt] Failed: {ex.Message}");
+            }
         }
 
         public static void SendNativeToast(string title, string message)
