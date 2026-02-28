@@ -304,6 +304,27 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }, cancellationToken).ConfigureAwait(false);
         }
 
+        public static Task<bool> IsCoreIsolationEnabledAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity");
+                    if (key != null)
+                    {
+                        var enabledValue = key.GetValue("Enabled");
+                        return enabledValue != null && (int)enabledValue == 1;
+                    }
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
+            }, cancellationToken);
+        }
+
         public static async Task<bool> IsDefenderServiceEnabledAsync(CancellationToken cancellationToken = default)
         {
             return await Task.Run(() =>
@@ -322,6 +343,28 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 }
                 return false;
             }, cancellationToken).ConfigureAwait(false);
+        }
+
+        public static Task<bool> IsAccountProtectionEnabledAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\NgcPin\Credentials");
+
+                    if (key != null)
+                    {
+                        return key.GetSubKeyNames().Length > 0;
+                    }
+
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
+            }, cancellationToken);
         }
 
         private static bool IsFirewallServiceDisabled()

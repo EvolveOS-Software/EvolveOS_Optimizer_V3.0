@@ -269,6 +269,23 @@
                                 </Grid>
                             </Button>
 
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="CoreIsolationLink_Click">
+                                <Grid>
+                                    <FontIcon Glyph="&#xEA39;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                                        <TextBlock x:Name="CoreIsolationStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <HyperlinkButton x:Name="CoreIsolationLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="CoreIsolationLink_Click"
+                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
+                                    </StackPanel>
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_CoreIsolation}" FontSize="16"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_CoreIsolationDesc}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
                             <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="DefenderServiceLink_Click">
                                 <Grid>
                                     <FontIcon Glyph="&#xE9F5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -282,6 +299,25 @@
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
                                         <TextBlock Text="{helpers:ResourceString Key=SecurityPage_WindowsDefenderService}" FontSize="16"/>
                                         <TextBlock Text="{helpers:ResourceString Key=SecurityPage_CoreSecurityService}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="380" Height="140" Margin="5" Padding="10" Click="AccountProtectionLink_Click">
+                                <Grid>
+                                    <FontIcon Glyph="&#xE77B;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                                        <TextBlock x:Name="AccountProtectionStatus" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <HyperlinkButton x:Name="AccountProtectionLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="AccountProtectionLink_Click"
+                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
+                                    </StackPanel>
+
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_AccountProtection}" FontSize="16"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_AccountProtectionDesc}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>

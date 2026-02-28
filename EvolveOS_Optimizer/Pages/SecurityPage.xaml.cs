@@ -10,13 +10,15 @@ namespace EvolveOS_Optimizer.Pages;
 
 public sealed partial class SecurityPage : Page, IPurgeable
 {
+    #region Fields
     private DispatcherTimer? _refreshTimer;
     private CancellationTokenSource? _cancellationTokenSource;
     private bool _isCheckInProgress;
     private string? _pendingScrollTarget;
-
     private bool _isUacSliderUpdating = false;
+    #endregion
 
+    #region Constructor & Lifecycle
     public SecurityPage()
     {
         InitializeComponent();
@@ -66,7 +68,9 @@ public sealed partial class SecurityPage : Page, IPurgeable
             _pendingScrollTarget = null;
         }
     }
+    #endregion
 
+    #region Core Diagnostics
     private async Task CheckSecurityStatusAsync(CancellationToken cancellationToken = default)
     {
         if (_isCheckInProgress || cancellationToken.IsCancellationRequested)
@@ -89,10 +93,12 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 var tamperProtection = await SecurityDiagnostics.IsTamperProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var controlledFolderAccess = await SecurityDiagnostics.IsControlledFolderAccessEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var bitLockerEnabled = await SecurityDiagnostics.IsBitLockerEnabledAsync(cancellationToken).ConfigureAwait(false);
+                var coreIsolationEnabled = await SecurityDiagnostics.IsCoreIsolationEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var defenderServiceEnabled = await SecurityDiagnostics.IsDefenderServiceEnabledAsync(cancellationToken).ConfigureAwait(false);
+                var accountProtectionEnabled = await SecurityDiagnostics.IsAccountProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
 
                 return (antivirusInfo, firewallProtection, windowsUpdate, smartscreen, realTimeProtection,
-                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, defenderServiceEnabled);
+                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled);
             }, cancellationToken).ConfigureAwait(true);
 
             if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
@@ -102,7 +108,9 @@ public sealed partial class SecurityPage : Page, IPurgeable
             UpdateStatusCard(FirewallStatus, FirewallLink, results.firewallProtection);
             UpdateStatusCard(WindowsUpdateStatus, WindowsUpdateLink, results.windowsUpdate);
             UpdateStatusCard(SmartScreenStatus, SmartScreenLink, results.smartscreen);
+            UpdateStatusCard(CoreIsolationStatus, CoreIsolationLink, results.coreIsolationEnabled);
             UpdateStatusCard(RealTimeProtectionStatus, RealTimeProtectionLink, results.realTimeProtection);
+            UpdateStatusCard(AccountProtectionStatus, AccountProtectionLink, results.accountProtectionEnabled);
 
             _isUacSliderUpdating = true;
             UacSlider.IsEnabled = true;
@@ -211,7 +219,9 @@ public sealed partial class SecurityPage : Page, IPurgeable
             _isCheckInProgress = false;
         }
     }
+    #endregion
 
+    #region UI Update Helpers
     private void UpdateStatusCard(TextBlock statusText, HyperlinkButton link, bool isEnabled)
     {
         statusText.Text = isEnabled ? ResourceString.GetString("Enabled") : ResourceString.GetString("Disabled");
@@ -238,7 +248,9 @@ public sealed partial class SecurityPage : Page, IPurgeable
         SecurityStatusImage.Visibility = Visibility.Visible;
         LastRefreshedText.Visibility = Visibility.Visible;
     }
+    #endregion
 
+    #region Top Bar Actions
     private async void RefreshButton_Click(object sender, RoutedEventArgs e)
     {
         await CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
@@ -335,14 +347,18 @@ public sealed partial class SecurityPage : Page, IPurgeable
             App.ShowNotification(ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle"), ResourceString.GetString("SecurityPage_DefinitionsUpdateFailed"), InfoBarSeverity.Error, 5000);
         }
     }
+    #endregion
 
+    #region Security Card Links
     private void VirusThreatProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
     private void FirewallLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://network/");
     private void WindowsUpdateLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("ms-settings:windowsupdate");
     private void SmartScreenLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://smartscreenpua/");
     private void RealTimeProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
     private void TamperProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
+    private void CoreIsolationLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://coreisolation/");
     private void ControlledFolderAccessLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://ransomwareprotection/");
+    private void AccountProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://account/");
 
     private void BitLockerLink_Click(object sender, RoutedEventArgs e)
     {
@@ -404,7 +420,9 @@ public sealed partial class SecurityPage : Page, IPurgeable
     }
 
     private void DefenderServiceLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
+    #endregion
 
+    #region Utilities
     private void OpenWindowsSecurityPage(string uri)
     {
         try { Process.Start(new ProcessStartInfo { FileName = uri, UseShellExecute = true }); }
@@ -423,6 +441,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
             await CheckSecurityStatusAsync(_cancellationTokenSource.Token);
         }
     }
+    #endregion
 
     #region Purge Page
     public void Purge()

@@ -229,6 +229,12 @@
     <sys:String x:Key="SecurityPage_QuickScanFailed">Quick scan failed</sys:String>
     <sys:String x:Key="SecurityPage_DefinitionsUpdated">Definitions updated</sys:String>
     <sys:String x:Key="SecurityPage_DefinitionsUpdateFailed">Definitions update failed</sys:String>
+
+    <sys:String x:Key="SecurityPage_CoreIsolation">Core Isolation</sys:String>
+    <sys:String x:Key="SecurityPage_CoreIsolationDesc">Virtualization-based security (Memory Integrity)</sys:String>
+    <sys:String x:Key="SecurityPage_AccountProtection">Account Protection</sys:String>
+    <sys:String x:Key="SecurityPage_AccountProtectionDesc">Windows Hello and sign-in security</sys:String>
+    
     <sys:String x:Key="None">None</sys:String>
     <sys:String x:Key="Enabled">Enabled</sys:String>
     <sys:String x:Key="Disabled">Disabled</sys:String>

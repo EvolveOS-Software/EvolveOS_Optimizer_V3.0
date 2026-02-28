@@ -214,6 +214,12 @@
     <sys:String x:Key="SecurityPage_QuickScanFailed">Snelle scan mislukt</sys:String>
     <sys:String x:Key="SecurityPage_DefinitionsUpdated">Definities bijgewerkt</sys:String>
     <sys:String x:Key="SecurityPage_DefinitionsUpdateFailed">Bijwerken van definities mislukt</sys:String>
+
+    <sys:String x:Key="SecurityPage_CoreIsolation">Kernisolatie</sys:String>
+    <sys:String x:Key="SecurityPage_CoreIsolationDesc">Op virtualisatie gebaseerde beveiliging (Geheugenintegriteit)</sys:String>
+    <sys:String x:Key="SecurityPage_AccountProtection">Accountbeveiliging</sys:String>
+    <sys:String x:Key="SecurityPage_AccountProtectionDesc">Windows Hello en aanmeldingsbeveiliging</sys:String>
+    
     <sys:String x:Key="None">Geen</sys:String>
     <sys:String x:Key="Enabled">Ingeschakeld</sys:String>
     <sys:String x:Key="Disabled">Uitgeschakeld</sys:String>

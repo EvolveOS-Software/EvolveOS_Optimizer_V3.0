@@ -228,6 +228,12 @@
     <sys:String x:Key="SecurityPage_QuickScanFailed">Scansione rapida fallita</sys:String>
     <sys:String x:Key="SecurityPage_DefinitionsUpdated">Definizioni aggiornate</sys:String>
     <sys:String x:Key="SecurityPage_DefinitionsUpdateFailed">Aggiornamento definizioni fallito</sys:String>
+
+    <sys:String x:Key="SecurityPage_CoreIsolation">Isolamento core</sys:String>
+    <sys:String x:Key="SecurityPage_CoreIsolationDesc">Sicurezza basata su virtualizzazione (Integrità memoria)</sys:String>
+    <sys:String x:Key="SecurityPage_AccountProtection">Protezione account</sys:String>
+    <sys:String x:Key="SecurityPage_AccountProtectionDesc">Sicurezza di accesso e Windows Hello</sys:String>
+    
     <sys:String x:Key="None">Nessuno</sys:String>
     <sys:String x:Key="Enabled">Abilitato</sys:String>
     <sys:String x:Key="Disabled">Disabilitato</sys:String>

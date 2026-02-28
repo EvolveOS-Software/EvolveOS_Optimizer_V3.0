@@ -214,6 +214,12 @@
     <sys:String x:Key="SecurityPage_QuickScanFailed">Échec de l'analyse rapide</sys:String>
     <sys:String x:Key="SecurityPage_DefinitionsUpdated">Définitions mises à jour</sys:String>
     <sys:String x:Key="SecurityPage_DefinitionsUpdateFailed">Échec de la mise à jour des définitions</sys:String>
+
+    <sys:String x:Key="SecurityPage_CoreIsolation">Isolation du noyau</sys:String>
+    <sys:String x:Key="SecurityPage_CoreIsolationDesc">Sécurité basée sur la virtualisation (Intégrité de la mémoire)</sys:String>
+    <sys:String x:Key="SecurityPage_AccountProtection">Protection du compte</sys:String>
+    <sys:String x:Key="SecurityPage_AccountProtectionDesc">Windows Hello et sécurité de connexion</sys:String>
+    
     <sys:String x:Key="None">Aucun</sys:String>
     <sys:String x:Key="Enabled">Activé</sys:String>
     <sys:String x:Key="Disabled">Désactivé</sys:String>
