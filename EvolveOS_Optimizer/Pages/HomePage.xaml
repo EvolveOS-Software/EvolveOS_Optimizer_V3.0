@@ -108,7 +108,7 @@
                         <Viewbox Width="90" Height="90" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Path x:Name="LogoPath" Data="M0,0 H45 V45 H0 Z M50,0 H95 V45 H50 Z M0,50 H45 V95 H0 Z M50,50 H95 V95 H50 Z" Stretch="Uniform">
                                 <Path.Fill>
-                                    <ImageBrush ImageSource="{Binding DisplayWallpaper, Mode=OneWay}" Stretch="UniformToFill" />
+                                    <ImageBrush x:Name="WallpaperBrush" Stretch="UniformToFill" />
                                 </Path.Fill>
                             </Path>
                         </Viewbox>

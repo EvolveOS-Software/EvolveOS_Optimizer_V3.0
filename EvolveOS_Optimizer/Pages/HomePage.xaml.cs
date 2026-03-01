@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using EvolveOS_Optimizer.Core.Interfaces;
@@ -22,8 +23,12 @@ namespace EvolveOS_Optimizer.Pages
         #region Fields
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
         private readonly DispatcherQueue _dispatcherQueue;
+
         private DispatcherTimer? _monitoringTimer;
-        private string _lastWallpaperPath = string.Empty;
+        private DispatcherTimer? _wallpaperTimer;
+
+        private string _currentWallpaperPath = string.Empty;
+        private DateTime _currentWallpaperWriteTime = DateTime.MinValue;
 
         private NetworkInterface[]? _activeInterfaces;
         private DateTime _lastInterfaceUpdate = DateTime.MinValue;
@@ -47,7 +52,7 @@ namespace EvolveOS_Optimizer.Pages
             this.InitializeComponent();
             LogoGrid.Translation = new System.Numerics.Vector3(0, 0, 32);
 
-            this.DataContext = new HomePageViewModel();
+            this.DataContext = ViewModel;
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread() ?? throw new InvalidOperationException("DispatcherQueue not found.");
 
             this.Loaded += HomePage_Loaded;
@@ -64,15 +69,13 @@ namespace EvolveOS_Optimizer.Pages
             await CalculateSystemHealthAsync();
             await CalculateSecurityHealthAsync();
 
-            SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
-            SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
-
             var stats = GetCurrentNetworkBytes();
             _lastDownloadBytes = stats.Down;
             _lastUploadBytes = stats.Up;
             _lastUpdateTime = DateTime.Now;
 
             StartMonitoring();
+            StartWallpaperMonitor();
 
             if (HardwareData.Memory.Total == 0)
             {
@@ -91,7 +94,6 @@ namespace EvolveOS_Optimizer.Pages
                     HardwareData.Memory.Total = 16384;
                 }
             }
-            SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
 
             StartShimmer(IpShimmerBrush, "Stop2");
             StartShimmer(LocalIpShimmerBrush, "LocalStop2");
@@ -110,7 +112,12 @@ namespace EvolveOS_Optimizer.Pages
                 _monitoringTimer = null;
             }
 
-            SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
+            if (_wallpaperTimer != null)
+            {
+                _wallpaperTimer.Stop();
+                _wallpaperTimer.Tick -= CheckWallpaperTimer_Tick;
+                _wallpaperTimer = null;
+            }
 
             if (this.DataContext is IDisposable disposableVM)
             {
@@ -121,11 +128,7 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Loaded -= HomePage_Loaded;
             this.Unloaded -= Page_Unloaded;
-
-            //Debug.WriteLine("[HomePage] Memory leaks plugged. Static events unhooked.");
         }
-
-
         #endregion
 
         #region Real-time Monitoring (Hardware & Network)
@@ -150,6 +153,9 @@ namespace EvolveOS_Optimizer.Pages
                 string pCount = await _systemDiagnostics.GetProcessCount();
                 string sCount = await _systemDiagnostics.GetServicesCount();
                 double cpuPercentage = await _systemDiagnostics.GetTotalProcessorUsage();
+
+                await SystemDiagnostics.GetGpuUsage();
+
                 var memInfo = GC.GetGCMemoryInfo();
                 double totalBytes = (double)memInfo.TotalAvailableMemoryBytes;
                 double availBytes = await _systemDiagnostics.GetPhysicalAvailableMemory();
@@ -179,7 +185,6 @@ namespace EvolveOS_Optimizer.Pages
                     if (this.DataContext is HomePageViewModel vm)
                     {
                         vm.RefreshStats(pCount, sCount);
-
                         vm.UpdateDateTime();
 
                         CPULoad.Value = Math.Clamp(cpuPercentage, 0, 100);
@@ -194,13 +199,6 @@ namespace EvolveOS_Optimizer.Pages
 
                         DownLoadText.Text = dlMbps.ToString("F2");
                         UpLoadText.Text = ulMbps.ToString("F2");
-
-                        string currentPath = _systemDiagnostics.GetWallpaperPath();
-                        if (currentPath != _lastWallpaperPath)
-                        {
-                            _lastWallpaperPath = currentPath;
-                            AnimateWallpaperChange(vm);
-                        }
                     }
                 });
             }
@@ -237,8 +235,74 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
-        #region Weather Handlers
+        #region Direct Wallpaper Injection Logic
+        private void StartWallpaperMonitor()
+        {
+            _wallpaperTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+            _wallpaperTimer.Tick += CheckWallpaperTimer_Tick;
+            _wallpaperTimer.Start();
 
+            CheckWallpaperTimer_Tick(null, null);
+        }
+
+        private async void CheckWallpaperTimer_Tick(object? sender, object? e)
+        {
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Windows\Themes\TranscodedWallpaper");
+
+            if (!File.Exists(path)) return;
+
+            try
+            {
+                DateTime writeTime = File.GetLastWriteTime(path);
+
+                if (writeTime > _currentWallpaperWriteTime)
+                {
+                    _currentWallpaperWriteTime = writeTime;
+                    await LoadWallpaperIntoBrushAsync(path);
+                }
+            }
+            catch { }
+        }
+
+        private async Task LoadWallpaperIntoBrushAsync(string path)
+        {
+            try
+            {
+                byte[] imageBytes;
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var ms = new MemoryStream())
+                {
+                    await fs.CopyToAsync(ms);
+                    imageBytes = ms.ToArray();
+                }
+
+                using var memStream = new MemoryStream(imageBytes);
+                var randomAccessStream = memStream.AsRandomAccessStream();
+
+                var bitmap = new BitmapImage();
+                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                await bitmap.SetSourceAsync(randomAccessStream);
+
+                if (WallpaperBrush != null)
+                {
+                    WallpaperBrush.ImageSource = bitmap;
+                }
+
+                var visual = ElementCompositionPreview.GetElementVisual(LogoPath);
+                var fadeAnimation = visual.Compositor.CreateScalarKeyFrameAnimation();
+                fadeAnimation.InsertKeyFrame(0.0f, 0.5f);
+                fadeAnimation.InsertKeyFrame(1.0f, 1.0f);
+                fadeAnimation.Duration = TimeSpan.FromMilliseconds(500);
+                visual.StartAnimation("Opacity", fadeAnimation);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Direct Wallpaper Update Failed] {ex.Message}");
+            }
+        }
+        #endregion
+
+        #region Weather Handlers
         private void LocationButton_Click(object sender, RoutedEventArgs e)
         {
             if (this.DataContext is HomePageViewModel vm)
@@ -247,7 +311,7 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void Calendar_MouseEnter(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void Calendar_MouseEnter(object sender, PointerRoutedEventArgs e)
         {
             if (sender is UIElement element)
             {
@@ -263,7 +327,7 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void Calendar_MouseLeave(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void Calendar_MouseLeave(object sender, PointerRoutedEventArgs e)
         {
             if (sender is UIElement element)
             {
@@ -279,11 +343,11 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void DiskCard_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void DiskCard_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             if (sender is UIElement element)
             {
-                var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(element);
+                var visual = ElementCompositionPreview.GetElementVisual(element);
                 var compositor = visual.Compositor;
 
                 visual.CenterPoint = new System.Numerics.Vector3((float)(element.ActualSize.X / 2), (float)(element.ActualSize.Y / 2), 0f);
@@ -298,11 +362,11 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void DiskCard_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void DiskCard_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             if (sender is UIElement element)
             {
-                var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(element);
+                var visual = ElementCompositionPreview.GetElementVisual(element);
                 var compositor = visual.Compositor;
 
                 var springAnimation = compositor.CreateSpringVector3Animation();
@@ -333,12 +397,11 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Registry & Location Logic
-
         private void SaveLocationToRegistry(string location)
         {
             try
             {
-                using var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(RegistryPath);
+                using var key = Registry.CurrentUser.CreateSubKey(RegistryPath);
                 key.SetValue(RegistryValueName, location);
             }
             catch (Exception ex) { Debug.WriteLine($"[Registry] Save Error: {ex.Message}"); }
@@ -364,7 +427,7 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void CustomLocationBox_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        private void CustomLocationBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
@@ -377,12 +440,9 @@ namespace EvolveOS_Optimizer.Pages
             if (ViewModel != null && !string.IsNullOrWhiteSpace(location))
             {
                 SaveLocationToRegistry(location);
-
                 ViewModel.WeatherLocation = location;
             }
-
             LocationFlyout.Hide();
-
             CustomLocationBox.Text = string.Empty;
         }
 
@@ -411,7 +471,6 @@ namespace EvolveOS_Optimizer.Pages
                 try
                 {
                     await ViewModel.FetchWeatherAsync(ViewModel.WeatherLocation, forceRefresh: true);
-
                     await Task.Delay(500);
                 }
                 catch (Exception ex)
@@ -426,11 +485,9 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
-
         #endregion
 
         #region Dashboard Customization (Drag, Drop, Visibility)
-
         private void LoadDashboardLayout()
         {
             ToggleNetwork.IsOn = SettingsEngine.Dashboard_CardNetwork;
@@ -565,7 +622,6 @@ namespace EvolveOS_Optimizer.Pages
         private void DashCard_DropCompleted(UIElement sender, DropCompletedEventArgs args)
         {
             sender.Opacity = 1.0;
-
             _draggedCard = null;
         }
 
@@ -609,7 +665,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(LocalIpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
         }
 
-        private void ResetDashboard_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
             SettingsEngine.DashboardCardOrder = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk";
             SettingsEngine.Dashboard_CardNetwork = true;
@@ -638,7 +694,6 @@ namespace EvolveOS_Optimizer.Pages
             if (sender is Border card)
             {
                 card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorSecondaryBrush"];
-
                 FactoryAnimation.AnimateCardScale(card, 1.01);
             }
         }
@@ -648,7 +703,6 @@ namespace EvolveOS_Optimizer.Pages
             if (sender is Border card)
             {
                 card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"];
-
                 FactoryAnimation.AnimateCardScale(card, 1.0);
             }
         }
@@ -658,7 +712,6 @@ namespace EvolveOS_Optimizer.Pages
             if (sender is Border card)
             {
                 card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorSecondaryBrush"];
-
                 FactoryAnimation.AnimateCardScale(card, 1.01);
             }
         }
@@ -679,7 +732,6 @@ namespace EvolveOS_Optimizer.Pages
                 FactoryAnimation.AnimateCardScale(card, 0.98);
             }
         }
-
         #endregion
 
         #region DNS Card
@@ -756,7 +808,7 @@ namespace EvolveOS_Optimizer.Pages
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Dashboard DNS] Error: {ex.Message}");
+                Debug.WriteLine($"[Dashboard DNS] Error: {ex.Message}");
                 statusLabel.Text = "Service action failed.";
             }
             finally
@@ -766,7 +818,7 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private async void BtnDebug_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private async void BtnDebug_Click(object sender, RoutedEventArgs e)
         {
             BtnDebug.IsEnabled = false;
 
@@ -784,7 +836,7 @@ namespace EvolveOS_Optimizer.Pages
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Dashboard DNS Debug] Error: {ex.Message}");
+                Debug.WriteLine($"[Dashboard DNS Debug] Error: {ex.Message}");
             }
             finally
             {
@@ -850,7 +902,7 @@ namespace EvolveOS_Optimizer.Pages
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
+                Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
                 TxtHealthStatus.Text = "Scan failed.";
             }
             finally
@@ -990,18 +1042,6 @@ namespace EvolveOS_Optimizer.Pages
             catch { }
         }
 
-        private void AnimateWallpaperChange(HomePageViewModel vm)
-        {
-            var visual = ElementCompositionPreview.GetElementVisual(LogoPath);
-            var compositor = visual.Compositor;
-            var fadeAnimation = compositor.CreateScalarKeyFrameAnimation();
-            fadeAnimation.InsertKeyFrame(0.0f, 0.0f);
-            fadeAnimation.InsertKeyFrame(1.0f, 1.0f);
-            fadeAnimation.Duration = TimeSpan.FromMilliseconds(500);
-            vm.RefreshWallpaper();
-            visual.StartAnimation("Opacity", fadeAnimation);
-        }
-
         private void HandleCopyingData_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             string textToCopy = (sender is Run runText) ? runText.Text : (sender is TextBlock tb) ? tb.Text : string.Empty;
@@ -1012,18 +1052,10 @@ namespace EvolveOS_Optimizer.Pages
                 Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
             }
         }
-
-        private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
-        {
-            if (e.Category == UserPreferenceCategory.Desktop || e.Category == UserPreferenceCategory.General)
-            {
-                _dispatcherQueue.TryEnqueue(() => (this.DataContext as HomePageViewModel)?.RefreshWallpaper());
-            }
-        }
         #endregion
 
         #region Privacy & Masking Logic
-        private void BtnVision_PreviewKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        private void BtnVision_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == Windows.System.VirtualKey.Space || e.Key == Windows.System.VirtualKey.Enter)
             {
@@ -1055,7 +1087,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (element == null) return;
 
-            var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(element);
+            var visual = ElementCompositionPreview.GetElementVisual(element);
             var compositor = visual.Compositor;
 
             var animation = compositor.CreateScalarKeyFrameAnimation();
@@ -1115,12 +1147,17 @@ namespace EvolveOS_Optimizer.Pages
                 _monitoringTimer = null;
             }
 
+            if (_wallpaperTimer != null)
+            {
+                _wallpaperTimer.Stop();
+                _wallpaperTimer.Tick -= CheckWallpaperTimer_Tick;
+                _wallpaperTimer = null;
+            }
+
             if (DashboardPanel != null)
             {
                 DashboardPanel.Children.Clear();
             }
-
-            SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
 
             HardwareData.ClearResources();
 
@@ -1140,10 +1177,6 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Loaded -= HomePage_Loaded;
             this.Unloaded -= Page_Unloaded;
-
-            // CLEAR LOCAL COLLECTIONS
-            // Lists or Observables, clear to drop refs
-            // _someLocalList?.Clear();
 
             Debug.WriteLine("[HomePage] Purge complete. 0 remaining references.");
         }

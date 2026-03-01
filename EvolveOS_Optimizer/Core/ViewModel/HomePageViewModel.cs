@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
@@ -35,7 +36,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private string _currentDate = DateTime.Now.ToString("dddd, MMMM d");
         private double _downloadSpeed;
         private double _uploadSpeed;
-        private ImageSource? _displayWallpaper;
         #endregion
 
         #region Properties
@@ -159,21 +159,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             get => _uploadSpeed;
             set { _uploadSpeed = value; OnPropertyChanged(); }
-        }
-
-        public ImageSource? DisplayWallpaper
-        {
-            get
-            {
-                if (_displayWallpaper == null)
-                    _displayWallpaper = _monitoringService.GetWallpaperSource();
-                return _displayWallpaper;
-            }
-            set
-            {
-                _displayWallpaper = value;
-                OnPropertyChanged();
-            }
         }
 
         public class IPWrapper
@@ -340,6 +325,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
 
             OnPropertyChanged(nameof(IpVisibility));
+            OnPropertyChanged(nameof(GpuUsageDisplay));
+            OnPropertyChanged(nameof(GpuUsagePercentage));
+
             OnPropertyChanged("Item[]");
         }
 
@@ -368,21 +356,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 Debug.WriteLine($"[Disk Data Error] Failed to load disk drives: {ex.Message}");
             }
-        }
-
-        public void RefreshWallpaper()
-        {
-            var wallpaperPath = _monitoringService.GetWallpaperPath();
-            if (string.IsNullOrEmpty(wallpaperPath)) return;
-
-            _dispatcherQueue.TryEnqueue(() =>
-            {
-                var bitmap = new BitmapImage();
-                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                bitmap.UriSource = new Uri(wallpaperPath);
-
-                DisplayWallpaper = bitmap;
-            });
         }
         #endregion
 
@@ -499,14 +472,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private async void StatsTimer_Tick(object? sender, object? e)
         {
-            await SystemDiagnostics.GetGpuUsage();
+            try
+            {
+                await SystemDiagnostics.GetGpuUsage();
 
-            RefreshStats(HardwareData.RunningProcessesCount, HardwareData.RunningServicesCount);
+                RefreshStats(HardwareData.RunningProcessesCount, HardwareData.RunningServicesCount);
 
-            UpdateDateTime();
-
-            OnPropertyChanged(nameof(GpuUsageDisplay));
-            OnPropertyChanged(nameof(GpuUsagePercentage));
+                UpdateDateTime();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[StatsTimer Error] {ex.Message}");
+            }
         }
 
         #endregion
@@ -539,9 +516,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _cts.Dispose();
                 }
                 catch (ObjectDisposedException) { }
-
-                DisplayWallpaper = null;
-                _displayWallpaper = null;
 
                 if (_displayData != null)
                 {
