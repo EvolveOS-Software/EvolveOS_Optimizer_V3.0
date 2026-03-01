@@ -37,7 +37,7 @@
         </Storyboard>
     </Page.Resources>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Padding="4,-38,24,0">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Padding="4,0,24,0">
         <Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Spacing="8" Margin="24,34,0,0" Canvas.ZIndex="100">
                 <Button x:Name="BtnDownloadInstall" Background="Transparent" BorderThickness="0" Padding="8" Click="BtnDownloadInstall_Click">
@@ -55,11 +55,11 @@
                 </Button>
             </StackPanel>
 
-            <TextBlock Text="Service Status" Margin="0,30,0,0" FontSize="22" FontFamily="{ThemeResource Jura-SemiBold}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Service Status" Margin="0,0,0,0" FontSize="22" FontFamily="{ThemeResource Jura-SemiBold}" HorizontalAlignment="Center"/>
 
             <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Spacing="48">
 
-                <StackPanel Spacing="14" Margin="0,18,0,-55" HorizontalAlignment="Center" MaxWidth="1000">
+                <StackPanel Spacing="14" Margin="0,-16,0,-55" HorizontalAlignment="Center" MaxWidth="1000">
 
                     <StackPanel HorizontalAlignment="Center" Spacing="12">
 
