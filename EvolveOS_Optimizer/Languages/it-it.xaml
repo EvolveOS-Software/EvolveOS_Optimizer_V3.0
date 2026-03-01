@@ -1141,6 +1141,9 @@
     <sys:String x:Key="systray_run_startup">Esegui all'avvio</sys:String>
     <sys:String x:Key="systray_close_window">Esci da EvolveOS</sys:String>
     <sys:String x:Key="systray_click_show">Fai doppio clic per aprire EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="systray_security">Centro di sicurezza</sys:String>
+    <sys:String x:Key="systray_maintenance">Manutenzione del sistema</sys:String>
+    <sys:String x:Key="systray_dns">Cambia DNS</sys:String>
     <!-- endregion System TrayIcon -->
 
     <!-- region Run On StartUp -->

@@ -67,6 +67,37 @@
                         </MenuFlyoutItem.Template>
                     </MenuFlyoutItem>
 
+                    <MenuFlyoutSeparator Opacity="0.5"/>
+
+                    <MenuFlyoutItem x:Name="TrayMenu_Security"
+                                    Text="{helpers:ResourceString Key=systray_security}"
+                                    Command="{Binding OpenSecurityCommand}"
+                                    FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE773;" FontSize="14" Margin="0,0,0,2" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutItem x:Name="TrayMenu_Maintenance"
+                                    Text="{helpers:ResourceString Key=systray_maintenance}"
+                                    Command="{Binding OpenMaintenanceCommand}"
+                                    FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE9D9;" FontSize="14" Margin="0,0,0,2" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutItem x:Name="TrayMenu_DNS"
+                                    Text="{helpers:ResourceString Key=systray_dns}"
+                                    Command="{Binding OpenDnsCommand}"
+                                    FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE774;" FontSize="14" Margin="0,0,0,2" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    
+                    <MenuFlyoutSeparator Opacity="0.5"/>
+
                     <MenuFlyoutItem x:Name="TrayMenu_Show"
                                     Text="{helpers:ResourceString Key=systray_show_window}"
                                     Command="{Binding MaximizeCommand}"

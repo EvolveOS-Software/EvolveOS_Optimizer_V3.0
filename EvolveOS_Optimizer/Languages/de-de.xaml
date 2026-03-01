@@ -1141,6 +1141,9 @@
     <sys:String x:Key="systray_run_startup">Beim Systemstart ausführen</sys:String>
     <sys:String x:Key="systray_close_window">EvolveOS beenden</sys:String>
     <sys:String x:Key="systray_click_show">Doppelklicken, um den EvolveOS Optimizer zu öffnen</sys:String>
+    <sys:String x:Key="systray_security">Sicherheitscenter</sys:String>
+    <sys:String x:Key="systray_maintenance">Systemwartung</sys:String>
+    <sys:String x:Key="systray_dns">DNS-Wechsler</sys:String>
     <!-- endregion System TrayIcon -->
 
     <!-- region Run On StartUp -->

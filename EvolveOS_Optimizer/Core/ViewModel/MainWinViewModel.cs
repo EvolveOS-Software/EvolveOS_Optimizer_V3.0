@@ -180,6 +180,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public ICommand CloseCommand { get; }
         public ICommand ToggleWindowVisibilityCommand { get; }
         public ICommand ToggleRunOnStartupCommand { get; }
+        public ICommand OpenSecurityCommand { get; }
+        public ICommand OpenMaintenanceCommand { get; }
+        public ICommand OpenDnsCommand { get; }
         #endregion
 
         #region Constructor
@@ -190,6 +193,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             MaximizeCommand = new RelayCommand<object>(_ => ExecuteMaximize());
             MinimizeCommand = new RelayCommand<object>(_ => ExecuteMinimize());
             CloseCommand = new RelayCommand<object>(_ => ExecuteClose());
+            OpenSecurityCommand = new RelayCommand<object>(_ => OpenPageFromTray("Security"));
+            OpenMaintenanceCommand = new RelayCommand<object>(_ => OpenPageFromTray("Maintenance"));
+            OpenDnsCommand = new RelayCommand<object>(_ => OpenPageFromTray("Utilities")); // DNS is inside Utilities
             ToggleWindowVisibilityCommand = new RelayCommand<object>(_ => ExecuteToggleVisibility());
 
             LocalizationService.Instance.PropertyChanged += OnLocalizationPropertyChanged;
@@ -268,6 +274,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 ExecuteMaximize();
             }
+        }
+
+        private void OpenPageFromTray(string tag)
+        {
+            ExecuteMaximize();
+            ExecuteNavigate(tag);
         }
 
         private void ExecuteClose()
