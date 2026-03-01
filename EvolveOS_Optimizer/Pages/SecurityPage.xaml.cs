@@ -67,6 +67,8 @@ public sealed partial class SecurityPage : Page, IPurgeable
             await ScrollToElementHelper.ScrollToElementAsync(this, _pendingScrollTarget);
             _pendingScrollTarget = null;
         }
+
+        LastRefreshedText.Text = string.Empty; ;
     }
     #endregion
 

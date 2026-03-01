@@ -59,14 +59,14 @@
                            FontFamily="{StaticResource Jura}"
                            FontSize="28"
                            FontWeight="Bold" 
-                           Foreground="{ThemeResource MyDynamicAccentBrush}"
                            HorizontalAlignment="Center" Margin="0,0,0,4"/>
 
                 <!-- <Button x:Name="TestToastButton"
                         Content="Test Toast"
                         Click="TestToastButton_Click" /> -->
 
-                <Button x:Name="RefreshButton" 
+                <Button x:Name="RefreshButton"
+                        FontFamily="{StaticResource Jura}"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         Click="RefreshButton_Click">
@@ -79,6 +79,7 @@
                                       FontSize="14"/>
                             
                             <TextBlock x:Uid="MaintenancePage_RefreshButton"
+                                       FontFamily="{StaticResource Jura}"
                                        Text="Refresh"/>
                             
                         </StackPanel>
@@ -105,10 +106,11 @@
 
             <TextBlock x:Name="LastRefreshedText" 
                        HorizontalAlignment="Center" 
-                       Margin="0,0,0,10"
+                       Margin="0,0,0,20"
                        Opacity="0.7"
+                       FontFamily="{StaticResource Jura}"
                        FontSize="12"
-                       Visibility="Collapsed"/>
+                       Visibility="Visible"/>
 
             <Grid ColumnSpacing="12">
                 <Grid.ColumnDefinitions>

@@ -744,7 +744,7 @@ namespace EvolveOS_Optimizer.Pages
 
             MaintenanceStatusLoadingRing.Visibility = Visibility.Visible;
             MaintenanceStatusImage.Visibility = Visibility.Collapsed;
-            LastRefreshedText.Visibility = Visibility.Collapsed;
+            LastRefreshedText.Text = string.Empty; ;
             RefreshButton.IsEnabled = false;
 
             if (_sharedViewModel.RefreshCleanupSpaceCommand.CanExecute(null))
