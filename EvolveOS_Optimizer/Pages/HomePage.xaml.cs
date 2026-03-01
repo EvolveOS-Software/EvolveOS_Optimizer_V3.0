@@ -3,6 +3,7 @@ using System.Reflection;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Animation;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -632,10 +633,57 @@ namespace EvolveOS_Optimizer.Pages
             LoadDashboardLayout();
         }
 
+        private void DashCard_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Border card)
+            {
+                card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorSecondaryBrush"];
+
+                FactoryAnimation.AnimateCardScale(card, 1.01);
+            }
+        }
+
+        private void DashCard_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Border card)
+            {
+                card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"];
+
+                FactoryAnimation.AnimateCardScale(card, 1.0);
+            }
+        }
+
+        private void DashCard_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Border card)
+            {
+                card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorSecondaryBrush"];
+
+                FactoryAnimation.AnimateCardScale(card, 1.01);
+            }
+        }
+
+        private void DashCard_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Border card)
+            {
+                if (Application.Current.Resources.TryGetValue("CardBackgroundFillColorTertiaryBrush", out object tertiaryBrush))
+                {
+                    card.Background = (Brush)tertiaryBrush;
+                }
+                else if (Application.Current.Resources.TryGetValue("CardBackgroundFillColorSecondaryBrush", out object secondaryBrush))
+                {
+                    card.Background = (Brush)secondaryBrush;
+                }
+
+                FactoryAnimation.AnimateCardScale(card, 0.98);
+            }
+        }
+
         #endregion
 
         #region DNS Card
-        private void BtnOpenDnsPage_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void BtnOpenDnsPage_Click(object sender, RoutedEventArgs e)
         {
             if (MainWindow.Instance != null)
             {
