@@ -6,6 +6,7 @@
     xmlns:local="using:EvolveOS_Optimizer"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:conv="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:vm="using:EvolveOS_Optimizer.Core.ViewModel"
     xmlns:tb="using:H.NotifyIcon"
@@ -16,6 +17,8 @@
 
     <Grid x:Name="RootGrid" x:FieldModifier="public" Background="Transparent">
         <Grid.Resources>
+            <conv:UserTypeToColorConverter x:Key="UserTypeToColorConverter"/>
+            
             <Storyboard x:Name="ShowDimOverlay">
                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="WindowDimOverlay" Storyboard.TargetProperty="Visibility">
                     <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
@@ -72,22 +75,14 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+
                 <Grid Width="30" Height="30">
-                    <Border CornerRadius="15"
-                            Width="30"
-                            Height="30"
-                            BorderBrush="{StaticResource MyDynamicAccentBrush}"
-                            BorderThickness="1">
+                    <Border CornerRadius="15" Width="30" Height="30" BorderBrush="{StaticResource MyDynamicAccentBrush}" BorderThickness="1">
                         <Border.Background>
-                            <ImageBrush ImageSource="{Binding DisplayProfileAvatar, Mode=OneWay}"
-                                        Stretch="UniformToFill"/>
+                            <ImageBrush x:Name="ProfileImage" ImageSource="{Binding DisplayProfileAvatar, Mode=OneWay}" Stretch="UniformToFill"/>
                         </Border.Background>
                     </Border>
-
-                    <Ellipse Stroke="{StaticResource MyDynamicAccentBrush}" 
-                             StrokeThickness="0.5"
-                             Opacity="0.5"
-                             Margin="-2"/>
+                    <Ellipse Stroke="{StaticResource MyDynamicAccentBrush}" StrokeThickness="0.5" Opacity="0.5" Margin="-2"/>
                 </Grid>
 
                 <TextBlock x:Name="DisplayProfileName"
@@ -98,8 +93,43 @@
                            Foreground="{StaticResource MyDynamicAccentBrush}"
                            VerticalAlignment="Center"
                            Margin="10,0,0,0"/>
-            </StackPanel>
 
+                <Button Background="Transparent" 
+                        BorderThickness="0" 
+                        Padding="0" 
+                        Margin="10,0,0,0" 
+                        VerticalAlignment="Center"
+                        CornerRadius="4"
+                        IsTabStop="False">
+
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="Logout" Click="LogoutMenu_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xE7E8;"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+
+                    <Border Background="{Binding AssignedUserType, Converter={StaticResource UserTypeToColorConverter}}" 
+                            Padding="6,3" 
+                            CornerRadius="4" 
+                            BorderThickness="1"
+                            BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <FontIcon Glyph="&#xE77B;" FontSize="10" Foreground="White" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding AssignedUserType}" 
+                                       FontSize="10" 
+                                       FontWeight="Bold" 
+                                       Foreground="White" 
+                                       VerticalAlignment="Center"/>
+                            <FontIcon Glyph="&#xE70D;" FontSize="8" Foreground="White" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Button>
+
+            </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2">
@@ -136,6 +166,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Home"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Home'), Mode=OneWay}"
                                      IsChecked="True">
                             <FontIcon Glyph="&#xE80F;" FontSize="18"/>
@@ -144,6 +175,7 @@
                         <RadioButton x:Name="BtnNavSecurity" Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Security"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Security'),Mode=OneWay}">
                             <FontIcon Glyph="&#xEA18;" FontSize="18"/>
                         </RadioButton>
@@ -151,6 +183,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Confidentiality"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Privacy'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEE3F;" FontSize="18"/>
                         </RadioButton>
@@ -158,6 +191,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="GroupPolicy"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_GroupPolicy'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE9D5;" FontSize="18"/>
                         </RadioButton>
@@ -165,6 +199,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Interface"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Interface'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE790;" FontSize="18"/>
                         </RadioButton>
@@ -172,6 +207,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="ServiceTweaks"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Services'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEC05;" FontSize="18"/>
                         </RadioButton>
@@ -179,6 +215,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="SystemManager"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_System_Manager'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE9D9;" FontSize="18"/>
                         </RadioButton>
@@ -186,6 +223,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Software"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Software_Center'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE74C;" FontSize="18"/>
                         </RadioButton>
@@ -193,6 +231,7 @@
                         <RadioButton x:Name="BtnNavUtilities" Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Utilities"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Utilities'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEC7A;" FontSize="18"/>
                         </RadioButton>
@@ -200,6 +239,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Scripts"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Scripts'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEA86;" FontSize="18"/>
                         </RadioButton>
@@ -207,6 +247,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="System"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_System'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEDA2;" FontSize="18"/>
                         </RadioButton>
@@ -214,6 +255,7 @@
                         <RadioButton x:Name="BtnNavMaintenance" Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Maintenance"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Maintenance'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE772;" FontSize="18"/>
                         </RadioButton>
@@ -221,6 +263,7 @@
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Settings"
+                                     IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Settings'), Mode=OneWay}">
                             <SymbolIcon Symbol="Setting" />
                         </RadioButton>

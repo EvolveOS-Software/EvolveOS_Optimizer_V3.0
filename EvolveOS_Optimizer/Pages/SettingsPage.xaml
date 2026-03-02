@@ -89,7 +89,7 @@
                                         </DoubleAnimation>
                                     </Storyboard>
                                 </StackPanel.Resources>
-                                
+
                                 <MenuFlyoutSeparator/>
 
                                 <StackPanel Spacing="4">
@@ -349,6 +349,77 @@
                       OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
                       OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
                     </Grid>
+                </Border>
+            </StackPanel>
+
+            <StackPanel x:Name="SecurityPrivacy" Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="Security &amp; Privacy" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="16">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="{x:Bind GetText('lbl_autologin_header'), Mode=OneWay, FallbackValue='Enable Auto-Login'}" FontWeight="SemiBold"/>
+                                <TextBlock Text="Bypass the login screen and encrypt your session securely." 
+                                           Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+                            <ToggleSwitch x:Name="CbEnableAutoLogin" Grid.Column="1" 
+                                          Toggled="BtnAutoLogin_Checked" 
+                                          OnContent="Enabled" OffContent="Disabled"/>
+                        </Grid>
+
+                        <StackPanel x:Name="AutoLoginSettings" Visibility="Collapsed" Spacing="12" Margin="0,8,0,0">
+                            <MenuFlyoutSeparator/>
+
+                            <StackPanel Spacing="4">
+                                <Grid>
+                                    <TextBlock Text="{x:Bind GetText('lbl_session_duration'), Mode=OneWay, FallbackValue='Session Duration'}" 
+                                               Style="{StaticResource CaptionTextBlockStyle}"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                                        <TextBlock Text="{x:Bind SliderSessionHours.Value, Mode=OneWay}" 
+                                                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemAccentColor}" FontWeight="Bold"/>
+                                        <TextBlock Text="{x:Bind GetText('lbl_unit_hours'), Mode=OneWay, FallbackValue='Hours'}" 
+                                                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemAccentColor}" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Slider x:Name="SliderSessionHours" 
+                                        Minimum="1" Maximum="8" Value="4" 
+                                        StepFrequency="1" TickFrequency="1" TickPlacement="Outside"
+                                        ValueChanged="SliderSessionHours_ValueChanged"/>
+                            </StackPanel>
+
+                            <Border Background="{ThemeResource SystemControlBackgroundBaseLowBrush}" CornerRadius="4" Padding="12,8">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE823;" Foreground="{ThemeResource SystemAccentColor}" FontSize="16"/>
+                                    <TextBlock x:Name="LblSessionExpiry" 
+                                               Text="{x:Bind GetText('lbl_session_expiry_default'), Mode=OneWay, FallbackValue='Session will expire at: --:--'}" 
+                                               FontSize="12" VerticalAlignment="Center" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <MenuFlyoutSeparator/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="{x:Bind GetText('btgl_developer_mode_main'), Mode=OneWay, FallbackValue='Developer Mode'}" FontWeight="SemiBold"/>
+                                <TextBlock Text="Enable advanced tools and deep system configurations." Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+
+                            <ToggleSwitch x:Name="BtnDeveloperMode" Grid.Column="1" Toggled="BtnDeveloperMode_ChangedState" OnContent="Enabled" OffContent="Disabled"/>
+                        </Grid>
+
+                    </StackPanel>
                 </Border>
             </StackPanel>
 

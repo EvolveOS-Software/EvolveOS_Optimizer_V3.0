@@ -10,12 +10,20 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
 using Microsoft.Windows.AppNotifications;
+using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer
 {
     public partial class App : Application
     {
         public const string Name = "EvolveOS Optimizer";
+
+        private const string PlainDb = "EvolveOS_OptimizerDb.mdf";
+        private const string SecureDb = "EvolveOS_OptimizerDb.dat";
+        private const string PlainLdf = "EvolveOS_OptimizerDb_log.ldf";
+        private const string SecureLdf = "EvolveOS_OptimizerDb_log.dat";
+
+        private static bool _isCleanupRunning = false;
 
         public Window? MainWindow { get; set; }
         public static bool IsStartedHidden { get; private set; }
@@ -35,9 +43,11 @@ namespace EvolveOS_Optimizer
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
 
             UnhandledException += OnUnhandledException;
+
+            AppDomain.CurrentDomain.ProcessExit += (s, ev) => HandleCleanup();
         }
 
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             string aumid = "EvolveOS.Optimizer.App";
             SetCurrentProcessAppId(aumid);
@@ -228,7 +238,7 @@ namespace EvolveOS_Optimizer
 
                 if (!success)
                 {
-                    ShowNotification("Hotkey Warning", $"Hotkey {hotkey} is in use by another app.", InfoBarSeverity.Warning, 5000);
+                    ShowNotification("Hotkey Warning", $"Hotkey {hotkey} is in use by another app.", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Warning, 5000);
                 }
 
                 return success;
@@ -263,7 +273,7 @@ namespace EvolveOS_Optimizer
             e.Handled = true;
         }
 
-        public static void ShowNotification(string title, string message, InfoBarSeverity severity, int duration)
+        public static void ShowNotification(string title, string message, Microsoft.UI.Xaml.Controls.InfoBarSeverity severity, int duration)
         {
             NotificationManager.Show(title, message)
                 .WithSeverity(severity)
@@ -377,12 +387,113 @@ namespace EvolveOS_Optimizer
             ExitApp();
         }
 
-        public static void ExitApp()
+        private static void HandleCleanup()
         {
+            if (_isCleanupRunning)
+            {
+                return;
+            }
+
+            _isCleanupRunning = true;
+
             try
             {
-                Debug.WriteLine("[App] Shutting down...");
+                bool hasActiveAutoLogin = TokenManager.TokenExists();
 
+                if (LocalMachineSettingsEngine.KeepDevModeOnExit || hasActiveAutoLogin)
+                {
+                    // Respect the explicit session choice or the auto-login state
+                }
+                else
+                {
+                    LocalMachineSettingsEngine.IsDeveloperMode = false;
+                }
+            }
+            catch { }
+
+            try
+            {
+                SqlConnectionHelper.ReleaseDatabase();
+            }
+            catch { }
+
+            try
+            {
+                var stopInfo = new ProcessStartInfo("sqllocaldb", "stop MSSQLLocalDB -i")
+                {
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
+                Process.Start(stopInfo)?.WaitForExit();
+
+                Thread.Sleep(500);
+            }
+            catch { /* Log error */ }
+
+            // Note: _systemDiagnostics is handled correctly via IDisposable in LoadingWindow
+            // When implemented the static BackupScheduler in this project, uncomment the next line:
+            // BackupScheduler?.StopScheduler(); 
+
+            string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? AppContext.BaseDirectory;
+            string baseDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
+
+            string mdfPath = Path.Combine(baseDir, PlainDb);
+            string ldfPath = Path.Combine(baseDir, PlainLdf);
+            string securePath = Path.Combine(baseDir, SecureDb);
+            string secureLdfPath = Path.Combine(baseDir, SecureLdf);
+
+            if (!File.Exists(mdfPath))
+            {
+                Debug.WriteLine("[App] No MDF file found. Skipping encryption.");
+                ReleaseMemory();
+                return;
+            }
+
+            bool isReady = false;
+            for (int i = 0; i < 20; i++)
+            {
+                if (!DatabaseSecurityService.IsFileLocked(mdfPath))
+                {
+                    isReady = true;
+                    break;
+                }
+                Thread.Sleep(500);
+            }
+
+            if (isReady)
+            {
+                try
+                {
+                    DatabaseSecurityService.EncryptDatabase(mdfPath, securePath);
+
+                    if (File.Exists(ldfPath))
+                    {
+                        DatabaseSecurityService.EncryptDatabase(ldfPath, secureLdfPath);
+                    }
+
+                    if (File.Exists(securePath))
+                    {
+                        File.Delete(mdfPath);
+                    }
+                    if (File.Exists(secureLdfPath))
+                    {
+                        File.Delete(ldfPath);
+                    }
+
+                    Debug.WriteLine("[App] Database successfully encrypted and plain files deleted.");
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogWritingFile(ex, "App_HandleCleanup_Fail");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("[App] Timeout waiting for SQL Server to release the database files.");
+            }
+
+            try
+            {
                 _hotkeyService?.Dispose();
 
                 if (_mutex != null)
@@ -390,8 +501,19 @@ namespace EvolveOS_Optimizer
                     _mutex.ReleaseMutex();
                     _mutex.Dispose();
                 }
+            }
+            catch { }
 
-                ReleaseMemory();
+            ReleaseMemory();
+        }
+
+        public static void ExitApp()
+        {
+            try
+            {
+                Debug.WriteLine("[App] Shutting down...");
+
+                HandleCleanup();
 
                 Environment.Exit(0);
             }

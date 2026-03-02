@@ -3,13 +3,14 @@ using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
-using H.NotifyIcon.Core;
+using EvolveOS_Optimizer.Views;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
@@ -31,6 +32,9 @@ namespace EvolveOS_Optimizer
         private AppWindow? _appWindow;
         private IntPtr _hWnd;
 
+        private DispatcherTimer? _sessionTimer;
+        private DateTime _sessionExpiryTime;
+
         public string GetText(string key) => LocalizationService.Instance[key];
 
         public MainWindow()
@@ -39,6 +43,9 @@ namespace EvolveOS_Optimizer
 
             this.InitializeComponent();
             this.Title = "EvolveOS Optimizer";
+
+            DisplayProfileName.Text = UserSession.Username;
+            ProfileImage.ImageSource = UserSession.ProfileImage;
 
             _permanentFrameReference = this.ContentFrame;
 
@@ -178,9 +185,19 @@ namespace EvolveOS_Optimizer
         {
             SetupNavigationObserver();
 
+            if (!string.IsNullOrEmpty(UserSession.Username))
+            {
+                await InitializeUserPermissionsAsync(UserSession.Username);
+            }
+
             if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
             {
                 this.DispatcherQueue.TryEnqueue(() => AnimateUpdateBanner(true));
+            }
+
+            if (AuthSessionManager.IsSessionValid(out string? sessionUser, out DateTime expiry))
+            {
+                StartLiveSessionTimer(expiry);
             }
         }
 
@@ -216,6 +233,89 @@ namespace EvolveOS_Optimizer
                         vm.MinimizeCommand.Execute(null);
                     }
                 }
+            }
+        }
+
+        private void LogoutMenu_Click(object sender, RoutedEventArgs e)
+        {
+            UserSession.IsAuthenticated = false;
+            UserSession.Username = string.Empty;
+            UserSession.UserType = string.Empty;
+            UserSession.ProfileImage = null;
+
+            TokenManager.DeleteToken();
+
+            SettingsEngine.SelfReboot();
+        }
+        #endregion
+
+        #region Global Auto-Login Session Monitoring
+        public void StartLiveSessionTimer(DateTime expiry)
+        {
+            _sessionExpiryTime = expiry;
+
+            if (_sessionTimer == null)
+            {
+                _sessionTimer = new DispatcherTimer();
+                _sessionTimer.Interval = TimeSpan.FromSeconds(1);
+                _sessionTimer.Tick += (s, e) => CheckSessionExpiry();
+            }
+
+            _sessionTimer.Start();
+            Debug.WriteLine($"[Session] Global monitor started. Expires at: {_sessionExpiryTime}");
+        }
+
+        public void StopLiveSessionTimer()
+        {
+            _sessionTimer?.Stop();
+            _sessionTimer = null;
+            Debug.WriteLine("[Session] Global monitor stopped.");
+        }
+
+        private void CheckSessionExpiry()
+        {
+            if ((_sessionExpiryTime - DateTime.Now).TotalSeconds <= 0)
+            {
+                StopLiveSessionTimer();
+
+                if (LocalMachineSettingsEngine.IsDeveloperMode)
+                {
+                    string devMsg = ResourceString.GetString("msgbox_dev_mode_logout_prompt") ?? "Developer Mode is still active. Would you like to disable it before logging out?";
+                    string devTitle = ResourceString.GetString("msgbox_dev_mode_active_title") ?? "Developer Mode Active";
+
+                    var devResult = Win32Helper.MessageBox(_hWnd, devMsg, devTitle, Win32Helper.MB_YESNO | Win32Helper.MB_ICONWARNING);
+
+                    if (devResult == Win32Helper.IDYES)
+                    {
+                        LocalMachineSettingsEngine.IsDeveloperMode = false;
+                    }
+                    else
+                    {
+                        LocalMachineSettingsEngine.KeepDevModeOnExit = true;
+                    }
+                }
+
+                UserSession.Clear();
+                TokenManager.DeleteToken();
+
+                string msg = ResourceString.GetString("msg_session_expired_login") ?? "Your session has expired. Please log in again.";
+                NativeToastHelper.SendNativeToast("Session Expired", msg);
+
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    var weatherService = new WeatherService();
+                    var loginWin = new Views.UserLoginWindow(weatherService, msg);
+
+                    if (App.Current.MainWindow != null)
+                    {
+                        App.Current.MainWindow.Close();
+                    }
+
+                    App.Current.MainWindow = loginWin;
+                    loginWin.Activate();
+
+                    this.Close();
+                });
             }
         }
         #endregion
@@ -370,7 +470,7 @@ namespace EvolveOS_Optimizer
                 byte g = (byte)uint.Parse(hexColor.Substring(4, 2), NumberStyles.HexNumber);
                 byte b = (byte)uint.Parse(hexColor.Substring(6, 2), NumberStyles.HexNumber);
 
-                Color color = Color.FromArgb(a, r, g, b);
+                Color color = Microsoft.UI.ColorHelper.FromArgb(a, r, g, b);
 
                 if (App.Current.Resources.TryGetValue("MyDynamicAccentBrush", out object brushObj)
                     && brushObj is SolidColorBrush dynamicBrush)
@@ -509,6 +609,62 @@ namespace EvolveOS_Optimizer
                 }
             }
         }
+        #endregion
+
+        #region User Permissions & Access Control
+        private async Task InitializeUserPermissionsAsync(string username)
+        {
+            try
+            {
+                string userType = "Guest";
+
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        using (var conn = new Microsoft.Data.SqlClient.SqlConnection(SqlConnectionHelper.connectReturn()))
+                        {
+                            string sql = "SELECT usertype FROM admin WHERE username = @user";
+                            using (var cmd = new Microsoft.Data.SqlClient.SqlCommand(sql, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@user", username);
+                                conn.Open();
+                                var result = cmd.ExecuteScalar();
+                                userType = result?.ToString() ?? "Guest";
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[Permissions] DB Query Failed: {ex.Message}");
+                    }
+                });
+
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    ApplyUserPermissions(userType);
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Permissions] Critical Failure: {ex.Message}");
+                ApplyUserPermissions("Guest");
+            }
+        }
+
+        private void ApplyUserPermissions(string type)
+        {
+            bool isAdmin = string.Equals(UserSession.UserType, "Admin", StringComparison.OrdinalIgnoreCase);
+
+            Visibility adminVisibility = isAdmin ? Visibility.Visible : Visibility.Collapsed;
+
+            //if (BtnNavUserAccounts != null) BtnNavUserAccounts.Visibility = adminVisibility;
+
+            UserSession.UserType = type;
+
+            Debug.WriteLine($"[Permissions] Applied logic for type: {type}");
+        }
+
         #endregion
 
         #region Events & Overrides

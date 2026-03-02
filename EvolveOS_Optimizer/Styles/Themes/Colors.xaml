@@ -40,5 +40,6 @@
     <SolidColorBrush x:Key="Brush_Info" Color="{StaticResource Color_Info}"/>
     <SolidColorBrush x:Key="Brush_Overlay_Dim" Color="#B3000000"/>
     <SolidColorBrush x:Key="Brush_Dark_Background" Color="#272727"/>
+    <SolidColorBrush x:Key="Brush_Highlighted_Inverted" Color="#2C2E2D"/>
 
 </ResourceDictionary>

@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Services;
@@ -22,6 +23,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private bool _isOverlayVisible;
 
         private bool _isWindowVisible = !App.IsStartedHidden;
+
+        public string AssignedUserType => UserSession.UserType ?? "Guest";
 
         public IEnumerable<VirtualKeyModifiers> AvailableModifiers { get; } = new[]
         {

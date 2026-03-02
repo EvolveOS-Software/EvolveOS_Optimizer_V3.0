@@ -15,7 +15,17 @@
     <!-- endregion Safe Mode -->
 
     <!-- region Loading Window -->
-    <sys:String x:Key="loading_message">Loading EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="loading_message">Initializing hardware data and security protocols</sys:String>
+    <sys:String x:Key="status_waiting_system">Waiting for system to initialize...</sys:String>
+    <sys:String x:Key="status_extracting_resources">Extracting resources...</sys:String>
+    <sys:String x:Key="status_initializing_db">Initializing database...</sys:String>
+    <sys:String x:Key="status_checking_db">Checking database availability...</sys:String>
+    <sys:String x:Key="status_db_not_found">Database not found...</sys:String>
+    <sys:String x:Key="status_decrypting_db">Decrypting database...</sys:String>
+    <sys:String x:Key="status_starting_sql">Starting SQL engine...</sys:String>
+    <sys:String x:Key="status_finalizing_access">Finalizing access...</sys:String>
+    <sys:String x:Key="status_db_ready">Database Ready</sys:String>
+
     <sys:String x:Key="step1_load">Starting Trusted Installer Service...</sys:String>
     <sys:String x:Key="step2_load">Checking Windows License status...</sys:String>
     <sys:String x:Key="step3_load">Gathering Hardware Diagnostics...</sys:String>
@@ -1153,5 +1163,78 @@
     <sys:String x:Key="text_run_startup">Run on Startup</sys:String>
     <sys:String x:Key="tooltip_run_startup">Enable or disable launching the program on Windows Startup.</sys:String>
     <!-- endregion Run On StartUp -->
+
+    <!-- region User Login/Create Account -->
+    <sys:String x:Key="settings_run_startup">Run on StartUp</sys:String>
+
+    <sys:String x:Key="login_title">Welcome Back</sys:String>
+    <sys:String x:Key="login_no_account">Don't have an account?</sys:String>
+    <sys:String x:Key="login_awaiting_auth">Secure authentication required. Please log in before the session expires.</sys:String>
+
+    <sys:String x:Key="signup_btn_create">Create Account</sys:String>
+    <sys:String x:Key="signup_existing_account">Already have an account?</sys:String>
+
+    <sys:String x:Key="signup_text_email">Email Address</sys:String>
+    <sys:String x:Key="signup_text_username">Username</sys:String>
+    <sys:String x:Key="signup_text_password">Password</sys:String>
+    <sys:String x:Key="signup_text_confirm_password">Confirm Password</sys:String>
+    <sys:String x:Key="signup_text_login">Log In</sys:String>
+
+    <!-- Notifications & Dialogs -->
+    <sys:String x:Key="notif_blank_fields">Username and password cannot be empty.</sys:String>
+    <sys:String x:Key="notif_wrong_username_password">Invalid username or password.</sys:String>
+    <sys:String x:Key="notif_max_login_attempts">Maximum login attempts reached. Closing application.</sys:String>
+    <sys:String x:Key="notif_login_time_expired">Login time expired.</sys:String>
+
+    <sys:String x:Key="notif_pass_not_match">Passwords do not match.</sys:String>
+    <sys:String x:Key="notif_exist">already exists.</sys:String>
+    <sys:String x:Key="notif_registered_succesful">Account successfully registered!</sys:String>
+
+    <sys:String x:Key="notif_connection_error">A connection error occurred.</sys:String>
+    <sys:String x:Key="notif_error_database">Database Error:</sys:String>
+
+    <sys:String x:Key="msgbox_welcome_first_user">Welcome to EvolveOS Optimizer! Let's get your secure profile set up.</sys:String>
+    <sys:String x:Key="msgbox_btn_get_started">Get Started</sys:String>
+    <sys:String x:Key="msgbox_btn_cancel">Cancel</sys:String>
+    <sys:String x:Key="msgbox_load_profile_image_success">Profile picture loaded successfully.</sys:String>
+    <sys:String x:Key="msgbox_load_profile_image_fail">No file selected. Loading default profile image.</sys:String>
+    <!-- endregion User Login/Create Account -->
+
+    <!-- region Developer Mode (Auto Login Session) -->
+    <sys:String x:Key="btgl_developer_mode_main">Enable Developer Mode</sys:String>
+    <sys:String x:Key="lbl_session_expiry_default">Session will expire at: --:--</sys:String>
+    <sys:String x:Key="lbl_session_expiry_prefix">Session will expire at:</sys:String>
+    <sys:String x:Key="lbl_session_expired">Session Expired</sys:String>
+    <sys:String x:Key="lbl_session_expires_in">Expires in:</sys:String>
+    <sys:String x:Key="msg_session_expired_login">Your session has expired. Please log in again.</sys:String>
+    <sys:String x:Key="lbl_autologin_header">Auto-Login Session</sys:String>
+    <sys:String x:Key="lbl_session_duration">Session Duration</sys:String>
+    <sys:String x:Key="lbl_unit_hours">Hours</sys:String>
+    <sys:String x:Key="lbl_autologin_session_header">Auto-Login Session</sys:String>
+    <sys:String x:Key="btn_reset_hotkeys">Reset Hotkeys to Default</sys:String>
+    <sys:String x:Key="lbl_advanced_settings_header">Advanced Settings</sys:String>
+    <sys:String x:Key="btn_back_nav">← Back</sys:String>
+    <sys:String x:Key="btn_advanced_settings_nav">Advanced Settings →</sys:String>
+    <sys:String x:Key="text_db_backup_path_title">Select Database Backup Folder</sys:String>
+    <sys:String x:Key="title_end_session">End Session?</sys:String>
+    <sys:String x:Key="msg_end_session_confirm">An Auto-Login session is currently active. Are you sure you want to end it and remove your saved credentials?</sys:String>
+    <sys:String x:Key="btn_yes_end_session">Yes, End Session</sys:String>
+    <sys:String x:Key="btn_cancel">Cancel</sys:String>
+    <sys:String x:Key="lbl_session_expire_default">Session will expire at: --:--</sys:String>
+    <sys:String x:Key="toast_title_autologin">Auto-Login</sys:String>
+    <sys:String x:Key="toast_msg_session_ended">Session ended and credentials removed.</sys:String>
+    <sys:String x:Key="txt_enter_password">Enter your password...</sys:String>
+    <sys:String x:Key="msg_invalid_password">Invalid password. Please try again.</sys:String>
+    <sys:String x:Key="msg_verify_identity">Please verify your identity to enable Auto-Login.</sys:String>
+    <sys:String x:Key="title_authorize_autologin">Authorize Auto-Login</sys:String>
+    <sys:String x:Key="btn_verify">Verify</sys:String>
+    <sys:String x:Key="toast_success">Success</sys:String>
+    <sys:String x:Key="toast_autologin_authorized">Auto-Login Authorized!</sys:String>
+    <sys:String x:Key="toast_token_error">Security Token Error</sys:String>
+    <sys:String x:Key="msgbox_logout_title">Logout</sys:String>
+    <sys:String x:Key="msgbox_logout_confirm">Are you sure you want to logout?</sys:String>
+    <sys:String x:Key="msgbox_dev_mode_active_title">Developer Mode Active</sys:String>
+    <sys:String x:Key="msgbox_dev_mode_logout_prompt">Developer Mode is still active. Would you like to disable it before logging out?</sys:String>
+    <!-- endregion Developer Mode (Auto Login Session) -->
 
 </ResourceDictionary>

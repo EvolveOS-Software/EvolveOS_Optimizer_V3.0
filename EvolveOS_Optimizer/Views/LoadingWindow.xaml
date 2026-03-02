@@ -77,7 +77,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="0" VerticalAlignment="Bottom">
-                <TextBlock Foreground="{ThemeResource Brush_Inactive}" FontFamily="{StaticResource Jura-Bold}" FontSize="12">
+                <TextBlock Foreground="{ThemeResource Brush_Inactive}" FontFamily="{StaticResource Jura-Bold}" TextWrapping="Wrap" FontSize="12">
                     <Run Text="{helpers:ResourceString Key=loading_message}" />
                     <Run x:Name="DotRun" Text="..." />
                 </TextBlock>
@@ -94,6 +94,7 @@
         </Grid>
 
         <Border x:Name="AutoLoginBadge" 
+                Grid.ColumnSpan="2"
                 Visibility="Collapsed" 
                 HorizontalAlignment="Right" 
                 VerticalAlignment="Bottom" 
@@ -103,12 +104,29 @@
                 BorderThickness="1"
                 CornerRadius="8" 
                 Padding="10,6">
-            <StackPanel Orientation="Horizontal">
-                <FontIcon Glyph="&#xE77B;" Foreground="{ThemeResource Brush_Accent}" FontSize="14" VerticalAlignment="Center"/>
-                <TextBlock Foreground="White" FontSize="12" Margin="8,0,2,0" VerticalAlignment="Center">
-                    <Run Text="Auto-Login:" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}"/>
-                    <Run x:Name="RunUsername" FontFamily="{StaticResource Jura-Bold}" FontWeight="Bold" Foreground="{StaticResource Brush_Accent}"/>
-                </TextBlock>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                <FontIcon Glyph="&#xE77B;"
+                          Foreground="{ThemeResource Brush_Accent}"
+                          FontSize="14"
+                          VerticalAlignment="Center"/>
+
+                <TextBlock Text="Auto-Login:"
+                           FontFamily="{StaticResource Jura}"
+                           Foreground="{StaticResource Brush_Inactive}"
+                           FontSize="12"
+                           Margin="8,0,4,0"
+                           VerticalAlignment="Center"/>
+
+                <TextBlock x:Name="RunUsername"
+                           FontFamily="{StaticResource Jura-Bold}"
+                           FontWeight="Bold"
+                           Foreground="{ThemeResource Brush_Accent}"
+                           FontSize="12"
+                           Margin="0,2,0,0"
+                           TextWrapping="NoWrap"
+                           VerticalAlignment="Center"/>
+
             </StackPanel>
         </Border>
     </Grid>

@@ -137,5 +137,27 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             storyboard.Children.Add(animY);
             storyboard.Begin();
         }
+
+        internal static void AnimateErrorShake(UIElement target)
+        {
+            if (target == null) return;
+
+            ElementCompositionPreview.SetIsTranslationEnabled(target, true);
+
+            Visual visual = ElementCompositionPreview.GetElementVisual(target);
+            Compositor compositor = visual.Compositor;
+
+            ScalarKeyFrameAnimation shakeAnim = compositor.CreateScalarKeyFrameAnimation();
+            shakeAnim.Duration = TimeSpan.FromSeconds(0.4);
+
+            shakeAnim.InsertKeyFrame(0.00f, 0f);
+            shakeAnim.InsertKeyFrame(0.15f, 10f);
+            shakeAnim.InsertKeyFrame(0.35f, -10f);
+            shakeAnim.InsertKeyFrame(0.55f, 5f);
+            shakeAnim.InsertKeyFrame(0.75f, -5f);
+            shakeAnim.InsertKeyFrame(1.00f, 0f);
+
+            visual.StartAnimation("Translation.X", shakeAnim);
+        }
     }
 }
