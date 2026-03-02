@@ -35,6 +35,7 @@
     <sys:String x:Key="noty_sys_restart">Een herstart is vereist om de wijzigingen toe te passen.</sys:String>
     <sys:String x:Key="noty_acc_title">Account</sys:String>
     <sys:String x:Key="noty_acc_logout">Log uit en weer in om de wijzigingen toe te passen.</sys:String>
+    <sys:String x:Key="no_internet_connection_notif_key">Geen internetverbinding gedetecteerd.</sys:String>
     <!-- endregion Notification Manager -->
 
     <!-- region App Updates -->
@@ -103,6 +104,20 @@
     <sys:String x:Key="Settings_Theme_Default">Systeemstandaard</sys:String>
     <sys:String x:Key="Settings_Theme_Light">Licht</sys:String>
     <sys:String x:Key="Settings_Theme_Dark">Donker</sys:String>
+
+    <sys:String x:Key="Settings_System_Title">Systeemgedrag</sys:String>
+
+    <sys:String x:Key="Settings_Startup_Title">Starten bij opstarten</sys:String>
+    <sys:String x:Key="Settings_Startup_Subtitle">Start EvolveOS Optimizer automatisch stilletjes in het systeemvak wanneer Windows opstart.</sys:String>
+
+    <sys:String x:Key="Settings_CloseToTray_Title">Sluiten naar systeemvak</sys:String>
+    <sys:String x:Key="Settings_CloseToTray_Subtitle">Laat de applicatie op de achtergrond draaien wanneer het venster wordt gesloten.</sys:String>
+
+    <sys:String x:Key="Settings_StartMinimized_Title">Geminimaliseerd starten</sys:String>
+    <sys:String x:Key="Settings_StartMinimized_Subtitle">Start de applicatie direct in het systeemvak zonder het hoofdvenster te tonen.</sys:String>
+
+    <sys:String x:Key="Settings_ToggleOn">Aan</sys:String>
+    <sys:String x:Key="Settings_ToggleOff">Uit</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

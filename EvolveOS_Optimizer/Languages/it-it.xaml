@@ -36,6 +36,7 @@
     <sys:String x:Key="noty_sys_restart">È necessario un riavvio per applicare le modifiche.</sys:String>
     <sys:String x:Key="noty_acc_title">Account</sys:String>
     <sys:String x:Key="noty_acc_logout">Disconnettiti e accedi di nuovo per applicare le modifiche.</sys:String>
+    <sys:String x:Key="no_internet_connection_notif_key">Nessuna connessione Internet rilevata.</sys:String>
     <!-- endregion Notification Manager -->
 
     <!-- region App Updates -->

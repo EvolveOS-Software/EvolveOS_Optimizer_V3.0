@@ -36,7 +36,8 @@
     <sys:String x:Key="noty_sys_restart">Ein Neustart ist erforderlich, um die Änderungen zu übernehmen.</sys:String>
     <sys:String x:Key="noty_acc_title">Konto</sys:String>
     <sys:String x:Key="noty_acc_logout">Melden Sie sich ab und wieder an, um die Änderungen zu übernehmen.</sys:String>
-    <!-- endregion Notification Manager -->
+    <sys:String x:Key="no_internet_connection_notif_key">Keine Internetverbindung erkannt.</sys:String>
+        <!-- endregion Notification Manager -->
 
     <!-- region App Updates -->
     <sys:String x:Key="Update_Banner_Message">Ein neues Update ist für den EvolveOS Optimizer verfügbar!</sys:String>

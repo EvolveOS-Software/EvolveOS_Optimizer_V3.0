@@ -36,6 +36,7 @@
     <sys:String x:Key="noty_sys_restart">Un redémarrage est nécessaire pour appliquer les modifications.</sys:String>
     <sys:String x:Key="noty_acc_title">Compte</sys:String>
     <sys:String x:Key="noty_acc_logout">Déconnectez-vous et reconnectez-vous pour appliquer les modifications.</sys:String>
+    <sys:String x:Key="no_internet_connection_notif_key">Aucune connexion Internet détectée.</sys:String>
     <!-- endregion Notification Manager -->
 
     <!-- region App Updates -->
@@ -103,6 +104,20 @@
     <sys:String x:Key="Settings_Theme_Default">Par défaut du système</sys:String>
     <sys:String x:Key="Settings_Theme_Light">Clair</sys:String>
     <sys:String x:Key="Settings_Theme_Dark">Sombre</sys:String>
+
+    <sys:String x:Key="Settings_System_Title">Comportement du système</sys:String>
+
+    <sys:String x:Key="Settings_Startup_Title">Lancer au démarrage</sys:String>
+    <sys:String x:Key="Settings_Startup_Subtitle">Lancer automatiquement et silencieusement EvolveOS Optimizer dans la zone de notification au démarrage de Windows.</sys:String>
+
+    <sys:String x:Key="Settings_CloseToTray_Title">Fermer dans la zone de notification</sys:String>
+    <sys:String x:Key="Settings_CloseToTray_Subtitle">Garder l'application en cours d'exécution en arrière-plan lorsque la fenêtre est fermée.</sys:String>
+
+    <sys:String x:Key="Settings_StartMinimized_Title">Démarrer réduit</sys:String>
+    <sys:String x:Key="Settings_StartMinimized_Subtitle">Lancer l'application directement dans la zone de notification sans afficher la fenêtre principale.</sys:String>
+
+    <sys:String x:Key="Settings_ToggleOn">Activé</sys:String>
+    <sys:String x:Key="Settings_ToggleOff">Désactivé</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
