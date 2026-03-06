@@ -34,6 +34,7 @@ namespace EvolveOS_Optimizer
 
         private static IHotkeyService? _hotkeyService;
         public static event EventHandler? HotkeySettingsChanged;
+        private static PasswordGeneratorWindow? _passwordGeneratorWindow;
 
         public static new App Current => (App)Application.Current;
 
@@ -224,6 +225,8 @@ namespace EvolveOS_Optimizer
 
             service.UnregisterAll();
 
+            bool allSuccess = true;
+
             if (LocalMachineSettingsEngine.UseHotkey)
             {
                 var hotkey = new EvolveOS_Optimizer.Core.Model.Hotkey(
@@ -238,13 +241,55 @@ namespace EvolveOS_Optimizer
 
                 if (!success)
                 {
-                    ShowNotification("Hotkey Warning", $"Hotkey {hotkey} is in use by another app.", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Warning, 5000);
+                    ShowNotification("Hotkey Warning", $"Optimization Hotkey {hotkey} is in use.", InfoBarSeverity.Warning, 5000);
+                    allSuccess = false;
                 }
-
-                return success;
             }
 
-            return true;
+            if (SettingsEngine.IsPasswordGenHotkeyEnabled)
+            {
+                var pwHotkey = new EvolveOS_Optimizer.Core.Model.Hotkey(
+                    (Windows.System.VirtualKeyModifiers)SettingsEngine.PasswordGenHotkeyModifier,
+                    (Windows.System.VirtualKey)SettingsEngine.PasswordGenHotkeyKey
+                );
+
+                bool success = service.Register(pwHotkey, () =>
+                {
+                    UIThreadDispatcher?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
+                    {
+                        OpenPasswordGeneratorWindow();
+                    });
+                });
+
+                if (!success)
+                {
+                    NativeToastHelper.SendNativeToast(
+                        "Hotkey Warning",
+                        $"Password Gen Hotkey {pwHotkey} is in use by another app."
+                    );
+                    allSuccess = false;
+                }
+            }
+
+            return allSuccess;
+        }
+
+        private static void OpenPasswordGeneratorWindow()
+        {
+            if (_passwordGeneratorWindow == null)
+            {
+                _passwordGeneratorWindow = new PasswordGeneratorWindow();
+
+                _passwordGeneratorWindow.Closed += (s, e) => { _passwordGeneratorWindow = null; };
+
+                _passwordGeneratorWindow.Activate();
+            }
+            else
+            {
+                IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_passwordGeneratorWindow);
+                Win32Helper.ShowWindow(hwnd, 9);
+                Win32Helper.SetForegroundWindow(hwnd);
+            }
         }
 
         private static async Task RunGlobalOptimizationAsync()

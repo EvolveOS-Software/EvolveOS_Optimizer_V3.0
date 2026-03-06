@@ -8,7 +8,10 @@ using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Views;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Notifications;
+using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Utilities.Managers
 {
@@ -69,8 +72,8 @@ namespace EvolveOS_Optimizer.Utilities.Managers
         {
             _mainWindow = window;
 
-            Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetIsTranslationEnabled(_mainWindow.UpdateBanner, true);
-            Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetIsTranslationEnabled(_mainWindow.GlobalNotificationBanner, true);
+            ElementCompositionPreview.SetIsTranslationEnabled(_mainWindow.UpdateBanner, true);
+            ElementCompositionPreview.SetIsTranslationEnabled(_mainWindow.GlobalNotificationBanner, true);
 
             _autoDismissTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
             _autoDismissTimer.Tick += AutoDismissTimer_Tick;
@@ -152,7 +155,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
                 bool isMinimized = false;
 
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_mainWindow);
+                var hwnd = WindowNative.GetWindowHandle(_mainWindow);
                 bool isActuallyVisible = Win32Helper.IsWindowVisible(hwnd);
 
                 if (_mainWindow.AppWindow != null && _mainWindow.AppWindow.Presenter is OverlappedPresenter presenter)
@@ -276,7 +279,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
             Canvas.SetZIndex(banner, 99999);
             banner.UpdateLayout();
 
-            var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(banner);
+            var visual = ElementCompositionPreview.GetElementVisual(banner);
             var compositor = visual.Compositor;
 
             visual.StopAnimation("Opacity");
@@ -427,10 +430,10 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                     </visual>
                 </toast>";
 
-                var xmlDoc = new Windows.Data.Xml.Dom.XmlDocument();
+                var xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(xmlPayload);
 
-                var toast = new Windows.UI.Notifications.ToastNotification(xmlDoc)
+                var toast = new ToastNotification(xmlDoc)
                 {
                     Tag = "Maintenance",
                     Group = "Optimizer"
@@ -442,7 +445,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                     {
                         if (App.Current.MainWindow != null)
                         {
-                            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
+                            var hwnd = WindowNative.GetWindowHandle(App.Current.MainWindow);
                             Win32Helper.ShowWindow(hwnd, 5);
                             Win32Helper.ShowWindow(hwnd, 9);
                             Win32Helper.SetForegroundWindow(hwnd);
@@ -450,7 +453,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                     });
                 };
 
-                Windows.UI.Notifications.ToastNotificationManager.CreateToastNotifier(aumid).Show(toast);
+                ToastNotificationManager.CreateToastNotifier(aumid).Show(toast);
             }
             catch (System.Exception ex)
             {

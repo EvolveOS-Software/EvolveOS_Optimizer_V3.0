@@ -3,6 +3,10 @@
 // Licensed under the MIT License. 
 // See the LICENSE file in the project root for more information.
 
+using System.Security;
+using Windows.UI.Notifications;
+using WinRT.Interop;
+
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class NativeToastHelper
@@ -18,14 +22,14 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 string textLinesXml = "";
                 foreach (var stat in stats)
                 {
-                    textLinesXml += $"<text hint-style='body'>{stat.Trim()}</text>";
+                    textLinesXml += $"<text hint-style='body' hint-wrap='true'>{SecurityElement.Escape(stat.Trim())}</text>";
                 }
 
                 string xmlPayload = $@"
                 <toast scenario='reminder'>
                     <visual>
                         <binding template='ToastGeneric'>
-                            <text>{title}</text>
+                            <text>{SecurityElement.Escape(title)}</text>
                             <group>
                                 <subgroup>
                                     {textLinesXml}
@@ -35,10 +39,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     </visual>
                 </toast>";
 
-                var xmlDoc = new Windows.Data.Xml.Dom.XmlDocument();
+                var xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(xmlPayload);
 
-                var toast = new Windows.UI.Notifications.ToastNotification(xmlDoc)
+                var toast = new ToastNotification(xmlDoc)
                 {
                     Tag = "Maintenance",
                     Group = "Optimizer"
@@ -50,7 +54,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     {
                         if (App.Current.MainWindow != null)
                         {
-                            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
+                            var hwnd = WindowNative.GetWindowHandle(App.Current.MainWindow);
                             Win32Helper.ShowWindow(hwnd, 5);
                             Win32Helper.ShowWindow(hwnd, 9);
                             Win32Helper.SetForegroundWindow(hwnd);
@@ -58,7 +62,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     });
                 };
 
-                Windows.UI.Notifications.ToastNotificationManager.CreateToastNotifier(aumid).Show(toast);
+                ToastNotificationManager.CreateToastNotifier(aumid).Show(toast);
             }
             catch (Exception ex)
             {

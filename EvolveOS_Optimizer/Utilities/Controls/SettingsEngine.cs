@@ -75,7 +75,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_CardDns"] = true,
             ["Dashboard_CardHealth"] = true,
             ["Dashboard_CardSecurity"] = true,
-            ["AutoLoginSessionHours"] = 4
+            ["AutoLoginSessionHours"] = 4,
+
+            ["IsPasswordGenHotkeyEnabled"] = false,
+            ["PasswordGenHotkeyModifier"] = 1,
+            ["PasswordGenHotkeyKey"] = 80
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -118,6 +122,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         }
         internal static bool IsHiddenIpAddress { get => (bool)_cachedSettings["EnableIpBlur"]; set => ChangingParameters("EnableIpBlur", value); }
         internal static int AutoLoginSessionHours { get => (int)_cachedSettings["AutoLoginSessionHours"]; set => ChangingParameters("AutoLoginSessionHours", value); }
+        internal static bool IsPasswordGenHotkeyEnabled { get => (bool)_cachedSettings["IsPasswordGenHotkeyEnabled"]; set => ChangingParameters("IsPasswordGenHotkeyEnabled", value); }
+        internal static int PasswordGenHotkeyModifier { get => (int)_cachedSettings["PasswordGenHotkeyModifier"]; set => ChangingParameters("PasswordGenHotkeyModifier", value); }
+        internal static int PasswordGenHotkeyKey { get => (int)_cachedSettings["PasswordGenHotkeyKey"]; set => ChangingParameters("PasswordGenHotkeyKey", value); }
 
         internal static string DashboardCardOrder { get => (string)_cachedSettings["DashboardCardOrder"]; set => ChangingParameters("DashboardCardOrder", value); }
         internal static bool Dashboard_CardNetwork { get => (bool)_cachedSettings["Dashboard_CardNetwork"]; set => ChangingParameters("Dashboard_CardNetwork", value); }

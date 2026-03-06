@@ -150,9 +150,6 @@
     <sys:String x:Key="tooltip_open_maintenance">Wartungsseite öffnen</sys:String>
     <sys:String x:Key="btn_refresh_status">Status aktualisieren</sys:String>
     <sys:String x:Key="text_scanning_system">System wird gescannt...</sys:String>
-    <sys:String x:Key="Health_Poor">Schlecht - Handlung erforderlich</sys:String>
-    <sys:String x:Key="Health_Warning">Ausreichend - Optimierung empfohlen</sys:String>
-    <sys:String x:Key="Health_Good">Gut - System ist gesund</sys:String>
     <sys:String x:Key="text_last_checked">Zuletzt geprüft</sys:String>
 
     <!-- Dns Card Card -->
@@ -1236,5 +1233,25 @@
     <sys:String x:Key="msgbox_dev_mode_active_title">Entwicklermodus Aktiv</sys:String>
     <sys:String x:Key="msgbox_dev_mode_logout_prompt">Der Entwicklermodus ist noch aktiv. Möchten Sie ihn vor dem Abmelden deaktivieren?</sys:String>
     <!-- endregion Developer Mode (Auto Login Session) -->
+
+    <!--region Password validator -->
+    <sys:String x:Key="txt_password_req_title">Passwortanforderungen</sys:String>
+    <sys:String x:Key="val_length_name">Länge ({0}-{1} Zeichen)</sys:String>
+    <sys:String x:Key="val_length_err">Das Passwort muss zwischen {0} und {1} Zeichen lang sein.</sys:String>
+    <sys:String x:Key="val_uppercase_name">Großbuchstaben (A-Z)</sys:String>
+    <sys:String x:Key="val_uppercase_err_full">Das Passwort muss mindestens einen Großbuchstaben enthalten.</sys:String>
+    <sys:String x:Key="val_lowercase_name">Kleinbuchstaben (a-z)</sys:String>
+    <sys:String x:Key="val_lowercase_err">Das Passwort muss mindestens einen Kleinbuchstaben enthalten.</sys:String>
+    <sys:String x:Key="val_digit_name">Ziffern (0-9)</sys:String>
+    <sys:String x:Key="val_digit_err">Das Passwort muss mindestens eine Ziffer enthalten.</sys:String>
+    <sys:String x:Key="val_special_name">Sonderzeichen (!@#)</sys:String>
+    <sys:String x:Key="val_special_err_full">Das Passwort muss mindestens ein Sonderzeichen enthalten.</sys:String>
+    <sys:String x:Key="val_patterns_name">Keine gängigen Muster (z. B. wiederholende Zeichen)</sys:String>
+    <sys:String x:Key="val_patterns_err">Das Passwort enthält sich wiederholende Zeichenfolgen.</sys:String>
+    <sys:String x:Key="txt_custom_input">Eigene Eingabe</sys:String>
+    <sys:String x:Key="txt_include_chars">Zeichen einbeziehen</sys:String>
+    <sys:String x:Key="txt_gen_custom_password">Generiertes / Eigenes Passwort</sys:String>
+    <sys:String x:Key="txt_copy_to_clipboard">In Zwischenablage kopieren</sys:String>
+    <!-- endregion Password validator -->
 
 </ResourceDictionary>

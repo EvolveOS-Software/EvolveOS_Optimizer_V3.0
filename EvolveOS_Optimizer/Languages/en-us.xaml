@@ -150,9 +150,6 @@
     <sys:String x:Key="tooltip_open_maintenance">Open Maintenance page</sys:String>
     <sys:String x:Key="btn_refresh_status">Refresh Status</sys:String>
     <sys:String x:Key="text_scanning_system">Scanning System...</sys:String>
-    <sys:String x:Key="Health_Poor">Poor - Action Required</sys:String>
-    <sys:String x:Key="Health_Warning">Fair - Optimization Recommended</sys:String>
-    <sys:String x:Key="Health_Good">Good - System is Healthy</sys:String>
     <sys:String x:Key="text_last_checked">Last checked</sys:String>
 
     <!-- Dns Card Card -->
@@ -1236,5 +1233,25 @@
     <sys:String x:Key="msgbox_dev_mode_active_title">Developer Mode Active</sys:String>
     <sys:String x:Key="msgbox_dev_mode_logout_prompt">Developer Mode is still active. Would you like to disable it before logging out?</sys:String>
     <!-- endregion Developer Mode (Auto Login Session) -->
+
+    <!--region Password validator -->
+    <sys:String x:Key="txt_password_req_title">Password Requirements</sys:String>
+    <sys:String x:Key="val_length_name">Length ({0}-{1} characters)</sys:String>
+    <sys:String x:Key="val_length_err">Password must be between {0} and {1} characters.</sys:String>
+    <sys:String x:Key="val_uppercase_name">Uppercase (A-Z)</sys:String>
+    <sys:String x:Key="val_uppercase_err_full">Password must contain at least one uppercase letter.</sys:String>
+    <sys:String x:Key="val_lowercase_name">Lowercase (a-z)</sys:String>
+    <sys:String x:Key="val_lowercase_err">Password must contain at least one lowercase letter.</sys:String>
+    <sys:String x:Key="val_digit_name">Digits (0-9)</sys:String>
+    <sys:String x:Key="val_digit_err">Password must contain at least one digit.</sys:String>
+    <sys:String x:Key="val_special_name">Symbols (!@#)</sys:String>
+    <sys:String x:Key="val_special_err_full">Password must contain at least one special character.</sys:String>
+    <sys:String x:Key="val_patterns_name">No common patterns (e.g., repeating characters)</sys:String>
+    <sys:String x:Key="val_patterns_err">Password contains repetitive characters.</sys:String>
+    <sys:String x:Key="txt_custom_input">Custom Input</sys:String>
+    <sys:String x:Key="txt_include_chars">Include Characters</sys:String>
+    <sys:String x:Key="txt_gen_custom_password">Generated / Custom Password</sys:String>
+    <sys:String x:Key="txt_copy_to_clipboard">Copy to Clipboard</sys:String>
+    <!-- endregion Password validator -->
 
 </ResourceDictionary>

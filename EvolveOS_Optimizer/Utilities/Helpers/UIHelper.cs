@@ -141,6 +141,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             catch { _currentController = null; }
         }
 
+        public static double GetScaleAdjustment(IntPtr hWnd)
+        {
+            uint dpi = Win32Helper.GetDpiForWindow(hWnd);
+            return (double)dpi / 96.0;
+        }
+
         public static Color ToColor(string hex)
         {
             hex = hex.Replace("#", string.Empty);

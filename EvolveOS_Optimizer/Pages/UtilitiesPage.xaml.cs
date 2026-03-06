@@ -1,8 +1,3 @@
-using System;
-using EvolveOS_Optimizer.Utilities.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-
 namespace EvolveOS_Optimizer.Pages
 {
     public partial class UtilitiesPage : Page
@@ -28,7 +23,7 @@ namespace EvolveOS_Optimizer.Pages
                 Type pageType = tag switch
                 {
                     "DNSChangerPage" => typeof(DNSChangerPage),
-                    //"AdvancedUtilsPage" => typeof(AdvancedUtilsPage),
+                    "AdvancedUtilsPage" => typeof(AdvancedUtilsPage),
                     _ => typeof(DNSChangerPage)
                 };
 

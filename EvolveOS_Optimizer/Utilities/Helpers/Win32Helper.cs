@@ -341,6 +341,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
+        [System.Runtime.InteropServices.DllImport("User32.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        public static extern uint GetDpiForWindow(IntPtr hwnd);
+
         #endregion
 
         #region Delegates & Private Fields

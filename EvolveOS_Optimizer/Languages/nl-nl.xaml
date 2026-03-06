@@ -66,7 +66,6 @@
     <!-- endregion App Updates -->
 
     <!-- region Main Window -->
-    <sys:String x:Key="loading_message">EvolveOS Optimizer laden</sys:String>
     <sys:String x:Key="Nav_Home">Startpagina</sys:String>
     <sys:String x:Key="Nav_Security">Beveiliging</sys:String>
     <sys:String x:Key="Nav_Utilities">Hulpprogramma's</sys:String>
@@ -151,9 +150,6 @@
     <sys:String x:Key="tooltip_open_maintenance">Onderhoudspagina openen</sys:String>
     <sys:String x:Key="btn_refresh_status">Status vernieuwen</sys:String>
     <sys:String x:Key="text_scanning_system">Systeem scannen...</sys:String>
-    <sys:String x:Key="Health_Poor">Slecht - Actie vereist</sys:String>
-    <sys:String x:Key="Health_Warning">Redelijk - Optimalisatie aanbevolen</sys:String>
-    <sys:String x:Key="Health_Good">Goed - Systeem is gezond</sys:String>
     <sys:String x:Key="text_last_checked">Laatst gecontroleerd</sys:String>
 
     <!-- Dns Card Card -->
@@ -1229,5 +1225,25 @@
     <sys:String x:Key="msgbox_dev_mode_active_title">Ontwikkelaarsmodus actief</sys:String>
     <sys:String x:Key="msgbox_dev_mode_logout_prompt">De ontwikkelaarsmodus is nog actief. Wilt u deze uitschakelen voordat u zich afmeldt?</sys:String>
     <!-- endregion Developer Mode (Auto Login Session) -->
+
+    <!--region Password validator -->
+    <sys:String x:Key="txt_password_req_title">Wachtwoordvereisten</sys:String>
+    <sys:String x:Key="val_length_name">Lengte ({0}-{1} tekens)</sys:String>
+    <sys:String x:Key="val_length_err">Wachtwoord moet tussen de {0} en {1} tekens lang zijn.</sys:String>
+    <sys:String x:Key="val_uppercase_name">Hoofdletters (A-Z)</sys:String>
+    <sys:String x:Key="val_uppercase_err_full">Wachtwoord moet minimaal één hoofdletter bevatten.</sys:String>
+    <sys:String x:Key="val_lowercase_name">Kleine letters (a-z)</sys:String>
+    <sys:String x:Key="val_lowercase_err">Wachtwoord moet minimaal één kleine letter bevatten.</sys:String>
+    <sys:String x:Key="val_digit_name">Cijfers (0-9)</sys:String>
+    <sys:String x:Key="val_digit_err">Wachtwoord moet minimaal één cijfer bevatten.</sys:String>
+    <sys:String x:Key="val_special_name">Symbolen (!@#)</sys:String>
+    <sys:String x:Key="val_special_err_full">Wachtwoord moet minimaal één speciaal teken bevatten.</sys:String>
+    <sys:String x:Key="val_patterns_name">Geen veelvoorkomende patronen (bijv. herhalende tekens)</sys:String>
+    <sys:String x:Key="val_patterns_err">Wachtwoord bevat herhalende tekens.</sys:String>
+    <sys:String x:Key="txt_custom_input">Eigen invoer</sys:String>
+    <sys:String x:Key="txt_include_chars">Tekens opnemen</sys:String>
+    <sys:String x:Key="txt_gen_custom_password">Gegenereerd / Eigen wachtwoord</sys:String>
+    <sys:String x:Key="txt_copy_to_clipboard">Kopiëren naar klembord</sys:String>
+    <!-- endregion Password validator -->
 
 </ResourceDictionary>

@@ -150,9 +150,6 @@
     <sys:String x:Key="tooltip_open_maintenance">Ouvrir la page de maintenance</sys:String>
     <sys:String x:Key="btn_refresh_status">Actualiser l'état</sys:String>
     <sys:String x:Key="text_scanning_system">Analyse du système...</sys:String>
-    <sys:String x:Key="Health_Poor">Médiocre - Action requise</sys:String>
-    <sys:String x:Key="Health_Warning">Passable - Optimisation recommandée</sys:String>
-    <sys:String x:Key="Health_Good">Bon - Système sain</sys:String>
     <sys:String x:Key="text_last_checked">Dernière vérification</sys:String>
 
     <!-- Dns Card Card -->
@@ -1234,5 +1231,25 @@
     <sys:String x:Key="msgbox_dev_mode_active_title">Mode développeur actif</sys:String>
     <sys:String x:Key="msgbox_dev_mode_logout_prompt">Le mode développeur est toujours actif. Souhaitez-vous le désactiver avant de vous déconnecter ?</sys:String>
     <!-- endregion Developer Mode (Auto Login Session) -->
+
+    <!--region Password validator -->
+    <sys:String x:Key="txt_password_req_title">Exigences du mot de passe</sys:String>
+    <sys:String x:Key="val_length_name">Longueur ({0}-{1} caractères)</sys:String>
+    <sys:String x:Key="val_length_err">Le mot de passe doit contenir entre {0} et {1} caractères.</sys:String>
+    <sys:String x:Key="val_uppercase_name">Majuscules (A-Z)</sys:String>
+    <sys:String x:Key="val_uppercase_err_full">Le mot de passe doit contenir au moins une lettre majuscule.</sys:String>
+    <sys:String x:Key="val_lowercase_name">Minuscules (a-z)</sys:String>
+    <sys:String x:Key="val_lowercase_err">Le mot de passe doit contenir au moins une lettre minuscule.</sys:String>
+    <sys:String x:Key="val_digit_name">Chiffres (0-9)</sys:String>
+    <sys:String x:Key="val_digit_err">Le mot de passe doit contenir au moins un chiffre.</sys:String>
+    <sys:String x:Key="val_special_name">Symboles (!@#)</sys:String>
+    <sys:String x:Key="val_special_err_full">Le mot de passe doit contenir au moins un caractère spécial.</sys:String>
+    <sys:String x:Key="val_patterns_name">Pas de schémas communs (ex: caractères répétitifs)</sys:String>
+    <sys:String x:Key="val_patterns_err">Le mot de passe contient des caractères répétitifs.</sys:String>
+    <sys:String x:Key="txt_custom_input">Saisie personnalisée</sys:String>
+    <sys:String x:Key="txt_include_chars">Inclure des caractères</sys:String>
+    <sys:String x:Key="txt_gen_custom_password">Mot de passe généré / personnalisé</sys:String>
+    <sys:String x:Key="txt_copy_to_clipboard">Copier dans le presse-papiers</sys:String>
+    <!-- endregion Password validator -->
 
 </ResourceDictionary>

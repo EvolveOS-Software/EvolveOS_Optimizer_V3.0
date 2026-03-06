@@ -1237,4 +1237,24 @@
     <sys:String x:Key="msgbox_dev_mode_logout_prompt">Developer Mode is still active. Would you like to disable it before logging out?</sys:String>
     <!-- endregion Developer Mode (Auto Login Session) -->
 
+    <!--region Password validator -->
+    <sys:String x:Key="txt_password_req_title">Requisiti della password</sys:String>
+    <sys:String x:Key="val_length_name">Lunghezza ({0}-{1} caratteri)</sys:String>
+    <sys:String x:Key="val_length_err">La password deve contenere tra {0} e {1} caratteri.</sys:String>
+    <sys:String x:Key="val_uppercase_name">Contiene almeno una lettera maiuscola (A-Z)</sys:String>
+    <sys:String x:Key="val_uppercase_err_full">La password deve contenere almeno una lettera maiuscola.</sys:String>
+    <sys:String x:Key="val_lowercase_name">Contiene almeno una lettera minuscola (a-z)</sys:String>
+    <sys:String x:Key="val_lowercase_err">La password deve contenere almeno una lettera minuscola.</sys:String>
+    <sys:String x:Key="val_digit_name">Contiene almeno una cifra (0-9)</sys:String>
+    <sys:String x:Key="val_digit_err">La password deve contenere almeno una cifra.</sys:String>
+    <sys:String x:Key="val_special_name">Contiene almeno un carattere speciale</sys:String>
+    <sys:String x:Key="val_special_err_full">La password deve contenere almeno un carattere speciale.</sys:String>
+    <sys:String x:Key="val_patterns_name">Nessun pattern comune (es. caratteri ripetuti)</sys:String>
+    <sys:String x:Key="val_patterns_err">La password contiene caratteri ripetitivi.</sys:String>
+    <sys:String x:Key="txt_custom_input">Input personalizzato</sys:String>
+    <sys:String x:Key="txt_include_chars">Includi caratteri</sys:String>
+    <sys:String x:Key="txt_gen_custom_password">Password generata / personalizzata</sys:String>
+    <sys:String x:Key="txt_copy_to_clipboard">Copia negli appunti</sys:String>
+    <!-- endregion Password validator -->
+
 </ResourceDictionary>
