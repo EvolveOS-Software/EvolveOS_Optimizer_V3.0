@@ -388,11 +388,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (File.Exists(defaultImagePath))
                 {
                     _defaultImageData = await File.ReadAllBytesAsync(defaultImagePath);
+                    var loadedImage = await ImageHelper.LoadFromBytesAsync(_defaultImageData);
+
+                    App.UIThreadDispatcher?.TryEnqueue(() =>
+                    {
+                        ProfileImageSource = loadedImage;
+                    });
                 }
                 else
                 {
-                    Debug.WriteLine($"[Warning] Default image NOT FOUND on disk at: {defaultImagePath}");
+                    Debug.WriteLine($"[Warning] Default image not found at: {defaultImagePath}");
                     _defaultImageData = null;
+
+                    App.UIThreadDispatcher?.TryEnqueue(() =>
+                    {
+                        ProfileImageSource = new BitmapImage(new Uri("ms-appx:///Resources/EvolveOSLogo.png"));
+                    });
                 }
 
                 ProfileImagePath = null;

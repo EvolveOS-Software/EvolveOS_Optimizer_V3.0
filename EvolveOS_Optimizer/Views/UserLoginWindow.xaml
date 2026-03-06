@@ -106,7 +106,7 @@
                                 <Grid HorizontalAlignment="Center" Margin="0,0,0,6">
                                     <Ellipse Width="80" Height="80" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="2">
                                         <Ellipse.Fill>
-                                            <ImageBrush x:Name="ProfileImage" ImageSource="{Binding ProfileImageSource, TargetNullValue='ms-appx:///Resources/EvolveOSLogo.png', FallbackValue='ms-appx:///Resources/EvolveOSLogo.png'}" Stretch="UniformToFill"/>
+                                            <ImageBrush x:Name="ProfileImage" ImageSource="{Binding ProfileImageSource}" Stretch="UniformToFill"/>
                                         </Ellipse.Fill>
                                     </Ellipse>
                                     <Button Command="{Binding BrowseImageCommand}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="28" Height="28" CornerRadius="14" Background="{ThemeResource MyDynamicAccentBrush}" Padding="0">
