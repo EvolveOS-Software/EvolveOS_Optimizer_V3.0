@@ -5,9 +5,6 @@
 
 using System.IO;
 using System.Threading;
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Media.Animation;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Animation;
 using EvolveOS_Optimizer.Utilities.Configuration;
@@ -17,10 +14,12 @@ using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks;
-
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Media.Animation;
+using WinRT.Interop;
 using WinPoint = global::Windows.Graphics.PointInt32;
 using WinSize = global::Windows.Graphics.SizeInt32;
-using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Views
 {
@@ -262,6 +261,12 @@ namespace EvolveOS_Optimizer.Views
                 await Task.Delay(5000, token);
             }
 
+            bool isEngineInstalled = await EnsureDatabaseEngineInstalledAsync(token);
+            if (!isEngineInstalled)
+            {
+                return;
+            }
+
             bool dbBootSuccessful = await PerformDatabaseBootSequenceAsync(token);
 
             if (!dbBootSuccessful)
@@ -300,7 +305,6 @@ namespace EvolveOS_Optimizer.Views
                     });
 
                     Parallel.Invoke(
-                        () => ExecuteWithLogging(TrustedInstaller.StartTrustedInstallerService, nameof(TrustedInstaller.StartTrustedInstallerService)),
                         () => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus)),
                         () => ExecuteWithLogging(_systemDiagnostics.GetHardwareData, nameof(_systemDiagnostics.GetHardwareData)),
                         () => ExecuteAsyncWithLogging(() => _systemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(_systemDiagnostics.ValidateVersionUpdatesAsync)),
@@ -408,6 +412,88 @@ namespace EvolveOS_Optimizer.Views
                     ErrorLogging.LogWritingFile(ex, "LoadingProcessing_Fail");
                 }
             }, token);
+        }
+        #endregion
+
+        #region LocalDB Dependency Check
+        private async Task<bool> EnsureDatabaseEngineInstalledAsync(CancellationToken token)
+        {
+            try
+            {
+                string checkCommand = "sqllocaldb info";
+                string output = await CommandExecutor.GetCommandOutput(checkCommand, false);
+
+                if (!string.IsNullOrEmpty(output) && output.Contains("MSSQLLocalDB", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+
+                UpdateStatusDirect(ResourceString.GetString("status_installing_engine") ?? "Installing required database engine...");
+
+                string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? AppContext.BaseDirectory;
+                string baseDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
+                string archivePath = Path.Combine(baseDir, "Resources", "DatabaseEngine.gz");
+                string msiPath = Path.Combine(baseDir, "SqlLocalDB.msi");
+
+                byte[] archiveBytes = Array.Empty<byte>();
+
+                if (File.Exists(archivePath))
+                {
+                    archiveBytes = await File.ReadAllBytesAsync(archivePath, token);
+                }
+                else if (File.Exists(Path.Combine(baseDir, "DatabaseEngine.gz")))
+                {
+                    archiveBytes = await File.ReadAllBytesAsync(Path.Combine(baseDir, "DatabaseEngine.gz"), token);
+                }
+                else
+                {
+                    archiveBytes = ArchiveManager.GetResourceBytes("DatabaseEngine.gz");
+                }
+
+                if (archiveBytes.Length == 0)
+                {
+                    _dispatcherQueue.TryEnqueue(() => {
+                        NativeToastHelper.SendNativeToast("Dependency Missing", "Database engine is not installed and the installer archive could not be found.");
+                        Application.Current.Exit();
+                    });
+                    return false;
+                }
+
+                await Task.Run(() => ArchiveManager.Unarchive(msiPath, archiveBytes), token);
+
+                UpdateStatusDirect(ResourceString.GetString("status_configuring_engine") ?? "Configuring database engine...");
+                string installCommand = $"msiexec /i \"{msiPath}\" /qn /norestart IACCEPTSQLLOCALDBLICENSETERMS=YES";
+
+                await CommandExecutor.StartInCmd(installCommand);
+
+                if (File.Exists(msiPath))
+                {
+                    File.Delete(msiPath);
+                }
+
+                await CommandExecutor.StartInCmd("sqllocaldb create MSSQLLocalDB");
+
+                string verifyOutput = await CommandExecutor.GetCommandOutput("sqllocaldb info", false);
+                if (string.IsNullOrEmpty(verifyOutput) || verifyOutput.Contains("not recognized", StringComparison.OrdinalIgnoreCase))
+                {
+                    _dispatcherQueue.TryEnqueue(() => {
+                        NativeToastHelper.SendNativeToast("Installation Failed", "Could not install the required SQL engine. Please run the app as Administrator.");
+                        Application.Current.Exit();
+                    });
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogWritingFile(new Exception("Dependency Check Failed", ex), "Engine_Install_Sequence");
+                _dispatcherQueue.TryEnqueue(() => {
+                    NativeToastHelper.SendNativeToast("Startup Error", $"Engine installation failed: {ex.Message}");
+                    Application.Current.Exit();
+                });
+                return false;
+            }
         }
         #endregion
 

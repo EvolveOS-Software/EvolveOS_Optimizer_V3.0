@@ -18,6 +18,8 @@
     <sys:String x:Key="loading_message">Hardwaregegevens en beveiligingsprotocollen initialiseren</sys:String>
     <sys:String x:Key="status_waiting_system">Wachten op systeeminitialisatie...</sys:String>
     <sys:String x:Key="status_extracting_resources">Bronnen uitpakken...</sys:String>
+    <sys:String x:Key="status_installing_engine">Vereiste database-engine wordt geïnstalleerd...</sys:String>
+    <sys:String x:Key="status_configuring_engine">Database-engine wordt geconfigureerd...</sys:String>
     <sys:String x:Key="status_initializing_db">Database initialiseren...</sys:String>
     <sys:String x:Key="status_checking_db">Beschikbaarheid database controleren...</sys:String>
     <sys:String x:Key="status_db_not_found">Database niet gevonden...</sys:String>

@@ -21,7 +21,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = isPowerShell ? PathLocator.Executable.PowerShell : PathLocator.Executable.CommandShell,
-                    Arguments = isPowerShell ? $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command}\"" : command,
+                    Arguments = isPowerShell ? $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command}\"" : $"/c {command}",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -52,7 +52,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             });
         }
 
-        internal static async Task RunCommandAsTrustedInstaller(string command, bool isPowerShell = false)
+        internal static async Task RunCommandAsTrustedInstaller(string command, bool isPowerShell = false, int timeoutMs = 15000)
         {
             try
             {
@@ -77,7 +77,28 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 if (childPid > 0)
                 {
-                    await WaitForProcessExitAsync(childPid);
+                    var exitTask = WaitForProcessExitAsync(childPid);
+
+                    var timeoutTask = Task.Delay(timeoutMs);
+
+                    var completedTask = await Task.WhenAny(exitTask, timeoutTask);
+
+                    if (completedTask == timeoutTask)
+                    {
+                        Debug.WriteLine($"[CommandExecutor] TrustedInstaller command timed out after {timeoutMs}ms. Forcing exit.");
+                        try
+                        {
+                            using var stuckProcess = Process.GetProcessById(childPid);
+                            if (!stuckProcess.HasExited)
+                            {
+                                stuckProcess.Kill();
+                            }
+                        }
+                        catch
+                        {
+                            // Ignore exceptions if the process just finished or access is denied
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -117,7 +138,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 ProcessStartInfo startInfo = new ProcessStartInfo()
                 {
                     FileName = isPowerShell ? PathLocator.Executable.PowerShell : PathLocator.Executable.CommandShell,
-                    Arguments = isPowerShell ? $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command}\"" : command,
+                    Arguments = isPowerShell ? $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command}\"" : $"/c {command}",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     UseShellExecute = true,
                     Verb = "runas",
@@ -170,7 +191,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = isPowerShell ? PathLocator.Executable.PowerShell : PathLocator.Executable.CommandShell,
-                Arguments = isPowerShell ? $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command}\"" : command,
+                Arguments = isPowerShell ? $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command}\"" : $"/c {command}",
                 WindowStyle = ProcessWindowStyle.Hidden,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

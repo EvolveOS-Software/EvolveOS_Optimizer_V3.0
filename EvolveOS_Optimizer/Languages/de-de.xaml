@@ -18,6 +18,8 @@
     <sys:String x:Key="loading_message">Initialisiere Hardwaredaten und Sicherheitsprotokolle</sys:String>
     <sys:String x:Key="status_waiting_system">Warten auf Systeminitialisierung...</sys:String>
     <sys:String x:Key="status_extracting_resources">Ressourcen werden extrahiert...</sys:String>
+    <sys:String x:Key="status_installing_engine">Erforderliche Datenbank-Engine wird installiert...</sys:String>
+    <sys:String x:Key="status_configuring_engine">Datenbank-Engine wird konfiguriert...</sys:String>
     <sys:String x:Key="status_initializing_db">Datenbank wird initialisiert...</sys:String>
     <sys:String x:Key="status_checking_db">Datenbankverfügbarkeit wird geprüft...</sys:String>
     <sys:String x:Key="status_db_not_found">Datenbank nicht gefunden...</sys:String>

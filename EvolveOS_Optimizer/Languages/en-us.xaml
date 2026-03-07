@@ -18,6 +18,8 @@
     <sys:String x:Key="loading_message">Initializing hardware data and security protocols</sys:String>
     <sys:String x:Key="status_waiting_system">Waiting for system to initialize...</sys:String>
     <sys:String x:Key="status_extracting_resources">Extracting resources...</sys:String>
+    <sys:String x:Key="status_installing_engine">Installing required database engine...</sys:String>
+    <sys:String x:Key="status_configuring_engine">Configuring database engine...</sys:String>
     <sys:String x:Key="status_initializing_db">Initializing database...</sys:String>
     <sys:String x:Key="status_checking_db">Checking database availability...</sys:String>
     <sys:String x:Key="status_db_not_found">Database not found...</sys:String>
