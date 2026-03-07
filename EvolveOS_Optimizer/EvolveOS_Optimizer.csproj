@@ -10,7 +10,6 @@
         <RootNamespace>EvolveOS_Optimizer</RootNamespace>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <ApplicationIcon>Assets\EvolveOS_Optimizer.ico</ApplicationIcon>
-
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
@@ -22,14 +21,14 @@
         <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <WindowsPackageType>None</WindowsPackageType>
-        
+
         <PublishSingleFile>true</PublishSingleFile>
         <SelfContained>true</SelfContained>
         <PublishTrimmed>False</PublishTrimmed>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 
-        <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
-        <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
+        <PublishReadyToRun>False</PublishReadyToRun>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 
         <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
         <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
@@ -106,9 +105,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="Resources\EvolveOSLogo.png" />
-      <Content Include="Resources\EvolveOS_OptimizerDb.mdf.gz" />
-      <Content Include="Resources\EvolveOS_OptimizerDb_log.ldf.gz" />
+        <Content Include="Resources\EvolveOSLogo.png" />
+        <Content Include="Resources\EvolveOS_OptimizerDb.mdf.gz" />
+        <Content Include="Resources\EvolveOS_OptimizerDb_log.ldf.gz" />
     </ItemGroup>
 
 </Project>
