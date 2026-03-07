@@ -4,8 +4,6 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.Data.SqlClient;
-using System;
-using System.Threading.Tasks;
 
 namespace EvolveOS_Optimizer.Core.Model
 {

@@ -18,6 +18,7 @@
     <Grid x:Name="RootGrid" x:FieldModifier="public" Background="Transparent">
         <Grid.Resources>
             <conv:UserTypeToColorConverter x:Key="UserTypeToColorConverter"/>
+            <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             
             <Storyboard x:Name="ShowDimOverlay">
                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="WindowDimOverlay" Storyboard.TargetProperty="Visibility">
@@ -267,6 +268,15 @@
                                      Tag="{x:Bind GetText('Nav_Settings'), Mode=OneWay}">
                             <SymbolIcon Symbol="Setting" />
                         </RadioButton>
+
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="UserAccounts"
+                                     IsTabStop="False"
+                                     Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                     Tag="{x:Bind GetText('Nav_Users'), Mode=OneWay}">
+                            <SymbolIcon Symbol="People" />
+                        </RadioButton>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
@@ -471,7 +481,7 @@
             </Border>
         </Grid>
 
-        <Grid x:Name="WindowDimOverlay" Grid.Row="0" Grid.RowSpan="10" Canvas.ZIndex="999999" Background="#B3000000" IsHitTestVisible="False" Visibility="Collapsed" Opacity="0">
+        <Grid x:Name="WindowDimOverlay" Grid.Row="0" Grid.RowSpan="10" Canvas.ZIndex="999980" Background="#B3000000" IsHitTestVisible="False" Visibility="Collapsed" Opacity="0">
             <ContentControl x:Name="PopupHost" HorizontalAlignment="Center" VerticalAlignment="Center" IsTabStop="False"/>
         </Grid>
     </Grid>

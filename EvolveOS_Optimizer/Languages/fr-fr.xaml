@@ -1157,8 +1157,6 @@
     <sys:String x:Key="tooltip_run_startup">Activez ou désactivez le lancement du programme au démarrage de Windows.</sys:String>
     <!-- endregion Run On StartUp -->
 
-
-
     <!-- region User Login/Create Account -->
     <sys:String x:Key="settings_run_startup">Lancer au démarrage</sys:String>
 
@@ -1193,6 +1191,35 @@
     <sys:String x:Key="msgbox_btn_cancel">Annuler</sys:String>
     <sys:String x:Key="msgbox_load_profile_image_success">Photo de profil chargée avec succès.</sys:String>
     <sys:String x:Key="msgbox_load_profile_image_fail">Aucun fichier sélectionné. Chargement de l'image par défaut.</sys:String>
+
+    <!-- User Accounts Page -->
+    <sys:String x:Key="UserAccounts_Title">Comptes utilisateurs</sys:String>
+    <sys:String x:Key="UserAccounts_Description">Gérez l'accès administratif et les privilèges du système.</sys:String>
+
+    <sys:String x:Key="UserAccounts_AddAccount">Ajouter un compte</sys:String>
+    <sys:String x:Key="UserAccounts_EditSelected">Modifier la sélection</sys:String>
+    <sys:String x:Key="UserAccounts_Remove">Supprimer</sys:String>
+
+    <sys:String x:Key="UserAccounts_FormDescription">Remplissez les détails ci-dessous.</sys:String>
+    <sys:String x:Key="UserAccounts_ChangeProfilePicture_ToolTip">Cliquez pour changer la photo de profil</sys:String>
+
+    <sys:String x:Key="UserAccounts_UsernameHeader">Nom d'utilisateur</sys:String>
+    <sys:String x:Key="UserAccounts_UsernamePlaceholder">ex. JohnDoe</sys:String>
+
+    <sys:String x:Key="UserAccounts_EmailHeader">Adresse e-mail</sys:String>
+    <sys:String x:Key="UserAccounts_EmailPlaceholder">john@example.com</sys:String>
+
+    <sys:String x:Key="UserAccounts_FirstNameHeader">Prénom</sys:String>
+    <sys:String x:Key="UserAccounts_LastNameHeader">Nom</sys:String>
+
+    <sys:String x:Key="UserAccounts_PasswordHeader">Mot de passe</sys:String>
+    <sys:String x:Key="UserAccounts_PasswordPlaceholder">Laisser vide pour ne pas modifier</sys:String>
+    <sys:String x:Key="UserAccounts_PasswordToolTip">Doit comporter au moins 6 caractères.</sys:String>
+
+    <sys:String x:Key="UserAccounts_AccountTypeHeader">Type de compte</sys:String>
+
+    <sys:String x:Key="UserAccounts_CancelButton">Annuler</sys:String>
+    <sys:String x:Key="UserAccounts_SaveButton">Enregistrer le compte</sys:String>
     <!-- endregion User Login/Create Account -->
 
     <!-- region Developer Mode (Auto Login Session) -->

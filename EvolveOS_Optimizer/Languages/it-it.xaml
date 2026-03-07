@@ -1162,8 +1162,6 @@
     <sys:String x:Key="tooltip_run_startup">Abilita o disabilita l'avvio del programma all'avvio di Windows.</sys:String>
     <!-- endregion Run On StartUp -->
 
-
-
     <!-- region User Login/Create Account -->
     <sys:String x:Key="settings_run_startup">Run on StartUp</sys:String>
 
@@ -1198,6 +1196,35 @@
     <sys:String x:Key="msgbox_btn_cancel">Cancel</sys:String>
     <sys:String x:Key="msgbox_load_profile_image_success">Profile picture loaded successfully.</sys:String>
     <sys:String x:Key="msgbox_load_profile_image_fail">No file selected. Loading default profile image.</sys:String>
+
+    <!-- User Accounts Page -->
+    <sys:String x:Key="UserAccounts_Title">Account utente</sys:String>
+    <sys:String x:Key="UserAccounts_Description">Gestisci l'accesso amministrativo e i privilegi di sistema.</sys:String>
+
+    <sys:String x:Key="UserAccounts_AddAccount">Aggiungi account</sys:String>
+    <sys:String x:Key="UserAccounts_EditSelected">Modifica selezione</sys:String>
+    <sys:String x:Key="UserAccounts_Remove">Rimuovi</sys:String>
+
+    <sys:String x:Key="UserAccounts_FormDescription">Compila i dettagli di seguito.</sys:String>
+    <sys:String x:Key="UserAccounts_ChangeProfilePicture_ToolTip">Clicca per cambiare l'immagine del profilo</sys:String>
+
+    <sys:String x:Key="UserAccounts_UsernameHeader">Nome utente</sys:String>
+    <sys:String x:Key="UserAccounts_UsernamePlaceholder">es. JohnDoe</sys:String>
+
+    <sys:String x:Key="UserAccounts_EmailHeader">Indirizzo email</sys:String>
+    <sys:String x:Key="UserAccounts_EmailPlaceholder">john@example.com</sys:String>
+
+    <sys:String x:Key="UserAccounts_FirstNameHeader">Nome</sys:String>
+    <sys:String x:Key="UserAccounts_LastNameHeader">Cognome</sys:String>
+
+    <sys:String x:Key="UserAccounts_PasswordHeader">Password</sys:String>
+    <sys:String x:Key="UserAccounts_PasswordPlaceholder">Lascia vuoto per non modificare</sys:String>
+    <sys:String x:Key="UserAccounts_PasswordToolTip">Deve contenere almeno 6 caratteri.</sys:String>
+
+    <sys:String x:Key="UserAccounts_AccountTypeHeader">Tipo di account</sys:String>
+
+    <sys:String x:Key="UserAccounts_CancelButton">Annulla</sys:String>
+    <sys:String x:Key="UserAccounts_SaveButton">Salva account</sys:String>
     <!-- endregion User Login/Create Account -->
 
     <!-- region Developer Mode (Auto Login Session) -->

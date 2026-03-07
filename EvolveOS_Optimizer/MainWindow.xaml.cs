@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -10,10 +11,12 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
-using EvolveOS_Optimizer.Views;
+using Microsoft.Data.SqlClient;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
@@ -375,6 +378,7 @@ namespace EvolveOS_Optimizer
                 "System" => typeof(Pages.SystemPage),
                 "Maintenance" => typeof(Pages.MaintenancePage),
                 "Settings" => typeof(Pages.SettingsPage),
+                "UserAccounts" => typeof(Pages.UserAccountsPage),
                 _ => typeof(Pages.HomePage)
             };
 
@@ -502,11 +506,11 @@ namespace EvolveOS_Optimizer
             if (show)
             {
                 visual.Opacity = 0f;
-                visual.Properties.InsertVector3("Translation", new System.Numerics.Vector3(0, 250f, 0));
+                visual.Properties.InsertVector3("Translation", new Vector3(0, 250f, 0));
             }
 
-            var easeOut = compositor.CreateCubicBezierEasingFunction(new System.Numerics.Vector2(0.3f, 0.3f), new System.Numerics.Vector2(0.0f, 1.0f));
-            var batch = compositor.CreateScopedBatch(Microsoft.UI.Composition.CompositionBatchTypes.Animation);
+            var easeOut = compositor.CreateCubicBezierEasingFunction(new Vector2(0.3f, 0.3f), new Vector2(0.0f, 1.0f));
+            var batch = compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
 
             var moveAnim = compositor.CreateScalarKeyFrameAnimation();
             moveAnim.InsertKeyFrame(0.0f, show ? 200f : 0f);
@@ -612,6 +616,20 @@ namespace EvolveOS_Optimizer
         #endregion
 
         #region User Permissions & Access Control
+        private bool _isAdmin;
+        public bool IsAdmin
+        {
+            get => _isAdmin;
+            set
+            {
+                if (_isAdmin != value)
+                {
+                    _isAdmin = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private async Task InitializeUserPermissionsAsync(string username)
         {
             try
@@ -622,10 +640,10 @@ namespace EvolveOS_Optimizer
                 {
                     try
                     {
-                        using (var conn = new Microsoft.Data.SqlClient.SqlConnection(SqlConnectionHelper.connectReturn()))
+                        using (var conn = new SqlConnection(SqlConnectionHelper.connectReturn()))
                         {
                             string sql = "SELECT usertype FROM admin WHERE username = @user";
-                            using (var cmd = new Microsoft.Data.SqlClient.SqlCommand(sql, conn))
+                            using (var cmd = new SqlCommand(sql, conn))
                             {
                                 cmd.Parameters.AddWithValue("@user", username);
                                 conn.Open();
@@ -654,22 +672,18 @@ namespace EvolveOS_Optimizer
 
         private void ApplyUserPermissions(string type)
         {
-            bool isAdmin = string.Equals(UserSession.UserType, "Admin", StringComparison.OrdinalIgnoreCase);
-
-            Visibility adminVisibility = isAdmin ? Visibility.Visible : Visibility.Collapsed;
-
-            //if (BtnNavUserAccounts != null) BtnNavUserAccounts.Visibility = adminVisibility;
-
             UserSession.UserType = type;
 
-            Debug.WriteLine($"[Permissions] Applied logic for type: {type}");
+            IsAdmin = string.Equals(UserSession.UserType, "Admin", StringComparison.OrdinalIgnoreCase);
+
+            Debug.WriteLine($"[Permissions] Applied logic for type: {type}, IsAdmin: {IsAdmin}");
         }
 
         #endregion
 
         #region Events & Overrides
-        private void Banner_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => NotificationManager.SetPaused(true);
-        private void Banner_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => NotificationManager.SetPaused(false);
+        private void Banner_PointerEntered(object sender, PointerRoutedEventArgs e) => NotificationManager.SetPaused(true);
+        private void Banner_PointerExited(object sender, PointerRoutedEventArgs e) => NotificationManager.SetPaused(false);
         private void DismissNotification_Click(object sender, RoutedEventArgs e) => NotificationManager.HideBanner();
 
         private void OnPropertyChanged([CallerMemberName] string? name = null)

@@ -1,26 +1,34 @@
+using System;
 using System.IO;
+using System.Diagnostics;
 using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
-    class SqlConnectionHelper
+    public static class SqlConnectionHelper
     {
-        private static string DbPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EvolveOS_OptimizerDb.mdf");
+        private static string GetRealBaseDirectory()
+        {
+            string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? AppContext.BaseDirectory;
+            return Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
+        }
+
+        private static string DbPath => Path.Combine(GetRealBaseDirectory(), "EvolveOS_OptimizerDb.mdf");
 
         public static string connectReturn()
         {
-            return $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={DbPath};Integrated Security=True;Connect Timeout=30";
+            return $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={DbPath};Initial Catalog=EvolveOS_OptimizerDb_Main;Integrated Security=True;Connect Timeout=30";
         }
 
         public static string connectReturnMARS()
         {
-            return $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={DbPath};MultipleActiveResultSets=True;Integrated Security=True;Connect Timeout=30";
+            return $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={DbPath};Initial Catalog=EvolveOS_OptimizerDb_Main;MultipleActiveResultSets=True;Integrated Security=True;Connect Timeout=30";
         }
 
         public static void ReleaseDatabase()
         {
             string masterConnString = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True";
-            string dbFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EvolveOS_OptimizerDb.mdf");
+            string dbFilePath = DbPath;
 
             string dbSafePath = dbFilePath.Replace("'", "''");
 

@@ -1152,7 +1152,6 @@
     <sys:String x:Key="tooltip_run_startup">Schakel het starten van het programma in of uit bij het opstarten van Windows.</sys:String>
     <!-- endregion Run On StartUp -->
 
-
     <!-- region User Login/Create Account -->
     <sys:String x:Key="settings_run_startup">Uitvoeren bij opstarten</sys:String>
 
@@ -1187,6 +1186,35 @@
     <sys:String x:Key="msgbox_btn_cancel">Annuleren</sys:String>
     <sys:String x:Key="msgbox_load_profile_image_success">Profielfoto succesvol geladen.</sys:String>
     <sys:String x:Key="msgbox_load_profile_image_fail">Geen bestand geselecteerd. Standaard profielfoto wordt geladen.</sys:String>
+
+    <!-- User Accounts Page -->
+    <sys:String x:Key="UserAccounts_Title">Gebruikersaccounts</sys:String>
+    <sys:String x:Key="UserAccounts_Description">Beheer administratieve toegang en systeemprivileges.</sys:String>
+
+    <sys:String x:Key="UserAccounts_AddAccount">Account toevoegen</sys:String>
+    <sys:String x:Key="UserAccounts_EditSelected">Selectie bewerken</sys:String>
+    <sys:String x:Key="UserAccounts_Remove">Verwijderen</sys:String>
+
+    <sys:String x:Key="UserAccounts_FormDescription">Vul de onderstaande gegevens in.</sys:String>
+    <sys:String x:Key="UserAccounts_ChangeProfilePicture_ToolTip">Klik om de profielfoto te wijzigen</sys:String>
+
+    <sys:String x:Key="UserAccounts_UsernameHeader">Gebruikersnaam</sys:String>
+    <sys:String x:Key="UserAccounts_UsernamePlaceholder">bijv. JohnDoe</sys:String>
+
+    <sys:String x:Key="UserAccounts_EmailHeader">E-mailadres</sys:String>
+    <sys:String x:Key="UserAccounts_EmailPlaceholder">john@example.com</sys:String>
+
+    <sys:String x:Key="UserAccounts_FirstNameHeader">Voornaam</sys:String>
+    <sys:String x:Key="UserAccounts_LastNameHeader">Achternaam</sys:String>
+
+    <sys:String x:Key="UserAccounts_PasswordHeader">Wachtwoord</sys:String>
+    <sys:String x:Key="UserAccounts_PasswordPlaceholder">Laat leeg om ongewijzigd te laten</sys:String>
+    <sys:String x:Key="UserAccounts_PasswordToolTip">Moet minimaal 6 tekens bevatten.</sys:String>
+
+    <sys:String x:Key="UserAccounts_AccountTypeHeader">Accounttype</sys:String>
+
+    <sys:String x:Key="UserAccounts_CancelButton">Annuleren</sys:String>
+    <sys:String x:Key="UserAccounts_SaveButton">Account opslaan</sys:String>
     <!-- endregion User Login/Create Account -->
 
     <!-- region Developer Mode (Auto Login Session) -->

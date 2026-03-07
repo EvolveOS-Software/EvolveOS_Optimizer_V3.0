@@ -79,6 +79,7 @@
     <sys:String x:Key="Nav_Maintenance">Maintenance</sys:String>
     <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Settings</sys:String>
+    <sys:String x:Key="Nav_Users">User Accounts</sys:String>
 
     <sys:String x:Key="Tab_DNSChanger">DNS Changer</sys:String>
     <sys:String x:Key="Tab_Advanced">Advanced</sys:String>
@@ -1195,6 +1196,35 @@
     <sys:String x:Key="msgbox_btn_cancel">Cancel</sys:String>
     <sys:String x:Key="msgbox_load_profile_image_success">Profile picture loaded successfully.</sys:String>
     <sys:String x:Key="msgbox_load_profile_image_fail">No file selected. Loading default profile image.</sys:String>
+
+    <!-- User Accounts Page -->
+    <sys:String x:Key="UserAccounts_Title">User Accounts</sys:String>
+    <sys:String x:Key="UserAccounts_Description">Manage administrative access and system privileges.</sys:String>
+
+    <sys:String x:Key="UserAccounts_AddAccount">Add Account</sys:String>
+    <sys:String x:Key="UserAccounts_EditSelected">Edit Selected</sys:String>
+    <sys:String x:Key="UserAccounts_Remove">Remove</sys:String>
+
+    <sys:String x:Key="UserAccounts_FormDescription">Fill out the details below.</sys:String>
+    <sys:String x:Key="UserAccounts_ChangeProfilePicture_ToolTip">Click to change profile picture</sys:String>
+
+    <sys:String x:Key="UserAccounts_UsernameHeader">Username</sys:String>
+    <sys:String x:Key="UserAccounts_UsernamePlaceholder">e.g. JohnDoe</sys:String>
+
+    <sys:String x:Key="UserAccounts_EmailHeader">Email Address</sys:String>
+    <sys:String x:Key="UserAccounts_EmailPlaceholder">john@example.com</sys:String>
+
+    <sys:String x:Key="UserAccounts_FirstNameHeader">First Name</sys:String>
+    <sys:String x:Key="UserAccounts_LastNameHeader">Last Name</sys:String>
+
+    <sys:String x:Key="UserAccounts_PasswordHeader">Password</sys:String>
+    <sys:String x:Key="UserAccounts_PasswordPlaceholder">Leave blank to keep unchanged</sys:String>
+    <sys:String x:Key="UserAccounts_PasswordToolTip">Must be at least 6 characters.</sys:String>
+
+    <sys:String x:Key="UserAccounts_AccountTypeHeader">Account Type</sys:String>
+
+    <sys:String x:Key="UserAccounts_CancelButton">Cancel</sys:String>
+    <sys:String x:Key="UserAccounts_SaveButton">Save Account</sys:String>
     <!-- endregion User Login/Create Account -->
 
     <!-- region Developer Mode (Auto Login Session) -->
