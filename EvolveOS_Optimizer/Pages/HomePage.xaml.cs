@@ -45,6 +45,8 @@ namespace EvolveOS_Optimizer.Pages
 
         private List<double> _cpuHistory = new List<double>();
         private List<double> _ramHistory = new List<double>();
+        private List<double> _netDownHistory = new List<double>();
+        private List<double> _netUpHistory = new List<double>();
         #endregion
 
         public HomePageViewModel ViewModel { get; } = new();
@@ -207,6 +209,7 @@ namespace EvolveOS_Optimizer.Pages
 
                     UpdateCpuGraph(cpuPercentage);
                     UpdateRamGraph(ramPercentage);
+                    UpdateNetworkGraph(dlMbps, ulMbps);
                 });
             }
             catch (Exception ex) { Debug.WriteLine(ex.Message); }
@@ -239,6 +242,130 @@ namespace EvolveOS_Optimizer.Pages
                 _activeInterfaces = null;
             }
             return (d, u);
+        }
+        #endregion
+
+        #region Network Graph Logic
+        private int _maxNetDataPoints = 30;
+
+        private void ComboNetTimeframe_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboNetTimeframe == null) return;
+
+            int totalSeconds = 60;
+
+            switch (ComboNetTimeframe.SelectedIndex)
+            {
+                case 0: totalSeconds = 60; break;
+                case 1: totalSeconds = 300; break;
+                case 2: totalSeconds = 900; break;
+            }
+
+            _maxNetDataPoints = totalSeconds / 2;
+            UpdateNetAxisLabels(totalSeconds);
+            DrawNetGraph();
+        }
+
+        private void UpdateNetAxisLabels(int totalSeconds)
+        {
+            if (TxtNetAxis1 == null || TxtNetAxis2 == null || TxtNetAxis3 == null || TxtNetAxis4 == null) return;
+
+            double step = totalSeconds / 4.0;
+
+            TxtNetAxis4.Text = FormatTime(totalSeconds);
+            TxtNetAxis3.Text = FormatTime(totalSeconds - step);
+            TxtNetAxis2.Text = FormatTime(totalSeconds - (step * 2));
+            TxtNetAxis1.Text = FormatTime(totalSeconds - (step * 3));
+        }
+
+        private void UpdateNetworkGraph(double dlMbps, double ulMbps)
+        {
+            _netDownHistory.Add(dlMbps);
+            _netUpHistory.Add(ulMbps);
+
+            while (_netDownHistory.Count > _maxNetDataPoints) _netDownHistory.RemoveAt(0);
+            while (_netUpHistory.Count > _maxNetDataPoints) _netUpHistory.RemoveAt(0);
+
+            if (TxtCurrentDown != null) TxtCurrentDown.Text = $"D: {Math.Round(dlMbps, 1)} Mbps";
+            if (TxtCurrentUp != null) TxtCurrentUp.Text = $"U: {Math.Round(ulMbps, 1)} Mbps";
+
+            DrawNetGraph();
+        }
+
+        private void NetGraphCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            DrawNetGraph();
+        }
+
+        private void DrawNetGraph()
+        {
+            if (NetGraphCanvas == null || NetGraphLineDown == null || NetGraphLineUp == null) return;
+            if (_netDownHistory.Count < 2 || NetGraphCanvas.ActualWidth == 0 || NetGraphCanvas.ActualHeight == 0) return;
+
+            double width = NetGraphCanvas.ActualWidth;
+            double height = NetGraphCanvas.ActualHeight;
+
+            double maxDown = _netDownHistory.Count > 0 ? _netDownHistory.Max() : 0;
+            double maxUp = _netUpHistory.Count > 0 ? _netUpHistory.Max() : 0;
+            double absoluteMax = Math.Max(maxDown, maxUp);
+
+            double maxNetScale = Math.Max(10.0, Math.Ceiling(absoluteMax * 1.2));
+
+            if (TxtNetY4 != null)
+            {
+                TxtNetY4.Text = Math.Round(maxNetScale).ToString();
+                TxtNetY3.Text = Math.Round(maxNetScale * 0.75).ToString();
+                TxtNetY2.Text = Math.Round(maxNetScale * 0.50).ToString();
+                TxtNetY1.Text = Math.Round(maxNetScale * 0.25).ToString();
+            }
+
+            double stepX = width / (_netDownHistory.Count - 1);
+
+            var downGeo = new PathGeometry();
+            var upGeo = new PathGeometry();
+            var downFig = new PathFigure();
+            var upFig = new PathFigure();
+
+            double startYDown = height - (_netDownHistory[0] / maxNetScale * height);
+            double startYUp = height - (_netUpHistory[0] / maxNetScale * height);
+
+            downFig.StartPoint = new Windows.Foundation.Point(0, Math.Max(0, Math.Min(height, startYDown)));
+            upFig.StartPoint = new Windows.Foundation.Point(0, Math.Max(0, Math.Min(height, startYUp)));
+
+            Windows.Foundation.Point lastDownPoint = downFig.StartPoint;
+            Windows.Foundation.Point lastUpPoint = upFig.StartPoint;
+
+            for (int i = 1; i < _netDownHistory.Count; i++)
+            {
+                double x = i * stepX;
+
+                double yDown = height - (_netDownHistory[i] / maxNetScale * height);
+                double yUp = height - (_netUpHistory[i] / maxNetScale * height);
+
+                yDown = Math.Max(0, Math.Min(height, yDown));
+                yUp = Math.Max(0, Math.Min(height, yUp));
+
+                lastDownPoint = new Windows.Foundation.Point(x, yDown);
+                lastUpPoint = new Windows.Foundation.Point(x, yUp);
+
+                downFig.Segments.Add(new LineSegment { Point = lastDownPoint });
+                upFig.Segments.Add(new LineSegment { Point = lastUpPoint });
+            }
+
+            downGeo.Figures.Add(downFig);
+            upGeo.Figures.Add(upFig);
+
+            NetGraphLineDown.Data = downGeo;
+            NetGraphLineUp.Data = upGeo;
+
+            NetGraphDotDown.Visibility = Visibility.Visible;
+            NetGraphDotUp.Visibility = Visibility.Visible;
+
+            Canvas.SetLeft(NetGraphDotDown, lastDownPoint.X);
+            Canvas.SetTop(NetGraphDotDown, lastDownPoint.Y);
+
+            Canvas.SetLeft(NetGraphDotUp, lastUpPoint.X);
+            Canvas.SetTop(NetGraphDotUp, lastUpPoint.Y);
         }
         #endregion
 
@@ -729,6 +856,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleSecurity.IsOn = SettingsEngine.Dashboard_CardSecurity;
             ToggleCpuGraph.IsOn = SettingsEngine.Dashboard_CardCpuGraph;
             ToggleRamGraph.IsOn = SettingsEngine.Dashboard_CardRamGraph;
+            ToggleNetworkGraph.IsOn = SettingsEngine.Dashboard_CardNetworkGraph;
 
             CardWeather.Visibility = Visibility.Visible;
             CardNetwork.Visibility = ToggleNetwork.IsOn ? Visibility.Visible : Visibility.Collapsed;
@@ -792,6 +920,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardSecurity = ToggleSecurity.IsOn;
             SettingsEngine.Dashboard_CardCpuGraph = ToggleCpuGraph.IsOn;
             SettingsEngine.Dashboard_CardRamGraph = ToggleRamGraph.IsOn;
+            SettingsEngine.Dashboard_CardNetworkGraph = ToggleRamGraph.IsOn;
         }
 
         private void ToggleCard_Toggled(object sender, RoutedEventArgs e)
@@ -893,6 +1022,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CardSecurity, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardCpuGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardRamGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardNetworkGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
 
             SetCustomCursor(BtnVision, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenDnsPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
@@ -904,6 +1034,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnRefreshSecurity, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(ComboCpuTimeframe, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(ComboRamTimeframe, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(ComboNetTimeframe, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
@@ -920,6 +1051,9 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardDns = true;
             SettingsEngine.Dashboard_CardHealth = true;
             SettingsEngine.Dashboard_CardSecurity = true;
+            SettingsEngine.Dashboard_CardCpuGraph = true;
+            SettingsEngine.Dashboard_CardRamGraph = true;
+            SettingsEngine.Dashboard_CardNetworkGraph = true;
 
             ToggleNetwork.IsOn = true;
             ToggleRam.IsOn = true;
@@ -929,6 +1063,9 @@ namespace EvolveOS_Optimizer.Pages
             ToggleDns.IsOn = true;
             ToggleHealth.IsOn = true;
             ToggleSecurity.IsOn = true;
+            ToggleCpuGraph.IsOn = true;
+            ToggleRamGraph.IsOn = true;
+            ToggleNetworkGraph.IsOn = true;
 
             LoadDashboardLayout();
         }
