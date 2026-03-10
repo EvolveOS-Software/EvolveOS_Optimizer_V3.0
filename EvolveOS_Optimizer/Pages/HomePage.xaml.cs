@@ -42,6 +42,8 @@ namespace EvolveOS_Optimizer.Pages
         private bool _isFirstTick = true;
 
         private UIElement? _draggedCard;
+
+        private List<double> _cpuHistory = new List<double>();
         #endregion
 
         public HomePageViewModel ViewModel { get; } = new();
@@ -152,6 +154,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 string pCount = await _systemDiagnostics.GetProcessCount();
                 string sCount = await _systemDiagnostics.GetServicesCount();
+
                 double cpuPercentage = await _systemDiagnostics.GetTotalProcessorUsage();
 
                 await SystemDiagnostics.GetGpuUsage();
@@ -200,6 +203,8 @@ namespace EvolveOS_Optimizer.Pages
                         DownLoadText.Text = dlMbps.ToString("F2");
                         UpLoadText.Text = ulMbps.ToString("F2");
                     }
+
+                    UpdateCpuGraph(cpuPercentage);
                 });
             }
             catch (Exception ex) { Debug.WriteLine(ex.Message); }
@@ -232,6 +237,122 @@ namespace EvolveOS_Optimizer.Pages
                 _activeInterfaces = null;
             }
             return (d, u);
+        }
+        #endregion
+
+        #region CPU Graph Logic
+        // Default to 60 seconds (30 ticks at 2s per tick)
+        private int _maxCpuDataPoints = 30;
+
+        private void ComboCpuTimeframe_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboCpuTimeframe == null) return;
+
+            int totalSeconds = 60;
+
+            switch (ComboCpuTimeframe.SelectedIndex)
+            {
+                case 0: totalSeconds = 60; break;   // 60 Seconds
+                case 1: totalSeconds = 300; break;  // 5 Minutes
+                case 2: totalSeconds = 900; break;  // 15 Minutes
+            }
+
+            _maxCpuDataPoints = totalSeconds / 2;
+
+            UpdateAxisLabels(totalSeconds);
+
+            DrawCpuGraph();
+        }
+
+        private void UpdateAxisLabels(int totalSeconds)
+        {
+            if (TxtAxis1 == null || TxtAxis2 == null || TxtAxis3 == null || TxtAxis4 == null) return;
+
+            double step = totalSeconds / 4.0;
+
+            TxtAxis4.Text = FormatTime(totalSeconds);
+            TxtAxis3.Text = FormatTime(totalSeconds - step);
+            TxtAxis2.Text = FormatTime(totalSeconds - (step * 2));
+            TxtAxis1.Text = FormatTime(totalSeconds - (step * 3));
+        }
+
+        private string FormatTime(double seconds)
+        {
+            if (seconds < 60)
+                return $"{Math.Round(seconds)}s";
+
+            return TimeSpan.FromSeconds(seconds).ToString(@"m\:ss");
+        }
+
+        private void UpdateCpuGraph(double currentCpuUsage)
+        {
+            _cpuHistory.Add(currentCpuUsage);
+
+            while (_cpuHistory.Count > _maxCpuDataPoints)
+            {
+                _cpuHistory.RemoveAt(0);
+            }
+
+            if (TxtCurrentCpu != null)
+                TxtCurrentCpu.Text = $"{Math.Round(currentCpuUsage)}%";
+
+            DrawCpuGraph();
+        }
+
+        private void CpuGraphCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            DrawCpuGraph();
+        }
+
+        private void DrawCpuGraph()
+        {
+            if (CpuGraphCanvas == null || CpuGraphLine == null || CpuGraphFill == null || CpuGraphDot == null) return;
+
+            if (_cpuHistory.Count < 2 || CpuGraphCanvas.ActualWidth == 0 || CpuGraphCanvas.ActualHeight == 0) return;
+
+            double width = CpuGraphCanvas.ActualWidth;
+            double height = CpuGraphCanvas.ActualHeight;
+            double maxCpu = 100.0;
+            double stepX = width / (_cpuHistory.Count - 1);
+
+            var geometry = new PathGeometry();
+            var fillGeometry = new PathGeometry();
+
+            var figure = new PathFigure();
+            var fillFigure = new PathFigure();
+
+            double startY = height - (_cpuHistory[0] / maxCpu * height);
+
+            figure.StartPoint = new Windows.Foundation.Point(0, startY);
+            fillFigure.StartPoint = new Windows.Foundation.Point(0, height);
+            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(0, startY) });
+
+            Windows.Foundation.Point lastPoint = figure.StartPoint;
+
+            for (int i = 1; i < _cpuHistory.Count; i++)
+            {
+                double x = i * stepX;
+                double y = height - (_cpuHistory[i] / maxCpu * height);
+
+                y = Math.Max(0, Math.Min(height, y));
+
+                lastPoint = new Windows.Foundation.Point(x, y);
+
+                figure.Segments.Add(new LineSegment { Point = lastPoint });
+                fillFigure.Segments.Add(new LineSegment { Point = lastPoint });
+            }
+
+            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(width, height) });
+
+            geometry.Figures.Add(figure);
+            fillGeometry.Figures.Add(fillFigure);
+
+            CpuGraphLine.Data = geometry;
+            CpuGraphFill.Data = fillGeometry;
+
+            CpuGraphDot.Visibility = Visibility.Visible;
+            Canvas.SetLeft(CpuGraphDot, lastPoint.X);
+            Canvas.SetTop(CpuGraphDot, lastPoint.Y);
         }
         #endregion
 
@@ -498,11 +619,13 @@ namespace EvolveOS_Optimizer.Pages
             ToggleDns.IsOn = SettingsEngine.Dashboard_CardDns;
             ToggleHealth.IsOn = SettingsEngine.Dashboard_CardHealth;
             ToggleSecurity.IsOn = SettingsEngine.Dashboard_CardSecurity;
+            ToggleCpuGraph.IsOn = SettingsEngine.Dashboard_CardCpuGraph;
 
             CardWeather.Visibility = Visibility.Visible;
             CardNetwork.Visibility = ToggleNetwork.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardRam.Visibility = ToggleRam.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardCpu.Visibility = ToggleCpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardCpuGraph.Visibility = ToggleCpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardGpu.Visibility = ToggleGpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDisk.Visibility = ToggleDisk.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDns.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
@@ -557,6 +680,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardDns = ToggleDns.IsOn;
             SettingsEngine.Dashboard_CardHealth = ToggleHealth.IsOn;
             SettingsEngine.Dashboard_CardSecurity = ToggleSecurity.IsOn;
+            SettingsEngine.Dashboard_CardCpuGraph = ToggleCpuGraph.IsOn;
         }
 
         private void ToggleCard_Toggled(object sender, RoutedEventArgs e)
@@ -567,6 +691,13 @@ namespace EvolveOS_Optimizer.Pages
                 if (card != null)
                 {
                     card.Visibility = ts.IsOn ? Visibility.Visible : Visibility.Collapsed;
+
+                    /*if (cardName == "CardCpu")
+                    {
+                        var graphCard = DashboardPanel.Children.OfType<FrameworkElement>().FirstOrDefault(c => c.Name == "CardCpuGraph");
+                        if (graphCard != null) graphCard.Visibility = ts.IsOn ? Visibility.Visible : Visibility.Collapsed;
+                    }*/
+
                     SaveDashboardLayout();
                 }
             }
@@ -640,17 +771,17 @@ namespace EvolveOS_Optimizer.Pages
 
         private void DashboardDragCursor()
         {
-            // Set the "Move" cursor for the draggable cards
             SetCustomCursor(CardNetwork, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardRam, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardCpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardCpuGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardGpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardDisk, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardDns, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardMaintenance, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardSecurity, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardCpuGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
 
-            // OVERRIDES: Set the standard Arrow (or Hand) cursor for clickable elements INSIDE the cards
             SetCustomCursor(BtnVision, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenDnsPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnStartService, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
@@ -660,14 +791,13 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnOpenSecurityPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRefreshSecurity, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
 
-            // Text blocks with "PointerPressed" events to copy text. 
             SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
         }
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsEngine.DashboardCardOrder = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk";
+            SettingsEngine.DashboardCardOrder = "CardNetwork,CardRam,CardCpu,CardCpuGraph,CardGpu,CardDisk";
             SettingsEngine.Dashboard_CardNetwork = true;
             SettingsEngine.Dashboard_CardRam = true;
             SettingsEngine.Dashboard_CardCpu = true;
