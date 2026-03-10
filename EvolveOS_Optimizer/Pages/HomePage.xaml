@@ -193,6 +193,7 @@
                                     <ToggleSwitch x:Name="ToggleHealth" Header="System Health" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardMaintenance"/>
                                     <ToggleSwitch x:Name="ToggleSecurity" Header="System Security" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardSecurity"/>
                                     <ToggleSwitch x:Name="ToggleCpuGraph" Header="Cpu Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpuGraph"/>
+                                    <ToggleSwitch x:Name="ToggleRamGraph" Header="Ram Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRamGraph"/>
                                     <MenuFlyoutSeparator Margin="0,5"/>
                                     <Button Content="{helpers:ResourceString Key=button_reset_default}" Click="ResetDashboard_Click" HorizontalAlignment="Stretch" />
                                 </StackPanel>
@@ -710,6 +711,113 @@
                                         <Path x:Name="CpuGraphLine" Stroke="#0078D7" StrokeThickness="2.5" StrokeLineJoin="Round"/>
 
                                         <Ellipse x:Name="CpuGraphDot" Width="10" Height="10" Fill="#0078D7" Margin="-5,-5,0,0" Visibility="Collapsed"/>
+                                    </Canvas>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="CardRamGraph" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
+                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,16">
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
+                                    <FontIcon Glyph="&#xE964;" Margin="0,-12,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                    <TextBlock Text="Memory History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
+                                    <ComboBox x:Name="ComboRamTimeframe" SelectedIndex="0" SelectionChanged="ComboRamTimeframe_SelectionChanged" Height="32" Padding="12,0,8,0" Background="Transparent" BorderThickness="0">
+                                        <x:String>60 Seconds</x:String>
+                                        <x:String>5 Minutes</x:String>
+                                        <x:String>15 Minutes</x:String>
+                                    </ComboBox>
+                                    <TextBlock x:Name="TxtCurrentRam" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#881798" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Grid.Row="1" MinHeight="140">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="20" />
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,8,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                    <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                    <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                    <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                    <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
+                                </Grid>
+
+                                <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="TxtRamAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                    <TextBlock x:Name="TxtRamAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                    <TextBlock x:Name="TxtRamAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                    <TextBlock x:Name="TxtRamAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                    <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+                                </Grid>
+
+                                <Grid Grid.Row="0" Grid.Column="1">
+                                    <Grid Opacity="0.15" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.RowSpan="4" Grid.Column="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                        <Border Grid.RowSpan="4" Grid.Column="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                        <Border Grid.RowSpan="4" Grid.Column="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+
+                                        <Border Grid.ColumnSpan="4" Grid.Row="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                        <Border Grid.ColumnSpan="4" Grid.Row="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                        <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                    </Grid>
+
+                                    <Canvas x:Name="RamGraphCanvas" SizeChanged="RamGraphCanvas_SizeChanged">
+                                        <Path x:Name="RamGraphFill" Opacity="0.15">
+                                            <Path.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Color="#881798" Offset="0.0" />
+                                                    <GradientStop Color="Transparent" Offset="1.0" />
+                                                </LinearGradientBrush>
+                                            </Path.Fill>
+                                        </Path>
+
+                                        <Path x:Name="RamGraphLine" Stroke="#881798" StrokeThickness="2.5" StrokeLineJoin="Round"/>
+
+                                        <Ellipse x:Name="RamGraphDot" Width="10" Height="10" Fill="#881798" Margin="-5,-5,0,0" Visibility="Collapsed"/>
                                     </Canvas>
                                 </Grid>
                             </Grid>

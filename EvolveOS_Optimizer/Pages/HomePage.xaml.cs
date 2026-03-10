@@ -44,6 +44,7 @@ namespace EvolveOS_Optimizer.Pages
         private UIElement? _draggedCard;
 
         private List<double> _cpuHistory = new List<double>();
+        private List<double> _ramHistory = new List<double>();
         #endregion
 
         public HomePageViewModel ViewModel { get; } = new();
@@ -205,6 +206,7 @@ namespace EvolveOS_Optimizer.Pages
                     }
 
                     UpdateCpuGraph(cpuPercentage);
+                    UpdateRamGraph(ramPercentage);
                 });
             }
             catch (Exception ex) { Debug.WriteLine(ex.Message); }
@@ -237,6 +239,112 @@ namespace EvolveOS_Optimizer.Pages
                 _activeInterfaces = null;
             }
             return (d, u);
+        }
+        #endregion
+
+        #region RAM Graph Logic
+
+        private int _maxRamDataPoints = 30;
+
+        private void ComboRamTimeframe_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboRamTimeframe == null) return;
+
+            int totalSeconds = 60;
+
+            switch (ComboRamTimeframe.SelectedIndex)
+            {
+                case 0: totalSeconds = 60; break;
+                case 1: totalSeconds = 300; break;
+                case 2: totalSeconds = 900; break;
+            }
+
+            _maxRamDataPoints = totalSeconds / 2;
+            UpdateRamAxisLabels(totalSeconds);
+            DrawRamGraph();
+        }
+
+        private void UpdateRamAxisLabels(int totalSeconds)
+        {
+            if (TxtRamAxis1 == null || TxtRamAxis2 == null || TxtRamAxis3 == null || TxtRamAxis4 == null) return;
+
+            double step = totalSeconds / 4.0;
+
+            TxtRamAxis4.Text = FormatTime(totalSeconds);
+            TxtRamAxis3.Text = FormatTime(totalSeconds - step);
+            TxtRamAxis2.Text = FormatTime(totalSeconds - (step * 2));
+            TxtRamAxis1.Text = FormatTime(totalSeconds - (step * 3));
+        }
+
+        private void UpdateRamGraph(double currentRamUsage)
+        {
+            _ramHistory.Add(currentRamUsage);
+
+            while (_ramHistory.Count > _maxRamDataPoints)
+            {
+                _ramHistory.RemoveAt(0);
+            }
+
+            if (TxtCurrentRam != null)
+                TxtCurrentRam.Text = $"{Math.Round(currentRamUsage)}%";
+
+            DrawRamGraph();
+        }
+
+        private void RamGraphCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            DrawRamGraph();
+        }
+
+        private void DrawRamGraph()
+        {
+            if (RamGraphCanvas == null || RamGraphLine == null || RamGraphFill == null || RamGraphDot == null) return;
+
+            if (_ramHistory.Count < 2 || RamGraphCanvas.ActualWidth == 0 || RamGraphCanvas.ActualHeight == 0) return;
+
+            double width = RamGraphCanvas.ActualWidth;
+            double height = RamGraphCanvas.ActualHeight;
+            double maxRam = 100.0;
+            double stepX = width / (_ramHistory.Count - 1);
+
+            var geometry = new PathGeometry();
+            var fillGeometry = new PathGeometry();
+
+            var figure = new PathFigure();
+            var fillFigure = new PathFigure();
+
+            double startY = height - (_ramHistory[0] / maxRam * height);
+
+            figure.StartPoint = new Windows.Foundation.Point(0, startY);
+            fillFigure.StartPoint = new Windows.Foundation.Point(0, height);
+            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(0, startY) });
+
+            Windows.Foundation.Point lastPoint = figure.StartPoint;
+
+            for (int i = 1; i < _ramHistory.Count; i++)
+            {
+                double x = i * stepX;
+                double y = height - (_ramHistory[i] / maxRam * height);
+
+                y = Math.Max(0, Math.Min(height, y));
+
+                lastPoint = new Windows.Foundation.Point(x, y);
+
+                figure.Segments.Add(new LineSegment { Point = lastPoint });
+                fillFigure.Segments.Add(new LineSegment { Point = lastPoint });
+            }
+
+            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(width, height) });
+
+            geometry.Figures.Add(figure);
+            fillGeometry.Figures.Add(fillFigure);
+
+            RamGraphLine.Data = geometry;
+            RamGraphFill.Data = fillGeometry;
+
+            RamGraphDot.Visibility = Visibility.Visible;
+            Canvas.SetLeft(RamGraphDot, lastPoint.X);
+            Canvas.SetTop(RamGraphDot, lastPoint.Y);
         }
         #endregion
 
@@ -620,17 +728,19 @@ namespace EvolveOS_Optimizer.Pages
             ToggleHealth.IsOn = SettingsEngine.Dashboard_CardHealth;
             ToggleSecurity.IsOn = SettingsEngine.Dashboard_CardSecurity;
             ToggleCpuGraph.IsOn = SettingsEngine.Dashboard_CardCpuGraph;
+            ToggleRamGraph.IsOn = SettingsEngine.Dashboard_CardRamGraph;
 
             CardWeather.Visibility = Visibility.Visible;
             CardNetwork.Visibility = ToggleNetwork.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardRam.Visibility = ToggleRam.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardCpu.Visibility = ToggleCpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardCpuGraph.Visibility = ToggleCpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardCpuGraph.Visibility = ToggleCpuGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardGpu.Visibility = ToggleGpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDisk.Visibility = ToggleDisk.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDns.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardMaintenance.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardSecurity.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardRamGraph.Visibility = ToggleRamGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
 
             string savedOrder = SettingsEngine.DashboardCardOrder;
             if (!string.IsNullOrWhiteSpace(savedOrder))
@@ -681,6 +791,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardHealth = ToggleHealth.IsOn;
             SettingsEngine.Dashboard_CardSecurity = ToggleSecurity.IsOn;
             SettingsEngine.Dashboard_CardCpuGraph = ToggleCpuGraph.IsOn;
+            SettingsEngine.Dashboard_CardRamGraph = ToggleRamGraph.IsOn;
         }
 
         private void ToggleCard_Toggled(object sender, RoutedEventArgs e)
@@ -781,6 +892,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CardMaintenance, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardSecurity, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardCpuGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardRamGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
 
             SetCustomCursor(BtnVision, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenDnsPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
@@ -790,6 +902,8 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnRefreshHealth, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenSecurityPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRefreshSecurity, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(ComboCpuTimeframe, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(ComboRamTimeframe, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);

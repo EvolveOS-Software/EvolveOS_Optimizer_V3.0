@@ -66,7 +66,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableCloseToTray"] = true,
             ["EnableStartMinimized"] = false,
 
-            ["DashboardCardOrder"] = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk,CardDns,CardHealth,CardSecurity,CardCpuGraph",
+            ["DashboardCardOrder"] = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk,CardDns,CardHealth,CardSecurity,CardCpuGraph,CardRamGraph",
             ["Dashboard_CardNetwork"] = true,
             ["Dashboard_CardRam"] = true,
             ["Dashboard_CardCpu"] = true,
@@ -76,6 +76,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_CardHealth"] = true,
             ["Dashboard_CardSecurity"] = true,
             ["Dashboard_CardCpuGraph"] = true,
+            ["Dashboard_CardRamGraph"] = true,
             ["AutoLoginSessionHours"] = 4,
 
             ["IsPasswordGenHotkeyEnabled"] = false,
@@ -137,6 +138,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_CardHealth { get => (bool)_cachedSettings["Dashboard_CardHealth"]; set => ChangingParameters("Dashboard_CardHealth", value); }
         internal static bool Dashboard_CardSecurity { get => (bool)_cachedSettings["Dashboard_CardSecurity"]; set => ChangingParameters("Dashboard_CardSecurity", value); }
         internal static bool Dashboard_CardCpuGraph { get => (bool)_cachedSettings["Dashboard_CardCpuGraph"]; set => ChangingParameters("Dashboard_CardCpuGraph", value); }
+        internal static bool Dashboard_CardRamGraph { get => (bool)_cachedSettings["Dashboard_CardRamGraph"]; set => ChangingParameters("Dashboard_CardRamGraph", value); }
 
         private static void ChangingParameters(string key, object value)
         {
