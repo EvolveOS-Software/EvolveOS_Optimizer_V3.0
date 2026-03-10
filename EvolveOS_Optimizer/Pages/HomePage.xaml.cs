@@ -175,8 +175,15 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (timeDiff > 0 && !_isFirstTick)
                 {
-                    dlMbps = ((currentStats.Down - _lastDownloadBytes) / timeDiff / (1024.0 * 1024.0)) * 8.0;
-                    ulMbps = ((currentStats.Up - _lastUploadBytes) / timeDiff / (1024.0 * 1024.0)) * 8.0;
+                    if (currentStats.Down >= _lastDownloadBytes)
+                    {
+                        dlMbps = ((currentStats.Down - _lastDownloadBytes) * 8.0) / timeDiff / 1_000_000.0;
+                    }
+
+                    if (currentStats.Up >= _lastUploadBytes)
+                    {
+                        ulMbps = ((currentStats.Up - _lastUploadBytes) * 8.0) / timeDiff / 1_000_000.0;
+                    }
                 }
 
                 _lastDownloadBytes = currentStats.Down;
@@ -222,10 +229,32 @@ namespace EvolveOS_Optimizer.Pages
             {
                 if (_activeInterfaces == null || (DateTime.Now - _lastInterfaceUpdate).TotalSeconds > 60)
                 {
-                    _activeInterfaces = NetworkInterface.GetAllNetworkInterfaces()
-                        .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
-                                     ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                        .ToArray();
+                    var allInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+                    var mainInterface = allInterfaces.FirstOrDefault(ni =>
+                        ni.OperationalStatus == OperationalStatus.Up &&
+                        ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                        ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
+                        ni.GetIPProperties().GatewayAddresses.Any(g => g.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork));
+
+                    if (mainInterface == null)
+                    {
+                        mainInterface = allInterfaces.FirstOrDefault(ni =>
+                            ni.OperationalStatus == OperationalStatus.Up &&
+                            (ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
+                             ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) &&
+                            !ni.Description.Contains("Virtual", StringComparison.OrdinalIgnoreCase) &&
+                            !ni.Description.Contains("Pseudo", StringComparison.OrdinalIgnoreCase));
+                    }
+
+                    if (mainInterface != null)
+                    {
+                        _activeInterfaces = new[] { mainInterface };
+                    }
+                    else
+                    {
+                        _activeInterfaces = Array.Empty<NetworkInterface>();
+                    }
 
                     _lastInterfaceUpdate = DateTime.Now;
                 }
