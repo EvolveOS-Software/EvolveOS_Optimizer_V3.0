@@ -78,6 +78,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_CardCpuGraph"] = true,
             ["Dashboard_CardRamGraph"] = true,
             ["Dashboard_CardNetworkGraph"] = true,
+            ["Dashboard_GraphTimeframe"] = 0,
             ["AutoLoginSessionHours"] = 4,
 
             ["IsPasswordGenHotkeyEnabled"] = false,
@@ -141,6 +142,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_CardCpuGraph { get => (bool)_cachedSettings["Dashboard_CardCpuGraph"]; set => ChangingParameters("Dashboard_CardCpuGraph", value); }
         internal static bool Dashboard_CardRamGraph { get => (bool)_cachedSettings["Dashboard_CardRamGraph"]; set => ChangingParameters("Dashboard_CardRamGraph", value); }
         internal static bool Dashboard_CardNetworkGraph { get => (bool)_cachedSettings["Dashboard_CardNetworkGraph"]; set => ChangingParameters("Dashboard_CardNetworkGraph", value); }
+        internal static int Dashboard_GraphTimeframe { get => (int)_cachedSettings["Dashboard_GraphTimeframe"]; set => ChangingParameters("Dashboard_GraphTimeframe", value); }
 
         private static void ChangingParameters(string key, object value)
         {

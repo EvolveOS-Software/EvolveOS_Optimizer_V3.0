@@ -277,24 +277,6 @@ namespace EvolveOS_Optimizer.Pages
         #region Network Graph Logic
         private int _maxNetDataPoints = 30;
 
-        private void ComboNetTimeframe_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ComboNetTimeframe == null) return;
-
-            int totalSeconds = 60;
-
-            switch (ComboNetTimeframe.SelectedIndex)
-            {
-                case 0: totalSeconds = 60; break;
-                case 1: totalSeconds = 300; break;
-                case 2: totalSeconds = 900; break;
-            }
-
-            _maxNetDataPoints = totalSeconds / 2;
-            UpdateNetAxisLabels(totalSeconds);
-            DrawNetGraph();
-        }
-
         private void UpdateNetAxisLabels(int totalSeconds)
         {
             if (TxtNetAxis1 == null || TxtNetAxis2 == null || TxtNetAxis3 == null || TxtNetAxis4 == null) return;
@@ -402,24 +384,6 @@ namespace EvolveOS_Optimizer.Pages
 
         private int _maxRamDataPoints = 30;
 
-        private void ComboRamTimeframe_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ComboRamTimeframe == null) return;
-
-            int totalSeconds = 60;
-
-            switch (ComboRamTimeframe.SelectedIndex)
-            {
-                case 0: totalSeconds = 60; break;
-                case 1: totalSeconds = 300; break;
-                case 2: totalSeconds = 900; break;
-            }
-
-            _maxRamDataPoints = totalSeconds / 2;
-            UpdateRamAxisLabels(totalSeconds);
-            DrawRamGraph();
-        }
-
         private void UpdateRamAxisLabels(int totalSeconds)
         {
             if (TxtRamAxis1 == null || TxtRamAxis2 == null || TxtRamAxis3 == null || TxtRamAxis4 == null) return;
@@ -507,26 +471,6 @@ namespace EvolveOS_Optimizer.Pages
         #region CPU Graph Logic
         // Default to 60 seconds (30 ticks at 2s per tick)
         private int _maxCpuDataPoints = 30;
-
-        private void ComboCpuTimeframe_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ComboCpuTimeframe == null) return;
-
-            int totalSeconds = 60;
-
-            switch (ComboCpuTimeframe.SelectedIndex)
-            {
-                case 0: totalSeconds = 60; break;   // 60 Seconds
-                case 1: totalSeconds = 300; break;  // 5 Minutes
-                case 2: totalSeconds = 900; break;  // 15 Minutes
-            }
-
-            _maxCpuDataPoints = totalSeconds / 2;
-
-            UpdateAxisLabels(totalSeconds);
-
-            DrawCpuGraph();
-        }
 
         private void UpdateAxisLabels(int totalSeconds)
         {
@@ -617,6 +561,36 @@ namespace EvolveOS_Optimizer.Pages
             CpuGraphDot.Visibility = Visibility.Visible;
             Canvas.SetLeft(CpuGraphDot, lastPoint.X);
             Canvas.SetTop(CpuGraphDot, lastPoint.Y);
+        }
+        #endregion
+
+        #region Global Graph Settings
+        private void ComboGlobalTimeframe_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboGlobalTimeframe == null) return;
+
+            SettingsEngine.Dashboard_GraphTimeframe = ComboGlobalTimeframe.SelectedIndex;
+
+            int totalSeconds = 60;
+
+            switch (ComboGlobalTimeframe.SelectedIndex)
+            {
+                case 0: totalSeconds = 60; break;
+                case 1: totalSeconds = 300; break;
+                case 2: totalSeconds = 900; break;
+            }
+
+            _maxCpuDataPoints = totalSeconds / 2;
+            _maxRamDataPoints = totalSeconds / 2;
+            _maxNetDataPoints = totalSeconds / 2;
+
+            UpdateAxisLabels(totalSeconds);    // CPU
+            UpdateRamAxisLabels(totalSeconds); // RAM
+            UpdateNetAxisLabels(totalSeconds); // Network
+
+            DrawCpuGraph();
+            DrawRamGraph();
+            DrawNetGraph();
         }
         #endregion
 
@@ -895,9 +869,10 @@ namespace EvolveOS_Optimizer.Pages
             CardGpu.Visibility = ToggleGpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDisk.Visibility = ToggleDisk.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardDns.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardMaintenance.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardSecurity.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardMaintenance.Visibility = ToggleHealth.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardSecurity.Visibility = ToggleSecurity.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardRamGraph.Visibility = ToggleRamGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            CardNetworkGraph.Visibility = ToggleNetworkGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
 
             string savedOrder = SettingsEngine.DashboardCardOrder;
             if (!string.IsNullOrWhiteSpace(savedOrder))
@@ -928,6 +903,11 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     DashboardPanel.Children.Add(card);
                 }
+            }
+
+            if (ComboGlobalTimeframe != null)
+            {
+                ComboGlobalTimeframe.SelectedIndex = SettingsEngine.Dashboard_GraphTimeframe;
             }
         }
 
@@ -1061,9 +1041,6 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnRefreshHealth, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenSecurityPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRefreshSecurity, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(ComboCpuTimeframe, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(ComboRamTimeframe, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(ComboNetTimeframe, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
@@ -1071,7 +1048,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsEngine.DashboardCardOrder = "CardNetwork,CardRam,CardCpu,CardCpuGraph,CardGpu,CardDisk";
+            SettingsEngine.DashboardCardOrder = "CardNetwork,CardRam,CardCpu,CardCpuGraph,CardGpu,CardDisk,CardDns,CardHealth,CardSecurity,CardCpuGraph,CardRamGraph,CardNetworkGraph";
             SettingsEngine.Dashboard_CardNetwork = true;
             SettingsEngine.Dashboard_CardRam = true;
             SettingsEngine.Dashboard_CardCpu = true;
@@ -1083,6 +1060,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardCpuGraph = true;
             SettingsEngine.Dashboard_CardRamGraph = true;
             SettingsEngine.Dashboard_CardNetworkGraph = true;
+            SettingsEngine.Dashboard_GraphTimeframe = 0;
 
             ToggleNetwork.IsOn = true;
             ToggleRam.IsOn = true;
@@ -1095,6 +1073,11 @@ namespace EvolveOS_Optimizer.Pages
             ToggleCpuGraph.IsOn = true;
             ToggleRamGraph.IsOn = true;
             ToggleNetworkGraph.IsOn = true;
+
+            if (ComboGlobalTimeframe != null)
+            {
+                ComboGlobalTimeframe.SelectedIndex = 0;
+            }
 
             LoadDashboardLayout();
         }

@@ -192,10 +192,21 @@
                                     <ToggleSwitch x:Name="ToggleDns" Header="DNS Encryption" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDns"/>
                                     <ToggleSwitch x:Name="ToggleHealth" Header="System Health" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardMaintenance"/>
                                     <ToggleSwitch x:Name="ToggleSecurity" Header="System Security" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardSecurity"/>
-                                    <ToggleSwitch x:Name="ToggleCpuGraph" Header="Cpu Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpuGraph"/>
-                                    <ToggleSwitch x:Name="ToggleRamGraph" Header="Ram Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRamGraph"/>
+                                    <ToggleSwitch x:Name="ToggleCpuGraph" Header="CPU Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpuGraph"/>
+                                    <ToggleSwitch x:Name="ToggleRamGraph" Header="RAM Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRamGraph"/>
                                     <ToggleSwitch x:Name="ToggleNetworkGraph" Header="Network Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetworkGraph"/>
+
                                     <MenuFlyoutSeparator Margin="0,5"/>
+
+                                    <TextBlock Text="Graph Timeframe" Style="{StaticResource BodyTextBlockStyle}"/>
+                                    <ComboBox x:Name="ComboGlobalTimeframe" SelectedIndex="0" SelectionChanged="ComboGlobalTimeframe_SelectionChanged" HorizontalAlignment="Stretch">
+                                        <x:String>60 Seconds</x:String>
+                                        <x:String>5 Minutes</x:String>
+                                        <x:String>15 Minutes</x:String>
+                                    </ComboBox>
+
+                                    <MenuFlyoutSeparator Margin="0,5"/>
+
                                     <Button Content="{helpers:ResourceString Key=button_reset_default}" Click="ResetDashboard_Click" HorizontalAlignment="Stretch" />
                                 </StackPanel>
                             </Flyout>
@@ -621,16 +632,11 @@
 
                             <Grid Grid.Row="0" Margin="0,0,0,16">
                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
-                                    <FontIcon Glyph="&#xE950;" Margin="0,-12,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                    <FontIcon Glyph="&#xE950;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
                                     <TextBlock Text="CPU History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                    <ComboBox x:Name="ComboCpuTimeframe" SelectedIndex="0" SelectionChanged="ComboCpuTimeframe_SelectionChanged" Height="32" Padding="12,0,8,0" Background="Transparent" BorderThickness="0">
-                                        <x:String>60 Seconds</x:String>
-                                        <x:String>5 Minutes</x:String>
-                                        <x:String>15 Minutes</x:String>
-                                    </ComboBox>
                                     <TextBlock x:Name="TxtCurrentCpu" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#0078D7" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
                                 </StackPanel>
                             </Grid>
@@ -730,16 +736,11 @@
 
                             <Grid Grid.Row="0" Margin="0,0,0,16">
                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
-                                    <FontIcon Glyph="&#xE964;" Margin="0,-12,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                    <FontIcon Glyph="&#xE964;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
                                     <TextBlock Text="Memory History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                    <ComboBox x:Name="ComboRamTimeframe" SelectedIndex="0" SelectionChanged="ComboRamTimeframe_SelectionChanged" Height="32" Padding="12,0,8,0" Background="Transparent" BorderThickness="0">
-                                        <x:String>60 Seconds</x:String>
-                                        <x:String>5 Minutes</x:String>
-                                        <x:String>15 Minutes</x:String>
-                                    </ComboBox>
                                     <TextBlock x:Name="TxtCurrentRam" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#881798" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
                                 </StackPanel>
                             </Grid>
@@ -841,17 +842,9 @@
                                     <TextBlock Text="Network History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                    <ComboBox x:Name="ComboNetTimeframe" SelectedIndex="0" SelectionChanged="ComboNetTimeframe_SelectionChanged" Height="32" Padding="12,0,8,0" Background="Transparent" BorderThickness="0">
-                                        <x:String>60 Seconds</x:String>
-                                        <x:String>5 Minutes</x:String>
-                                        <x:String>15 Minutes</x:String>
-                                    </ComboBox>
-
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock x:Name="TxtCurrentDown" Text="D: 0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#0078D7" HorizontalAlignment="Right"/>
-                                        <TextBlock x:Name="TxtCurrentUp" Text="U: 0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#881798" HorizontalAlignment="Right"/>
-                                    </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock x:Name="TxtCurrentDown" Text="D: 0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#0078D7" HorizontalAlignment="Right"/>
+                                    <TextBlock x:Name="TxtCurrentUp" Text="U: 0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#881798" HorizontalAlignment="Right"/>
                                 </StackPanel>
                             </Grid>
 
