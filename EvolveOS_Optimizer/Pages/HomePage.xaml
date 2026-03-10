@@ -138,87 +138,70 @@
 
                 <Grid VerticalAlignment="Top" Margin="10,2,10,0">
                     <Ellipse Height="95" Width="95" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>
-
                     <Viewbox Width="105" Height="105">
-                        <ProgressRing x:Name="DownLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" 
-                               Foreground="#00bfff"/>
+                        <ProgressRing x:Name="DownLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" Foreground="#00bfff"/>
                     </Viewbox>
-
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="DOWNLOAD" FontSize="11" FontFamily="{StaticResource Jura}" 
-                           Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Mbps" FontSize="10" FontFamily="{StaticResource Jura}" 
-                           Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
-                        <TextBlock x:Name="DownLoadText" Text="0.00" FontSize="18" FontWeight="Bold" 
-                           Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="DOWNLOAD" FontSize="11" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Mbps" FontSize="10" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
+                        <TextBlock x:Name="DownLoadText" Text="0.00" FontSize="18" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Grid>
 
-                <Grid VerticalAlignment="Top" Margin="10,2,10,0">
-                    <Ellipse Height="95" Width="95" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5" 
-                     VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>
-
+                <Grid VerticalAlignment="Top" Margin="10,2,-10,0">
+                    <Ellipse Height="95" Width="95" Stroke="{StaticResource Brush_Separator}" StrokeThickness="4.5" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.2"/>
                     <Viewbox Width="105" Height="105">
-                        <ProgressRing x:Name="UpLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" 
-                               Foreground="#ff9f1c"/>
+                        <ProgressRing x:Name="UpLoadRing" Value="0" Maximum="1000" IsIndeterminate="False" Foreground="#ff9f1c"/>
                     </Viewbox>
-
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="UPLOAD" FontSize="11" FontFamily="{StaticResource Jura}" 
-                           Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Mbps" FontSize="10" FontFamily="{StaticResource Jura}" 
-                           Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
-                        <TextBlock x:Name="UpLoadText" Text="0.00" FontSize="18" FontWeight="Bold" 
-                           Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="UPLOAD" FontSize="11" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Mbps" FontSize="10" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center" Margin="0,-2,0,2"/>
+                        <TextBlock x:Name="UpLoadText" Text="0.00" FontSize="18" FontWeight="Bold" Style="{StaticResource BodyTextBlockStyle}" Foreground="{StaticResource Brush_Inactive}" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Grid>
+
+                <Button VerticalAlignment="Bottom" Margin="0,0,-3,0" Background="Transparent" BorderThickness="0" IsTabStop="False" Padding="6" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_customize_layout}">
+                    <Button.Flyout>
+                        <Flyout>
+                            <StackPanel Spacing="10" MinWidth="200">
+                                <TextBlock Text="{helpers:ResourceString Key=text_customize_dashboard}" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,0,5"/>
+                                <ToggleSwitch x:Name="ToggleNetwork" Header="Network Status" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetwork"/>
+                                <ToggleSwitch x:Name="ToggleRam" Header="RAM Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRam"/>
+                                <ToggleSwitch x:Name="ToggleCpu" Header="CPU Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpu"/>
+                                <ToggleSwitch x:Name="ToggleGpu" Header="GPU Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpu"/>
+                                <ToggleSwitch x:Name="ToggleDisk" Header="Disk Space" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDisk"/>
+                                <ToggleSwitch x:Name="ToggleDns" Header="DNS Encryption" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDns"/>
+                                <ToggleSwitch x:Name="ToggleHealth" Header="System Health" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardMaintenance"/>
+                                <ToggleSwitch x:Name="ToggleSecurity" Header="System Security" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardSecurity"/>
+                                <ToggleSwitch x:Name="ToggleCpuGraph" Header="CPU Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpuGraph"/>
+                                <ToggleSwitch x:Name="ToggleRamGraph" Header="RAM Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRamGraph"/>
+                                <ToggleSwitch x:Name="ToggleNetworkGraph" Header="Network Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetworkGraph"/>
+                                <ToggleSwitch x:Name="ToggleGpuGraph" Header="GPU Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpuGraph"/>
+
+                                <MenuFlyoutSeparator Margin="0,5"/>
+
+                                <TextBlock Text="Graph Timeframe" Style="{StaticResource BodyTextBlockStyle}"/>
+                                <ComboBox x:Name="ComboGlobalTimeframe" SelectionChanged="ComboGlobalTimeframe_SelectionChanged" HorizontalAlignment="Stretch">
+                                    <x:String>60 Seconds</x:String>
+                                    <x:String>5 Minutes</x:String>
+                                    <x:String>15 Minutes</x:String>
+                                </ComboBox>
+
+                                <MenuFlyoutSeparator Margin="0,5"/>
+
+                                <Button Content="{helpers:ResourceString Key=button_reset_default}" Click="ResetDashboard_Click" HorizontalAlignment="Stretch" />
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                    <FontIcon Glyph="&#xE713;" FontSize="14" Foreground="{StaticResource Brush_Inactive}"/>
+                </Button>
             </StackPanel>
         </Grid>
 
-        <ScrollViewer Grid.Row="1" Margin="0,-25,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,-20">
+        <ScrollViewer Grid.Row="1" Margin="0,0,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,-20">
 
             <StackPanel>
-                <StackPanel HorizontalAlignment="Right" Margin="0,0,25,26">
-                    <Button Background="Transparent" BorderThickness="0" IsTabStop="False" Padding="6" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_customize_layout}">
-                        <Button.Flyout>
-                            <Flyout>
-                                <StackPanel Spacing="10" MinWidth="200">
-                                    <TextBlock Text="{helpers:ResourceString Key=text_customize_dashboard}" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,0,5"/>
-                                    <ToggleSwitch x:Name="ToggleNetwork" Header="Network Status" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetwork"/>
-                                    <ToggleSwitch x:Name="ToggleRam" Header="RAM Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRam"/>
-                                    <ToggleSwitch x:Name="ToggleCpu" Header="CPU Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpu"/>
-                                    <ToggleSwitch x:Name="ToggleGpu" Header="GPU Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpu"/>
-                                    <ToggleSwitch x:Name="ToggleDisk" Header="Disk Space" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDisk"/>
-                                    <ToggleSwitch x:Name="ToggleDns" Header="DNS Encryption" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDns"/>
-                                    <ToggleSwitch x:Name="ToggleHealth" Header="System Health" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardMaintenance"/>
-                                    <ToggleSwitch x:Name="ToggleSecurity" Header="System Security" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardSecurity"/>
-                                    <ToggleSwitch x:Name="ToggleCpuGraph" Header="CPU Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpuGraph"/>
-                                    <ToggleSwitch x:Name="ToggleRamGraph" Header="RAM Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRamGraph"/>
-                                    <ToggleSwitch x:Name="ToggleNetworkGraph" Header="Network Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetworkGraph"/>
-                                    <ToggleSwitch x:Name="ToggleGpuGraph" Header="GPU Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpuGraph"/>
-
-                                    <MenuFlyoutSeparator Margin="0,5"/>
-
-                                    <TextBlock Text="Graph Timeframe" Style="{StaticResource BodyTextBlockStyle}"/>
-                                    <ComboBox x:Name="ComboGlobalTimeframe" SelectionChanged="ComboGlobalTimeframe_SelectionChanged" HorizontalAlignment="Stretch">
-                                        <x:String>60 Seconds</x:String>
-                                        <x:String>5 Minutes</x:String>
-                                        <x:String>15 Minutes</x:String>
-                                    </ComboBox>
-
-                                    <MenuFlyoutSeparator Margin="0,5"/>
-
-                                    <Button Content="{helpers:ResourceString Key=button_reset_default}" Click="ResetDashboard_Click" HorizontalAlignment="Stretch" />
-                                </StackPanel>
-                            </Flyout>
-                        </Button.Flyout>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon Glyph="&#xE713;" FontSize="14" Foreground="{StaticResource Brush_Inactive}"/>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-
-                <uc:DashboardFlowPanel x:Name="DashboardPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,-22,0,0" HorizontalSpacing="10" VerticalSpacing="10">
+                <uc:DashboardFlowPanel x:Name="DashboardPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,0,0" HorizontalSpacing="10" VerticalSpacing="10">
                     <uc:DashboardFlowPanel.ChildrenTransitions>
                         <TransitionCollection>
                             <RepositionThemeTransition IsStaggeringEnabled="False"/>
