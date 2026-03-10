@@ -595,32 +595,57 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
             string winTemp = Path.Combine(PathLocator.Folders.SystemDrive, @"Windows\Temp");
 
             CleanDirectorySafely(winTemp);
-            CleanDirectorySafely(localTemp, skipNetExtracts: true);
+            CleanDirectorySafely(localTemp);
         }
 
-        private static void CleanDirectorySafely(string directoryPath, bool skipNetExtracts = false)
+        private static void CleanDirectorySafely(string directoryPath)
         {
             if (!Directory.Exists(directoryPath)) return;
 
+            string currentAppBaseDir = AppContext.BaseDirectory.TrimEnd('\\', '/');
+            string targetDir = directoryPath.TrimEnd('\\', '/');
+
+            if (targetDir.Equals(currentAppBaseDir, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
             DirectoryInfo dir = new DirectoryInfo(directoryPath);
 
-            foreach (FileInfo file in dir.GetFiles())
+            bool isParentOfApp = currentAppBaseDir.StartsWith(targetDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+
+            if (!isParentOfApp)
             {
-                try { file.Delete(); } catch { }
+                foreach (FileInfo file in dir.GetFiles())
+                {
+                    try { file.Delete(); } catch { }
+                }
             }
 
             foreach (DirectoryInfo subDir in dir.GetDirectories())
             {
-                if (skipNetExtracts && subDir.Name.Equals(".net", StringComparison.OrdinalIgnoreCase))
+                string subDirFullName = subDir.FullName.TrimEnd('\\', '/');
+
+                if (subDirFullName.Equals(currentAppBaseDir, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
 
-                try
+                if (currentAppBaseDir.StartsWith(subDirFullName + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
                 {
-                    subDir.Delete(true);
+                    CleanDirectorySafely(subDir.FullName);
                 }
-                catch { }
+                else
+                {
+                    try
+                    {
+                        subDir.Delete(true);
+                    }
+                    catch
+                    {
+                        CleanDirectorySafely(subDir.FullName);
+                    }
+                }
             }
         }
 
