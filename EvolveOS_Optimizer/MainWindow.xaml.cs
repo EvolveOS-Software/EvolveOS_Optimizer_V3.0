@@ -17,6 +17,7 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Windows.UI.WindowManagement;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
@@ -35,6 +36,8 @@ namespace EvolveOS_Optimizer
         private AppWindow? _appWindow;
         private IntPtr _hWnd;
 
+        string iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "EvolveOS_Optimizer.ico");
+
         private DispatcherTimer? _sessionTimer;
         private DateTime _sessionExpiryTime;
 
@@ -46,6 +49,15 @@ namespace EvolveOS_Optimizer
 
             this.InitializeComponent();
             this.Title = "EvolveOS Optimizer";
+
+            if (File.Exists(iconPath))
+            {
+                _appWindow?.SetIcon(iconPath);
+            }
+            else
+            {
+                Debug.WriteLine($"[Icon Warning] Could not find icon at: {iconPath}");
+            }
 
             DisplayProfileName.Text = UserSession.Username;
             ProfileImage.ImageSource = UserSession.ProfileImage;
