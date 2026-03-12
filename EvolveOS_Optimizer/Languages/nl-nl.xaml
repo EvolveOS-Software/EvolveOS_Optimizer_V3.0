@@ -1276,4 +1276,159 @@
     <sys:String x:Key="txt_copy_to_clipboard">Kopiëren naar klembord</sys:String>
     <!-- endregion Password validator -->
 
+    <!--#region Password Manager -->
+    <sys:String x:Key="text_confirm_password">Bevestig uw wachtwoord</sys:String>
+    <sys:String x:Key="notif_wrong_password">Het wachtwoord is onjuist. Probeer het opnieuw.</sys:String>
+    <sys:String x:Key="btn_add_record">Nieuw record toevoegen</sys:String>
+    <sys:String x:Key="text_edit">Bewerken</sys:String>
+    <sys:String x:Key="text_remove">Verwijderen</sys:String>
+    <sys:String x:Key="textbox_search_credentials">Zoek inloggegevens</sys:String>
+    <sys:String x:Key="title_category_website">Website</sys:String>
+    <sys:String x:Key="title_category_email">E-mail</sys:String>
+    <sys:String x:Key="title_category_mobile">Mobiel</sys:String>
+    <sys:String x:Key="title_category_official">Officieel</sys:String>
+    <sys:String x:Key="title_category_bank">Bank</sys:String>
+    <sys:String x:Key="title_category_other">Overige</sys:String>
+    <sys:String x:Key="title_category_showall">Alles tonen</sys:String>
+    <sys:String x:Key="title_password_manager_add">Wachtwoord toevoegen</sys:String>
+    <sys:String x:Key="title_password_manager_edit">Item bewerken</sys:String>
+    <sys:String x:Key="btn_update">Bijwerken</sys:String>
+    <sys:String x:Key="btn_cancel">Annuleren</sys:String>
+    <sys:String x:Key="btn_aes">AES-encryptie</sys:String>
+    <sys:String x:Key="btn_encrypt">Versleutelen</sys:String>
+    <sys:String x:Key="btn_decrypt">Ontsleutelen</sys:String>
+    <sys:String x:Key="title_aes_encryption">AES-encryptie</sys:String>
+    <sys:String x:Key="text_input">Invoer</sys:String>
+    <sys:String x:Key="text_encrypted">Versleuteld</sys:String>
+    <sys:String x:Key="text_decrypted">Ontsleuteld</sys:String>
+    <sys:String x:Key="text_select_cat">Selecteer categorie</sys:String>
+    <sys:String x:Key="text_display_name">Weergavenaam</sys:String>
+    <sys:String x:Key="text_user_name">Gebruikersnaam</sys:String>
+    <sys:String x:Key="text_email">E-mail</sys:String>
+    <sys:String x:Key="text_pass">Wachtwoord</sys:String>
+    <sys:String x:Key="text_website">Website</sys:String>
+    <sys:String x:Key="text_notes">Notities</sys:String>
+    <sys:String x:Key="notif_data_succesful">Gegevens succesvol opgeslagen.</sys:String>
+    <sys:String x:Key="notif_data_failed">Gegevens opslaan mislukt!</sys:String>
+    <sys:String x:Key="msgbox_notif_delete_data">Weet u zeker dat u item(s) uit de database wilt verwijderen? Verwijderde item(s) kunnen niet worden hersteld!</sys:String>
+    <sys:String x:Key="msgbox_notif_data_not_deleted">Het verwijderen van item(s) is geannuleerd.</sys:String>
+
+    <sys:String x:Key="title_password_manager">Wachtwoordbeheerder</sys:String>
+    <sys:String x:Key="text_password_manager_desc">Bewaar, bewerk en organiseer al uw wachtwoorden veilig op één plek. Versleutel en genereer sterke wachtwoorden.</sys:String>
+    <sys:String x:Key="btn_open_pass_manager">Beheerder openen</sys:String>
+    <sys:String x:Key="btn_generate_pwd">Genereren</sys:String>
+
+    <!-- Add Record User Control -->
+    <sys:String x:Key="lbl_add_record_title">Nieuw beveiligd record toevoegen</sys:String>
+    <sys:String x:Key="lbl_record_type">Recordtype</sys:String>
+    <sys:String x:Key="lbl_title_required">Titel / Naam (Verplicht)</sys:String>
+    <sys:String x:Key="tag_title_example">bijv. Google, Banknaam</sys:String>
+    <sys:String x:Key="lbl_username_id">Gebruikersnaam / ID</sys:String>
+    <sys:String x:Key="tag_username_id">Gebruikersnaam of Account-ID</sys:String>
+    <sys:String x:Key="lbl_mobile_number">Mobiel nummer</sys:String>
+    <sys:String x:Key="tag_mobile_number">Optioneel mobiel/telefoonnummer</sys:String>
+    <sys:String x:Key="lbl_password_required">Wachtwoord record (Verplicht)</sys:String>
+    <sys:String x:Key="tag_secure_password">Veilig wachtwoord</sys:String>
+    <sys:String x:Key="lbl_email_address">E-mailadres</sys:String>
+    <sys:String x:Key="tag_associated_email">Gekoppeld e-mailadres</sys:String>
+    <sys:String x:Key="lbl_website_url">Website-URL</sys:String>
+    <sys:String x:Key="tag_website_url">https://example.com</sys:String>
+    <sys:String x:Key="lbl_secure_notes">Beschrijving / Veilige notities</sys:String>
+    <sys:String x:Key="tag_secure_notes">Aanvullende veilige details (komt overeen met DB-kolom [Description])</sys:String>
+    <sys:String x:Key="btn_save_securely">Veilig opslaan</sys:String>
+
+    <sys:String x:Key="status_processing_record">Record verwerken en versleutelen...</sys:String>
+    <sys:String x:Key="status_success_saved">Record opgeslagen en versleuteld.</sys:String>
+    <sys:String x:Key="status_error_db_failed">Databasebewerking mislukt of er zijn nul rijen beïnvloed.</sys:String>
+    <sys:String x:Key="status_error_decrypt_edit">Fout: Kan niet ontsleutelen voor bewerking.</sys:String>
+    <sys:String x:Key="status_ready_to_edit">Klaar om '{0}' te bewerken.</sys:String>
+    <sys:String x:Key="status_ready_to_add_new">Klaar om nieuw record toe te voegen.</sys:String>
+    <sys:String x:Key="status_error_failed_to_save">Opslaan van record mislukt. Details: {0}</sys:String>
+
+    <sys:String x:Key="lbl_login_title">Inloggen wachtwoordbeheerder</sys:String>
+    <sys:String x:Key="lbl_login_subtitle">Voer uw inloggegevens in om door te gaan.</sys:String>
+    <sys:String x:Key="lbl_username_label">Gebruikersnaam</sys:String>
+    <sys:String x:Key="tag_username">Gebruikersnaam</sys:String>
+    <sys:String x:Key="lbl_password_label">Wachtwoord</sys:String>
+    <sys:String x:Key="tag_password">Wachtwoord</sys:String>
+    <sys:String x:Key="btn_login_securely">Veilig inloggen</sys:String>
+
+    <!-- Password Manager -->
+    <sys:String x:Key="window_title_password_manager">Wachtwoordbeheerder</sys:String>
+    <sys:String x:Key="search_passwords_and_websites_tag">Wachtwoorden zoeken...</sys:String>
+    <sys:String x:Key="btn_add_new_record">Nieuw record toevoegen</sys:String>
+    <sys:String x:Key="btn_generate_password">Wachtwoord genereren</sys:String>
+    <sys:String x:Key="btn_settings">Instellingen</sys:String>
+    <sys:String x:Key="txt_encryption_mode">Versleutelingsmodus:</sys:String>
+    <sys:String x:Key="txt_full_record_details">VOLLEDIGE RECORDDETAILS</sys:String>
+    <sys:String x:Key="txt_detail_name_format">Naam: {0}</sys:String>
+    <sys:String x:Key="txt_detail_type_format">Type: {0}</sys:String>
+    <sys:String x:Key="txt_detail_username_format">Gebruikersnaam: {0}</sys:String>
+    <sys:String x:Key="txt_detail_password_format">Wachtwoord: {0}</sys:String>
+    <sys:String x:Key="txt_detail_email_format">E-mail: {0}</sys:String>
+    <sys:String x:Key="txt_detail_mobile_format">Mobiel: {0}</sys:String>
+    <sys:String x:Key="txt_detail_website_format">Website: {0}</sys:String>
+    <sys:String x:Key="txt_detail_description_label">Beschrijving:</sys:String>
+    <sys:String x:Key="txt_type_label">Type:</sys:String>
+    <sys:String x:Key="txt_username_label">Gebruikersnaam:</sys:String>
+    <sys:String x:Key="txt_mobile_label">Mobiel:</sys:String>
+    <sys:String x:Key="txt_website_label">Website:</sys:String>
+    <sys:String x:Key="txt_password_label">Wachtwoord:</sys:String>
+
+    <!-- ViewModel  -->
+    <sys:String x:Key="lbl_category_email_db">E-mailaccount</sys:String>
+    <sys:String x:Key="lbl_category_website_db">Website-login</sys:String>
+    <sys:String x:Key="lbl_category_bank_db">Bankrekening / Financieel</sys:String>
+    <sys:String x:Key="lbl_category_official_db">Officieel Document/Systeem</sys:String>
+    <sys:String x:Key="lbl_category_mobile_db">Mobiele app/dienst</sys:String>
+    <sys:String x:Key="lbl_category_other_db">Overig / Algemene veilige notitie</sys:String>
+    <sys:String x:Key="lbl_category_all_db">Alles</sys:String>
+
+    <sys:String x:Key="lbl_category_all_display">Alle records</sys:String>
+    <sys:String x:Key="lbl_category_emails_display">E-mails</sys:String>
+    <sys:String x:Key="lbl_category_websites_display">Websites</sys:String>
+    <sys:String x:Key="lbl_category_banking_display">Bankieren</sys:String>
+    <sys:String x:Key="lbl_category_official_display">Officiële doc.</sys:String>
+    <sys:String x:Key="lbl_category_mobile_display">Mobiele apps</sys:String>
+    <sys:String x:Key="lbl_category_other_display">Overig</sys:String>
+
+    <sys:String x:Key="err_master_password_null">Masterwachtwoord moet worden opgegeven.</sys:String>
+
+    <sys:String x:Key="msg_copy_missing_data">Kan niet kopiëren: Wachtwoordgegevens ontbreken voor dit record.</sys:String>
+    <sys:String x:Key="msg_copy_failed_title">Kopiëren mislukt</sys:String>
+    <sys:String x:Key="msg_success_title">Succes</sys:String>
+    <sys:String x:Key="msg_copy_success_body">Wachtwoord voor '{0}' succesvol naar klembord gekopieerd.</sys:String>
+    <sys:String x:Key="msg_decrypt_error_body">Ontsleutelen van wachtwoord mislukt. Het masterwachtwoord is mogelijk onjuist.</sys:String>
+    <sys:String x:Key="msg_decrypt_error_title">Ontsleutelingsfout</sys:String>
+    <sys:String x:Key="msg_critical_error_title">Kritieke fout</sys:String>
+    <sys:String x:Key="msg_copy_critical_error_body">Er is een fout opgetreden bij het kopiëren van het wachtwoord: {0}</sys:String>
+
+    <sys:String x:Key="msg_data_load_error_title">Gegevenslaadfout</sys:String>
+    <sys:String x:Key="msg_load_data_error_body">Laden van wachtwoordrecords mislukt. De database is mogelijk niet beschikbaar. Fout: {0}</sys:String>
+
+    <sys:String x:Key="msg_save_success_body">Record voor '{0}' succesvol opgeslagen. Gegevens worden opnieuw geladen.</sys:String>
+    <sys:String x:Key="msg_error_title">Fout</sys:String>
+    <sys:String x:Key="msg_save_db_error_body">Opslaan van het record in de database mislukt. Controleer de console voor details.</sys:String>
+    <sys:String x:Key="msg_save_critical_error_body">Er is een fout opgetreden tijdens het versleutelen of opslaan: {0}</sys:String>
+    <sys:String x:Key="msg_missing_data_title">Ontbrekende gegevens</sys:String>
+    <sys:String x:Key="msg_save_missing_data_body">Zorg ervoor dat het record een Naam en een Wachtwoord heeft voordat u opslaat.</sys:String>
+
+    <sys:String x:Key="msg_delete_confirm_title">Verwijderen bevestigen</sys:String>
+    <sys:String x:Key="msg_delete_confirm_body">Weet u zeker dat u '{0}' wilt verwijderen?</sys:String>
+    <sys:String x:Key="msg_delete_success_body">'{0}' succesvol verwijderd.</sys:String>
+    <sys:String x:Key="msg_delete_db_error_body">Verwijderen van record uit database mislukt.</sys:String>
+
+    <sys:String x:Key="msg_no_change_title">Geen wijziging</sys:String>
+    <sys:String x:Key="msg_reencrypt_no_change_body">Gegevens zijn al versleuteld met '{0}'. Opnieuw versleutelen is niet nodig.</sys:String>
+    <sys:String x:Key="msg_reencryption_title">Her-versleuteling</sys:String>
+    <sys:String x:Key="msg_reencrypt_start_body">Starten met her-versleutelen van alle records van '{0}' naar '{1}'. Dit kan even duren...</sys:String>
+    <sys:String x:Key="msg_encryption_success_title">Versleuteling succesvol</sys:String>
+    <sys:String x:Key="msg_reencrypt_success_body">Succesvol {0} records opnieuw versleuteld met de nieuwe modus: {1}.</sys:String>
+    <sys:String x:Key="msg_partial_reencrypt_title">Gedeeltelijke her-versleutelingsfout</sys:String>
+    <sys:String x:Key="msg_reencrypt_partial_failure_body">WAARSCHUWING: Kon {0} records niet opnieuw versleutelen (bijv. {1}). Deze zijn mogelijk versleuteld met een andere modus dan '{2}'. Ze blijven in hun oorspronkelijke modus versleuteld en zijn mogelijk niet bruikbaar totdat de oude modus opnieuw wordt geselecteerd.</sys:String>
+    <sys:String x:Key="msg_reencrypt_finished_title">Her-versleuteling voltooid</sys:String>
+    <sys:String x:Key="msg_reencrypt_finished_body">Her-versleuteling afgerond. Alle records zijn succesvol bijgewerkt of hadden geen update nodig.</sys:String>
+    <sys:String x:Key="msg_reencrypt_critical_error_body">Er is een kritieke systeemfout opgetreden tijdens het her-versleutelen. De instelling voor de beveiligingsmodus wordt teruggezet naar '{0}'. Fout: {1}</sys:String>
+    <!-- endregion Password Manager -->
+
 </ResourceDictionary>

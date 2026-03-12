@@ -6,7 +6,7 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}"/>
         <Setter Property="Height" Value="48"/>
-        <Setter Property="Width" Value="Auto"/> 
+        <Setter Property="Width" Value="Auto"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -20,6 +20,8 @@
                                         <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="MaxWidth" To="50" Duration="0:0:0.2"/>
                                         <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="-50" Duration="0:0:0.2"/>
                                         <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+
+                                        <DoubleAnimation Storyboard.TargetName="HoverPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
 
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Visibility">
                                             <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="Collapsed"/>
@@ -41,7 +43,8 @@
                                         </ObjectAnimationUsingKeyFrames>
 
                                         <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
-                                        <DoubleAnimation Storyboard.TargetName="BackgroundPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+
+                                        <DoubleAnimation Storyboard.TargetName="HoverPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -50,7 +53,8 @@
                                 <VisualState x:Name="Checked">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="SelectionIndicator" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
-                                        <DoubleAnimation Storyboard.TargetName="BackgroundPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+
+                                        <DoubleAnimation Storyboard.TargetName="CheckedPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
 
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource MyDynamicAccentBrush}"/>
@@ -65,7 +69,8 @@
                                 <VisualState x:Name="Unchecked">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="SelectionIndicator" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
-                                        <DoubleAnimation Storyboard.TargetName="BackgroundPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+
+                                        <DoubleAnimation Storyboard.TargetName="CheckedPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
 
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForeground}"/>
@@ -86,7 +91,16 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Border x:Name="BackgroundPill" 
+                            <Border x:Name="HoverPill" 
+                                    Grid.Column="0" 
+                                    Grid.ColumnSpan="2"
+                                    Margin="4,2,4,2"
+                                    CornerRadius="12" 
+                                    Opacity="0"
+                                    IsHitTestVisible="False"
+                                    Background="{ThemeResource SystemListLowColor}"/>
+
+                            <Border x:Name="CheckedPill" 
                                     Grid.Column="0" 
                                     Grid.ColumnSpan="2"
                                     Margin="4,2,4,2"
@@ -132,5 +146,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 </ResourceDictionary>

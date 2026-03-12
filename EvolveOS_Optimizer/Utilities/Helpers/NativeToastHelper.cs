@@ -52,9 +52,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 {
                     App.UIThreadDispatcher?.TryEnqueue(() =>
                     {
-                        if (App.Current.MainWindow != null)
+                        if (App.MainWindow != null)
                         {
-                            var hwnd = WindowNative.GetWindowHandle(App.Current.MainWindow);
+                            var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
                             Win32Helper.ShowWindow(hwnd, 5);
                             Win32Helper.ShowWindow(hwnd, 9);
                             Win32Helper.SetForegroundWindow(hwnd);

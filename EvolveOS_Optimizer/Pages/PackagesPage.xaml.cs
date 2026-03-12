@@ -140,10 +140,7 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         if (packageName == "Edge")
                         {
-                            var app = Application.Current as App;
-                            var mainWindow = app?.MainWindow as MainWindow;
-
-                            if (mainWindow != null)
+                            if (App.MainWindow is MainWindow mainWindow)
                             {
                                 mainWindow.TxtGlobalTitle.Text = ResourceString.GetString("title_over_pkg") ?? "Uninstallation confirmation";
                                 mainWindow.TxtGlobalMessage.Text = ResourceString.GetString("text_over_pkg") ?? "Edge Removal Warning...";
@@ -220,10 +217,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 if (vm.SelectedPackages.Count == 0) return;
 
-                var app = Application.Current as App;
-                var mainWindow = app?.MainWindow as MainWindow;
-
-                if (mainWindow == null) return;
+                if (App.MainWindow is not MainWindow mainWindow) return;
 
                 bool isEdgeSelected = vm.SelectedPackages.Any(p => p.Name == "Edge");
 

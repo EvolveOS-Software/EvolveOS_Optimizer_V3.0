@@ -321,12 +321,12 @@ namespace EvolveOS_Optimizer
                     var weatherService = new WeatherService();
                     var loginWin = new Views.UserLoginWindow(weatherService, msg);
 
-                    if (App.Current.MainWindow != null)
+                    if (App.MainWindow != null)
                     {
-                        App.Current.MainWindow.Close();
+                        App.MainWindow.Close();
                     }
 
-                    App.Current.MainWindow = loginWin;
+                    App.MainWindow = loginWin;
                     loginWin.Activate();
 
                     this.Close();
@@ -440,6 +440,16 @@ namespace EvolveOS_Optimizer
             }
             else if (tag == "Maintenance") { BtnNavMaintenance.IsChecked = true; }
             else if (tag == "Security") { BtnNavSecurity.IsChecked = true; }
+        }
+
+        private void SidebarContainer_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            SidebarContainer.Width = 300;
+        }
+
+        private void SidebarContainer_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            SidebarContainer.Width = 75;
         }
         #endregion
 

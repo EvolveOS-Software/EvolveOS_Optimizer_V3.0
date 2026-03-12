@@ -30,6 +30,34 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Password Manager" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="Securely store, edit, and organize all your passwords in one place. Encrypt and generate strong passwords." 
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                                   TextWrapping="Wrap" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" 
+                            Content="Open Manager" 
+                            Style="{StaticResource AccentButtonStyle}"
+                            Click="BtnOpenPasswordManager_Click"
+                            VerticalAlignment="Center"
+                            MinWidth="120"/>
+                </Grid>
+            </Border>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="Password Generator" FontWeight="SemiBold" FontSize="16"/>
                         <TextBlock Text="Quickly open the password generator using a global keyboard shortcut." 
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" 

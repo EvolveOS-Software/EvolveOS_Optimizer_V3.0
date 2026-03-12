@@ -240,7 +240,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void ExecuteMaximize()
         {
-            var window = App.Current.MainWindow;
+            var window = App.MainWindow;
             if (window == null) return;
 
             var hwnd = WindowNative.GetWindowHandle(window);
@@ -256,7 +256,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void ExecuteMinimize()
         {
-            var window = App.Current.MainWindow;
+            var window = App.MainWindow;
             if (window == null) return;
 
             var hwnd = WindowNative.GetWindowHandle(window);

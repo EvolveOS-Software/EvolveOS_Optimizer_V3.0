@@ -19,7 +19,7 @@
         <Grid.Resources>
             <conv:UserTypeToColorConverter x:Key="UserTypeToColorConverter"/>
             <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            
+
             <Storyboard x:Name="ShowDimOverlay">
                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="WindowDimOverlay" Storyboard.TargetProperty="Visibility">
                     <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
@@ -146,14 +146,27 @@
                    VerticalContentAlignment="Stretch"
                    IsNavigationStackEnabled="False" />
 
-            <Grid Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Stretch" Canvas.ZIndex="100">
-                <Border Width="55" 
-                        Background="{ThemeResource LayerFillColorDefaultBrush}" 
+            <Grid x:Name="SidebarContainer"
+                  Grid.Row="2"
+                  Grid.ColumnSpan="2"
+                  Width="75"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Stretch"
+                  Canvas.ZIndex="100"
+                  Background="{x:Null}"
+                  PointerEntered="SidebarContainer_PointerEntered"
+                  PointerExited="SidebarContainer_PointerExited">
+
+                <Rectangle Width="75" HorizontalAlignment="Left" Fill="Transparent" />
+
+                <Border Width="55"
+                        Background="{ThemeResource LayerFillColorDefaultBrush}"
                         CornerRadius="10"
                         Margin="10,15,0,50"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Stretch"
-                        Translation="0,0,8">
+                        Translation="0,0,8"
+                        IsHitTestVisible="False">
                     <Border.Shadow>
                         <ThemeShadow />
                     </Border.Shadow>
@@ -161,7 +174,8 @@
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
-                              Margin="0,15,0,50">
+                              Margin="0,15,0,50"
+                              HorizontalAlignment="Left">
 
                     <StackPanel Orientation="Vertical" Spacing="4" Padding="10,10,0,0" HorizontalAlignment="Left">
                         <RadioButton Style="{StaticResource BtnNavigation}"

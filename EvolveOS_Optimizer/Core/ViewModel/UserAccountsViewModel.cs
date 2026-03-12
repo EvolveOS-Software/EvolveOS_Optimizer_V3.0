@@ -11,6 +11,7 @@ using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using System.Text.RegularExpressions;
+using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -496,8 +497,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 picker.FileTypeFilter.Add(".png");
                 picker.FileTypeFilter.Add(".bmp");
 
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+                var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
+                InitializeWithWindow.Initialize(picker, hwnd);
 
                 var file = await picker.PickSingleFileAsync();
 

@@ -1281,4 +1281,159 @@
     <sys:String x:Key="txt_copy_to_clipboard">Copier dans le presse-papiers</sys:String>
     <!-- endregion Password validator -->
 
+    <!--#region Password Manager -->
+    <sys:String x:Key="text_confirm_password">Confirmez votre mot de passe</sys:String>
+    <sys:String x:Key="notif_wrong_password">Le mot de passe est incorrect. Veuillez réessayer.</sys:String>
+    <sys:String x:Key="btn_add_record">Ajouter un nouvel enregistrement</sys:String>
+    <sys:String x:Key="text_edit">Modifier</sys:String>
+    <sys:String x:Key="text_remove">Supprimer</sys:String>
+    <sys:String x:Key="textbox_search_credentials">Rechercher des identifiants</sys:String>
+    <sys:String x:Key="title_category_website">Site web</sys:String>
+    <sys:String x:Key="title_category_email">E-mail</sys:String>
+    <sys:String x:Key="title_category_mobile">Mobile</sys:String>
+    <sys:String x:Key="title_category_official">Officiel</sys:String>
+    <sys:String x:Key="title_category_bank">Banque</sys:String>
+    <sys:String x:Key="title_category_other">Autre</sys:String>
+    <sys:String x:Key="title_category_showall">Tout afficher</sys:String>
+    <sys:String x:Key="title_password_manager_add">Ajouter un mot de passe</sys:String>
+    <sys:String x:Key="title_password_manager_edit">Modifier l'élément</sys:String>
+    <sys:String x:Key="btn_update">Mettre à jour</sys:String>
+    <sys:String x:Key="btn_cancel">Annuler</sys:String>
+    <sys:String x:Key="btn_aes">Chiffrement AES</sys:String>
+    <sys:String x:Key="btn_encrypt">Chiffrer</sys:String>
+    <sys:String x:Key="btn_decrypt">Déchiffrer</sys:String>
+    <sys:String x:Key="title_aes_encryption">Chiffrement AES</sys:String>
+    <sys:String x:Key="text_input">Entrée</sys:String>
+    <sys:String x:Key="text_encrypted">Chiffré</sys:String>
+    <sys:String x:Key="text_decrypted">Déchiffré</sys:String>
+    <sys:String x:Key="text_select_cat">Sélectionner une catégorie</sys:String>
+    <sys:String x:Key="text_display_name">Nom d'affichage</sys:String>
+    <sys:String x:Key="text_user_name">Nom d'utilisateur</sys:String>
+    <sys:String x:Key="text_email">E-mail</sys:String>
+    <sys:String x:Key="text_pass">Mot de passe</sys:String>
+    <sys:String x:Key="text_website">Site web</sys:String>
+    <sys:String x:Key="text_notes">Notes</sys:String>
+    <sys:String x:Key="notif_data_succesful">Données enregistrées avec succès.</sys:String>
+    <sys:String x:Key="notif_data_failed">Échec de l'enregistrement des données !</sys:String>
+    <sys:String x:Key="msgbox_notif_delete_data">Êtes-vous sûr de vouloir supprimer un ou plusieurs éléments de la base de données ? Les éléments supprimés ne peuvent pas être récupérés !</sys:String>
+    <sys:String x:Key="msgbox_notif_data_not_deleted">La suppression de l'élément (ou des éléments) a été annulée.</sys:String>
+
+    <sys:String x:Key="title_password_manager">Gestionnaire de mots de passe</sys:String>
+    <sys:String x:Key="text_password_manager_desc">Stockez, modifiez et organisez tous vos mots de passe en toute sécurité au même endroit. Chiffrez et générez des mots de passe forts.</sys:String>
+    <sys:String x:Key="btn_open_pass_manager">Ouvrir le gestionnaire</sys:String>
+    <sys:String x:Key="btn_generate_pwd">Générer</sys:String>
+
+    <!-- Add Record User Control -->
+    <sys:String x:Key="lbl_add_record_title">Ajouter un nouvel enregistrement sécurisé</sys:String>
+    <sys:String x:Key="lbl_record_type">Type d'enregistrement</sys:String>
+    <sys:String x:Key="lbl_title_required">Titre / Nom (Obligatoire)</sys:String>
+    <sys:String x:Key="tag_title_example">ex. Google, Nom de la banque</sys:String>
+    <sys:String x:Key="lbl_username_id">Nom d'utilisateur / ID</sys:String>
+    <sys:String x:Key="tag_username_id">Nom d'utilisateur ou ID de compte</sys:String>
+    <sys:String x:Key="lbl_mobile_number">Numéro de mobile</sys:String>
+    <sys:String x:Key="tag_mobile_number">Numéro de mobile/téléphone (facultatif)</sys:String>
+    <sys:String x:Key="lbl_password_required">Mot de passe de l'enregistrement (Obligatoire)</sys:String>
+    <sys:String x:Key="tag_secure_password">Mot de passe sécurisé</sys:String>
+    <sys:String x:Key="lbl_email_address">Adresse e-mail</sys:String>
+    <sys:String x:Key="tag_associated_email">E-mail associé</sys:String>
+    <sys:String x:Key="lbl_website_url">URL du site web</sys:String>
+    <sys:String x:Key="tag_website_url">https://example.com</sys:String>
+    <sys:String x:Key="lbl_secure_notes">Description / Notes sécurisées</sys:String>
+    <sys:String x:Key="tag_secure_notes">Détails sécurisés supplémentaires (correspond à la colonne de la base de données [Description])</sys:String>
+    <sys:String x:Key="btn_save_securely">Enregistrer de manière sécurisée</sys:String>
+
+    <sys:String x:Key="status_processing_record">Traitement et chiffrement de l'enregistrement...</sys:String>
+    <sys:String x:Key="status_success_saved">Enregistrement sauvegardé et chiffré.</sys:String>
+    <sys:String x:Key="status_error_db_failed">L'opération de la base de données a échoué ou a renvoyé zéro ligne affectée.</sys:String>
+    <sys:String x:Key="status_error_decrypt_edit">Erreur : Impossible de déchiffrer pour la modification.</sys:String>
+    <sys:String x:Key="status_ready_to_edit">Prêt à modifier '{0}'.</sys:String>
+    <sys:String x:Key="status_ready_to_add_new">Prêt à ajouter un nouvel enregistrement.</sys:String>
+    <sys:String x:Key="status_error_failed_to_save">Échec de l'enregistrement. Détails : {0}</sys:String>
+
+    <sys:String x:Key="lbl_login_title">Connexion au gestionnaire de mots de passe</sys:String>
+    <sys:String x:Key="lbl_login_subtitle">Entrez vos identifiants pour continuer.</sys:String>
+    <sys:String x:Key="lbl_username_label">Nom d'utilisateur</sys:String>
+    <sys:String x:Key="tag_username">Nom d'utilisateur</sys:String>
+    <sys:String x:Key="lbl_password_label">Mot de passe</sys:String>
+    <sys:String x:Key="tag_password">Mot de passe</sys:String>
+    <sys:String x:Key="btn_login_securely">Connexion sécurisée</sys:String>
+
+    <!-- Password Manager -->
+    <sys:String x:Key="window_title_password_manager">Gestionnaire de mots de passe</sys:String>
+    <sys:String x:Key="search_passwords_and_websites_tag">Rechercher des mots de passe...</sys:String>
+    <sys:String x:Key="btn_add_new_record">Ajouter un nouvel enregistrement</sys:String>
+    <sys:String x:Key="btn_generate_password">Générer un mot de passe</sys:String>
+    <sys:String x:Key="btn_settings">Paramètres</sys:String>
+    <sys:String x:Key="txt_encryption_mode">Mode de chiffrement :</sys:String>
+    <sys:String x:Key="txt_full_record_details">DÉTAILS COMPLETS DE L'ENREGISTREMENT</sys:String>
+    <sys:String x:Key="txt_detail_name_format">Nom : {0}</sys:String>
+    <sys:String x:Key="txt_detail_type_format">Type : {0}</sys:String>
+    <sys:String x:Key="txt_detail_username_format">Nom d'utilisateur : {0}</sys:String>
+    <sys:String x:Key="txt_detail_password_format">Mot de passe : {0}</sys:String>
+    <sys:String x:Key="txt_detail_email_format">E-mail : {0}</sys:String>
+    <sys:String x:Key="txt_detail_mobile_format">Mobile : {0}</sys:String>
+    <sys:String x:Key="txt_detail_website_format">Site web : {0}</sys:String>
+    <sys:String x:Key="txt_detail_description_label">Description :</sys:String>
+    <sys:String x:Key="txt_type_label">Type :</sys:String>
+    <sys:String x:Key="txt_username_label">Nom d'utilisateur :</sys:String>
+    <sys:String x:Key="txt_mobile_label">Mobile :</sys:String>
+    <sys:String x:Key="txt_website_label">Site web :</sys:String>
+    <sys:String x:Key="txt_password_label">Mot de passe :</sys:String>
+
+    <!-- ViewModel  -->
+    <sys:String x:Key="lbl_category_email_db">Compte E-mail</sys:String>
+    <sys:String x:Key="lbl_category_website_db">Connexion au site web</sys:String>
+    <sys:String x:Key="lbl_category_bank_db">Compte bancaire / Finances</sys:String>
+    <sys:String x:Key="lbl_category_official_db">Document/Système officiel</sys:String>
+    <sys:String x:Key="lbl_category_mobile_db">Application/Service mobile</sys:String>
+    <sys:String x:Key="lbl_category_other_db">Autre / Note sécurisée générale</sys:String>
+    <sys:String x:Key="lbl_category_all_db">Tout</sys:String>
+
+    <sys:String x:Key="lbl_category_all_display">Tous les enregistrements</sys:String>
+    <sys:String x:Key="lbl_category_emails_display">E-mails</sys:String>
+    <sys:String x:Key="lbl_category_websites_display">Sites web</sys:String>
+    <sys:String x:Key="lbl_category_banking_display">Banque</sys:String>
+    <sys:String x:Key="lbl_category_official_display">Docs officiels</sys:String>
+    <sys:String x:Key="lbl_category_mobile_display">Apps mobiles</sys:String>
+    <sys:String x:Key="lbl_category_other_display">Autre</sys:String>
+
+    <sys:String x:Key="err_master_password_null">Le mot de passe principal doit être fourni.</sys:String>
+
+    <sys:String x:Key="msg_copy_missing_data">Impossible de copier : Les données de mot de passe sont manquantes pour cette entrée.</sys:String>
+    <sys:String x:Key="msg_copy_failed_title">Échec de la copie</sys:String>
+    <sys:String x:Key="msg_success_title">Succès</sys:String>
+    <sys:String x:Key="msg_copy_success_body">Mot de passe de '{0}' copié avec succès dans le presse-papiers.</sys:String>
+    <sys:String x:Key="msg_decrypt_error_body">Échec du déchiffrement du mot de passe. Le mot de passe principal est peut-être incorrect.</sys:String>
+    <sys:String x:Key="msg_decrypt_error_title">Erreur de déchiffrement</sys:String>
+    <sys:String x:Key="msg_critical_error_title">Erreur critique</sys:String>
+    <sys:String x:Key="msg_copy_critical_error_body">Une erreur s'est produite lors de la tentative de copie du mot de passe : {0}</sys:String>
+
+    <sys:String x:Key="msg_data_load_error_title">Erreur de chargement des données</sys:String>
+    <sys:String x:Key="msg_load_data_error_body">Échec du chargement des mots de passe. La base de données est peut-être indisponible. Erreur : {0}</sys:String>
+
+    <sys:String x:Key="msg_save_success_body">Entrée pour '{0}' enregistrée avec succès. Rechargement des données.</sys:String>
+    <sys:String x:Key="msg_error_title">Erreur</sys:String>
+    <sys:String x:Key="msg_save_db_error_body">Échec de l'enregistrement dans la base de données. Vérifiez la console pour plus de détails.</sys:String>
+    <sys:String x:Key="msg_save_critical_error_body">Une erreur est survenue lors du chiffrement ou de la sauvegarde : {0}</sys:String>
+    <sys:String x:Key="msg_missing_data_title">Données manquantes</sys:String>
+    <sys:String x:Key="msg_save_missing_data_body">Veuillez vous assurer que l'entrée possède un Nom et un Mot de passe avant d'enregistrer.</sys:String>
+
+    <sys:String x:Key="msg_delete_confirm_title">Confirmer la suppression</sys:String>
+    <sys:String x:Key="msg_delete_confirm_body">Êtes-vous sûr de vouloir supprimer '{0}' ?</sys:String>
+    <sys:String x:Key="msg_delete_success_body">'{0}' supprimé avec succès.</sys:String>
+    <sys:String x:Key="msg_delete_db_error_body">Échec de la suppression de l'entrée de la base de données.</sys:String>
+
+    <sys:String x:Key="msg_no_change_title">Aucun changement</sys:String>
+    <sys:String x:Key="msg_reencrypt_no_change_body">Les données sont déjà chiffrées avec '{0}'. Aucun re-chiffrement nécessaire.</sys:String>
+    <sys:String x:Key="msg_reencryption_title">Re-chiffrement</sys:String>
+    <sys:String x:Key="msg_reencrypt_start_body">Démarrage du re-chiffrement pour toutes les entrées de '{0}' vers '{1}'. Cela peut prendre un instant...</sys:String>
+    <sys:String x:Key="msg_encryption_success_title">Succès du chiffrement</sys:String>
+    <sys:String x:Key="msg_reencrypt_success_body">{0} entrées re-chiffrées avec succès avec le nouveau mode : {1}.</sys:String>
+    <sys:String x:Key="msg_partial_reencrypt_title">Échec partiel du re-chiffrement</sys:String>
+    <sys:String x:Key="msg_reencrypt_partial_failure_body">AVERTISSEMENT : Échec du re-chiffrement de {0} entrées (ex: {1}). Elles ont peut-être été chiffrées avec un mode différent de '{2}'. Elles restent chiffrées avec leur mode d'origine et pourraient ne plus être visibles/utilisables jusqu'à ce que l'ancien mode soit sélectionné à nouveau.</sys:String>
+    <sys:String x:Key="msg_reencrypt_finished_title">Re-chiffrement terminé</sys:String>
+    <sys:String x:Key="msg_reencrypt_finished_body">Re-chiffrement terminé. Toutes les entrées ont été mises à jour avec succès ou n'ont pas nécessité de mise à jour.</sys:String>
+    <sys:String x:Key="msg_reencrypt_critical_error_body">Une erreur système critique s'est produite lors du re-chiffrement. Le paramètre du mode de sécurité sera rétabli à '{0}'. Erreur : {1}</sys:String>
+    <!-- endregion Password Manager -->
+
 </ResourceDictionary>

@@ -211,7 +211,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 SettingsEngine.Language = item.Tag?.ToString() ?? "en-us";
 
-                if (App.Current.MainWindow is EvolveOS_Optimizer.MainWindow mainWindow)
+                if (App.MainWindow is EvolveOS_Optimizer.MainWindow mainWindow)
                 {
                     mainWindow.RefreshTrayIconLanguage();
                 }
@@ -239,7 +239,7 @@ namespace EvolveOS_Optimizer.Pages
                 PanelTransform.Y = -20;
             }
 
-            if (App.Current.MainWindow is Window mainWindow)
+            if (App.MainWindow is Window mainWindow)
             {
                 UIHelper.ApplyBackdrop(mainWindow, selected);
             }
@@ -258,7 +258,7 @@ namespace EvolveOS_Optimizer.Pages
                 else if (slider == LuminositySlider)
                     SettingsEngine.AcrylicLuminosity = e.NewValue;
 
-                if (App.Current.MainWindow is Window window)
+                if (App.MainWindow is Window window)
                 {
                     UIHelper.ApplyBackdrop(window, "AcrylicThin");
                 }
@@ -274,7 +274,7 @@ namespace EvolveOS_Optimizer.Pages
 
             ColorPreview.Background = new SolidColorBrush(args.NewColor);
 
-            if (App.Current.MainWindow is Window mainWindow)
+            if (App.MainWindow is Window mainWindow)
             {
                 UIHelper.ApplyBackdrop(mainWindow, SettingsEngine.Backdrop);
             }
@@ -329,7 +329,7 @@ namespace EvolveOS_Optimizer.Pages
 
             if (updateFound)
             {
-                if (App.Current.MainWindow is EvolveOS_Optimizer.MainWindow mainWin)
+                if (App.MainWindow is EvolveOS_Optimizer.MainWindow mainWin)
                 {
                     mainWin.AnimateUpdateBanner(true);
                 }
@@ -680,11 +680,11 @@ namespace EvolveOS_Optimizer.Pages
                 DispatcherQueue.TryEnqueue(() =>
                 {
                     var loginWin = new EvolveOS_Optimizer.Views.UserLoginWindow(new WeatherService(), msg);
-                    if (App.Current.MainWindow != null)
+                    if (App.MainWindow != null)
                     {
-                        App.Current.MainWindow.Close();
+                        App.MainWindow.Close();
                     }
-                    App.Current.MainWindow = loginWin;
+                    App.MainWindow = loginWin;
                     loginWin.Activate();
                 });
 

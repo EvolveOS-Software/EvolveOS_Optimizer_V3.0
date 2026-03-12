@@ -395,7 +395,7 @@ namespace EvolveOS_Optimizer.Views
 
                         if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
                         {
-                            if (Application.Current is App myApp && myApp.MainWindow is MainWindow mainWin)
+                            if (Application.Current is App && App.MainWindow is MainWindow mainWin)
                             {
                                 mainWin.DispatcherQueue.TryEnqueue(async () =>
                                 {
@@ -687,9 +687,9 @@ namespace EvolveOS_Optimizer.Views
 
                 nextWindow.Closed += (s, e) => { Application.Current.Exit(); };
 
-                if (Application.Current is App myApp)
+                if (Application.Current is App)
                 {
-                    myApp.MainWindow = nextWindow;
+                    App.MainWindow = nextWindow;
                 }
 
                 bool isStartedHidden = Environment.GetCommandLineArgs().Any(a => a.Equals("-hidden", StringComparison.OrdinalIgnoreCase));
@@ -733,9 +733,9 @@ namespace EvolveOS_Optimizer.Views
                 var fallbackWeather = new WeatherService();
                 var fallback = new global::EvolveOS_Optimizer.Views.UserLoginWindow(fallbackWeather);
 
-                if (Application.Current is App a)
+                if (Application.Current is App)
                 {
-                    a.MainWindow = fallback;
+                    App.MainWindow = fallback;
                     SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
                 }
 

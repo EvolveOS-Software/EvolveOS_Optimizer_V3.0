@@ -1,5 +1,6 @@
 using System.Reflection;
 using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
@@ -65,6 +66,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableRunOnStartup"] = false,
             ["EnableCloseToTray"] = true,
             ["EnableStartMinimized"] = false,
+            ["EncryptionMode"] = KeyDerivationMode.Balanced.ToString(),
 
             ["DashboardCardOrder"] = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk,CardDns,CardHealth,CardSecurity,CardCpuGraph,CardRamGraph,CardNetworkGraph,CardGpuGraph",
             ["Dashboard_CardNetwork"] = true,
@@ -104,6 +106,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool IsRunOnStartUp { get => (bool)_cachedSettings["EnableRunOnStartup"]; set { if ((bool)_cachedSettings["EnableRunOnStartup"] != value) { ChangingParameters("EnableRunOnStartup", value); ToggleStartup(value, IsStartMinimized); } } }
         internal static bool IsCloseToTrayEnabled { get => (bool)_cachedSettings["EnableCloseToTray"]; set => ChangingParameters("EnableCloseToTray", value); }
         internal static bool IsStartMinimized { get => (bool)_cachedSettings["EnableStartMinimized"]; set { if ((bool)_cachedSettings["EnableStartMinimized"] != value) { ChangingParameters("EnableStartMinimized", value); if (IsRunOnStartUp) { ToggleStartup(true, value); } } } }
+        internal static string EncryptionMode { get => (string)_cachedSettings["EncryptionMode"]; set => ChangingParameters("EncryptionMode", value); }
         internal static List<string> AllUserScriptsPaths
         {
             get
@@ -178,7 +181,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         private static void ApplyLiveSettings(string key, object value)
         {
-            if (App.Current is not App currentApp) return;
+            if (App.Current is not App) return;
 
             if (key == "Language")
             {
@@ -190,7 +193,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 UpdateTheme((string)value);
             }
 
-            if (currentApp.MainWindow is MainWindow mainWindow)
+            if (App.MainWindow is MainWindow mainWindow)
             {
                 mainWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
                 {
@@ -251,7 +254,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         public static void UpdateTheme(string themeStr, Window? targetWindow = null)
         {
-            var window = targetWindow ?? App.Current.MainWindow;
+            var window = targetWindow ?? App.MainWindow;
 
             if (window?.Content is FrameworkElement rootElement)
             {
@@ -266,9 +269,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         private static void UpdateAppInstance()
         {
-            if (App.Current is not App currentApp) return;
+            if (App.Current is not App) return;
 
-            if (currentApp.MainWindow is MainWindow target)
+            if (App.MainWindow is MainWindow target)
             {
                 target.SetBackdropByName(Backdrop);
             }

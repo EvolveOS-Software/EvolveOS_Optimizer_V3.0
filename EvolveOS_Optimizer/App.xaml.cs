@@ -25,7 +25,7 @@ namespace EvolveOS_Optimizer
 
         private static bool _isCleanupRunning = false;
 
-        public Window? MainWindow { get; set; }
+        public static Window? MainWindow { get; set; }
         public static bool IsStartedHidden { get; private set; }
 
         public static Microsoft.UI.Dispatching.DispatcherQueue? UIThreadDispatcher { get; private set; }

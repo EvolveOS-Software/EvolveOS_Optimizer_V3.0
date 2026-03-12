@@ -214,9 +214,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     mainDash.Closed += (s, e) => { Application.Current.Exit(); };
 
-                    if (Application.Current is App myApp)
+                    if (Application.Current is App)
                     {
-                        myApp.MainWindow = mainDash;
+                        App.MainWindow = mainDash;
                     }
 
                     bool shouldStartHidden = Environment.GetCommandLineArgs().Any(arg => arg.Equals("-hidden", StringComparison.OrdinalIgnoreCase));
