@@ -609,7 +609,7 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     await DNSCryptHelper.StopService(progressBar, statusLabel);
                     ProgressRingRunServices.Visibility = Visibility.Collapsed;
-                     TxtServicesRunning.Text = "";
+                    TxtServicesRunning.Text = "";
 
                     IconServiceStopped.Visibility = Visibility.Visible;
                     ImgServiceRunning.Visibility = Visibility.Collapsed;

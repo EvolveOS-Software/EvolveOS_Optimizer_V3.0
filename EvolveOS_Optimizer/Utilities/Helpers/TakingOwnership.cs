@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using EvolveOS_Optimizer.Utilities.Controls;
 

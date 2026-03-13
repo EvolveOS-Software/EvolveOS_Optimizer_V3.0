@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using System.Diagnostics;
 using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

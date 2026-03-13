@@ -4,7 +4,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.ObjectModel;
-using Microsoft.Data.SqlClient;
 using System.Security;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
@@ -14,6 +13,7 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
+using Microsoft.Data.SqlClient;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {

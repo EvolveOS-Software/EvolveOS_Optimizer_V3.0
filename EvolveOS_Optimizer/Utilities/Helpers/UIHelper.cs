@@ -1,10 +1,10 @@
+using System.ComponentModel;
+using System.Numerics;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
-using System.ComponentModel;
-using System.Numerics;
 using WinRT;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
@@ -131,7 +131,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 controller.AddSystemBackdropTarget(target);
                 controller.SetSystemBackdropConfiguration(config);
 
-                window.Closed += (s, e) => {
+                window.Closed += (s, e) =>
+                {
                     _currentController = null;
                     controller?.Dispose();
                 };

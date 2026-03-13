@@ -1,7 +1,7 @@
+using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media.Animation;
-using System.Numerics;
 
 namespace EvolveOS_Optimizer.Utilities.Animation
 {

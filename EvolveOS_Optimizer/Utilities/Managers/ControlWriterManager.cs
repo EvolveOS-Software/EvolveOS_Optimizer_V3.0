@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-
 namespace EvolveOS_Optimizer.Utilities.Managers
 {
     internal sealed class ControlWriterManager

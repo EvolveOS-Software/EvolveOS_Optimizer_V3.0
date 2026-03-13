@@ -325,7 +325,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void RefreshFilteredScripts()
         {
-            var filtered = Scripts.Where(s => {
+            var filtered = Scripts.Where(s =>
+            {
                 if (string.IsNullOrWhiteSpace(SearchText)) return true;
                 return s.FileName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
                        s.FilePath.Contains(SearchText, StringComparison.OrdinalIgnoreCase);

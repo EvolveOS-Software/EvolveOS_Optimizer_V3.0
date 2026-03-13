@@ -1,6 +1,6 @@
-using Microsoft.UI.Dispatching;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Dispatching;
 
 namespace EvolveOS_Optimizer.Core.Base
 {

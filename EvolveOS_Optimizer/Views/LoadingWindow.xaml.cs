@@ -456,7 +456,8 @@ namespace EvolveOS_Optimizer.Views
 
                 if (archiveBytes.Length == 0)
                 {
-                    _dispatcherQueue.TryEnqueue(() => {
+                    _dispatcherQueue.TryEnqueue(() =>
+                    {
                         NativeToastHelper.SendNativeToast("Dependency Missing", "Database engine is not installed and the installer archive could not be found.");
                         Application.Current.Exit();
                     });
@@ -480,7 +481,8 @@ namespace EvolveOS_Optimizer.Views
                 string verifyOutput = await CommandExecutor.GetCommandOutput("sqllocaldb info", false);
                 if (string.IsNullOrEmpty(verifyOutput) || verifyOutput.Contains("not recognized", StringComparison.OrdinalIgnoreCase))
                 {
-                    _dispatcherQueue.TryEnqueue(() => {
+                    _dispatcherQueue.TryEnqueue(() =>
+                    {
                         NativeToastHelper.SendNativeToast("Installation Failed", "Could not install the required SQL engine. Please run the app as Administrator.");
                         Application.Current.Exit();
                     });
@@ -492,7 +494,8 @@ namespace EvolveOS_Optimizer.Views
             catch (Exception ex)
             {
                 ErrorLogging.LogWritingFile(new Exception("Dependency Check Failed", ex), "Engine_Install_Sequence");
-                _dispatcherQueue.TryEnqueue(() => {
+                _dispatcherQueue.TryEnqueue(() =>
+                {
                     NativeToastHelper.SendNativeToast("Startup Error", $"Engine installation failed: {ex.Message}");
                     Application.Current.Exit();
                 });
@@ -527,7 +530,8 @@ namespace EvolveOS_Optimizer.Views
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    _dispatcherQueue.TryEnqueue(() => {
+                    _dispatcherQueue.TryEnqueue(() =>
+                    {
                         NativeToastHelper.SendNativeToast("Permission Denied", "App cannot write to the EXE folder. Please run as Administrator or move the app out of Program Files.");
                     });
                 }
@@ -589,7 +593,8 @@ namespace EvolveOS_Optimizer.Views
 
                 if (!decryptionSuccessful)
                 {
-                    _dispatcherQueue.TryEnqueue(() => {
+                    _dispatcherQueue.TryEnqueue(() =>
+                    {
                         NativeToastHelper.SendNativeToast("Critical Error", "Database is busy or corrupted. Please wait a moment and try again.");
                         Application.Current.Exit();
                     });
@@ -619,7 +624,8 @@ namespace EvolveOS_Optimizer.Views
             catch (Exception ex)
             {
                 ErrorLogging.LogWritingFile(new Exception("Database Access Failed", ex), "Database_Boot_Sequence");
-                _dispatcherQueue.TryEnqueue(() => {
+                _dispatcherQueue.TryEnqueue(() =>
+                {
                     NativeToastHelper.SendNativeToast("Startup Error", $"Database initialization failed: {ex.Message}");
                     Application.Current.Exit();
                 });

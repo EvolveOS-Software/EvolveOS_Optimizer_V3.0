@@ -1,11 +1,11 @@
+using System.IO;
+using System.Reflection;
+using System.Text;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.Win32;
-using System.IO;
-using System.Reflection;
-using System.Text;
 
 namespace EvolveOS_Optimizer.Utilities.Tweaks
 {

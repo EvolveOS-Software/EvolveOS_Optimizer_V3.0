@@ -5,12 +5,12 @@
 
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
-using Microsoft.Data.SqlClient;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using System.Text.RegularExpressions;
+using Microsoft.Data.SqlClient;
 using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Core.ViewModel

@@ -1,10 +1,9 @@
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
-using EvolveOS_Optimizer.Utilities.Tweaks;
 using EvolveOS_Optimizer.Utilities.Managers;
+using EvolveOS_Optimizer.Utilities.Tweaks;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {

@@ -1,8 +1,8 @@
-﻿using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Assets.Panels

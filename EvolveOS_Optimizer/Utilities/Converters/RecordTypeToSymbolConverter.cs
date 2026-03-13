@@ -3,8 +3,8 @@
 // Licensed under the MIT License. 
 // See the LICENSE file in the project root for more information.
 
-using Microsoft.UI.Xaml.Data;
 using EvolveOS_Optimizer.Core.Model;
+using Microsoft.UI.Xaml.Data;
 
 namespace EvolveOS_Optimizer.Utilities.Converters
 {

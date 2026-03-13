@@ -1,10 +1,5 @@
 using EvolveOS_Optimizer.Utilities.Controls;
 using NetFwTypeLib;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EvolveOS_Optimizer.Utilities.Managers
 {
@@ -112,7 +107,8 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
         protected static async Task BlockSpyDomain(bool isDisabled)
         {
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 try { RulesHosts(isDisabled); }
                 catch (Exception ex) { Debug.WriteLine(ex.Message); }
             });
@@ -165,7 +161,8 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
         protected static async Task BlockWDefender(bool isDisabled)
         {
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 try { ChangeRules(isDisabled, PathLocator.Executable.MpCmdRun, _nameRules["WDefender"], NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT, "blocking Windows Defender database updates"); }
                 catch (Exception ex) { ErrorLogging.LogDebug(ex); }
             });

@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-
 namespace EvolveOS_Optimizer.Utilities.Storage
 {
     internal class WinKeyStorage

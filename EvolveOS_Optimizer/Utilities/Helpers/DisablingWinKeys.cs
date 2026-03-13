@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using Windows.System;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

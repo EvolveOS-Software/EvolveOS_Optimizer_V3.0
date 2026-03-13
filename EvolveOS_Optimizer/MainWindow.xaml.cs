@@ -17,7 +17,6 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
-using Windows.UI.WindowManagement;
 using WinRT.Interop;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
@@ -551,7 +550,8 @@ namespace EvolveOS_Optimizer
                 if (!show)
                 {
                     UpdateBanner.Visibility = Visibility.Collapsed;
-                    Task.Delay(50).ContinueWith(_ => {
+                    Task.Delay(50).ContinueWith(_ =>
+                    {
                         this.DispatcherQueue.TryEnqueue(() => NotificationManager.ProcessQueue());
                     });
                 }

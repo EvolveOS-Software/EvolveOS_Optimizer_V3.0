@@ -3,9 +3,9 @@
 // Licensed under the MIT License. 
 // See the LICENSE file in the project root for more information.
 
-using Microsoft.Data.SqlClient;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using Microsoft.Data.SqlClient;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {

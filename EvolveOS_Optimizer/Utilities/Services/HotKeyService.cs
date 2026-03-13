@@ -152,7 +152,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             });
 
             Win32Helper.PostThreadMessage(_threadId, Win32Helper.WM_USER_REGISTER_HOTKEY, IntPtr.Zero, IntPtr.Zero);
- 
+
             return true;
         }
 

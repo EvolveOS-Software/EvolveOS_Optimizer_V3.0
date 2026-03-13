@@ -1,3 +1,8 @@
+using System.IO;
+using System.Management;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Threading;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -6,11 +11,6 @@ using EvolveOS_Optimizer.Utilities.Storage;
 using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
 using Microsoft.Win32;
-using System.IO;
-using System.Management;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace EvolveOS_Optimizer.Utilities.Tweaks
 {
@@ -301,7 +301,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                                     if (!isDisabled)
                                     {
                                         NotificationManager.Show().WithDuration(300).Restart();
-                                        _ = Task.Run(async () => {
+                                        _ = Task.Run(async () =>
+                                        {
                                             await Task.Delay(10000);
                                             await CommandExecutor.RunCommand($"/c del /f \"{PathLocator.Executable.NSudo}\"");
                                         });

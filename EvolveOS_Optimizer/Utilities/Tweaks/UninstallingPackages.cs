@@ -1,10 +1,10 @@
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.Win32;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Threading;
 using SystemTask = System.Threading.Tasks.Task;
 
 namespace EvolveOS_Optimizer.Utilities.Tweaks

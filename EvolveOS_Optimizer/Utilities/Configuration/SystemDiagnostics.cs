@@ -508,13 +508,13 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         using (managementObj)
                         {
                             ulong cap = Convert.ToUInt64(managementObj["Capacity"]);
-                        totalCapacity += cap;
+                            totalCapacity += cap;
 
-                        string manufacturer = managementObj["Manufacturer"]?.ToString() ?? "Unknown";
-                        string capacity = SizeCalculationHelper(cap);
-                        string speed = managementObj["Speed"]?.ToString() ?? "0";
+                            string manufacturer = managementObj["Manufacturer"]?.ToString() ?? "Unknown";
+                            string capacity = SizeCalculationHelper(cap);
+                            string speed = managementObj["Speed"]?.ToString() ?? "0";
 
-                        entries.Add($"{manufacturer}, {capacity} @ {speed} MHz");
+                            entries.Add($"{manufacturer}, {capacity} @ {speed} MHz");
 
                             if (memoryTypeCode == 0 && managementObj["SMBIOSMemoryType"] != null)
                             {

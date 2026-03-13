@@ -14,19 +14,19 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             var tasks = new List<Task>
             {
                 RunCommandAsync("sc", "stop TrustedInstaller"),
-            
+
                 RunCommandAsync("sc", "stop msiserver"),
-            
+
                 RunCommandAsync("taskkill", "/F /IM dism.exe"),
-            
+
                 RunCommandAsync("taskkill", "/F /IM DismHost.exe"),
-            
+
                 RunCommandAsync("taskkill", "/F /IM sfc.exe"),
-            
+
                 RunCommandAsync("taskkill", "/F /IM chkdsk.exe"),
-            
+
                 RunCommandAsync("taskkill", "/F /IM TiWorker.exe"),
-            
+
                 RunCommandAsync("taskkill", "/F /IM wusa.exe")
             };
 

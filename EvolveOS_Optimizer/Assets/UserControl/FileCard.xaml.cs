@@ -1,9 +1,9 @@
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Input;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Pages;
+using EvolveOS_Optimizer.Utilities.Helpers;
+using Microsoft.UI.Xaml.Input;
 
 namespace EvolveOS_Optimizer.Assets.UserControl
 {

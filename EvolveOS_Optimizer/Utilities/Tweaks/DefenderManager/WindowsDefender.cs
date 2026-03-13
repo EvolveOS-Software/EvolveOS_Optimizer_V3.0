@@ -1,11 +1,11 @@
-using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Storage;
-using Microsoft.Win32;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Storage;
+using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager
 {

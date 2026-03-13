@@ -1,9 +1,5 @@
-using EvolveOS_Optimizer.Utilities.Helpers;
-using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Utilities.Controls
 {

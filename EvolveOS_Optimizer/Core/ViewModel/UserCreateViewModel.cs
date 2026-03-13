@@ -8,9 +8,9 @@ using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
-using Microsoft.Data.SqlClient;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using Microsoft.Data.SqlClient;
 using Microsoft.UI.Xaml.Input;
 using WinRT.Interop;
 
@@ -472,7 +472,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                             if (existingCount >= 1)
                             {
-                                App.UIThreadDispatcher?.TryEnqueue(() => {
+                                App.UIThreadDispatcher?.TryEnqueue(() =>
+                                {
                                     NativeToastHelper.SendNativeToast("Warning", UserNameText + " " + (ResourceString.GetString("notif_exist") ?? "already exists"));
                                 });
                                 return;
@@ -502,7 +503,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             cmd.ExecuteNonQuery();
                         }
 
-                        App.UIThreadDispatcher?.TryEnqueue(() => {
+                        App.UIThreadDispatcher?.TryEnqueue(() =>
+                        {
                             NativeToastHelper.SendNativeToast("Success", ResourceString.GetString("notif_registered_succesful") ?? "Successfully registered");
                             SwitchToLoginRequested?.Invoke();
                         });
@@ -511,7 +513,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 catch (Exception ex)
                 {
                     Debug.WriteLine("Database Error: " + ex.Message);
-                    App.UIThreadDispatcher?.TryEnqueue(() => {
+                    App.UIThreadDispatcher?.TryEnqueue(() =>
+                    {
                         NativeToastHelper.SendNativeToast("Error", (ResourceString.GetString("notif_error_database") ?? "Database Error: ") + ex.Message);
                     });
                 }
@@ -540,7 +543,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     ProfileImagePath = file.Path;
                     var loadedImage = await ImageHelper.LoadFromBytesAsync(File.ReadAllBytes(file.Path));
 
-                    App.UIThreadDispatcher?.TryEnqueue(() => {
+                    App.UIThreadDispatcher?.TryEnqueue(() =>
+                    {
                         ProfileImageSource = loadedImage;
                     });
 
