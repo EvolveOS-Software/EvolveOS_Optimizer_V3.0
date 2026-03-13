@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Reflection;
+using System.Security.Principal;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
@@ -41,6 +42,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Properties
+
+        public Visibility IsAdmin
+        {
+            get
+            {
+                bool isAdminRole = new WindowsPrincipal(WindowsIdentity.GetCurrent())
+                    .IsInRole(WindowsBuiltInRole.Administrator);
+
+                return isAdminRole ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
 
         public bool UseHotkey
         {

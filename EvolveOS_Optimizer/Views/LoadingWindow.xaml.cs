@@ -255,6 +255,29 @@ namespace EvolveOS_Optimizer.Views
             UpdateStatus(1);
             var token = _cts.Token;
 
+            Task weatherTask = Task.Run(async () =>
+            {
+                try
+                {
+                    var weatherService = new WeatherService();
+                    using var weatherCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+                    string savedLocation = SettingsEngine.LastLocation;
+                    if (string.IsNullOrEmpty(savedLocation)) savedLocation = "London";
+
+                    var data = await weatherService.GetWeatherAsync(savedLocation, weatherCts.Token);
+                    if (data != null)
+                    {
+                        GlobalAppData.PreloadedWeather = data;
+                        Debug.WriteLine("[Weather] Preloaded successfully in background.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Weather] Failed to preload: {ex.Message}");
+                }
+            });
+
             if (_isSystemBusy)
             {
                 UpdateStatusDirect("Waiting for system to initialize...");
@@ -284,25 +307,6 @@ namespace EvolveOS_Optimizer.Views
                     await Task.Delay(400, token);
 
                     Report(20);
-
-                    Task weatherTask = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            var weatherService = new WeatherService();
-                            using var weatherCts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-
-                            string savedLocation = SettingsEngine.LastLocation;
-                            if (string.IsNullOrEmpty(savedLocation)) savedLocation = "London";
-
-                            var data = await weatherService.GetWeatherAsync(savedLocation, weatherCts.Token);
-                            if (data != null)
-                            {
-                                GlobalAppData.PreloadedWeather = data;
-                            }
-                        }
-                        catch { }
-                    });
 
                     Parallel.Invoke(
                         () => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus)),
