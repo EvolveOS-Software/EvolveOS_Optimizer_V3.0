@@ -182,6 +182,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
+        public Visibility IsWindowBorderVisible
+        {
+            get => SettingsEngine.IsWindowBorderEnabled ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public bool IsWindowBorderEnabled
+        {
+            get => SettingsEngine.IsWindowBorderEnabled;
+            set
+            {
+                if (SettingsEngine.IsWindowBorderEnabled != value)
+                {
+                    SettingsEngine.IsWindowBorderEnabled = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsWindowBorderVisible));
+                }
+            }
+        }
+
         public string DisplayTweakVersion =>
             (Assembly.GetEntryAssembly() ?? throw new InvalidOperationException())
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "Unknown Version";

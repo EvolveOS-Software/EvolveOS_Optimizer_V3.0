@@ -56,6 +56,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["AcrylicOpacity"] = 0.5,
             ["AcrylicLuminosity"] = 0.3,
             ["AcrylicTintColor"] = "#000000",
+            ["EnableWindowBorder"] = false,
             ["Language"] = "en-us",
             ["EnableHoverGlow"] = true,
             ["EnableSelectionGlow"] = true,
@@ -96,6 +97,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string AppTheme { get => (string)_cachedSettings["AppTheme"]; set => ChangingParameters("AppTheme", value); }
         internal static string AccentColor { get => (string)_cachedSettings["AccentColor"]; set => ChangingParameters("AccentColor", value); }
         internal static string AcrylicTintColor { get => (string)_cachedSettings["AcrylicTintColor"]; set => ChangingParameters("AcrylicTintColor", value); }
+        internal static bool IsWindowBorderEnabled { get => (bool)_cachedSettings["EnableWindowBorder"]; set => ChangingParameters("EnableWindowBorder", value); }
         internal static double AcrylicOpacity { get => Convert.ToDouble(_cachedSettings["AcrylicOpacity"]); set => ChangingParameters("AcrylicOpacity", value); }
         internal static double AcrylicLuminosity { get => Convert.ToDouble(_cachedSettings["AcrylicLuminosity"]); set => ChangingParameters("AcrylicLuminosity", value); }
         internal static string Language { get => (string)_cachedSettings["Language"]; set => ChangingParameters("Language", value); }

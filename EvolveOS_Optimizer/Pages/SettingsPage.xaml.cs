@@ -372,6 +372,25 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Bound Properties
+        public bool IsWindowBorderEnabled
+        {
+            get => SettingsEngine.IsWindowBorderEnabled;
+            set
+            {
+                if (SettingsEngine.IsWindowBorderEnabled != value)
+                {
+                    if (MainWindow.Instance?.RootGrid?.DataContext is Core.ViewModel.MainWinViewModel mainVm)
+                    {
+                        mainVm.IsWindowBorderEnabled = value;
+                    }
+                    else
+                    {
+                        SettingsEngine.IsWindowBorderEnabled = value;
+                    }
+                }
+            }
+        }
+
         public bool IsRunOnStartUp
         {
             get => SettingsEngine.IsRunOnStartUp;

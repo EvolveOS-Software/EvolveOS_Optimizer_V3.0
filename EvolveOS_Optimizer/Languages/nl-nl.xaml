@@ -137,6 +137,9 @@
 
     <sys:String x:Key="Settings_ToggleOn">Aan</sys:String>
     <sys:String x:Key="Settings_ToggleOff">Uit</sys:String>
+
+    <sys:String x:Key="Settings_WindowBorder_Title">Vensterrand in accentkleur weergeven</sys:String>
+    <sys:String x:Key="Settings_WindowBorder_Subtitle">Tekent een gekleurde rand rond het toepassingsvenster met de door u geselecteerde accentkleur.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

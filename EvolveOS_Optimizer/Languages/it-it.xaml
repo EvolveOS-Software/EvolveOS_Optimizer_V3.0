@@ -134,6 +134,12 @@
 
     <sys:String x:Key="Settings_StartMinimized_Title">Avvia minimizzato</sys:String>
     <sys:String x:Key="Settings_StartMinimized_Subtitle">Avvia l'applicazione direttamente nell'area di notifica senza mostrare la finestra principale.</sys:String>
+
+    <sys:String x:Key="Settings_ToggleOn">Attivato</sys:String>
+    <sys:String x:Key="Settings_ToggleOff">Disattivato</sys:String>
+
+    <sys:String x:Key="Settings_WindowBorder_Title">Mostra bordo della finestra con colore d'accento</sys:String>
+    <sys:String x:Key="Settings_WindowBorder_Subtitle">Disegna un bordo colorato attorno alla finestra dell'applicazione utilizzando il colore d'accento selezionato.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

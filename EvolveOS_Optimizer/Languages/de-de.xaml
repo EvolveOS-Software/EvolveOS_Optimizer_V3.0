@@ -137,6 +137,9 @@
 
     <sys:String x:Key="Settings_ToggleOn">Ein</sys:String>
     <sys:String x:Key="Settings_ToggleOff">Aus</sys:String>
+
+    <sys:String x:Key="Settings_WindowBorder_Title">Fensterrahmen in Akzentfarbe anzeigen</sys:String>
+    <sys:String x:Key="Settings_WindowBorder_Subtitle">Zeichnet einen farbigen Rahmen um das Anwendungsfenster in Ihrer ausgewählten Akzentfarbe.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

@@ -138,6 +138,9 @@
 
     <sys:String x:Key="Settings_ToggleOn">On</sys:String>
     <sys:String x:Key="Settings_ToggleOff">Off</sys:String>
+
+    <sys:String x:Key="Settings_WindowBorder_Title">Show Accent Window Border</sys:String>
+    <sys:String x:Key="Settings_WindowBorder_Subtitle">Draw a colored border around the application window using your selected accent color.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

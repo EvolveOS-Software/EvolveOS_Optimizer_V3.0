@@ -174,6 +174,24 @@
                 </Border>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="{x:Bind GetText('Settings_WindowBorder_Title'), Mode=OneWay, FallbackValue='Show Accent Window Border'}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_WindowBorder_Subtitle'), Mode=OneWay, FallbackValue='Draw a colored border around the application window using your selected accent color.'}" 
+                                       Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1" 
+                                      IsOn="{x:Bind IsWindowBorderEnabled, Mode=TwoWay}" 
+                                      OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
+                                      OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                    </Grid>
+                </Border>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
                         <StackPanel Spacing="2">
                             <TextBlock Text="{x:Bind GetText('Settings_AccentColor_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
