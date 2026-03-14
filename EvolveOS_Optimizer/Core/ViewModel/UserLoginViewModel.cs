@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.IO;
+using System.Threading;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
@@ -139,6 +140,27 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _loginTimer = new DispatcherTimer();
             _loginTimer.Interval = TimeSpan.FromSeconds(1);
             _loginTimer.Tick += Timer_Tick;
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    using var weatherCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                    string savedLocation = SettingsEngine.LastLocation;
+                    if (string.IsNullOrEmpty(savedLocation)) savedLocation = "Paris";
+
+                    var data = await _weatherService.GetWeatherAsync(savedLocation, weatherCts.Token);
+                    if (data != null)
+                    {
+                        GlobalAppData.PreloadedWeather = data;
+                        Debug.WriteLine("[Weather] Preloaded successfully during Login screen.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Weather] Failed to preload during Login: {ex.Message}");
+                }
+            });
         }
         #endregion
 

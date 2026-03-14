@@ -11,6 +11,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Windows.Graphics;
+using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Views
 {
@@ -23,6 +24,17 @@ namespace EvolveOS_Optimizer.Views
             this.InitializeComponent();
 
             CenterAndSizeWindow(850, 600);
+
+            IntPtr hwnd = WindowNative.GetWindowHandle(this);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+
+            if (appWindow.Presenter is OverlappedPresenter presenter)
+            {
+                presenter.IsMinimizable = false;
+                presenter.IsMaximizable = false;
+                presenter.IsResizable = false;
+            }
 
             var loginVM = new UserLoginViewModel(weatherService, () =>
             {
