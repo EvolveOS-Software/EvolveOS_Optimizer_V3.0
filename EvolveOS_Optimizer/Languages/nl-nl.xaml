@@ -4,6 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="using:System">
 
+    <!-- region System Restore Point -->
+    <sys:String x:Key="chkbox_do_not_show">Dit niet meer weergeven</sys:String>
+    <sys:String x:Key="title_restore_point">Herstelpunt maken</sys:String>
+    <sys:String x:Key="txt_restore_point_dialog">Het wordt ten zeerste aanbevolen om een systeemherstelpunt te maken voordat u deze of andere optimalisatietools gebruikt.</sys:String>
+    <sys:String x:Key="btn_continue">Doorgaan</sys:String>
+    <!-- endregion System Restore Point -->
+
     <!-- region Default Description Block String(s) -->
     <sys:String x:Key="defaultDescriptionApp">Beweeg de muis over een app om de beschrijving te zien.</sys:String>
     <sys:String x:Key="defaultDescription">Beweeg de muis over een tweak voor de beschrijving.</sys:String>

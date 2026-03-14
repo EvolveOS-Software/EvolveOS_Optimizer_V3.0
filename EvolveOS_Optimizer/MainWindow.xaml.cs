@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Security.Principal;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
@@ -213,9 +214,21 @@ namespace EvolveOS_Optimizer
             {
                 StartLiveSessionTimer(expiry);
             }
+
+            bool isWindowsAdmin = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+            bool isAppAdmin = UserSession.UserType == "Admin";
+
+            if (LocalMachineSettingsEngine.IsFirstRun && isAppAdmin && isWindowsAdmin)
+            {
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    await Task.Delay(1000);
+                    await ShowRestorePointDialogAsync();
+                });
+            }
         }
 
-        private void AppWindow_Closing(Microsoft.UI.Windowing.AppWindow sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs args)
+        private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
             if (SettingsEngine.IsCloseToTrayEnabled)
             {
@@ -509,6 +522,66 @@ namespace EvolveOS_Optimizer
                 Debug.WriteLine($"[Accent] Applied color: {hexColor}");
             }
             catch (Exception ex) { Debug.WriteLine($"[Accent] Error: {ex.Message}"); }
+        }
+
+        private async Task ShowRestorePointDialogAsync()
+        {
+            var neverShowAgain = new CheckBox
+            {
+                Content = ResourceString.GetString("chkbox_do_not_show") ?? "Do not show this again",
+                Margin = new Thickness(0, 10, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            var dialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("title_restore_point") ?? "Create Restore Point",
+                Content = new StackPanel
+                {
+                    Children =
+            {
+                new TextBlock
+                {
+                    Text = ResourceString.GetString("txt_restore_point_dialog") ?? "It is highly recommended to create a system restore point before using this or other optimization tools.",
+                    TextWrapping = TextWrapping.Wrap,
+                    Margin = new Thickness(0, 0, 0, 10)
+                },
+                neverShowAgain
+            }
+                },
+                PrimaryButtonText = ResourceString.GetString("btn_continue") ?? "Continue",
+                CloseButtonText = ResourceString.GetString("btn_cancel") ?? "Close",
+                XamlRoot = this.Content.XamlRoot,
+                PrimaryButtonStyle = (Style)Application.Current.Resources["AccentButtonStyle"],
+                Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
+                BorderBrush = Application.Current.Resources["MyDynamicAccentBrush"] as SolidColorBrush
+            };
+
+            try
+            {
+                var result = await dialog.ShowAsync();
+
+                if (neverShowAgain.IsChecked == true)
+                {
+                    LocalMachineSettingsEngine.IsFirstRun = false;
+                }
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    Debug.WriteLine("[RestorePoint] Opening SystemPropertiesProtection");
+
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "SystemPropertiesProtection.exe",
+                        UseShellExecute = true
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[RestorePoint Error] {ex.Message}");
+            }
         }
         #endregion
 

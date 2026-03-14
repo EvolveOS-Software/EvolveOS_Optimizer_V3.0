@@ -413,7 +413,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["OptimizationModifiers"] = (int)(VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift),
             ["MemoryAreas"] = (int)(Enums.Memory.Areas.CombinedPageList | Enums.Memory.Areas.ModifiedFileCache | Enums.Memory.Areas.ModifiedPageList | Enums.Memory.Areas.RegistryCache |
                         Enums.Memory.Areas.StandbyList | Enums.Memory.Areas.SystemFileCache | Enums.Memory.Areas.WorkingSet | Enums.Memory.Areas.DiskCleanup | Enums.Memory.Areas.FlushDns),
-            ["EnableDeveloperMode"] = false
+            ["EnableDeveloperMode"] = false,
+            ["IsFirstRun"] = true
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -435,6 +436,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static VirtualKeyModifiers OptimizationModifiers { get => (VirtualKeyModifiers)Convert.ToInt32(_cachedSettings["OptimizationModifiers"]); set => ChangingParameters("OptimizationModifiers", (int)value); }
         internal static Enums.Memory.Areas MemoryAreas { get => (Enums.Memory.Areas)(int)_cachedSettings["MemoryAreas"]; set => ChangingParameters("MemoryAreas", (int)value); }
         internal static bool IsDeveloperMode { get => (bool)_cachedSettings["EnableDeveloperMode"]; set => ChangingParameters("EnableDeveloperMode", value); }
+        internal static bool IsFirstRun { get => (bool)_cachedSettings["IsFirstRun"]; set => ChangingParameters("IsFirstRun", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)

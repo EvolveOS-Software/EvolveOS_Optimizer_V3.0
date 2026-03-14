@@ -4,6 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="using:System">
 
+    <!-- region System Restore Point -->
+    <sys:String x:Key="chkbox_do_not_show">Nicht mehr anzeigen</sys:String>
+    <sys:String x:Key="title_restore_point">Wiederherstellungspunkt erstellen</sys:String>
+    <sys:String x:Key="txt_restore_point_dialog">Es wird dringend empfohlen, einen Systemwiederherstellungspunkt zu erstellen, bevor Sie diese oder andere Optimierungstools verwenden.</sys:String>
+    <sys:String x:Key="btn_continue">Weiter</sys:String>
+    <!-- endregion System Restore Point -->
+
     <!-- region Default Description Block String(s) -->
     <sys:String x:Key="defaultDescriptionApp">Fahren Sie mit der Maus über eine App, um deren Beschreibung anzuzeigen.</sys:String>
     <sys:String x:Key="defaultDescription">Fahren Sie mit der Maus über einen Tweak, um dessen Beschreibung zu erhalten.</sys:String>
