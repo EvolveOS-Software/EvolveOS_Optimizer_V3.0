@@ -21,7 +21,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
         public enum NoticeSeverity { Info, Warning, Error, Success }
 
         private static DispatcherTimer? _autoDismissTimer;
-        private static double _timeLeft;
+        private static double _progressValue;
         private static bool _isPaused;
         private static MainWindow? _mainWindow;
 
@@ -267,9 +267,10 @@ namespace EvolveOS_Optimizer.Utilities.Managers
             if (_mainWindow == null) return;
 
             _autoDismissTimer?.Stop();
-            _timeLeft = 100;
+
+            _progressValue = 0;
             _isPaused = false;
-            _mainWindow.NotificationProgress.Value = 100;
+            _mainWindow.NotificationProgress.Value = 0;
 
             var banner = _mainWindow.GlobalNotificationBanner;
             var textBlock = _mainWindow.NotificationText;
@@ -292,7 +293,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
             banner.Background = severity switch
             {
                 NoticeSeverity.Error => new SolidColorBrush(Color.FromArgb(255, 199, 0, 57)),
-                NoticeSeverity.Warning => new SolidColorBrush(Color.FromArgb(255, 255, 195, 0)),
+                NoticeSeverity.Warning => new SolidColorBrush(Color.FromArgb(255, 217, 119, 6)),
                 NoticeSeverity.Success => new SolidColorBrush(Color.FromArgb(255, 46, 204, 113)),
                 _ => new SolidColorBrush((Color)Application.Current.Resources["SystemAccentColor"])
             };
@@ -328,10 +329,10 @@ namespace EvolveOS_Optimizer.Utilities.Managers
         {
             if (_isPaused || _mainWindow == null || _isNotificationOpen == 0) return;
 
-            _timeLeft -= 1.2;
-            _mainWindow.NotificationProgress.Value = _timeLeft;
+            _progressValue += 1.2;
+            _mainWindow.NotificationProgress.Value = _progressValue;
 
-            if (_timeLeft <= 0)
+            if (_progressValue >= 100)
             {
                 _autoDismissTimer?.Stop();
                 HideBanner();
