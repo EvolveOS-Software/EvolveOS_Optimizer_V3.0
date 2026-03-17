@@ -99,9 +99,13 @@
         <EmbeddedResource Include="Resources\**" />
 
         <Page Remove="Languages\*.xaml" />
-        <Content Include="Languages\*.xaml">
+
+        <EmbeddedResource Include="Languages\*.xaml" />
+
+        <None Include="Languages\**\*.*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
     </ItemGroup>
 
     <ItemGroup>

@@ -141,6 +141,33 @@
 
     <sys:String x:Key="Settings_WindowBorder_Title">Show Accent Window Border</sys:String>
     <sys:String x:Key="Settings_WindowBorder_Subtitle">Draw a colored border around the application window using your selected accent color.</sys:String>
+
+    <sys:String x:Key="btgl_developer_mode_main">Developer Mode</sys:String>
+    <sys:String x:Key="btgl_developer_mode_subtitle">Enable advanced tools and deep system configurations.</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_Title">Developer Tools</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_TranslationHotkey_Title">Translation Debug Hotkey</sys:String>
+    <sys:String x:Key="Settings_DevTools_TranslationHotkey_Subtitle">Enable a hotkey to instantly display missing localization keys on the current page.</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_ViewLog_Title">View Missing Strings Log</sys:String>
+    <sys:String x:Key="Settings_DevTools_ViewLog_Subtitle">Open the JSON file containing currently missing translations for the active language.</sys:String>
+    <sys:String x:Key="Settings_DevTools_ViewLog_Button">Open JSON File</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_LocateFile_Title">Locate Language File</sys:String>
+    <sys:String x:Key="Settings_DevTools_LocateFile_Subtitle">Open File Explorer and highlight the currently active language dictionary (.xaml).</sys:String>
+    <sys:String x:Key="Settings_DevTools_LocateFile_Button">Locate File</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_CreateTemplate_Title">Create New Language Template</sys:String>
+    <sys:String x:Key="Settings_DevTools_CreateTemplate_Subtitle">Generate a base XAML dictionary for a new language (e.g., 'es-es').</sys:String>
+    <sys:String x:Key="Settings_DevTools_CreateTemplate_Button">Create</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_Merge_Title">Merge Missing Strings</sys:String>
+    <sys:String x:Key="Settings_DevTools_Merge_Subtitle">Injects logged missing strings from JSON into the current language's XAML dictionary.</sys:String>
+    <sys:String x:Key="Settings_DevTools_Merge_Button">Merge to XAML</sys:String>
+
+    <sys:String x:Key="Settings_ToggleOn">Enabled</sys:String>
+    <sys:String x:Key="Settings_ToggleOff">Disabled</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

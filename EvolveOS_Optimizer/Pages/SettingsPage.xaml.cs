@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security;
 using EvolveOS_Optimizer.Core.Interfaces;
@@ -12,6 +13,7 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
+using Windows.Storage;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -99,6 +101,8 @@ namespace EvolveOS_Optimizer.Pages
             var savedColor = UIHelper.ToColor(SettingsEngine.AcrylicTintColor);
             AcrylicColorPicker.Color = savedColor;
             ColorPreview.Background = new SolidColorBrush(savedColor);
+
+            PopulateTranslationHotkeyComboBoxes();
 
             _isInitialized = true;
 
@@ -360,6 +364,25 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void MergeStrings_Click(object sender, RoutedEventArgs e)
+        {
+            string currentLang = SettingsEngine.Language;
+
+            if (currentLang.Equals("en-us", StringComparison.OrdinalIgnoreCase))
+            {
+                NativeToastHelper.SendNativeToast("Developer Tools", "Cannot merge missing strings into the base English (en-us) dictionary.");
+                return;
+            }
+
+            ResourceHelper.MergeMissingStringsToXaml(currentLang);
+
+            LocalizationService.Instance.LoadLanguage(currentLang);
+
+            NativeToastHelper.SendNativeToast("Developer Tools", $"Successfully merged missing strings for {currentLang}.");
+        }
+        #endregion
+
+        #region Developer Tools
         private void BtnDeveloperMode_ChangedState(object sender, RoutedEventArgs e)
         {
             if (!_isInitialized) return;
@@ -367,6 +390,184 @@ namespace EvolveOS_Optimizer.Pages
             if (sender is ToggleSwitch ts)
             {
                 LocalMachineSettingsEngine.IsDeveloperMode = ts.IsOn;
+
+                if (!ts.IsOn)
+                {
+                    IsTranslationHotkeyEnabled = false;
+                }
+
+                Loc.RefreshAll();
+            }
+        }
+
+        public bool IsTranslationHotkeyEnabled
+        {
+            get => LocalMachineSettingsEngine.IsTranslationHotkeyEnabled;
+            set
+            {
+                if (LocalMachineSettingsEngine.IsTranslationHotkeyEnabled != value)
+                {
+                    LocalMachineSettingsEngine.IsTranslationHotkeyEnabled = value;
+                    OnPropertyChanged();
+                    App.NotifyHotkeySettingsChanged();
+                }
+            }
+        }
+
+        private async void OpenMissingStringsJson_Click(object sender, RoutedEventArgs e)
+        {
+            string langCode = SettingsEngine.Language;
+
+            string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
+            string realBaseDir = System.IO.Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
+
+            string jsonPath = System.IO.Path.Combine(realBaseDir, "Languages", $"MissingStrings_{langCode}.json");
+
+            if (File.Exists(jsonPath))
+            {
+                try
+                {
+                    var file = await StorageFile.GetFileFromPathAsync(jsonPath);
+
+                    var options = new Windows.System.LauncherOptions
+                    {
+                        DisplayApplicationPicker = true
+                    };
+
+                    await Windows.System.Launcher.LaunchFileAsync(file, options);
+                }
+                catch (Exception ex)
+                {
+                    NativeToastHelper.SendNativeToast("Developer Tools", $"Failed to open file: {ex.Message}");
+                }
+            }
+            else
+            {
+                NativeToastHelper.SendNativeToast("Developer Tools", $"No missing strings logged for {langCode} yet.");
+            }
+        }
+
+        private void PopulateTranslationHotkeyComboBoxes()
+        {
+            _isInitialized = false;
+
+            CbTranslationModifier.Items.Clear();
+            CbTranslationModifier.Items.Add(new ComboBoxItem { Content = "Ctrl", Tag = Windows.System.VirtualKeyModifiers.Control });
+            CbTranslationModifier.Items.Add(new ComboBoxItem { Content = "Alt", Tag = Windows.System.VirtualKeyModifiers.Menu });
+            CbTranslationModifier.Items.Add(new ComboBoxItem { Content = "Shift", Tag = Windows.System.VirtualKeyModifiers.Shift });
+            CbTranslationModifier.Items.Add(new ComboBoxItem { Content = "Ctrl + Shift", Tag = Windows.System.VirtualKeyModifiers.Control | Windows.System.VirtualKeyModifiers.Shift });
+            CbTranslationModifier.Items.Add(new ComboBoxItem { Content = "Ctrl + Alt", Tag = Windows.System.VirtualKeyModifiers.Control | Windows.System.VirtualKeyModifiers.Menu });
+
+            CbTranslationKey.Items.Clear();
+            for (int i = 65; i <= 90; i++)
+            {
+                var key = (Windows.System.VirtualKey)i;
+                CbTranslationKey.Items.Add(new ComboBoxItem { Content = key.ToString(), Tag = key });
+            }
+
+            var savedMod = (Windows.System.VirtualKeyModifiers)LocalMachineSettingsEngine.TranslationHotkeyModifier;
+            CbTranslationModifier.SelectedItem = CbTranslationModifier.Items.Cast<ComboBoxItem>().FirstOrDefault(i => (Windows.System.VirtualKeyModifiers)i.Tag == savedMod) ?? CbTranslationModifier.Items[3];
+
+            var savedKey = (Windows.System.VirtualKey)LocalMachineSettingsEngine.TranslationHotkeyKey;
+            CbTranslationKey.SelectedItem = CbTranslationKey.Items.Cast<ComboBoxItem>().FirstOrDefault(i => (Windows.System.VirtualKey)i.Tag == savedKey) ?? CbTranslationKey.Items[11]; // Defaults to 'L'
+
+            _isInitialized = true;
+        }
+
+        private void CbTranslationModifier_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_isInitialized || CbTranslationModifier.SelectedItem is not ComboBoxItem item) return;
+            LocalMachineSettingsEngine.TranslationHotkeyModifier = (int)item.Tag;
+            App.NotifyHotkeySettingsChanged();
+        }
+
+        private void CbTranslationKey_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_isInitialized || CbTranslationKey.SelectedItem is not ComboBoxItem item) return;
+            LocalMachineSettingsEngine.TranslationHotkeyKey = (int)item.Tag;
+            App.NotifyHotkeySettingsChanged();
+        }
+
+        private async void CreateNewLanguage_Click(object sender, RoutedEventArgs e)
+        {
+            string newLangCode = TxtNewLangCode.Text.Trim().ToLower();
+
+            if (string.IsNullOrWhiteSpace(newLangCode) || newLangCode.Length < 2)
+            {
+                NativeToastHelper.SendNativeToast("Developer Tools", "Please enter a valid language code (e.g., es-es or pt).");
+                return;
+            }
+
+            string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
+            string realBaseDir = System.IO.Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
+
+            string langDir = System.IO.Path.Combine(realBaseDir, "Languages");
+            string englishPath = System.IO.Path.Combine(langDir, "en-us.xaml");
+            string newLangPath = System.IO.Path.Combine(langDir, $"{newLangCode}.xaml");
+
+            if (File.Exists(newLangPath))
+            {
+                NativeToastHelper.SendNativeToast("Developer Tools", $"The language file {newLangCode}.xaml already exists!");
+                return;
+            }
+
+            if (!File.Exists(englishPath))
+            {
+                NativeToastHelper.SendNativeToast("Developer Tools", "Error: The base en-us.xaml file could not be found.");
+                return;
+            }
+
+            try
+            {
+                File.Copy(englishPath, newLangPath);
+
+                NativeToastHelper.SendNativeToast("Developer Tools", $"Successfully created {newLangCode}.xaml! Choose an editor to open it.");
+                TxtNewLangCode.Text = string.Empty;
+
+                var file = await StorageFile.GetFileFromPathAsync(newLangPath);
+
+                var options = new Windows.System.LauncherOptions
+                {
+                    DisplayApplicationPicker = true
+                };
+
+                await Windows.System.Launcher.LaunchFileAsync(file, options);
+            }
+            catch (Exception ex)
+            {
+                NativeToastHelper.SendNativeToast("Developer Tools", $"Failed to create language file: {ex.Message}");
+            }
+        }
+
+        private void LocateLanguageFile_Click(object sender, RoutedEventArgs e)
+        {
+            string langCode = SettingsEngine.Language;
+
+            string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
+            string realBaseDir = System.IO.Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
+
+            string langPath = System.IO.Path.Combine(realBaseDir, "Languages", $"{langCode}.xaml");
+
+            ShowInExplorer(langPath);
+        }
+
+        private void ShowInExplorer(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                try
+                {
+
+                    Process.Start("explorer.exe", $"/select,\"{filePath}\"");
+                }
+                catch (Exception ex)
+                {
+                    NativeToastHelper.SendNativeToast("Developer Tools", $"Failed to open Explorer: {ex.Message}");
+                }
+            }
+            else
+            {
+                NativeToastHelper.SendNativeToast("Developer Tools", "File does not exist yet.");
             }
         }
         #endregion

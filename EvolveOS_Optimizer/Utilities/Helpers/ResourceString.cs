@@ -1,3 +1,8 @@
+// Copyright (c) 2026 EvolveOS Software
+//
+// Licensed under the MIT License. 
+// See the LICENSE file in the project root for more information.
+
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Markup;
 
@@ -22,42 +27,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             if (string.IsNullOrEmpty(key)) return string.Empty;
 
-            var result = LocalizationService.Instance[key];
-            if (!string.IsNullOrEmpty(result) && !result.StartsWith("["))
-            {
-                return result;
-            }
-
-            if (Application.Current != null)
-            {
-                var resources = Application.Current.Resources;
-
-                if (resources.TryGetValue(key, out object? val))
-                {
-                    return val?.ToString() ?? $"[{key}]";
-                }
-
-                foreach (var dict in resources.MergedDictionaries)
-                {
-                    if (dict.TryGetValue(key, out object? mergedVal))
-                    {
-                        return mergedVal?.ToString() ?? $"[{key}]";
-                    }
-                }
-            }
-
-            try
-            {
-                string altKey = key.Replace('.', '_').Replace('/', '_');
-                if (altKey != key)
-                {
-                    var altResult = GetString(altKey);
-                    if (!altResult.StartsWith("[")) return altResult;
-                }
-            }
-            catch { }
-
-            return $"[{key}]";
+            return LocalizationService.Instance.Get(key);
         }
     }
 }

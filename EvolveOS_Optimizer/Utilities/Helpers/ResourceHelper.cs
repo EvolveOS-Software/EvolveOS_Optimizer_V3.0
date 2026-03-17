@@ -1,5 +1,11 @@
+// Copyright (c) 2026 EvolveOS Software
+//
+// Licensed under the MIT License. 
+// See the LICENSE file in the project root for more information.
+
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Xml.Linq;
 using EvolveOS_Optimizer.Core;
 
@@ -93,9 +99,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         public static string GetOptimizationResultMessage(
             string reason,
-                KeyValuePair<double, Enums.Memory.Unit> physical,
-                KeyValuePair<double, Enums.Memory.Unit> virtualMem,
-                KeyValuePair<double, Enums.Memory.Unit> disk,
+            KeyValuePair<double, Enums.Memory.Unit> physical,
+            KeyValuePair<double, Enums.Memory.Unit> virtualMem,
+            KeyValuePair<double, Enums.Memory.Unit> disk,
             bool showVirtual,
             bool showDisk)
         {
@@ -183,9 +189,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 var root = doc.Root;
                 if (root == null) return;
 
-                if (root.Attribute(XNamespace.Xmlns + "v") == null)
+                if (root.Attribute(XNamespace.Xmlns + "sys") == null)
                 {
-                    root.Add(new XAttribute(XNamespace.Xmlns + "v", nv.NamespaceName));
+                    root.Add(new XAttribute(XNamespace.Xmlns + "sys", nv.NamespaceName));
                 }
 
                 bool exists = root.Descendants().Any(e => e.Attribute(x + "Key")?.Value == key);
@@ -202,6 +208,73 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             catch (Exception ex)
             {
                 Debug.WriteLine($"[XML INJECT ERROR] {ex.Message}");
+            }
+        }
+
+        public static void MergeMissingStringsToXaml(string langCode)
+        {
+            string langDir = Path.Combine(AppContext.BaseDirectory, "Languages");
+            string jsonPath = Path.Combine(langDir, $"MissingStrings_{langCode}.json");
+            string xamlPath = Path.Combine(langDir, $"{langCode}.xaml");
+
+            if (!File.Exists(jsonPath))
+            {
+                Debug.WriteLine($"[Merge] No missing strings JSON found for {langCode}. Everything is up to date.");
+                return;
+            }
+
+            if (!File.Exists(xamlPath))
+            {
+                Debug.WriteLine($"[Merge] Target XAML dictionary {xamlPath} does not exist.");
+                return;
+            }
+
+            try
+            {
+                string jsonContent = File.ReadAllText(jsonPath);
+                var missingStrings = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonContent);
+
+                if (missingStrings == null || missingStrings.Count == 0) return;
+
+                var doc = XDocument.Load(xamlPath);
+                var root = doc.Root;
+                if (root == null) return;
+
+                XNamespace x = "http://schemas.microsoft.com/winfx/2006/xaml";
+                XNamespace sys = "clr-namespace:System;assembly=mscorlib";
+
+                if (root.Attribute(XNamespace.Xmlns + "sys") == null)
+                {
+                    root.Add(new XAttribute(XNamespace.Xmlns + "sys", sys.NamespaceName));
+                }
+
+                bool wasModified = false;
+
+                foreach (var kvp in missingStrings)
+                {
+                    bool exists = root.Descendants(sys + "String").Any(e => e.Attribute(x + "Key")?.Value == kvp.Key);
+
+                    if (!exists)
+                    {
+                        XElement newElement = new XElement(sys + "String", kvp.Value);
+                        newElement.Add(new XAttribute(x + "Key", kvp.Key));
+                        root.Add(newElement);
+                        wasModified = true;
+                        Debug.WriteLine($"[Merge] Injected: {kvp.Key}");
+                    }
+                }
+
+                if (wasModified)
+                {
+                    doc.Save(xamlPath, SaveOptions.None);
+                    Debug.WriteLine($"[Merge] Successfully updated {langCode}.xaml");
+
+                    File.WriteAllText(jsonPath, "{}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Merge Error] {ex.Message}");
             }
         }
     }

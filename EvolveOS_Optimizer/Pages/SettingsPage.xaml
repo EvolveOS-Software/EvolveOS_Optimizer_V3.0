@@ -18,7 +18,7 @@
         <StackPanel Spacing="24" Margin="4,20,28,40">
 
             <StackPanel Spacing="4">
-                <TextBlock Text="{x:Bind GetText('Settings_Appearance_Title'), Mode=OneWay}" 
+                <TextBlock helpers:Loc.Key="Settings_Appearance_Title"
                            Style="{StaticResource TitleTextBlockStyle}" FontSize="28" FontWeight="Bold"/>
                 <TextBlock Text="{x:Bind GetText('Settings_Appearance_Subtitle'), Mode=OneWay}" 
                            Style="{StaticResource BodyTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
@@ -430,13 +430,103 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock Text="{x:Bind GetText('btgl_developer_mode_main'), Mode=OneWay, FallbackValue='Developer Mode'}" FontWeight="SemiBold"/>
-                                <TextBlock Text="Enable advanced tools and deep system configurations." Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock helpers:Loc.Key="btgl_developer_mode_main" FontWeight="SemiBold"/>
+                                <TextBlock helpers:Loc.Key="btgl_developer_mode_subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
 
-                            <ToggleSwitch x:Name="BtnDeveloperMode" Grid.Column="1" Toggled="BtnDeveloperMode_ChangedState" OnContent="Enabled" OffContent="Disabled"/>
+                            <ToggleSwitch x:Name="BtnDeveloperMode" Grid.Column="1" Toggled="BtnDeveloperMode_ChangedState" 
+                      OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" 
+                      OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
                         </Grid>
 
+                        <StackPanel Visibility="{x:Bind BtnDeveloperMode.IsOn, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Spacing="12" Margin="0,8,0,0">
+                            <MenuFlyoutSeparator/>
+                            <TextBlock helpers:Loc.Key="Settings_DevTools_Title" FontWeight="SemiBold" FontSize="14" Foreground="{ThemeResource SystemAccentColor}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_TranslationHotkey_Title" FontWeight="SemiBold"/>
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_TranslationHotkey_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <ToggleSwitch x:Name="BtnTranslationHotkey" Grid.Column="1" IsOn="{x:Bind IsTranslationHotkeyEnabled, Mode=TwoWay}" 
+                          OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" 
+                          OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
+                            </Grid>
+
+                            <StackPanel Visibility="{x:Bind BtnTranslationHotkey.IsOn, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1" Spacing="8">
+                                        <ComboBox x:Name="CbTranslationModifier" Width="140" SelectionChanged="CbTranslationModifier_SelectionChanged"/>
+                                        <TextBlock Text="+" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        <ComboBox x:Name="CbTranslationKey" Width="100" SelectionChanged="CbTranslationKey_SelectionChanged"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+
+                            <MenuFlyoutSeparator Opacity="0.3"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_ViewLog_Title" FontWeight="SemiBold"/>
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_ViewLog_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" helpers:Loc.Key="Settings_DevTools_ViewLog_Button" Click="OpenMissingStringsJson_Click" MinWidth="150"/>
+                            </Grid>
+
+                            <MenuFlyoutSeparator Opacity="0.3"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_LocateFile_Title" FontWeight="SemiBold"/>
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_LocateFile_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" helpers:Loc.Key="Settings_DevTools_LocateFile_Button" Click="LocateLanguageFile_Click" MinWidth="150"/>
+                            </Grid>
+
+                            <MenuFlyoutSeparator Opacity="0.3"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_CreateTemplate_Title" FontWeight="SemiBold"/>
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_CreateTemplate_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                    <TextBox x:Name="TxtNewLangCode" PlaceholderText="es-es" Width="80" MaxLength="5" VerticalAlignment="Center"/>
+                                    <Button helpers:Loc.Key="Settings_DevTools_CreateTemplate_Button" Click="CreateNewLanguage_Click" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <MenuFlyoutSeparator Opacity="0.3"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_Merge_Title" FontWeight="SemiBold"/>
+                                    <TextBlock helpers:Loc.Key="Settings_DevTools_Merge_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" helpers:Loc.Key="Settings_DevTools_Merge_Button" Click="MergeStrings_Click" Style="{StaticResource AccentButtonStyle}" MinWidth="150"/>
+                            </Grid>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
             </StackPanel>

@@ -3,6 +3,7 @@ using System.Security.Principal;
 using System.Threading;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -10,6 +11,7 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
+using Microsoft.UI.Dispatching;
 using Microsoft.Windows.AppNotifications;
 
 namespace EvolveOS_Optimizer
@@ -153,6 +155,64 @@ namespace EvolveOS_Optimizer
             });
         }
 
+        private static async Task ShowMissingStringsDialogAsync()
+        {
+            if (MainWindow?.Content?.XamlRoot == null) return;
+
+            // Get the report from our tracked UI elements
+            var missingStrings = Loc.GetMissingStringsReport();
+
+            var panel = new Microsoft.UI.Xaml.Controls.StackPanel { Spacing = 10 };
+
+            if (missingStrings.Count == 0)
+            {
+                panel.Children.Add(new Microsoft.UI.Xaml.Controls.TextBlock
+                {
+                    Text = "Good job! All strings on this page are fully translated.",
+                    Foreground = new SolidColorBrush(Colors.LightGreen)
+                });
+            }
+            else
+            {
+                var scrollViewer = new Microsoft.UI.Xaml.Controls.ScrollViewer { MaxHeight = 400 };
+                var listPanel = new Microsoft.UI.Xaml.Controls.StackPanel { Spacing = 6 };
+
+                foreach (var item in missingStrings.OrderByDescending(x => x.Status).ThenBy(x => x.Key))
+                {
+                    string statusText = item.Status == StringStatus.Missing ? "[MISSING]" : "[FALLBACK]";
+                    var color = item.Status == StringStatus.Missing ? Colors.Red : Colors.Orange;
+
+                    var tb = new Microsoft.UI.Xaml.Controls.TextBlock
+                    {
+                        Text = $"{statusText} {item.Key}",
+                        Foreground = new SolidColorBrush(color),
+                        TextWrapping = TextWrapping.Wrap,
+                        FontFamily = new FontFamily("Consolas")
+                    };
+                    listPanel.Children.Add(tb);
+                }
+                scrollViewer.Content = listPanel;
+                panel.Children.Add(scrollViewer);
+            }
+
+            var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+            {
+                Title = $"Missing Strings on Page ({missingStrings.Count})",
+                Content = panel,
+                CloseButtonText = "Close",
+                XamlRoot = MainWindow.Content.XamlRoot
+            };
+
+            try
+            {
+                await dialog.ShowAsync();
+            }
+            catch
+            {
+                // Suppress exception if another ContentDialog is already open
+            }
+        }
+
         #region System & Process Utilities
         private static void SetCurrentProcessAppId(string appId)
         {
@@ -248,14 +308,14 @@ namespace EvolveOS_Optimizer
 
             if (SettingsEngine.IsPasswordGenHotkeyEnabled)
             {
-                var pwHotkey = new EvolveOS_Optimizer.Core.Model.Hotkey(
+                var pwHotkey = new Hotkey(
                     (Windows.System.VirtualKeyModifiers)SettingsEngine.PasswordGenHotkeyModifier,
                     (Windows.System.VirtualKey)SettingsEngine.PasswordGenHotkeyKey
                 );
 
                 bool success = service.Register(pwHotkey, () =>
                 {
-                    UIThreadDispatcher?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
+                    UIThreadDispatcher?.TryEnqueue(DispatcherQueuePriority.Normal, () =>
                     {
                         OpenPasswordGeneratorWindow();
                     });
@@ -271,7 +331,30 @@ namespace EvolveOS_Optimizer
                 }
             }
 
+            if (LocalMachineSettingsEngine.IsTranslationHotkeyEnabled)
+            {
+                var locHotkey = new Hotkey(
+                    (Windows.System.VirtualKeyModifiers)LocalMachineSettingsEngine.TranslationHotkeyModifier,
+                    (Windows.System.VirtualKey)LocalMachineSettingsEngine.TranslationHotkeyKey
+                );
+
+                bool success = service.Register(locHotkey, () =>
+                {
+                    UIThreadDispatcher?.TryEnqueue(DispatcherQueuePriority.Normal, async () =>
+                    {
+                        await ShowMissingStringsDialogAsync();
+                    });
+                });
+
+                if (!success)
+                {
+                    NativeToastHelper.SendNativeToast("Hotkey Warning", $"Translation Debug Hotkey {locHotkey} is in use by another app.");
+                    allSuccess = false;
+                }
+            }
+
             return allSuccess;
+
         }
 
         private static void OpenPasswordGeneratorWindow()
@@ -452,6 +535,7 @@ namespace EvolveOS_Optimizer
                 else
                 {
                     LocalMachineSettingsEngine.IsDeveloperMode = false;
+                    LocalMachineSettingsEngine.IsTranslationHotkeyEnabled = false;
                 }
             }
             catch { }

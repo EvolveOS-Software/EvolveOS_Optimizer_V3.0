@@ -121,17 +121,44 @@ If this tool has lowered your gaming ping and improved your gaming experience wi
 ---
 </br>
 
-### 📝 How to Translate a Program
-To translate the program into your language, download the file [en-us.xaml (EN)](https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/EvolveOS_Optimizer/Languages/en-us.xaml). Translate it and place it in the language folder named according to your language code. Then, submit a **Pull Request**.
+## 🌍 How to Contribute a Translation
 
-Or choose a more suitable language for you at the path:
-<div>
-    <pre>
-📂 .Source
-└── 📁 EvolveOS_Optimizer
-    └── 📁 Languages
-    </pre>
-</div>
+Want to see EvolveOS Optimizer in your native language? We have built a dedicated set of Developer Tools right into the app to make translating incredibly fast and easy! You don't need to be a programmer to help out.
+
+### Getting Started with the Built-In Translation Tools
+
+**1. Enable Developer Mode**
+Go to **Settings > Security & Privacy** and toggle **Developer Mode** to `ON`. A new "Developer Tools" section will appear at the bottom of the page.
+
+**2. Starting your Translation**
+* **Updating an existing language:** Simply change the app's language in the Appearance settings to the one you want to work on.
+* **Adding a brand NEW language:** Scroll down to the Developer Tools menu, type your language code (e.g., `es-es` for Spanish) into the **Create New Language Template** box, and click Create. The app will automatically generate a new dictionary file filled with English defaults for you to translate!
+
+**3. Turn on the Translation Hotkey**
+Inside the Developer Tools menu, turn on the **Translation Debug Hotkey**. You can customize the shortcut, but the default is `Ctrl + Shift + L`.
+
+**4. Browse the App & Spot Missing Strings**
+As you navigate through the app, any text that hasn't been translated yet will automatically light up:
+* 🟠 **Orange Text:** The string is missing in your language, so the app is using the English fallback.
+* 🔴 **Red Text:** The string is completely missing from the app's dictionaries.
+
+**5. Generate a Missing Strings Report**
+Press your translation hotkey (`Ctrl + Shift + L`) on any page. A dialog will pop up showing you exactly which translation keys are missing on your current screen. 
+
+Behind the scenes, the app automatically tracks every missing string you encounter and logs it into a JSON file (e.g., `MissingStrings_fr-fr.json`).
+
+**6. Translate the JSON File**
+* In the Developer Tools menu, click **Open JSON File**. *(Note: If Windows doesn't know how to open JSON files, it will open File Explorer. Just right-click the file and open it with Notepad, VS Code, or your favorite text editor).*
+* You will see a list of missing keys alongside their English defaults. Simply change the English text to your language, save, and close the file.
+
+**7. Merge and See Your Changes!**
+* Go back to the Developer Tools menu in the app and click **Merge to XAML**.
+* The app will automatically inject your newly translated JSON strings directly into your language's `.xaml` dictionary file and refresh the UI. The orange/red text will instantly turn back to normal!
+
+**8. Submit your Translation**
+Once you are happy with your translations, it's time to share them! 
+* Click the **Locate Language File** button in the Developer Tools. This will instantly open File Explorer and highlight your finished `.xaml` file. 
+* Simply upload that file to your fork and submit a Pull Request. Thank you for your contribution! ❤️
 
 </br>
 
