@@ -34,7 +34,7 @@
                     <FontIcon Glyph="&#xEA86;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                     <StackPanel>
                         <TextBlock x:Name="TotalServicesText" Text="0" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="18" />
-                        <TextBlock Text="{helpers:ResourceString Key=service_manager_page_total_services}" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock helpers:Loc.Key="service_manager_page_total_services" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -50,7 +50,7 @@
                     <FontIcon Glyph="&#xE768;" FontSize="24" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                     <StackPanel>
                         <TextBlock x:Name="RunningServicesText" Text="0" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="18" />
-                        <TextBlock Text="{helpers:ResourceString Key=service_manager_page_running_services}" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock helpers:Loc.Key="service_manager_page_running_services" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -66,7 +66,7 @@
                     <FontIcon Glyph="&#xE71A;" FontSize="24" Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
                     <StackPanel>
                         <TextBlock x:Name="StoppedServicesText" FontFamily="{ThemeResource Jura-SemiBold}" Text="0" FontSize="18" />
-                        <TextBlock Text="{helpers:ResourceString Key=service_manager_page_stopped_services}" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
+                        <TextBlock helpers:Loc.Key="service_manager_page_stopped_services" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -106,7 +106,7 @@
                     Click="RefreshButton_Click">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                    <TextBlock x:Uid="ServicesPage_Refresh"/>
+                    <TextBlock helpers:Loc.Key="ServicesPage_Refresh"/>
                 </StackPanel>
             </Button>
         </Grid>
@@ -137,7 +137,7 @@
                     BorderThickness="0" 
                     Padding="0" 
                     HorizontalAlignment="Left">
-                <TextBlock Text="{helpers:ResourceString Key=service_manager_page_service_name}"
+                <TextBlock helpers:Loc.Key="service_manager_page_service_name"
                            FontFamily="{ThemeResource Jura-SemiBold}"
                            FontSize="13"/>
             </Button>
@@ -150,7 +150,7 @@
                     BorderThickness="0" 
                     Padding="0" 
                     HorizontalAlignment="Center">
-                <TextBlock Text="{helpers:ResourceString Key=service_manager_page_status}"
+                <TextBlock helpers:Loc.Key="service_manager_page_status"
                            FontFamily="{ThemeResource Jura-SemiBold}"
                            FontSize="13"/>
             </Button>
@@ -163,12 +163,12 @@
                     BorderThickness="0" 
                     Padding="0" 
                     HorizontalAlignment="Center">
-                <TextBlock Text="{helpers:ResourceString Key=service_manager_page_startup}"
+                <TextBlock helpers:Loc.Key="service_manager_page_startup"
                            FontWeight="SemiBold"
                            FontSize="13"/>
             </Button>
 
-            <TextBlock Text="{helpers:ResourceString Key=service_manager_page_actions}" 
+            <TextBlock helpers:Loc.Key="service_manager_page_actions" 
                        Grid.Column="3"
                        FontFamily="{ThemeResource Jura}"
                        FontSize="13"

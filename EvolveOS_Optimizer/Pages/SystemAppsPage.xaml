@@ -76,7 +76,7 @@
                                 VerticalAlignment="Center">
                 <StackPanel x:Name="appsFilterText" Margin="0,6,0,6" Visibility="Collapsed" Orientation="Horizontal">
                     <FontIcon Glyph="&#xE71C;" FontSize="{StaticResource TextBoxIconFontSize}"/>
-                    <TextBlock Text="{helpers:ResourceString Key=SystemAppsPage_AppsFilter}" Style="{StaticResource DetailBodyBaseMediumStyle}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                    <TextBlock helpers:Loc.Key="SystemAppsPage_AppsFilter" Style="{StaticResource DetailBodyBaseMediumStyle}" Margin="6,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <ComboBox Width="190" x:Name="appsFilter" Margin="8,6,0,6" VerticalAlignment="Center" Visibility="Collapsed" SelectedIndex="0" SelectionChanged="appsFilter_SelectionChanged">
@@ -96,11 +96,11 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="{helpers:ResourceString Key=SystemAppsPage_NoAppFound}" Grid.Row="1" x:Name="noAppFoundText" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                <TextBlock helpers:Loc.Key="SystemAppsPage_NoAppFound" Grid.Row="1" x:Name="noAppFoundText" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
 
                 <StackPanel Margin="10" x:Name="gettingAppsLoading" Grid.Row="1" VerticalAlignment="Center" Visibility="Visible">
                     <ProgressRing Margin="20" Width="100" Height="100" IsIndeterminate="True"/>
-                    <TextBlock Text="{helpers:ResourceString Key=SystemAppsPage_FetchingInstalledApps}" HorizontalAlignment="Center" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                    <TextBlock helpers:Loc.Key="SystemAppsPage_FetchingInstalledApps" HorizontalAlignment="Center" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                 </StackPanel>
 
                 <TreeView x:Name="appTreeView"

@@ -23,12 +23,12 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Margin="32,24,32,0" Spacing="8">
-                <TextBlock Text="{helpers:ResourceString Key=UserAccounts_Title}" 
+                <TextBlock helpers:Loc.Key="UserAccounts_Title" 
                            Style="{StaticResource TitleTextBlockStyle}" 
                            FontSize="28" 
                            FontWeight="Bold"/>
 
-                <TextBlock Text="{helpers:ResourceString Key=UserAccounts_Description}" 
+                <TextBlock helpers:Loc.Key="UserAccounts_Description" 
                            Style="{StaticResource BodyTextBlockStyle}" 
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
@@ -209,7 +209,7 @@
                                 <TextBlock Text="{x:Bind ViewModel.FormTitle, Mode=OneWay}" 
                                            Style="{StaticResource SubtitleTextBlockStyle}" 
                                            FontWeight="Bold"/>
-                                <TextBlock Text="{helpers:ResourceString Key=UserAccounts_FormDescription}" 
+                                <TextBlock helpers:Loc.Key="UserAccounts_FormDescription" 
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             </StackPanel>
 

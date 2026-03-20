@@ -27,7 +27,7 @@
                     <AppBarButton.Flyout>
                         <Flyout Placement="Bottom">
                             <StackPanel Spacing="10" MinWidth="200">
-                                <TextBlock Text="{helpers:ResourceString Key=settings_card_effects}" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                <TextBlock helpers:Loc.Key="settings_card_effects" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                                 <CheckBox Content="{helpers:ResourceString Key=settings_hover_glow}" IsChecked="{Binding IsHoverGlowEnabled, Mode=TwoWay}"/>
                                 <CheckBox Content="{helpers:ResourceString Key=settings_selection_glow}" IsChecked="{Binding IsSelectionGlowEnabled, Mode=TwoWay}"/>
                             </StackPanel>
@@ -48,7 +48,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE1F3;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl1_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl1_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton1].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -61,7 +61,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE895;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl2_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl2_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton2].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -74,7 +74,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE95A;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl3_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl3_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton3].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -87,7 +87,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE9D9;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl4_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl4_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton4].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -100,7 +100,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE731;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl5_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl5_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton5].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -113,7 +113,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xEC8A;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl6_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl6_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton6].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -126,7 +126,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE765;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl7_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl7_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton7].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -139,7 +139,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE9D2;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl8_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl8_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton8].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -152,7 +152,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE12B;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl9_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl9_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton9].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -165,7 +165,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE81D;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl10_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl10_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton10].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -178,7 +178,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xED15;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl11_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl11_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton11].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -191,7 +191,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE720;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl12_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl12_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton12].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -204,7 +204,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE77B;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl13_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl13_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton13].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -217,7 +217,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xBE2B;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl14_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl14_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton14].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -230,7 +230,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE912;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl15_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl15_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton15].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -243,7 +243,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE9D2;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl16_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl16_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton16].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -256,7 +256,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE950;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl17_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl17_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton17].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -269,7 +269,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE722;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl18_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl18_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton18].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -282,7 +282,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xE81D;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl19_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl19_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton19].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>
@@ -295,7 +295,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <FontIcon Grid.Column="0" Glyph="&#xEDA2;" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=tgl20_conf}" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" helpers:Loc.Key="tgl20_conf" VerticalAlignment="Center" Style="{StaticResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                         <ToggleSwitch Grid.Column="2" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding [TglButton20].State, Mode=TwoWay}" Toggled="NativeTgl_Toggled"/>
                     </Grid>
                 </ContentControl>

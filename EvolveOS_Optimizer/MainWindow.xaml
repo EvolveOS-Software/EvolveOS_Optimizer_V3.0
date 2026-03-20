@@ -329,7 +329,7 @@
                               Margin="0,2,0,0"
                               Grid.Column="0"/>
 
-                    <TextBlock Text="{helpers:ResourceString Key=Update_Banner_Message}"
+                    <TextBlock helpers:Loc.Key="Update_Banner_Message"
                                Grid.Column="1"
                                Foreground="White"
                                TextWrapping="WrapWholeWords"

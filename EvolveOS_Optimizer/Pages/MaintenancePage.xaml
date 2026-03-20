@@ -54,8 +54,8 @@
         <StackPanel Grid.Row="0" Spacing="12" Margin="0,0,0,16">
 
             <Grid Margin="0,0,0,10">
-                
-                <TextBlock Text="{helpers:ResourceString Key=title_system_health_status}" 
+
+                <TextBlock helpers:Loc.Key="title_system_health_status" 
                            FontFamily="{StaticResource Jura}"
                            FontSize="28"
                            FontWeight="Bold" 
@@ -181,8 +181,8 @@
                                         VerticalAlignment="Center"/>
                                 
                                 <StackPanel VerticalAlignment="Center">
-                                    
-                                    <TextBlock Text="{helpers:ResourceString Key=txt_physical_memory_used}"
+
+                                    <TextBlock helpers:Loc.Key="txt_physical_memory_used"
                                                Style="{StaticResource LabelStyle}"
                                                FontFamily="{StaticResource Jura}"
                                                FontSize="12"
@@ -214,8 +214,8 @@
                                         VerticalAlignment="Center"/>
                                 
                                 <StackPanel VerticalAlignment="Center">
-                                    
-                                    <TextBlock Text="{helpers:ResourceString Key=txt_physical_memory_free}"
+
+                                    <TextBlock helpers:Loc.Key="txt_physical_memory_free"
                                                Style="{StaticResource LabelStyle}"
                                                FontFamily="{StaticResource Jura}"
                                                Margin="0,-1,0,0"
@@ -244,8 +244,8 @@
                 <Border Grid.Column="1" Style="{StaticResource SettingsCardStyle}"
                         Visibility="{x:Bind ViewModel.ShowVirtualMemory, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
                     <StackPanel>
-                        
-                        <TextBlock Text="{helpers:ResourceString Key=txt_header_virtual_memory}"
+
+                        <TextBlock helpers:Loc.Key="txt_header_virtual_memory"
                                    Style="{StaticResource CardHeaderStyle}"
                                    Margin="0,0,0,12"/>
 
@@ -301,8 +301,8 @@
                                         VerticalAlignment="Center"/>
                                 
                                 <StackPanel VerticalAlignment="Center">
-                                    
-                                    <TextBlock Text="{helpers:ResourceString Key=txt_virtual_memory_used}"
+
+                                    <TextBlock helpers:Loc.Key="txt_virtual_memory_used"
                                                Style="{StaticResource LabelStyle}"
                                                FontFamily="{StaticResource Jura}"
                                                FontSize="12"
@@ -337,8 +337,8 @@
                                         VerticalAlignment="Center"/>
                                 
                                 <StackPanel VerticalAlignment="Center">
-                                    
-                                    <TextBlock Text="{helpers:ResourceString Key=txt_virtual_memory_free}"
+
+                                    <TextBlock helpers:Loc.Key="txt_virtual_memory_free"
                                                Style="{StaticResource LabelStyle}"
                                                FontFamily="{StaticResource Jura}"
                                                FontSize="12" Margin="0"/>
@@ -367,8 +367,8 @@
                         Style="{StaticResource SettingsCardStyle}">
                     
                     <StackPanel>
-                        
-                        <TextBlock Text="{helpers:ResourceString Key=txt_header_drive_c_space}"
+
+                        <TextBlock helpers:Loc.Key="txt_header_drive_c_space"
                                    Style="{StaticResource CardHeaderStyle}"
                                    Margin="0,0,0,12"/>
 
@@ -426,8 +426,8 @@
                                         VerticalAlignment="Center"/>
                                 
                                 <StackPanel VerticalAlignment="Center">
-                                    
-                                    <TextBlock Text="{helpers:ResourceString Key=txt_drive_c_used}"
+
+                                    <TextBlock helpers:Loc.Key="txt_drive_c_used"
                                                Style="{StaticResource LabelStyle}"
                                                FontFamily="{StaticResource Jura}"
                                                FontSize="12"
@@ -463,8 +463,8 @@
                                         VerticalAlignment="Center"/>
                                 
                                 <StackPanel VerticalAlignment="Center">
-                                    
-                                    <TextBlock Text="{helpers:ResourceString Key=txt_drive_c_free}"
+
+                                    <TextBlock helpers:Loc.Key="txt_drive_c_free"
                                                Style="{StaticResource LabelStyle}"
                                                FontFamily="{StaticResource Jura}"
                                                FontSize="12"
@@ -510,8 +510,8 @@
                             VerticalAlignment="Top">
                         
                         <StackPanel>
-                            
-                            <TextBlock Text="{helpers:ResourceString Key=txt_header_process_exlusions}"
+
+                            <TextBlock helpers:Loc.Key="txt_header_process_exlusions"
                                        Style="{StaticResource CardHeaderStyle}"/>
                             
                             <Grid>
@@ -589,8 +589,8 @@
                             VerticalAlignment="Top">
                         
                         <StackPanel>
-                            
-                            <TextBlock Text="{helpers:ResourceString Key=txt_header_memory_areas}"
+
+                            <TextBlock helpers:Loc.Key="txt_header_memory_areas"
                                        Style="{StaticResource CardHeaderStyle}"/>
 
                             <ItemsControl ItemsSource="{x:Bind ViewModel.MemoryAreaItems, Mode=OneWay}">
@@ -625,8 +625,8 @@
                             VerticalAlignment="Top">
                         
                         <StackPanel>
-                            
-                            <TextBlock Text="{helpers:ResourceString Key=txt_header_system_cleanup}"
+
+                            <TextBlock helpers:Loc.Key="txt_header_system_cleanup"
                                        Style="{StaticResource CardHeaderStyle}"/>
 
                             <ItemsControl ItemsSource="{x:Bind ViewModel.SystemCleanupAreaItems, Mode=OneWay}">
@@ -685,8 +685,8 @@
                                                   Foreground="{ThemeResource MyDynamicAccentBrush}"
                                                   Visibility="{x:Bind ViewModel.IsScanning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </Grid>
-                                
-                                <TextBlock Text="{helpers:ResourceString Key=txt_total_estimated_space}"
+
+                                <TextBlock helpers:Loc.Key="txt_total_estimated_space"
                                            FontFamily="{StaticResource Jura}"
                                            FontSize="14"
                                            Foreground="{ThemeResource Brush_Highlighted}"
@@ -706,8 +706,8 @@
                             VerticalAlignment="Top">
                         
                         <StackPanel>
-                            
-                            <TextBlock Text="{helpers:ResourceString Key=txt_header_auto_optimizations}" Style="{StaticResource CardHeaderStyle}"/>
+
+                            <TextBlock helpers:Loc.Key="txt_header_auto_optimizations" Style="{StaticResource CardHeaderStyle}"/>
 
                             <TextBlock Text="{x:Bind ViewModel.AutoOptimizationMemoryIntervalDescription, Mode=OneWay}"
                                        Foreground="{ThemeResource Brush_Highlighted}"
@@ -741,7 +741,7 @@
                             VerticalAlignment="Top">
                         
                         <StackPanel>
-                            <TextBlock Text="{helpers:ResourceString Key=txt_header_settings}"
+                            <TextBlock helpers:Loc.Key="txt_header_settings"
                                        Style="{StaticResource CardHeaderStyle}"/>
 
                             <ItemsControl ItemsSource="{x:Bind ViewModel.SettingItems, Mode=OneWay}">
@@ -773,8 +773,8 @@
                             Visibility="{x:Bind ViewModel.Computer.OperatingSystem.HasHotkeyManager, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
                         
                         <StackPanel>
-                            
-                            <TextBlock Text="{helpers:ResourceString Key=txt_header_optimization_hotkey}"
+
+                            <TextBlock helpers:Loc.Key="txt_header_optimization_hotkey"
                                        Style="{StaticResource CardHeaderStyle}"/>
 
                             <StackPanel Orientation="Vertical" Spacing="16">
@@ -823,7 +823,7 @@
                                     
                                 </StackPanel>
 
-                                <TextBlock Text="{helpers:ResourceString Key=txt_invalid}"
+                                <TextBlock helpers:Loc.Key="txt_invalid"
                                            Foreground="{ThemeResource Brush_Error}"
                                            FontFamily="{StaticResource Jura}"
                                            FontSize="13"
@@ -839,7 +839,7 @@
                         <StackPanel>
                             
                             <TextBlock x:Uid="RepairPage_RepairOptions"
-                                       Text="{helpers:ResourceString Key=txt_header_system_repair}"
+                                       helpers:Loc.Key="txt_header_system_repair"
                                        Style="{StaticResource CardHeaderStyle}"/>
 
                             <StackPanel x:Name="CheckBoxes">
@@ -922,7 +922,7 @@
                             </Grid>
 
                             <TextBlock x:Name="StatusTextBlock"
-                                       Text="{helpers:ResourceString Key=txt_ready}"
+                                       helpers:Loc.Key="txt_ready"
                                        FontFamily="{StaticResource Jura}"
                                        FontSize="13"
                                        Opacity="0.7"
@@ -937,7 +937,7 @@
                         
                         <StackPanel>
 
-                            <TextBlock Text="{helpers:ResourceString Key=txt_header_diagnostic_options}"
+                            <TextBlock helpers:Loc.Key="txt_header_diagnostic_options"
                                        Style="{StaticResource CardHeaderStyle}"
                                        Margin="0,0,0,12"/>
 
@@ -972,7 +972,7 @@
                                                   VerticalAlignment="Center"
                                                   Margin="0,0,16,0"/>
 
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_battery_health}"
+                                        <TextBlock helpers:Loc.Key="txt_battery_health"
                                                    Grid.Column="1"
                                                    VerticalAlignment="Center"
                                                    FontFamily="{StaticResource Jura-SemiBold}"
@@ -1008,7 +1008,7 @@
                                                   VerticalAlignment="Center"
                                                   Margin="0,0,16,0"/>
 
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_memory_diagnostic}"
+                                        <TextBlock helpers:Loc.Key="txt_memory_diagnostic"
                                                    Grid.Column="1"
                                                    VerticalAlignment="Center"
                                                    FontFamily="{StaticResource Jura}"
@@ -1047,7 +1047,7 @@
                                                   VerticalAlignment="Center"
                                                   Margin="0,0,16,0"/>
 
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_disk_optimizations}"
+                                        <TextBlock helpers:Loc.Key="txt_disk_optimizations"
                                                    Grid.Column="1"
                                                    VerticalAlignment="Center"
                                                    FontFamily="{StaticResource Jura}"
@@ -1082,8 +1082,8 @@
                                                   Foreground="{ThemeResource MyDynamicAccentBrush}"
                                                   VerticalAlignment="Center"
                                                   Margin="0,0,16,0"/>
-                                        
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_event_viewer}"
+
+                                        <TextBlock helpers:Loc.Key="txt_event_viewer"
                                                    Grid.Column="1"
                                                    VerticalAlignment="Center"
                                                    FontFamily="{StaticResource Jura}"

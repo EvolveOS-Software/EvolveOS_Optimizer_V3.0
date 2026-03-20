@@ -186,8 +186,8 @@
                         Background="{ThemeResource Brush_Success}"
                         VerticalAlignment="Center"
                         Visibility="{Binding IsMultiSelectMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    
-                    <TextBlock Text="{helpers:ResourceString Key=text_status_active}"
+
+                    <TextBlock helpers:Loc.Key="text_status_active"
                                FontSize="12"
                                FontFamily="{ThemeResource Jura}"
                                Foreground="White"
@@ -197,9 +197,9 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Spacing="4" Opacity="0.6">
-                <TextBlock Text="{helpers:ResourceString Key=warn_part1_pkg}"/>
-                <TextBlock Text="{helpers:ResourceString Key=warn_part2_pkg}" Foreground="{ThemeResource SystemAccentColor}"/>
-                <TextBlock Text="{helpers:ResourceString Key=warn_part3_pkg}"/>
+                <TextBlock helpers:Loc.Key="warn_part1_pkg"/>
+                <TextBlock helpers:Loc.Key="warn_part2_pkg" Foreground="{ThemeResource SystemAccentColor}"/>
+                <TextBlock helpers:Loc.Key="warn_part3_pkg"/>
             </StackPanel>
 
             <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">

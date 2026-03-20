@@ -13,7 +13,7 @@
         <ScrollViewer Padding="4,14,24,0">
             <StackPanel Margin="0,0,0,38">
                 <Grid Margin="0,0,0,10">
-                    <TextBlock Text="{helpers:ResourceString Key=SecurityPage_Status}"
+                    <TextBlock helpers:Loc.Key="SecurityPage_Status"
                                HorizontalAlignment="Center"
                                FontFamily="{ThemeResource Jura-Bold}"
                                Style="{StaticResource TitleTextBlockStyle}"/>
@@ -57,7 +57,7 @@
                     <Button Click="OpenWindowsSecurity_Click">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <FontIcon Glyph="&#xE72E;" FontSize="16"/>
-                            <TextBlock FontFamily="{ThemeResource Jura}" Text="{helpers:ResourceString Key=SecurityPage_OpenWindowsSecurity}"/>
+                            <TextBlock FontFamily="{ThemeResource Jura}" helpers:Loc.Key="SecurityPage_OpenWindowsSecurity"/>
                         </StackPanel>
                     </Button>
 
@@ -69,20 +69,20 @@
                                           Visibility="Collapsed"
                                           IsActive="True"/>
                             <FontIcon x:Name="QuickScanIcon" Glyph="&#xE8C8;" FontSize="16"/>
-                            <TextBlock FontFamily="{ThemeResource Jura}" Text="{helpers:ResourceString Key=SecurityPage_QuickScan}"/>
+                            <TextBlock FontFamily="{ThemeResource Jura}" helpers:Loc.Key="SecurityPage_QuickScan"/>
                         </StackPanel>
                     </Button>
 
                     <Button Click="UpdateDefenderSignatures_Click">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <FontIcon Glyph="&#xE896;" FontSize="16"/>
-                            <TextBlock FontFamily="{ThemeResource Jura}" Text="{helpers:ResourceString Key=SecurityPage_UpdateDefinitions}"/>
+                            <TextBlock FontFamily="{ThemeResource Jura}" helpers:Loc.Key="SecurityPage_UpdateDefinitions"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
 
                 <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="{helpers:ResourceString Key=SecurityPage_Details}"
+                    <TextBlock helpers:Loc.Key="SecurityPage_Details"
                                FontFamily="{ThemeResource Jura}"
                                FontSize="18"
                                Style="{StaticResource TitleTextBlockStyle}"
@@ -109,7 +109,7 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_VirusThreatProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_VirusThreatProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
                                         <TextBlock x:Name="AntivirusProductName" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                         <TextBlock x:Name="SignatureUpdateText" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
@@ -127,8 +127,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_FirewallNetworkProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_BlocksUnauthorizedAccess}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_FirewallNetworkProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_BlocksUnauthorizedAccess" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -144,8 +144,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_AccountProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_AccountProtectionDesc}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_AccountProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_AccountProtectionDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -161,8 +161,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_WindowsUpdate}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_SecurityPatchesAndUpdates}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_WindowsUpdate" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_SecurityPatchesAndUpdates" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -186,8 +186,8 @@
                                         <FontIcon Glyph="&#xE7C1;" FontSize="22" Margin="0,0,12,0" VerticalAlignment="Top"/>
 
                                         <StackPanel Grid.Column="1">
-                                            <TextBlock Text="{helpers:ResourceString Key=SecurityPage_UAC}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
-                                            <TextBlock Text="{helpers:ResourceString Key=SecurityPage_AdministrativeAccessControl}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                            <TextBlock helpers:Loc.Key="SecurityPage_UAC" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
+                                            <TextBlock helpers:Loc.Key="SecurityPage_AdministrativeAccessControl" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                         </StackPanel>
                                     </Grid>
 
@@ -215,8 +215,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_RealTimeProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_ActiveMalwareScanning}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_RealTimeProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_ActiveMalwareScanning" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -232,8 +232,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_TamperProtection}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_PreventsUnauthorizedChanges}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_TamperProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_PreventsUnauthorizedChanges" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -249,8 +249,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_CoreIsolation}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_CoreIsolationDesc}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_CoreIsolation" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_CoreIsolationDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -266,8 +266,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_BitLockerEncryption}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_DriveEncryptionStatus}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_BitLockerEncryption" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_DriveEncryptionStatus" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -283,8 +283,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_ControlledFolderAccess}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_RansomwareProtection}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_ControlledFolderAccess" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_RansomwareProtection" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -300,8 +300,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_SmartScreen}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_WebAndAppProtection}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_SmartScreen" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_WebAndAppProtection" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>
@@ -317,8 +317,8 @@
                                                          FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
                                     </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_WindowsDefenderService}" FontFamily="{ThemeResource Jura}" FontSize="16"/>
-                                        <TextBlock Text="{helpers:ResourceString Key=SecurityPage_CoreSecurityService}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_WindowsDefenderService" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_CoreSecurityService" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Button>

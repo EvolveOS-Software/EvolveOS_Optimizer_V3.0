@@ -122,14 +122,14 @@
                         </TextBlock>
 
                         <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                            <TextBlock Text="{helpers:ResourceString Key=label_proc_sysinfo}" FontFamily="{StaticResource Jura}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                            <TextBlock helpers:Loc.Key="label_proc_sysinfo" FontFamily="{StaticResource Jura}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
                             <TextBlock x:Name="ProcCountText" Text="0" FontFamily="{StaticResource Play}" FontSize="16" Margin="5,0.5,5,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
                             <TextBlock Text=" • " FontFamily="{StaticResource Jura}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
-                            <TextBlock Text="{helpers:ResourceString Key=label_svc_sysinfo}" FontFamily="{StaticResource Jura}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
+                            <TextBlock helpers:Loc.Key="label_svc_sysinfo" FontFamily="{StaticResource Jura}" FontSize="16.5" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
                             <TextBlock x:Name="SvcCountText" Text="0" FontFamily="{StaticResource Play}" FontSize="16" Margin="5,0.5,0,0" Foreground="{ThemeResource Brush_TextBlock_Inactivity}"/>
                         </StackPanel>
 
-                        <TextBlock x:Name="StatusLabel" FontFamily="{StaticResource Jura}" FontSize="14.5" Text="{helpers:ResourceString Key=label_status_checking}" Margin="0,-1,0,0"/>
+                        <TextBlock x:Name="StatusLabel" FontFamily="{StaticResource Jura}" FontSize="14.5" helpers:Loc.Key="label_status_checking" Margin="0,-1,0,0"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -164,7 +164,7 @@
                     <Button.Flyout>
                         <Flyout>
                             <StackPanel Spacing="10" MinWidth="200">
-                                <TextBlock Text="{helpers:ResourceString Key=text_customize_dashboard}" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,0,5"/>
+                                <TextBlock helpers:Loc.Key="text_customize_dashboard" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,0,5"/>
                                 <ToggleSwitch x:Name="ToggleNetwork" Header="Network Status" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetwork"/>
                                 <ToggleSwitch x:Name="ToggleRam" Header="RAM Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRam"/>
                                 <ToggleSwitch x:Name="ToggleCpu" Header="CPU Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpu"/>
@@ -256,7 +256,7 @@
                                                         <Button.Flyout>
                                                             <Flyout x:Name="LocationFlyout">
                                                                 <StackPanel Spacing="12" MinWidth="220">
-                                                                    <TextBlock Text="{helpers:ResourceString Key=txt_select_location}" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                                                    <TextBlock helpers:Loc.Key="txt_select_location" Style="{StaticResource BodyStrongTextBlockStyle}"/>
                                                                     <ComboBox x:Name="CityPicker" ItemsSource="{x:Bind ViewModel.AvailableCities, Mode=OneWay}" HorizontalAlignment="Stretch" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_city}" SelectionChanged="CityPicker_SelectionChanged"/>
                                                                     <TextBlock Text="Or enter custom:" Style="{StaticResource CaptionTextBlockStyle}"/>
                                                                     <TextBox x:Name="CustomLocationBox" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_location}" KeyDown="CustomLocationBox_KeyDown"/>
@@ -272,7 +272,7 @@
                                         </StackPanel>
                                     </Grid>
                                     <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="0, 0, 0, -5">
-                                        <TextBlock Text="{helpers:ResourceString Key=txt_weather_forecast}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" FontSize="16" Margin="0, 10, 0, 5"/>
+                                        <TextBlock helpers:Loc.Key="txt_weather_forecast" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" FontSize="16" Margin="0, 10, 0, 5"/>
                                         <ItemsControl x:Name="ForecastList" ItemsSource="{x:Bind ViewModel.FiveDayForecast, Mode=OneWay}" HorizontalAlignment="Stretch">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
@@ -310,7 +310,7 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Orientation="Horizontal">
                                 <FontIcon Glyph="&#xE839;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" Text="{helpers:ResourceString Key=title_netadapter_sysinfo}"/>
+                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" helpers:Loc.Key="title_netadapter_sysinfo"/>
                             </StackPanel>
                             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
                                 <StackPanel>
@@ -321,7 +321,7 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0">
-                                            <TextBlock Style="{StaticResource InfoLabel}" Text="{helpers:ResourceString Key=title_ip_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,0,0,0"/>
+                                            <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_ip_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,0,0,0"/>
                                             <Grid Margin="10,0,0,10" MinHeight="30">
                                                 <TextBlock x:Name="IpAddress" Text="{x:Bind ViewModel.PublicIP, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
                                                 <Border x:Name="IpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
@@ -335,7 +335,7 @@
                                                     <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                             </Grid>
-                                            <TextBlock Text="{helpers:ResourceString Key=title_localip_sysinfo}" Style="{StaticResource InfoLabel}" FontFamily="Jura Medium" FontWeight="Normal" Margin="0,0,0,0"/>
+                                            <TextBlock helpers:Loc.Key="title_localip_sysinfo" Style="{StaticResource InfoLabel}" FontFamily="Jura Medium" FontWeight="Normal" Margin="0,0,0,0"/>
                                             <Grid Margin="10,0,0,0" MinHeight="30">
                                                 <TextBlock x:Name="LocalIpAddress" Text="{x:Bind ViewModel.LocalIPValue, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
                                                 <Border x:Name="LocalIpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
@@ -367,11 +367,11 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Orientation="Horizontal">
                                 <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" Text="{helpers:ResourceString Key=title_ram_sysinfo}"/>
+                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" helpers:Loc.Key="title_ram_sysinfo"/>
                             </StackPanel>
                             <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,0">
                                 <TextBlock Text="{Binding [Memory].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
-                                <TextBlock Style="{StaticResource InfoLabel}" Text="{helpers:ResourceString Key=title_mtype_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                                <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_mtype_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,10,0,5"/>
                                 <TextBlock Text="{Binding [Type].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" PointerPressed="HandleCopyingData_PointerPressed" />
                             </StackPanel>
                         </Grid>
@@ -383,7 +383,7 @@
                         <StackPanel Spacing="12">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <FontIcon Glyph="&#xE950;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="{helpers:ResourceString Key=title_cpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock helpers:Loc.Key="title_cpu_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
                             <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
                                 <TextBlock Text="{Binding [CPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22"/>
@@ -397,13 +397,13 @@
                         <StackPanel Spacing="12">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <FontIcon Glyph="&#xEC06;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="{helpers:ResourceString Key=title_gpu_sysinfo}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock helpers:Loc.Key="title_gpu_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
                             <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
                                 <TextBlock Text="{Binding [GPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22"/>
                             </ScrollViewer>
                             <StackPanel Spacing="4" Margin="0,-3,0,0">
-                                <TextBlock Text="{helpers:ResourceString Key=title_gpu_liveinfo}" FontSize="12" Opacity="0.6"/>
+                                <TextBlock helpers:Loc.Key="title_gpu_liveinfo" FontSize="12" Opacity="0.6"/>
                                 <Grid ColumnDefinitions="*, Auto">
                                     <ProgressBar Value="{Binding GpuUsageDisplay}" Maximum="100" Width="300" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <TextBlock Grid.Column="1" FontFamily="Jura Medium" Text="{Binding GpuUsageDisplay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="12"/>
@@ -437,7 +437,7 @@
 
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                     <FontIcon Glyph="&#xEDA2;" Margin="0,-12,0,0" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                    <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,0" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16" Text="{helpers:ResourceString Key=txt_header_disk_space_card}"/>
+                                    <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,0" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16" helpers:Loc.Key="txt_header_disk_space_card"/>
                                 </StackPanel>
 
                                 <TextBlock Text="{Binding [Storage].Data}"
@@ -499,7 +499,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <FontIcon Glyph="&#xE774;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_dns_encryption}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" helpers:Loc.Key="title_dns_encryption" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
                                 <Button x:Name="BtnOpenDnsPage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDnsPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_dns_page}">
                                     <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
                                 </Button>
@@ -510,8 +510,8 @@
                                 <ProgressRing x:Name="ProgressRingRunServices" IsActive="True" Width="15" Height="15" Canvas.ZIndex="10" Margin="0,0,16,28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                             </Grid>
                             <StackPanel Grid.Row="2" Spacing="2" Margin="0,0">
-                                <TextBlock x:Name="TxtServicesRunning" Text="{helpers:ResourceString Key=text_services_running}" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="statusLabel" Text="{helpers:ResourceString Key=text_status}" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
+                                <TextBlock x:Name="TxtServicesRunning" helpers:Loc.Key="text_services_running" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="statusLabel" helpers:Loc.Key="text_status" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
                             </StackPanel>
                             <ProgressBar x:Name="progressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8"/>
                             <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="12" VerticalAlignment="Bottom">
@@ -531,7 +531,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <FontIcon Glyph="&#xE9D9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_system_health_status}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" helpers:Loc.Key="title_system_health_status" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
                                 <Button x:Name="BtnOpenMaintenancePage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenMaintenancePage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_maintenance}">
                                     <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
                                 </Button>
@@ -541,8 +541,8 @@
                                 <Image x:Name="DashMaintenanceStatusImage" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
                             </Grid>
                             <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
-                                <TextBlock x:Name="TxtHealthStatus" Text="{helpers:ResourceString Key=text_scanning_system}" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="TxtLastRefreshed" Text="{helpers:ResourceString Key=text_never_updated}" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="1" FontSize="11"/>
+                                <TextBlock x:Name="TxtHealthStatus" helpers:Loc.Key="text_scanning_system" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TxtLastRefreshed" helpers:Loc.Key="text_never_updated" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="1" FontSize="11"/>
                             </StackPanel>
                             <ProgressBar x:Name="MaintenanceProgressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8" Visibility="Collapsed"/>
                             <Grid Grid.Row="4" VerticalAlignment="Bottom">
@@ -550,7 +550,7 @@
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
                                             <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                                            <TextBlock Text="{helpers:ResourceString Key=btn_refresh_status}"/>
+                                            <TextBlock helpers:Loc.Key="btn_refresh_status"/>
                                         </StackPanel>
                                     </Button.Content>
                                 </Button>
@@ -571,7 +571,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <FontIcon Glyph="&#xE773;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_security_card}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" helpers:Loc.Key="title_security_card" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
                                 <Button x:Name="BtnOpenSecurityPage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenSecurityPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_security}">
                                     <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
@@ -595,7 +595,7 @@
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
                                             <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                                            <TextBlock Text="{helpers:ResourceString Key=btn_quick_scan}"/>
+                                            <TextBlock helpers:Loc.Key="btn_quick_scan"/>
                                         </StackPanel>
                                     </Button.Content>
                                 </Button>
@@ -1023,13 +1023,13 @@
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <SymbolIcon Symbol="Admin" Foreground="{StaticResource Brush_Error}" VerticalAlignment="Center"/>
                     <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource Jura}" Foreground="{StaticResource Brush_Error}" FontWeight="SemiBold">
-                        <Run Text="{helpers:ResourceString Key=label_limited_mode}"/>
-                        <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" Text="{helpers:ResourceString Key=label_admin_notice}"/>
+                        <Run helpers:Loc.Key="label_limited_mode"/>
+                        <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="11" helpers:Loc.Key="label_admin_notice"/>
                     </TextBlock>
                     <Button Margin="15,0,0,0" Padding="12,4" Click="RestartAsAdmin_Click" Style="{StaticResource AccentButtonStyle}" IsTabStop="False" Background="DarkRed">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <SymbolIcon Symbol="Permissions" Scale="0.9,0.9,1"/>
-                            <TextBlock Text="{helpers:ResourceString Key=btn_restart_admin}" FontSize="12" VerticalAlignment="Center"/>
+                            <TextBlock helpers:Loc.Key="btn_restart_admin" FontSize="12" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
