@@ -91,6 +91,7 @@
     <sys:String x:Key="Nav_Users">User Accounts</sys:String>
 
     <sys:String x:Key="Tab_DNSChanger">DNS Changer</sys:String>
+    <sys:String x:Key="Tab_WinIsoBuilder">Windows ISO Builder</sys:String>
     <sys:String x:Key="Tab_Advanced">Advanced</sys:String>
     <!-- endregion Main Window -->
 

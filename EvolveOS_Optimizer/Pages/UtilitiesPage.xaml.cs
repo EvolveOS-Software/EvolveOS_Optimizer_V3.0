@@ -23,6 +23,7 @@ namespace EvolveOS_Optimizer.Pages
                 Type pageType = tag switch
                 {
                     "DNSChangerPage" => typeof(DNSChangerPage),
+                    "WinBuilderPage" => typeof(WinBuilderPage),
                     "AdvancedUtilsPage" => typeof(AdvancedUtilsPage),
                     _ => typeof(DNSChangerPage)
                 };

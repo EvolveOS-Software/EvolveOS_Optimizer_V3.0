@@ -1,0 +1,211 @@
+<Page
+    x:Class="EvolveOS_Optimizer.Pages.WinBuilderPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:EvolveOS_Optimizer.Utilities.WinBuilder"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <ScrollViewer Padding="24" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="16" HorizontalAlignment="Stretch">
+
+            <StackPanel Spacing="8" Margin="0,0,0,16">
+                <TextBlock Text="EvolveOS Custom ISO Builder" Style="{StaticResource TitleTextBlockStyle}" />
+                <TextBlock Text="Create your own debloated, customized, and unattended Windows 11 installation media." 
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="1. Windows 11 Source" Style="{StaticResource SubtitleTextBlockStyle}" />
+
+                    <Grid ColumnDefinitions="*, Auto">
+                        <StackPanel Spacing="4" VerticalAlignment="Center">
+                            <TextBlock Text="Don't have a Windows 11 ISO?" FontWeight="SemiBold"/>
+                            <TextBlock Text="Download the latest official release directly from Microsoft." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="Download Official ISO" Click="DownloadWin11_Click" Style="{StaticResource AccentButtonStyle}"/>
+                    </Grid>
+
+                    <MenuFlyoutSeparator />
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                        <TextBox x:Name="TxtSourceIso" Header="Source ISO File" PlaceholderText="Select your downloaded Windows 11 ISO..." IsReadOnly="True" VerticalAlignment="Bottom"/>
+                        <Button Grid.Column="1" Content="Browse..." Click="BrowseSource_Click" VerticalAlignment="Bottom" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                        <TextBox x:Name="TxtOutputIso" Header="Save Destination" PlaceholderText="Where should we save your custom EvolveOS ISO?" IsReadOnly="True" VerticalAlignment="Bottom"/>
+                        <Button Grid.Column="1" Content="Browse..." Click="BrowseDestination_Click" VerticalAlignment="Bottom" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="2. Core Setup Rules" Style="{StaticResource SubtitleTextBlockStyle}" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Text="Target Windows Edition" FontWeight="SemiBold" />
+                            <TextBlock Text="Select the specific edition to extract and optimize." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <ComboBox x:Name="CmbTargetEdition" Grid.Column="1" SelectedIndex="1" Width="150" VerticalAlignment="Center">
+                            <ComboBoxItem Content="Home" />
+                            <ComboBoxItem Content="Pro" />
+                        </ComboBox>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Text="Output Image Format" FontWeight="SemiBold" />
+                            <TextBlock Text="WIM is faster to build. ESD provides maximum compression (smaller ISO)." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <ComboBox x:Name="CmbImageFormat" Grid.Column="1" SelectedIndex="0" Width="150" VerticalAlignment="Center">
+                            <ComboBoxItem Content="WIM" />
+                            <ComboBoxItem Content="ESD" />
+                        </ComboBox>
+                    </Grid>
+
+                    <MenuFlyoutSeparator Margin="0,8"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Text="Bypass Windows 11 Requirements" FontWeight="SemiBold" />
+                            <TextBlock Text="Removes TPM 2.0, SecureBoot, CPU, and RAM checks during setup." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <ToggleSwitch x:Name="ToggleBypassReqs" Grid.Column="1" IsOn="True" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Text="Bypass Microsoft Account" FontWeight="SemiBold" />
+                            <TextBlock Text="Forces a local account creation (Admin) by disabling network during OOBE." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <ToggleSwitch x:Name="ToggleBypassMSA" Grid.Column="1" IsOn="True" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Text="Enable .NET Framework 3.5" FontWeight="SemiBold" />
+                            <TextBlock Text="Installs legacy .NET support offline directly from the ISO sources." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <ToggleSwitch x:Name="ToggleNet35" Grid.Column="1" IsOn="True" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <MenuFlyoutSeparator Margin="0,8"/>
+
+                    <TextBlock Text="Deep Component Removal" FontWeight="SemiBold" />
+                    <CheckBox x:Name="ChkRemoveEdge" Content="Completely Remove Microsoft Edge (And EdgeUpdate)" IsChecked="True" Margin="0,-8,0,0"/>
+                    <CheckBox x:Name="ChkRemoveOneDrive" Content="Completely Remove Microsoft OneDrive" IsChecked="True" Margin="0,-8,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Expander.Header>
+                    <StackPanel>
+                        <TextBlock Text="3. Advanced Registry Tweaks" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="Select system behaviors to modify on first boot." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                    </StackPanel>
+                </Expander.Header>
+                <Expander.Content>
+                    <ItemsControl x:Name="TweaksItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:RegistryTweak">
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,4">
+                                    <StackPanel>
+                                        <TextBlock Text="{x:Bind Category}" FontWeight="Bold" FontSize="12" Foreground="{ThemeResource SystemAccentColorLight2}"/>
+                                        <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander.Content>
+            </Expander>
+
+            <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Expander.Header>
+                    <StackPanel>
+                        <TextBlock Text="4. Remove Bloatware" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="Select default Windows apps to completely uninstall." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                    </StackPanel>
+                </Expander.Header>
+                <Expander.Content>
+                    <ItemsControl x:Name="AppsItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:RemovableApp">
+                                <CheckBox Content="{x:Bind DisplayName}" IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,4"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander.Content>
+            </Expander>
+
+            <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Expander.Header>
+                    <StackPanel>
+                        <TextBlock Text="5. Optimize System Services" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="Set unnecessary system services to Manual or Disabled to free up RAM/CPU." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                    </StackPanel>
+                </Expander.Header>
+                <Expander.Content>
+                    <ItemsControl x:Name="ServicesItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:ServiceTweak">
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,4">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="{x:Bind ServiceName}" FontWeight="SemiBold" FontSize="14"/>
+                                        <TextBlock Text="&#x2192;" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{x:Bind StartupType}" FontWeight="Bold" Foreground="{ThemeResource SystemAccentColorLight2}"/>
+                                    </StackPanel>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander.Content>
+            </Expander>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="16">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock x:Name="TxtStatus" Text="Ready to build." FontWeight="SemiBold" />
+                            <ProgressBar x:Name="BuildProgress" IsIndeterminate="False" Margin="0,8,0,0" HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                        <Button x:Name="BtnBuildIso" Grid.Column="1" Content="Build Custom ISO" Click="BuildIso_Click" Style="{StaticResource AccentButtonStyle}" Margin="16,0,0,0" Height="40" Padding="24,0"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

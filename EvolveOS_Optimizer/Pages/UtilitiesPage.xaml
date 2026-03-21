@@ -32,6 +32,12 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
+                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_WinIsoBuilder}" Tag="WinBuilderPage">
+                    <ui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
                 <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_Advanced}" Tag="AdvancedUtilsPage">
                     <ui:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE713;"/>
