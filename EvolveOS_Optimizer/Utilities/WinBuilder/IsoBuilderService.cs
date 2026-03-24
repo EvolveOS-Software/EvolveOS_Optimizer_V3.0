@@ -3,12 +3,8 @@
 // Licensed under the MIT License. 
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using EvolveOS_Optimizer.Utilities.Managers;
 
 namespace EvolveOS_Optimizer.Utilities.WinBuilder
@@ -224,6 +220,9 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             {
                 sb.AppendLine(@"    reg.exe delete ""HKLM\OffSys\ControlSet001\Services\edgeupdate"" /f 2>&1 | Out-Null");
                 sb.AppendLine(@"    reg.exe delete ""HKLM\OffSys\ControlSet001\Services\edgeupdatem"" /f 2>&1 | Out-Null");
+                sb.AppendLine(@"    reg.exe delete ""HKLM\OffSoft\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge"" /f 2>&1 | Out-Null");
+                sb.AppendLine(@"    reg.exe delete ""HKLM\OffSoft\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge Update"" /f 2>&1 | Out-Null");
+                sb.AppendLine(@"    reg.exe delete ""HKLM\OffSoft\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge"" /f 2>&1 | Out-Null");
             }
 
             if (options.RemoveOneDrive)
@@ -231,7 +230,6 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 sb.AppendLine(@"    reg.exe delete ""HKLM\OffDef\Software\Microsoft\Windows\CurrentVersion\Run"" /v OneDriveSetup /f 2>&1 | Out-Null");
             }
 
-            // ---> THE FIX: Extreme Cloud Content Blocking to Destroy Ghost Stub Apps <---
             sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Microsoft\Windows\CurrentVersion\OOBE"" /v DisableZDP /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Policies\Microsoft\Windows\CloudContent"" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Policies\Microsoft\Windows\CloudContent"" /v DisableCloudOptimizedContent /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
@@ -261,9 +259,6 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             {
                 sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Microsoft\Windows\CurrentVersion\Themes\Personalize"" /v AppsUseLightTheme /t REG_DWORD /d 0 /f 2>&1 | Out-Null");
                 sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Microsoft\Windows\CurrentVersion\Themes\Personalize"" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f 2>&1 | Out-Null");
-                sb.AppendLine(@"    reg.exe add ""HKLM\OffDef\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"" /v AppsUseLightTheme /t REG_DWORD /d 0 /f 2>&1 | Out-Null");
-                sb.AppendLine(@"    reg.exe add ""HKLM\OffDef\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f 2>&1 | Out-Null");
-                sb.AppendLine(@"    reg.exe add ""HKLM\OffDef\Software\Microsoft\Windows\CurrentVersion\Themes"" /v InstallTheme /t REG_EXPAND_SZ /d ""%SystemRoot%\resources\Themes\dark.theme"" /f 2>&1 | Out-Null");
             }
 
             sb.AppendLine("    Write-Output 'Applying Selected Registry Tweaks...'");
@@ -287,8 +282,16 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 sb.AppendLine(@"    $xmlLayout = '<LayoutModificationTemplate xmlns:defaultlayout=""http://schemas.microsoft.com/Start/2014/FullDefaultLayout"" xmlns:start=""http://schemas.microsoft.com/Start/2014/StartLayout"" Version=""1"" xmlns=""http://schemas.microsoft.com/Start/2014/LayoutModification""><LayoutOptions StartTileGroupCellWidth=""6"" /><DefaultLayoutOverride><StartLayoutCollection><defaultlayout:StartLayout GroupCellWidth=""6"" /></StartLayoutCollection></DefaultLayoutOverride></LayoutModificationTemplate>'");
                 sb.AppendLine(@"    Set-Content -Path ""$layoutDir\LayoutModification.xml"" -Value $xmlLayout -Force");
 
-                // Extra cleanup to ensure Default Start Menu bin doesn't force stubs
                 sb.AppendLine(@"    Remove-Item ""$mountDir\Users\Default\AppData\Local\Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState\start.bin"" -Force -ErrorAction SilentlyContinue");
+
+                sb.AppendLine(@"    $scriptsDir = ""$mountDir\ProgramData\EvolveOS\Scripts""");
+                sb.AppendLine(@"    if (-not (Test-Path $scriptsDir)) { New-Item -Path $scriptsDir -ItemType Directory -Force | Out-Null }");
+                sb.AppendLine(@"    $psScriptPath = Join-Path $scriptsDir 'RemoveGhostApps.ps1'");
+                sb.AppendLine(@"    Set-Content -Path $psScriptPath -Value '$ErrorActionPreference = ""SilentlyContinue""' -Force");
+                foreach (var app in options.AppsToRemove)
+                {
+                    sb.AppendLine($"    Add-Content -Path $psScriptPath -Value \"Get-AppxPackage -AllUsers '*{app}*' | Remove-AppxPackage -AllUsers\"");
+                }
             }
 
             if (options.EnableNet35)
@@ -308,6 +311,8 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
 
             sb.AppendLine("    Write-Output 'Saving and Dismounting WIM (This will take a few minutes)...'");
             sb.AppendLine("    dism.exe /Unmount-Image /MountDir:$mountDir /Commit | Out-Null");
+
+            sb.AppendLine("    Remove-Item -Path $mountDir -Force -Recurse -ErrorAction SilentlyContinue");
 
             if (options.ImageFormat != null && options.ImageFormat.Equals("ESD", StringComparison.OrdinalIgnoreCase))
             {
@@ -389,14 +394,6 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 xmlSb.AppendLine($"        <RunSynchronousCommand wcm:action=\"add\"><Order>{specOrder++}</Order><Description>Disable Network to force Local Account</Description><Path>powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \"Get-NetAdapter | Disable-NetAdapter -Confirm:$false\"</Path></RunSynchronousCommand>");
             }
 
-            // ---> THE FIX: Removes the Edge Registry Uninstaller Keys natively in the Specialize pass <---
-            if (options.RemoveMicrosoftEdge)
-            {
-                xmlSb.AppendLine($"        <RunSynchronousCommand wcm:action=\"add\"><Order>{specOrder++}</Order><Description>Remove Edge from Installed Apps (x64)</Description><Path>cmd /c reg.exe delete \"HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Microsoft Edge\" /f</Path></RunSynchronousCommand>");
-                xmlSb.AppendLine($"        <RunSynchronousCommand wcm:action=\"add\"><Order>{specOrder++}</Order><Description>Remove Edge Update from Installed Apps</Description><Path>cmd /c reg.exe delete \"HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Microsoft Edge Update\" /f</Path></RunSynchronousCommand>");
-                xmlSb.AppendLine($"        <RunSynchronousCommand wcm:action=\"add\"><Order>{specOrder++}</Order><Description>Remove Edge from Installed Apps (x86)</Description><Path>cmd /c reg.exe delete \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Microsoft Edge\" /f</Path></RunSynchronousCommand>");
-            }
-
             xmlSb.AppendLine("      </RunSynchronous>");
             xmlSb.AppendLine("    </component>");
             xmlSb.AppendLine("  </settings>");
@@ -440,10 +437,7 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             {
                 xmlSb.AppendLine($"        <SynchronousCommand wcm:action=\"add\"><Order>{logonOrder++}</Order><CommandLine>cmd /c reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f</CommandLine></SynchronousCommand>");
 
-                foreach (var appPackage in options.AppsToRemove)
-                {
-                    xmlSb.AppendLine($"        <SynchronousCommand wcm:action=\"add\"><Order>{logonOrder++}</Order><CommandLine>powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -Command \"Get-AppxPackage -AllUsers *{appPackage}* | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue\"</CommandLine></SynchronousCommand>");
-                }
+                xmlSb.AppendLine($"        <SynchronousCommand wcm:action=\"add\"><Order>{logonOrder++}</Order><CommandLine>powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\ProgramData\\EvolveOS\\Scripts\\RemoveGhostApps.ps1\"</CommandLine></SynchronousCommand>");
             }
 
             xmlSb.AppendLine("      </FirstLogonCommands>");
