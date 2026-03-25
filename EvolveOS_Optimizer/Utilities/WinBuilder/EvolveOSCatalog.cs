@@ -666,5 +666,26 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 new ServiceTweak { ServiceName = "wudfsvc", StartupType = "Manual" }
             };
         }
+
+        public static List<RemovableElement> GetAvailableElements()
+        {
+            return new List<RemovableElement>
+            {
+                // Optional Features (Disabled via Disable-WindowsOptionalFeature)
+                new RemovableElement { DisplayName = "Legacy Windows Media Player", PackageName = "MediaPlayback", Description = "The ancient Windows Media Player from the Windows 7 era. (The modern Win11 Media Player app remains).", IsCapability = false },
+                new RemovableElement { DisplayName = "Microsoft XPS Document Writer", PackageName = "Printing-XPSServices-Features", Description = "Legacy XPS virtual printer. Replaced by 'Print to PDF'.", IsCapability = false },
+                new RemovableElement { DisplayName = "Work Folders Client", PackageName = "WorkFolders-Client", Description = "Enterprise-only feature used to sync work files to a corporate server.", IsCapability = false },
+                new RemovableElement { DisplayName = "Windows TIFF IFilter", PackageName = "TiffFilter", Description = "Legacy Optical Character Recognition (OCR) for ancient TIFF image formats.", IsCapability = false },
+        
+                // Capabilities / Features on Demand (Removed via Remove-WindowsCapability)
+                new RemovableElement { DisplayName = "Internet Explorer 11", PackageName = "Browser.InternetExplorer~~~~0.0.11.0", Description = "The dead IE11 browser engine. (Edge Chromium remains untouched).", IsCapability = true },
+                new RemovableElement { DisplayName = "WordPad", PackageName = "Microsoft.Windows.WordPad~~~~0.0.1.0", Description = "Legacy basic text editor that Microsoft has officially deprecated.", IsCapability = true },
+                new RemovableElement { DisplayName = "Steps Recorder", PackageName = "App.StepsRecorder~~~~0.0.1.0", Description = "Legacy tool used to record screen clicks for troubleshooting. Deprecated.", IsCapability = true },
+                new RemovableElement { DisplayName = "Quick Assist", PackageName = "App.Support.QuickAssist~~~~0.0.1.0", Description = "Built-in remote desktop assistance tool. Safe to remove if you use AnyDesk/TeamViewer.", IsCapability = true },
+                new RemovableElement { DisplayName = "Math Recognizer", PackageName = "MathRecognizer~~~~0.0.1.0", Description = "Math Input Panel and handwriting recognition engine for math equations.", IsCapability = true },
+                new RemovableElement { DisplayName = "PowerShell ISE", PackageName = "Microsoft.Windows.PowerShell.ISE~~~~0.0.1.0", Description = "Legacy graphical editor for PowerShell. (The standard PowerShell console remains).", IsCapability = true },
+                new RemovableElement { DisplayName = "Windows Mixed Reality", PackageName = "Analog.Holographic.Desktop~~~~0.0.1.0", Description = "Removes the Windows Mixed Reality portal and spatial environment files.", IsCapability = true },
+            };
+        }
     }
 }

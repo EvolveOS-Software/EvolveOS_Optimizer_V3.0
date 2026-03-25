@@ -34,5 +34,6 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
         public List<string> AppsToRemove { get; set; } = new List<string>();
         public List<RegistryTweak> RegistryTweaks { get; set; } = new List<RegistryTweak>();
         public List<ServiceTweak> ServiceTweaks { get; set; } = new List<ServiceTweak>();
+        public List<string> ElementsToRemove { get; set; } = new List<string>();
     }
 }

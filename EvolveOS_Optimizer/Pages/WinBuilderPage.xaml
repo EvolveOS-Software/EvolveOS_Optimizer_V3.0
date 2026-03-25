@@ -116,7 +116,7 @@
                             <TextBlock Text="Enable .NET Framework 3.5" FontWeight="SemiBold" />
                             <TextBlock Text="Installs legacy .NET support offline directly from the ISO sources." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
                         </StackPanel>
-                        <ToggleSwitch x:Name="ToggleNet35" Grid.Column="1" IsOn="True" VerticalAlignment="Center" />
+                        <ToggleSwitch x:Name="ToggleNet35" Grid.Column="1" IsOn="False" VerticalAlignment="Center" />
                     </Grid>
 
                     <MenuFlyoutSeparator Margin="0,8"/>
@@ -184,6 +184,29 @@
                                         <TextBlock Text="{x:Bind ServiceName}" FontWeight="SemiBold" FontSize="14"/>
                                         <TextBlock Text="&#x2192;" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
                                         <TextBlock Text="{x:Bind StartupType}" FontWeight="Bold" Foreground="{ThemeResource SystemAccentColorLight2}"/>
+                                    </StackPanel>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander.Content>
+            </Expander>
+
+            <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Expander.Header>
+                    <StackPanel>
+                        <TextBlock Text="6. Strip Windows Features" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="Physically remove legacy components and capabilities from the WIM to save space." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                    </StackPanel>
+                </Expander.Header>
+                <Expander.Content>
+                    <ItemsControl x:Name="ElementsItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:RemovableElement">
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,4">
+                                    <StackPanel>
+                                        <TextBlock Text="{x:Bind DisplayName}" FontWeight="SemiBold" FontSize="14"/>
+                                        <TextBlock Text="{x:Bind Description}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </CheckBox>
                             </DataTemplate>

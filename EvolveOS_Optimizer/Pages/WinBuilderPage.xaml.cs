@@ -14,6 +14,7 @@ namespace EvolveOS_Optimizer.Pages
         public ObservableCollection<RegistryTweak> AvailableTweaks { get; set; } = new();
         public ObservableCollection<RemovableApp> AvailableApps { get; set; } = new();
         public ObservableCollection<ServiceTweak> AvailableServices { get; set; } = new();
+        public ObservableCollection<RemovableElement> AvailableElements { get; set; } = new();
 
         public WinBuilderPage()
         {
@@ -46,6 +47,14 @@ namespace EvolveOS_Optimizer.Pages
                 AvailableServices.Add(service);
             }
             ServicesItemsControl.ItemsSource = AvailableServices;
+
+            var elements = EvolveOSCatalog.GetAvailableElements();
+            foreach (var element in elements)
+            {
+                element.IsSelected = true;
+                AvailableElements.Add(element);
+            }
+            ElementsItemsControl.ItemsSource = AvailableElements;
         }
 
         private async void DownloadWin11_Click(object sender, RoutedEventArgs e)
@@ -102,6 +111,7 @@ namespace EvolveOS_Optimizer.Pages
             var selectedApps = AvailableApps.Where(a => a.IsSelected).Select(a => a.PackageName).ToList();
             var selectedTweaks = AvailableTweaks.Where(t => t.IsSelected).ToList();
             var selectedServices = AvailableServices.Where(s => s.IsSelected).ToList();
+            var selectedElements = AvailableElements.Where(el => el.IsSelected).Select(el => el.PackageName).ToList();
 
             // Extract the string values from the new ComboBoxes
             string targetEdition = (CmbTargetEdition.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Pro";
@@ -125,7 +135,8 @@ namespace EvolveOS_Optimizer.Pages
 
                 AppsToRemove = selectedApps,
                 RegistryTweaks = selectedTweaks,
-                ServiceTweaks = selectedServices
+                ServiceTweaks = selectedServices,
+                ElementsToRemove = selectedElements
             };
 
             BtnBuildIso.IsEnabled = false;

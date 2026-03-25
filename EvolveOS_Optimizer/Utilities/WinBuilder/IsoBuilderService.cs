@@ -3,8 +3,12 @@
 // Licensed under the MIT License. 
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using EvolveOS_Optimizer.Utilities.Managers;
 
 namespace EvolveOS_Optimizer.Utilities.WinBuilder
@@ -38,6 +42,16 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
 
                 progress.Report("Generating Unattended Setup (Hardware/Account Bypasses)...");
                 GenerateUnattendXml(options);
+
+                if (!options.EnableNet35)
+                {
+                    progress.Report("Purging legacy .NET 3.5 payloads from ISO...");
+                    string sxsPath = Path.Combine(options.WorkingDirectory, "sources", "sxs");
+                    if (Directory.Exists(sxsPath))
+                    {
+                        ForceDeleteDirectory(sxsPath);
+                    }
+                }
 
                 progress.Report("Repacking custom bootable ISO...");
                 await RepackIsoAsync(oscdimgPath, options.WorkingDirectory, options.OutputIsoPath, progress);
@@ -211,6 +225,23 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 sb.AppendLine($"    Get-AppxProvisionedPackage -Path $mountDir | Where-Object {{ $_.DisplayName -match '{app}' -or $_.PackageName -match '{app}' }} | ForEach-Object {{ Remove-AppxProvisionedPackage -Path $mountDir -PackageName $_.PackageName | Out-Null }}");
             }
 
+            var elementsToRemove = options.GetType().GetProperty("ElementsToRemove")?.GetValue(options, null) as System.Collections.Generic.IEnumerable<string>;
+            if (elementsToRemove != null && elementsToRemove.Any())
+            {
+                sb.AppendLine("    Write-Output 'Stripping Selected Windows Features & Capabilities...'");
+                foreach (var pkg in elementsToRemove)
+                {
+                    if (pkg.Contains("~~~~"))
+                    {
+                        sb.AppendLine($"    Remove-WindowsCapability -Path $mountDir -Name '{pkg}' -ErrorAction SilentlyContinue | Out-Null");
+                    }
+                    else
+                    {
+                        sb.AppendLine($"    Disable-WindowsOptionalFeature -Path $mountDir -FeatureName '{pkg}' -Remove -NoRestart -ErrorAction SilentlyContinue | Out-Null");
+                    }
+                }
+            }
+
             sb.AppendLine("    Write-Output 'Loading Offline Registries...'");
             sb.AppendLine(@"    reg.exe load HKLM\OffSoft ""$mountDir\Windows\System32\config\SOFTWARE"" 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe load HKLM\OffSys ""$mountDir\Windows\System32\config\SYSTEM"" 2>&1 | Out-Null");
@@ -303,6 +334,23 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 sb.AppendLine(@"    }");
             }
 
+            sb.AppendLine("    Write-Output 'Deep Cleaning Component Store (ResetBase) to shrink image size...'");
+            sb.AppendLine(@"    dism.exe /Image:$mountDir /Cleanup-Image /StartComponentCleanup /ResetBase | Out-Null");
+
+            sb.AppendLine("    Write-Output 'Purging System Cache, Temp, and Log Files...'");
+            sb.AppendLine(@"    $cachePaths = @(");
+            sb.AppendLine(@"        ""$mountDir\Windows\Logs\CBS\*"",");
+            sb.AppendLine(@"        ""$mountDir\Windows\Logs\DISM\*"",");
+            sb.AppendLine(@"        ""$mountDir\Windows\Temp\*"",");
+            sb.AppendLine(@"        ""$mountDir\Users\Default\AppData\Local\Temp\*"",");
+            sb.AppendLine(@"        ""$mountDir\Windows\SoftwareDistribution\Download\*"",");
+            sb.AppendLine(@"        ""$mountDir\Windows\SoftwareDistribution\DataStore\*"",");
+            sb.AppendLine(@"        ""$mountDir\Windows\Prefetch\*"",");
+            sb.AppendLine(@"        ""$mountDir\Windows\WinSxS\Backup\*"",");
+            sb.AppendLine(@"        ""$mountDir\Windows\System32\SleepStudy\*""");
+            sb.AppendLine(@"    )");
+            sb.AppendLine(@"    foreach ($path in $cachePaths) { Remove-Item -Path $path -Force -Recurse -ErrorAction SilentlyContinue }");
+
             sb.AppendLine("} finally {");
             sb.AppendLine("    [System.GC]::Collect(); [System.GC]::WaitForPendingFinalizers(); Start-Sleep -Seconds 2");
             sb.AppendLine(@"    reg.exe unload HKLM\OffSoft 2>&1 | Out-Null");
@@ -319,6 +367,14 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 sb.AppendLine("    Write-Output 'Compressing final image to ESD (This requires high CPU and takes time)...'");
                 sb.AppendLine("    dism.exe /Export-Image /SourceImageFile:$wimPath /SourceIndex:1 /DestinationImageFile:$esdPath /Compress:recovery /CheckIntegrity | Out-Null");
                 sb.AppendLine("    Remove-Item $wimPath -Force");
+            }
+            else
+            {
+                sb.AppendLine("    Write-Output 'Exporting WIM to reclaim deleted space (This takes a few minutes)...'");
+                sb.AppendLine("    $optimizedWim = Join-Path $workDir 'sources\\install_optimized.wim'");
+                sb.AppendLine("    dism.exe /Export-Image /SourceImageFile:$wimPath /SourceIndex:1 /DestinationImageFile:$optimizedWim /Compress:max /CheckIntegrity | Out-Null");
+                sb.AppendLine("    Remove-Item $wimPath -Force");
+                sb.AppendLine("    Rename-Item $optimizedWim 'install.wim'");
             }
 
             sb.AppendLine("}");
@@ -436,7 +492,6 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             if (options.AppsToRemove.Any())
             {
                 xmlSb.AppendLine($"        <SynchronousCommand wcm:action=\"add\"><Order>{logonOrder++}</Order><CommandLine>cmd /c reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f</CommandLine></SynchronousCommand>");
-
                 xmlSb.AppendLine($"        <SynchronousCommand wcm:action=\"add\"><Order>{logonOrder++}</Order><CommandLine>powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\ProgramData\\EvolveOS\\Scripts\\RemoveGhostApps.ps1\"</CommandLine></SynchronousCommand>");
             }
 
