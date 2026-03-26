@@ -3,9 +3,12 @@
 
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading;
 using Windows.System;
 using Windows.Storage.Pickers;
+using Microsoft.UI.Xaml.Navigation;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
+using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -15,6 +18,10 @@ namespace EvolveOS_Optimizer.Pages
         public ObservableCollection<RemovableApp> AvailableApps { get; set; } = new();
         public ObservableCollection<ServiceTweak> AvailableServices { get; set; } = new();
         public ObservableCollection<RemovableElement> AvailableElements { get; set; } = new();
+
+        private bool _isBuildInProgress = false;
+        private bool _isDialogShowing = false;
+        private CancellationTokenSource? _buildCts;
 
         public WinBuilderPage()
         {
@@ -90,8 +97,10 @@ namespace EvolveOS_Optimizer.Pages
             WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd);
 
             picker.SuggestedStartLocation = PickerLocationId.Desktop;
-            picker.SuggestedFileName = "EvolveOS_Custom_Win11";
-            picker.FileTypeChoices.Add("ISO Image", new[] { ".iso" });
+            picker.SuggestedFileName = ResourceString.GetString("winbuilder_default_iso_name") ?? "EvolveOS_Custom_Win11";
+
+            string filterName = ResourceString.GetString("winbuilder_iso_image_filter") ?? "ISO Image";
+            picker.FileTypeChoices.Add(filterName, new[] { ".iso" });
 
             var file = await picker.PickSaveFileAsync();
             if (file != null)
@@ -102,9 +111,17 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void BuildIso_Click(object sender, RoutedEventArgs e)
         {
+            if (_isBuildInProgress)
+            {
+                BtnBuildIso.IsEnabled = false;
+                BtnBuildIso.Content = ResourceString.GetString("winbuilder_btn_cancelling") ?? "Cancelling...";
+                _buildCts?.Cancel();
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(TxtSourceIso.Text) || string.IsNullOrWhiteSpace(TxtOutputIso.Text))
             {
-                TxtStatus.Text = "Please select a source ISO and a save destination first.";
+                TxtStatus.Text = ResourceString.GetString("winbuilder_err_select_paths") ?? "Please select a source ISO and a save destination first.";
                 return;
             }
 
@@ -113,7 +130,6 @@ namespace EvolveOS_Optimizer.Pages
             var selectedServices = AvailableServices.Where(s => s.IsSelected).ToList();
             var selectedElements = AvailableElements.Where(el => el.IsSelected).Select(el => el.PackageName).ToList();
 
-            // Extract the string values from the new ComboBoxes
             string targetEdition = (CmbTargetEdition.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Pro";
             string imageFormat = (CmbImageFormat.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "WIM";
 
@@ -130,6 +146,8 @@ namespace EvolveOS_Optimizer.Pages
                 BypassMicrosoftAccount = ToggleBypassMSA.IsOn,
                 EnableNet35 = ToggleNet35.IsOn,
 
+                RemoveWindowsRecovery = ToggleRemoveWinRE.IsOn,
+
                 RemoveMicrosoftEdge = ChkRemoveEdge.IsChecked ?? false,
                 RemoveOneDrive = ChkRemoveOneDrive.IsChecked ?? false,
 
@@ -139,8 +157,11 @@ namespace EvolveOS_Optimizer.Pages
                 ElementsToRemove = selectedElements
             };
 
-            BtnBuildIso.IsEnabled = false;
+            BtnBuildIso.Content = ResourceString.GetString("winbuilder_btn_cancel_build") ?? "Cancel Build";
+
             BuildProgress.IsIndeterminate = true;
+            _isBuildInProgress = true;
+            _buildCts = new CancellationTokenSource();
 
             var progressReporter = new Progress<string>(status =>
             {
@@ -151,20 +172,67 @@ namespace EvolveOS_Optimizer.Pages
 
             try
             {
-                await builderService.BuildCustomIsoAsync(buildOptions, progressReporter);
+                await builderService.BuildCustomIsoAsync(buildOptions, progressReporter, _buildCts.Token);
 
                 BuildProgress.IsIndeterminate = false;
                 BuildProgress.Value = 100;
-                TxtStatus.Text = "Success! Custom EvolveOS ISO created.";
+                TxtStatus.Text = ResourceString.GetString("winbuilder_msg_success") ?? "Success! Custom EvolveOS ISO created.";
+            }
+            catch (OperationCanceledException)
+            {
+                BuildProgress.IsIndeterminate = false;
+                BuildProgress.Value = 0;
+                TxtStatus.Text = ResourceString.GetString("winbuilder_msg_cancelled") ?? "Build was successfully cancelled.";
             }
             catch (Exception ex)
             {
                 BuildProgress.IsIndeterminate = false;
-                TxtStatus.Text = $"Error: {ex.Message}";
+                string errorPrefix = ResourceString.GetString("winbuilder_msg_error_prefix") ?? "Error:";
+                TxtStatus.Text = $"{errorPrefix} {ex.Message}";
             }
             finally
             {
+                _isBuildInProgress = false;
                 BtnBuildIso.IsEnabled = true;
+                BtnBuildIso.Content = ResourceString.GetString("winbuilder_btn_build") ?? "Build Custom ISO";
+
+                _buildCts?.Dispose();
+                _buildCts = null;
+            }
+        }
+
+        protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            if (!_isBuildInProgress)
+            {
+                base.OnNavigatingFrom(e);
+                return;
+            }
+
+            e.Cancel = true;
+
+            if (_isDialogShowing) return;
+            _isDialogShowing = true;
+
+            var dialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("winbuilder_dialog_title") ?? "Build in Progress",
+                Content = ResourceString.GetString("winbuilder_dialog_content") ?? "An ISO build is currently running. If you leave this page, the build will be permanently cancelled. What would you like to do?",
+                PrimaryButtonText = ResourceString.GetString("winbuilder_dialog_btn_leave") ?? "Cancel Build & Leave",
+                CloseButtonText = ResourceString.GetString("winbuilder_dialog_btn_wait") ?? "Wait",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+            _isDialogShowing = false;
+
+            if (result == ContentDialogResult.Primary)
+            {
+                _buildCts?.Cancel();
+                _isBuildInProgress = false;
+
+                Frame.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
             }
         }
     }

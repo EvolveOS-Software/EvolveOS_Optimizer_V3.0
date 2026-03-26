@@ -1460,4 +1460,103 @@
     <sys:String x:Key="msg_reencrypt_critical_error_body">Er is een kritieke systeemfout opgetreden tijdens het her-versleutelen. De instelling voor de beveiligingsmodus wordt teruggezet naar '{0}'. Fout: {1}</sys:String>
     <!-- endregion Password Manager -->
 
+    <!--#region EvolveOS Iso Builder -->
+    <sys:String x:Key="winbuilder_title">EvolveOS Aangepaste ISO Builder</sys:String>
+    <sys:String x:Key="winbuilder_subtitle">Maak je eigen gedebloate, aangepaste en onbeheerde Windows 11-installatiemedia.</sys:String>
+    <sys:String x:Key="winbuilder_section1_title">1. Windows 11-bron</sys:String>
+    <sys:String x:Key="winbuilder_no_iso_title">Heb je geen Windows 11 ISO?</sys:String>
+    <sys:String x:Key="winbuilder_no_iso_desc">Download de nieuwste officiële release rechtstreeks van Microsoft.</sys:String>
+    <sys:String x:Key="winbuilder_btn_download_iso">Download Officiële ISO</sys:String>
+    <sys:String x:Key="winbuilder_source_iso_header">Bron ISO-bestand</sys:String>
+    <sys:String x:Key="winbuilder_source_iso_placeholder">Selecteer je gedownloade Windows 11 ISO...</sys:String>
+    <sys:String x:Key="winbuilder_btn_browse">Bladeren...</sys:String>
+    <sys:String x:Key="winbuilder_output_iso_header">Opslaglocatie</sys:String>
+    <sys:String x:Key="winbuilder_output_iso_placeholder">Waar moeten we je aangepaste EvolveOS ISO opslaan?</sys:String>
+    <sys:String x:Key="winbuilder_section2_title">2. Kerninstellingen Setup</sys:String>
+    <sys:String x:Key="winbuilder_target_edition_title">Doel Windows-editie</sys:String>
+    <sys:String x:Key="winbuilder_target_edition_desc">Selecteer de specifieke editie om uit te pakken en te optimaliseren.</sys:String>
+    <sys:String x:Key="winbuilder_edition_home">Home</sys:String>
+    <sys:String x:Key="winbuilder_edition_pro">Pro</sys:String>
+    <sys:String x:Key="winbuilder_image_format_title">Uitvoer afbeeldingsformaat</sys:String>
+    <sys:String x:Key="winbuilder_image_format_desc">WIM is sneller te bouwen. ESD biedt maximale compressie (kleinere ISO).</sys:String>
+    <sys:String x:Key="winbuilder_format_wim">WIM</sys:String>
+    <sys:String x:Key="winbuilder_format_esd">ESD</sys:String>
+    <sys:String x:Key="winbuilder_bypass_reqs_title">Windows 11-vereisten omzeilen</sys:String>
+    <sys:String x:Key="winbuilder_bypass_reqs_desc">Verwijdert TPM 2.0-, SecureBoot-, CPU- en RAM-controles tijdens de installatie.</sys:String>
+    <sys:String x:Key="winbuilder_bypass_msa_title">Microsoft-account omzeilen</sys:String>
+    <sys:String x:Key="winbuilder_bypass_msa_desc">Dwingt het aanmaken van een lokaal account (Admin) af door het netwerk uit te schakelen tijdens OOBE.</sys:String>
+    <sys:String x:Key="winbuilder_enable_net35_title">.NET Framework 3.5 inschakelen</sys:String>
+    <sys:String x:Key="winbuilder_enable_net35_desc">Installeert legacy .NET-ondersteuning offline, rechtstreeks vanuit de ISO-bronnen.</sys:String>
+    <sys:String x:Key="winbuilder_remove_winre_title">Windows Recovery (WinRE) verwijderen</sys:String>
+    <sys:String x:Key="winbuilder_remove_winre_desc">Verwijdert de payload van de herstelomgeving fysiek. Let op! Dit schakelt 'Deze pc opnieuw instellen' uit.</sys:String>
+    <sys:String x:Key="winbuilder_deep_removal_title">Diepe componentenverwijdering</sys:String>
+    <sys:String x:Key="winbuilder_remove_edge">Microsoft Edge (en EdgeUpdate) volledig verwijderen</sys:String>
+    <sys:String x:Key="winbuilder_remove_onedrive">Microsoft OneDrive volledig verwijderen</sys:String>
+    <sys:String x:Key="winbuilder_section3_title">3. Geavanceerde register-tweaks</sys:String>
+    <sys:String x:Key="winbuilder_section3_desc">Selecteer systeemgedrag om te wijzigen bij de eerste keer opstarten.</sys:String>
+    <sys:String x:Key="winbuilder_section4_title">4. Bloatware verwijderen</sys:String>
+    <sys:String x:Key="winbuilder_section4_desc">Selecteer standaard Windows-apps om volledig te verwijderen.</sys:String>
+    <sys:String x:Key="winbuilder_section5_title">5. Systeemservices optimaliseren</sys:String>
+    <sys:String x:Key="winbuilder_section5_desc">Stel onnodige systeemservices in op Handmatig of Uitgeschakeld om RAM/CPU vrij te maken.</sys:String>
+    <sys:String x:Key="winbuilder_section6_title">6. Windows-onderdelen strippen</sys:String>
+    <sys:String x:Key="winbuilder_section6_desc">Verwijder verouderde componenten en mogelijkheden fysiek uit de WIM om ruimte te besparen.</sys:String>
+    <sys:String x:Key="winbuilder_status_ready">Klaar om te bouwen.</sys:String>
+
+    <sys:String x:Key="winbuilder_default_iso_name">EvolveOS_Custom_Win11</sys:String>
+    <sys:String x:Key="winbuilder_iso_image_filter">ISO-bestand</sys:String>
+    <sys:String x:Key="winbuilder_btn_cancelling">Annuleren...</sys:String>
+    <sys:String x:Key="winbuilder_err_select_paths">Selecteer eerst een bron-ISO en een opslaglocatie.</sys:String>
+    <sys:String x:Key="winbuilder_btn_cancel_build">Bouw annuleren</sys:String>
+    <sys:String x:Key="winbuilder_msg_success">Succes! Aangepaste EvolveOS ISO gemaakt.</sys:String>
+    <sys:String x:Key="winbuilder_msg_cancelled">De bouw is succesvol geannuleerd.</sys:String>
+    <sys:String x:Key="winbuilder_msg_error_prefix">Fout:</sys:String>
+    <sys:String x:Key="winbuilder_btn_build">Aangepaste ISO bouwen</sys:String>
+    <sys:String x:Key="winbuilder_dialog_title">Bouw in uitvoering</sys:String>
+    <sys:String x:Key="winbuilder_dialog_content">Er is momenteel een ISO-bouw bezig. Als je deze pagina verlaat, wordt de bouw permanent geannuleerd. Wat wil je doen?</sys:String>
+    <sys:String x:Key="winbuilder_dialog_btn_leave">Bouw annuleren &amp; Verlaten</sys:String>
+    <sys:String x:Key="winbuilder_dialog_btn_wait">Wachten</sys:String>
+
+    <sys:String x:Key="isobuilder_bg_prep_tools">Hulpprogramma's voorbereiden (oscdimg)...</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_oscdimg_missing">Kan oscdimg.exe.gz niet vinden in de ingesloten bronnen!</sys:String>
+    <sys:String x:Key="isobuilder_bg_extract_iso">Oorspronkelijke Windows ISO uitpakken (Dit kan enkele minuten duren)...</sys:String>
+    <sys:String x:Key="isobuilder_bg_clear_readonly">ISO Alleen-lezen kenmerken wissen...</sys:String>
+    <sys:String x:Key="isobuilder_bg_mount_wim">Offline WIM-installatiekopie koppelen en onderhouden...</sys:String>
+    <sys:String x:Key="isobuilder_bg_gen_unattend">Onbeheerde installatie genereren (Hardware/Account-bypasses)...</sys:String>
+    <sys:String x:Key="isobuilder_bg_purge_net35">Verouderde .NET 3.5 payloads uit ISO verwijderen...</sys:String>
+    <sys:String x:Key="isobuilder_bg_repack_iso">Aangepaste opstartbare ISO inpakken...</sys:String>
+    <sys:String x:Key="isobuilder_bg_cleanup">Tijdelijke bestanden opschonen...</sys:String>
+    <sys:String x:Key="isobuilder_bg_success">Succes! Aangepaste EvolveOS ISO met offline onderhoud gemaakt.</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_extract">Uitpakken van ISO is mislukt. Fout:</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_service">Onderhoud van offline WIM is mislukt. Fout:</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_missing_boot">Uitgepakte ISO mist opstartbestanden. Zorg ervoor dat je een geldige Windows ISO hebt geselecteerd.</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_pack_failed">oscdimg kon de ISO niet inpakken. Fout:</sys:String>
+
+    <sys:String x:Key="isobuilder_ps_mount_iso">Windows ISO koppelen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_copy_files">Installatiebestanden kopiëren naar werkruimte...</sys:String>
+    <sys:String x:Key="isobuilder_ps_dismount_iso">Oorspronkelijke ISO ontkoppelen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_exclude_defender">Werkruimte tijdelijk uitsluiten van Windows Defender-vergrendelingen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_convert_esd">install.esd converteren naar install.wim (Dit duurt enkele minuten)...</sys:String>
+    <sys:String x:Key="isobuilder_ps_export_edition">Geselecteerde editie-index exporteren naar nieuwe WIM...</sys:String>
+    <sys:String x:Key="isobuilder_ps_mount_offline">WIM koppelen aan offline map...</sys:String>
+    <sys:String x:Key="isobuilder_ps_nuke_edge">Microsoft Edge-ecosysteem vernietigen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_remove_onedrive">OneDrive verwijderen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_remove_apps">Geselecteerde meegeleverde apps verwijderen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_strip_features">Geselecteerde Windows-onderdelen &amp; mogelijkheden strippen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_load_registry">Offline registers laden...</sys:String>
+    <sys:String x:Key="isobuilder_ps_apply_services">Service-tweaks toepassen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_apply_ui">Systeem-UI-voorkeuren toepassen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_apply_registry">Geselecteerde register-tweaks toepassen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_clear_start">Spookpinnen startmenu wissen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_enable_net35">.NET Framework 3.5 inschakelen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_wipe_winre">WinRE payload schoonvegen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_strip_protect">Beveiligingen strippen van</sys:String>
+    <sys:String x:Key="isobuilder_ps_attempt_delete">Poging tot verwijderen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_gen_dummy_wim">Geldige 2KB dummy WIM genereren om te voldoen aan Windows Setup...</sys:String>
+    <sys:String x:Key="isobuilder_ps_deep_clean">Component Store grondig reinigen (ResetBase) om afbeeldingsgrootte te verkleinen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_purge_cache">Systeemcache, Temp- en logbestanden opschonen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_save_wim">WIM opslaan en ontkoppelen (Dit duurt enkele minuten)...</sys:String>
+    <sys:String x:Key="isobuilder_ps_compress_esd">Definitieve afbeelding comprimeren naar ESD (Dit vereist een hoge CPU en kost tijd)...</sys:String>
+    <sys:String x:Key="isobuilder_ps_reclaim_space">WIM exporteren om verwijderde ruimte terug te winnen (Dit duurt enkele minuten)...</sys:String>
+    <!-- endregion EvolveOS Iso Builder -->
+
 </ResourceDictionary>

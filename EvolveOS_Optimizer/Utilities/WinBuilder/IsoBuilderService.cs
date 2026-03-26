@@ -3,13 +3,11 @@
 // Licensed under the MIT License. 
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using EvolveOS_Optimizer.Utilities.Managers;
+using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Utilities.WinBuilder
 {
@@ -24,28 +22,40 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             }
         }
 
-        public async Task BuildCustomIsoAsync(IsoBuildOptions options, IProgress<string> progress)
+        public async Task BuildCustomIsoAsync(IsoBuildOptions options, IProgress<string> progress, CancellationToken cancellationToken = default)
         {
             try
             {
-                progress.Report("Preparing tools (oscdimg)...");
+                cancellationToken.ThrowIfCancellationRequested();
+
+                progress.Report(ResourceString.GetString("isobuilder_bg_prep_tools") ?? "Preparing tools (oscdimg)...");
                 string oscdimgPath = await EnsureOscdimgExtractAsync();
 
-                progress.Report("Extracting original Windows ISO (This may take a few minutes)...");
-                await ExtractIsoAsync(options.SourceIsoPath, options.WorkingDirectory, progress);
+                cancellationToken.ThrowIfCancellationRequested();
 
-                progress.Report("Clearing ISO Read-Only attributes...");
+                progress.Report(ResourceString.GetString("isobuilder_bg_extract_iso") ?? "Extracting original Windows ISO (This may take a few minutes)...");
+                await ExtractIsoAsync(options.SourceIsoPath, options.WorkingDirectory, progress, cancellationToken);
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                progress.Report(ResourceString.GetString("isobuilder_bg_clear_readonly") ?? "Clearing ISO Read-Only attributes...");
                 ClearReadOnlyAttributes(options.WorkingDirectory);
 
-                progress.Report("Mounting and Servicing offline WIM Image...");
-                await ApplyOfflineTweaksAsync(options, progress);
+                cancellationToken.ThrowIfCancellationRequested();
 
-                progress.Report("Generating Unattended Setup (Hardware/Account Bypasses)...");
+                progress.Report(ResourceString.GetString("isobuilder_bg_mount_wim") ?? "Mounting and Servicing offline WIM Image...");
+                await ApplyOfflineTweaksAsync(options, progress, cancellationToken);
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                progress.Report(ResourceString.GetString("isobuilder_bg_gen_unattend") ?? "Generating Unattended Setup (Hardware/Account Bypasses)...");
                 GenerateUnattendXml(options);
+
+                cancellationToken.ThrowIfCancellationRequested();
 
                 if (!options.EnableNet35)
                 {
-                    progress.Report("Purging legacy .NET 3.5 payloads from ISO...");
+                    progress.Report(ResourceString.GetString("isobuilder_bg_purge_net35") ?? "Purging legacy .NET 3.5 payloads from ISO...");
                     string sxsPath = Path.Combine(options.WorkingDirectory, "sources", "sxs");
                     if (Directory.Exists(sxsPath))
                     {
@@ -53,18 +63,38 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                     }
                 }
 
-                progress.Report("Repacking custom bootable ISO...");
-                await RepackIsoAsync(oscdimgPath, options.WorkingDirectory, options.OutputIsoPath, progress);
+                cancellationToken.ThrowIfCancellationRequested();
 
-                progress.Report("Cleaning up temporary files...");
-                await Task.Delay(1000);
+                progress.Report(ResourceString.GetString("isobuilder_bg_repack_iso") ?? "Repacking custom bootable ISO...");
+                await RepackIsoAsync(oscdimgPath, options.WorkingDirectory, options.OutputIsoPath, progress, cancellationToken);
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                progress.Report(ResourceString.GetString("isobuilder_bg_cleanup") ?? "Cleaning up temporary files...");
+                await Task.Delay(1000, cancellationToken);
                 ForceDeleteDirectory(options.WorkingDirectory);
 
-                progress.Report("Success! Custom Offline-Serviced EvolveOS ISO created.");
+                progress.Report(ResourceString.GetString("isobuilder_bg_success") ?? "Success! Custom Offline-Serviced EvolveOS ISO created.");
+            }
+            catch (OperationCanceledException)
+            {
+                try
+                {
+                    string mountDir = Path.Combine(options.WorkingDirectory, "mount");
+                    if (Directory.Exists(mountDir))
+                    {
+                        Process.Start(new ProcessStartInfo("dism.exe", $"/Unmount-Image /MountDir:\"{mountDir}\" /Discard") { CreateNoWindow = true, UseShellExecute = false })?.WaitForExit();
+                        Process.Start(new ProcessStartInfo("dism.exe", "/Cleanup-Wim") { CreateNoWindow = true, UseShellExecute = false })?.WaitForExit();
+                    }
+                    ForceDeleteDirectory(options.WorkingDirectory);
+                }
+                catch { }
+
+                throw;
             }
             catch (Exception ex)
             {
-                throw new Exception($"ISO Build Failed: {ex.Message}", ex);
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -106,7 +136,8 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 byte[] resourceBytes = ArchiveManager.GetResourceBytes("oscdimg.exe.gz");
                 if (resourceBytes == null || resourceBytes.Length == 0)
                 {
-                    throw new FileNotFoundException("Could not find oscdimg.exe.gz in the embedded resources!");
+                    string errMissing = ResourceString.GetString("isobuilder_bg_err_oscdimg_missing") ?? "Could not find oscdimg.exe.gz in the embedded resources!";
+                    throw new FileNotFoundException(errMissing);
                 }
                 ArchiveManager.Unarchive(exePath, resourceBytes);
             });
@@ -114,20 +145,25 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             return exePath;
         }
 
-        private async Task ExtractIsoAsync(string isoPath, string extractToPath, IProgress<string> progress)
+        private async Task ExtractIsoAsync(string isoPath, string extractToPath, IProgress<string> progress, CancellationToken cancellationToken)
         {
+            string errPsMount = ResourceString.GetString("isobuilder_err_ps_mount_failed") ?? "Failed to mount ISO.";
+            string msgMount = ResourceString.GetString("isobuilder_ps_mount_iso") ?? "Mounting Windows ISO...";
+            string msgCopy = ResourceString.GetString("isobuilder_ps_copy_files") ?? "Copying installation files to workspace...";
+            string msgDismount = ResourceString.GetString("isobuilder_ps_dismount_iso") ?? "Dismounting original ISO...";
+
             Directory.CreateDirectory(extractToPath);
             string psScript = $@"
                 $ErrorActionPreference = 'Stop'
-                Write-Output 'Mounting Windows ISO...'
+                Write-Output '{msgMount}'
                 $mountResult = Mount-DiskImage -ImagePath '{isoPath}' -PassThru
                 $driveLetter = ($mountResult | Get-Volume).DriveLetter
-                if (-not $driveLetter) {{ throw 'Failed to mount ISO.' }}
+                if (-not $driveLetter) {{ throw '{errPsMount}' }}
                 
-                Write-Output 'Copying installation files to workspace...'
+                Write-Output '{msgCopy}'
                 Copy-Item -Path ""$($driveLetter):\*"" -Destination '{extractToPath}' -Recurse -Force
                 
-                Write-Output 'Dismounting original ISO...'
+                Write-Output '{msgDismount}'
                 Dismount-DiskImage -ImagePath '{isoPath}'
             ";
 
@@ -150,36 +186,79 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 process.OutputDataReceived += (sender, e) =>
                 {
                     if (!string.IsNullOrWhiteSpace(e.Data))
-                        progress.Report($"Extracting: {e.Data}");
+                        progress.Report(e.Data);
                 };
                 process.BeginOutputReadLine();
 
-                string error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
-                if (process.ExitCode != 0) throw new Exception($"Failed to extract ISO. Error: {error}");
+                using var ctr = cancellationToken.Register(() => { try { process.Kill(true); } catch { } });
+
+                var errorTask = process.StandardError.ReadToEndAsync();
+
+                await process.WaitForExitAsync(cancellationToken);
+
+                string error = await errorTask;
+
+                if (process.ExitCode != 0)
+                {
+                    string errExtract = ResourceString.GetString("isobuilder_bg_err_extract") ?? "Failed to extract ISO. Error:";
+                    throw new Exception($"{errExtract} {error}");
+                }
             }
             File.Delete(tempScriptPath);
         }
 
-        private async Task ApplyOfflineTweaksAsync(IsoBuildOptions options, IProgress<string> progress)
+        private async Task ApplyOfflineTweaksAsync(IsoBuildOptions options, IProgress<string> progress, CancellationToken cancellationToken)
         {
             string mountDir = Path.Combine(options.WorkingDirectory, "mount");
             Directory.CreateDirectory(mountDir);
 
             string targetEdition = options.GetType().GetProperty("TargetEdition")?.GetValue(options, null)?.ToString() ?? "Pro";
 
+            string errEsd = ResourceString.GetString("isobuilder_err_ps_esd_failed") ?? "Critical Error: DISM failed to create the install.esd file.";
+            string errWim = ResourceString.GetString("isobuilder_err_ps_wim_failed") ?? "Critical Error: DISM failed to create the optimized install.wim file.";
+
+            string msgExcludeDef = ResourceString.GetString("isobuilder_ps_exclude_defender") ?? "Temporarily excluding workspace from Windows Defender locks...";
+            string msgConvertEsd = ResourceString.GetString("isobuilder_ps_convert_esd") ?? "Converting install.esd to install.wim (This will take a few minutes)...";
+            string msgExportEd = ResourceString.GetString("isobuilder_ps_export_edition") ?? "Exporting selected Edition Index to new WIM...";
+            string msgMountOff = ResourceString.GetString("isobuilder_ps_mount_offline") ?? "Mounting WIM to offline directory...";
+            string msgNukeEdge = ResourceString.GetString("isobuilder_ps_nuke_edge") ?? "Nuking Microsoft Edge Ecosystem...";
+            string msgRemOneDrive = ResourceString.GetString("isobuilder_ps_remove_onedrive") ?? "Removing OneDrive...";
+            string msgRemApps = ResourceString.GetString("isobuilder_ps_remove_apps") ?? "Removing Selected Provisioned Apps...";
+            string msgStripFeat = ResourceString.GetString("isobuilder_ps_strip_features") ?? "Stripping Selected Windows Features & Capabilities...";
+            string msgLoadReg = ResourceString.GetString("isobuilder_ps_load_registry") ?? "Loading Offline Registries...";
+            string msgApplySvc = ResourceString.GetString("isobuilder_ps_apply_services") ?? "Applying Service Tweaks...";
+            string msgApplyUI = ResourceString.GetString("isobuilder_ps_apply_ui") ?? "Applying System UI Preferences...";
+            string msgApplyReg = ResourceString.GetString("isobuilder_ps_apply_registry") ?? "Applying Selected Registry Tweaks...";
+            string msgClearStart = ResourceString.GetString("isobuilder_ps_clear_start") ?? "Clearing Start Menu Ghost Pins...";
+            string msgEnableNet35 = ResourceString.GetString("isobuilder_ps_enable_net35") ?? "Enabling .NET Framework 3.5...";
+            string msgWipeWinRe = ResourceString.GetString("isobuilder_ps_wipe_winre") ?? "Executing Clean Wipe of WinRE payload...";
+            string msgStripProtect = ResourceString.GetString("isobuilder_ps_strip_protect") ?? "Stripping protections from";
+            string msgAttDelete = ResourceString.GetString("isobuilder_ps_attempt_delete") ?? "Attempting deletion...";
+            string msgGenDummy = ResourceString.GetString("isobuilder_ps_gen_dummy_wim") ?? "Generating valid 2KB dummy WIM to satisfy Windows Setup...";
+            string msgDeepClean = ResourceString.GetString("isobuilder_ps_deep_clean") ?? "Deep Cleaning Component Store (ResetBase) to shrink image size...";
+            string msgPurgeCache = ResourceString.GetString("isobuilder_ps_purge_cache") ?? "Purging System Cache, Temp, and Log Files...";
+            string msgSaveWim = ResourceString.GetString("isobuilder_ps_save_wim") ?? "Saving and Dismounting WIM (This will take a few minutes)...";
+            string msgCompressEsd = ResourceString.GetString("isobuilder_ps_compress_esd") ?? "Compressing final image to ESD (This requires high CPU and takes time)...";
+            string msgReclaimSpace = ResourceString.GetString("isobuilder_ps_reclaim_space") ?? "Exporting WIM to reclaim deleted space (This takes a few minutes)...";
+
             var sb = new StringBuilder();
             sb.AppendLine("$ErrorActionPreference = 'Continue'");
             sb.AppendLine("$ProgressPreference = 'SilentlyContinue'");
 
+            sb.AppendLine(@"Start-Transcript -Path ""$env:USERPROFILE\Desktop\EvolveOS_Debug.log"" -Force");
+
             sb.AppendLine($"$workDir = '{options.WorkingDirectory}'");
+
+            sb.AppendLine($"Write-Output '{msgExcludeDef}'");
+            sb.AppendLine(@"Add-MpPreference -ExclusionPath $workDir -ErrorAction SilentlyContinue");
+
             sb.AppendLine($"$mountDir = '{mountDir}'");
             sb.AppendLine("$esdPath = Join-Path $workDir 'sources\\install.esd'");
             sb.AppendLine("$wimPath = Join-Path $workDir 'sources\\install.wim'");
             sb.AppendLine("$newWimPath = Join-Path $workDir 'sources\\install_temp.wim'");
 
             sb.AppendLine("if (Test-Path $esdPath) {");
-            sb.AppendLine("    Write-Output 'Converting install.esd to install.wim (This will take a few minutes)...'");
+            sb.AppendLine($"    Write-Output '{msgConvertEsd}'");
             sb.AppendLine("    dism.exe /Export-Image /SourceImageFile:$esdPath /SourceIndex:1 /DestinationImageFile:$wimPath /Compress:max /CheckIntegrity | Out-Null");
             sb.AppendLine("    Remove-Item $esdPath -Force");
             sb.AppendLine("}");
@@ -189,19 +268,19 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             sb.AppendLine("$selectedImage = $images | Where-Object ImageName -match $targetEdition");
             sb.AppendLine("$targetIndex = if ($selectedImage) { $selectedImage[0].ImageIndex } else { 1 }");
 
-            sb.AppendLine("Write-Output \"Exporting Edition Index $targetIndex to new WIM...\"");
+            sb.AppendLine($"Write-Output '{msgExportEd}'");
             sb.AppendLine("dism.exe /Export-Image /SourceImageFile:$wimPath /SourceIndex:$targetIndex /DestinationImageFile:$newWimPath /Compress:max /CheckIntegrity | Out-Null");
             sb.AppendLine("Remove-Item $wimPath -Force");
             sb.AppendLine("Rename-Item $newWimPath 'install.wim'");
 
-            sb.AppendLine("Write-Output 'Mounting WIM to offline directory...'");
+            sb.AppendLine($"Write-Output '{msgMountOff}'");
             sb.AppendLine("dism.exe /Mount-Image /ImageFile:$wimPath /Index:1 /MountDir:$mountDir | Out-Null");
 
             sb.AppendLine("try {");
 
             if (options.RemoveMicrosoftEdge)
             {
-                sb.AppendLine(@"    Write-Output 'Nuking Microsoft Edge Ecosystem...'");
+                sb.AppendLine($"    Write-Output '{msgNukeEdge}'");
                 sb.AppendLine(@"    $edgePaths = @(");
                 sb.AppendLine(@"        (Join-Path $mountDir 'Program Files (x86)\Microsoft\Edge'),");
                 sb.AppendLine(@"        (Join-Path $mountDir 'Program Files (x86)\Microsoft\EdgeUpdate'),");
@@ -212,14 +291,14 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
 
             if (options.RemoveOneDrive)
             {
-                sb.AppendLine(@"    Write-Output 'Removing OneDrive...'");
+                sb.AppendLine($"    Write-Output '{msgRemOneDrive}'");
                 sb.AppendLine(@"    $odPath1 = Join-Path $mountDir 'Windows\System32\OneDriveSetup.exe'");
                 sb.AppendLine(@"    $odPath2 = Join-Path $mountDir 'Windows\SysWOW64\OneDriveSetup.exe'");
                 sb.AppendLine(@"    if (Test-Path $odPath1) { Remove-Item -Path $odPath1 -Force -ErrorAction SilentlyContinue }");
                 sb.AppendLine(@"    if (Test-Path $odPath2) { Remove-Item -Path $odPath2 -Force -ErrorAction SilentlyContinue }");
             }
 
-            sb.AppendLine("    Write-Output 'Removing Selected Provisioned Apps...'");
+            sb.AppendLine($"    Write-Output '{msgRemApps}'");
             foreach (var app in options.AppsToRemove)
             {
                 sb.AppendLine($"    Get-AppxProvisionedPackage -Path $mountDir | Where-Object {{ $_.DisplayName -match '{app}' -or $_.PackageName -match '{app}' }} | ForEach-Object {{ Remove-AppxProvisionedPackage -Path $mountDir -PackageName $_.PackageName | Out-Null }}");
@@ -228,21 +307,23 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             var elementsToRemove = options.GetType().GetProperty("ElementsToRemove")?.GetValue(options, null) as System.Collections.Generic.IEnumerable<string>;
             if (elementsToRemove != null && elementsToRemove.Any())
             {
-                sb.AppendLine("    Write-Output 'Stripping Selected Windows Features & Capabilities...'");
+                sb.AppendLine($"    Write-Output '{msgStripFeat}'");
                 foreach (var pkg in elementsToRemove)
                 {
+                    sb.AppendLine("    try {");
                     if (pkg.Contains("~~~~"))
                     {
-                        sb.AppendLine($"    Remove-WindowsCapability -Path $mountDir -Name '{pkg}' -ErrorAction SilentlyContinue | Out-Null");
+                        sb.AppendLine($"        Remove-WindowsCapability -Path $mountDir -Name '{pkg}' -ErrorAction Stop | Out-Null");
                     }
                     else
                     {
-                        sb.AppendLine($"    Disable-WindowsOptionalFeature -Path $mountDir -FeatureName '{pkg}' -Remove -NoRestart -ErrorAction SilentlyContinue | Out-Null");
+                        sb.AppendLine($"        Disable-WindowsOptionalFeature -Path $mountDir -FeatureName '{pkg}' -Remove -NoRestart -ErrorAction Stop | Out-Null");
                     }
+                    sb.AppendLine($"    }} catch {{ }}");
                 }
             }
 
-            sb.AppendLine("    Write-Output 'Loading Offline Registries...'");
+            sb.AppendLine($"    Write-Output '{msgLoadReg}'");
             sb.AppendLine(@"    reg.exe load HKLM\OffSoft ""$mountDir\Windows\System32\config\SOFTWARE"" 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe load HKLM\OffSys ""$mountDir\Windows\System32\config\SYSTEM"" 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe load HKLM\OffDef ""$mountDir\Users\Default\NTUSER.DAT"" 2>&1 | Out-Null");
@@ -270,7 +351,7 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             sb.AppendLine(@"    reg.exe add ""HKLM\OffDef\Software\Policies\Microsoft\Windows\CloudContent"" /v DisableCloudOptimizedContent /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe add ""HKLM\OffDef\Software\Policies\Microsoft\Windows\CloudContent"" /v DisableConsumerAccountStateContent /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
 
-            sb.AppendLine("    Write-Output 'Applying Service Tweaks...'");
+            sb.AppendLine($"    Write-Output '{msgApplySvc}'");
             foreach (var tweak in options.ServiceTweaks)
             {
                 string startValue = tweak.StartupType.ToLower() switch { "disabled" => "4", "manual" => "3", "automatic" => "2", "automaticdelayedstart" => "2", _ => "3" };
@@ -280,7 +361,7 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             sb.AppendLine(@"    $perUserSvc = @('CDPUserSvc','OneSyncSvc','PimIndexMaintenanceSvc','UserDataSvc','UnistoreSvc','BcastDVRUserService','PrintWorkflowUserSvc','DevicePickerUserSvc','DevicesFlowUserSvc','ConsentUxUserSvc','CredentialEnrollmentManagerUserSvc','CaptureService','BluetoothUserService')");
             sb.AppendLine(@"    foreach ($svc in $perUserSvc) { reg.exe add ""HKLM\OffSys\ControlSet001\Services\$svc"" /v Start /t REG_DWORD /d 4 /f 2>&1 | Out-Null }");
 
-            sb.AppendLine("    Write-Output 'Applying System UI Preferences...'");
+            sb.AppendLine($"    Write-Output '{msgApplyUI}'");
             if (options.AlignTaskbarLeft)
             {
                 sb.AppendLine(@"    reg.exe add ""HKLM\OffDef\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"" /v TaskbarAl /t REG_DWORD /d 0 /f 2>&1 | Out-Null");
@@ -292,7 +373,7 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Microsoft\Windows\CurrentVersion\Themes\Personalize"" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f 2>&1 | Out-Null");
             }
 
-            sb.AppendLine("    Write-Output 'Applying Selected Registry Tweaks...'");
+            sb.AppendLine($"    Write-Output '{msgApplyReg}'");
             foreach (var tweak in options.RegistryTweaks)
             {
                 string offlineCmd = tweak.RegCommand
@@ -305,7 +386,7 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
 
             if (options.AppsToRemove.Any())
             {
-                sb.AppendLine("    Write-Output 'Clearing Start Menu Ghost Pins...'");
+                sb.AppendLine($"    Write-Output '{msgClearStart}'");
                 sb.AppendLine(@"    $layoutDir = ""$mountDir\Users\Default\AppData\Local\Microsoft\Windows\Shell""");
                 sb.AppendLine(@"    if (-not (Test-Path $layoutDir)) { New-Item -Path $layoutDir -ItemType Directory -Force | Out-Null }");
                 sb.AppendLine(@"    Remove-Item ""$layoutDir\DefaultLayouts.xml"" -Force -ErrorAction SilentlyContinue");
@@ -327,17 +408,50 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
 
             if (options.EnableNet35)
             {
-                sb.AppendLine("    Write-Output 'Enabling .NET Framework 3.5...'");
+                sb.AppendLine($"    Write-Output '{msgEnableNet35}'");
                 sb.AppendLine(@"    $sxsPath = Join-Path $workDir 'sources\sxs'");
                 sb.AppendLine(@"    if (Test-Path ""$sxsPath\*.cab"") {");
                 sb.AppendLine(@"        Enable-WindowsOptionalFeature -Path $mountDir -FeatureName NetFx3 -All -LimitAccess -Source $sxsPath | Out-Null");
                 sb.AppendLine(@"    }");
             }
 
-            sb.AppendLine("    Write-Output 'Deep Cleaning Component Store (ResetBase) to shrink image size...'");
+            if (options.RemoveWindowsRecovery)
+            {
+                sb.AppendLine($"    Write-Output '{msgWipeWinRe}'");
+                sb.AppendLine(@"    $winre = ""$mountDir\Windows\System32\Recovery\winre.wim""");
+                sb.AppendLine(@"    $reagent = ""$mountDir\Windows\System32\Recovery\ReAgent.xml""");
+
+                sb.AppendLine(@"    foreach ($file in @($winre, $reagent)) {");
+                sb.AppendLine(@"        if (Test-Path -LiteralPath $file) {");
+                sb.AppendLine($"            Write-Output \">> {msgStripProtect} $file...\"");
+                sb.AppendLine(@"            takeown.exe /f $file /a | Out-Null");
+                sb.AppendLine(@"            icacls.exe $file /grant ""Administrators:F"" /q | Out-Null");
+                sb.AppendLine(@"            attrib.exe -s -h -r $file | Out-Null");
+
+                sb.AppendLine(@"            $retries = 0");
+                sb.AppendLine(@"            while ((Test-Path -LiteralPath $file) -and ($retries -lt 10)) {");
+                sb.AppendLine($"                Write-Output \">> {msgAttDelete} ($retries/10)\"");
+                sb.AppendLine(@"                Remove-Item -LiteralPath $file -Force -ErrorAction SilentlyContinue");
+                sb.AppendLine(@"                if (Test-Path -LiteralPath $file) { Start-Sleep -Seconds 2 }");
+                sb.AppendLine(@"                $retries++");
+                sb.AppendLine(@"            }");
+                sb.AppendLine(@"        }");
+                sb.AppendLine(@"    }");
+
+                sb.AppendLine(@"    reg.exe load HKLM\OffSoft ""$mountDir\Windows\System32\config\SOFTWARE"" 2>&1 | Out-Null");
+                sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Microsoft\Windows\CurrentVersion\ReserveManager"" /v ""ShippedWithWinRE"" /t REG_DWORD /d 0 /f 2>&1 | Out-Null");
+                sb.AppendLine(@"    reg.exe unload HKLM\OffSoft 2>&1 | Out-Null");
+
+                sb.AppendLine($"    Write-Output '{msgGenDummy}'");
+                sb.AppendLine(@"    $emptyDir = Join-Path $workDir 'EmptyWinRE'");
+                sb.AppendLine(@"    if (-not (Test-Path $emptyDir)) { New-Item -ItemType Directory -Path $emptyDir -Force | Out-Null }");
+                sb.AppendLine(@"    dism.exe /Capture-Image /CaptureDir:$emptyDir /ImageFile:$winre /Name:""EmptyWinRE"" /Compress:max | Out-Null");
+            }
+
+            sb.AppendLine($"    Write-Output '{msgDeepClean}'");
             sb.AppendLine(@"    dism.exe /Image:$mountDir /Cleanup-Image /StartComponentCleanup /ResetBase | Out-Null");
 
-            sb.AppendLine("    Write-Output 'Purging System Cache, Temp, and Log Files...'");
+            sb.AppendLine($"    Write-Output '{msgPurgeCache}'");
             sb.AppendLine(@"    $cachePaths = @(");
             sb.AppendLine(@"        ""$mountDir\Windows\Logs\CBS\*"",");
             sb.AppendLine(@"        ""$mountDir\Windows\Logs\DISM\*"",");
@@ -357,25 +471,28 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             sb.AppendLine(@"    reg.exe unload HKLM\OffSys 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe unload HKLM\OffDef 2>&1 | Out-Null");
 
-            sb.AppendLine("    Write-Output 'Saving and Dismounting WIM (This will take a few minutes)...'");
+            sb.AppendLine($"    Write-Output '{msgSaveWim}'");
             sb.AppendLine("    dism.exe /Unmount-Image /MountDir:$mountDir /Commit | Out-Null");
+
+            sb.AppendLine(@"    Remove-MpPreference -ExclusionPath $workDir -ErrorAction SilentlyContinue");
 
             sb.AppendLine("    Remove-Item -Path $mountDir -Force -Recurse -ErrorAction SilentlyContinue");
 
             if (options.ImageFormat != null && options.ImageFormat.Equals("ESD", StringComparison.OrdinalIgnoreCase))
             {
-                sb.AppendLine("    Write-Output 'Compressing final image to ESD (This requires high CPU and takes time)...'");
+                sb.AppendLine($"    Write-Output '{msgCompressEsd}'");
                 sb.AppendLine("    dism.exe /Export-Image /SourceImageFile:$wimPath /SourceIndex:1 /DestinationImageFile:$esdPath /Compress:recovery /CheckIntegrity | Out-Null");
-                sb.AppendLine("    Remove-Item $wimPath -Force");
+                sb.AppendLine($"    if (Test-Path $esdPath) {{ Remove-Item $wimPath -Force }} else {{ throw '{errEsd}' }}");
             }
             else
             {
-                sb.AppendLine("    Write-Output 'Exporting WIM to reclaim deleted space (This takes a few minutes)...'");
+                sb.AppendLine($"    Write-Output '{msgReclaimSpace}'");
                 sb.AppendLine("    $optimizedWim = Join-Path $workDir 'sources\\install_optimized.wim'");
                 sb.AppendLine("    dism.exe /Export-Image /SourceImageFile:$wimPath /SourceIndex:1 /DestinationImageFile:$optimizedWim /Compress:max /CheckIntegrity | Out-Null");
-                sb.AppendLine("    Remove-Item $wimPath -Force");
-                sb.AppendLine("    Rename-Item $optimizedWim 'install.wim'");
+                sb.AppendLine($"    if (Test-Path $optimizedWim) {{ Remove-Item $wimPath -Force; Rename-Item $optimizedWim 'install.wim' }} else {{ throw '{errWim}' }}");
             }
+
+            sb.AppendLine("    Stop-Transcript");
 
             sb.AppendLine("}");
 
@@ -398,13 +515,23 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 process.OutputDataReceived += (sender, e) =>
                 {
                     if (!string.IsNullOrWhiteSpace(e.Data))
-                        progress.Report($"Servicing: {e.Data}");
+                        progress.Report(e.Data);
                 };
                 process.BeginOutputReadLine();
 
-                string error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
-                if (process.ExitCode != 0) throw new Exception($"Failed to service offline WIM. Error: {error}");
+                using var ctr = cancellationToken.Register(() => { try { process.Kill(true); } catch { } });
+
+                var errorTask = process.StandardError.ReadToEndAsync();
+
+                await process.WaitForExitAsync(cancellationToken);
+
+                string error = await errorTask;
+
+                if (process.ExitCode != 0)
+                {
+                    string errService = ResourceString.GetString("isobuilder_bg_err_service") ?? "Failed to service offline WIM. Error:";
+                    throw new Exception($"{errService} {error}");
+                }
             }
             File.Delete(tempScriptPath);
         }
@@ -503,13 +630,16 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             File.WriteAllText(xmlPath, xmlSb.ToString(), Encoding.UTF8);
         }
 
-        private async Task RepackIsoAsync(string oscdimgPath, string workingDir, string outputIsoPath, IProgress<string> progress)
+        private async Task RepackIsoAsync(string oscdimgPath, string workingDir, string outputIsoPath, IProgress<string> progress, CancellationToken cancellationToken)
         {
             string etfsBoot = Path.Combine(workingDir, "boot", "etfsboot.com");
             string efiSys = Path.Combine(workingDir, "efi", "microsoft", "boot", "efisys.bin");
 
             if (!File.Exists(etfsBoot) || !File.Exists(efiSys))
-                throw new Exception("Extracted ISO is missing boot files. Ensure you selected a valid Windows ISO.");
+            {
+                string errMsg = ResourceString.GetString("isobuilder_bg_err_missing_boot") ?? "Extracted ISO is missing boot files. Ensure you selected a valid Windows ISO.";
+                throw new Exception(errMsg);
+            }
 
             string cleanWorkingDir = workingDir.TrimEnd('\\');
             string arguments = $"-m -o -u2 -udfver102 -bootdata:2#p0,e,b\"{etfsBoot}\"#pEF,e,b\"{efiSys}\" \"{cleanWorkingDir}\" \"{outputIsoPath}\"";
@@ -530,13 +660,23 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 process.OutputDataReceived += (sender, e) =>
                 {
                     if (!string.IsNullOrWhiteSpace(e.Data))
-                        progress.Report($"Repacking: {e.Data}");
+                        progress.Report(e.Data);
                 };
                 process.BeginOutputReadLine();
 
-                string error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
-                if (process.ExitCode != 0) throw new Exception($"oscdimg failed to pack the ISO. Error: {error}");
+                using var ctr = cancellationToken.Register(() => { try { process.Kill(true); } catch { } });
+
+                var errorTask = process.StandardError.ReadToEndAsync();
+
+                await process.WaitForExitAsync(cancellationToken);
+
+                string error = await errorTask;
+
+                if (process.ExitCode != 0)
+                {
+                    string errPack = ResourceString.GetString("isobuilder_bg_err_pack_failed") ?? "oscdimg failed to pack the ISO. Error:";
+                    throw new Exception($"{errPack} {error}");
+                }
             }
         }
     }

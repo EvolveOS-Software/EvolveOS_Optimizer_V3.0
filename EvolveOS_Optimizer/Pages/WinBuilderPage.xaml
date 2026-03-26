@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:EvolveOS_Optimizer.Utilities.WinBuilder"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     mc:Ignorable="d"
     Background="Transparent">
 
@@ -12,8 +13,8 @@
         <StackPanel Spacing="16" HorizontalAlignment="Stretch">
 
             <StackPanel Spacing="8" Margin="0,0,0,16">
-                <TextBlock Text="EvolveOS Custom ISO Builder" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBlock Text="Create your own debloated, customized, and unattended Windows 11 installation media." 
+                <TextBlock Text="{helpers:ResourceString Key=winbuilder_title}" Style="{StaticResource TitleTextBlockStyle}" />
+                <TextBlock Text="{helpers:ResourceString Key=winbuilder_subtitle}" 
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </StackPanel>
 
@@ -21,26 +22,26 @@
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
                     BorderThickness="1" CornerRadius="8" Padding="20">
                 <StackPanel Spacing="16">
-                    <TextBlock Text="1. Windows 11 Source" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <TextBlock Text="{helpers:ResourceString Key=winbuilder_section1_title}" Style="{StaticResource SubtitleTextBlockStyle}" />
 
                     <Grid ColumnDefinitions="*, Auto">
                         <StackPanel Spacing="4" VerticalAlignment="Center">
-                            <TextBlock Text="Don't have a Windows 11 ISO?" FontWeight="SemiBold"/>
-                            <TextBlock Text="Download the latest official release directly from Microsoft." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_no_iso_title}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_no_iso_desc}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                         </StackPanel>
-                        <Button Grid.Column="1" Content="Download Official ISO" Click="DownloadWin11_Click" Style="{StaticResource AccentButtonStyle}"/>
+                        <Button Grid.Column="1" Content="{helpers:ResourceString Key=winbuilder_btn_download_iso}" Click="DownloadWin11_Click" Style="{StaticResource AccentButtonStyle}"/>
                     </Grid>
 
                     <MenuFlyoutSeparator />
 
                     <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
-                        <TextBox x:Name="TxtSourceIso" Header="Source ISO File" PlaceholderText="Select your downloaded Windows 11 ISO..." IsReadOnly="True" VerticalAlignment="Bottom"/>
-                        <Button Grid.Column="1" Content="Browse..." Click="BrowseSource_Click" VerticalAlignment="Bottom" />
+                        <TextBox x:Name="TxtSourceIso" Header="{helpers:ResourceString Key=winbuilder_source_iso_header}" PlaceholderText="{helpers:ResourceString Key=winbuilder_source_iso_placeholder}" IsReadOnly="True" VerticalAlignment="Bottom"/>
+                        <Button Grid.Column="1" Content="{helpers:ResourceString Key=winbuilder_btn_browse}" Click="BrowseSource_Click" VerticalAlignment="Bottom" />
                     </Grid>
 
                     <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
-                        <TextBox x:Name="TxtOutputIso" Header="Save Destination" PlaceholderText="Where should we save your custom EvolveOS ISO?" IsReadOnly="True" VerticalAlignment="Bottom"/>
-                        <Button Grid.Column="1" Content="Browse..." Click="BrowseDestination_Click" VerticalAlignment="Bottom" />
+                        <TextBox x:Name="TxtOutputIso" Header="{helpers:ResourceString Key=winbuilder_output_iso_header}" PlaceholderText="{helpers:ResourceString Key=winbuilder_output_iso_placeholder}" IsReadOnly="True" VerticalAlignment="Bottom"/>
+                        <Button Grid.Column="1" Content="{helpers:ResourceString Key=winbuilder_btn_browse}" Click="BrowseDestination_Click" VerticalAlignment="Bottom" />
                     </Grid>
                 </StackPanel>
             </Border>
@@ -49,7 +50,7 @@
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
                     BorderThickness="1" CornerRadius="8" Padding="20">
                 <StackPanel Spacing="16">
-                    <TextBlock Text="2. Core Setup Rules" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <TextBlock Text="{helpers:ResourceString Key=winbuilder_section2_title}" Style="{StaticResource SubtitleTextBlockStyle}" />
 
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -57,12 +58,12 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
-                            <TextBlock Text="Target Windows Edition" FontWeight="SemiBold" />
-                            <TextBlock Text="Select the specific edition to extract and optimize." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_target_edition_title}" FontWeight="SemiBold" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_target_edition_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
                         </StackPanel>
                         <ComboBox x:Name="CmbTargetEdition" Grid.Column="1" SelectedIndex="1" Width="150" VerticalAlignment="Center">
-                            <ComboBoxItem Content="Home" />
-                            <ComboBoxItem Content="Pro" />
+                            <ComboBoxItem Content="{helpers:ResourceString Key=winbuilder_edition_home}" />
+                            <ComboBoxItem Content="{helpers:ResourceString Key=winbuilder_edition_pro}" />
                         </ComboBox>
                     </Grid>
 
@@ -72,12 +73,12 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
-                            <TextBlock Text="Output Image Format" FontWeight="SemiBold" />
-                            <TextBlock Text="WIM is faster to build. ESD provides maximum compression (smaller ISO)." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_image_format_title}" FontWeight="SemiBold" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_image_format_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
                         </StackPanel>
                         <ComboBox x:Name="CmbImageFormat" Grid.Column="1" SelectedIndex="0" Width="150" VerticalAlignment="Center">
-                            <ComboBoxItem Content="WIM" />
-                            <ComboBoxItem Content="ESD" />
+                            <ComboBoxItem Content="{helpers:ResourceString Key=winbuilder_format_wim}" />
+                            <ComboBoxItem Content="{helpers:ResourceString Key=winbuilder_format_esd}" />
                         </ComboBox>
                     </Grid>
 
@@ -89,8 +90,8 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
-                            <TextBlock Text="Bypass Windows 11 Requirements" FontWeight="SemiBold" />
-                            <TextBlock Text="Removes TPM 2.0, SecureBoot, CPU, and RAM checks during setup." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_bypass_reqs_title}" FontWeight="SemiBold" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_bypass_reqs_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
                         </StackPanel>
                         <ToggleSwitch x:Name="ToggleBypassReqs" Grid.Column="1" IsOn="True" VerticalAlignment="Center" />
                     </Grid>
@@ -101,8 +102,8 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
-                            <TextBlock Text="Bypass Microsoft Account" FontWeight="SemiBold" />
-                            <TextBlock Text="Forces a local account creation (Admin) by disabling network during OOBE." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_bypass_msa_title}" FontWeight="SemiBold" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_bypass_msa_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
                         </StackPanel>
                         <ToggleSwitch x:Name="ToggleBypassMSA" Grid.Column="1" IsOn="True" VerticalAlignment="Center" />
                     </Grid>
@@ -113,25 +114,37 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
-                            <TextBlock Text="Enable .NET Framework 3.5" FontWeight="SemiBold" />
-                            <TextBlock Text="Installs legacy .NET support offline directly from the ISO sources." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_enable_net35_title}" FontWeight="SemiBold" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_enable_net35_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
                         </StackPanel>
                         <ToggleSwitch x:Name="ToggleNet35" Grid.Column="1" IsOn="False" VerticalAlignment="Center" />
                     </Grid>
 
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_remove_winre_title}" FontWeight="SemiBold" />
+                            <TextBlock Text="{helpers:ResourceString Key=winbuilder_remove_winre_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <ToggleSwitch x:Name="ToggleRemoveWinRE" Grid.Column="1" IsOn="False" IsEnabled="False" VerticalAlignment="Center" />
+                    </Grid>
+
                     <MenuFlyoutSeparator Margin="0,8"/>
 
-                    <TextBlock Text="Deep Component Removal" FontWeight="SemiBold" />
-                    <CheckBox x:Name="ChkRemoveEdge" Content="Completely Remove Microsoft Edge (And EdgeUpdate)" IsChecked="True" Margin="0,-8,0,0"/>
-                    <CheckBox x:Name="ChkRemoveOneDrive" Content="Completely Remove Microsoft OneDrive" IsChecked="True" Margin="0,-8,0,0"/>
+                    <TextBlock Text="{helpers:ResourceString Key=winbuilder_deep_removal_title}" FontWeight="SemiBold" />
+                    <CheckBox x:Name="ChkRemoveEdge" Content="{helpers:ResourceString Key=winbuilder_remove_edge}" IsChecked="True" Margin="0,-8,0,0"/>
+                    <CheckBox x:Name="ChkRemoveOneDrive" Content="{helpers:ResourceString Key=winbuilder_remove_onedrive}" IsChecked="True" Margin="0,-8,0,0"/>
                 </StackPanel>
             </Border>
 
             <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                 <Expander.Header>
                     <StackPanel>
-                        <TextBlock Text="3. Advanced Registry Tweaks" FontWeight="SemiBold" FontSize="16"/>
-                        <TextBlock Text="Select system behaviors to modify on first boot." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{helpers:ResourceString Key=winbuilder_section3_title}" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="{helpers:ResourceString Key=winbuilder_section3_desc}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
@@ -153,8 +166,8 @@
             <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                 <Expander.Header>
                     <StackPanel>
-                        <TextBlock Text="4. Remove Bloatware" FontWeight="SemiBold" FontSize="16"/>
-                        <TextBlock Text="Select default Windows apps to completely uninstall." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{helpers:ResourceString Key=winbuilder_section4_title}" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="{helpers:ResourceString Key=winbuilder_section4_desc}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
@@ -171,8 +184,8 @@
             <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                 <Expander.Header>
                     <StackPanel>
-                        <TextBlock Text="5. Optimize System Services" FontWeight="SemiBold" FontSize="16"/>
-                        <TextBlock Text="Set unnecessary system services to Manual or Disabled to free up RAM/CPU." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{helpers:ResourceString Key=winbuilder_section5_title}" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="{helpers:ResourceString Key=winbuilder_section5_desc}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
@@ -195,8 +208,8 @@
             <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                 <Expander.Header>
                     <StackPanel>
-                        <TextBlock Text="6. Strip Windows Features" FontWeight="SemiBold" FontSize="16"/>
-                        <TextBlock Text="Physically remove legacy components and capabilities from the WIM to save space." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                        <TextBlock Text="{helpers:ResourceString Key=winbuilder_section6_title}" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock Text="{helpers:ResourceString Key=winbuilder_section6_desc}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
@@ -221,10 +234,10 @@
                 <StackPanel Spacing="16">
                     <Grid ColumnDefinitions="*, Auto">
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock x:Name="TxtStatus" Text="Ready to build." FontWeight="SemiBold" />
+                            <TextBlock x:Name="TxtStatus" Text="{helpers:ResourceString Key=winbuilder_status_ready}" FontWeight="SemiBold" />
                             <ProgressBar x:Name="BuildProgress" IsIndeterminate="False" Margin="0,8,0,0" HorizontalAlignment="Stretch" />
                         </StackPanel>
-                        <Button x:Name="BtnBuildIso" Grid.Column="1" Content="Build Custom ISO" Click="BuildIso_Click" Style="{StaticResource AccentButtonStyle}" Margin="16,0,0,0" Height="40" Padding="24,0"/>
+                        <Button x:Name="BtnBuildIso" Grid.Column="1" Content="{helpers:ResourceString Key=winbuilder_btn_build}" Click="BuildIso_Click" Style="{StaticResource AccentButtonStyle}" Margin="16,0,0,0" Height="40" Padding="24,0"/>
                     </Grid>
                 </StackPanel>
             </Border>

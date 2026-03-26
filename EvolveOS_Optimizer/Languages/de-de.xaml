@@ -1467,4 +1467,103 @@
     <sys:String x:Key="msg_reencrypt_critical_error_body">Ein kritischer Systemfehler trat bei der Neu-Verschlüsselung auf. Der Sicherheitsmodus wird auf '{0}' zurückgesetzt. Fehler: {1}</sys:String>
     <!-- endregion Password Manager -->
 
+    <!--#region EvolveOS Iso Builder -->
+    <sys:String x:Key="winbuilder_title">EvolveOS Benutzerdefinierter ISO-Builder</sys:String>
+    <sys:String x:Key="winbuilder_subtitle">Erstellen Sie Ihr eigenes bereinigtes, angepasstes und unbeaufsichtigtes Windows 11-Installationsmedium.</sys:String>
+    <sys:String x:Key="winbuilder_section1_title">1. Windows 11-Quelle</sys:String>
+    <sys:String x:Key="winbuilder_no_iso_title">Haben Sie keine Windows 11 ISO?</sys:String>
+    <sys:String x:Key="winbuilder_no_iso_desc">Laden Sie die neueste offizielle Version direkt von Microsoft herunter.</sys:String>
+    <sys:String x:Key="winbuilder_btn_download_iso">Offizielle ISO herunterladen</sys:String>
+    <sys:String x:Key="winbuilder_source_iso_header">Quell-ISO-Datei</sys:String>
+    <sys:String x:Key="winbuilder_source_iso_placeholder">Wählen Sie Ihre heruntergeladene Windows 11 ISO aus...</sys:String>
+    <sys:String x:Key="winbuilder_btn_browse">Durchsuchen...</sys:String>
+    <sys:String x:Key="winbuilder_output_iso_header">Speicherort</sys:String>
+    <sys:String x:Key="winbuilder_output_iso_placeholder">Wo sollen wir Ihre EvolveOS-ISO speichern?</sys:String>
+    <sys:String x:Key="winbuilder_section2_title">2. Grundlegende Setup-Regeln</sys:String>
+    <sys:String x:Key="winbuilder_target_edition_title">Ziel-Windows-Edition</sys:String>
+    <sys:String x:Key="winbuilder_target_edition_desc">Wählen Sie die spezifische Edition zum Extrahieren und Optimieren aus.</sys:String>
+    <sys:String x:Key="winbuilder_edition_home">Home</sys:String>
+    <sys:String x:Key="winbuilder_edition_pro">Pro</sys:String>
+    <sys:String x:Key="winbuilder_image_format_title">Ausgabe-Image-Format</sys:String>
+    <sys:String x:Key="winbuilder_image_format_desc">WIM lässt sich schneller erstellen. ESD bietet maximale Komprimierung (kleinere ISO).</sys:String>
+    <sys:String x:Key="winbuilder_format_wim">WIM</sys:String>
+    <sys:String x:Key="winbuilder_format_esd">ESD</sys:String>
+    <sys:String x:Key="winbuilder_bypass_reqs_title">Windows 11-Anforderungen umgehen</sys:String>
+    <sys:String x:Key="winbuilder_bypass_reqs_desc">Entfernt TPM 2.0-, SecureBoot-, CPU- und RAM-Überprüfungen während der Installation.</sys:String>
+    <sys:String x:Key="winbuilder_bypass_msa_title">Microsoft-Konto umgehen</sys:String>
+    <sys:String x:Key="winbuilder_bypass_msa_desc">Erzwingt die Erstellung eines lokalen Kontos (Admin), indem das Netzwerk während des OOBE deaktiviert wird.</sys:String>
+    <sys:String x:Key="winbuilder_enable_net35_title">.NET Framework 3.5 aktivieren</sys:String>
+    <sys:String x:Key="winbuilder_enable_net35_desc">Installiert die Legacy-.NET-Unterstützung offline, direkt aus den ISO-Quellen.</sys:String>
+    <sys:String x:Key="winbuilder_remove_winre_title">Windows-Wiederherstellung (WinRE) entfernen</sys:String>
+    <sys:String x:Key="winbuilder_remove_winre_desc">Löscht die Payload der Wiederherstellungsumgebung physisch. Achtung! Dies deaktiviert 'Diesen PC zurücksetzen'.</sys:String>
+    <sys:String x:Key="winbuilder_deep_removal_title">Tiefe Komponentenentfernung</sys:String>
+    <sys:String x:Key="winbuilder_remove_edge">Microsoft Edge (und EdgeUpdate) vollständig entfernen</sys:String>
+    <sys:String x:Key="winbuilder_remove_onedrive">Microsoft OneDrive vollständig entfernen</sys:String>
+    <sys:String x:Key="winbuilder_section3_title">3. Erweiterte Registry-Tweaks</sys:String>
+    <sys:String x:Key="winbuilder_section3_desc">Wählen Sie das Systemverhalten aus, das beim ersten Start geändert werden soll.</sys:String>
+    <sys:String x:Key="winbuilder_section4_title">4. Bloatware entfernen</sys:String>
+    <sys:String x:Key="winbuilder_section4_desc">Wählen Sie die Standard-Windows-Apps aus, die vollständig deinstalliert werden sollen.</sys:String>
+    <sys:String x:Key="winbuilder_section5_title">5. Systemdienste optimieren</sys:String>
+    <sys:String x:Key="winbuilder_section5_desc">Setzen Sie unnötige Systemdienste auf Manuell oder Deaktiviert, um RAM/CPU freizugeben.</sys:String>
+    <sys:String x:Key="winbuilder_section6_title">6. Windows-Funktionen entfernen</sys:String>
+    <sys:String x:Key="winbuilder_section6_desc">Entfernen Sie Legacy-Komponenten und -Funktionen physisch aus der WIM, um Speicherplatz zu sparen.</sys:String>
+    <sys:String x:Key="winbuilder_status_ready">Bereit zum Erstellen.</sys:String>
+
+    <sys:String x:Key="winbuilder_default_iso_name">EvolveOS_Custom_Win11</sys:String>
+    <sys:String x:Key="winbuilder_iso_image_filter">ISO-Abbild</sys:String>
+    <sys:String x:Key="winbuilder_btn_cancelling">Abbrechen...</sys:String>
+    <sys:String x:Key="winbuilder_err_select_paths">Bitte wählen Sie zuerst eine Quell-ISO und einen Speicherort aus.</sys:String>
+    <sys:String x:Key="winbuilder_btn_cancel_build">Erstellung abbrechen</sys:String>
+    <sys:String x:Key="winbuilder_msg_success">Erfolg! Benutzerdefinierte EvolveOS-ISO erstellt.</sys:String>
+    <sys:String x:Key="winbuilder_msg_cancelled">Erstellung wurde erfolgreich abgebrochen.</sys:String>
+    <sys:String x:Key="winbuilder_msg_error_prefix">Fehler:</sys:String>
+    <sys:String x:Key="winbuilder_btn_build">Benutzerdefinierte ISO erstellen</sys:String>
+    <sys:String x:Key="winbuilder_dialog_title">Erstellung im Gange</sys:String>
+    <sys:String x:Key="winbuilder_dialog_content">Eine ISO-Erstellung läuft derzeit. Wenn Sie diese Seite verlassen, wird die Erstellung dauerhaft abgebrochen. Was möchten Sie tun?</sys:String>
+    <sys:String x:Key="winbuilder_dialog_btn_leave">Erstellung abbrechen &amp; Verlassen</sys:String>
+    <sys:String x:Key="winbuilder_dialog_btn_wait">Warten</sys:String>
+
+    <sys:String x:Key="isobuilder_bg_prep_tools">Werkzeuge werden vorbereitet (oscdimg)...</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_oscdimg_missing">oscdimg.exe.gz konnte in den eingebetteten Ressourcen nicht gefunden werden!</sys:String>
+    <sys:String x:Key="isobuilder_bg_extract_iso">Ursprüngliche Windows-ISO wird extrahiert (Dies kann einige Minuten dauern)...</sys:String>
+    <sys:String x:Key="isobuilder_bg_clear_readonly">ISO-Schreibschutzattribute werden gelöscht...</sys:String>
+    <sys:String x:Key="isobuilder_bg_mount_wim">Offline-WIM-Image wird bereitgestellt und gewartet...</sys:String>
+    <sys:String x:Key="isobuilder_bg_gen_unattend">Unbeaufsichtigtes Setup wird generiert (Hardware-/Konto-Umgehungen)...</sys:String>
+    <sys:String x:Key="isobuilder_bg_purge_net35">Veraltete .NET 3.5-Nutzdaten werden aus der ISO bereinigt...</sys:String>
+    <sys:String x:Key="isobuilder_bg_repack_iso">Benutzerdefinierte bootfähige ISO wird neu gepackt...</sys:String>
+    <sys:String x:Key="isobuilder_bg_cleanup">Temporäre Dateien werden bereinigt...</sys:String>
+    <sys:String x:Key="isobuilder_bg_success">Erfolg! Benutzerdefinierte offline-gewartete EvolveOS-ISO erstellt.</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_extract">ISO konnte nicht extrahiert werden. Fehler:</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_service">Offline-WIM konnte nicht gewartet werden. Fehler:</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_missing_boot">Der extrahierten ISO fehlen Bootdateien. Stellen Sie sicher, dass Sie eine gültige Windows-ISO ausgewählt haben.</sys:String>
+    <sys:String x:Key="isobuilder_bg_err_pack_failed">oscdimg konnte die ISO nicht packen. Fehler:</sys:String>
+
+    <sys:String x:Key="isobuilder_ps_mount_iso">Windows-ISO bereitstellen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_copy_files">Installationsdateien in den Arbeitsbereich kopieren...</sys:String>
+    <sys:String x:Key="isobuilder_ps_dismount_iso">Ursprüngliche ISO aushängen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_exclude_defender">Arbeitsbereich vorübergehend von Windows Defender-Sperren ausschließen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_convert_esd">install.esd in install.wim konvertieren (Dies dauert einige Minuten)...</sys:String>
+    <sys:String x:Key="isobuilder_ps_export_edition">Ausgewählten Editionsindex in neue WIM exportieren...</sys:String>
+    <sys:String x:Key="isobuilder_ps_mount_offline">WIM im Offline-Verzeichnis bereitstellen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_nuke_edge">Microsoft Edge-Ökosystem entfernen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_remove_onedrive">OneDrive entfernen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_remove_apps">Ausgewählte bereitgestellte Apps entfernen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_strip_features">Ausgewählte Windows-Funktionen entfernen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_load_registry">Offline-Registrierungen laden...</sys:String>
+    <sys:String x:Key="isobuilder_ps_apply_services">Dienst-Tweaks anwenden...</sys:String>
+    <sys:String x:Key="isobuilder_ps_apply_ui">System-UI-Einstellungen anwenden...</sys:String>
+    <sys:String x:Key="isobuilder_ps_apply_registry">Ausgewählte Registrierungs-Tweaks anwenden...</sys:String>
+    <sys:String x:Key="isobuilder_ps_clear_start">Geister-Pins im Startmenü löschen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_enable_net35">.NET Framework 3.5 aktivieren...</sys:String>
+    <sys:String x:Key="isobuilder_ps_wipe_winre">Saubere Löschung der WinRE-Nutzdaten durchführen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_strip_protect">Schutzmaßnahmen entfernen von</sys:String>
+    <sys:String x:Key="isobuilder_ps_attempt_delete">Löschversuch...</sys:String>
+    <sys:String x:Key="isobuilder_ps_gen_dummy_wim">Gültige 2KB-Dummy-WIM generieren, um das Windows-Setup zu befriedigen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_deep_clean">Tiefenreinigung des Komponentenspeichers (ResetBase) zur Reduzierung der Imagegröße...</sys:String>
+    <sys:String x:Key="isobuilder_ps_purge_cache">Systemcache, Temp- und Protokolldateien bereinigen...</sys:String>
+    <sys:String x:Key="isobuilder_ps_save_wim">WIM speichern und aushängen (Dies dauert einige Minuten)...</sys:String>
+    <sys:String x:Key="isobuilder_ps_compress_esd">Endgültiges Image auf ESD komprimieren (Dies erfordert viel CPU und dauert)...</sys:String>
+    <sys:String x:Key="isobuilder_ps_reclaim_space">WIM exportieren, um gelöschten Speicherplatz zurückzugewinnen (Dies dauert einige Minuten)...</sys:String>
+    <!-- endregion EvolveOS Iso Builder -->
+
 </ResourceDictionary>

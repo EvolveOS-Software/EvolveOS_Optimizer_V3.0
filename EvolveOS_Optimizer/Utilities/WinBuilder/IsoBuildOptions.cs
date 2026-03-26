@@ -29,6 +29,7 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
         // Deep System App Removal
         public bool RemoveMicrosoftEdge { get; set; }
         public bool RemoveOneDrive { get; set; }
+        public bool RemoveWindowsRecovery { get; set; }
 
         // Selectable Customizations
         public List<string> AppsToRemove { get; set; } = new List<string>();
