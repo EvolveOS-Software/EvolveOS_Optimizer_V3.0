@@ -685,6 +685,11 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 new RemovableElement { DisplayName = "Math Recognizer", PackageName = "MathRecognizer~~~~0.0.1.0", Description = "Math Input Panel and handwriting recognition engine for math equations.", IsCapability = true },
                 new RemovableElement { DisplayName = "PowerShell ISE", PackageName = "Microsoft.Windows.PowerShell.ISE~~~~0.0.1.0", Description = "Legacy graphical editor for PowerShell. (The standard PowerShell console remains).", IsCapability = true },
                 new RemovableElement { DisplayName = "Windows Mixed Reality", PackageName = "Analog.Holographic.Desktop~~~~0.0.1.0", Description = "Removes the Windows Mixed Reality portal and spatial environment files.", IsCapability = true },
+                new RemovableElement { DisplayName = "Windows Hello Face Recognition", PackageName = "Hello.Face.18967~~~~0.0.1.0", Description = "Removes biometric facial recognition payloads. Safe to remove for desktop users without IR webcams.", IsCapability = true },
+                new RemovableElement { DisplayName = "Windows Fax and Scan", PackageName = "Print.Fax.Scan~~~~0.0.1.0", Description = "Legacy dial-up faxing and scanning utilities.", IsCapability = true },
+                new RemovableElement { DisplayName = "XPS Viewer", PackageName = "XPS.Viewer~~~~0.0.1.0", Description = "Legacy app used to view XPS documents. Replaced entirely by PDF.", IsCapability = true },
+                new RemovableElement { DisplayName = "Wireless Display (Miracast)", PackageName = "App.WirelessDisplay.Connect~~~~0.0.1.0", Description = "The 'Connect' app used to cast your PC screen to a wireless display or Smart TV.", IsCapability = true },
+                new RemovableElement { DisplayName = "OpenSSH Client", PackageName = "OpenSSH.Client~~~~0.0.1.0", Description = "Developer networking tool for Secure Shell protocol. Not needed for standard users.", IsCapability = true }
             };
         }
     }

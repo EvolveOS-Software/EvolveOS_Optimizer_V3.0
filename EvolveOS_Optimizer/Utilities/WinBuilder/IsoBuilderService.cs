@@ -172,7 +172,14 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             sb.AppendLine("$ErrorActionPreference = 'Continue'");
             sb.AppendLine("$ProgressPreference = 'SilentlyContinue'");
 
+            // ---> RESTORED THE WIRETAP! <---
+            sb.AppendLine(@"Start-Transcript -Path ""$env:USERPROFILE\Desktop\EvolveOS_Debug.log"" -Force");
+
             sb.AppendLine($"$workDir = '{options.WorkingDirectory}'");
+
+            sb.AppendLine("Write-Output 'Temporarily excluding workspace from Windows Defender locks...'");
+            sb.AppendLine(@"Add-MpPreference -ExclusionPath $workDir -ErrorAction SilentlyContinue");
+
             sb.AppendLine($"$mountDir = '{mountDir}'");
             sb.AppendLine("$esdPath = Join-Path $workDir 'sources\\install.esd'");
             sb.AppendLine("$wimPath = Join-Path $workDir 'sources\\install.wim'");
@@ -231,14 +238,16 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 sb.AppendLine("    Write-Output 'Stripping Selected Windows Features & Capabilities...'");
                 foreach (var pkg in elementsToRemove)
                 {
+                    sb.AppendLine("    try {");
                     if (pkg.Contains("~~~~"))
                     {
-                        sb.AppendLine($"    Remove-WindowsCapability -Path $mountDir -Name '{pkg}' -ErrorAction SilentlyContinue | Out-Null");
+                        sb.AppendLine($"        Remove-WindowsCapability -Path $mountDir -Name '{pkg}' -ErrorAction Stop | Out-Null");
                     }
                     else
                     {
-                        sb.AppendLine($"    Disable-WindowsOptionalFeature -Path $mountDir -FeatureName '{pkg}' -Remove -NoRestart -ErrorAction SilentlyContinue | Out-Null");
+                        sb.AppendLine($"        Disable-WindowsOptionalFeature -Path $mountDir -FeatureName '{pkg}' -Remove -NoRestart -ErrorAction Stop | Out-Null");
                     }
+                    sb.AppendLine($"    }} catch {{ Write-Output '>> Warning: Feature {pkg} not found or already removed. Skipping...' }}");
                 }
             }
 
@@ -334,6 +343,44 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 sb.AppendLine(@"    }");
             }
 
+            // ---> THE FINAL ULTIMATE FIX: 2KB WIM REPLACEMENT <---
+            if (options.RemoveWindowsRecovery)
+            {
+                sb.AppendLine("    Write-Output 'Nuking WinRE and replacing with a valid 2KB Empty WIM...'");
+
+                sb.AppendLine(@"    $winre = ""$mountDir\Windows\System32\Recovery\winre.wim""");
+                sb.AppendLine(@"    $reagent = ""$mountDir\Windows\System32\Recovery\ReAgent.xml""");
+
+                sb.AppendLine(@"    foreach ($file in @($winre, $reagent)) {");
+                sb.AppendLine(@"        if (Test-Path -LiteralPath $file) {");
+                sb.AppendLine(@"            Write-Output "">> Stripping protections from $file...""");
+                sb.AppendLine(@"            takeown.exe /f $file /a | Out-Null");
+                sb.AppendLine(@"            icacls.exe $file /grant ""Administrators:F"" /q | Out-Null");
+                sb.AppendLine(@"            attrib.exe -s -h -r $file | Out-Null");
+
+                // Hammer the file until Defender lets it go
+                sb.AppendLine(@"            $retries = 0");
+                sb.AppendLine(@"            while ((Test-Path -LiteralPath $file) -and ($retries -lt 10)) {");
+                sb.AppendLine(@"                Write-Output "">> Attempting deletion... (Try $retries/10)""");
+                sb.AppendLine(@"                Remove-Item -LiteralPath $file -Force -ErrorAction SilentlyContinue");
+                sb.AppendLine(@"                if (Test-Path -LiteralPath $file) { Start-Sleep -Seconds 2 }");
+                sb.AppendLine(@"                $retries++");
+                sb.AppendLine(@"            }");
+                sb.AppendLine(@"        }");
+                sb.AppendLine(@"    }");
+
+                // Fix the Registry
+                sb.AppendLine(@"    reg.exe load HKLM\OffSoft ""$mountDir\Windows\System32\config\SOFTWARE"" 2>&1 | Out-Null");
+                sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Microsoft\Windows\CurrentVersion\ReserveManager"" /v ""ShippedWithWinRE"" /t REG_DWORD /d 0 /f 2>&1 | Out-Null");
+                sb.AppendLine(@"    reg.exe unload HKLM\OffSoft 2>&1 | Out-Null");
+
+                // ---> THE MAGIC TRICK: BUILD A 2KB VALID WIM FILE <---
+                sb.AppendLine(@"    Write-Output 'Generating valid 2KB dummy WIM to satisfy Windows Setup...'");
+                sb.AppendLine(@"    $emptyDir = Join-Path $workDir 'EmptyWinRE'");
+                sb.AppendLine(@"    if (-not (Test-Path $emptyDir)) { New-Item -ItemType Directory -Path $emptyDir -Force | Out-Null }");
+                sb.AppendLine(@"    dism.exe /Capture-Image /CaptureDir:$emptyDir /ImageFile:$winre /Name:""EmptyWinRE"" /Compress:max | Out-Null");
+            }
+
             sb.AppendLine("    Write-Output 'Deep Cleaning Component Store (ResetBase) to shrink image size...'");
             sb.AppendLine(@"    dism.exe /Image:$mountDir /Cleanup-Image /StartComponentCleanup /ResetBase | Out-Null");
 
@@ -360,22 +407,27 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             sb.AppendLine("    Write-Output 'Saving and Dismounting WIM (This will take a few minutes)...'");
             sb.AppendLine("    dism.exe /Unmount-Image /MountDir:$mountDir /Commit | Out-Null");
 
+            // ---> RESTORE DEFENDER PROTECTIONS <---
+            sb.AppendLine(@"    Remove-MpPreference -ExclusionPath $workDir -ErrorAction SilentlyContinue");
+
             sb.AppendLine("    Remove-Item -Path $mountDir -Force -Recurse -ErrorAction SilentlyContinue");
 
             if (options.ImageFormat != null && options.ImageFormat.Equals("ESD", StringComparison.OrdinalIgnoreCase))
             {
                 sb.AppendLine("    Write-Output 'Compressing final image to ESD (This requires high CPU and takes time)...'");
                 sb.AppendLine("    dism.exe /Export-Image /SourceImageFile:$wimPath /SourceIndex:1 /DestinationImageFile:$esdPath /Compress:recovery /CheckIntegrity | Out-Null");
-                sb.AppendLine("    Remove-Item $wimPath -Force");
+                sb.AppendLine("    if (Test-Path $esdPath) { Remove-Item $wimPath -Force } else { throw 'Critical Error: DISM failed to create the install.esd file.' }");
             }
             else
             {
                 sb.AppendLine("    Write-Output 'Exporting WIM to reclaim deleted space (This takes a few minutes)...'");
                 sb.AppendLine("    $optimizedWim = Join-Path $workDir 'sources\\install_optimized.wim'");
                 sb.AppendLine("    dism.exe /Export-Image /SourceImageFile:$wimPath /SourceIndex:1 /DestinationImageFile:$optimizedWim /Compress:max /CheckIntegrity | Out-Null");
-                sb.AppendLine("    Remove-Item $wimPath -Force");
-                sb.AppendLine("    Rename-Item $optimizedWim 'install.wim'");
+                sb.AppendLine("    if (Test-Path $optimizedWim) { Remove-Item $wimPath -Force; Rename-Item $optimizedWim 'install.wim' } else { throw 'Critical Error: DISM failed to create the optimized install.wim file.' }");
             }
+
+            // ---> STOP WIRETAP <---
+            sb.AppendLine("    Stop-Transcript");
 
             sb.AppendLine("}");
 

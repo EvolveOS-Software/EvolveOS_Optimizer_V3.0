@@ -130,6 +130,8 @@ namespace EvolveOS_Optimizer.Pages
                 BypassMicrosoftAccount = ToggleBypassMSA.IsOn,
                 EnableNet35 = ToggleNet35.IsOn,
 
+                RemoveWindowsRecovery = ToggleRemoveWinRE.IsOn,
+
                 RemoveMicrosoftEdge = ChkRemoveEdge.IsChecked ?? false,
                 RemoveOneDrive = ChkRemoveOneDrive.IsChecked ?? false,
 
