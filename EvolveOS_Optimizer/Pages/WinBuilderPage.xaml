@@ -126,9 +126,9 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
                             <TextBlock Text="Remove Windows Recovery (WinRE)" FontWeight="SemiBold" />
-                            <TextBlock Text="Physically deletes the recovery environment payload. Saves ~500MB but disables 'Reset This PC'." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                            <TextBlock Text="Physically deletes the recovery environment payload. Attention! This disables 'Reset This PC'." FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
                         </StackPanel>
-                        <ToggleSwitch x:Name="ToggleRemoveWinRE" Grid.Column="1" IsOn="False" VerticalAlignment="Center" />
+                        <ToggleSwitch x:Name="ToggleRemoveWinRE" Grid.Column="1" IsOn="False" IsEnabled="False" VerticalAlignment="Center" />
                     </Grid>
 
                     <MenuFlyoutSeparator Margin="0,8"/>
