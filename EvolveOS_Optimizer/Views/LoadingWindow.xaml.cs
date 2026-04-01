@@ -420,11 +420,34 @@ namespace EvolveOS_Optimizer.Views
         #endregion
 
         #region LocalDB Dependency Check
+
+        private string GetSqlLocalDbAbsolutePath()
+        {
+            try
+            {
+                string programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                string sqlDir = Path.Combine(programFiles, "Microsoft SQL Server");
+
+                if (Directory.Exists(sqlDir))
+                {
+                    var files = Directory.GetFiles(sqlDir, "sqllocaldb.exe", SearchOption.AllDirectories);
+                    if (files.Length > 0)
+                    {
+                        return files[0];
+                    }
+                }
+            }
+            catch { }
+
+            return "sqllocaldb";
+        }
+
         private async Task<bool> EnsureDatabaseEngineInstalledAsync(CancellationToken token)
         {
             try
             {
-                string checkCommand = "sqllocaldb info";
+                string sqlExePath = GetSqlLocalDbAbsolutePath();
+                string checkCommand = $"\"{sqlExePath}\" info";
                 string output = await CommandExecutor.GetCommandOutput(checkCommand, false);
 
                 if (!string.IsNullOrEmpty(output) && output.Contains("MSSQLLocalDB", StringComparison.OrdinalIgnoreCase))
@@ -467,18 +490,36 @@ namespace EvolveOS_Optimizer.Views
                 await Task.Run(() => ArchiveManager.Unarchive(msiPath, archiveBytes), token);
 
                 UpdateStatusDirect(ResourceString.GetString("status_configuring_engine") ?? "Configuring database engine...");
-                string installCommand = $"msiexec /i \"{msiPath}\" /qn /norestart IACCEPTSQLLOCALDBLICENSETERMS=YES";
 
-                await CommandExecutor.StartInCmd(installCommand);
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "msiexec.exe",
+                    Arguments = $"/i \"{msiPath}\" /qn /norestart IACCEPTSQLLOCALDBLICENSETERMS=YES",
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
+
+                using (var process = Process.Start(psi))
+                {
+                    if (process != null)
+                    {
+                        await process.WaitForExitAsync(token);
+                    }
+                }
 
                 if (File.Exists(msiPath))
                 {
                     File.Delete(msiPath);
                 }
 
-                await CommandExecutor.StartInCmd("sqllocaldb create MSSQLLocalDB");
+                await Task.Delay(3000, token);
 
-                string verifyOutput = await CommandExecutor.GetCommandOutput("sqllocaldb info", false);
+                sqlExePath = GetSqlLocalDbAbsolutePath();
+
+                await CommandExecutor.StartInCmd($"\"{sqlExePath}\" create MSSQLLocalDB");
+                await Task.Delay(1500, token);
+
+                string verifyOutput = await CommandExecutor.GetCommandOutput($"\"{sqlExePath}\" info", false);
                 if (string.IsNullOrEmpty(verifyOutput) || verifyOutput.Contains("not recognized", StringComparison.OrdinalIgnoreCase))
                 {
                     _dispatcherQueue.TryEnqueue(() =>
@@ -602,10 +643,12 @@ namespace EvolveOS_Optimizer.Views
                 }
 
                 UpdateStatusDirect(ResourceString.GetString("status_starting_sql") ?? "Starting SQL engine...");
+
+                string sqlExePath = GetSqlLocalDbAbsolutePath();
                 await Task.Run(() =>
                 {
-                    CommandExecutor.ExecuteCommand("sqllocaldb", "stop MSSQLLocalDB -i");
-                    CommandExecutor.ExecuteCommand("sqllocaldb", "start MSSQLLocalDB");
+                    CommandExecutor.ExecuteCommand(sqlExePath, "stop MSSQLLocalDB -i");
+                    CommandExecutor.ExecuteCommand(sqlExePath, "start MSSQLLocalDB");
                 }, token);
 
                 UpdateStatusDirect(ResourceString.GetString("status_finalizing_access") ?? "Finalizing access...");

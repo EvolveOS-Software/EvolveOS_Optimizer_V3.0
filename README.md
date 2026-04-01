@@ -179,6 +179,18 @@ git clone https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0.git
 # 4. Build and Run!
 ```
 
+## 📦 Publishing a Standalone Release (Self-Contained)
+
+* ** If you are deploying this application to a fresh Windows installation, it is highly recommended to publish it as a Self-Contained application.This bundles the .NET Desktop Runtime directly into the app folder so the user is not prompted to download any dependencies.
+```bash
+# 1. Right-click the EvolveOS_Optimizer project in the Solution Explorer and select Publish.
+# 2. Select the target Folder.
+# 3. Click on Show all settings (or the pencil icon) in the publish profile and ensure the following are set:
+     - Deployment Mode: Self-Contained
+     - Target Runtime: win-x64
+# 4. Click Publish.
+```
+
 ---
 
 ## Contact
