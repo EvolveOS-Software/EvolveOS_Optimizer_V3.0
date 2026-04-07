@@ -58,6 +58,25 @@
     <sys:String x:Key="no_internet_connection_notif_key">Nessuna connessione Internet rilevata.</sys:String>
     <!-- endregion Notification Manager -->
 
+    <!--#region Message Window -->
+    <sys:String x:Key="title_message">Ops..</sys:String>
+    <sys:String x:Key="part1_message">La creazione di copie del programma è</sys:String>
+    <sys:String x:Key="part2_message">vietata,</sys:String>
+    <sys:String x:Key="part3_message">al fine di prevenire errori e situazioni o scenari imprevisti.</sys:String>
+    <sys:String x:Key="button_message">Accetta (05)</sys:String>
+    <sys:String x:Key="noty_message">▪chiusura automatica della finestra</sys:String>
+    <sys:String x:Key="title_nosupport_message">Non supportato</sys:String>
+    <sys:String x:Key="part1_nosupport_message">L'utilità non supporta il tuo Windows. Nessun ulteriore avvio è</sys:String>
+    <sys:String x:Key="part2_nosupport_message">possibile,</sys:String>
+    <sys:String x:Key="part3_nosupport_message">EvolveOS_Optimizer verrà chiuso per prevenire errori critici.</sys:String>
+    <sys:String x:Key="title_alreadyrunning_message">Già in esecuzione</sys:String>
+    <sys:String x:Key="part1_alreadyrunning_message">Un'altra istanza di</sys:String>
+    <sys:String x:Key="part2_alreadyrunning_message">EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="part3_alreadyrunning_message">è già attiva. Questa finestra duplicata verrà ora chiusa in modo sicuro.</sys:String>
+    <sys:String x:Key="title_critical_error">Errore critico</sys:String>
+    <sys:String x:Key="msg_db_busy_error">Accesso al database non riuscito. Questo accade di solito se l'app non dispone delle autorizzazioni.\n\nProva a eseguire l'applicazione come Amministratore.</sys:String>
+    <!-- endregion Message Window -->
+
     <!-- region App Updates -->
     <sys:String x:Key="Update_Banner_Message">È disponibile un nuovo aggiornamento per EvolveOS Optimizer!</sys:String>
     <sys:String x:Key="Update_Banner_ConfirmButton">Aggiorna ora</sys:String>

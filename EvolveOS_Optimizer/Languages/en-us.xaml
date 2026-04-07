@@ -58,6 +58,25 @@
     <sys:String x:Key="no_internet_connection_notif_key">No internet connection detected.</sys:String>
     <!-- endregion Notification Manager -->
 
+    <!--#region Message Window -->
+    <sys:String x:Key="title_message">Oops..</sys:String>
+    <sys:String x:Key="part1_message">The creation of copies of the program is</sys:String>
+    <sys:String x:Key="part2_message">prohibited,</sys:String>
+    <sys:String x:Key="part3_message">in order to prevent errors and unforeseen situations, scenarios.</sys:String>
+    <sys:String x:Key="button_message">Accept (05)</sys:String>
+    <sys:String x:Key="noty_message">▪automatic window closing</sys:String>
+    <sys:String x:Key="title_nosupport_message">Not supported</sys:String>
+    <sys:String x:Key="part1_nosupport_message">The utility does not support your Windows. No further launch is</sys:String>
+    <sys:String x:Key="part2_nosupport_message">possible,</sys:String>
+    <sys:String x:Key="part3_nosupport_message">EvolveOS_Optimizer will be closed to prevent critical errors.</sys:String>
+    <sys:String x:Key="title_alreadyrunning_message">Already Running</sys:String>
+    <sys:String x:Key="part1_alreadyrunning_message">Another instance of</sys:String>
+    <sys:String x:Key="part2_alreadyrunning_message">EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="part3_alreadyrunning_message">is already active. This duplicate window will now safely close.</sys:String>
+    <sys:String x:Key="title_critical_error">Critical Error</sys:String>
+    <sys:String x:Key="msg_db_busy_error">Database access failed. This usually happens if the app lacks permissions.\n\nPlease try running the application as Administrator.</sys:String>
+    <!-- endregion Message Window -->
+
     <!-- region App Updates -->
     <sys:String x:Key="Update_Banner_Message">A new update is available for EvolveOS Optimizer!</sys:String>
     <sys:String x:Key="Update_Banner_ConfirmButton">Update Now</sys:String>

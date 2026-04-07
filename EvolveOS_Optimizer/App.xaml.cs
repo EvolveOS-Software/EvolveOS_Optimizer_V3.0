@@ -72,22 +72,25 @@ namespace EvolveOS_Optimizer
 
             if (!isNewInstance)
             {
-                IntPtr hwnd = Win32Helper.FindWindow("WinUIDesktopWin32WindowClass", "EvolveOS Optimizer");
+                string windowTitle = "EvolveOS_Optimizer";
 
-                if (hwnd == IntPtr.Zero) hwnd = Win32Helper.FindWindow(null!, "EvolveOS Optimizer");
+                IntPtr hwnd = Win32Helper.FindWindow("WinUIDesktopWin32WindowClass", windowTitle);
+                if (hwnd == IntPtr.Zero) hwnd = Win32Helper.FindWindow(null!, windowTitle);
 
                 if (hwnd != IntPtr.Zero)
                 {
                     Win32Helper.ShowWindow(hwnd, 5);
                     Win32Helper.ShowWindow(hwnd, 9);
                     Win32Helper.SetForegroundWindow(hwnd);
+
+                    Environment.Exit(0);
                 }
                 else
                 {
-                    Win32Helper.MessageBox(IntPtr.Zero, "Failed to find the hidden window. Check the Title!", "Debug", 0);
+                    MainWindow = new MessageWindow(MessageWindowState.AlreadyRunning);
+                    MainWindow.Activate();
                 }
 
-                Environment.Exit(0);
                 return;
             }
 

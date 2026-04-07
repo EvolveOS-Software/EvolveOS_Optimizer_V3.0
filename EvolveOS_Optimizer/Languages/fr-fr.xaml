@@ -57,6 +57,25 @@
     <sys:String x:Key="noty_acc_logout">Déconnectez-vous et reconnectez-vous pour appliquer les modifications.</sys:String>
     <sys:String x:Key="no_internet_connection_notif_key">Aucune connexion Internet détectée.</sys:String>
     <!-- endregion Notification Manager -->
+    
+    <!--#region Message Window -->
+    <sys:String x:Key="title_message">Oups..</sys:String>
+    <sys:String x:Key="part1_message">La création de copies du programme est</sys:String>
+    <sys:String x:Key="part2_message">interdite,</sys:String>
+    <sys:String x:Key="part3_message">afin d'éviter des erreurs et des situations ou scénarios imprévus.</sys:String>
+    <sys:String x:Key="button_message">Accepter (05)</sys:String>
+    <sys:String x:Key="noty_message">▪fermeture automatique de la fenêtre</sys:String>
+    <sys:String x:Key="title_nosupport_message">Non pris en charge</sys:String>
+    <sys:String x:Key="part1_nosupport_message">L'utilitaire ne prend pas en charge votre version de Windows. Aucun autre lancement n'est</sys:String>
+    <sys:String x:Key="part2_nosupport_message">possible,</sys:String>
+    <sys:String x:Key="part3_nosupport_message">EvolveOS_Optimizer sera fermé pour éviter des erreurs critiques.</sys:String>
+    <sys:String x:Key="title_alreadyrunning_message">Déjà en cours d'exécution</sys:String>
+    <sys:String x:Key="part1_alreadyrunning_message">Une autre instance de</sys:String>
+    <sys:String x:Key="part2_alreadyrunning_message">EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="part3_alreadyrunning_message">est déjà active. Cette fenêtre en double va maintenant se fermer en toute sécurité.</sys:String>
+    <sys:String x:Key="title_critical_error">Erreur critique</sys:String>
+    <sys:String x:Key="msg_db_busy_error">L'accès à la base de données a échoué. Cela se produit généralement si l'application manque d'autorisations.\n\nVeuillez essayer d'exécuter l'application en tant qu'administrateur.</sys:String>
+    <!-- endregion Message Window -->
 
     <!-- region App Updates -->
     <sys:String x:Key="Update_Banner_Message">Une nouvelle mise à jour est disponible pour EvolveOS Optimizer !</sys:String>

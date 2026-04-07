@@ -56,7 +56,26 @@
     <sys:String x:Key="noty_acc_title">Konto</sys:String>
     <sys:String x:Key="noty_acc_logout">Melden Sie sich ab und wieder an, um die Änderungen zu übernehmen.</sys:String>
     <sys:String x:Key="no_internet_connection_notif_key">Keine Internetverbindung erkannt.</sys:String>
-        <!-- endregion Notification Manager -->
+    <!-- endregion Notification Manager -->
+
+    <!--#region Message Window -->
+    <sys:String x:Key="title_message">Hoppla..</sys:String>
+    <sys:String x:Key="part1_message">Das Erstellen von Kopien des Programms ist</sys:String>
+    <sys:String x:Key="part2_message">untersagt,</sys:String>
+    <sys:String x:Key="part3_message">um Fehler und unvorhergesehene Situationen oder Szenarien zu vermeiden.</sys:String>
+    <sys:String x:Key="button_message">Akzeptieren (05)</sys:String>
+    <sys:String x:Key="noty_message">▪automatisches Schließen des Fensters</sys:String>
+    <sys:String x:Key="title_nosupport_message">Nicht unterstützt</sys:String>
+    <sys:String x:Key="part1_nosupport_message">Das Dienstprogramm unterstützt Ihr Windows nicht. Ein weiterer Start ist nicht</sys:String>
+    <sys:String x:Key="part2_nosupport_message">möglich,</sys:String>
+    <sys:String x:Key="part3_nosupport_message">EvolveOS_Optimizer wird geschlossen, um kritische Fehler zu vermeiden.</sys:String>
+    <sys:String x:Key="title_alreadyrunning_message">Wird bereits ausgeführt</sys:String>
+    <sys:String x:Key="part1_alreadyrunning_message">Eine andere Instanz von</sys:String>
+    <sys:String x:Key="part2_alreadyrunning_message">EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="part3_alreadyrunning_message">ist bereits aktiv. Dieses doppelte Fenster wird nun sicher geschlossen.</sys:String>
+    <sys:String x:Key="title_critical_error">Kritischer Fehler</sys:String>
+    <sys:String x:Key="msg_db_busy_error">Datenbankzugriff fehlgeschlagen. Dies geschieht normalerweise, wenn der App Berechtigungen fehlen.\n\nBitte versuchen Sie, die Anwendung als Administrator auszuführen.</sys:String>
+    <!-- endregion Message Window -->
 
     <!-- region App Updates -->
     <sys:String x:Key="Update_Banner_Message">Ein neues Update ist für den EvolveOS Optimizer verfügbar!</sys:String>
