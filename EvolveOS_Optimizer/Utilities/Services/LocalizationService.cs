@@ -56,9 +56,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 }
 
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-
                 string resourcePrefix = "EvolveOS_Optimizer.Languages.";
-
                 string[] resourceNames = assembly.GetManifestResourceNames();
 
                 foreach (string resourceName in resourceNames)
@@ -68,17 +66,35 @@ namespace EvolveOS_Optimizer.Utilities.Services
                         string fileName = resourceName.Substring(resourcePrefix.Length);
                         string filePath = Path.Combine(langDir, fileName);
 
-                        if (!File.Exists(filePath))
+                        using (Stream? resourceStream = assembly.GetManifestResourceStream(resourceName))
                         {
-                            using (Stream? stream = assembly.GetManifestResourceStream(resourceName))
+                            if (resourceStream != null)
                             {
-                                if (stream != null)
+                                bool shouldExtract = false;
+
+                                if (!File.Exists(filePath))
+                                {
+                                    shouldExtract = true;
+                                }
+                                else
+                                {
+                                    long localFileSize = new FileInfo(filePath).Length;
+                                    long resourceSize = resourceStream.Length;
+
+                                    if (localFileSize != resourceSize)
+                                    {
+                                        shouldExtract = true;
+                                        Debug.WriteLine($"[Localization] Size mismatch detected for {fileName}. Updating local file...");
+                                    }
+                                }
+
+                                if (shouldExtract)
                                 {
                                     using (FileStream fileStream = File.Create(filePath))
                                     {
-                                        stream.CopyTo(fileStream);
+                                        resourceStream.CopyTo(fileStream);
                                     }
-                                    Debug.WriteLine($"[Localization] Successfully extracted {fileName}");
+                                    Debug.WriteLine($"[Localization] Successfully extracted/updated {fileName}");
                                 }
                             }
                         }
@@ -87,7 +103,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Localization] Failed to extract local language files: {ex.Message}");
+                Debug.WriteLine($"[Localization] Failed to extract or update language files: {ex.Message}");
             }
         }
 
