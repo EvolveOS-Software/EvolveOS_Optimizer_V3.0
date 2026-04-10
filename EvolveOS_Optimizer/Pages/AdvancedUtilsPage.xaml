@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:conv="using:EvolveOS_Optimizer.Utilities.Converters"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     mc:Ignorable="d"
     Background="Transparent">
 
@@ -16,7 +17,7 @@
     <Grid Padding="30">
         <StackPanel Spacing="20">
 
-            <TextBlock Text="Advanced Utilities" FontSize="28" FontWeight="SemiBold" FontFamily="{StaticResource Jura-SemiBold}"/>
+            <TextBlock helpers:Loc.Key="AdvancedUtils_PageTitle" FontSize="28" FontWeight="SemiBold" FontFamily="{StaticResource Jura-SemiBold}"/>
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
@@ -30,15 +31,15 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Password Manager" FontWeight="SemiBold" FontSize="16"/>
-                        <TextBlock Text="Securely store, edit, and organize all your passwords in one place. Encrypt and generate strong passwords." 
+                        <TextBlock helpers:Loc.Key="AdvancedUtils_PwdManager_Title" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock helpers:Loc.Key="AdvancedUtils_PwdManager_Desc" 
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
                                    TextWrapping="Wrap" 
                                    Margin="0,4,0,0"/>
                     </StackPanel>
 
                     <Button Grid.Column="1" 
-                            Content="Open Manager" 
+                            helpers:Loc.Key="AdvancedUtils_PwdManager_Btn" 
                             Style="{StaticResource AccentButtonStyle}"
                             Click="BtnOpenPasswordManager_Click"
                             VerticalAlignment="Center"
@@ -58,8 +59,36 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Password Generator" FontWeight="SemiBold" FontSize="16"/>
-                        <TextBlock Text="Quickly open the password generator using a global keyboard shortcut." 
+                        <TextBlock helpers:Loc.Key="AdvancedUtils_FileEncryptor_Title" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock helpers:Loc.Key="AdvancedUtils_FileEncryptor_Desc"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                                   TextWrapping="Wrap" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" 
+                            helpers:Loc.Key="AdvancedUtils_FileEncryptor_Btn" 
+                            Style="{StaticResource AccentButtonStyle}"
+                            Click="BtnOpenFileEncryptor_Click"
+                            VerticalAlignment="Center"
+                            MinWidth="120"/>
+                </Grid>
+            </Border>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock helpers:Loc.Key="AdvancedUtils_PwdGen_Title" FontWeight="SemiBold" FontSize="16"/>
+                        <TextBlock helpers:Loc.Key="AdvancedUtils_PwdGen_Desc" 
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
                                    TextWrapping="Wrap" 
                                    Margin="0,4,0,0"/>

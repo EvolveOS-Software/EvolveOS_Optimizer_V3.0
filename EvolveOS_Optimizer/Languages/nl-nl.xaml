@@ -1559,4 +1559,45 @@
     <sys:String x:Key="isobuilder_ps_reclaim_space">WIM exporteren om verwijderde ruimte terug te winnen (Dit duurt enkele minuten)...</sys:String>
     <!-- endregion EvolveOS Iso Builder -->
 
+    <!--#region Advanced Utils Page -->
+    <sys:String x:Key="AdvancedUtils_PageTitle">Geavanceerde Hulpprogramma's</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Title">Wachtwoordbeheerder</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Sla al uw wachtwoorden veilig op, bewerk ze en organiseer ze op één plek. Versleutel en genereer sterke wachtwoorden.</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Open Beheerder</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Title">Bestandsversleuteling</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Desc">Versleutel en ontsleutel veilig elk bestand, elke map of elk document met behulp van AES-256-GCM versleuteling van militaire kwaliteit.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Btn">Open Versleuteling</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Title">Wachtwoordgenerator</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Open de wachtwoordgenerator snel met een globale sneltoets.</sys:String>
+    <!-- endregion Advanced Utils Page -->
+
+    <!--#region File/Folder Encryption/Decryption -->
+    <sys:String x:Key="lbl_login_encryptor">Voer uw inloggegevens in om toegang te krijgen tot de Bestandsversleuteling.</sys:String>
+    <sys:String x:Key="lbl_encryptor_title">Bestandsversleuteling Login</sys:String>
+    <sys:String x:Key="FileEncryptor_Title">Bestandsversleuteling</sys:String>
+    <sys:String x:Key="FileEncryptor_Description">Beveilig uw gevoelige gegevens met AES-256-GCM versleuteling van militaire kwaliteit. Versleutelde bestanden zijn gekoppeld aan uw huidige sessie en kunnen niet worden hersteld als u uw hoofdwachtwoord vergeet.</sys:String>
+    <sys:String x:Key="FileEncryptor_SecureDataHeader">Gegevens beveiligen</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Title">Bestand versleutelen</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Desc">Beveilig een enkel document, afbeelding of bestand.</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Title">Map versleutelen</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Desc">Comprimeer en beveilig een volledige map.</sys:String>
+    <sys:String x:Key="FileEncryptor_RestoreDataHeader">Gegevens herstellen</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Title">Bestand/map ontsleutelen</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Desc">Herstel een versleuteld .evo archief.</sys:String>
+    <sys:String x:Key="FileEncryptor_WarningBanner">Grote bestanden en mappen kunnen even duren om te verwerken. Sluit de applicatie niet tijdens een actief versleutelings- of ontsleutelingsproces.</sys:String>
+    <sys:String x:Key="FileEncryptor_Processing">Bestand verwerken...</sys:String>
+
+    <sys:String x:Key="Toast_Success_Title">Succes</sys:String>
+    <sys:String x:Key="Toast_Error_Title">Fout</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Encrypted">EvolveOS Versleuteld Bestand</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_EncryptedFolder">EvolveOS Versleutelde Map</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Original">Origineel Bestand</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FileEncryptSuccess">Bestand succesvol versleuteld.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FolderEncryptSuccess">Map succesvol versleuteld.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptSuccess">Succesvol ontsleuteld.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_EncryptionErrorTitle">Versleutelingsfout</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailTitle">Ontsleuteling Mislukt</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">Het wachtwoord is onjuist of er is met het bestand geknoeid.</sys:String>
+    <!-- endregion File/Folder Encryption/Decryption -->
+
 </ResourceDictionary>

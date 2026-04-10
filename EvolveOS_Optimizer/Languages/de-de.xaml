@@ -1566,4 +1566,45 @@
     <sys:String x:Key="isobuilder_ps_reclaim_space">WIM exportieren, um gelöschten Speicherplatz zurückzugewinnen (Dies dauert einige Minuten)...</sys:String>
     <!-- endregion EvolveOS Iso Builder -->
 
+    <!--#region Advanced Utils Page -->
+    <sys:String x:Key="AdvancedUtils_PageTitle">Erweiterte Dienstprogramme</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Title">Passwort-Manager</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Speichern, bearbeiten und organisieren Sie alle Ihre Passwörter sicher an einem Ort. Verschlüsseln und generieren Sie starke Passwörter.</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Manager Öffnen</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Title">Dateiverschlüsselung</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Desc">Verschlüsseln und entschlüsseln Sie jede Datei, jeden Ordner oder jedes Dokument sicher mit der AES-256-GCM-Verschlüsselung auf Militärniveau.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Btn">Verschlüsselung Öffnen</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Title">Passwortgenerator</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Öffnen Sie den Passwortgenerator schnell mit einem globalen Tastaturkürzel.</sys:String>
+    <!-- endregion Advanced Utils Page -->
+
+    <!--#region File/Folder Encryption/Decryption -->
+    <sys:String x:Key="lbl_login_encryptor">Geben Sie Ihre Anmeldedaten ein, um auf die Dateiverschlüsselung zuzugreifen.</sys:String>
+    <sys:String x:Key="lbl_encryptor_title">Dateiverschlüsselung Login</sys:String>
+    <sys:String x:Key="FileEncryptor_Title">Dateiverschlüsselung</sys:String>
+    <sys:String x:Key="FileEncryptor_Description">Sichern Sie Ihre sensiblen Daten mit AES-256-GCM-Verschlüsselung auf Militärniveau. Verschlüsselte Dateien sind an Ihre aktuelle Sitzung gebunden und können nicht wiederhergestellt werden, wenn Sie Ihr Master-Passwort vergessen.</sys:String>
+    <sys:String x:Key="FileEncryptor_SecureDataHeader">Daten sichern</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Title">Datei verschlüsseln</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Desc">Sichern Sie ein einzelnes Dokument, Bild oder eine Datei.</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Title">Ordner verschlüsseln</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Desc">Komprimieren und sichern Sie ein gesamtes Verzeichnis.</sys:String>
+    <sys:String x:Key="FileEncryptor_RestoreDataHeader">Daten wiederherstellen</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Title">Datei/Ordner entschlüsseln</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Desc">Stellen Sie ein verschlüsseltes .evo-Archiv wieder her.</sys:String>
+    <sys:String x:Key="FileEncryptor_WarningBanner">Die Verarbeitung großer Dateien und Ordner kann einen Moment dauern. Schließen Sie die Anwendung nicht während eines aktiven Verschlüsselungs- oder Entschlüsselungsprozesses.</sys:String>
+    <sys:String x:Key="FileEncryptor_Processing">Datei wird verarbeitet...</sys:String>
+
+    <sys:String x:Key="Toast_Success_Title">Erfolg</sys:String>
+    <sys:String x:Key="Toast_Error_Title">Fehler</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Encrypted">EvolveOS verschlüsselte Datei</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_EncryptedFolder">EvolveOS verschlüsselter Ordner</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Original">Originaldatei</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FileEncryptSuccess">Datei erfolgreich verschlüsselt.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FolderEncryptSuccess">Ordner erfolgreich verschlüsselt.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptSuccess">Erfolgreich entschlüsselt.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_EncryptionErrorTitle">Verschlüsselungsfehler</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailTitle">Entschlüsselung fehlgeschlagen</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">Das Passwort ist falsch oder die Datei wurde manipuliert.</sys:String>
+    <!-- endregion File/Folder Encryption/Decryption -->
+
 </ResourceDictionary>

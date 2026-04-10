@@ -1572,4 +1572,45 @@
     <sys:String x:Key="isobuilder_ps_reclaim_space">Esportazione WIM per recuperare lo spazio eliminato (Richiederà alcuni minuti)...</sys:String>
     <!-- endregion EvolveOS Iso Builder -->
 
+    <!--#region Advanced Utils Page -->
+    <sys:String x:Key="AdvancedUtils_PageTitle">Utilità Avanzate</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Title">Gestore Password</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Archivia, modifica e organizza in modo sicuro tutte le tue password in un unico posto. Crittografa e genera password complesse.</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Apri Gestore</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Title">Crittografia File</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Desc">Crittografa e decrittografa in modo sicuro qualsiasi file, cartella o documento utilizzando la crittografia di livello militare AES-256-GCM.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Btn">Apri Crittografia</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Title">Generatore di Password</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Apri rapidamente il generatore di password utilizzando una scorciatoia da tastiera globale.</sys:String>
+    <!-- endregion Advanced Utils Page -->
+
+    <!--#region File/Folder Encryption/Decryption -->
+    <sys:String x:Key="lbl_login_encryptor">Inserisci le tue credenziali per accedere alla Crittografia File.</sys:String>
+    <sys:String x:Key="lbl_encryptor_title">Login Crittografia File</sys:String>
+    <sys:String x:Key="FileEncryptor_Title">Crittografia File</sys:String>
+    <sys:String x:Key="FileEncryptor_Description">Proteggi i tuoi dati sensibili utilizzando la crittografia di livello militare AES-256-GCM. I file crittografati sono legati alla sessione corrente e non possono essere recuperati se dimentichi la password principale.</sys:String>
+    <sys:String x:Key="FileEncryptor_SecureDataHeader">Proteggi Dati</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Title">Crittografa un File</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Desc">Proteggi un singolo documento, immagine o file.</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Title">Crittografa una Cartella</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Desc">Comprimi e proteggi un'intera directory.</sys:String>
+    <sys:String x:Key="FileEncryptor_RestoreDataHeader">Ripristina Dati</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Title">Decrittografa File/Cartella</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Desc">Ripristina un archivio .evo crittografato.</sys:String>
+    <sys:String x:Key="FileEncryptor_WarningBanner">L'elaborazione di file e cartelle di grandi dimensioni potrebbe richiedere alcuni istanti. Non chiudere l'applicazione durante un processo di crittografia o decrittografia attivo.</sys:String>
+    <sys:String x:Key="FileEncryptor_Processing">Elaborazione file in corso...</sys:String>
+
+    <sys:String x:Key="Toast_Success_Title">Successo</sys:String>
+    <sys:String x:Key="Toast_Error_Title">Errore</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Encrypted">File crittografato EvolveOS</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_EncryptedFolder">Cartella crittografata EvolveOS</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Original">File originale</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FileEncryptSuccess">File crittografato con successo.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FolderEncryptSuccess">Cartella crittografata con successo.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptSuccess">Decrittografato con successo.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_EncryptionErrorTitle">Errore di crittografia</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailTitle">Decrittografia non riuscita</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">La password non è corretta o il file è stato manomesso.</sys:String>
+    <!-- endregion File/Folder Encryption/Decryption -->
+
 </ResourceDictionary>

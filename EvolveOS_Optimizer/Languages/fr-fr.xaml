@@ -1564,4 +1564,45 @@
     <sys:String x:Key="isobuilder_ps_reclaim_space">Exportation du WIM pour récupérer l'espace supprimé (Cela prend quelques minutes)...</sys:String>
     <!-- endregion EvolveOS Iso Builder -->
 
+    <!--#region Advanced Utils Page -->
+    <sys:String x:Key="AdvancedUtils_PageTitle">Utilitaires Avancés</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Title">Gestionnaire de Mots de Passe</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Stockez, modifiez et organisez tous vos mots de passe en toute sécurité en un seul endroit. Chiffrez et générez des mots de passe forts.</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Ouvrir le Gestionnaire</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Title">Chiffrement de Fichiers</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Desc">Chiffrez et déchiffrez en toute sécurité tout fichier, dossier ou document à l'aide d'un chiffrement de qualité militaire AES-256-GCM.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Btn">Ouvrir le Chiffrement</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Title">Générateur de Mots de Passe</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Ouvrez rapidement le générateur de mots de passe à l'aide d'un raccourci clavier global.</sys:String>
+    <!-- endregion Advanced Utils Page -->
+
+    <!--#region File/Folder Encryption/Decryption -->
+    <sys:String x:Key="lbl_login_encryptor">Entrez vos identifiants pour accéder au chiffrement de fichiers.</sys:String>
+    <sys:String x:Key="lbl_encryptor_title">Connexion au chiffrement</sys:String>
+    <sys:String x:Key="FileEncryptor_Title">Chiffrement de fichiers</sys:String>
+    <sys:String x:Key="FileEncryptor_Description">Sécurisez vos données sensibles grâce au chiffrement de qualité militaire AES-256-GCM. Les fichiers chiffrés sont liés à votre session actuelle et ne peuvent pas être récupérés si vous oubliez votre mot de passe principal.</sys:String>
+    <sys:String x:Key="FileEncryptor_SecureDataHeader">Sécuriser les données</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Title">Chiffrer un fichier</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Desc">Sécurisez un seul document, image ou fichier.</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Title">Chiffrer un dossier</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Desc">Compressez et sécurisez un répertoire entier.</sys:String>
+    <sys:String x:Key="FileEncryptor_RestoreDataHeader">Restaurer les données</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Title">Déchiffrer un fichier/dossier</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Desc">Restaurez une archive .evo chiffrée.</sys:String>
+    <sys:String x:Key="FileEncryptor_WarningBanner">Le traitement des fichiers et dossiers volumineux peut prendre quelques instants. Ne fermez pas l'application pendant un processus de chiffrement ou de déchiffrement actif.</sys:String>
+    <sys:String x:Key="FileEncryptor_Processing">Traitement du fichier...</sys:String>
+
+    <sys:String x:Key="Toast_Success_Title">Succès</sys:String>
+    <sys:String x:Key="Toast_Error_Title">Erreur</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Encrypted">Fichier chiffré EvolveOS</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_EncryptedFolder">Dossier chiffré EvolveOS</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Original">Fichier d'origine</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FileEncryptSuccess">Fichier chiffré avec succès.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FolderEncryptSuccess">Dossier chiffré avec succès.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptSuccess">Déchiffré avec succès.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_EncryptionErrorTitle">Erreur de chiffrement</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailTitle">Échec du déchiffrement</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">Le mot de passe est incorrect ou le fichier a été altéré.</sys:String>
+    <!-- endregion File/Folder Encryption/Decryption -->
+
 </ResourceDictionary>

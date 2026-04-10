@@ -1597,4 +1597,45 @@
     <sys:String x:Key="isobuilder_ps_reclaim_space">Exporting WIM to reclaim deleted space (This takes a few minutes)...</sys:String>
     <!-- endregion EvolveOS Iso Builder -->
 
+    <!--#region Advanced Utils Page -->
+    <sys:String x:Key="AdvancedUtils_PageTitle">Advanced Utilities</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Title">Password Manager</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Securely store, edit, and organize all your passwords in one place. Encrypt and generate strong passwords.</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Open Manager</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Title">File Encryptor</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Desc">Securely encrypt and decrypt any file, folder, or document using AES-256-GCM military-grade encryption.</sys:String>
+    <sys:String x:Key="AdvancedUtils_FileEncryptor_Btn">Open Encryptor</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Title">Password Generator</sys:String>
+    <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Quickly open the password generator using a global keyboard shortcut.</sys:String>
+    <!-- endregion Advanced Utils Page -->
+
+    <!--#region File/Folder Encryption/Decryption -->
+    <sys:String x:Key="lbl_login_encryptor">Enter your credentials to access the File Encryptor.</sys:String>
+    <sys:String x:Key="lbl_encryptor_title">File Encryptor Login</sys:String>
+    <sys:String x:Key="FileEncryptor_Title">File Encryptor</sys:String>
+    <sys:String x:Key="FileEncryptor_Description">Secure your sensitive data using AES-256-GCM military-grade encryption. Encrypted files are tied to your current session and cannot be recovered if you forget your master password.</sys:String>
+    <sys:String x:Key="FileEncryptor_SecureDataHeader">Secure Data</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Title">Encrypt a File</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFile_Desc">Secure a single document, image, or file.</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Title">Encrypt a Folder</sys:String>
+    <sys:String x:Key="FileEncryptor_EncryptFolder_Desc">Compress and secure an entire directory.</sys:String>
+    <sys:String x:Key="FileEncryptor_RestoreDataHeader">Restore Data</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Title">Decrypt File/Folder</sys:String>
+    <sys:String x:Key="FileEncryptor_Decrypt_Desc">Restore an encrypted .evo archive.</sys:String>
+    <sys:String x:Key="FileEncryptor_WarningBanner">Large files and folders may take a few moments to process. Do not close the application during an active encryption or decryption process.</sys:String>
+    <sys:String x:Key="FileEncryptor_Processing">Processing File...</sys:String>
+
+    <sys:String x:Key="Toast_Success_Title">Success</sys:String>
+    <sys:String x:Key="Toast_Error_Title">Error</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Encrypted">EvolveOS Encrypted File</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_EncryptedFolder">EvolveOS Encrypted Folder</sys:String>
+    <sys:String x:Key="FileEncryptor_FileType_Original">Original File</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FileEncryptSuccess">File encrypted successfully.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_FolderEncryptSuccess">Folder encrypted successfully.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptSuccess">Decrypted successfully.</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_EncryptionErrorTitle">Encryption Error</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailTitle">Decryption Failed</sys:String>
+    <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">The password is incorrect or the file has been tampered with.</sys:String>
+    <!-- endregion File/Folder Encryption/Decryption -->
+
 </ResourceDictionary>
