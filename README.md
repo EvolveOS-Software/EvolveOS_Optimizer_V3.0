@@ -38,12 +38,14 @@ Whether running actively on your dashboard or silently in your system tray, Evol
 * **Zero-Footprint Architecture:** As a system optimizer, the app itself is engineered to consume as little memory as possible. It utilizes a strict zero-cache navigation model where every page implements a custom `IPurgeable` interface. ViewModels are aggressively disposed, background threads are cancelled, and UI elements are completely purged from memory the moment you navigate away—ensuring perfectly fluent browsing with zero passive memory bloat.
 * **Global Optimization Hotkeys:** Configure custom keyboard shortcuts to instantly flush system memory, clear DNS cache, and wipe temp files at any time. Triggering this directly optimizes the app itself—drastically reducing active memory usage when the dashboard is open, and aggressively trimming its background footprint down to an ultra-light 35-50 MB when hidden in the system tray.
 * **Automated Background Autopilot:** A silent background engine that tracks system resources. Use custom sliders in the Maintenance menu to set specific memory usage percentages or time intervals (in hours) to trigger fully automated, background memory optimization without lifting a finger.
-* **3-Tier Context-Aware Notification Engine: A custom-built, queue-based notification manager that intelligently routes alerts based on your exact window state. If the dashboard is active, it delivers beautifully animated, severity-colored in-app banners. If the app is minimized, it triggers a custom, non-intrusive overlay notification. If running silently in the system tray, it seamlessly delegates to Windows Native Adaptive Toasts to keep you informed without interrupting your workflow.
-* **Secure Password Manager & Generator: Includes a fully offline, AES-encrypted password manager backed by a secure local SQL database. Safely store, categorize, and manage credentials with one-click copy and reveal toggles. Features a standalone, advanced password generator accessible system-wide via custom global hotkeys.
-* **Advanced User Authentication: Features a robust, multi-user accounts management system powered by an auto-installing SQL LocalDB backend. Keep your application access and encrypted vaults entirely private and completely disconnected from the cloud.
-* **Dynamic Hardware Dashboard: A beautifully animated dashboard featuring real-time history line graphs for CPU, RAM, GPU, and dual-line Network speeds. Fully interactive with smooth scale animations on hover and a customizable global timeframe setting.
+* **3-Tier Context-Aware Notification Engine:** A custom-built, queue-based notification manager that intelligently routes alerts based on your exact window state. If the dashboard is active, it delivers beautifully animated, severity-colored in-app banners. If the app is minimized, it triggers a custom, non-intrusive overlay notification. If running silently in the system tray, it seamlessly delegates to Windows Native Adaptive Toasts to keep you informed without interrupting your workflow.
+* **Secure Password Manager & Generator:** Includes a fully offline, AES-encrypted password manager backed by a secure local SQL database. Safely store, categorize, and manage credentials with one-click copy and reveal toggles. Features a standalone, advanced password generator accessible system-wide via custom global hotkeys.
+* **Military-Grade File & Folder Encryptor:** Securely encrypt and decrypt any file, image, executable, or entire directory using AES-256-GCM encryption. Engineered with raw byte processing to prevent binary data corruption and on-the-fly background ZIP compression for folders. Heavy cryptographic tasks are safely offloaded to background threads, triggering a global UI lock and modern visual overlay to prevent interruption.
+* **Custom Windows 11 ISO Builder:** This feature enables the creation of fully debloated, optimized installation media using a sophisticated offline servicing engine. It automates the generation of unattended setups to bypass strict Windows 11 hardware requirements (TPM, CPU, RAM), forces local account creation, and strips away over 50+ bloatware packages like Edge, OneDrive, Copilot and Cortana. By injecting hundreds of custom registry tweaks, removing legacy system components, and pre-tuning over 100 system services directly into the WIM/ESD image, it ensures a high-performance, privacy-focused Windows experience from the very first boot.
+* **Advanced User Authentication:** Features a robust, multi-user accounts management system powered by an auto-installing SQL LocalDB backend. Keep your application access and encrypted vaults entirely private and completely disconnected from the cloud.
+* **Dynamic Hardware Dashboard:** A beautifully animated dashboard featuring real-time history line graphs for CPU, RAM, GPU, and dual-line Network speeds. Fully interactive with smooth scale animations on hover and a customizable global timeframe setting.
 * **Built-in Process Manager:** Includes a dedicated, real-time process manager to monitor memory usage (MB), thread counts, and PIDs. Easily search, sort, and forcefully terminate resource-heavy applications directly within the app.
-* **Security Center Dashboard: Provides a comprehensive overview of system security, actively monitoring Firewall, SmartScreen, BitLocker, Core Isolation, Account Protection, and UAC levels. Accurately mirrors native Windows Defender states and includes a custom slider to instantly adjust UAC consent behaviors.
+* **Security Center Dashboard:** Provides a comprehensive overview of system security, actively monitoring Firewall, SmartScreen, BitLocker, Core Isolation, Account Protection, and UAC levels. Accurately mirrors native Windows Defender states and includes a custom slider to instantly adjust UAC consent behaviors.
 * **One-Click Defender Actions:** Bypass the standard Windows UI to instantly trigger Windows Defender Quick Scans or force malware signature updates directly via PowerShell integration.
 * **Custom Script Engine:** A dedicated dynamic scripts hub allows users to load, refresh, and execute custom scripts individually or in bulk via a multi-select mode.
 * **Advanced Memory & Disk Management:** Intelligently flushes the Working Set, System File Cache, Modified Page Lists, and safely clears system caches, DNS, and Windows Update leftovers.
@@ -55,7 +57,7 @@ Whether running actively on your dashboard or silently in your system tray, Evol
 * **Group Policy Manager:** Includes a dedicated scanner to detect, review, and easily revert customized or corrupted Windows Group Policies back to default OS behavior.
 * **Gaming Performance:** Instantly import custom power plans, disable Game DVR/Bar, and remove network throttling to ensure lower latency and higher frame rates.
 * **Automated Background Monitoring:** A silent background engine that tracks RAM and Disk usage, alerting you only when critical thresholds are reached.
-* **System Tray Integration: Run silently in the background with an ultra-light footprint, featuring a quick-access context menu to instantly jump to key pages or trigger optimizations directly from the taskbar without opening the full UI.
+* **System Tray Integration:** Run silently in the background with an ultra-light footprint, featuring a quick-access context menu to instantly jump to key pages or trigger optimizations directly from the taskbar without opening the full UI.
 * **Portable Execution:** Runs as a standalone, unpacked single executable. No bulky installers or registry bloat.
 
 ---
@@ -193,8 +195,16 @@ git clone https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0.git
 
 ---
 
-## Contact
-<img src="https://avatars.githubusercontent.com/u/203890833?s=400&u=94c1b9e1e32396b0112ae765f9cc87a71dee0a64&v=4" width="100px;"/>
+## 📬 Contact
 
-[![github](https://img.shields.io/badge/Github-gray?style=for-the-badge&logo=github&logoColor=white)](https://github.com/EvolveOS-Software)
+<img src="https://avatars.githubusercontent.com/u/203890833?s=400&u=94c1b9e1e32396b0112ae765f9cc87a71dee0a64&v=4" width="100px;" style="border-radius: 50%;"/>
+
+<p align="left">
+  <a href="https://github.com/EvolveOS-Software">
+    <img src="https://img.shields.io/badge/Github-gray?style=for-the-badge&logo=github&logoColor=white" />
+  </a>
+  <a href="mailto:evolveossoftware@gmail.com">
+    <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Gmail" />
+  </a>
+</p>
 
