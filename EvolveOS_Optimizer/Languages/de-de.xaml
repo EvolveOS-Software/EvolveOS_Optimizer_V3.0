@@ -1086,6 +1086,7 @@
     <sys:String x:Key="toast_optimization_complete_msg">Systemressourcen wurden erfolgreich freigegeben und optimiert.</sys:String>
     <sys:String x:Key="toast_health_critical_title">Systemintegrität kritisch</sys:String>
     <sys:String x:Key="toast_health_critical_msg">Systemressourcen sind stark belastet oder es ist wenig Speicherplatz vorhanden. Klicken Sie hier zum Optimieren.</sys:String>
+    <sys:String x:Key="placeholder_select_process">Prozess zum Ausschließen auswählen...</sys:String>
     <!-- endregion System Optimizer -->
 
     <!-- Resource Helper -->

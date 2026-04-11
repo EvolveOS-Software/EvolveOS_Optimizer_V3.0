@@ -78,6 +78,11 @@ namespace EvolveOS_Optimizer.Pages
 
             Optimize.Focus(FocusState.Programmatic);
 
+            if (ViewModel.SelectedProcess == null && ViewModel.Processes.Count > 0)
+            {
+                ViewModel.SelectedProcess = ViewModel.Processes[0];
+            }
+
             await CalculateSystemHealthAsync();
 
             if (!string.IsNullOrEmpty(_pendingScrollTarget))

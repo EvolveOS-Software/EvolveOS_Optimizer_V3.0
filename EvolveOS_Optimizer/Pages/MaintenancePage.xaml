@@ -566,12 +566,21 @@
 
                                 <ComboBox Grid.Row="1"
                                           Grid.Column="0"
+                                          x:Name="ProcessExclusionComboBox"
                                           ItemsSource="{x:Bind ViewModel.Processes, Mode=OneWay}"
                                           SelectedValue="{x:Bind ViewModel.SelectedProcess, Mode=TwoWay}"
+                                          PlaceholderText="{helpers:ResourceString Key=placeholder_select_process}"
                                           Height="40"
                                           Margin="0,0,12,0"
-                                          HorizontalAlignment="Stretch"/>
-                                
+                                          HorizontalAlignment="Stretch">
+
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <TextBlock Text="{x:Bind}" FontFamily="{StaticResource Jura}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+
                                 <Button Grid.Row="1"
                                         Grid.Column="1"
                                         Content="+"

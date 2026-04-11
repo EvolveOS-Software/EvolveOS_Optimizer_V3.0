@@ -1085,6 +1085,7 @@
     <sys:String x:Key="toast_optimization_complete_msg">Les ressources système ont été libérées et optimisées avec succès.</sys:String>
     <sys:String x:Key="toast_health_critical_title">État du système critique</sys:String>
     <sys:String x:Key="toast_health_critical_msg">Les ressources système sont fortement sollicitées ou l'espace disque est faible. Cliquez pour optimiser.</sys:String>
+    <sys:String x:Key="placeholder_select_process">Sélectionnez un processus à exclure...</sys:String>
     <!--#endregion-->
 
     <!-- Resource Helper -->
