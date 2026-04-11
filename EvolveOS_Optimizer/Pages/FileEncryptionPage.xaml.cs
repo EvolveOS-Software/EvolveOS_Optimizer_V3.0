@@ -295,6 +295,18 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        #region Navigation
+
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Frame != null && this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
+        }
+
+        #endregion
+
         #endregion
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

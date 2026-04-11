@@ -14,6 +14,8 @@ namespace EvolveOS_Optimizer.Pages
 {
     public sealed partial class PasswordManagerPage : Page
     {
+        #region Fields & Initialization
+
         private PasswordManagerViewModel? ViewModel;
         private Views.PasswordGeneratorWindow? _generatorWindow;
 
@@ -21,6 +23,10 @@ namespace EvolveOS_Optimizer.Pages
         {
             this.InitializeComponent();
         }
+
+        #endregion
+
+        #region Navigation & Lifecycle
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -46,6 +52,20 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Frame != null && this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e) { }
+
+        #endregion
+
+        #region Record Management (Add, Edit, Info)
+
         private void BtnAddRecord_Click(object sender, RoutedEventArgs e)
         {
             OpenRecordModal(null);
@@ -68,6 +88,12 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void InfoButton_Click(object sender, RoutedEventArgs e) { }
+
+        #endregion
+
+        #region Modal Interaction (Save & Close)
+
         private void BtnCloseModal_Click(object sender, RoutedEventArgs e)
         {
             CloseSidePanel();
@@ -82,7 +108,6 @@ namespace EvolveOS_Optimizer.Pages
                 if (ViewModel.AddRecordVM.SaveCommand.CanExecute(null))
                 {
                     ViewModel.AddRecordVM.SaveCommand.Execute(null);
-
                 }
                 else
                 {
@@ -103,6 +128,22 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void RecordPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is PasswordManagerViewModel mainVm)
+            {
+                mainVm.AddRecordVM.RecordPassword = RecordPasswordBox.Password;
+            }
+            else if (this.DataContext is AddRecordViewModel addVm)
+            {
+                addVm.RecordPassword = RecordPasswordBox.Password;
+            }
+        }
+
+        #endregion
+
+        #region Tools & Settings
+
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
             var popup = PopupSettings ?? (Popup)this.FindName("PopupSettings");
@@ -122,19 +163,6 @@ namespace EvolveOS_Optimizer.Pages
             _generatorWindow.Activate();
         }
 
-        private void RecordPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (this.DataContext is PasswordManagerViewModel mainVm)
-            {
-                mainVm.AddRecordVM.RecordPassword = RecordPasswordBox.Password;
-            }
-            else if (this.DataContext is AddRecordViewModel addVm)
-            {
-                addVm.RecordPassword = RecordPasswordBox.Password;
-            }
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e) { }
-        private void InfoButton_Click(object sender, RoutedEventArgs e) { }
+        #endregion
     }
 }

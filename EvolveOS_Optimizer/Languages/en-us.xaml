@@ -1423,6 +1423,7 @@
     <sys:String x:Key="lbl_password_label">Password</sys:String>
     <sys:String x:Key="tag_password">Password</sys:String>
     <sys:String x:Key="btn_login_securely">Login Securely</sys:String>
+    <sys:String x:Key="btn_close_password_manager">Close</sys:String>
 
     <!-- Password Manager -->
     <sys:String x:Key="window_title_password_manager">Password Manager</sys:String>

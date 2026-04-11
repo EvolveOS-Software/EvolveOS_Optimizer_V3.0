@@ -1385,6 +1385,7 @@
     <sys:String x:Key="lbl_password_label">Wachtwoord</sys:String>
     <sys:String x:Key="tag_password">Wachtwoord</sys:String>
     <sys:String x:Key="btn_login_securely">Veilig inloggen</sys:String>
+    <sys:String x:Key="btn_close_password_manager">Sluiten</sys:String>
 
     <!-- Password Manager -->
     <sys:String x:Key="window_title_password_manager">Wachtwoordbeheerder</sys:String>

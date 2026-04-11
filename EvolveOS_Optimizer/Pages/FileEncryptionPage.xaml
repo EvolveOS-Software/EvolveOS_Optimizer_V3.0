@@ -12,13 +12,34 @@
     <Grid>
 
         <Grid Padding="30">
-            <StackPanel Spacing="32" MaxWidth="850" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Click="BtnBack_Click" 
+                    Background="Transparent" 
+                    BorderThickness="0" 
+                    Padding="8,6" 
+                    CornerRadius="4"
+                    VerticalAlignment="Top"
+                    Margin="0,0,16,0">
+                <FontIcon Glyph="&#xE72B;" FontSize="16" />
+            </Button>
+
+            <StackPanel Grid.Column="1" Spacing="32" MaxWidth="850" HorizontalAlignment="Left">
 
                 <StackPanel Spacing="8">
-                    <TextBlock helpers:Loc.Key="FileEncryptor_Title" FontSize="28" FontWeight="SemiBold" FontFamily="{StaticResource Jura-SemiBold}"/>
+                    <TextBlock helpers:Loc.Key="FileEncryptor_Title" 
+                               FontSize="28" 
+                               FontWeight="SemiBold" 
+                               FontFamily="{StaticResource Jura-SemiBold}" 
+                               VerticalAlignment="Center"/>
+
                     <TextBlock helpers:Loc.Key="FileEncryptor_Description" 
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
-                               TextWrapping="Wrap" />
+                               TextWrapping="Wrap"/>
                 </StackPanel>
 
                 <Grid>

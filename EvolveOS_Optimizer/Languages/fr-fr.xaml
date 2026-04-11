@@ -1390,6 +1390,7 @@
     <sys:String x:Key="lbl_password_label">Mot de passe</sys:String>
     <sys:String x:Key="tag_password">Mot de passe</sys:String>
     <sys:String x:Key="btn_login_securely">Connexion sécurisée</sys:String>
+    <sys:String x:Key="btn_close_password_manager">Fermer</sys:String>
 
     <!-- Password Manager -->
     <sys:String x:Key="window_title_password_manager">Gestionnaire de mots de passe</sys:String>
