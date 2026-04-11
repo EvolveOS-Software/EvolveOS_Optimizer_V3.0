@@ -523,7 +523,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public System.Windows.Input.ICommand RemoveProcessFromExclusionListCommand { get; }
         public System.Windows.Input.ICommand RefreshCleanupSpaceCommand => new RelayCommand(async (_) =>
         {
+            if (IsScanning) return;
+
             TotalSpaceToFree = ResourceString.GetString("txt_scanning");
+
+            LoadDriveInfo();
+
             await CalculateCleanupSpaceAsync();
         });
 
@@ -833,6 +838,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 await _computerService.Optimize(reason, LocalMachineSettingsEngine.MemoryAreas);
 
                 _computerService.RefreshMemory();
+
+                if (isDiskCleanupSelected)
+                {
+                    LoadDriveInfo();
+                }
+
                 OnOptimizeProgressUpdate(++currentStep, ResourceString.GetString("txt_progress_finalizing"));
                 await Task.Delay(500);
 
@@ -841,6 +852,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     if (Computer != null) Computer.Memory = _computerService.Memory;
                     OnPropertyChanged(nameof(Computer));
                 });
+
+                _ = CalculateCleanupSpaceAsync();
 
                 var physicalDiff = Math.Max(0, _computerService.Memory.Physical.Free.Bytes - startPhysical);
                 var virtualDiff = Math.Max(0, _computerService.Memory.Virtual.Free.Bytes - startVirtual);

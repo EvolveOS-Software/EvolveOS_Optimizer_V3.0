@@ -626,6 +626,8 @@ namespace EvolveOS_Optimizer.Pages
             if (LocalMachineSettingsEngine.DisableAllOptimizationResults)
             {
                 _isShowingResult = false;
+
+                _ = CalculateSystemHealthAsync();
                 return;
             }
 
@@ -637,6 +639,8 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         await Task.Delay(2000);
                     }
+
+                    await CalculateSystemHealthAsync();
 
                     if (!LocalMachineSettingsEngine.ShowOptimizationNotifications)
                     {
