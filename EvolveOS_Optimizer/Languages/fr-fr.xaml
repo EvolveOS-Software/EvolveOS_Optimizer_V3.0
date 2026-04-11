@@ -91,6 +91,9 @@
     <sys:String x:Key="Settings_Update_CheckButton">Vérifier maintenant</sys:String>
     <sys:String x:Key="Settings_Update_Checking">Vérification...</sys:String>
     <sys:String x:Key="Settings_Update_UpToDate">À jour !</sys:String>
+
+    <sys:String x:Key="title_error">Échec de la mise à jour</sys:String>
+    <sys:String x:Key="msg_check_internet">Impossible de télécharger la mise à jour. Veuillez vérifier votre connexion.</sys:String>
     <!-- endregion App Updates -->
 
     <!-- region Main Window -->

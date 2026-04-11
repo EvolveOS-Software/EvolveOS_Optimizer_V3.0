@@ -91,6 +91,9 @@
     <sys:String x:Key="Settings_Update_CheckButton">Nu controleren</sys:String>
     <sys:String x:Key="Settings_Update_Checking">Controleren...</sys:String>
     <sys:String x:Key="Settings_Update_UpToDate">Up-to-date!</sys:String>
+
+    <sys:String x:Key="title_error">Update mislukt</sys:String>
+    <sys:String x:Key="msg_check_internet">Kan de update niet downloaden. Controleer uw verbinding.</sys:String>
     <!-- endregion App Updates -->
 
     <!-- region Main Window -->

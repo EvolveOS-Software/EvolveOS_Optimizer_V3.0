@@ -91,6 +91,9 @@
     <sys:String x:Key="Settings_Update_CheckButton">Check Now</sys:String>
     <sys:String x:Key="Settings_Update_Checking">Checking...</sys:String>
     <sys:String x:Key="Settings_Update_UpToDate">Up to date!</sys:String>
+
+    <sys:String x:Key="title_error">Update Failed</sys:String>
+    <sys:String x:Key="msg_check_internet">Could not download the update. Please check your connection.</sys:String>
     <!-- endregion App Updates -->
 
     <!-- region Main Window -->

@@ -91,6 +91,9 @@
     <sys:String x:Key="Settings_Update_CheckButton">Jetzt prüfen</sys:String>
     <sys:String x:Key="Settings_Update_Checking">Wird geprüft...</sys:String>
     <sys:String x:Key="Settings_Update_UpToDate">Auf dem neuesten Stand!</sys:String>
+
+    <sys:String x:Key="title_error">Update fehlgeschlagen</sys:String>
+    <sys:String x:Key="msg_check_internet">Das Update konnte nicht heruntergeladen werden. Bitte überprüfen Sie Ihre Verbindung.</sys:String>
     <!-- endregion App Updates -->
 
     <!-- region Main Window -->

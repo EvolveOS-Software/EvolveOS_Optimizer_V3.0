@@ -649,7 +649,7 @@ namespace EvolveOS_Optimizer
 
                 string currentExe = Environment.ProcessPath ?? AppContext.BaseDirectory;
                 string exeName = Path.GetFileName(currentExe) ?? "EvolveOS_Optimizer.exe";
-                string cmdScript = $"/c timeout /t 1 & taskkill /f /im \"{exeName}\" & timeout /t 2 & del /f /q \"{currentExe}\" & move /y \"{tempPath}\" \"{currentExe}\" & start \"\" \"{currentExe}\"";
+                string cmdScript = $"/c timeout /t 2 & taskkill /f /im \"{exeName}\" 2>NUL & timeout /t 1 & move /y \"{tempPath}\" \"{currentExe}\" & start \"\" \"{currentExe}\"";
 
                 Process.Start(new ProcessStartInfo
                 {
@@ -658,13 +658,19 @@ namespace EvolveOS_Optimizer
                     CreateNoWindow = true,
                     UseShellExecute = false
                 });
-                Application.Current.Exit();
+                Environment.Exit(0);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"[Update Error] {ex.Message}");
                 DownloadProgressArea.Visibility = Visibility.Collapsed;
                 if (sender is Button btn) btn.IsEnabled = true;
+
+                App.ShowNotification(
+                    GetText("title_error") ?? "Update Failed",
+                    GetText("msg_check_internet") ?? "Could not download the update. Please check your connection.",
+                    InfoBarSeverity.Error,
+                    5000);
             }
         }
 

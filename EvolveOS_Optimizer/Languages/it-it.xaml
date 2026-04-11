@@ -91,6 +91,9 @@
     <sys:String x:Key="Settings_Update_CheckButton">Controlla ora</sys:String>
     <sys:String x:Key="Settings_Update_Checking">Controllo in corso...</sys:String>
     <sys:String x:Key="Settings_Update_UpToDate">Aggiornato!</sys:String>
+
+    <sys:String x:Key="title_error">Aggiornamento non riuscito</sys:String>
+    <sys:String x:Key="msg_check_internet">Impossibile scaricare l'aggiornamento. Verifica la tua connessione.</sys:String>
     <!-- endregion App Updates -->
 
     <!-- region Main Window -->
