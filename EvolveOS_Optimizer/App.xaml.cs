@@ -13,6 +13,7 @@ using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
 using Microsoft.UI.Dispatching;
 using Microsoft.Windows.AppNotifications;
+using static EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer
 {

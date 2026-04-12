@@ -86,5 +86,12 @@ namespace EvolveOS_Optimizer.Core
             Recommended,
             Privacy,
         }
+
+        public enum MessageWindowState
+        {
+            Warning,
+            NotSupported,
+            AlreadyRunning
+        }
     }
 }
