@@ -3,7 +3,9 @@
 // Licensed under the MIT License. 
 // See the LICENSE file in the project root for more information.
 
+using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Maintenance;
@@ -13,14 +15,19 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class GamingModeHelper
     {
-        public static bool IsGamingModeActive { get; private set; }
+        private static readonly string BackupFilePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "EvolveOS_Optimizer",
+            "GamingModeBackup.json");
 
-        private static readonly Dictionary<string, int> _originalServiceStates = new();
-        private static readonly List<string> _tasksDisabledByUs = new();
-        private static readonly Dictionary<string, int> _originalRegistryValues = new();
-        private static readonly Dictionary<string, string> _originalStringRegistryValues = new();
+        public static bool IsGamingModeActive { get; private set; } = File.Exists(BackupFilePath);
+
+        private static Dictionary<string, int> _originalServiceStates = new();
+        private static List<string> _tasksDisabledByUs = new();
+        private static Dictionary<string, int> _originalRegistryValues = new();
+        private static Dictionary<string, string> _originalStringRegistryValues = new();
         private static string _originalPowerPlanGuid = string.Empty;
-        private static readonly Dictionary<string, int> _originalGpuRegistryValues = new();
+        private static Dictionary<string, int> _originalGpuRegistryValues = new();
 
         private static readonly string[] ProcessesToKill =
         {
@@ -101,18 +108,28 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             "radeonsoftware", "amddvr", "lghub", "lghub_agent", "icue", "razer synapse", "rzsynapse"
         };
 
-        public static async Task<bool> ToggleGamingModeAsync(bool enable)
+        private class BackupStateModel
+        {
+            public Dictionary<string, int>? ServiceStates { get; set; }
+            public List<string>? TasksDisabled { get; set; }
+            public Dictionary<string, int>? RegistryValues { get; set; }
+            public Dictionary<string, string>? StringRegistryValues { get; set; }
+            public string? PowerPlanGuid { get; set; }
+            public Dictionary<string, int>? GpuRegistryValues { get; set; }
+        }
+
+        public static async Task<bool> ToggleGamingModeAsync(bool enable, IProgress<string>? progress = null)
         {
             try
             {
                 if (enable)
                 {
-                    await EnableGamingModeAsync();
+                    await EnableGamingModeAsync(progress);
                     IsGamingModeActive = true;
                 }
                 else
                 {
-                    await DisableGamingModeAsync();
+                    await DisableGamingModeAsync(progress);
                     IsGamingModeActive = false;
                 }
                 return true;
@@ -120,15 +137,18 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             catch (Exception ex)
             {
                 ErrorLogging.LogDebug(new Exception($"[GamingMode] Error: {ex.Message}", ex));
+                progress?.Report("Error: " + ex.Message);
                 return false;
             }
         }
 
-        private static async Task EnableGamingModeAsync()
+        private static async Task EnableGamingModeAsync(IProgress<string>? progress)
         {
+            progress?.Report(ResourceString.GetString("gm_progress_snapshot"));
             CaptureSystemState();
 
             StringBuilder cmd1 = new StringBuilder("/c ");
+            progress?.Report(ResourceString.GetString("gm_progress_power_plan"));
             cmd1.Append("powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c & ");
             cmd1.Append("powercfg -change -disk-timeout-ac 0 & ");
             cmd1.Append("powercfg -change -disk-timeout-dc 0 & ");
@@ -141,18 +161,26 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             foreach (var proc in ProcessesToKill)
             {
+                progress?.Report($"{ResourceString.GetString("gm_progress_terminating")}: {proc}");
                 cmd1.Append($"taskkill /f /im {proc} >nul 2>&1 & ");
             }
             await CommandExecutor.RunCommand(cmd1.ToString(), isPowerShell: false);
 
+            progress?.Report(ResourceString.GetString("gm_progress_cleaning_apps"));
             await Task.Run(() => SmartKillNonEssentialApps());
+
+            progress?.Report(ResourceString.GetString("gm_progress_gpu"));
             SetGpuMaxPerformance();
 
+            SaveStateToBackupFile();
+
+            progress?.Report(ResourceString.GetString("gm_progress_cpu"));
             _ = Task.Run(() => OptimizeGamingProcessCores());
 
             StringBuilder cmd2 = new StringBuilder("/c ");
             foreach (var service in ServicesToSuspend)
             {
+                progress?.Report($"{ResourceString.GetString("gm_progress_suspending_svc")}: {service}");
                 cmd2.Append($"sc config \"{service}\" start= disabled >nul 2>&1 & ");
                 cmd2.Append($"net stop \"{service}\" /y >nul 2>&1 & ");
             }
@@ -162,9 +190,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             foreach (var task in _tasksDisabledByUs)
             {
+                progress?.Report($"{ResourceString.GetString("gm_progress_disabling_task")}: {task}");
                 cmd3.Append($"schtasks /change /tn \"{task}\" /disable >nul 2>&1 & ");
             }
 
+            progress?.Report(ResourceString.GetString("gm_progress_registry"));
             cmd3.Append(@"reg add ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"" /v ""NetworkThrottlingIndex"" /t REG_DWORD /d 4294967295 /f >nul 2>&1 & ");
             cmd3.Append(@"reg add ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"" /v ""SystemResponsiveness"" /t REG_DWORD /d 0 /f >nul 2>&1 & ");
             cmd3.Append(@"reg add ""HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl"" /v ""Win32PrioritySeparation"" /t REG_DWORD /d 38 /f >nul 2>&1 & ");
@@ -210,11 +240,13 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             cmd3.Append("netsh int tcp set global timestamps=disabled >nul 2>&1 & ");
             cmd3.Append("netsh int tcp set heuristics disabled >nul 2>&1 & ");
 
+            progress?.Report(ResourceString.GetString("gm_progress_network_routing"));
             cmd3.Append("ipconfig /flushdns >nul 2>&1 & ");
             cmd3.Append("arp -d * >nul 2>&1 & ");
 
             await CommandExecutor.RunCommand(cmd3.ToString(), isPowerShell: false);
 
+            progress?.Report(ResourceString.GetString("gm_progress_memory"));
             await ClearingMemory.StartMemoryCleanup(
                 clearRamCache: true,
                 optimizeWorkingSet: true,
@@ -223,14 +255,26 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             );
         }
 
-        private static async Task DisableGamingModeAsync()
+        private static async Task DisableGamingModeAsync(IProgress<string>? progress)
         {
+            if (_originalRegistryValues.Count == 0 && File.Exists(BackupFilePath))
+            {
+                progress?.Report("Recovering state from crash backup...");
+                LoadStateFromBackupFile();
+            }
+
+            progress?.Report(ResourceString.GetString("gm_progress_restoring_config"));
             StringBuilder cmd1 = new StringBuilder("/c ");
-            cmd1.Append($"powercfg -setactive {_originalPowerPlanGuid} & ");
+
+            if (!string.IsNullOrEmpty(_originalPowerPlanGuid))
+            {
+                cmd1.Append($"powercfg -setactive {_originalPowerPlanGuid} & ");
+            }
 
             foreach (var kvp in _originalServiceStates)
             {
                 string service = kvp.Key;
+                progress?.Report($"{ResourceString.GetString("gm_progress_restoring_svc")}: {service}");
                 int originalStartType = kvp.Value;
 
                 string startStr = originalStartType switch
@@ -254,55 +298,68 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             foreach (var task in _tasksDisabledByUs)
             {
+                progress?.Report($"{ResourceString.GetString("gm_progress_re-enabling_task")}: {task}");
                 cmd2.Append($"schtasks /change /tn \"{task}\" /enable >nul 2>&1 & ");
             }
 
-            cmd2.Append($@"reg add ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"" /v ""NetworkThrottlingIndex"" /t REG_DWORD /d {_originalRegistryValues["NetworkThrottlingIndex"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"" /v ""SystemResponsiveness"" /t REG_DWORD /d {_originalRegistryValues["SystemResponsiveness"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl"" /v ""Win32PrioritySeparation"" /t REG_DWORD /d {_originalRegistryValues["Win32PrioritySeparation"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\System\GameConfigStore"" /v ""GameDVR_Enabled"" /t REG_DWORD /d {_originalRegistryValues["GameDVR_Enabled"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR"" /v ""AllowGameDVR"" /t REG_DWORD /d {_originalRegistryValues["AllowGameDVR"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SOFTWARE\Microsoft\Windows\DWM"" /v ""DisableProcessWindowsGhosting"" /t REG_DWORD /d {_originalRegistryValues["DisableProcessWindowsGhosting"]} /f >nul 2>&1 & ");
+            progress?.Report(ResourceString.GetString("gm_progress_reverting_registry"));
 
-            cmd2.Append($@"reg add ""HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications"" /v ""GlobalUserDisabled"" /t REG_DWORD /d {_originalRegistryValues["GlobalUserDisabled"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Software\Microsoft\Windows\CurrentVersion\Search"" /v ""BackgroundAppGlobalToggle"" /t REG_DWORD /d {_originalRegistryValues["BackgroundAppGlobalToggle"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy"" /v ""LetAppsRunInBackground"" /t REG_DWORD /d {_originalRegistryValues["LetAppsRunInBackground"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling"" /v ""PowerThrottlingOff"" /t REG_DWORD /d {_originalRegistryValues["PowerThrottlingOff"]} /f >nul 2>&1 & ");
+            Action<string, string, string, string, string> addReg = (path, name, type, dicKey, dictType) =>
+            {
+                if (dictType == "int" && _originalRegistryValues.TryGetValue(dicKey, out int valInt))
+                    cmd2.Append($@"reg add ""{path}"" /v ""{name}"" /t {type} /d {valInt} /f >nul 2>&1 & ");
+                else if (dictType == "string" && _originalStringRegistryValues.TryGetValue(dicKey, out string? valStr))
+                    cmd2.Append($@"reg add ""{path}"" /v ""{name}"" /t {type} /d ""{valStr}"" /f >nul 2>&1 & ");
+            };
 
-            cmd2.Append($@"reg add ""HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"" /v ""EnableTransparency"" /t REG_DWORD /d {_originalRegistryValues["EnableTransparency"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects"" /v ""VisualFXSetting"" /t REG_DWORD /d {_originalRegistryValues["VisualFXSetting"]} /f >nul 2>&1 & ");
+            addReg(@"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile", "NetworkThrottlingIndex", "REG_DWORD", "NetworkThrottlingIndex", "int");
+            addReg(@"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile", "SystemResponsiveness", "REG_DWORD", "SystemResponsiveness", "int");
+            addReg(@"HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl", "Win32PrioritySeparation", "REG_DWORD", "Win32PrioritySeparation", "int");
+            addReg(@"HKCU\System\GameConfigStore", "GameDVR_Enabled", "REG_DWORD", "GameDVR_Enabled", "int");
+            addReg(@"HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR", "AllowGameDVR", "REG_DWORD", "AllowGameDVR", "int");
+            addReg(@"HKLM\SOFTWARE\Microsoft\Windows\DWM", "DisableProcessWindowsGhosting", "REG_DWORD", "DisableProcessWindowsGhosting", "int");
 
-            cmd2.Append($@"reg add ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games"" /v ""GPU Priority"" /t REG_DWORD /d {_originalRegistryValues["MMCSS_GpuPriority"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games"" /v ""Priority"" /t REG_DWORD /d {_originalRegistryValues["MMCSS_Priority"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games"" /v ""Scheduling Category"" /t REG_SZ /d ""{_originalStringRegistryValues["MMCSS_SchedulingCategory"]}"" /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games"" /v ""SFIO Priority"" /t REG_SZ /d ""{_originalStringRegistryValues["MMCSS_SFIOPriority"]}"" /f >nul 2>&1 & ");
+            addReg(@"HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications", "GlobalUserDisabled", "REG_DWORD", "GlobalUserDisabled", "int");
+            addReg(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Search", "BackgroundAppGlobalToggle", "REG_DWORD", "BackgroundAppGlobalToggle", "int");
+            addReg(@"HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy", "LetAppsRunInBackground", "REG_DWORD", "LetAppsRunInBackground", "int");
+            addReg(@"HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff", "REG_DWORD", "PowerThrottlingOff", "int");
 
-            cmd2.Append($@"reg add ""HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters"" /v ""KeyboardDataQueueSize"" /t REG_DWORD /d {_originalRegistryValues["KeyboardDataQueueSize"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters"" /v ""MouseDataQueueSize"" /t REG_DWORD /d {_originalRegistryValues["MouseDataQueueSize"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Mouse"" /v ""MouseSpeed"" /t REG_SZ /d ""{_originalStringRegistryValues["MouseSpeed"]}"" /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Mouse"" /v ""MouseThreshold1"" /t REG_SZ /d ""{_originalStringRegistryValues["MouseThreshold1"]}"" /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Mouse"" /v ""MouseThreshold2"" /t REG_SZ /d ""{_originalStringRegistryValues["MouseThreshold2"]}"" /f >nul 2>&1 & ");
+            addReg(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "EnableTransparency", "REG_DWORD", "EnableTransparency", "int");
+            addReg(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects", "VisualFXSetting", "REG_DWORD", "VisualFXSetting", "int");
 
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Accessibility\StickyKeys"" /v ""Flags"" /t REG_SZ /d ""{_originalStringRegistryValues["StickyKeys_Flags"]}"" /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Accessibility\Keyboard Response"" /v ""Flags"" /t REG_SZ /d ""{_originalStringRegistryValues["FilterKeys_Flags"]}"" /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Accessibility\ToggleKeys"" /v ""Flags"" /t REG_SZ /d ""{_originalStringRegistryValues["ToggleKeys_Flags"]}"" /f >nul 2>&1 & ");
+            addReg(@"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games", "GPU Priority", "REG_DWORD", "MMCSS_GpuPriority", "int");
+            addReg(@"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games", "Priority", "REG_DWORD", "MMCSS_Priority", "int");
+            addReg(@"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games", "Scheduling Category", "REG_SZ", "MMCSS_SchedulingCategory", "string");
+            addReg(@"HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games", "SFIO Priority", "REG_SZ", "MMCSS_SFIOPriority", "string");
 
-            cmd2.Append($@"reg add ""HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces"" /v ""TcpAckFrequency"" /t REG_DWORD /d {_originalRegistryValues["TcpAckFrequency"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces"" /v ""TCPNoDelay"" /t REG_DWORD /d {_originalRegistryValues["TCPNoDelay"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel"" /v ""GlobalTimerResolutionRequests"" /t REG_DWORD /d {_originalRegistryValues["GlobalTimerResolutionRequests"]} /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Desktop"" /v ""AutoEndTasks"" /t REG_SZ /d ""{_originalStringRegistryValues["AutoEndTasks"]}"" /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Desktop"" /v ""HungAppTimeout"" /t REG_SZ /d ""{_originalStringRegistryValues["HungAppTimeout"]}"" /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Desktop"" /v ""WaitToKillAppTimeout"" /t REG_SZ /d ""{_originalStringRegistryValues["WaitToKillAppTimeout"]}"" /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Desktop"" /v ""MenuShowDelay"" /t REG_SZ /d ""{_originalStringRegistryValues["MenuShowDelay"]}"" /f >nul 2>&1 & ");
-            cmd2.Append($@"reg add ""HKCU\Control Panel\Desktop"" /v ""ForegroundLockTimeout"" /t REG_DWORD /d {_originalRegistryValues["ForegroundLockTimeout"]} /f >nul 2>&1 & ");
+            addReg(@"HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters", "KeyboardDataQueueSize", "REG_DWORD", "KeyboardDataQueueSize", "int");
+            addReg(@"HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters", "MouseDataQueueSize", "REG_DWORD", "MouseDataQueueSize", "int");
+            addReg(@"HKCU\Control Panel\Mouse", "MouseSpeed", "REG_SZ", "MouseSpeed", "string");
+            addReg(@"HKCU\Control Panel\Mouse", "MouseThreshold1", "REG_SZ", "MouseThreshold1", "string");
+            addReg(@"HKCU\Control Panel\Mouse", "MouseThreshold2", "REG_SZ", "MouseThreshold2", "string");
+
+            addReg(@"HKCU\Control Panel\Accessibility\StickyKeys", "Flags", "REG_SZ", "StickyKeys_Flags", "string");
+            addReg(@"HKCU\Control Panel\Accessibility\Keyboard Response", "Flags", "REG_SZ", "FilterKeys_Flags", "string");
+            addReg(@"HKCU\Control Panel\Accessibility\ToggleKeys", "Flags", "REG_SZ", "ToggleKeys_Flags", "string");
+
+            addReg(@"HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces", "TcpAckFrequency", "REG_DWORD", "TcpAckFrequency", "int");
+            addReg(@"HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces", "TCPNoDelay", "REG_DWORD", "TCPNoDelay", "int");
+            addReg(@"HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel", "GlobalTimerResolutionRequests", "REG_DWORD", "GlobalTimerResolutionRequests", "int");
+            addReg(@"HKCU\Control Panel\Desktop", "AutoEndTasks", "REG_SZ", "AutoEndTasks", "string");
+            addReg(@"HKCU\Control Panel\Desktop", "HungAppTimeout", "REG_SZ", "HungAppTimeout", "string");
+            addReg(@"HKCU\Control Panel\Desktop", "WaitToKillAppTimeout", "REG_SZ", "WaitToKillAppTimeout", "string");
+            addReg(@"HKCU\Control Panel\Desktop", "MenuShowDelay", "REG_SZ", "MenuShowDelay", "string");
+            addReg(@"HKCU\Control Panel\Desktop", "ForegroundLockTimeout", "REG_DWORD", "ForegroundLockTimeout", "int");
 
             cmd2.Append("netsh int tcp set global timestamps=enabled >nul 2>&1 & ");
             cmd2.Append("netsh int tcp set heuristics default >nul 2>&1 & ");
 
             await CommandExecutor.RunCommand(cmd2.ToString(), isPowerShell: false);
 
+            progress?.Report(ResourceString.GetString("gm_progress_restoring_gpu"));
             RestoreGpuPowerStates();
 
+            progress?.Report(ResourceString.GetString("gm_progress_reverting_cpu"));
             _ = Task.Run(() => RestoreGamingProcessCores());
 
             _originalServiceStates.Clear();
@@ -310,6 +367,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             _originalRegistryValues.Clear();
             _originalStringRegistryValues.Clear();
             _originalPowerPlanGuid = string.Empty;
+
+            if (File.Exists(BackupFilePath))
+            {
+                File.Delete(BackupFilePath);
+            }
         }
 
         private static void SmartKillNonEssentialApps()
@@ -490,6 +552,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             _tasksDisabledByUs.Clear();
             _originalRegistryValues.Clear();
             _originalStringRegistryValues.Clear();
+            _originalGpuRegistryValues.Clear();
 
             _originalPowerPlanGuid = GetActivePowerPlan();
 
@@ -544,6 +607,55 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 {
                     _tasksDisabledByUs.Add(task);
                 }
+            }
+        }
+
+        private static void SaveStateToBackupFile()
+        {
+            try
+            {
+                var backup = new BackupStateModel
+                {
+                    ServiceStates = _originalServiceStates,
+                    TasksDisabled = _tasksDisabledByUs,
+                    RegistryValues = _originalRegistryValues,
+                    StringRegistryValues = _originalStringRegistryValues,
+                    PowerPlanGuid = _originalPowerPlanGuid,
+                    GpuRegistryValues = _originalGpuRegistryValues
+                };
+
+                string directory = Path.GetDirectoryName(BackupFilePath)!;
+                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+
+                string json = JsonSerializer.Serialize(backup);
+                File.WriteAllText(BackupFilePath, json);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[GamingMode Backup] Failed to save state to disk: {ex.Message}");
+            }
+        }
+
+        private static void LoadStateFromBackupFile()
+        {
+            try
+            {
+                string json = File.ReadAllText(BackupFilePath);
+                var backup = JsonSerializer.Deserialize<BackupStateModel>(json);
+
+                if (backup != null)
+                {
+                    _originalServiceStates = backup.ServiceStates ?? new();
+                    _tasksDisabledByUs = backup.TasksDisabled ?? new();
+                    _originalRegistryValues = backup.RegistryValues ?? new();
+                    _originalStringRegistryValues = backup.StringRegistryValues ?? new();
+                    _originalPowerPlanGuid = backup.PowerPlanGuid ?? "381b4222-f694-41f0-9685-ff5bb260df2e";
+                    _originalGpuRegistryValues = backup.GpuRegistryValues ?? new();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[GamingMode Backup] Failed to load state from disk: {ex.Message}");
             }
         }
 

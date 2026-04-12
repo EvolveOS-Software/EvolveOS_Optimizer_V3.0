@@ -1335,7 +1335,7 @@
     <sys:String x:Key="msgbox_dev_mode_logout_prompt">Developer Mode is still active. Would you like to disable it before logging out?</sys:String>
     <!-- endregion Developer Mode (Auto Login Session) -->
 
-    <!--region Password validator -->
+    <!-- region Password validator -->
     <sys:String x:Key="txt_password_req_title">Password Requirements</sys:String>
     <sys:String x:Key="val_length_name">Length ({0}-{1} characters)</sys:String>
     <sys:String x:Key="val_length_err">Password must be between {0} and {1} characters.</sys:String>
@@ -1355,7 +1355,7 @@
     <sys:String x:Key="txt_copy_to_clipboard">Copy to Clipboard</sys:String>
     <!-- endregion Password validator -->
 
-    <!--#region Password Manager -->
+    <!-- region Password Manager -->
     <sys:String x:Key="text_confirm_password">Confirm your password</sys:String>
     <sys:String x:Key="notif_wrong_password">The password is incorrect. Please try again.</sys:String>
     <sys:String x:Key="btn_add_record">Add New Record</sys:String>
@@ -1511,7 +1511,7 @@
     <sys:String x:Key="msg_reencrypt_critical_error_body">A critical system error occurred during data re-encryption. The security mode setting will be reverted to '{0}'. Error: {1}</sys:String>
     <!-- endregion Password Manager -->
 
-    <!--#region EvolveOS Iso Builder -->
+    <!-- region EvolveOS Iso Builder -->
     <sys:String x:Key="winbuilder_title">EvolveOS Custom ISO Builder</sys:String>
     <sys:String x:Key="winbuilder_subtitle">Create your own debloated, customized, and unattended Windows 11 installation media.</sys:String>
     <sys:String x:Key="winbuilder_section1_title">1. Windows 11 Source</sys:String>
@@ -1610,7 +1610,7 @@
     <sys:String x:Key="isobuilder_ps_reclaim_space">Exporting WIM to reclaim deleted space (This takes a few minutes)...</sys:String>
     <!-- endregion EvolveOS Iso Builder -->
 
-    <!--#region Advanced Utils Page -->
+    <!-- region Advanced Utils Page -->
     <sys:String x:Key="AdvancedUtils_PageTitle">Advanced Utilities</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Title">Password Manager</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Securely store, edit, and organize all your passwords in one place. Encrypt and generate strong passwords.</sys:String>
@@ -1622,7 +1622,7 @@
     <sys:String x:Key="AdvancedUtils_PwdGen_Desc">Quickly open the password generator using a global keyboard shortcut.</sys:String>
     <!-- endregion Advanced Utils Page -->
 
-    <!--#region File/Folder Encryption/Decryption -->
+    <!-- region File/Folder Encryption/Decryption -->
     <sys:String x:Key="lbl_login_encryptor">Enter your credentials to access the File Encryptor.</sys:String>
     <sys:String x:Key="lbl_encryptor_title">File Encryptor Login</sys:String>
     <sys:String x:Key="FileEncryptor_Title">File Encryptor</sys:String>
@@ -1650,5 +1650,46 @@
     <sys:String x:Key="FileEncryptor_Toast_DecryptFailTitle">Decryption Failed</sys:String>
     <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">The password is incorrect or the file has been tampered with.</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
+
+    <!-- region GamingMode Card -->
+    <sys:String x:Key="gm_card_title">Gaming Engine</sys:String>
+    <sys:String x:Key="gm_progress_idle">Engine idle. Toggle to begin optimization...</sys:String>
+    <sys:String x:Key="gm_mode_standard">Mode: Standard</sys:String>
+    <sys:String x:Key="gm_tooltip_toggle_console">Toggle Engine Output Console</sys:String>
+
+    <sys:String x:Key="gm_ui_initializing">Initializing Gaming Engine...</sys:String>
+    <sys:String x:Key="gm_ui_deactivating">Deactivating Gaming Engine...</sys:String>
+    <sys:String x:Key="gm_status_optimizing">Status: Optimizing</sys:String>
+    <sys:String x:Key="gm_status_restoring">Status: Restoring</sys:String>
+    <sys:String x:Key="gm_mode_high_perf">Mode: High Performance</sys:String>
+    <sys:String x:Key="gm_mode_standard">Mode: Standard</sys:String>
+    <sys:String x:Key="gm_mode_error">Mode: Error</sys:String>
+    <sys:String x:Key="gm_ui_engine_ready">ENGINE READY</sys:String>
+    <sys:String x:Key="gm_ui_system_restored">SYSTEM RESTORED</sys:String>
+    <sys:String x:Key="gm_ui_tweak_fail">Some tweaks failed to apply.</sys:String>
+    <sys:String x:Key="gm_ui_critical_error">CRITICAL ERROR</sys:String>
+    <sys:String x:Key="gm_label_gaming">Gaming</sys:String>
+    <sys:String x:Key="gm_label_normal">Normal</sys:String>
+    <sys:String x:Key="gm_btn_enable">Enable</sys:String>
+    <sys:String x:Key="gm_btn_disable">Disable</sys:String>
+
+    <sys:String x:Key="gm_progress_snapshot">Snapshotting original system state...</sys:String>
+    <sys:String x:Key="gm_progress_power_plan">Activating High Performance Power Plan...</sys:String>
+    <sys:String x:Key="gm_progress_terminating">Terminating process</sys:String>
+    <sys:String x:Key="gm_progress_cleaning_apps">Cleaning background applications...</sys:String>
+    <sys:String x:Key="gm_progress_gpu">Setting GPU to Maximum Performance...</sys:String>
+    <sys:String x:Key="gm_progress_cpu">Optimizing CPU Affinity and Priority...</sys:String>
+    <sys:String x:Key="gm_progress_suspending_svc">Suspending service</sys:String>
+    <sys:String x:Key="gm_progress_disabling_task">Disabling task</sys:String>
+    <sys:String x:Key="gm_progress_registry">Applying kernel registry optimizations...</sys:String>
+    <sys:String x:Key="gm_progress_network_routing">Cleaning network routing tables...</sys:String>
+    <sys:String x:Key="gm_progress_memory">Executing deep memory cleanup...</sys:String>
+    <sys:String x:Key="gm_progress_restoring_config">Restoring original system configuration...</sys:String>
+    <sys:String x:Key="gm_progress_restoring_svc">Restoring service</sys:String>
+    <sys:String x:Key="gm_progress_re-enabling_task">Re-enabling task</sys:String>
+    <sys:String x:Key="gm_progress_reverting_registry">Reverting kernel registry settings...</sys:String>
+    <sys:String x:Key="gm_progress_restoring_gpu">Restoring original GPU parameters...</sys:String>
+    <sys:String x:Key="gm_progress_reverting_cpu">Reverting CPU thread scheduling...</sys:String>
+    <!-- endregion GamingMode Card -->
 
 </ResourceDictionary>

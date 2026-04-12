@@ -1613,4 +1613,45 @@
     <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">Het wachtwoord is onjuist of er is met het bestand geknoeid.</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
+    <!-- region GamingMode Card -->
+    <sys:String x:Key="gm_card_title">Gaming Engine</sys:String>
+    <sys:String x:Key="gm_progress_idle">Engine inactief. Schakel in om optimalisatie te starten...</sys:String>
+    <sys:String x:Key="gm_mode_standard">Modus: Standaard</sys:String>
+    <sys:String x:Key="gm_tooltip_toggle_console">Schakel Engine Output Console in/uit</sys:String>
+
+    <sys:String x:Key="gm_ui_initializing">Gaming Engine initialiseren...</sys:String>
+    <sys:String x:Key="gm_ui_deactivating">Gaming Engine deactiveren...</sys:String>
+    <sys:String x:Key="gm_status_optimizing">Status: Optimaliseren</sys:String>
+    <sys:String x:Key="gm_status_restoring">Status: Herstellen</sys:String>
+    <sys:String x:Key="gm_mode_high_perf">Modus: Hoge Prestaties</sys:String>
+    <sys:String x:Key="gm_mode_standard">Modus: Standaard</sys:String>
+    <sys:String x:Key="gm_mode_error">Modus: Fout</sys:String>
+    <sys:String x:Key="gm_ui_engine_ready">ENGINE KLAAR</sys:String>
+    <sys:String x:Key="gm_ui_system_restored">SYSTEEM HERSTELD</sys:String>
+    <sys:String x:Key="gm_ui_tweak_fail">Sommige aanpassingen konden niet worden toegepast.</sys:String>
+    <sys:String x:Key="gm_ui_critical_error">KRITIEKE FOUT</sys:String>
+    <sys:String x:Key="gm_label_gaming">Gaming</sys:String>
+    <sys:String x:Key="gm_label_normal">Normaal</sys:String>
+    <sys:String x:Key="gm_btn_enable">Inschakelen</sys:String>
+    <sys:String x:Key="gm_btn_disable">Uitschakelen</sys:String>
+
+    <sys:String x:Key="gm_progress_snapshot">Momentopname van originele systeemstatus maken...</sys:String>
+    <sys:String x:Key="gm_progress_power_plan">Energiebeheerschema voor hoge prestaties activeren...</sys:String>
+    <sys:String x:Key="gm_progress_terminating">Proces beëindigen</sys:String>
+    <sys:String x:Key="gm_progress_cleaning_apps">Achtergrondtoepassingen opschonen...</sys:String>
+    <sys:String x:Key="gm_progress_gpu">GPU instellen op maximale prestaties...</sys:String>
+    <sys:String x:Key="gm_progress_cpu">CPU-affiniteit en prioriteit optimaliseren...</sys:String>
+    <sys:String x:Key="gm_progress_suspending_svc">Service opschorten</sys:String>
+    <sys:String x:Key="gm_progress_disabling_task">Taak uitschakelen</sys:String>
+    <sys:String x:Key="gm_progress_registry">Kernelregister-optimalisaties toepassen...</sys:String>
+    <sys:String x:Key="gm_progress_network_routing">Netwerkrouteringstabellen opschonen...</sys:String>
+    <sys:String x:Key="gm_progress_memory">Grondige geheugenopschoning uitvoeren...</sys:String>
+    <sys:String x:Key="gm_progress_restoring_config">Originele systeemconfiguratie herstellen...</sys:String>
+    <sys:String x:Key="gm_progress_restoring_svc">Service herstellen</sys:String>
+    <sys:String x:Key="gm_progress_re-enabling_task">Taak opnieuw inschakelen</sys:String>
+    <sys:String x:Key="gm_progress_reverting_registry">Kernelregisterinstellingen terugdraaien...</sys:String>
+    <sys:String x:Key="gm_progress_restoring_gpu">Originele GPU-parameters herstellen...</sys:String>
+    <sys:String x:Key="gm_progress_reverting_cpu">CPU-threadplanning terugdraaien...</sys:String>
+    <!-- endregion GamingMode Card -->
+
 </ResourceDictionary>

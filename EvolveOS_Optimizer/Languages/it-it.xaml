@@ -1626,4 +1626,45 @@
     <sys:String x:Key="FileEncryptor_Toast_DecryptFailMsg">La password non è corretta o il file è stato manomesso.</sys:String>
     <!-- endregion File/Folder Encryption/Decryption -->
 
+    <!-- region GamingMode Card -->
+    <sys:String x:Key="gm_card_title">Motore di Gioco</sys:String>
+    <sys:String x:Key="gm_progress_idle">Motore inattivo. Attiva per iniziare l'ottimizzazione...</sys:String>
+    <sys:String x:Key="gm_mode_standard">Modalità: Standard</sys:String>
+    <sys:String x:Key="gm_tooltip_toggle_console">Mostra/Nascondi console di output del motore</sys:String>
+
+    <sys:String x:Key="gm_ui_initializing">Inizializzazione del motore di gioco...</sys:String>
+    <sys:String x:Key="gm_ui_deactivating">Disattivazione del motore di gioco...</sys:String>
+    <sys:String x:Key="gm_status_optimizing">Stato: Ottimizzazione</sys:String>
+    <sys:String x:Key="gm_status_restoring">Stato: Ripristino</sys:String>
+    <sys:String x:Key="gm_mode_high_perf">Modalità: Prestazioni elevate</sys:String>
+    <sys:String x:Key="gm_mode_standard">Modalità: Standard</sys:String>
+    <sys:String x:Key="gm_mode_error">Modalità: Errore</sys:String>
+    <sys:String x:Key="gm_ui_engine_ready">MOTORE PRONTO</sys:String>
+    <sys:String x:Key="gm_ui_system_restored">SISTEMA RIPRISTINATO</sys:String>
+    <sys:String x:Key="gm_ui_tweak_fail">Impossibile applicare alcune modifiche.</sys:String>
+    <sys:String x:Key="gm_ui_critical_error">ERRORE CRITICO</sys:String>
+    <sys:String x:Key="gm_label_gaming">Gioco</sys:String>
+    <sys:String x:Key="gm_label_normal">Normale</sys:String>
+    <sys:String x:Key="gm_btn_enable">Abilita</sys:String>
+    <sys:String x:Key="gm_btn_disable">Disabilita</sys:String>
+
+    <sys:String x:Key="gm_progress_snapshot">Creazione snapshot dello stato originale del sistema...</sys:String>
+    <sys:String x:Key="gm_progress_power_plan">Attivazione combinazione per il risparmio di energia a prestazioni elevate...</sys:String>
+    <sys:String x:Key="gm_progress_terminating">Terminazione processo</sys:String>
+    <sys:String x:Key="gm_progress_cleaning_apps">Pulizia applicazioni in background...</sys:String>
+    <sys:String x:Key="gm_progress_gpu">Impostazione GPU sulle massime prestazioni...</sys:String>
+    <sys:String x:Key="gm_progress_cpu">Ottimizzazione affinità e priorità CPU...</sys:String>
+    <sys:String x:Key="gm_progress_suspending_svc">Sospensione servizio</sys:String>
+    <sys:String x:Key="gm_progress_disabling_task">Disabilitazione attività</sys:String>
+    <sys:String x:Key="gm_progress_registry">Applicazione ottimizzazioni del registro del kernel...</sys:String>
+    <sys:String x:Key="gm_progress_network_routing">Pulizia tabelle di routing di rete...</sys:String>
+    <sys:String x:Key="gm_progress_memory">Esecuzione pulizia profonda della memoria...</sys:String>
+    <sys:String x:Key="gm_progress_restoring_config">Ripristino configurazione di sistema originale...</sys:String>
+    <sys:String x:Key="gm_progress_restoring_svc">Ripristino servizio</sys:String>
+    <sys:String x:Key="gm_progress_re-enabling_task">Riabilitazione attività</sys:String>
+    <sys:String x:Key="gm_progress_reverting_registry">Ripristino impostazioni del registro del kernel...</sys:String>
+    <sys:String x:Key="gm_progress_restoring_gpu">Ripristino parametri GPU originali...</sys:String>
+    <sys:String x:Key="gm_progress_reverting_cpu">Ripristino pianificazione thread CPU...</sys:String>
+    <!-- endregion GamingMode Card -->
+
 </ResourceDictionary>

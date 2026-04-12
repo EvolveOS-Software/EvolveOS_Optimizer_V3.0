@@ -69,12 +69,13 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableStartMinimized"] = false,
             ["EncryptionMode"] = KeyDerivationMode.Balanced.ToString(),
 
-            ["DashboardCardOrder"] = "CardNetwork,CardRam,CardCpu,CardGpu,CardDisk,CardDns,CardHealth,CardSecurity,CardCpuGraph,CardRamGraph,CardNetworkGraph,CardGpuGraph",
+            ["DashboardCardOrder"] = "CardDns,CardSecurity,CardGamingMode,CardMaintenance,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk",
             ["Dashboard_CardNetwork"] = true,
             ["Dashboard_CardRam"] = true,
             ["Dashboard_CardCpu"] = true,
             ["Dashboard_CardGpu"] = true,
             ["Dashboard_CardDisk"] = true,
+            ["Dashboard_CardGamingMode"] = true,
             ["Dashboard_CardDns"] = true,
             ["Dashboard_CardHealth"] = true,
             ["Dashboard_CardSecurity"] = true,
@@ -147,6 +148,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_CardCpu { get => (bool)_cachedSettings["Dashboard_CardCpu"]; set => ChangingParameters("Dashboard_CardCpu", value); }
         internal static bool Dashboard_CardGpu { get => (bool)_cachedSettings["Dashboard_CardGpu"]; set => ChangingParameters("Dashboard_CardGpu", value); }
         internal static bool Dashboard_CardDisk { get => (bool)_cachedSettings["Dashboard_CardDisk"]; set => ChangingParameters("Dashboard_CardDisk", value); }
+        internal static bool Dashboard_CardGamingMode { get => (bool)_cachedSettings["Dashboard_CardGamingMode"]; set => ChangingParameters("Dashboard_CardGamingMode", value); }
         internal static bool Dashboard_CardDns { get => (bool)_cachedSettings["Dashboard_CardDns"]; set => ChangingParameters("Dashboard_CardDns", value); }
         internal static bool Dashboard_CardHealth { get => (bool)_cachedSettings["Dashboard_CardHealth"]; set => ChangingParameters("Dashboard_CardHealth", value); }
         internal static bool Dashboard_CardSecurity { get => (bool)_cachedSettings["Dashboard_CardSecurity"]; set => ChangingParameters("Dashboard_CardSecurity", value); }

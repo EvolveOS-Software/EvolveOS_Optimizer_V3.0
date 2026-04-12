@@ -945,6 +945,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleCpu.IsOn = SettingsEngine.Dashboard_CardCpu;
             ToggleGpu.IsOn = SettingsEngine.Dashboard_CardGpu;
             ToggleDisk.IsOn = SettingsEngine.Dashboard_CardDisk;
+            ToggleGamingMode.IsOn = SettingsEngine.Dashboard_CardGamingMode;
             ToggleDns.IsOn = SettingsEngine.Dashboard_CardDns;
             ToggleHealth.IsOn = SettingsEngine.Dashboard_CardHealth;
             ToggleSecurity.IsOn = SettingsEngine.Dashboard_CardSecurity;
@@ -966,6 +967,30 @@ namespace EvolveOS_Optimizer.Pages
             CardRamGraph.Visibility = ToggleRamGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardNetworkGraph.Visibility = ToggleNetworkGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
             CardGpuGraph.Visibility = ToggleGpuGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
+
+            CardGamingMode.Visibility = ToggleGamingMode.IsOn ? Visibility.Visible : Visibility.Collapsed;
+
+            bool isGamingActive = GamingModeHelper.IsGamingModeActive;
+            if (isGamingActive)
+            {
+                GamingModeButtonLabel.Text = ResourceString.GetString("gm_label_gaming");
+                GamingModeBtnText.Text = ResourceString.GetString("gm_btn_disable");
+
+                DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/health_good.png"));
+                DashGamingStatusImage.Opacity = 1.0;
+                GamingSpinner.Visibility = Visibility.Visible;
+                GamingSpinner.IsActive = true;
+            }
+            else
+            {
+                GamingModeButtonLabel.Text = ResourceString.GetString("gm_label_normal");
+                GamingModeBtnText.Text = ResourceString.GetString("gm_btn_enable");
+
+                DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
+                DashGamingStatusImage.Opacity = 1.0;
+                GamingSpinner.Visibility = Visibility.Collapsed;
+                GamingSpinner.IsActive = false;
+            }
 
             string savedOrder = SettingsEngine.DashboardCardOrder;
             if (!string.IsNullOrWhiteSpace(savedOrder))
@@ -1017,6 +1042,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardCpu = ToggleCpu.IsOn;
             SettingsEngine.Dashboard_CardGpu = ToggleGpu.IsOn;
             SettingsEngine.Dashboard_CardDisk = ToggleDisk.IsOn;
+            SettingsEngine.Dashboard_CardGamingMode = ToggleGamingMode.IsOn;
             SettingsEngine.Dashboard_CardDns = ToggleDns.IsOn;
             SettingsEngine.Dashboard_CardHealth = ToggleHealth.IsOn;
             SettingsEngine.Dashboard_CardSecurity = ToggleSecurity.IsOn;
@@ -1120,6 +1146,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CardCpuGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardGpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardDisk, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardGamingMode, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardDns, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardMaintenance, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardSecurity, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
@@ -1136,6 +1163,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnRefreshHealth, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenSecurityPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRefreshSecurity, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnGamingMode, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
@@ -1143,12 +1171,13 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsEngine.DashboardCardOrder = "CardNetwork,CardRam,CardCpu,CardCpuGraph,CardGpu,CardDisk,CardDns,CardHealth,CardSecurity,CardCpuGraph,CardRamGraph,CardNetworkGraph";
+            SettingsEngine.DashboardCardOrder = "CardDns,CardSecurity,CardGamingMode,CardMaintenance,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk";
             SettingsEngine.Dashboard_CardNetwork = true;
             SettingsEngine.Dashboard_CardRam = true;
             SettingsEngine.Dashboard_CardCpu = true;
             SettingsEngine.Dashboard_CardGpu = true;
             SettingsEngine.Dashboard_CardDisk = true;
+            SettingsEngine.Dashboard_CardGamingMode = true;
             SettingsEngine.Dashboard_CardDns = true;
             SettingsEngine.Dashboard_CardHealth = true;
             SettingsEngine.Dashboard_CardSecurity = true;
@@ -1163,6 +1192,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleCpu.IsOn = true;
             ToggleGpu.IsOn = true;
             ToggleDisk.IsOn = true;
+            ToggleGamingMode.IsOn = true;
             ToggleDns.IsOn = true;
             ToggleHealth.IsOn = true;
             ToggleSecurity.IsOn = true;
@@ -1220,6 +1250,122 @@ namespace EvolveOS_Optimizer.Pages
                 }
 
                 FactoryAnimation.AnimateCardScale(card, 0.98);
+            }
+        }
+        #endregion
+
+        #region Gaming Mode
+
+        private void BtnToggleGamingConsole_Click(object sender, RoutedEventArgs e)
+        {
+            bool isConsoleOpen = BtnToggleGamingConsole.IsChecked ?? false;
+
+            if (isConsoleOpen)
+            {
+                GamingVisualGrid.Visibility = Visibility.Collapsed;
+                GamingConsoleBorder.Visibility = Visibility.Visible;
+                IconToggleConsole.Glyph = "\uE70E";
+            }
+            else
+            {
+                GamingConsoleBorder.Visibility = Visibility.Collapsed;
+                GamingVisualGrid.Visibility = Visibility.Visible;
+                IconToggleConsole.Glyph = "\uE70D";
+            }
+        }
+
+        private async void BtnGamingMode_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn) return;
+
+            bool targetState = !GamingModeHelper.IsGamingModeActive;
+
+            GamingProgressText.Text = targetState
+                ? $"> {ResourceString.GetString("gm_ui_initializing")}"
+                : $"> {ResourceString.GetString("gm_ui_deactivating")}";
+
+            GamingStatusLabel.Text = targetState
+                ? ResourceString.GetString("gm_status_optimizing")
+                : ResourceString.GetString("gm_status_restoring");
+
+            btn.IsEnabled = false;
+
+            GamingSpinner.Visibility = Visibility.Visible;
+            GamingSpinner.IsActive = true;
+            DashGamingStatusImage.Opacity = 1.0;
+
+            if (GamingVisualGrid.Visibility == Visibility.Visible)
+            {
+                BtnToggleGamingConsole.IsChecked = true;
+                BtnToggleGamingConsole_Click(BtnToggleGamingConsole, new RoutedEventArgs());
+            }
+
+            var progressReporter = new Progress<string>(message =>
+            {
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    GamingProgressText.Text += $"\n> {message}";
+                    GamingProgressScroll.ChangeView(0, GamingProgressScroll.ScrollableHeight, 1);
+                });
+            });
+
+            try
+            {
+                bool success = await GamingModeHelper.ToggleGamingModeAsync(targetState, progressReporter);
+
+                if (success)
+                {
+                    GamingStatusLabel.Text = targetState
+                        ? ResourceString.GetString("gm_mode_high_perf")
+                        : ResourceString.GetString("gm_mode_standard");
+
+                    GamingProgressText.Text += targetState
+                        ? $"\n\n[{ResourceString.GetString("gm_ui_engine_ready")}]"
+                        : $"\n\n[{ResourceString.GetString("gm_ui_system_restored")}]";
+
+                    if (targetState)
+                    {
+                        DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/health_good.png"));
+                        DashGamingStatusImage.Opacity = 1.0;
+
+                        GamingSpinner.Visibility = Visibility.Visible;
+                        GamingSpinner.IsActive = true;
+
+                        GamingModeButtonLabel.Text = ResourceString.GetString("gm_label_gaming");
+                        GamingModeBtnText.Text = ResourceString.GetString("gm_btn_disable");
+                    }
+                    else
+                    {
+                        DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
+                        DashGamingStatusImage.Opacity = 1.0;
+
+                        GamingSpinner.IsActive = false;
+                        GamingSpinner.Visibility = Visibility.Collapsed;
+
+                        GamingModeButtonLabel.Text = ResourceString.GetString("gm_label_normal");
+                        GamingModeBtnText.Text = ResourceString.GetString("gm_btn_enable");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                GamingProgressText.Text += $"\n[{ResourceString.GetString("gm_ui_critical_error")}] {ex.Message}";
+                GamingSpinner.IsActive = false;
+                GamingSpinner.Visibility = Visibility.Collapsed;
+
+                DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
+                DashGamingStatusImage.Opacity = 0.8;
+            }
+            finally
+            {
+                btn.IsEnabled = true;
+
+                await Task.Delay(1000);
+                if (BtnToggleGamingConsole.IsChecked == true)
+                {
+                    BtnToggleGamingConsole.IsChecked = false;
+                    BtnToggleGamingConsole_Click(BtnToggleGamingConsole, new RoutedEventArgs());
+                }
             }
         }
         #endregion
@@ -1335,7 +1481,7 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
-        #region Heealth Card
+        #region Health Card
         private void BtnOpenMaintenancePage_Click(object sender, RoutedEventArgs e)
         {
             if (MainWindow.Instance != null)
