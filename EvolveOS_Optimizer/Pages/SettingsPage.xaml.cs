@@ -1,3 +1,8 @@
+// Copyright (c) 2026 EvolveOS Software
+//
+// Licensed under the MIT License. 
+// See the LICENSE file in the project root for more information.
+
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -27,7 +32,9 @@ namespace EvolveOS_Optimizer.Pages
 
         private DispatcherTimer? _sessionTimer;
         private DateTime _sessionExpiryTime;
-        private bool _isPulsing = false;
+
+        private DispatcherTimer? _themeSchedulerTimer;
+        private string _lastScheduledTheme = string.Empty;
         #endregion
 
         #region Events & Properties
@@ -146,6 +153,8 @@ namespace EvolveOS_Optimizer.Pages
             {
                 BtnDeveloperMode.IsOn = LocalMachineSettingsEngine.IsDeveloperMode;
             }
+
+            InitializeAutoThemeScheduler();
         }
 
         private void SettingsPage_Unloaded(object sender, RoutedEventArgs e)
@@ -286,14 +295,16 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ResetAcrylicColor_Click(object sender, RoutedEventArgs e)
         {
-            AcrylicColorPicker.Color = Microsoft.UI.Colors.Black;
+            AcrylicColorPicker.Color = Colors.Black;
         }
 
         private void ThemeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_isInitialized && ThemeSelector.SelectedItem is ComboBoxItem item)
             {
-                SettingsEngine.AppTheme = item.Tag?.ToString() ?? "Default";
+                string selectedTheme = item.Tag?.ToString() ?? "Default";
+                SettingsEngine.AppTheme = selectedTheme;
+                SettingsEngine.UpdateTheme(selectedTheme);
             }
         }
 
@@ -318,6 +329,127 @@ namespace EvolveOS_Optimizer.Pages
 
             ((App)Application.Current).UpdateGlobalAccentColor(_pendingHexColor);
         }
+        #endregion
+
+        #region Auto Theme / LightSwitch Feature
+
+        public bool IsAutoThemeEnabled
+        {
+            get => SettingsEngine.IsAutoThemeEnabled;
+            set
+            {
+                if (SettingsEngine.IsAutoThemeEnabled != value)
+                {
+                    SettingsEngine.IsAutoThemeEnabled = value;
+
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsManualThemeEnabled));
+
+                    InitializeAutoThemeScheduler();
+                }
+            }
+        }
+
+        public bool IsManualThemeEnabled => !IsAutoThemeEnabled;
+
+        public TimeSpan LightThemeTime
+        {
+            get => SettingsEngine.LightThemeTime;
+            set
+            {
+                if (SettingsEngine.LightThemeTime != value)
+                {
+                    SettingsEngine.LightThemeTime = value;
+                    OnPropertyChanged();
+                    CheckAutoThemeState();
+                }
+            }
+        }
+
+        public bool SyncOsThemeWithApp
+        {
+            get => SettingsEngine.SyncOsThemeWithApp;
+            set
+            {
+                if (SettingsEngine.SyncOsThemeWithApp != value)
+                {
+                    SettingsEngine.SyncOsThemeWithApp = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public TimeSpan DarkThemeTime
+        {
+            get => SettingsEngine.DarkThemeTime;
+            set
+            {
+                if (SettingsEngine.DarkThemeTime != value)
+                {
+                    SettingsEngine.DarkThemeTime = value;
+                    OnPropertyChanged();
+                    CheckAutoThemeState();
+                }
+            }
+        }
+
+        private void InitializeAutoThemeScheduler()
+        {
+            if (IsAutoThemeEnabled)
+            {
+                if (_themeSchedulerTimer == null)
+                {
+                    _themeSchedulerTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(1) };
+                    _themeSchedulerTimer.Tick += (s, e) => CheckAutoThemeState();
+                }
+                _themeSchedulerTimer.Start();
+                CheckAutoThemeState();
+            }
+            else
+            {
+                _themeSchedulerTimer?.Stop();
+            }
+        }
+
+        private void CheckAutoThemeState()
+        {
+            if (!IsAutoThemeEnabled) return;
+
+            var currentTime = DateTime.Now.TimeOfDay;
+            string targetTheme = "Default";
+
+            if (LightThemeTime < DarkThemeTime)
+            {
+                targetTheme = (currentTime >= LightThemeTime && currentTime < DarkThemeTime) ? "Light" : "Dark";
+            }
+            else
+            {
+                targetTheme = (currentTime >= LightThemeTime || currentTime < DarkThemeTime) ? "Light" : "Dark";
+            }
+
+            if (SettingsEngine.AppTheme != targetTheme && _lastScheduledTheme != targetTheme)
+            {
+                _lastScheduledTheme = targetTheme;
+                SettingsEngine.AppTheme = targetTheme;
+
+                _isInitialized = false;
+                SetSelectedByTag(ThemeSelector, targetTheme);
+                _isInitialized = true;
+
+                SettingsEngine.UpdateTheme(targetTheme);
+
+                if (SettingsEngine.SyncOsThemeWithApp)
+                {
+                    SettingsEngine.SetWindowsSystemTheme(targetTheme);
+                }
+
+                if (App.MainWindow is Window mainWindow)
+                {
+                    UIHelper.ApplyBackdrop(mainWindow, SettingsEngine.Backdrop);
+                }
+            }
+        }
+
         #endregion
 
         #region Event Handlers - Updates & Toggles
@@ -812,7 +944,6 @@ namespace EvolveOS_Optimizer.Pages
                 return;
             }
 
-            //StopCriticalAnimation();
             _sessionTimer?.Stop();
 
             AuthSessionManager.ClearSession();
@@ -869,7 +1000,6 @@ namespace EvolveOS_Optimizer.Pages
             if (totalSeconds <= 0)
             {
                 _sessionTimer?.Stop();
-                //StopCriticalAnimation();
 
                 if (LblSessionExpiry != null)
                 {
@@ -911,45 +1041,12 @@ namespace EvolveOS_Optimizer.Pages
                 return;
             }
 
-            if (totalSeconds <= 350 && !_isPulsing)
-            {
-                //StartCriticalAnimation();
-            }
-            else if (totalSeconds > 350 && _isPulsing)
-            {
-                //StopCriticalAnimation();
-            }
-
             if (LblSessionExpiry != null)
             {
                 string prefix = ResourceString.GetString("lbl_session_expires_in") ?? "Expires in: ";
                 LblSessionExpiry.Text = $"{prefix}{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
             }
         }
-
-        /*private void StartCriticalAnimation()
-        {
-            _isPulsing = true;
-            if (this.Resources.TryGetValue("PulseCriticalTimer", out object? resource) && resource is Storyboard sb)
-            {
-                if (LblSessionExpiry != null) LblSessionExpiry.Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
-                sb.Begin();
-            }
-        }
-
-        private void StopCriticalAnimation()
-        {
-            _isPulsing = false;
-            if (this.Resources.TryGetValue("PulseCriticalTimer", out object? resource) && resource is Storyboard sb)
-            {
-                sb.Stop();
-            }
-
-            if (LblSessionExpiry != null && App.Current.Resources.TryGetValue("Brush_Highlighted_Inverted", out object? brushObj) && brushObj is Brush brush)
-            {
-                LblSessionExpiry.Foreground = brush;
-            }
-        }*/
         #endregion
 
         #region Purge Page
@@ -961,6 +1058,12 @@ namespace EvolveOS_Optimizer.Pages
             {
                 _sessionTimer.Stop();
                 _sessionTimer = null;
+            }
+
+            if (_themeSchedulerTimer != null)
+            {
+                _themeSchedulerTimer.Stop();
+                _themeSchedulerTimer = null;
             }
 
             if (_localizationHandler != null)

@@ -148,6 +148,14 @@
     <sys:String x:Key="Settings_Theme_Light">Light</sys:String>
     <sys:String x:Key="Settings_Theme_Dark">Dark</sys:String>
 
+    <sys:String x:Key="Settings_AutoTheme_Title">Auto Theme Schedule</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_Subtitle">Automatically switch between Light and Dark themes based on your schedule.</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_LightTime">Light Theme Time</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_DarkTime">Dark Theme Time</sys:String>
+
+    <sys:String x:Key="Settings_Theme_SyncOsTitle">Sync Windows Theme</sys:String>
+    <sys:String x:Key="Settings_Theme_SyncOsSubtitle">Apply the selected theme to the entire Windows operating system.</sys:String>
+
     <sys:String x:Key="Settings_System_Title">System Behavior</sys:String>
 
     <sys:String x:Key="Settings_Startup_Title">Run on Startup</sys:String>

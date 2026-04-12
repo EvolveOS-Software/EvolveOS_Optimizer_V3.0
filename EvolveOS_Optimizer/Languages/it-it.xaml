@@ -146,6 +146,14 @@
     <sys:String x:Key="Settings_Theme_Light">Chiaro</sys:String>
     <sys:String x:Key="Settings_Theme_Dark">Scuro</sys:String>
 
+    <sys:String x:Key="Settings_AutoTheme_Title">Pianificazione automatica tema</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_Subtitle">Passa automaticamente tra i temi chiaro e scuro in base alla tua pianificazione.</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_LightTime">Orario tema chiaro</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_DarkTime">Orario tema scuro</sys:String>
+
+    <sys:String x:Key="Settings_Theme_SyncOsTitle">Sincronizza tema di Windows</sys:String>
+    <sys:String x:Key="Settings_Theme_SyncOsSubtitle">Applica il tema selezionato all'intero sistema operativo Windows.</sys:String>
+
     <sys:String x:Key="Settings_System_Title">Comportamento del Sistema</sys:String>
 
     <sys:String x:Key="Settings_Startup_Title">Esegui all'avvio</sys:String>

@@ -48,6 +48,22 @@ namespace EvolveOS_Optimizer
             Instance = this;
 
             this.InitializeComponent();
+
+            if (this.Content is FrameworkElement rootElement)
+            {
+                string savedTheme = SettingsEngine.AppTheme;
+
+                if (savedTheme == "Dark")
+                    rootElement.RequestedTheme = ElementTheme.Dark;
+                else if (savedTheme == "Light")
+                    rootElement.RequestedTheme = ElementTheme.Light;
+                else
+                    rootElement.RequestedTheme = ElementTheme.Default;
+            }
+
+            string savedBackdrop = SettingsEngine.Backdrop;
+            UIHelper.ApplyBackdrop(this, savedBackdrop);
+
             this.Title = "EvolveOS Optimizer";
 
             if (File.Exists(iconPath))

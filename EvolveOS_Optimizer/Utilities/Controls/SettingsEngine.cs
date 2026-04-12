@@ -87,7 +87,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             ["IsPasswordGenHotkeyEnabled"] = false,
             ["PasswordGenHotkeyModifier"] = 1,
-            ["PasswordGenHotkeyKey"] = 80
+            ["PasswordGenHotkeyKey"] = 80,
+
+            ["EnableAutoTheme"] = false,
+            ["LightThemeTimeStr"] = "08:00:00",
+            ["DarkThemeTimeStr"] = "20:00:00",
+            ["SyncOsThemeWithApp"] = false
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -150,6 +155,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_CardNetworkGraph { get => (bool)_cachedSettings["Dashboard_CardNetworkGraph"]; set => ChangingParameters("Dashboard_CardNetworkGraph", value); }
         internal static bool Dashboard_CardGpuGraph { get => (bool)_cachedSettings["Dashboard_CardGpuGraph"]; set => ChangingParameters("Dashboard_CardGpuGraph", value); }
         internal static int Dashboard_GraphTimeframe { get => (int)_cachedSettings["Dashboard_GraphTimeframe"]; set => ChangingParameters("Dashboard_GraphTimeframe", value); }
+
+        internal static bool IsAutoThemeEnabled { get => (bool)_cachedSettings["EnableAutoTheme"]; set => ChangingParameters("EnableAutoTheme", value); }
+        internal static TimeSpan LightThemeTime { get => TimeSpan.TryParse((string)_cachedSettings["LightThemeTimeStr"], out TimeSpan result) ? result : new TimeSpan(8, 0, 0); set => ChangingParameters("LightThemeTimeStr", value.ToString(@"hh\:mm\:ss")); }
+        internal static TimeSpan DarkThemeTime { get => TimeSpan.TryParse((string)_cachedSettings["DarkThemeTimeStr"], out TimeSpan result) ? result : new TimeSpan(20, 0, 0); set => ChangingParameters("DarkThemeTimeStr", value.ToString(@"hh\:mm\:ss")); }
+        internal static bool SyncOsThemeWithApp { get => (bool)_cachedSettings["SyncOsThemeWithApp"]; set => ChangingParameters("SyncOsThemeWithApp", value); }
 
         private static void ChangingParameters(string key, object value)
         {
@@ -266,6 +276,36 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                     "Dark" => ElementTheme.Dark,
                     _ => ElementTheme.Default
                 };
+            }
+
+            if (SyncOsThemeWithApp)
+            {
+                SetWindowsSystemTheme(themeStr);
+            }
+        }
+
+        public static void SetWindowsSystemTheme(string theme)
+        {
+            try
+            {
+                int themeValue = theme.Equals("Light", StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+
+                string registryKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(registryKeyPath, true))
+                {
+                    if (key != null)
+                    {
+                        key.SetValue("AppsUseLightTheme", themeValue, RegistryValueKind.DWord);
+                        key.SetValue("SystemUsesLightTheme", themeValue, RegistryValueKind.DWord);
+                    }
+                }
+
+                Debug.WriteLine($"[System Theme] Successfully switched Windows to {theme} mode.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[System Theme Error] Failed to change OS theme: {ex.Message}");
             }
         }
 

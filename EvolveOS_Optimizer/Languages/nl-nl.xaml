@@ -146,6 +146,14 @@
     <sys:String x:Key="Settings_Theme_Light">Licht</sys:String>
     <sys:String x:Key="Settings_Theme_Dark">Donker</sys:String>
 
+    <sys:String x:Key="Settings_AutoTheme_Title">Automatische themaplanning</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_Subtitle">Wissel automatisch tussen lichte en donkere thema's op basis van uw planning.</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_LightTime">Tijd voor licht thema</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_DarkTime">Tijd voor donker thema</sys:String>
+
+    <sys:String x:Key="Settings_Theme_SyncOsTitle">Windows-thema synchroniseren</sys:String>
+    <sys:String x:Key="Settings_Theme_SyncOsSubtitle">Pas het geselecteerde thema toe op het hele Windows-besturingssysteem.</sys:String>
+
     <sys:String x:Key="Settings_System_Title">Systeemgedrag</sys:String>
 
     <sys:String x:Key="Settings_Startup_Title">Starten bij opstarten</sys:String>

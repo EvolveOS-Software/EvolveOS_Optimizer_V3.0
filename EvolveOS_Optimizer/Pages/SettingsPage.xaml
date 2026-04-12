@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
-    mc:Ignorable="d" NavigationCacheMode="Disabled">
+    mc:Ignorable="d" NavigationCacheMode="Disabled" Background="Transparent">
 
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -155,22 +155,88 @@
                 </StackPanel>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock helpers:Loc.Key="Settings_Theme_Title" FontWeight="SemiBold"/>
-                            <TextBlock helpers:Loc.Key="Settings_Theme_Subtitle" 
-                           Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                    <StackPanel Spacing="16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock helpers:Loc.Key="Settings_Theme_Title" FontWeight="SemiBold"/>
+                                <TextBlock helpers:Loc.Key="Settings_Theme_Subtitle" 
+                                           Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+                            <ComboBox x:Name="ThemeSelector" Grid.Column="1" Width="200" VerticalAlignment="Center" SelectionChanged="ThemeSelector_SelectionChanged" IsEnabled="{x:Bind IsManualThemeEnabled, Mode=OneWay}">
+                                <ComboBoxItem Content="{x:Bind GetText('Settings_Theme_Default'), Mode=OneWay}" Tag="Default"/>
+                                <ComboBoxItem Content="{x:Bind GetText('Settings_Theme_Light'), Mode=OneWay}" Tag="Light"/>
+                                <ComboBoxItem Content="{x:Bind GetText('Settings_Theme_Dark'), Mode=OneWay}" Tag="Dark"/>
+                            </ComboBox>
+                        </Grid>
+
+                        <MenuFlyoutSeparator Opacity="0.5"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock helpers:Loc.Key="Settings_Theme_SyncOsTitle" FontWeight="SemiBold"/>
+                                <TextBlock helpers:Loc.Key="Settings_Theme_SyncOsSubtitle" 
+                                           Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" 
+                                          IsOn="{x:Bind SyncOsThemeWithApp, Mode=TwoWay}" 
+                                          IsEnabled="{x:Bind IsManualThemeEnabled, Mode=OneWay}"
+                                          OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
+                                          OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock helpers:Loc.Key="Settings_AutoTheme_Title" FontWeight="SemiBold"/>
+                                <TextBlock helpers:Loc.Key="Settings_AutoTheme_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" 
+                          IsOn="{x:Bind IsAutoThemeEnabled, Mode=TwoWay}" 
+                          OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
+                          OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                        </Grid>
+
+                        <StackPanel Visibility="{x:Bind IsAutoThemeEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Spacing="12">
+                            <MenuFlyoutSeparator Opacity="0.5" Margin="0,4"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock helpers:Loc.Key="Settings_AutoTheme_LightTime" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <TimePicker Grid.Column="1" Time="{x:Bind LightThemeTime, Mode=TwoWay}" HorizontalAlignment="Right"/>
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock helpers:Loc.Key="Settings_AutoTheme_DarkTime" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <TimePicker Grid.Column="1" Time="{x:Bind DarkThemeTime, Mode=TwoWay}" HorizontalAlignment="Right"/>
+                            </Grid>
                         </StackPanel>
-                        <ComboBox x:Name="ThemeSelector" Grid.Column="1" Width="200" VerticalAlignment="Center" SelectionChanged="ThemeSelector_SelectionChanged">
-                            <ComboBoxItem Content="{x:Bind GetText('Settings_Theme_Default'), Mode=OneWay}" Tag="Default"/>
-                            <ComboBoxItem Content="{x:Bind GetText('Settings_Theme_Light'), Mode=OneWay}" Tag="Light"/>
-                            <ComboBoxItem Content="{x:Bind GetText('Settings_Theme_Dark'), Mode=OneWay}" Tag="Dark"/>
-                        </ComboBox>
-                    </Grid>
+                    </StackPanel>
                 </Border>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">

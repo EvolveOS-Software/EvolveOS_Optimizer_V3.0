@@ -146,6 +146,14 @@
     <sys:String x:Key="Settings_Theme_Light">Hell</sys:String>
     <sys:String x:Key="Settings_Theme_Dark">Dunkel</sys:String>
 
+    <sys:String x:Key="Settings_AutoTheme_Title">Automatische Themenplanung</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_Subtitle">Wechselt automatisch zwischen hellen und dunklen Designs basierend auf Ihrem Zeitplan.</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_LightTime">Zeit für helles Design</sys:String>
+    <sys:String x:Key="Settings_AutoTheme_DarkTime">Zeit für dunkles Design</sys:String>
+
+    <sys:String x:Key="Settings_Theme_SyncOsTitle">Windows-Design synchronisieren</sys:String>
+    <sys:String x:Key="Settings_Theme_SyncOsSubtitle">Wenden Sie das ausgewählte Design auf das gesamte Windows-Betriebssystem an.</sys:String>
+
     <sys:String x:Key="Settings_System_Title">Systemverhalten</sys:String>
 
     <sys:String x:Key="Settings_Startup_Title">Beim Systemstart ausführen</sys:String>
