@@ -10,36 +10,33 @@
     Background="Transparent">
 
     <Grid>
-
-        <Grid Padding="30">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Button Grid.Column="0"
-                    Click="BtnBack_Click" 
+        <Grid Padding="30,30,30,0" VerticalAlignment="Top">
+            <Button Click="BtnBack_Click" 
                     Background="Transparent" 
                     BorderThickness="0" 
                     Padding="8,6" 
                     CornerRadius="4"
-                    VerticalAlignment="Top"
-                    Margin="0,0,16,0">
+                    HorizontalAlignment="Left">
                 <FontIcon Glyph="&#xE72B;" FontSize="16" />
             </Button>
+        </Grid>
 
-            <StackPanel Grid.Column="1" Spacing="32" MaxWidth="850" HorizontalAlignment="Left">
+        <Grid Padding="30">
+            <StackPanel Spacing="32" MaxWidth="850" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0">
 
                 <StackPanel Spacing="8">
                     <TextBlock helpers:Loc.Key="FileEncryptor_Title" 
                                FontSize="28" 
                                FontWeight="SemiBold" 
                                FontFamily="{StaticResource Jura-SemiBold}" 
-                               VerticalAlignment="Center"/>
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>
 
                     <TextBlock helpers:Loc.Key="FileEncryptor_Description" 
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
-                               TextWrapping="Wrap"/>
+                               TextWrapping="Wrap"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"/>
                 </StackPanel>
 
                 <Grid>
