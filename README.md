@@ -55,10 +55,23 @@ Whether running actively on your dashboard or silently in your system tray, Evol
 * **Advanced Service & Defender Control:** Safely suspend unnecessary background services (Xbox, Hyper-V, Maps) to free up resources. Features a powerful, ACL-level bypass to completely disable or restore Windows Defender via NSudo.
 * **System & UI Customization:** Fine-tune Windows Explorer, restore classic context menus, adjust keyboard/mouse input delays, and strip away resource-heavy visual effects.
 * **Group Policy Manager:** Includes a dedicated scanner to detect, review, and easily revert customized or corrupted Windows Group Policies back to default OS behavior.
-* **Gaming Performance:** Instantly import custom power plans, disable Game DVR/Bar, and remove network throttling to ensure lower latency and higher frame rates.
+* **Gaming Mode (Smart Sniper Optimization): Instantly shifts your system into high gear with a single click. Intelligently suspends non-essential background tasks, over 80 Windows services, and scheduled tasks while strictly protecting a "Do Not Touch" whitelist of essential gaming companions (Steam, Discord, OBS, Anti-Cheats). Automatically unleashes GPU power states, unlocks CPU core affinity for games, and seamlessly restores your system to its exact original state when disabled.
 * **Automated Background Monitoring:** A silent background engine that tracks RAM and Disk usage, alerting you only when critical thresholds are reached.
 * **System Tray Integration:** Run silently in the background with an ultra-light footprint, featuring a quick-access context menu to instantly jump to key pages or trigger optimizations directly from the taskbar without opening the full UI.
 * **Portable Execution:** Runs as a standalone, unpacked single executable. No bulky installers or registry bloat.
+
+---
+
+### 🧠 Under the Hood: The GamingModeHelper
+Traditional "Game Boosters" are notorious for blindly killing processes, which often leads to crashed Discord calls, closed game launchers, or worse—triggered Anti-Cheat bans. EvolveOS Optimizer takes a different approach by acting as a precision sniper rather than a blunt instrument. 
+
+Here is how the underlying `GamingModeHelper` safely pushes your system to its limits:
+
+* **The Snapshot (State Capture):** Before applying any optimizations, the engine takes a comprehensive snapshot of your system's exact state. It reads your active Power Plan GUID, the startup types of over 80 individual Windows services, GPU registry values, and scheduled tasks. This is serialized into a secure JSON backup, guaranteeing a perfect recovery even if your PC crashes mid-game.
+* **The "Do Not Touch" Whitelist:** Built directly into the code is a non-negotiable HashSet of protected processes. If an app matches this list (e.g., Vanguard, EasyAntiCheat, Steam, TeamSpeak, OBS, Logitech G HUB, Razer Synapse), the Optimizer strictly ignores it. Furthermore, it dynamically protects core Windows OS executables and essential Microsoft signed binaries from termination.
+* **Deep System Tweaks:** Once bloat is safely cleared, the helper injects over 30 temporary registry tweaks. It reconfigures MMCSS (Multimedia Class Scheduler Service) to prioritize game rendering, adjusts Mouse/Keyboard queue sizes to reduce input latency, completely disables Network Throttling, and flushes ARP/DNS caches for the cleanest possible route to game servers.
+* **GPU & CPU Unleashed:** The engine actively detects your hardware, forcing NVIDIA GPUs into "Prefer Maximum Performance" mode and disabling AMD's ULPS (Ultra-Low Power State). It then scans for active whitelisted games, automatically elevating their Process Priority to High and unlocking their Processor Affinity across all available CPU cores to prevent Windows parking.
+* **The Graceful Restoration:** When Gaming Mode is toggled off, the engine reads the JSON backup file and meticulously reverses every single change. Suspended services are restarted, power plans are restored, and registry keys are set back to their exact previous values, leaving your PC exactly as you left it.
 
 ---
 

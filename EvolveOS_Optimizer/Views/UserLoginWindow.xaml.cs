@@ -18,10 +18,13 @@ namespace EvolveOS_Optimizer.Views
     public sealed partial class UserLoginWindow : Window
     {
         private UserLoginViewModel? ViewModel => LoginView.DataContext as UserLoginViewModel;
+        private bool _isClosed = false;
 
         public UserLoginWindow(WeatherService weatherService, string? reasonMessage = null)
         {
             this.InitializeComponent();
+
+            this.Closed += (s, e) => _isClosed = true;
 
             CenterAndSizeWindow(850, 600);
 
@@ -69,8 +72,8 @@ namespace EvolveOS_Optimizer.Views
 
         private void CenterAndSizeWindow(int width, int height)
         {
-            IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            WindowId myWndId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+            IntPtr hWnd = WindowNative.GetWindowHandle(this);
+            WindowId myWndId = Win32Interop.GetWindowIdFromWindow(hWnd);
             var appWindow = AppWindow.GetFromWindowId(myWndId);
 
             appWindow.Resize(new SizeInt32 { Width = width, Height = height });
@@ -145,15 +148,20 @@ namespace EvolveOS_Optimizer.Views
 
             await Task.Delay(100);
 
-            LoginUserName.Focus(FocusState.Programmatic);
+            if (_isClosed) return;
 
-            if (ViewModel != null && this.Content?.XamlRoot != null)
+            if (LoginUserName != null && this.Content != null)
             {
-                await ViewModel.InitialDatabaseCheckAsync(this.Content.XamlRoot);
-            }
-            else
-            {
-                ViewModel?.RestartTimer();
+                LoginUserName.Focus(FocusState.Programmatic);
+
+                if (ViewModel != null && this.Content.XamlRoot != null)
+                {
+                    await ViewModel.InitialDatabaseCheckAsync(this.Content.XamlRoot);
+                }
+                else
+                {
+                    ViewModel?.RestartTimer();
+                }
             }
         }
 
