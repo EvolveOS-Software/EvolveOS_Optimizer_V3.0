@@ -684,8 +684,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     {
                         IsNeedUpdate = true;
                         DownloadVersion = git.СurrentVersion;
-
-                        NotificationManager.Show("info", ResourceString.GetString("Update_Banner_Message")).WithDuration(0).Perform();
                     }
                 }
             }

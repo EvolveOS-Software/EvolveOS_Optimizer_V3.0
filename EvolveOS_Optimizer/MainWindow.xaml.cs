@@ -221,15 +221,29 @@ namespace EvolveOS_Optimizer
                 await InitializeUserPermissionsAsync(UserSession.Username);
             }
 
-            if (SettingsEngine.IsUpdateCheckRequired)
+            _ = Task.Run(async () =>
             {
-                await SystemDiagnostics.ValidateVersionUpdatesAsync();
-
-                if (SystemDiagnostics.IsNeedUpdate)
+                if (SettingsEngine.IsUpdateCheckRequired)
                 {
-                    this.DispatcherQueue.TryEnqueue(() => AnimateUpdateBanner(true));
+                    await SystemDiagnostics.ValidateVersionUpdatesAsync();
+
+                    if (SystemDiagnostics.IsNeedUpdate)
+                    {
+                        await Task.Delay(1500);
+
+                        this.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            Debug.WriteLine("[UPDATE] Auto-check found update. Triggering Banner UI.");
+
+                            UpdateBanner.Visibility = Visibility.Visible;
+                            UpdateBanner.Opacity = 1.0;
+                            UpdateBanner.UpdateLayout();
+
+                            AnimateUpdateBanner(true);
+                        });
+                    }
                 }
-            }
+            });
 
             if (AuthSessionManager.IsSessionValid(out string? sessionUser, out DateTime expiry))
             {
