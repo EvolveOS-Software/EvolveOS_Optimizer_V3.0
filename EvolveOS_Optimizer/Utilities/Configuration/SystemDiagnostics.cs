@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -626,7 +627,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             return result.ToString().Trim();
         }
 
-        internal bool IsNetworkAvailable() => NetworkInterface.GetIsNetworkAvailable();
+        internal static bool IsNetworkAvailable() => NetworkInterface.GetIsNetworkAvailable();
 
         internal string GetDefaultLocalIP()
         {
@@ -660,7 +661,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             isIPAddressFormatValid = UserIPAddress.Any(char.IsDigit);
         }
 
-        internal async Task ValidateVersionUpdatesAsync(CancellationToken token = default)
+        internal static async Task ValidateVersionUpdatesAsync(CancellationToken token = default)
         {
             if (!SettingsEngine.IsUpdateCheckRequired || !IsNetworkAvailable())
             {
@@ -684,7 +685,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         IsNeedUpdate = true;
                         DownloadVersion = git.СurrentVersion;
 
-                        NotificationManager.Show("info", "msg_update_available").WithDuration(0).Perform();
+                        NotificationManager.Show("info", ResourceString.GetString("Update_Banner_Message")).WithDuration(0).Perform();
                     }
                 }
             }

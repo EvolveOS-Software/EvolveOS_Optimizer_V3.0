@@ -311,7 +311,7 @@ namespace EvolveOS_Optimizer.Views
                     Parallel.Invoke(
                         () => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus)),
                         () => ExecuteWithLogging(_systemDiagnostics.GetHardwareData, nameof(_systemDiagnostics.GetHardwareData)),
-                        () => ExecuteAsyncWithLogging(() => _systemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(_systemDiagnostics.ValidateVersionUpdatesAsync)),
+                        () => ExecuteAsyncWithLogging(() => SystemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(SystemDiagnostics.ValidateVersionUpdatesAsync)),
                         () => ExecuteWithLogging(_uninstallingPakages.GetInstalledPackages, nameof(_uninstallingPakages.GetInstalledPackages)),
                         () => ExecuteAsyncWithLogging(RunGuard.CheckingDefenderExclusions, nameof(RunGuard.CheckingDefenderExclusions)),
                         () =>

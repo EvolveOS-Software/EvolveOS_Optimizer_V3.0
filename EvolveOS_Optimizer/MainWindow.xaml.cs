@@ -221,9 +221,14 @@ namespace EvolveOS_Optimizer
                 await InitializeUserPermissionsAsync(UserSession.Username);
             }
 
-            if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
+            if (SettingsEngine.IsUpdateCheckRequired)
             {
-                this.DispatcherQueue.TryEnqueue(() => AnimateUpdateBanner(true));
+                await SystemDiagnostics.ValidateVersionUpdatesAsync();
+
+                if (SystemDiagnostics.IsNeedUpdate)
+                {
+                    this.DispatcherQueue.TryEnqueue(() => AnimateUpdateBanner(true));
+                }
             }
 
             if (AuthSessionManager.IsSessionValid(out string? sessionUser, out DateTime expiry))
