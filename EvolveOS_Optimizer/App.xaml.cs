@@ -597,6 +597,11 @@ namespace EvolveOS_Optimizer
             {
                 try
                 {
+                    if (SettingsEngine.PerformDbBackup)
+                    {
+                        ExecuteRawDatabaseBackup(mdfPath, ldfPath);
+                    }
+
                     DatabaseSecurityService.EncryptDatabase(mdfPath, securePath);
 
                     if (File.Exists(ldfPath))
@@ -638,6 +643,84 @@ namespace EvolveOS_Optimizer
             catch { }
 
             ReleaseMemory();
+        }
+
+        private static void ExecuteRawDatabaseBackup(string mdfSource, string ldfSource)
+        {
+            try
+            {
+                string backupDir = SettingsEngine.DatabaseBackupPath;
+                if (string.IsNullOrEmpty(backupDir) || !Directory.Exists(backupDir))
+                {
+                    return;
+                }
+
+                string stamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                bool encrypt = SettingsEngine.EncryptDbBackupCopies;
+
+                string destMdf = Path.Combine(backupDir, $"EvolveOS_Backup_{stamp}{(encrypt ? ".dat" : ".mdf.bak")}");
+                string destLdf = Path.Combine(backupDir, $"EvolveOS_Log_{stamp}{(encrypt ? "_log.dat" : ".ldf.bak")}");
+
+                if (File.Exists(mdfSource))
+                {
+                    if (encrypt)
+                    {
+                        DatabaseSecurityService.EncryptDatabase(mdfSource, destMdf);
+                    }
+                    else
+                    {
+                        File.Copy(mdfSource, destMdf, true);
+                    }
+                }
+
+                if (File.Exists(ldfSource))
+                {
+                    if (encrypt)
+                    {
+                        DatabaseSecurityService.EncryptDatabase(ldfSource, destLdf);
+                    }
+                    else
+                    {
+                        File.Copy(ldfSource, destLdf, true);
+                    }
+                }
+
+                if (!SettingsEngine.KeepBackupEnabled)
+                {
+                    ResetBackupSettings();
+                    Debug.WriteLine("[App] Backup settings reset as requested.");
+                }
+                else
+                {
+                    Debug.WriteLine("[App] Backup settings preserved for next session.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[App] Failed to execute raw database backup: {ex.Message}");
+            }
+        }
+
+        private static void ResetBackupSettings()
+        {
+            try
+            {
+                using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(PathLocator.Registry.SubKey, true);
+
+                if (key == null)
+                {
+                    return;
+                }
+
+                key.DeleteValue("DatabaseBackupPath", false);
+                key.DeleteValue("PerformDbBackup", false);
+                key.DeleteValue("EncryptDbBackupCopies", false);
+                key.Flush();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[App] Failed to reset backup registry settings: {ex.Message}");
+            }
         }
 
         public static void ExitApp()

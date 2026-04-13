@@ -14,8 +14,8 @@
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Page.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Spacing="24" Margin="4,20,28,40">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,20,0,0" Padding="4,0,28,40">
+        <StackPanel Spacing="24" Margin="4,0,0,40">
 
             <StackPanel Spacing="4">
                 <TextBlock helpers:Loc.Key="Settings_Appearance_Title"
@@ -580,6 +580,89 @@
                                 <Button Grid.Column="1" helpers:Loc.Key="Settings_DevTools_Merge_Button" Click="MergeStrings_Click" Style="{StaticResource AccentButtonStyle}" MinWidth="150"/>
                             </Grid>
                         </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock helpers:Loc.Key="Settings_DbBackup_SectionTitle" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="16">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock helpers:Loc.Key="Settings_DbBackup_AutoTitle" FontWeight="SemiBold"/>
+                                <TextBlock helpers:Loc.Key="Settings_DbBackup_AutoSubtitle"
+                                           Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <ToggleSwitch x:Name="CbPerformDbBackup" Grid.Column="1"
+                                          IsOn="{x:Bind PerformDbBackup, Mode=TwoWay}"
+                                          OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
+                                          OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                        </Grid>
+
+                        <StackPanel Visibility="{x:Bind CbPerformDbBackup.IsOn, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Spacing="12" Margin="0,8,0,0">
+                            <MenuFlyoutSeparator Opacity="0.5"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_PersistentTitle" FontWeight="SemiBold"/>
+                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_PersistentSubtitle"
+                                               Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1"
+                                              IsOn="{x:Bind KeepBackupEnabled, Mode=TwoWay}"
+                                              OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}"
+                                              OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
+                            </Grid>
+
+                            <MenuFlyoutSeparator Opacity="0.5"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_EncryptTitle" FontWeight="SemiBold"/>
+                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_EncryptSubtitle"
+                                               Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1"
+                                              IsOn="{x:Bind EncryptDbBackupCopies, Mode=TwoWay}"
+                                              OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
+                                              OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                            </Grid>
+
+                            <MenuFlyoutSeparator Opacity="0.5"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
+                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_LocationTitle" FontWeight="SemiBold"/>
+                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_LocationSubtitle"
+                                               Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                    <TextBox Text="{x:Bind DatabaseBackupPath, Mode=OneWay}" IsReadOnly="True" Width="220" VerticalAlignment="Center" PlaceholderText="{helpers:ResourceString Key=Settings_DbBackup_SelectFolder}"/>
+                                    <Button helpers:Loc.Key="Settings_DbBackup_BrowseButton" Click="BrowseBackupFolder_Click" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+
                     </StackPanel>
                 </Border>
             </StackPanel>

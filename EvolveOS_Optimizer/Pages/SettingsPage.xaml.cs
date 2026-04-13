@@ -762,11 +762,81 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
+
+        public bool PerformDbBackup
+        {
+            get => SettingsEngine.PerformDbBackup;
+            set
+            {
+                if (SettingsEngine.PerformDbBackup != value)
+                {
+                    SettingsEngine.PerformDbBackup = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool EncryptDbBackupCopies
+        {
+            get => SettingsEngine.EncryptDbBackupCopies;
+            set
+            {
+                if (SettingsEngine.EncryptDbBackupCopies != value)
+                {
+                    SettingsEngine.EncryptDbBackupCopies = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string DatabaseBackupPath
+        {
+            get => SettingsEngine.DatabaseBackupPath;
+            set
+            {
+                if (SettingsEngine.DatabaseBackupPath != value)
+                {
+                    SettingsEngine.DatabaseBackupPath = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool KeepBackupEnabled
+        {
+            get => SettingsEngine.KeepBackupEnabled;
+            set
+            {
+                if (SettingsEngine.KeepBackupEnabled != value)
+                {
+                    SettingsEngine.KeepBackupEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged Implementation
         private void OnPropertyChanged([CallerMemberName] string? name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        #endregion
+
+        #region Database Backup & Folder Logic
+        private async void BrowseBackupFolder_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+            folderPicker.FileTypeFilter.Add("*");
+
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
+
+            var folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                DatabaseBackupPath = folder.Path;
+            }
+        }
         #endregion
 
         #region Auto-Login Session Logic

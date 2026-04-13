@@ -93,7 +93,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableAutoTheme"] = false,
             ["LightThemeTimeStr"] = "08:00:00",
             ["DarkThemeTimeStr"] = "20:00:00",
-            ["SyncOsThemeWithApp"] = false
+            ["SyncOsThemeWithApp"] = false,
+
+            ["DatabaseBackupPath"] = string.Empty,
+            ["PerformDbBackup"] = false,
+            ["EncryptDbBackupCopies"] = true,
+            ["KeepBackupEnabled"] = false
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -162,6 +167,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static TimeSpan LightThemeTime { get => TimeSpan.TryParse((string)_cachedSettings["LightThemeTimeStr"], out TimeSpan result) ? result : new TimeSpan(8, 0, 0); set => ChangingParameters("LightThemeTimeStr", value.ToString(@"hh\:mm\:ss")); }
         internal static TimeSpan DarkThemeTime { get => TimeSpan.TryParse((string)_cachedSettings["DarkThemeTimeStr"], out TimeSpan result) ? result : new TimeSpan(20, 0, 0); set => ChangingParameters("DarkThemeTimeStr", value.ToString(@"hh\:mm\:ss")); }
         internal static bool SyncOsThemeWithApp { get => (bool)_cachedSettings["SyncOsThemeWithApp"]; set => ChangingParameters("SyncOsThemeWithApp", value); }
+
+        internal static string DatabaseBackupPath { get => (string)_cachedSettings["DatabaseBackupPath"]; set => ChangingParameters("DatabaseBackupPath", value); }
+        internal static bool PerformDbBackup { get => (bool)_cachedSettings["PerformDbBackup"]; set => ChangingParameters("PerformDbBackup", value); }
+        internal static bool EncryptDbBackupCopies { get => (bool)_cachedSettings["EncryptDbBackupCopies"]; set => ChangingParameters("EncryptDbBackupCopies", value); }
+        internal static bool KeepBackupEnabled { get => (bool)_cachedSettings["KeepBackupEnabled"]; set => ChangingParameters("KeepBackupEnabled", value); }
 
         private static void ChangingParameters(string key, object value)
         {

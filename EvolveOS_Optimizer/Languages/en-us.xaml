@@ -199,6 +199,23 @@
 
     <sys:String x:Key="Settings_ToggleOn">Enabled</sys:String>
     <sys:String x:Key="Settings_ToggleOff">Disabled</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_SectionTitle">Database &amp; Backup</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_AutoTitle">Automated Database Backup</sys:String>
+    <sys:String x:Key="Settings_DbBackup_AutoSubtitle">Automatically back up the database when the application closes.</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_EncryptTitle">Encrypt Backup Copies</sys:String>
+    <sys:String x:Key="Settings_DbBackup_EncryptSubtitle">Secure the backup files using AES encryption.</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_LocationTitle">Backup Location</sys:String>
+    <sys:String x:Key="Settings_DbBackup_LocationSubtitle">Select the folder where database backups will be saved.</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_SelectFolder">Select a folder...</sys:String>
+    <sys:String x:Key="Settings_DbBackup_BrowseButton">Browse</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_PersistentTitle">Remember Backup Setting</sys:String>
+    <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">If disabled, the backup toggle will automatically turn off after the app restarts.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

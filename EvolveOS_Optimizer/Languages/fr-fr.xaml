@@ -170,6 +170,47 @@
 
     <sys:String x:Key="Settings_WindowBorder_Title">Afficher la bordure d'accentuation de la fenêtre</sys:String>
     <sys:String x:Key="Settings_WindowBorder_Subtitle">Dessine une bordure colorée autour de la fenêtre de l'application en utilisant la couleur d'accentuation sélectionnée.</sys:String>
+
+    <sys:String x:Key="btgl_developer_mode_main">Mode développeur</sys:String>
+    <sys:String x:Key="btgl_developer_mode_subtitle">Activer les outils avancés et les configurations système profondes.</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_Title">Outils de développement</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_TranslationHotkey_Title">Raccourci de débogage de traduction</sys:String>
+    <sys:String x:Key="Settings_DevTools_TranslationHotkey_Subtitle">Activer un raccourci clavier pour afficher instantanément les clés de localisation manquantes sur la page actuelle.</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_ViewLog_Title">Voir le journal des chaînes manquantes</sys:String>
+    <sys:String x:Key="Settings_DevTools_ViewLog_Subtitle">Ouvrir le fichier JSON contenant les traductions actuellement manquantes pour la langue active.</sys:String>
+    <sys:String x:Key="Settings_DevTools_ViewLog_Button">Ouvrir le fichier JSON</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_LocateFile_Title">Localiser le fichier de langue</sys:String>
+    <sys:String x:Key="Settings_DevTools_LocateFile_Subtitle">Ouvrir l'Explorateur de fichiers et mettre en évidence le dictionnaire de langue actif (.xaml).</sys:String>
+    <sys:String x:Key="Settings_DevTools_LocateFile_Button">Localiser le fichier</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_CreateTemplate_Title">Créer un nouveau modèle de langue</sys:String>
+    <sys:String x:Key="Settings_DevTools_CreateTemplate_Subtitle">Générer un dictionnaire XAML de base pour une nouvelle langue (ex: 'es-es').</sys:String>
+    <sys:String x:Key="Settings_DevTools_CreateTemplate_Button">Créer</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_Merge_Title">Fusionner les chaînes manquantes</sys:String>
+    <sys:String x:Key="Settings_DevTools_Merge_Subtitle">Injecte les chaînes manquantes enregistrées du JSON dans le dictionnaire XAML de la langue actuelle.</sys:String>
+    <sys:String x:Key="Settings_DevTools_Merge_Button">Fusionner vers XAML</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_SectionTitle">Base de données &amp; Sauvegarde</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_AutoTitle">Sauvegarde automatisée de la base de données</sys:String>
+    <sys:String x:Key="Settings_DbBackup_AutoSubtitle">Sauvegarder automatiquement la base de données à la fermeture de l'application.</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_EncryptTitle">Chiffrer les copies de sauvegarde</sys:String>
+    <sys:String x:Key="Settings_DbBackup_EncryptSubtitle">Sécuriser les fichiers de sauvegarde à l'aide du chiffrement AES.</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_LocationTitle">Emplacement de sauvegarde</sys:String>
+    <sys:String x:Key="Settings_DbBackup_LocationSubtitle">Sélectionnez le dossier où les sauvegardes de la base de données seront enregistrées.</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_SelectFolder">Sélectionner un dossier...</sys:String>
+    <sys:String x:Key="Settings_DbBackup_BrowseButton">Parcourir</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_PersistentTitle">Mémoriser le paramètre de sauvegarde</sys:String>
+    <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">Si désactivé, l'option de sauvegarde s'éteindra automatiquement après le redémarrage de l'application.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

@@ -170,6 +170,47 @@
 
     <sys:String x:Key="Settings_WindowBorder_Title">Vensterrand in accentkleur weergeven</sys:String>
     <sys:String x:Key="Settings_WindowBorder_Subtitle">Tekent een gekleurde rand rond het toepassingsvenster met de door u geselecteerde accentkleur.</sys:String>
+
+    <sys:String x:Key="btgl_developer_mode_main">Ontwikkelaarsmodus</sys:String>
+    <sys:String x:Key="btgl_developer_mode_subtitle">Schakel geavanceerde tools en diepe systeemconfiguraties in.</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_Title">Ontwikkelaarstools</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_TranslationHotkey_Title">Vertaling Debug Sneltoets</sys:String>
+    <sys:String x:Key="Settings_DevTools_TranslationHotkey_Subtitle">Schakel een sneltoets in om direct ontbrekende vertalingssleutels op de huidige pagina weer te geven.</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_ViewLog_Title">Logboek Ontbrekende Teksten</sys:String>
+    <sys:String x:Key="Settings_DevTools_ViewLog_Subtitle">Open het JSON-bestand met momenteel ontbrekende vertalingen voor de actieve taal.</sys:String>
+    <sys:String x:Key="Settings_DevTools_ViewLog_Button">JSON-bestand openen</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_LocateFile_Title">Taalbestand Lokaliseren</sys:String>
+    <sys:String x:Key="Settings_DevTools_LocateFile_Subtitle">Open Verkenner en markeer het huidige actieve taalwoordenboek (.xaml).</sys:String>
+    <sys:String x:Key="Settings_DevTools_LocateFile_Button">Bestand zoeken</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_CreateTemplate_Title">Nieuw Taalsjabloon Maken</sys:String>
+    <sys:String x:Key="Settings_DevTools_CreateTemplate_Subtitle">Genereer een basis XAML-woordenboek voor een nieuwe taal (bijv. 'es-es').</sys:String>
+    <sys:String x:Key="Settings_DevTools_CreateTemplate_Button">Aanmaken</sys:String>
+
+    <sys:String x:Key="Settings_DevTools_Merge_Title">Ontbrekende Teksten Samenvoegen</sys:String>
+    <sys:String x:Key="Settings_DevTools_Merge_Subtitle">Voegt geregistreerde ontbrekende teksten uit JSON toe aan het XAML-woordenboek van de huidige taal.</sys:String>
+    <sys:String x:Key="Settings_DevTools_Merge_Button">Samenvoegen naar XAML</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_SectionTitle">Database &amp; back-up</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_AutoTitle">Geautomatiseerde database back-up</sys:String>
+    <sys:String x:Key="Settings_DbBackup_AutoSubtitle">Maak automatisch een back-up van de database wanneer de applicatie wordt gesloten.</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_EncryptTitle">Back-up kopieën versleutelen</sys:String>
+    <sys:String x:Key="Settings_DbBackup_EncryptSubtitle">Beveilig de back-upbestanden met AES-versleuteling.</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_LocationTitle">Back-up locatie</sys:String>
+    <sys:String x:Key="Settings_DbBackup_LocationSubtitle">Selecteer de map waar database back-ups worden opgeslagen.</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_SelectFolder">Selecteer een map...</sys:String>
+    <sys:String x:Key="Settings_DbBackup_BrowseButton">Bladeren</sys:String>
+
+    <sys:String x:Key="Settings_DbBackup_PersistentTitle">Back-up instelling onthouden</sys:String>
+    <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">Indien uitgeschakeld, wordt de back-upfunctie automatisch uitgezet nadat de app opnieuw is opgestart.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
