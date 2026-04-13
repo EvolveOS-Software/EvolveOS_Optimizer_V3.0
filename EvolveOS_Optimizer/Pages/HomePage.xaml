@@ -209,8 +209,7 @@
                         </TransitionCollection>
                     </uc:DashboardFlowPanel.ChildrenTransitions>
 
-                    <Border x:Name="CardWeather" Style="{StaticResource DashCard}" Padding="15" Margin="0" 
-                            AllowDrop="True" DragOver="DashCard_DragOver">
+                    <Border x:Name="CardWeather" Style="{StaticResource DashCard}" Padding="15" Margin="0" AllowDrop="True" DragOver="DashCard_DragOver">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -220,7 +219,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="290"/>
+                                    <ColumnDefinition Width="294"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0">
                                     <Grid.RowDefinitions>
@@ -293,9 +292,11 @@
                                         </ItemsControl>
                                     </StackPanel>
                                 </Grid>
-                                <Border Grid.Column="1" Width="1" Background="{StaticResource Brush_Inactive}" Opacity="0.3" Margin="10,0,20,0"/>
+
+                                <Border Grid.Column="1" Width="1" Background="{StaticResource Brush_Inactive}" Opacity="0.3" Margin="4,0,22,0"/>
+
                                 <StackPanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                    <CalendarView VerticalAlignment="Center" Background="Transparent" MinWidth="230" Margin="-10,0,-5,0" HorizontalAlignment="Center" PointerEntered="Calendar_MouseEnter" PointerExited="Calendar_MouseLeave"/>
+                                    <CalendarView VerticalAlignment="Center" Background="Transparent" Width="310" Margin="-11,0,-4,0" HorizontalAlignment="Center" PointerEntered="Calendar_MouseEnter" PointerExited="Calendar_MouseLeave"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>
