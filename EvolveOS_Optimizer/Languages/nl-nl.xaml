@@ -997,7 +997,8 @@
     <sys:String x:Key="process_manager_page_pid">PID</sys:String>
     <sys:String x:Key="process_manager_page_actions">Acties</sys:String>
 
-    <sys:String x:Key="process_manager_page_end_task">Taak beëindigen</sys:String>
+    <sys:String x:Key="process_manager_page_start_monitor">Monitoring Hervatten</sys:String>
+    <sys:String x:Key="process_manager_page_live_monitor">Live Monitoring</sys:String>
     <sys:String x:Key="process_manager_page_end_task_tooltip">Proces beëindigen</sys:String>
 
     <sys:String x:Key="process_manager_page_refresh">Vernieuwen</sys:String>

@@ -1012,7 +1012,8 @@
     <sys:String x:Key="process_manager_page_end_task">Termina Attività</sys:String>
     <sys:String x:Key="process_manager_page_end_task_tooltip">Termina Attività</sys:String>
 
-    <sys:String x:Key="process_manager_page_refresh">Aggiorna</sys:String>
+    <sys:String x:Key="process_manager_page_start_monitor">Riprendi monitoraggio</sys:String>
+    <sys:String x:Key="process_manager_page_live_monitor">Monitoraggio live</sys:String>
     <sys:String x:Key="process_manager_page_search_placeholder">Cerca processi...</sys:String>
     <!-- endregion Process Manager Page -->
 

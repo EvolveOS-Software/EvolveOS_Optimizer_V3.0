@@ -1005,7 +1005,8 @@
     <sys:String x:Key="process_manager_page_end_task">Fin de tâche</sys:String>
     <sys:String x:Key="process_manager_page_end_task_tooltip">Arrêter le processus</sys:String>
 
-    <sys:String x:Key="process_manager_page_refresh">Actualiser</sys:String>
+    <sys:String x:Key="process_manager_page_start_monitor">Reprendre la surveillance</sys:String>
+    <sys:String x:Key="process_manager_page_live_monitor">Surveillance en direct</sys:String>
     <sys:String x:Key="process_manager_page_search_placeholder">Rechercher des processus...</sys:String>
     <!-- endregion Process Manager Page -->
 

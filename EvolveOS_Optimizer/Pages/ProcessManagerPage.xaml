@@ -85,13 +85,18 @@
                             HorizontalAlignment="Left"
                             TextChanged="SearchBox_TextChanged"/>
 
-            <Button x:Name="RefreshButton" 
+            <Button x:Name="LiveMonitoringButton"
                     Grid.Column="1"
                     Margin="8,0,0,0"
-                    Click="RefreshButton_Click">
+                    MinWidth="200"
+                    Click="LiveMonitoringButton_Click">
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                    <TextBlock FontFamily="{ThemeResource Jura}" helpers:Loc.Key="process_manager_page_refresh"/>
+                    <FontIcon x:Name="LiveMonitoringIcon"
+                              Glyph="&#xE769;"
+                              FontSize="14"
+                              Foreground="LimeGreen"/>
+                    <TextBlock x:Name="LiveMonitoringText" FontFamily="{ThemeResource Jura}"
+                               helpers:Loc.Key="process_manager_page_live_monitor"/>
                 </StackPanel>
             </Button>
         </Grid>

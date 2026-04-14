@@ -1,6 +1,8 @@
+using System.Collections.ObjectModel;
 using System.Threading;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -8,10 +10,13 @@ public sealed partial class ProcessManagerPage : Page
 {
     #region Fields
     private List<ProcessManagerModel> _allProcesses = [];
-    private List<ProcessManagerModel> _filteredProcesses = [];
+    private readonly ObservableCollection<ProcessManagerModel> _filteredProcesses = [];
+
     private string _currentSort = "Memory";
     private bool _sortAscending;
+    private bool _isUpdating;
 
+    private DispatcherTimer? _refreshTimer;
     private CancellationTokenSource? _cts;
     #endregion
 
@@ -19,23 +24,67 @@ public sealed partial class ProcessManagerPage : Page
     public ProcessManagerPage()
     {
         InitializeComponent();
+        ProcessListView.ItemsSource = _filteredProcesses;
+
         Loaded += ProcessesPage_Loaded;
         Unloaded += ProcessesPage_Unloaded;
+    }
+
+    private async void ProcessesPage_Loaded(object sender, RoutedEventArgs e)
+    {
+        _cts = new CancellationTokenSource();
+
+        await LoadProcessesAsync();
+
+        StartAutoRefresh();
     }
 
     private void ProcessesPage_Unloaded(object sender, RoutedEventArgs e)
     {
         Purge();
     }
+    #endregion
 
-    private async void ProcessesPage_Loaded(object sender, RoutedEventArgs e)
+    #region Auto-Refresh Logic
+    private void StartAutoRefresh()
     {
-        if (_cts == null || _cts.IsCancellationRequested)
-            _cts = new CancellationTokenSource();
+        if (_refreshTimer != null) return;
 
-        await LoadProcessesAsync();
+        _refreshTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+        _refreshTimer.Tick += async (_, _) => await RefreshProcessesAsync();
+        _refreshTimer.Start();
     }
 
+    private void StopAutoRefresh()
+    {
+        _refreshTimer?.Stop();
+        _refreshTimer = null;
+    }
+
+    private async Task RefreshProcessesAsync()
+    {
+        if (_isUpdating || _cts == null || _cts.IsCancellationRequested) return;
+
+        _isUpdating = true;
+        try
+        {
+            _allProcesses = await GetProcessSnapshotAsync(_cts.Token);
+            UpdateSummary();
+            ApplyFilterAndSort();
+        }
+        catch (OperationCanceledException) { /* Ignored */ }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[ProcessManager] Refresh Error: {ex.Message}");
+        }
+        finally
+        {
+            _isUpdating = false;
+        }
+    }
+    #endregion
+
+    #region Data Loading
     private async Task LoadProcessesAsync()
     {
         LoadingRing.IsActive = true;
@@ -45,35 +94,7 @@ public sealed partial class ProcessManagerPage : Page
         try
         {
             var token = _cts?.Token ?? default;
-
-            _allProcesses = await Task.Run(() =>
-            {
-                return Process.GetProcesses()
-                    .Select(p =>
-                    {
-                        if (token.IsCancellationRequested) return null;
-
-                        try
-                        {
-                            return new ProcessManagerModel
-                            {
-                                Name = p.ProcessName,
-                                Id = p.Id,
-                                MemoryMB = p.WorkingSet64 / (1024.0 * 1024.0),
-                                ThreadCount = p.Threads.Count
-                            };
-                        }
-                        catch
-                        {
-                            return new ProcessManagerModel { Name = p.ProcessName, Id = p.Id };
-                        }
-                    })
-                    .OfType<ProcessManagerModel>()
-                    .OrderByDescending(p => p.MemoryMB)
-                    .ToList();
-            }, token);
-
-            if (token.IsCancellationRequested) return;
+            _allProcesses = await GetProcessSnapshotAsync(token);
 
             UpdateSummary();
             ApplyFilterAndSort();
@@ -90,6 +111,34 @@ public sealed partial class ProcessManagerPage : Page
         }
     }
 
+    private static async Task<List<ProcessManagerModel>> GetProcessSnapshotAsync(CancellationToken token)
+    {
+        return await Task.Run(() =>
+        {
+            return Process.GetProcesses()
+                .Select(p =>
+                {
+                    if (token.IsCancellationRequested) return null;
+                    try
+                    {
+                        return new ProcessManagerModel
+                        {
+                            Name = p.ProcessName,
+                            Id = p.Id,
+                            MemoryMB = p.WorkingSet64 / (1024.0 * 1024.0),
+                            ThreadCount = p.Threads.Count
+                        };
+                    }
+                    catch
+                    {
+                        return new ProcessManagerModel { Name = p.ProcessName, Id = p.Id };
+                    }
+                })
+                .OfType<ProcessManagerModel>()
+                .ToList();
+        }, token);
+    }
+
     private void UpdateSummary()
     {
         TotalProcessesText.Text = _allProcesses.Count.ToString();
@@ -103,35 +152,53 @@ public sealed partial class ProcessManagerPage : Page
     {
         var query = SearchBox.Text?.ToLowerInvariant() ?? "";
 
-        _filteredProcesses = string.IsNullOrEmpty(query)
-            ? [.. _allProcesses]
-            : _allProcesses
-                .Where(p => p.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                           p.Id.ToString().Contains(query))
-                .ToList();
+        var filtered = string.IsNullOrEmpty(query)
+            ? _allProcesses
+            : _allProcesses.Where(p => p.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                                       p.Id.ToString().Contains(query)).ToList();
 
-        SortProcesses();
-        ProcessListView.ItemsSource = _filteredProcesses;
+        var sorted = SortProcesses(filtered);
+
+        MergeInto(_filteredProcesses, sorted);
     }
 
-    private void SortProcesses()
+    private List<ProcessManagerModel> SortProcesses(List<ProcessManagerModel> source)
     {
-        _filteredProcesses = _currentSort switch
+        return _currentSort switch
         {
-            "Name" => _sortAscending
-                ? [.. _filteredProcesses.OrderBy(p => p.Name)]
-                : [.. _filteredProcesses.OrderByDescending(p => p.Name)],
-            "PID" => _sortAscending
-                ? [.. _filteredProcesses.OrderBy(p => p.Id)]
-                : [.. _filteredProcesses.OrderByDescending(p => p.Id)],
-            "Memory" => _sortAscending
-                ? [.. _filteredProcesses.OrderBy(p => p.MemoryMB)]
-                : [.. _filteredProcesses.OrderByDescending(p => p.MemoryMB)],
-            "Threads" => _sortAscending
-                ? [.. _filteredProcesses.OrderBy(p => p.ThreadCount)]
-                : [.. _filteredProcesses.OrderByDescending(p => p.ThreadCount)],
-            _ => _filteredProcesses
+            "Name" => _sortAscending ? source.OrderBy(p => p.Name).ToList() : source.OrderByDescending(p => p.Name).ToList(),
+            "PID" => _sortAscending ? source.OrderBy(p => p.Id).ToList() : source.OrderByDescending(p => p.Id).ToList(),
+            "Memory" => _sortAscending ? source.OrderBy(p => p.MemoryMB).ToList() : source.OrderByDescending(p => p.MemoryMB).ToList(),
+            "Threads" => _sortAscending ? source.OrderBy(p => p.ThreadCount).ToList() : source.OrderByDescending(p => p.ThreadCount).ToList(),
+            _ => source
         };
+    }
+
+    private static void MergeInto(ObservableCollection<ProcessManagerModel> target, List<ProcessManagerModel> source)
+    {
+        for (var i = 0; i < source.Count; i++)
+        {
+            if (i < target.Count)
+            {
+                if (target[i].Id == source[i].Id)
+                {
+                    target[i].UpdateFrom(source[i]);
+                }
+                else
+                {
+                    target[i] = source[i];
+                }
+            }
+            else
+            {
+                target.Add(source[i]);
+            }
+        }
+
+        while (target.Count > source.Count)
+        {
+            target.RemoveAt(target.Count - 1);
+        }
     }
     #endregion
 
@@ -154,9 +221,23 @@ public sealed partial class ProcessManagerPage : Page
         }
     }
 
-    private async void RefreshButton_Click(object sender, RoutedEventArgs e)
+    private async void LiveMonitoringButton_Click(object sender, RoutedEventArgs e)
     {
-        await LoadProcessesAsync();
+        if (_refreshTimer?.IsEnabled == true)
+        {
+            StopAutoRefresh();
+            LiveMonitoringIcon.Glyph = "\uE768";
+            LiveMonitoringIcon.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray);
+            LiveMonitoringText.Text = ResourceString.GetString("process_manager_page_start_monitor");
+        }
+        else
+        {
+            await RefreshProcessesAsync();
+            StartAutoRefresh();
+            LiveMonitoringIcon.Glyph = "\uE769";
+            LiveMonitoringIcon.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LimeGreen);
+            LiveMonitoringText.Text = ResourceString.GetString("process_manager_page_live_monitor");
+        }
     }
 
     private async void EndTask_Click(object sender, RoutedEventArgs e)
@@ -182,16 +263,11 @@ public sealed partial class ProcessManagerPage : Page
             {
                 using var process = Process.GetProcessById(processId);
                 process.Kill();
-                process.WaitForExit(5000);
+                process.WaitForExit(3000);
             });
 
-            App.ShowNotification("Process Ended", $"Process '{processName}' (PID: {processId}) was terminated successfully.", InfoBarSeverity.Success, 3000);
-            await LoadProcessesAsync();
-        }
-        catch (ArgumentException)
-        {
-            App.ShowNotification("Process Not Found", $"Process with PID {processId} no longer exists.", InfoBarSeverity.Warning, 3000);
-            await LoadProcessesAsync();
+            App.ShowNotification("Process Ended", $"'{processName}' was terminated successfully.", InfoBarSeverity.Success, 3000);
+            await RefreshProcessesAsync();
         }
         catch (Exception ex)
         {
@@ -206,6 +282,10 @@ public sealed partial class ProcessManagerPage : Page
     {
         Debug.WriteLine("[ProcessManagerPage] Purge initiated...");
 
+        StopAutoRefresh();
+
+        LiveMonitoringButton.Click -= LiveMonitoringButton_Click;
+
         if (_cts != null)
         {
             _cts.Cancel();
@@ -218,7 +298,6 @@ public sealed partial class ProcessManagerPage : Page
 
         _allProcesses?.Clear();
         _filteredProcesses?.Clear();
-
         ProcessListView.ItemsSource = null;
 
         this.DataContext = null;

@@ -1006,7 +1006,8 @@
     <sys:String x:Key="process_manager_page_end_task">Task beenden</sys:String>
     <sys:String x:Key="process_manager_page_end_task_tooltip">Task beenden</sys:String>
 
-    <sys:String x:Key="process_manager_page_refresh">Aktualisieren</sys:String>
+    <sys:String x:Key="process_manager_page_start_monitor">Überwachung fortsetzen</sys:String>
+    <sys:String x:Key="process_manager_page_live_monitor">Live-Überwachung</sys:String>
     <sys:String x:Key="process_manager_page_search_placeholder">Prozesse suchen...</sys:String>
     <!-- endregion Process Manager Page -->
 
