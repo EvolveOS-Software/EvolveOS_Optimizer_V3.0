@@ -401,7 +401,7 @@
     <!-- region Windows Packages (Tab 1) -->
     <sys:String x:Key="warn_part1_pkg">Le app verranno eliminate</sys:String>
     <sys:String x:Key="warn_part2_pkg">per sempre,</sys:String>
-    <sys:String x:Key="warn_part3_pkg">fai doppio clic su un'icona per rimuoverla, o usa la selezione multipla per la rimozione in blocco.</sys:String>
+    <sys:String x:Key="warn_part3_pkg">clic su un'icona per rimuoverla, o usa la selezione multipla per la rimozione in blocco.</sys:String>
 
     <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
     <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
@@ -559,6 +559,7 @@
     <sys:String x:Key="text_over_pkg" xml:space="preserve">Stai per disinstallare il browser Microsoft Edge. Questo rimuoverà anche la componente EdgeWebView, che viene utilizzata per visualizzare contenuti web in varie applicazioni — come Microsoft Office (es. Riunioni, Ricerca sale), l'app Foto (la nuova versione usa WebView2), alcuni bot di Telegram e altri programmi che si basano su WebView integrato. Prima di procedere, assicurati di non aver bisogno di questa componente. 
        Nelle build recenti di Windows 11, Copilot è implementato tramite EdgeWebView come PWA o wrapper di sistema. Quando Edge viene disinstallato, anche Copilot viene rimosso, poiché funziona come un wrapper web.</sys:String>
     <sys:String x:Key="question_over_pkg">Vuoi procedere con l'eliminazione insieme a EdgeWebView?</sys:String>
+    <sys:String x:Key="msg_uninstall_single">Stai per rimuovere {0}.</sys:String>
     <sys:String x:Key="msg_uninstall_bulk">Stai per rimuovere {0} pacchetti selezionati. Questa azione non può essere annullata.</sys:String>
     <sys:String x:Key="question_uninstall">Vuoi procedere con l'eliminazione?</sys:String>
     <sys:String x:Key="notif_bulk_completed">Disinstallazione di massa Completata</sys:String>
@@ -571,6 +572,7 @@
     <sys:String x:Key="tt_remove_selected">Rimuovi Pacchetti Selezionati</sys:String>
     <sys:String x:Key="text_status_active">Attivo</sys:String>
     <sys:String x:Key="title_uninstall">Conferma Disinstallazione</sys:String>
+    <sys:String x:Key="notif_pkg_removed">{0} è stato rimosso con successo.</sys:String>
     <!-- endregion Windows Packages -->
 
     <!-- region Installed Apps (Tab 2) -->

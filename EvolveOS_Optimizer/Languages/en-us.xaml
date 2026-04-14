@@ -401,7 +401,7 @@
     <!-- region Windows Packages (Tab 1) -->
     <sys:String x:Key="warn_part1_pkg">Apps will be deleted</sys:String>
     <sys:String x:Key="warn_part2_pkg">forever,</sys:String>
-    <sys:String x:Key="warn_part3_pkg">double-click an icon to remove it, or use multi-select for bulk removal.</sys:String>
+    <sys:String x:Key="warn_part3_pkg">click an icon to remove it, or use multi-select for bulk removal.</sys:String>
 
     <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
     <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
@@ -559,6 +559,7 @@
     <sys:String x:Key="text_over_pkg" xml:space="preserve">You are about to uninstall the Microsoft Edge browser. This will also remove the EdgeWebView component, which is used to display web content in various applications — such as Microsoft Office (e.g., Meeting Insights, Room Finder), the Photos app (the new version uses WebView2), some Telegram bots, and other programs that rely on embedded WebView. Before proceeding, make sure you do not need this component. 
        In recent builds of Windows 11, Copilot is implemented via EdgeWebView as a PWA or system wrapper. When Edge is uninstalled, Copilot is also removed, since it functions as a web wrapper.</sys:String>
     <sys:String x:Key="question_over_pkg">Would you like to continue deleting along with EdgeWebView?</sys:String>
+    <sys:String x:Key="msg_uninstall_single">You are about to remove {0}.</sys:String>
     <sys:String x:Key="msg_uninstall_bulk">You are about to remove {0} selected packages. This action cannot be undone.</sys:String>
     <sys:String x:Key="question_uninstall">Do you want to proceed with the deletion?</sys:String>
     <sys:String x:Key="notif_bulk_completed">Bulk uninstall Completed</sys:String>
@@ -571,6 +572,7 @@
     <sys:String x:Key="tt_remove_selected">Remove Selected Packages</sys:String>
     <sys:String x:Key="text_status_active">Active</sys:String>
     <sys:String x:Key="title_uninstall">Confirm Uninstallation</sys:String>
+    <sys:String x:Key="notif_pkg_removed">{0} has been successfully removed.</sys:String>
     <!-- endregion Windows Packages -->
 
     <!-- region Installed Apps (Tab 2) -->

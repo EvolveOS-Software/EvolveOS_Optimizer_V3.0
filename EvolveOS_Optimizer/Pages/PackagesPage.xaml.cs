@@ -127,44 +127,54 @@ namespace EvolveOS_Optimizer.Pages
                     return;
                 }
 
-                if (sender is ToggleButton toggleButton)
-                {
-                    string packageName = toggleButton.Name;
-                    bool currentlyChecked = toggleButton.IsChecked.GetValueOrDefault();
+                e.Handled = true;
 
-                    if (!currentlyChecked && packageName == "OneDrive")
-                    {
-                        await HandleOneDriveRestore(packageName);
-                    }
-                    else if (currentlyChecked)
+                string packageName = model.Name;
+                bool isInstalled = model.Installed == true;
+
+                if (!isInstalled && packageName == "OneDrive")
+                {
+                    await HandleOneDriveRestore(packageName);
+                }
+                else if (isInstalled)
+                {
+                    if (App.MainWindow is MainWindow mainWindow)
                     {
                         if (packageName == "Edge")
                         {
-                            if (App.MainWindow is MainWindow mainWindow)
-                            {
-                                mainWindow.TxtGlobalTitle.Text = ResourceString.GetString("title_over_pkg") ?? "Uninstallation confirmation";
-                                mainWindow.TxtGlobalMessage.Text = ResourceString.GetString("text_over_pkg") ?? "Edge Removal Warning...";
-                                mainWindow.TxtGlobalQuestion.Text = ResourceString.GetString("question_over_pkg") ?? "Continue deleting Edge + WebView?";
-
-                                OverlayDialogManager dialogManager = new OverlayDialogManager(
-                                    mainWindow.GlobalOverlay,
-                                    mainWindow.BtnGlobalDelete,
-                                    mainWindow.BtnGlobalCancel);
-
-                                _isWebViewRemoval = await dialogManager.Show();
-
-                                if (_isWebViewRemoval) await HandlePackageRemoval(packageName);
-                            }
+                            mainWindow.TxtGlobalTitle.Text = ResourceString.GetString("title_over_pkg") ?? "Uninstallation confirmation";
+                            mainWindow.TxtGlobalMessage.Text = ResourceString.GetString("text_over_pkg") ?? "Edge Removal Warning...";
+                            mainWindow.TxtGlobalQuestion.Text = ResourceString.GetString("question_over_pkg") ?? "Continue deleting Edge + WebView?";
                         }
                         else
                         {
-                            _isWebViewRemoval = false;
+                            mainWindow.TxtGlobalTitle.Text = ResourceString.GetString("title_uninstall") ?? "Confirm Uninstallation";
+
+                            string friendlyAppName = ResourceString.GetString($"{packageName}_pkg");
+                            if (string.IsNullOrEmpty(friendlyAppName) || friendlyAppName.StartsWith("[Missing"))
+                                friendlyAppName = packageName;
+
+                            string baseMsg = ResourceString.GetString("msg_uninstall_single") ?? "You are about to remove {0}.";
+                            mainWindow.TxtGlobalMessage.Text = string.Format(baseMsg, friendlyAppName);
+                            mainWindow.TxtGlobalQuestion.Text = ResourceString.GetString("question_uninstall") ?? "Proceed?";
+                        }
+
+                        OverlayDialogManager dialogManager = new OverlayDialogManager(
+                            mainWindow.GlobalOverlay,
+                            mainWindow.BtnGlobalDelete,
+                            mainWindow.BtnGlobalCancel);
+
+                        bool confirmed = await dialogManager.Show();
+
+                        if (confirmed)
+                        {
+                            _isWebViewRemoval = (packageName == "Edge");
                             await HandlePackageRemoval(packageName);
                         }
                     }
-
-                    SyncVisualStates();
                 }
+
+                SyncVisualStates();
             }
         }
 
@@ -266,8 +276,10 @@ namespace EvolveOS_Optimizer.Pages
                 await _backgroundQueue.QueueTask(async () =>
                 {
                     this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, true); });
+
                     await UninstallingPackages.RemoveAppxPackage(packageName, removeWebView);
                     await Task.Delay(2000);
+
                     this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, false); });
 
                     this.DispatcherQueue?.TryEnqueue(() =>
@@ -439,7 +451,8 @@ namespace EvolveOS_Optimizer.Pages
         private async Task HandlePackageRemoval(string packageName)
         {
             var vm = this.DataContext as PackagesViewModel;
-            var targetPackage = vm?[packageName];
+
+            if (_timer != null) _timer.Stop();
 
             await _backgroundQueue.QueueTask(async () =>
             {
@@ -452,25 +465,70 @@ namespace EvolveOS_Optimizer.Pages
 
                 await Task.Delay(3000);
 
+                _uninstalling.GetInstalledPackages();
+
                 this.DispatcherQueue?.TryEnqueue(() =>
                 {
-                    if (!this.IsLoaded) return;
+                    if (!this.IsLoaded || vm == null || HcPanel == null)
+                    {
+                        if (_timer != null) _timer.Start();
+                        return;
+                    }
 
                     UninstallingPackages.HandleAvailabilityStatus(packageName, false);
-
-                    if (targetPackage != null)
-                    {
-                        targetPackage.IsSelected = false;
-                        targetPackage.Installed = false;
-                    }
 
                     if (ExplorerManager.PackageMapping.TryGetValue(packageName, out bool needRestart) && needRestart)
                     {
                         ExplorerManager.Restart();
                     }
 
+                    bool isCurrentlyInstalled = UninstallingPackages.InstalledPackagesCache.Contains(packageName);
+
+                    foreach (var child in HcPanel.Children)
+                    {
+                        var card = child as ContentControl;
+                        if (card != null && card.DataContext is PackagesModel model && model.Name == packageName)
+                        {
+                            model.Installed = isCurrentlyInstalled;
+                            model.IsSelected = false;
+
+                            try { model.OnPropertyChanged(nameof(model.Installed)); } catch { }
+
+                            if (!isCurrentlyInstalled)
+                            {
+                                VisualStateManager.GoToState(card, "Unselected", false);
+                                _currentCardStates[model.Name] = "Unselected";
+
+                                var tb = card.Content as ToggleButton;
+                                if (tb != null)
+                                {
+                                    tb.IsChecked = false;
+
+                                    VisualStateManager.GoToState(tb, "Unchecked", true);
+                                    VisualStateManager.GoToState(tb, "Normal", true);
+
+                                    var iconImage = UIHelper.FindVisualChildByName<Image>(tb, "Icon");
+                                    if (iconImage != null)
+                                    {
+                                        iconImage.Opacity = 0.4;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+
                     UninstallingPackages.OnPackagesChanged();
                     SyncVisualStates();
+
+                    string friendlyAppName = ResourceString.GetString($"{packageName}_pkg");
+                    if (string.IsNullOrEmpty(friendlyAppName) || friendlyAppName.StartsWith("[Missing"))
+                        friendlyAppName = packageName;
+
+                    string removedMsg = ResourceString.GetString("notif_pkg_removed") ?? "{0} has been successfully removed.";
+                    NotificationManager.Show("info", string.Format(removedMsg, friendlyAppName)).Perform();
+
+                    if (_timer != null) _timer.Start();
                 });
             });
         }

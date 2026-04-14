@@ -395,7 +395,7 @@
     <!-- region Windows Packages (Tab 1) -->
     <sys:String x:Key="warn_part1_pkg">Apps werden</sys:String>
     <sys:String x:Key="warn_part2_pkg">für immer gelöscht,</sys:String>
-    <sys:String x:Key="warn_part3_pkg">doppelklicken Sie auf ein Symbol, um es zu entfernen, oder verwenden Sie die Mehrfachauswahl für das massenhafte Löschen.</sys:String>
+    <sys:String x:Key="warn_part3_pkg">klicken Sie auf ein Symbol, um es zu entfernen, oder verwenden Sie die Mehrfachauswahl für das massenhafte Löschen.</sys:String>
 
     <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
     <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
@@ -553,6 +553,7 @@
     <sys:String x:Key="text_over_pkg" xml:space="preserve">Sie sind dabei, den Microsoft Edge-Browser zu deinstallieren. Dadurch wird auch die EdgeWebView-Komponente entfernt, die zum Anzeigen von Webinhalten in verschiedenen Anwendungen verwendet wird — wie z.B. in Microsoft Office (z.B. Besprechungseinblicke, Raumsuche), der Fotos-App (die neue Version verwendet WebView2), einigen Telegram-Bots und anderen Programmen, die auf eingebettetes WebView angewiesen sind. Bevor Sie fortfahren, stellen Sie sicher, dass Sie diese Komponente nicht benötigen. 
        In aktuellen Builds von Windows 11 wird Copilot über EdgeWebView als PWA oder System-Wrapper implementiert. Wenn Edge deinstalliert wird, wird auch Copilot entfernt, da es als Web-Wrapper fungiert.</sys:String>
     <sys:String x:Key="question_over_pkg">Möchten Sie mit dem Löschen zusammen mit EdgeWebView fortfahren?</sys:String>
+    <sys:String x:Key="msg_uninstall_single">Sie sind dabei, {0} zu entfernen.</sys:String>
     <sys:String x:Key="msg_uninstall_bulk">Sie sind dabei, die {0} ausgewählten Pakete zu entfernen. Diese Aktion kann nicht rückgängig gemacht werden.</sys:String>
     <sys:String x:Key="question_uninstall">Möchten Sie mit dem Löschen fortfahren?</sys:String>
     <sys:String x:Key="notif_bulk_completed">Massen-Deinstallation abgeschlossen</sys:String>
@@ -565,6 +566,7 @@
     <sys:String x:Key="tt_remove_selected">Ausgewählte Pakete entfernen</sys:String>
     <sys:String x:Key="text_status_active">Aktiv</sys:String>
     <sys:String x:Key="title_uninstall">Deinstallation bestätigen</sys:String>
+    <sys:String x:Key="notif_pkg_removed">{0} wurde erfolgreich entfernt.</sys:String>
     <!-- endregion Windows Packages -->
 
     <!-- region Installed Apps (Tab 2) -->

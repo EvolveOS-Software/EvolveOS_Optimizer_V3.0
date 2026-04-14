@@ -395,7 +395,7 @@
     <!-- region Windows Packages (Tab 1) -->
     <sys:String x:Key="warn_part1_pkg">Apps worden verwijderd</sys:String>
     <sys:String x:Key="warn_part2_pkg">voor altijd,</sys:String>
-    <sys:String x:Key="warn_part3_pkg">dubbelklik om te verwijderen, of gebruik multiselectie voor bulkverwijdering.</sys:String>
+    <sys:String x:Key="warn_part3_pkg">klik om te verwijderen, of gebruik multiselectie voor bulkverwijdering.</sys:String>
 
     <sys:String x:Key="MicrosoftStore_pkg">Microsoft Store</sys:String>
     <sys:String x:Key="Xbox_pkg">Microsoft Xbox</sys:String>
@@ -551,6 +551,7 @@
     <sys:String x:Key="text_over_pkg" xml:space="preserve">U staat op het punt de Microsoft Edge-browser te verwijderen. Hiermee wordt ook de EdgeWebView-component verwijderd, die wordt gebruikt om webinhoud weer te geven in verschillende toepassingen — zoals Microsoft Office (bijv. Meeting Insights, Room Finder), de Foto's-app (de nieuwe versie gebruikt WebView2), sommige Telegram-bots en andere programma's die afhankelijk zijn van embedded WebView. Voordat u verdergaat, moet u er zeker van zijn dat u deze component niet nodig hebt.
     In recente builds van Windows 11 is Copilot geïmplementeerd via EdgeWebView als een PWA of systeemwrapper. Wanneer Edge wordt verwijderd, wordt Copilot ook verwijderd, omdat het functioneert als een webwrapper.</sys:String>
     <sys:String x:Key="question_over_pkg">Wilt u doorgaan met verwijderen samen met EdgeWebView?</sys:String>
+    <sys:String x:Key="msg_uninstall_single">Je staat op het punt {0} te verwijderen.</sys:String>
     <sys:String x:Key="msg_uninstall_bulk">U staat op het punt om {0} geselecteerde pakketten te verwijderen. Deze actie kan niet ongedaan worden gemaakt.</sys:String>
     <sys:String x:Key="question_uninstall">Wilt u doorgaan met de verwijdering?</sys:String>
     <sys:String x:Key="notif_bulk_completed">Batchgewijze verwijdering voltooid</sys:String>
@@ -563,6 +564,7 @@
     <sys:String x:Key="tt_remove_selected">Geselecteerde pakketten verwijderen</sys:String>
     <sys:String x:Key="text_status_active">Actief</sys:String>
     <sys:String x:Key="title_uninstall">Verwijdering bevestigen</sys:String>
+    <sys:String x:Key="notif_pkg_removed">{0} is succesvol verwijderd.</sys:String>
     <!-- endregion Windows Packages -->
 
     <!-- region Installed Apps (Tab 2) -->

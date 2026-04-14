@@ -182,7 +182,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 if (!token.IsCancellationRequested)
                 {
                     await CommandExecutor.RunCommand($@"/c rd /s /q %userprofile%\AppData\Local\Microsoft\OneDrive & rd /s /q %userprofile%\AppData\Local\OneDrive & 
-                    rd /s /q ""%allusersprofile%\Microsoft OneDrive"" & rd /s /q {PathLocator.Folders.SystemDrive}OneDriveTemp{(_isLocalAccount ? @" & rd /s /q %userprofile%\OneDrive" : "")}");
+                        rd /s /q ""%allusersprofile%\Microsoft OneDrive"" & rd /s /q {PathLocator.Folders.SystemDrive}OneDriveTemp{(_isLocalAccount ? @" & rd /s /q %userprofile%\OneDrive" : "")}");
                 }
                 return;
             }
@@ -204,18 +204,130 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
                 if (token.IsCancellationRequested) return;
 
-                string psCommands = $@"$pattern = '{string.Join("|", packageNamesToRemove.Select(Regex.Escape))}'
-                    Get-AppxPackage -AllUsers | Where-Object {{ $_.Name -match $pattern }} | ForEach-Object {{ Remove-AppxPackage -AllUsers -Package $_.PackageFullName }}
-                    Get-AppxProvisionedPackage -Online | Where-Object {{ $_.PackageName -match $pattern }} | ForEach-Object {{ Remove-AppxProvisionedPackage -Online -PackageName $_.PackageName -AllUsers}}";
+                try
+                {
+                    string killCmd = $@"/c taskkill /f /im ""{packageName}.exe"" /t";
+                    if (!string.IsNullOrWhiteSpace(alias)) killCmd += $@" & taskkill /f /im ""{alias}.exe"" /t";
+
+                    if (packageName == "PowerToys")
+                    {
+                        killCmd += @" & taskkill /f /im ""PowerToys.exe"" /t & taskkill /f /im ""PowerToys.Settings.exe"" /t & taskkill /f /im ""PowerToys.Awake.exe"" /t & taskkill /f /im ""PowerToys.ColorPickerUI.exe"" /t";
+                    }
+
+                    await CommandExecutor.RunCommand(killCmd).ConfigureAwait(false);
+                }
+                catch (Exception ex) { ErrorLogging.LogDebug($"Taskkill ignored: {ex.Message}"); }
+
+                if (token.IsCancellationRequested) return;
+
+                string psCommands = $@"$pattern = '{string.Join("|", packageNamesToRemove.Select(Regex.Escape))}'; " +
+                                    $@"Get-AppxPackage -AllUsers | Where-Object {{ $_.Name -match $pattern }} | ForEach-Object {{ Remove-AppxPackage -AllUsers -Package $_.PackageFullName }}; " +
+                                    $@"Get-AppxProvisionedPackage -Online | Where-Object {{ $_.PackageName -match $pattern }} | ForEach-Object {{ Remove-AppxProvisionedPackage -Online -PackageName $_.PackageName -AllUsers }}";
+
+                if (packageName == "PowerToys")
+                {
+                    psCommands += $@"; Get-Package -Name ""*PowerToys*"" -ErrorAction SilentlyContinue | Uninstall-Package -AllVersions -Force -ErrorAction SilentlyContinue";
+                }
 
                 await CommandExecutor.InvokeRunCommand(psCommands, true).ConfigureAwait(false);
 
-                if (!token.IsCancellationRequested)
+                if (token.IsCancellationRequested) return;
+
+                try
                 {
-                    await CommandExecutor.RunCommandAsTrustedInstaller($@"/c for /d %i in ({string.Join(" ", packageNamesToRemove.Select(n => $@"""{Path.Combine(PathLocator.Folders.SystemDrive, "Program Files", "WindowsApps")}\*{n}*"""))}) do takeown /f ""%i"" /r /d y && icacls ""%i"" /inheritance:r /remove S-1-5-32-544 S-1-5-11 S-1-5-32-545 S-1-5-18 && icacls ""%i"" /grant {Environment.UserName}:F && rd /s /q ""%i""");
+                    string windowsAppsBase = Path.Combine(PathLocator.Folders.SystemDrive, "Program Files", "WindowsApps");
+
+                    if (Directory.Exists(windowsAppsBase))
+                    {
+                        foreach (var pkgName in packageNamesToRemove)
+                        {
+                            try
+                            {
+                                var matchingDirs = Directory.GetDirectories(windowsAppsBase, $"*{pkgName}*");
+                                foreach (var dir in matchingDirs)
+                                {
+                                    UnlockHandleHelper.UnlockDirectory(dir);
+                                }
+                            }
+                            catch { /* Ignore access denied errors during search */ }
+                        }
+                    }
+
+                    string wipeCommand = $@"/c for /d %i in ({string.Join(" ", packageNamesToRemove.Select(n => $@"""{windowsAppsBase}\*{n}*"""))}) do ( takeown /f ""%i"" /r /d y && icacls ""%i"" /inheritance:r /remove S-1-5-32-544 S-1-5-11 S-1-5-32-545 S-1-5-18 && icacls ""%i"" /grant {Environment.UserName}:F && rd /s /q ""%i"" )";
+
+                    if (packageName == "PowerToys")
+                    {
+                        string localAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PowerToys");
+                        string localAppDataMicrosoft = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "PowerToys");
+                        string programFiles = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "PowerToys");
+
+                        UnlockHandleHelper.UnlockDirectory(localAppData);
+                        UnlockHandleHelper.UnlockDirectory(localAppDataMicrosoft);
+                        UnlockHandleHelper.UnlockDirectory(programFiles);
+
+                        try { if (Directory.Exists(localAppData)) Directory.Delete(localAppData, true); } catch { }
+                        try { if (Directory.Exists(localAppDataMicrosoft)) Directory.Delete(localAppDataMicrosoft, true); } catch { }
+                        try { if (Directory.Exists(programFiles)) Directory.Delete(programFiles, true); } catch { }
+
+                        wipeCommand += $@" & takeown /f ""{localAppData}"" /r /d y & icacls ""{localAppData}"" /grant {Environment.UserName}:F /t & rd /s /q ""{localAppData}""";
+                        wipeCommand += $@" & takeown /f ""{localAppDataMicrosoft}"" /r /d y & icacls ""{localAppDataMicrosoft}"" /grant {Environment.UserName}:F /t & rd /s /q ""{localAppDataMicrosoft}""";
+                        wipeCommand += $@" & takeown /f ""{programFiles}"" /r /d y & icacls ""{programFiles}"" /grant {Environment.UserName}:F /t & rd /s /q ""{programFiles}""";
+                    }
+
+                    await CommandExecutor.RunCommandAsTrustedInstaller(wipeCommand);
+
                 }
+                catch (Exception ex) { ErrorLogging.LogDebug($"TrustedInstaller wipe error: {ex.Message}"); }
+
+                if (token.IsCancellationRequested) return;
+
+                try
+                {
+                    string[] uninstallPaths = new[]
+                    {
+                        @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
+                        @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+                    };
+
+                    foreach (string path in uninstallPaths)
+                    {
+                        using RegistryKey? key = Registry.LocalMachine.OpenSubKey(path, true);
+                        if (key != null)
+                        {
+                            foreach (string subKeyName in key.GetSubKeyNames())
+                            {
+                                using RegistryKey? subKey = key.OpenSubKey(subKeyName);
+                                string? displayName = subKey?.GetValue("DisplayName") as string;
+
+                                if (!string.IsNullOrEmpty(displayName) && displayName.Contains(packageName, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    key.DeleteSubKeyTree(subKeyName, false);
+                                }
+                            }
+                        }
+                    }
+
+                    using RegistryKey? cuKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", true);
+                    if (cuKey != null)
+                    {
+                        foreach (string subKeyName in cuKey.GetSubKeyNames())
+                        {
+                            using RegistryKey? subKey = cuKey.OpenSubKey(subKeyName);
+                            string? displayName = subKey?.GetValue("DisplayName") as string;
+
+                            if (!string.IsNullOrEmpty(displayName) && displayName.Contains(packageName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                cuKey.DeleteSubKeyTree(subKeyName, false);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex) { ErrorLogging.LogDebug($"Ghost registry cleanup failed: {ex.Message}"); }
             }
-            catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug($"Critical uninstallation failure: {ex.Message}");
+            }
 
             if (token.IsCancellationRequested) return;
 
@@ -364,16 +476,16 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                                 using RegistryKey? subKeyEntry = key.OpenSubKey(subKey);
                                 string? path = subKeyEntry?.GetValue("Path") as string;
 
-                                if (!string.IsNullOrEmpty(path) && path.Equals("Edge"))
+                                if (!string.IsNullOrEmpty(path) && path.Contains("Edge", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    if (!shouldRemoveWebView && path.Contains("WebView"))
+                                    if (!shouldRemoveWebView && path.Contains("WebView", StringComparison.OrdinalIgnoreCase))
                                     {
                                         continue;
                                     }
 
                                     if (path.EndsWith(@"\AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
                                     {
-                                        path = path.Replace(@"\AppxManifest.xml", "").Trim();
+                                        path = path.Replace(@"\AppxManifest.xml", "", StringComparison.OrdinalIgnoreCase).Trim();
                                     }
 
                                     await RemoveDirectoryAsync(path);
