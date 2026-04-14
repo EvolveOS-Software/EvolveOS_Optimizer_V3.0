@@ -40,6 +40,7 @@ namespace EvolveOS_Optimizer.Pages
         private int _currentProcessId;
         public int selectedCount = 0;
         private string? _pendingScrollTarget;
+        private int _sfcPrefaceLinesSkipped;
         #endregion
 
         #region Constructor & Initialization
@@ -131,9 +132,9 @@ namespace EvolveOS_Optimizer.Pages
 
             var commands = new[]
             {
-                (DismCheckBox, "DISM", isRepair ? "/Online /Cleanup-Image /RestoreHealth" : "/Online /Cleanup-Image /ScanHealth"),
-                (SfcCheckBox, "SFC", isRepair ? "/scannow" : "/verifyonly"),
-                (ChkdskCheckBox, "CHKDSK", isRepair ? "/f" : "")
+                (DismCheckBox, "DISM", isRepair ? "/Online /Cleanup-Image /RestoreHealth" : "/Online /Cleanup-Image /ScanHealth", string.Empty),
+                (SfcCheckBox, "SFC", isRepair ? "/scannow" : "/verifyonly", string.Empty),
+                (ChkdskCheckBox, "CHKDSK", isRepair ? "/f" : "", "echo Y|chkdsk {DriveRoot} /f")
             };
 
             var current = 0;
@@ -143,7 +144,7 @@ namespace EvolveOS_Optimizer.Pages
 
             try
             {
-                foreach (var (checkBox, name, args) in commands)
+                foreach (var (checkBox, name, args, scheduleTemplate) in commands)
                 {
                     if (ct.IsCancellationRequested)
                     {
@@ -162,6 +163,24 @@ namespace EvolveOS_Optimizer.Pages
 
                         StatusTextBlock.Text = string.Format(formatString, current, selectedCount, name);
                         ProgressBar.Value = 0;
+
+                        if (name == "CHKDSK" && isRepair)
+                        {
+                            var driveRoot = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.Windows))?.TrimEnd('\\') ?? "C:";
+
+                            App.ShowNotification(ResourceString.GetString("Repair"), ResourceString.GetString("ScheduledLater"), InfoBarSeverity.Success, 5000);
+
+                            ChkdskCheckBox.IsEnabled = false;
+                            _scanResults[name].Clear();
+                            _scanResults[name].AppendLine(ResourceString.GetString("ScheduledLater"));
+
+                            if (!string.IsNullOrEmpty(scheduleTemplate))
+                            {
+                                var scheduleCmd = scheduleTemplate.Replace("{DriveRoot}", driveRoot);
+                                await CommandExecutor.StartInCmd(scheduleCmd);
+                            }
+                            continue;
+                        }
 
                         try
                         {
@@ -199,27 +218,27 @@ namespace EvolveOS_Optimizer.Pages
                 else if (hasError)
                 {
                     App.ShowNotification(ResourceString.GetString("Repair"), ResourceString.GetString("UnexpectedError"), InfoBarSeverity.Error, 5000);
-
-                    if (selectedNames.Count > 0)
-                    {
-                        await ShowScanResultsDialogAsync(selectedNames);
-                    }
+                    if (selectedNames.Count > 0) await ShowScanResultsDialogAsync(selectedNames);
                 }
                 else
                 {
                     App.ShowNotification(ResourceString.GetString("Repair"), ResourceString.GetString("OperationCompleted"), InfoBarSeverity.Success, 5000);
-
-                    if (selectedNames.Count > 0)
-                    {
-                        await ShowScanResultsDialogAsync(selectedNames);
-                    }
+                    if (selectedNames.Count > 0) await ShowScanResultsDialogAsync(selectedNames);
                 }
+
+                _cancellationTokenSource?.Dispose();
+                _cancellationTokenSource = null;
             }
         }
 
         private async Task RunCommandAsync(string name, string args, CancellationToken ct)
         {
             _scanResults[name].Clear();
+
+            if (name == "SFC")
+            {
+                _sfcPrefaceLinesSkipped = 0;
+            }
 
             var toolExecutable = name switch
             {
@@ -378,11 +397,20 @@ namespace EvolveOS_Optimizer.Pages
 
             UpdateProgress(name, line);
 
+            if (name == "DISM")
+            {
+                line = Regex.Replace(line, @"\[\s*[= ]*\s*\d+(?:[\.,]\d+)?%\s*[= ]*\]\s*", string.Empty).Trim();
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    return;
+                }
+            }
+
             var isProgress = name switch
             {
-                "DISM" => Regex.IsMatch(line, @"\[\s*[= ]*\s*(\d+(\.\d+)?)%\s*[= ]*\]"),
-                "SFC" => Regex.IsMatch(line, @"^\s*(\d+)\s*%\s*$"),
-                "CHKDSK" => Regex.IsMatch(line, @"Total:\s*(\d+)%", RegexOptions.IgnoreCase),
+                "DISM" => Regex.IsMatch(line, @"^\s*\[\s*[= ]*\s*(\d+(\.\d+)?)%\s*[= ]*\]\s*$"),
+                "SFC" => Regex.IsMatch(line, @"^\s*[^\d\r\n]*?(\d{1,3}(?:[\.,]\d+)?)\s*%\s*[^\d\r\n]*$"),
+                "CHKDSK" => Regex.IsMatch(line, @"^\s*[^\d\r\n]*?(\d{1,3}(?:[\.,]\d+)?)\s*%\s*[^\d\r\n]*$"),
                 _ => false
             };
 
@@ -391,15 +419,13 @@ namespace EvolveOS_Optimizer.Pages
                 return;
             }
 
-            if (name == "SFC" || name == "DISM")
+            if (name == "SFC" && _sfcPrefaceLinesSkipped < 2)
             {
-                _scanResults[name].Clear();
-                _scanResults[name].AppendLine(line);
+                _sfcPrefaceLinesSkipped++;
+                return;
             }
-            else
-            {
-                _scanResults[name].AppendLine(line);
-            }
+
+            _scanResults[name].AppendLine(line);
         }
 
         private void UpdateProgress(string commandName, string data)
@@ -429,15 +455,18 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         percentage = int.Parse(match.Groups[1].Value);
                     }
+                    else { }
                 }
                 else if (commandName == "CHKDSK")
                 {
-                    var match = Regex.Match(data, @"Total:\s*(\d+)%", RegexOptions.IgnoreCase);
+                    var match = Regex.Match(data, @"(\d+(?:[\.,]\d+)?)\s*%", RegexOptions.IgnoreCase);
 
                     if (match.Success)
                     {
-                        percentage = int.Parse(match.Groups[1].Value);
+                        var percentageText = match.Groups[1].Value.Replace(',', '.');
+                        percentage = (int)Math.Round(double.Parse(percentageText, CultureInfo.InvariantCulture));
                     }
+                    else { }
                 }
 
                 if (percentage > 0 && percentage <= 100)

@@ -60,7 +60,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 using var process = Process.GetProcessById(processId);
 
-                var readTask = ReadOutputAsync(outputRead, outputCallback, ct);
+                var outputEncoding = await ConsoleEncodingHelper.GetOemConsoleEncodingAsync();
+                var readTask = ReadOutputAsync(outputRead, outputEncoding, outputCallback, ct);
 
                 try
                 {
@@ -96,10 +97,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
-        private static async Task ReadOutputAsync(SafeFileHandle handle, Action<string> callback, CancellationToken ct)
+        private static async Task ReadOutputAsync(SafeFileHandle handle, Encoding encoding, Action<string> callback, CancellationToken ct)
         {
             using var stream = new FileStream(handle, FileAccess.Read, 4096, false);
-            using var reader = new StreamReader(stream, Encoding.UTF8);
+            using var reader = new StreamReader(stream, encoding);
 
             var buffer = new char[256];
             var line = new StringBuilder();
