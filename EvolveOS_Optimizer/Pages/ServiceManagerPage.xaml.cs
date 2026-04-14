@@ -1,6 +1,8 @@
+using System.Collections.ObjectModel;
 using System.ServiceProcess;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Win32;
 using static EvolveOS_Optimizer.Core.Enums;
 
@@ -10,29 +12,103 @@ public sealed partial class ServiceManagerPage : Page
 {
     #region Fields
     private List<ServiceManagerModel> _allServices = [];
-    private List<ServiceManagerModel> _filteredServices = [];
+    private readonly ObservableCollection<ServiceManagerModel> _filteredServices = [];
+
     private string _currentSort = "Name";
     private bool _sortAscending = true;
     private string _currentFilter = "All";
     private bool _isLoaded;
     private bool _isUpdatingStartupType;
     private HashSet<ComboBox> _userInteractedComboBoxes = [];
+
+    private DispatcherTimer? _refreshTimer;
+    private bool _isUpdating;
     #endregion
 
     #region Constructor & Lifecycle
     public ServiceManagerPage()
     {
         InitializeComponent();
+        ServicesListView.ItemsSource = _filteredServices;
 
         Loaded += ServicesPage_Loaded;
+        Unloaded += ServicesPage_Unloaded;
     }
 
     private async void ServicesPage_Loaded(object sender, RoutedEventArgs e)
     {
         _isLoaded = true;
         await LoadServicesAsync();
+        StartAutoRefresh();
     }
 
+    private void ServicesPage_Unloaded(object sender, RoutedEventArgs e)
+    {
+        Purge();
+    }
+    #endregion
+
+    #region Live Monitoring Logic
+    private void StartAutoRefresh()
+    {
+        if (_refreshTimer != null) return;
+
+        _refreshTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+        _refreshTimer.Tick += async (_, _) => await RefreshServicesAsync();
+        _refreshTimer.Start();
+    }
+
+    private void StopAutoRefresh()
+    {
+        _refreshTimer?.Stop();
+        _refreshTimer = null;
+    }
+
+    private async Task RefreshServicesAsync()
+    {
+        if (_isUpdating) return;
+
+        _isUpdating = true;
+        try
+        {
+            await FetchServicesDataAsync();
+            UpdateSummary();
+            ApplyFilterAndSort();
+        }
+        finally
+        {
+            _isUpdating = false;
+        }
+    }
+
+    private async Task FetchServicesDataAsync()
+    {
+        _allServices = await Task.Run(() =>
+        {
+            return ServiceController.GetServices()
+                .Select(s =>
+                {
+                    var startType = GetServiceStartType(s.ServiceName);
+                    var isRunning = s.Status == ServiceControllerStatus.Running;
+                    var canStop = s.Status == ServiceControllerStatus.Running && s.CanStop;
+
+                    return new ServiceManagerModel
+                    {
+                        Name = s.ServiceName,
+                        DisplayName = s.DisplayName,
+                        Status = s.Status.ToString(),
+                        StartType = startType,
+                        CanStart = !isRunning && startType != "Disabled",
+                        CanStop = canStop
+                    };
+                })
+                .OrderBy(s => s.DisplayName)
+                .ToList();
+        });
+    }
+    #endregion
+
+    #region Loading Logic
     private async Task LoadServicesAsync()
     {
         LoadingRing.IsActive = true;
@@ -41,29 +117,7 @@ public sealed partial class ServiceManagerPage : Page
 
         try
         {
-            _allServices = await Task.Run(() =>
-            {
-                return ServiceController.GetServices()
-                    .Select(s =>
-                    {
-                        var startType = GetServiceStartType(s.ServiceName);
-                        var isRunning = s.Status == ServiceControllerStatus.Running;
-                        var canStop = s.Status == ServiceControllerStatus.Running && s.CanStop;
-
-                        return new ServiceManagerModel
-                        {
-                            Name = s.ServiceName,
-                            DisplayName = s.DisplayName,
-                            Status = s.Status.ToString(),
-                            StartType = startType,
-                            CanStart = !isRunning && startType != "Disabled",
-                            CanStop = canStop
-                        };
-                    })
-                    .OrderBy(s => s.DisplayName)
-                    .ToList();
-            });
-
+            await FetchServicesDataAsync();
             UpdateSummary();
             ApplyFilterAndSort();
         }
@@ -97,7 +151,7 @@ public sealed partial class ServiceManagerPage : Page
 
         var query = SearchBox.Text?.ToLowerInvariant() ?? "";
 
-        _filteredServices = _allServices.Where(s =>
+        var filtered = _allServices.Where(s =>
         {
             var matchesFilter = _currentFilter switch
             {
@@ -116,31 +170,78 @@ public sealed partial class ServiceManagerPage : Page
             return matchesFilter && matchesSearch;
         }).ToList();
 
-        SortServices();
+        var sorted = SortServices(filtered);
 
-        ServicesListView.ItemsSource = _filteredServices;
+        MergeInto(_filteredServices, sorted);
+
         ResultsText.Text = $"Showing {_filteredServices.Count} of {_allServices.Count} services";
     }
 
-    private void SortServices()
+    private List<ServiceManagerModel> SortServices(List<ServiceManagerModel> source)
     {
-        _filteredServices = _currentSort switch
+        return _currentSort switch
         {
             "Name" => _sortAscending
-                ? [.. _filteredServices.OrderBy(s => s.DisplayName)]
-                : [.. _filteredServices.OrderByDescending(s => s.DisplayName)],
+                ? [.. source.OrderBy(s => s.DisplayName)]
+                : [.. source.OrderByDescending(s => s.DisplayName)],
             "Status" => _sortAscending
-                ? [.. _filteredServices.OrderBy(s => s.Status)]
-                : [.. _filteredServices.OrderByDescending(s => s.Status)],
+                ? [.. source.OrderBy(s => s.Status)]
+                : [.. source.OrderByDescending(s => s.Status)],
             "StartType" => _sortAscending
-                ? [.. _filteredServices.OrderBy(s => s.StartType)]
-                : [.. _filteredServices.OrderByDescending(s => s.StartType)],
-            _ => _filteredServices
+                ? [.. source.OrderBy(s => s.StartType)]
+                : [.. source.OrderByDescending(s => s.StartType)],
+            _ => source
         };
+    }
+
+    private static void MergeInto(ObservableCollection<ServiceManagerModel> target, List<ServiceManagerModel> source)
+    {
+        for (var i = 0; i < source.Count; i++)
+        {
+            if (i < target.Count)
+            {
+                if (target[i].Name == source[i].Name)
+                {
+                    target[i].UpdateFrom(source[i]);
+                }
+                else
+                {
+                    target[i] = source[i];
+                }
+            }
+            else
+            {
+                target.Add(source[i]);
+            }
+        }
+
+        while (target.Count > source.Count)
+        {
+            target.RemoveAt(target.Count - 1);
+        }
     }
     #endregion
 
     #region UI Event Handlers
+    private async void LiveMonitoringButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_refreshTimer?.IsEnabled == true)
+        {
+            StopAutoRefresh();
+            LiveMonitoringIcon.Glyph = "\uE768";
+            LiveMonitoringIcon.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.Gray);
+            LiveMonitoringText.Text = ResourceString.GetString("process_manager_page_start_monitor");
+        }
+        else
+        {
+            await RefreshServicesAsync();
+            StartAutoRefresh();
+            LiveMonitoringIcon.Glyph = "\uE769";
+            LiveMonitoringIcon.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.LimeGreen);
+            LiveMonitoringText.Text = ResourceString.GetString("process_manager_page_live_monitor");
+        }
+    }
+
     private void SearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
         if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
@@ -202,7 +303,6 @@ public sealed partial class ServiceManagerPage : Page
     private async void StartupType_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_isUpdatingStartupType) return;
-
         if (e.AddedItems.Count == 0) return;
 
         if (sender is ComboBox comboBox &&
@@ -368,6 +468,19 @@ public sealed partial class ServiceManagerPage : Page
         }
         catch { }
         return "Unknown";
+    }
+
+    public void Purge()
+    {
+        StopAutoRefresh();
+        Loaded -= ServicesPage_Loaded;
+        Unloaded -= ServicesPage_Unloaded;
+        LiveMonitoringButton.Click -= LiveMonitoringButton_Click;
+        _allServices?.Clear();
+        _filteredServices?.Clear();
+        ServicesListView.ItemsSource = null;
+        this.DataContext = null;
+        this.Content = null;
     }
     #endregion
 }

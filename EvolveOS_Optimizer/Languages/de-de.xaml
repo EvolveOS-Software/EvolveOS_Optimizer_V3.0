@@ -990,6 +990,13 @@
 
     <sys:String x:Key="service_manager_page_service_name">Dienstname</sys:String>
     <sys:String x:Key="service_manager_page_status">Status</sys:String>
+
+    <sys:String x:Key="process_manager_page_start_monitor">Überwachung fortsetzen</sys:String>
+    <sys:String x:Key="process_manager_page_live_monitor">Live-Überwachung</sys:String>
+
+    <sys:String x:Key="service_manager_page_start_tooltip">Dienst starten</sys:String>
+    <sys:String x:Key="service_manager_page_stop_tooltip">Dienst stoppen</sys:String>
+    <sys:String x:Key="service_manager_page_restart_tooltip">Dienst neu starten</sys:String>
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->
