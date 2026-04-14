@@ -344,7 +344,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         }
         */
 
-        public static T? FindParent<T>(DependencyObject? child) where T : DependencyObject
+        public static T? FindParent<T>(this DependencyObject? child) where T : DependencyObject
         {
             if (child == null) return null;
             DependencyObject? parentObject = VisualTreeHelper.GetParent(child);
@@ -353,26 +353,52 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             return FindParent<T>(parentObject);
         }
 
-        public static T? FindVisualChildByName<T>(DependencyObject parent, string name) where T : DependencyObject
+        public static T? FindVisualChildByName<T>(this DependencyObject parent, string name) where T : DependencyObject
         {
+            if (parent == null) return null;
+
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T typedChild && child is FrameworkElement fe && fe.Name == name) return typedChild;
+                if (child is T typedChild && child is FrameworkElement fe && fe.Name == name)
+                    return typedChild;
+
+
                 var result = FindVisualChildByName<T>(child, name);
                 if (result != null) return result;
             }
             return null;
         }
 
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
+        public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject parent) where T : DependencyObject
         {
+            if (parent == null) yield break;
+
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(parent, i);
                 if (child is T typedChild) yield return typedChild;
-                foreach (T childOfChild in FindVisualChildren<T>(child)) yield return childOfChild;
+
+                foreach (T childOfChild in FindVisualChildren<T>(child))
+                    yield return childOfChild;
             }
+        }
+
+        public static T? FindDescendant<T>(this DependencyObject element) where T : DependencyObject
+        {
+            if (element == null) return null;
+
+            if (element is T target) return target;
+
+            int childCount = VisualTreeHelper.GetChildrenCount(element);
+            for (int i = 0; i < childCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(element, i);
+                var result = FindDescendant<T>(child);
+                if (result != null) return result;
+            }
+
+            return null;
         }
 
         #endregion

@@ -389,7 +389,7 @@
     <!-- region Software Center Page (Tabbed) -->
     <sys:String x:Key="Tab_Recommended">Aanbevolen opschoning</sys:String>
     <sys:String x:Key="Tab_Installed">Geïnstalleerde apps</sys:String>
-    <sys:String x:Key="Tab_WinGet">App-winkel (WinGet)</sys:String>
+    <sys:String x:Key="Tab_AppStore">App-winkel (WinGet)</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
@@ -1704,5 +1704,56 @@
     <sys:String x:Key="gm_progress_restoring_gpu">Originele GPU-parameters herstellen...</sys:String>
     <sys:String x:Key="gm_progress_reverting_cpu">CPU-threadplanning terugdraaien...</sys:String>
     <!-- endregion GamingMode Card -->
+
+    <!-- region App Store Page -->
+    <sys:String x:Key="tab_browse">Bladeren</sys:String>
+    <sys:String x:Key="tab_updates">Updates</sys:String>
+    <sys:String x:Key="tab_installed">Geïnstalleerd</sys:String>
+    <sys:String x:Key="placeholder_search_winget">Zoek winget pakketten...</sys:String>
+    <sys:String x:Key="btn_install_selected">Installeer selectie</sys:String>
+
+    <sys:String x:Key="header_pkg_name">Naam</sys:String>
+    <sys:String x:Key="header_pkg_id">ID</sys:String>
+    <sys:String x:Key="header_version">Versie</sys:String>
+    <sys:String x:Key="header_publisher">Uitgever</sys:String>
+
+    <sys:String x:Key="status_loading_pkg">Pakketten laden…</sys:String>
+    <sys:String x:Key="status_select_pkg">Selecteer pakket voor installatie</sys:String>
+    <sys:String x:Key="text_installed">Geïnstalleerd</sys:String>
+
+    <sys:String x:Key="btn_update_selected">Update selectie</sys:String>
+    <sys:String x:Key="status_select_update">Selecteer pakketten voor update</sys:String>
+
+    <sys:String x:Key="btn_uninstall_selected">Verwijder selectie</sys:String>
+    <sys:String x:Key="status_select_uninstall">Selecteer voor verwijderen</sys:String>
+
+    <sys:String x:Key="err_winget_not_found">Winget is niet beschikbaar.</sys:String>
+    <sys:String x:Key="err_winget_source">Kan niet verbinden met winget.</sys:String>
+    <sys:String x:Key="err_no_packages">Geen pakketten. Zoek of vernieuw.</sys:String>
+    <sys:String x:Key="err_load_failed">Laden pakketten mislukt.</sys:String>
+    <sys:String x:Key="status_loading_wait">Pakketten laden, even geduld…</sys:String>
+    <sys:String x:Key="status_no_updates">Geen updates. Alles is up-to-date.</sys:String>
+    <sys:String x:Key="status_updates_success">Updates succesvol geïnstalleerd.</sys:String>
+
+    <sys:String x:Key="status_installing">Installeren</sys:String>
+    <sys:String x:Key="status_updating">Updaten</sys:String>
+    <sys:String x:Key="status_uninstalling">Verwijderen</sys:String>
+    <sys:String x:Key="status_selected_for_install">geselecteerd voor installatie</sys:String>
+    <sys:String x:Key="status_selected_for_update">geselecteerd voor update</sys:String>
+    <sys:String x:Key="status_selected_for_uninstall">geselecteerd voor verwijderen</sys:String>
+    <sys:String x:Key="status_package">pakket</sys:String>
+    <sys:String x:Key="status_packages">pakketten</sys:String>
+
+    <sys:String x:Key="notify_no_selected_part1">Geen pakketten geselecteerd voor</sys:String>
+    <sys:String x:Key="notify_install_completed">Installatie voltooid</sys:String>
+    <sys:String x:Key="notify_update_completed">Update voltooid</sys:String>
+    <sys:String x:Key="notify_succeeded">succesvol</sys:String>
+    <sys:String x:Key="notify_failed">mislukt</sys:String>
+    <sys:String x:Key="notify_install_results">Installatie: {0} succes, {1} mislukt.</sys:String>
+    <sys:String x:Key="notify_update_results">Update: {0} succes, {1} mislukt.</sys:String>
+    <sys:String x:Key="status_no_installed_packages">Geen geïnstalleerde pakketten gevonden.</sys:String>
+    <sys:String x:Key="notify_no_packages_uninstall">Geen pakketten voor verwijderen geselecteerd.</sys:String>
+    <sys:String x:Key="notify_uninstall_results">Verwijderen: {0} succes, {1} mislukt.</sys:String>
+    <!-- endregion App Store Page -->
 
 </ResourceDictionary>

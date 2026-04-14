@@ -395,7 +395,7 @@
     <!-- region Software Center Page (Tabbed) -->
     <sys:String x:Key="Tab_Recommended">Recommended Debloat</sys:String>
     <sys:String x:Key="Tab_Installed">Installed Apps</sys:String>
-    <sys:String x:Key="Tab_WinGet">App Store (WinGet)</sys:String>
+    <sys:String x:Key="Tab_AppStore">App Store (WinGet)</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
@@ -1718,5 +1718,56 @@
     <sys:String x:Key="gm_progress_restoring_gpu">Restoring original GPU parameters...</sys:String>
     <sys:String x:Key="gm_progress_reverting_cpu">Reverting CPU thread scheduling...</sys:String>
     <!-- endregion GamingMode Card -->
+
+    <!-- region App Store Page -->
+    <sys:String x:Key="tab_browse">Browse</sys:String>
+    <sys:String x:Key="tab_updates">Updates</sys:String>
+    <sys:String x:Key="tab_installed">Installed</sys:String>
+    <sys:String x:Key="placeholder_search_winget">Search all winget packages...</sys:String>
+    <sys:String x:Key="btn_install_selected">Install Selected</sys:String>
+
+    <sys:String x:Key="header_pkg_name">Package Name</sys:String>
+    <sys:String x:Key="header_pkg_id">Package ID</sys:String>
+    <sys:String x:Key="header_version">Version</sys:String>
+    <sys:String x:Key="header_publisher">Publisher</sys:String>
+
+    <sys:String x:Key="status_loading_pkg">Loading packages…</sys:String>
+    <sys:String x:Key="status_select_pkg">Select a package to install</sys:String>
+    <sys:String x:Key="text_installed">Installed</sys:String>
+
+    <sys:String x:Key="btn_update_selected">Update Selected</sys:String>
+    <sys:String x:Key="status_select_update">Select packages to update</sys:String>
+
+    <sys:String x:Key="btn_uninstall_selected">Uninstall Selected</sys:String>
+    <sys:String x:Key="status_select_uninstall">Select packages to uninstall</sys:String>
+
+    <sys:String x:Key="err_winget_not_found">Winget is not available on this system.</sys:String>
+    <sys:String x:Key="err_winget_source">Could not connect to the winget source.</sys:String>
+    <sys:String x:Key="err_no_packages">No packages found. Try Refresh or search by name.</sys:String>
+    <sys:String x:Key="err_load_failed">Failed to load packages.</sys:String>
+    <sys:String x:Key="status_loading_wait">Loading packages, please wait…</sys:String>
+    <sys:String x:Key="status_no_updates">No updates available. All packages are up to date.</sys:String>
+    <sys:String x:Key="status_updates_success">All updates installed successfully.</sys:String>
+
+    <sys:String x:Key="status_installing">Installing</sys:String>
+    <sys:String x:Key="status_updating">Updating</sys:String>
+    <sys:String x:Key="status_uninstalling">Uninstalling</sys:String>
+    <sys:String x:Key="status_selected_for_install">selected for installation</sys:String>
+    <sys:String x:Key="status_selected_for_update">selected for update</sys:String>
+    <sys:String x:Key="status_selected_for_uninstall">selected for uninstallation</sys:String>
+    <sys:String x:Key="status_package">package</sys:String>
+    <sys:String x:Key="status_packages">packages</sys:String>
+
+    <sys:String x:Key="notify_no_selected_part1">No packages selected for</sys:String>
+    <sys:String x:Key="notify_install_completed">Installation completed</sys:String>
+    <sys:String x:Key="notify_update_completed">Update completed</sys:String>
+    <sys:String x:Key="notify_succeeded">succeeded</sys:String>
+    <sys:String x:Key="notify_failed">failed</sys:String>
+    <sys:String x:Key="notify_install_results">Installation completed: {0} succeeded, {1} failed.</sys:String>
+    <sys:String x:Key="notify_update_results">Update completed: {0} succeeded, {1} failed.</sys:String>
+    <sys:String x:Key="status_no_installed_packages">No installed packages found.</sys:String>
+    <sys:String x:Key="notify_no_packages_uninstall">No packages selected for uninstallation.</sys:String>
+    <sys:String x:Key="notify_uninstall_results">Uninstallation completed: {0} succeeded, {1} failed.</sys:String>
+    <!-- endregion App Store Page -->
 
 </ResourceDictionary>

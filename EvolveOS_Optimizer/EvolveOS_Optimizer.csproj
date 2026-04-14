@@ -4,13 +4,15 @@
         <OutputType>WinExe</OutputType>
         <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
-        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+        <AssetTargetFallback>net8.0-windows10.0.26100;$(AssetTargetFallback)</AssetTargetFallback>
         <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
         <SupportedOSPlatform>Windows10.0.17763.0</SupportedOSPlatform>
         <RootNamespace>EvolveOS_Optimizer</RootNamespace>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <ApplicationIcon>Assets\EvolveOS_Optimizer.ico</ApplicationIcon>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <CsWinRTIncludes>Microsoft.Management.Deployment</CsWinRTIncludes>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -75,6 +77,7 @@
         <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
         <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
+        <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
         <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
         <PackageReference Include="DnsClient" Version="1.8.0" />
         <PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
@@ -83,6 +86,7 @@
         <PackageReference Include="Microsoft.Win32.SystemEvents" Version="10.0.5" />
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1721" />
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
+        <PackageReference Include="Microsoft.WindowsPackageManager.ComInterop" Version="1.28.220" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.5" />
         <PackageReference Include="System.Drawing.Common" Version="10.0.5" />

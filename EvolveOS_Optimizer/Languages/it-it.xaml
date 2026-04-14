@@ -395,7 +395,7 @@
     <!-- region Software Center Page (Tabbed) -->
     <sys:String x:Key="Tab_Recommended">Debloat Consigliato</sys:String>
     <sys:String x:Key="Tab_Installed">App Installate</sys:String>
-    <sys:String x:Key="Tab_WinGet">App Store (WinGet)</sys:String>
+    <sys:String x:Key="Tab_AppStore">App Store (WinGet)</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
@@ -1717,5 +1717,56 @@
     <sys:String x:Key="gm_progress_restoring_gpu">Ripristino parametri GPU originali...</sys:String>
     <sys:String x:Key="gm_progress_reverting_cpu">Ripristino pianificazione thread CPU...</sys:String>
     <!-- endregion GamingMode Card -->
+
+    <!-- region App Store Page -->
+    <sys:String x:Key="tab_browse">Esplora</sys:String>
+    <sys:String x:Key="tab_updates">Aggiorna</sys:String>
+    <sys:String x:Key="tab_installed">Installati</sys:String>
+    <sys:String x:Key="placeholder_search_winget">Cerca pacchetti...</sys:String>
+    <sys:String x:Key="btn_install_selected">Installa sel.</sys:String>
+
+    <sys:String x:Key="header_pkg_name">Nome</sys:String>
+    <sys:String x:Key="header_pkg_id">ID</sys:String>
+    <sys:String x:Key="header_version">Versione</sys:String>
+    <sys:String x:Key="header_publisher">Editore</sys:String>
+
+    <sys:String x:Key="status_loading_pkg">Caricamento...</sys:String>
+    <sys:String x:Key="status_select_pkg">Seleziona per installare</sys:String>
+    <sys:String x:Key="text_installed">Installato</sys:String>
+
+    <sys:String x:Key="btn_update_selected">Aggiorna sel.</sys:String>
+    <sys:String x:Key="status_select_update">Seleziona per aggiornare</sys:String>
+
+    <sys:String x:Key="btn_uninstall_selected">Disinstalla sel.</sys:String>
+    <sys:String x:Key="status_select_uninstall">Seleziona per disinstallare</sys:String>
+
+    <sys:String x:Key="err_winget_not_found">Winget non disponibile.</sys:String>
+    <sys:String x:Key="err_winget_source">Errore connessione winget.</sys:String>
+    <sys:String x:Key="err_no_packages">Nessun pacchetto. Cerca o aggiorna.</sys:String>
+    <sys:String x:Key="err_load_failed">Caricamento fallito.</sys:String>
+    <sys:String x:Key="status_loading_wait">Caricamento, attendi...</sys:String>
+    <sys:String x:Key="status_no_updates">Nessun agg. Tutto aggiornato.</sys:String>
+    <sys:String x:Key="status_updates_success">Aggiornamenti completati.</sys:String>
+
+    <sys:String x:Key="status_installing">Installazione</sys:String>
+    <sys:String x:Key="status_updating">Aggiornamento</sys:String>
+    <sys:String x:Key="status_uninstalling">Disinstallazione</sys:String>
+    <sys:String x:Key="status_selected_for_install">selezionati per install.</sys:String>
+    <sys:String x:Key="status_selected_for_update">selezionati per aggiorn.</sys:String>
+    <sys:String x:Key="status_selected_for_uninstall">selezionati per disinstall.</sys:String>
+    <sys:String x:Key="status_package">pacchetto</sys:String>
+    <sys:String x:Key="status_packages">pacchetti</sys:String>
+
+    <sys:String x:Key="notify_no_selected_part1">Nessun pacchetto per</sys:String>
+    <sys:String x:Key="notify_install_completed">Installazione completata</sys:String>
+    <sys:String x:Key="notify_update_completed">Aggiornamento completato</sys:String>
+    <sys:String x:Key="notify_succeeded">ok</sys:String>
+    <sys:String x:Key="notify_failed">falliti</sys:String>
+    <sys:String x:Key="notify_install_results">Installazione: {0} ok, {1} falliti.</sys:String>
+    <sys:String x:Key="notify_update_results">Aggiornamento: {0} ok, {1} falliti.</sys:String>
+    <sys:String x:Key="status_no_installed_packages">Nessun pacchetto installato trovato.</sys:String>
+    <sys:String x:Key="notify_no_packages_uninstall">Nessun pacchetto da disinstallare.</sys:String>
+    <sys:String x:Key="notify_uninstall_results">Disinstallazione: {0} ok, {1} falliti.</sys:String>
+    <!-- endregion App Store Page -->
 
 </ResourceDictionary>

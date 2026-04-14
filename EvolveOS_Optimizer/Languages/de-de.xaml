@@ -389,7 +389,7 @@
     <!-- region Software Center Page (Tabbed) -->
     <sys:String x:Key="Tab_Recommended">Empfohlenes Debloat</sys:String>
     <sys:String x:Key="Tab_Installed">Installierte Apps</sys:String>
-    <sys:String x:Key="Tab_WinGet">App-Store (WinGet)</sys:String>
+    <sys:String x:Key="Tab_AppStore">App-Store (WinGet)</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
@@ -1711,5 +1711,56 @@
     <sys:String x:Key="gm_progress_restoring_gpu">Ursprüngliche GPU-Parameter werden wiederhergestellt...</sys:String>
     <sys:String x:Key="gm_progress_reverting_cpu">CPU-Thread-Planung wird rückgängig gemacht...</sys:String>
     <!-- endregion GamingMode Card -->
+
+    <!-- region App Store Page -->
+    <sys:String x:Key="tab_browse">Suchen</sys:String>
+    <sys:String x:Key="tab_updates">Updates</sys:String>
+    <sys:String x:Key="tab_installed">Installiert</sys:String>
+    <sys:String x:Key="placeholder_search_winget">Pakete suchen...</sys:String>
+    <sys:String x:Key="btn_install_selected">Auswahl installieren</sys:String>
+
+    <sys:String x:Key="header_pkg_name">Name</sys:String>
+    <sys:String x:Key="header_pkg_id">ID</sys:String>
+    <sys:String x:Key="header_version">Version</sys:String>
+    <sys:String x:Key="header_publisher">Herausgeber</sys:String>
+
+    <sys:String x:Key="status_loading_pkg">Lade Pakete...</sys:String>
+    <sys:String x:Key="status_select_pkg">Paket zur Installation wählen</sys:String>
+    <sys:String x:Key="text_installed">Installiert</sys:String>
+
+    <sys:String x:Key="btn_update_selected">Auswahl updaten</sys:String>
+    <sys:String x:Key="status_select_update">Pakete für Update wählen</sys:String>
+
+    <sys:String x:Key="btn_uninstall_selected">Auswahl deinstallieren</sys:String>
+    <sys:String x:Key="status_select_uninstall">Pakete zur Deinstall. wählen</sys:String>
+
+    <sys:String x:Key="err_winget_not_found">Winget ist hier nicht verfügbar.</sys:String>
+    <sys:String x:Key="err_winget_source">Winget-Verbindung fehlgeschlagen.</sys:String>
+    <sys:String x:Key="err_no_packages">Keine Pakete. Suchen o. aktualisieren.</sys:String>
+    <sys:String x:Key="err_load_failed">Laden fehlgeschlagen.</sys:String>
+    <sys:String x:Key="status_loading_wait">Lade Pakete, bitte warten...</sys:String>
+    <sys:String x:Key="status_no_updates">Keine Updates. Alles aktuell.</sys:String>
+    <sys:String x:Key="status_updates_success">Updates erfolgreich installiert.</sys:String>
+
+    <sys:String x:Key="status_installing">Installiere</sys:String>
+    <sys:String x:Key="status_updating">Aktualisiere</sys:String>
+    <sys:String x:Key="status_uninstalling">Deinstalliere</sys:String>
+    <sys:String x:Key="status_selected_for_install">zur Installation gewählt</sys:String>
+    <sys:String x:Key="status_selected_for_update">fürs Update gewählt</sys:String>
+    <sys:String x:Key="status_selected_for_uninstall">zur Deinstall. gewählt</sys:String>
+    <sys:String x:Key="status_package">Paket</sys:String>
+    <sys:String x:Key="status_packages">Pakete</sys:String>
+
+    <sys:String x:Key="notify_no_selected_part1">Keine Pakete gewählt für</sys:String>
+    <sys:String x:Key="notify_install_completed">Installation beendet</sys:String>
+    <sys:String x:Key="notify_update_completed">Update beendet</sys:String>
+    <sys:String x:Key="notify_succeeded">erfolgr.</sys:String>
+    <sys:String x:Key="notify_failed">fehlgeschl.</sys:String>
+    <sys:String x:Key="notify_install_results">Installation: {0} erfolgr., {1} fehlgeschl.</sys:String>
+    <sys:String x:Key="notify_update_results">Update: {0} erfolgr., {1} fehlgeschl.</sys:String>
+    <sys:String x:Key="status_no_installed_packages">Keine installierten Pakete gefunden.</sys:String>
+    <sys:String x:Key="notify_no_packages_uninstall">Keine Pakete zur Deinstallation gewählt.</sys:String>
+    <sys:String x:Key="notify_uninstall_results">Deinstallation: {0} erfolgr., {1} fehlgeschl.</sys:String>
+    <!-- endregion App Store Page -->
 
 </ResourceDictionary>

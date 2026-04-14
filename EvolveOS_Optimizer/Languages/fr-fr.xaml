@@ -389,7 +389,7 @@
     <!-- region Software Center Page (Tabbed) -->
     <sys:String x:Key="Tab_Recommended">Nettoyage recommandé</sys:String>
     <sys:String x:Key="Tab_Installed">Applications installées</sys:String>
-    <sys:String x:Key="Tab_WinGet">Boutique d'applications (WinGet)</sys:String>
+    <sys:String x:Key="Tab_AppStore">Boutique d'applications (WinGet)</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
@@ -1709,5 +1709,56 @@
     <sys:String x:Key="gm_progress_restoring_gpu">Restauration des paramètres GPU d'origine...</sys:String>
     <sys:String x:Key="gm_progress_reverting_cpu">Rétablissement de la planification des threads CPU...</sys:String>
     <!-- endregion GamingMode Card -->
+
+    <!-- region App Store Page -->
+    <sys:String x:Key="tab_browse">Parcourir</sys:String>
+    <sys:String x:Key="tab_updates">MÀJ</sys:String>
+    <sys:String x:Key="tab_installed">Installés</sys:String>
+    <sys:String x:Key="placeholder_search_winget">Rechercher des paquets...</sys:String>
+    <sys:String x:Key="btn_install_selected">Installer sélection</sys:String>
+
+    <sys:String x:Key="header_pkg_name">Nom</sys:String>
+    <sys:String x:Key="header_pkg_id">ID</sys:String>
+    <sys:String x:Key="header_version">Version</sys:String>
+    <sys:String x:Key="header_publisher">Éditeur</sys:String>
+
+    <sys:String x:Key="status_loading_pkg">Chargement...</sys:String>
+    <sys:String x:Key="status_select_pkg">Sélectionnez pour installer</sys:String>
+    <sys:String x:Key="text_installed">Installé</sys:String>
+
+    <sys:String x:Key="btn_update_selected">Mettre à jour sélection</sys:String>
+    <sys:String x:Key="status_select_update">Sélectionnez pour maj</sys:String>
+
+    <sys:String x:Key="btn_uninstall_selected">Désinstaller sélection</sys:String>
+    <sys:String x:Key="status_select_uninstall">Sélectionnez pour désinstaller</sys:String>
+
+    <sys:String x:Key="err_winget_not_found">Winget indisponible.</sys:String>
+    <sys:String x:Key="err_winget_source">Connexion winget impossible.</sys:String>
+    <sys:String x:Key="err_no_packages">Aucun paquet. Cherchez ou actualisez.</sys:String>
+    <sys:String x:Key="err_load_failed">Échec du chargement.</sys:String>
+    <sys:String x:Key="status_loading_wait">Chargement, patientez…</sys:String>
+    <sys:String x:Key="status_no_updates">Aucune maj. Tout est à jour.</sys:String>
+    <sys:String x:Key="status_updates_success">Mises à jour terminées.</sys:String>
+
+    <sys:String x:Key="status_installing">Installation</sys:String>
+    <sys:String x:Key="status_updating">Mise à jour</sys:String>
+    <sys:String x:Key="status_uninstalling">Désinstallation</sys:String>
+    <sys:String x:Key="status_selected_for_install">sélectionné(s) pour install.</sys:String>
+    <sys:String x:Key="status_selected_for_update">sélectionné(s) pour maj</sys:String>
+    <sys:String x:Key="status_selected_for_uninstall">sélectionné(s) pour désinstall.</sys:String>
+    <sys:String x:Key="status_package">paquet</sys:String>
+    <sys:String x:Key="status_packages">paquets</sys:String>
+
+    <sys:String x:Key="notify_no_selected_part1">Aucun paquet pour</sys:String>
+    <sys:String x:Key="notify_install_completed">Installation terminée</sys:String>
+    <sys:String x:Key="notify_update_completed">Maj terminée</sys:String>
+    <sys:String x:Key="notify_succeeded">succès</sys:String>
+    <sys:String x:Key="notify_failed">échec(s)</sys:String>
+    <sys:String x:Key="notify_install_results">Installation : {0} succès, {1} échec(s).</sys:String>
+    <sys:String x:Key="notify_update_results">Mise à jour : {0} succès, {1} échec(s).</sys:String>
+    <sys:String x:Key="status_no_installed_packages">Aucun paquet installé trouvé.</sys:String>
+    <sys:String x:Key="notify_no_packages_uninstall">Aucun paquet pour désinstallation.</sys:String>
+    <sys:String x:Key="notify_uninstall_results">Désinstallation : {0} succès, {1} échec(s).</sys:String>
+    <!-- endregion App Store Page -->
 
 </ResourceDictionary>

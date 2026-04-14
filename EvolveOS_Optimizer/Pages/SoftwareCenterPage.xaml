@@ -36,7 +36,7 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_WinGet}" Tag="WinGetPage" IsEnabled="False">
+                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_AppStore}" Tag="AppStorePage">
                     <ui:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE896;"/>
                     </ui:NavigationViewItem.Icon>
