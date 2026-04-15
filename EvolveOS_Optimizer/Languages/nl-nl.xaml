@@ -1744,6 +1744,14 @@
     <sys:String x:Key="status_package">pakket</sys:String>
     <sys:String x:Key="status_packages">pakketten</sys:String>
 
+    <sys:String x:Key="sort_name">Naam</sys:String>
+    <sys:String x:Key="sort_id">ID</sys:String>
+    <sys:String x:Key="sort_version">Versie</sys:String>
+    <sys:String x:Key="sort_publisher">Uitgever</sys:String>
+
+    <sys:String x:Key="status_searching_online">Online zoeken...</sys:String>
+    <sys:String x:Key="status_no_results">Geen pakketten gevonden.</sys:String>
+
     <sys:String x:Key="notify_no_selected_part1">Geen pakketten geselecteerd voor</sys:String>
     <sys:String x:Key="notify_install_completed">Installatie voltooid</sys:String>
     <sys:String x:Key="notify_update_completed">Update voltooid</sys:String>

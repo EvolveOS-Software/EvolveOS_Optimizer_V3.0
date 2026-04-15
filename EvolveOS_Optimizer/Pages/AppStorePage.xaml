@@ -125,9 +125,24 @@
                 </controls:SegmentedItem>
             </controls:Segmented>
 
-            <AutoSuggestBox x:Name="PackageSearchBox" Grid.Column="1" HorizontalAlignment="Stretch" MinWidth="80" Height="34" QueryIcon="Find" 
-                            PlaceholderText="{helpers:ResourceString Key=placeholder_search_winget}" 
-                            Margin="0,0,10,0" TextChanged="PackageSearchBox_TextChanged" QuerySubmitted="PackageSearchBox_QuerySubmitted"/>
+            <Grid Grid.Column="1" Margin="0,0,10,0" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <AutoSuggestBox x:Name="PackageSearchBox" Grid.Column="0" HorizontalAlignment="Stretch" MinWidth="80" Height="34" QueryIcon="Find" 
+                                PlaceholderText="{helpers:ResourceString Key=placeholder_search_winget}" 
+                                Margin="0,0,10,0" TextChanged="PackageSearchBox_TextChanged" QuerySubmitted="PackageSearchBox_QuerySubmitted"/>
+
+                <ComboBox x:Name="SortComboBox" Grid.Column="1" SelectedIndex="0" Width="140" Height="34" 
+                          VerticalAlignment="Center" SelectionChanged="SortComboBox_SelectionChanged">
+                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_name}" Tag="Name"/>
+                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_id}" Tag="Id"/>
+                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_version}" Tag="Version"/>
+                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_publisher}" Tag="Category"/>
+                </ComboBox>
+            </Grid>
 
             <controls:WrapPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button x:Name="InstallButton" Margin="0,0,8,0" Click="InstallSelectedApp_Click" Style="{ThemeResource AccentButtonStyle}">
@@ -137,7 +152,7 @@
                     </StackPanel>
                 </Button>
                 <Button x:Name="RefreshButton" Click="RefreshButton_Click" Padding="10,7" MinWidth="0" MinHeight="0">
-                    <FontIcon Glyph="&#xE72C;" FontSize="13"/>
+                    <FontIcon Glyph="&#xE72C;" FontSize="17"/>
                 </Button>
             </controls:WrapPanel>
         </Grid>
@@ -165,9 +180,9 @@
             </Border>
 
             <Grid Grid.Row="1">
-                <StackPanel x:Name="LoadingState" VerticalAlignment="Center" Visibility="Visible">
-                    <ProgressRing Margin="20" Width="100" Height="100" IsIndeterminate="True"/>
-                    <TextBlock helpers:Loc.Key="status_loading_pkg" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Center"/>
+                <StackPanel x:Name="LoadingState" VerticalAlignment="Center" Visibility="Collapsed">
+                    <ProgressRing x:Name="SearchProgressRing" Margin="20" Width="100" Height="100" IsActive="False" IsIndeterminate="True"/>
+                    <TextBlock x:Name="SearchStatusText" helpers:Loc.Key="status_loading_pkg" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Center"/>
                 </StackPanel>
 
                 <ListView x:Name="PackagesGridView" ItemsSource="{x:Bind PackageList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 

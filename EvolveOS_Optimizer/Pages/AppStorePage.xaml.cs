@@ -47,6 +47,8 @@ namespace EvolveOS_Optimizer.Pages
         private int _updateCount;
         private int _searchVersion;
 
+        private string _currentSortMode = "Name";
+
         private string _wingetVersion = string.Empty;
         private bool _hasCheckedWingetUpdate = false;
 
@@ -84,8 +86,16 @@ namespace EvolveOS_Optimizer.Pages
             _isLoading = true;
             try
             {
+                SearchProgressRing.IsActive = true;
+                LoadingState.Visibility = Visibility.Visible;
+                PackagesGridView.Visibility = Visibility.Collapsed;
+                StatusText.Visibility = Visibility.Collapsed;
+
                 if (!await IsWingetAvailableAsync())
                 {
+                    SearchProgressRing.IsActive = false;
+                    LoadingState.Visibility = Visibility.Collapsed;
+
                     SetErrorState("Winget is not available on this system.");
                     if (!_hasCheckedWingetUpdate)
                     {
@@ -97,7 +107,6 @@ namespace EvolveOS_Optimizer.Pages
                             _isWingetAvailable = null;
                             _wingetCatalog = null;
                             _isLoading = false;
-
                             _ = LoadPackagesAsync();
                         }
                     }
@@ -116,7 +125,14 @@ namespace EvolveOS_Optimizer.Pages
                     var (hasUpdate, newVer) = await CheckForWingetUpdateAsync();
                     if (hasUpdate)
                     {
+                        SearchProgressRing.IsActive = false;
+                        LoadingState.Visibility = Visibility.Collapsed;
+
                         bool upgraded = await ShowUpgradeWingetDialogAsync(newVer);
+
+                        SearchProgressRing.IsActive = true;
+                        LoadingState.Visibility = Visibility.Visible;
+
                         if (upgraded)
                         {
                             _wingetVersion = await GetWingetVersionAsync();
@@ -127,11 +143,8 @@ namespace EvolveOS_Optimizer.Pages
 
                 _allPackages.Clear();
                 PackageList.Clear();
-                LoadingState.Visibility = Visibility.Visible;
-                PackagesGridView.Visibility = Visibility.Collapsed;
 
                 var installedMap = await GetInstalledPackagesMapAsync();
-
                 var catalog = await EnsureWingetCatalogAsync();
                 List<DiscoveredPackageEntry> discovered;
 
@@ -213,6 +226,7 @@ namespace EvolveOS_Optimizer.Pages
                     if (++count % 50 == 0) await Task.Delay(1);
                 }
 
+                SearchProgressRing.IsActive = false;
                 LoadingState.Visibility = Visibility.Collapsed;
                 PackagesGridView.Visibility = Visibility.Visible;
                 StatusText.Visibility = Visibility.Collapsed;
@@ -241,6 +255,7 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
+                SearchProgressRing.IsActive = false;
                 _isLoading = false;
             }
         }
@@ -582,10 +597,24 @@ namespace EvolveOS_Optimizer.Pages
             PackagesGridView.Visibility = Visibility.Collapsed;
             UpdatesGridView.Visibility = Visibility.Collapsed;
             InstalledGridView.Visibility = Visibility.Collapsed;
+            SearchProgressRing.IsActive = true;
             LoadingState.Visibility = Visibility.Visible;
             StatusText.Visibility = Visibility.Collapsed;
 
             await LoadPackagesAsync();
+        }
+
+        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SortComboBox.SelectedItem is ComboBoxItem item && item.Tag != null)
+            {
+                _currentSortMode = item.Tag.ToString() ?? "Name";
+
+                if (!_isLoading)
+                {
+                    ApplySearch(PackageSearchBox.Text?.Trim() ?? string.Empty);
+                }
+            }
         }
 
         private void PackageSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -603,36 +632,155 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void ApplySearch(string query)
         {
+            if (StatusText == null || LoadingState == null || SearchProgressRing == null || PackageList == null)
+            {
+                return;
+            }
+
             var currentVersion = Interlocked.Increment(ref _searchVersion);
+
+            StatusText.Visibility = Visibility.Collapsed;
+            LoadingState.Visibility = Visibility.Collapsed;
+            SearchProgressRing.IsActive = false;
             PackageList.Clear();
+
+            IEnumerable<WingetPackage> SortPackages(IEnumerable<WingetPackage> packages)
+            {
+                return _currentSortMode switch
+                {
+                    "Id" => packages.OrderBy(p => p.Id ?? string.Empty, StringComparer.CurrentCultureIgnoreCase),
+                    "Version" => packages.OrderBy(p => p.Version ?? string.Empty, StringComparer.CurrentCultureIgnoreCase),
+                    "Category" => packages.OrderBy(p => p.Category ?? string.Empty, StringComparer.CurrentCultureIgnoreCase),
+                    _ => packages.OrderBy(p => p.Name ?? string.Empty, StringComparer.CurrentCultureIgnoreCase)
+                };
+            }
 
             if (string.IsNullOrWhiteSpace(query))
             {
                 int count = 0;
-                foreach (var p in _allPackages)
+                var sortedAll = SortPackages(_allPackages).ToList();
+
+                foreach (var p in sortedAll)
                 {
                     if (currentVersion != _searchVersion) return;
                     PackageList.Add(p);
                     if (++count % 50 == 0) await Task.Delay(1);
                 }
+                return;
             }
-            else
+
+            int localCount = 0;
+            var startsWithResults = new List<WingetPackage>();
+            var containsResults = new List<WingetPackage>();
+
+            foreach (var p in _allPackages)
             {
-                int count = 0;
-                foreach (var p in _allPackages)
+                if (currentVersion != _searchVersion) return;
+
+                string safeName = p.Name ?? string.Empty;
+                string safeId = p.Id ?? string.Empty;
+
+                if (safeName.StartsWith(query, StringComparison.CurrentCultureIgnoreCase))
                 {
+                    startsWithResults.Add(p);
+                }
+                else if (safeName.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
+                         safeId.Contains(query, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    containsResults.Add(p);
+                }
+            }
+
+            var sortedStartsWith = SortPackages(startsWithResults).ToList();
+            foreach (var p in sortedStartsWith)
+            {
+                if (currentVersion != _searchVersion) return;
+                PackageList.Add(p);
+                if (++localCount % 50 == 0) await Task.Delay(1);
+            }
+
+            var sortedContains = SortPackages(containsResults).ToList();
+            foreach (var p in sortedContains)
+            {
+                if (currentVersion != _searchVersion) return;
+                PackageList.Add(p);
+                if (++localCount % 50 == 0) await Task.Delay(1);
+            }
+
+            if (query.Length >= 3)
+            {
+                await Task.Delay(400);
+                if (currentVersion != _searchVersion) return;
+
+                SearchStatusText.Text = ResourceString.GetString("status_searching_online") ?? "Searching online...";
+                LoadingState.Visibility = Visibility.Visible;
+                SearchProgressRing.IsActive = true;
+
+                try
+                {
+                    var webResults = await SearchPackagesFromWingetCliAsync(query);
+
                     if (currentVersion != _searchVersion) return;
-                    if (p.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
-                        p.Id.Contains(query, StringComparison.CurrentCultureIgnoreCase))
+
+                    var newWebPackages = new List<WingetPackage>();
+
+                    foreach (var webItem in webResults)
                     {
+                        if (currentVersion != _searchVersion) return;
+
+                        bool alreadyInList = _allPackages.Any(p => (p.Id ?? string.Empty).Equals(webItem.Id ?? string.Empty, StringComparison.OrdinalIgnoreCase));
+
+                        if (!alreadyInList)
+                        {
+                            var newPkg = new WingetPackage
+                            {
+                                Name = webItem.Name ?? string.Empty,
+                                Id = webItem.Id ?? string.Empty,
+                                Version = webItem.Version ?? "N/A",
+                                Category = PackageHelper.GetPublisherDisplayName(webItem.Id ?? string.Empty),
+                                IsInstalled = false
+                            };
+
+                            newWebPackages.Add(newPkg);
+                        }
+                    }
+
+                    var sortedWebPackages = SortPackages(newWebPackages).ToList();
+                    foreach (var p in sortedWebPackages)
+                    {
+                        if (currentVersion != _searchVersion) return;
                         PackageList.Add(p);
-                        if (++count % 50 == 0) await Task.Delay(1);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await ErrorLogging.LogInfo($"Online search failed: {ex.Message}");
+                }
+                finally
+                {
+                    if (currentVersion == _searchVersion)
+                    {
+                        LoadingState.Visibility = Visibility.Collapsed;
+                        SearchProgressRing.IsActive = false;
+                        SearchStatusText.Text = ResourceString.GetString("status_loading_pkg") ?? "Loading packages...";
                     }
                 }
             }
 
             if (currentVersion == _searchVersion)
-                await ErrorLogging.LogInfo($"ApplySearch: '{query}' → {PackageList.Count}/{_allPackages.Count}");
+            {
+                await ErrorLogging.LogInfo($"ApplySearch Final: '{query}' → {PackageList.Count} total results found.");
+
+                if (PackageList.Count == 0)
+                {
+                    StatusText.Text = ResourceString.GetString("status_no_results") ?? "No packages found.";
+                    StatusText.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    StatusText.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private void PackagesGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -751,6 +899,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void SetErrorState(string message)
         {
+            SearchProgressRing.IsActive = false;
             LoadingState.Visibility = Visibility.Collapsed;
             StatusText.Text = message;
             StatusText.Visibility = Visibility.Visible;

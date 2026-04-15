@@ -1757,6 +1757,14 @@
     <sys:String x:Key="status_package">pacchetto</sys:String>
     <sys:String x:Key="status_packages">pacchetti</sys:String>
 
+    <sys:String x:Key="sort_name">Nome</sys:String>
+    <sys:String x:Key="sort_id">ID</sys:String>
+    <sys:String x:Key="sort_version">Versione</sys:String>
+    <sys:String x:Key="sort_publisher">Editore</sys:String>
+
+    <sys:String x:Key="status_searching_online">Ricerca online...</sys:String>
+    <sys:String x:Key="status_no_results">Nessun pacchetto trovato.</sys:String>
+
     <sys:String x:Key="notify_no_selected_part1">Nessun pacchetto per</sys:String>
     <sys:String x:Key="notify_install_completed">Installazione completata</sys:String>
     <sys:String x:Key="notify_update_completed">Aggiornamento completato</sys:String>
