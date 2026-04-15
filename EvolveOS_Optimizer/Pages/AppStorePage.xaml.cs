@@ -11,6 +11,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.UI.Dispatching;
 using Microsoft.Management.Deployment;
+using System.IO;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -48,6 +49,13 @@ namespace EvolveOS_Optimizer.Pages
 
         private string _wingetVersion = string.Empty;
         private bool _hasCheckedWingetUpdate = false;
+
+        private static readonly Dictionary<string, (string[] RelativePaths, string Arguments)> UninstallQuirks = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Mozilla.Firefox", (new[] { @"Mozilla Firefox\uninstall\helper.exe" }, "/S") },
+            { "Notepad++.Notepad++", (new[] { @"Notepad++\uninstall.exe" }, "/S") },
+            { "VideoLAN.VLC", (new[] { @"VideoLAN\VLC\uninstall.exe" }, "/S") }
+        };
         #endregion
 
         #region Constructor & Lifecycle
@@ -288,6 +296,51 @@ namespace EvolveOS_Optimizer.Pages
 
                     try
                     {
+                        if (uninstall && UninstallQuirks.TryGetValue(pkg.Id, out var quirk))
+                        {
+                            string pf64 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                            string pf32 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+                            string? helperPath = null;
+
+                            foreach (var relPath in quirk.RelativePaths)
+                            {
+                                string p64 = Path.Combine(pf64, relPath);
+                                string p32 = Path.Combine(pf32, relPath);
+                                string pLocal = Path.Combine(localAppData, relPath);
+
+                                if (File.Exists(p64)) { helperPath = p64; break; }
+                                if (File.Exists(p32)) { helperPath = p32; break; }
+                                if (File.Exists(pLocal)) { helperPath = pLocal; break; }
+                            }
+
+                            if (helperPath != null)
+                            {
+                                var customPsi = new ProcessStartInfo
+                                {
+                                    FileName = helperPath,
+                                    Arguments = quirk.Arguments,
+
+                                    UseShellExecute = true,
+                                    WindowStyle = ProcessWindowStyle.Hidden,
+                                    WorkingDirectory = Path.GetDirectoryName(helperPath)
+                                };
+
+                                using var customP = Process.Start(customPsi);
+                                if (customP != null) await customP.WaitForExitAsync(localCts.Token);
+
+                                ok++;
+                                pkg.IsInstalled = false;
+                                pkg.HasUpdate = false;
+                                pkg.Version = "N/A";
+                                InstalledList.Remove(pkg);
+
+                                installingStatusBar.Value = i + 1;
+                                continue;
+                            }
+                        }
+
                         string cmdArgs = uninstall
                             ? $"uninstall --id \"{pkg.Id}\" --exact --accept-source-agreements --silent --disable-interactivity"
                             : upgrade
