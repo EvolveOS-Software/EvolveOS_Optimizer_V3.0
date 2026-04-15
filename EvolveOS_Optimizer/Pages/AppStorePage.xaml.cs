@@ -84,6 +84,12 @@ namespace EvolveOS_Optimizer.Pages
         private async Task LoadPackagesAsync()
         {
             _isLoading = true;
+
+            UpdatesLoadingRing.Visibility = Visibility.Visible;
+            UpdatesLoadingRing.IsActive = true;
+            InstalledLoadingRing.Visibility = Visibility.Visible;
+            InstalledLoadingRing.IsActive = true;
+
             try
             {
                 SearchProgressRing.IsActive = true;
@@ -95,6 +101,9 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     SearchProgressRing.IsActive = false;
                     LoadingState.Visibility = Visibility.Collapsed;
+
+                    InstalledLoadingRing.IsActive = false;
+                    InstalledLoadingRing.Visibility = Visibility.Collapsed;
 
                     SetErrorState("Winget is not available on this system.");
                     if (!_hasCheckedWingetUpdate)
@@ -128,10 +137,16 @@ namespace EvolveOS_Optimizer.Pages
                         SearchProgressRing.IsActive = false;
                         LoadingState.Visibility = Visibility.Collapsed;
 
+                        InstalledLoadingRing.IsActive = false;
+                        InstalledLoadingRing.Visibility = Visibility.Collapsed;
+
                         bool upgraded = await ShowUpgradeWingetDialogAsync(newVer);
 
                         SearchProgressRing.IsActive = true;
                         LoadingState.Visibility = Visibility.Visible;
+
+                        InstalledLoadingRing.Visibility = Visibility.Visible;
+                        InstalledLoadingRing.IsActive = true;
 
                         if (upgraded)
                         {
@@ -285,6 +300,8 @@ namespace EvolveOS_Optimizer.Pages
             finally
             {
                 SearchProgressRing.IsActive = false;
+                InstalledLoadingRing.IsActive = false;
+                InstalledLoadingRing.Visibility = Visibility.Collapsed;
                 _isLoading = false;
             }
         }
@@ -497,26 +514,47 @@ namespace EvolveOS_Optimizer.Pages
         private async Task CheckAndApplyUpdatesAsync()
         {
             var myVersion = _updateCheckVersion;
+
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                UpdatesLoadingRing.Visibility = Visibility.Visible;
+                UpdatesLoadingRing.IsActive = true;
+            });
+
             try
             {
                 await ErrorLogging.LogInfo("Starting background update check…");
 
                 var updatables = await GetUpdatablePackagesFromCliAsync();
 
-                if (_updateCheckVersion != myVersion) return;
-                if (updatables.Count == 0) { await ErrorLogging.LogInfo("No updates found."); return; }
+                if (_updateCheckVersion != myVersion)
+                {
+                    StopUpdatesSpinner();
+                    return;
+                }
 
-                var updatableDict = new Dictionary<string, (string Name, string Version)>(StringComparer.OrdinalIgnoreCase);
+                if (updatables.Count == 0)
+                {
+                    await ErrorLogging.LogInfo("No updates found.");
+                    StopUpdatesSpinner();
+                    return;
+                }
+
+                var updatableDict = new Dictionary<string, (string Name, string CurrentVer, string AvailableVer)>(StringComparer.OrdinalIgnoreCase);
                 foreach (var u in updatables)
                 {
-                    updatableDict.TryAdd(u.Id, (u.Name, u.AvailableVersion));
+                    updatableDict.TryAdd(u.Id, (u.Name, u.CurrentVersion, u.AvailableVersion));
                 }
 
                 var snapshot = _allPackages.ToList();
 
                 DispatcherQueue.TryEnqueue(async () =>
                 {
-                    if (_updateCheckVersion != myVersion) return;
+                    if (_updateCheckVersion != myVersion)
+                    {
+                        StopUpdatesSpinner();
+                        return;
+                    }
 
                     int count = 0;
 
@@ -525,10 +563,15 @@ namespace EvolveOS_Optimizer.Pages
                         if (updatableDict.TryGetValue(pkg.Id, out var updateInfo))
                         {
                             pkg.HasUpdate = true;
-                            pkg.LatestVersion = updateInfo.Version;
+                            pkg.LatestVersion = updateInfo.AvailableVer;
                             pkg.IsInstalled = true;
-                            count++;
 
+                            if (string.IsNullOrWhiteSpace(pkg.Version) || pkg.Version == "N/A" || pkg.Version == "Installed")
+                            {
+                                pkg.Version = updateInfo.CurrentVer;
+                            }
+
+                            count++;
                             updatableDict.Remove(pkg.Id);
                         }
                     }
@@ -539,8 +582,8 @@ namespace EvolveOS_Optimizer.Pages
                         {
                             Name = leftover.Value.Name,
                             Id = leftover.Key,
-                            Version = "Installed",
-                            LatestVersion = leftover.Value.Version,
+                            Version = leftover.Value.CurrentVer,
+                            LatestVersion = leftover.Value.AvailableVer,
                             HasUpdate = true,
                             IsInstalled = true,
                             Category = PackageHelper.GetPublisherDisplayName(leftover.Key)
@@ -557,14 +600,26 @@ namespace EvolveOS_Optimizer.Pages
 
                     foreach (var pkg in _updateablePackages) UpdatesList.Add(pkg);
 
-                    UpdatesTabLabel.Text = count > 0 ? $"{ResourceString.GetString("tab_updates") ?? "Updates"} ({count})" : (ResourceString.GetString("tab_updates") ?? "Updates");
+                    UpdatesTabLabel.Text = count > 0
+                        ? $"{ResourceString.GetString("tab_updates") ?? "Updates"} ({count})"
+                        : (ResourceString.GetString("tab_updates") ?? "Updates");
+
+                    StopUpdatesSpinner();
+
                     await ErrorLogging.LogInfo($"Update check done — {count} update(s).");
 
                     if (_isUpdatesMode) RefreshUpdatesTabList();
                 });
             }
-            catch (OperationCanceledException) { }
-            catch (Exception ex) { ErrorLogging.LogDebug($"Update check failed: {ex.Message}"); }
+            catch (OperationCanceledException)
+            {
+                StopUpdatesSpinner();
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug($"Update check failed: {ex.Message}");
+                StopUpdatesSpinner();
+            }
         }
         #endregion
 
@@ -611,13 +666,27 @@ namespace EvolveOS_Optimizer.Pages
                 _isInstalledMode = true;
                 PackageSearchBox.Visibility = Visibility.Collapsed;
                 InstallButtonText.Text = ResourceString.GetString("btn_uninstall_selected") ?? "Uninstall Selected";
-                InstallButtonIcon.Glyph = "\uE74D"; // Trash icon
+                InstallButtonIcon.Glyph = "\uE74D";
                 installingStatusText.Text = ResourceString.GetString("status_select_uninstall") ?? "Select packages to uninstall";
                 PackagesGridView.Visibility = Visibility.Collapsed;
                 UpdatesGridView.Visibility = Visibility.Collapsed;
                 PackagesGridView.SelectedItems.Clear();
                 UpdatesGridView.SelectedItems.Clear();
                 RefreshInstalledTabList();
+            }
+
+            if (StandardHeader != null && UpdatesHeader != null)
+            {
+                if (_isUpdatesMode)
+                {
+                    StandardHeader.Visibility = Visibility.Collapsed;
+                    UpdatesHeader.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    StandardHeader.Visibility = Visibility.Visible;
+                    UpdatesHeader.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -958,6 +1027,15 @@ namespace EvolveOS_Optimizer.Pages
             StatusText.Text = message;
             StatusText.Visibility = Visibility.Visible;
             _isLoading = false;
+        }
+
+        private void StopUpdatesSpinner()
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                UpdatesLoadingRing.IsActive = false;
+                UpdatesLoadingRing.Visibility = Visibility.Collapsed;
+            });
         }
         #endregion
 
@@ -1309,7 +1387,7 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region CLI Fallbacks & Parsing
-        private async Task<List<(string Name, string Id, string AvailableVersion)>> GetUpdatablePackagesFromCliAsync()
+        private async Task<List<(string Name, string Id, string CurrentVersion, string AvailableVersion)>> GetUpdatablePackagesFromCliAsync()
         {
             var psi = new ProcessStartInfo
             {
@@ -1334,7 +1412,7 @@ namespace EvolveOS_Optimizer.Pages
             var output = await stdOut;
             _ = await stdErr;
 
-            var results = new List<(string, string, string)>();
+            var results = new List<(string, string, string, string)>();
             var lines = output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             bool headerPassed = false, sepPassed = false;
 
@@ -1356,6 +1434,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 var name = parts[0].Trim();
                 var id = parts[1].Trim();
+                var currentVer = parts[2].Trim();
                 var available = parts[3].Trim();
 
                 // Commented out to ensure to get all updates. Uncomment for only traditional WinGet packages.
@@ -1363,7 +1442,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (string.IsNullOrWhiteSpace(available)) continue;
 
-                results.Add((name, id, available));
+                results.Add((name, id, currentVer, available));
             }
 
             return results;

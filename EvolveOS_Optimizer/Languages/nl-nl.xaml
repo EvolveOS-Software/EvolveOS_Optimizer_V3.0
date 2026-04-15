@@ -1715,6 +1715,7 @@
     <sys:String x:Key="header_pkg_name">Naam</sys:String>
     <sys:String x:Key="header_pkg_id">ID</sys:String>
     <sys:String x:Key="header_version">Versie</sys:String>
+    <sys:String x:Key="header_new_version">Nieuwe versie</sys:String>
     <sys:String x:Key="header_publisher">Uitgever</sys:String>
 
     <sys:String x:Key="status_loading_pkg">Pakketten laden…</sys:String>

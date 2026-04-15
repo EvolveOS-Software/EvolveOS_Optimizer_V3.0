@@ -18,9 +18,6 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
                         <Grid x:Name="RootGrid">
-                            <VisualStateManager.VisualStateGroups>
-                            </VisualStateManager.VisualStateGroups>
-
                             <Border x:Name="CardBorder"
                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
@@ -64,15 +61,23 @@
                     <ColumnDefinition Width="1.2*"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                    <FontIcon Glyph="&#xE7B8;" FontSize="14" Opacity="0.85"/>
-                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                </StackPanel>
+                <Grid Grid.Column="0" Margin="0,0,12,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Grid.Column="0" Glyph="&#xE7B8;" FontSize="14" Opacity="0.85" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{x:Bind Name, Mode=OneWay}" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                </Grid>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                    <FontIcon Glyph="&#xE8A5;" FontSize="13" Opacity="0.75"/>
-                    <TextBlock Text="{x:Bind Id}" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                </StackPanel>
+                <Grid Grid.Column="1" Margin="0,0,12,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Grid.Column="0" Glyph="&#xE8A5;" FontSize="13" Opacity="0.75" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{x:Bind Id}" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </Grid>
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="2">
                     <StackPanel Orientation="Horizontal" Spacing="4" Visibility="{x:Bind NotInstalledVisibility, Mode=OneWay}">
@@ -97,16 +102,61 @@
                 </StackPanel>
             </Grid>
         </DataTemplate>
+
+        <DataTemplate x:Key="UpdateItemTemplate" x:DataType="models:WingetPackage">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="0.9*"/>
+                    <ColumnDefinition Width="0.9*"/>
+                    <ColumnDefinition Width="1.2*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0" Margin="0,0,12,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Grid.Column="0" Glyph="&#xE7B8;" FontSize="14" Opacity="0.85" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{x:Bind Name, Mode=OneWay}" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                </Grid>
+
+                <Grid Grid.Column="1" Margin="0,0,12,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Grid.Column="0" Glyph="&#xE8A5;" FontSize="13" Opacity="0.75" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{x:Bind Id}" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </Grid>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                    <FontIcon Glyph="&#xE896;" FontSize="13" Opacity="0.75"/>
+                    <TextBlock Text="{x:Bind Version, Mode=OneWay}" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                    <FontIcon Glyph="&#xE898;" FontSize="12" Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
+                    <TextBlock Text="{x:Bind LatestVersion, Mode=OneWay}" FontSize="12" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{ThemeResource SystemFillColorCautionBrush}" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <FontIcon Glyph="&#xE71D;" FontSize="13" Opacity="0.75"/>
+                    <TextBlock Text="{x:Bind Category}" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
     </Page.Resources>
 
-    <Grid Padding="4,14,24,0">
+    <Grid Padding="4,14,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="0,0,0,12">
+        <Grid Grid.Row="0" Margin="0,0,24,12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -117,11 +167,17 @@
                 <controls:SegmentedItem helpers:Loc.Key="tab_browse" />
 
                 <controls:SegmentedItem x:Name="UpdatesTabItem">
-                    <TextBlock x:Name="UpdatesTabLabel" helpers:Loc.Key="tab_updates" Margin="4,0"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="4,0">
+                        <TextBlock x:Name="UpdatesTabLabel" helpers:Loc.Key="tab_updates" VerticalAlignment="Center"/>
+                        <ProgressRing x:Name="UpdatesLoadingRing" Width="14" Height="14" IsActive="False" Visibility="Collapsed" VerticalAlignment="Center"/>
+                    </StackPanel>
                 </controls:SegmentedItem>
 
                 <controls:SegmentedItem x:Name="InstalledTabItem">
-                    <TextBlock x:Name="InstalledTabLabel" helpers:Loc.Key="tab_installed" Margin="4,0"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="4,0">
+                        <TextBlock x:Name="InstalledTabLabel" helpers:Loc.Key="tab_installed" VerticalAlignment="Center"/>
+                        <ProgressRing x:Name="InstalledLoadingRing" Width="14" Height="14" IsActive="False" Visibility="Collapsed" VerticalAlignment="Center"/>
+                    </StackPanel>
                 </controls:SegmentedItem>
             </controls:Segmented>
 
@@ -164,10 +220,10 @@
             </Grid.RowDefinitions>
 
             <ProgressBar x:Name="SearchTopProgressBar" Grid.Row="0" Visibility="Collapsed" IsIndeterminate="True" 
-                         VerticalAlignment="Top" Margin="0,-4,0,0" Canvas.ZIndex="10" HorizontalAlignment="Stretch" Height="4"/>
+                         VerticalAlignment="Top" Margin="0,-4,24,0" Canvas.ZIndex="10" HorizontalAlignment="Stretch" Height="4"/>
 
-            <Border Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                    BorderThickness="1" CornerRadius="6" Padding="46,10,16,10" Margin="0,0,0,8">
+            <Border x:Name="StandardHeader" Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" CornerRadius="6" Padding="46,10,16,10" Margin="0,0,24,8">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
@@ -182,6 +238,24 @@
                 </Grid>
             </Border>
 
+            <Border x:Name="UpdatesHeader" Grid.Row="0" Visibility="Collapsed" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" CornerRadius="6" Padding="46,10,16,10" Margin="0,0,24,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="0.9*"/>
+                        <ColumnDefinition Width="0.9*"/>
+                        <ColumnDefinition Width="1.2*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock helpers:Loc.Key="header_pkg_name" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="1" helpers:Loc.Key="header_pkg_id" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="2" helpers:Loc.Key="header_version" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="3" helpers:Loc.Key="header_new_version" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Column="4" helpers:Loc.Key="header_publisher" FontWeight="SemiBold"/>
+                </Grid>
+            </Border>
+
             <Grid Grid.Row="1">
 
                 <StackPanel x:Name="LoadingState" VerticalAlignment="Center" Visibility="Collapsed">
@@ -190,7 +264,8 @@
                 </StackPanel>
 
                 <ListView x:Name="PackagesGridView" ItemsSource="{x:Bind PackageList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 
-                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource PackageItemTemplate}">
+                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource PackageItemTemplate}"
+                          Padding="0,0,24,0">
                     <ListView.ItemContainerTransitions>
                         <TransitionCollection>
                             <EntranceThemeTransition FromVerticalOffset="24"/>
@@ -200,7 +275,8 @@
                 </ListView>
 
                 <ListView x:Name="UpdatesGridView" ItemsSource="{x:Bind UpdatesList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 
-                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource PackageItemTemplate}">
+                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource UpdateItemTemplate}"
+                          Padding="0,0,24,0">
                     <ListView.ItemContainerTransitions>
                         <TransitionCollection>
                             <EntranceThemeTransition FromVerticalOffset="24"/>
@@ -210,7 +286,8 @@
                 </ListView>
 
                 <ListView x:Name="InstalledGridView" ItemsSource="{x:Bind InstalledList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 
-                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource PackageItemTemplate}">
+                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource PackageItemTemplate}"
+                          Padding="0,0,24,0">
                     <ListView.ItemContainerTransitions>
                         <TransitionCollection>
                             <EntranceThemeTransition FromVerticalOffset="24"/>
@@ -219,11 +296,11 @@
                     </ListView.ItemContainerTransitions>
                 </ListView>
 
-                <TextBlock x:Name="StatusText" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Visibility="Collapsed"/>
+                <TextBlock x:Name="StatusText" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Visibility="Collapsed" Margin="0,0,24,0"/>
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Margin="0,0,24,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
