@@ -45,6 +45,9 @@ namespace EvolveOS_Optimizer.Pages
         private int _updateCheckVersion;
         private int _updateCount;
         private int _searchVersion;
+
+        private string _wingetVersion = string.Empty;
+        private bool _hasCheckedWingetUpdate = false;
         #endregion
 
         #region Constructor & Lifecycle
@@ -76,7 +79,42 @@ namespace EvolveOS_Optimizer.Pages
                 if (!await IsWingetAvailableAsync())
                 {
                     SetErrorState("Winget is not available on this system.");
+                    if (!_hasCheckedWingetUpdate)
+                    {
+                        _hasCheckedWingetUpdate = true;
+                        bool installedSuccessfully = await ShowInstallWingetDialogAsync();
+
+                        if (installedSuccessfully)
+                        {
+                            _isWingetAvailable = null;
+                            _wingetCatalog = null;
+                            _isLoading = false;
+
+                            _ = LoadPackagesAsync();
+                        }
+                    }
                     return;
+                }
+
+                if (string.IsNullOrEmpty(_wingetVersion))
+                {
+                    _wingetVersion = await GetWingetVersionAsync();
+                    WingetVersionText.Text = string.Format(ResourceString.GetString("winget_version") ?? "WinGet {0}", _wingetVersion);
+                }
+
+                if (!_hasCheckedWingetUpdate)
+                {
+                    _hasCheckedWingetUpdate = true;
+                    var (hasUpdate, newVer) = await CheckForWingetUpdateAsync();
+                    if (hasUpdate)
+                    {
+                        bool upgraded = await ShowUpgradeWingetDialogAsync(newVer);
+                        if (upgraded)
+                        {
+                            _wingetVersion = await GetWingetVersionAsync();
+                            WingetVersionText.Text = string.Format(ResourceString.GetString("winget_version") ?? "WinGet {0}", _wingetVersion);
+                        }
+                    }
                 }
 
                 _allPackages.Clear();
@@ -221,9 +259,13 @@ namespace EvolveOS_Optimizer.Pages
             InstallButton.IsEnabled = false;
             RefreshButton.IsEnabled = false;
             activeView.IsEnabled = false;
+
+            WingetVersionText.Visibility = Visibility.Collapsed;
+
             installingStatusBar.Opacity = 1;
             installingStatusBar.Maximum = selected.Count;
             installingStatusBar.Value = 0;
+            installingStatusBar.IsIndeterminate = true;
 
             var localCts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
             int ok = 0, fail = 0;
@@ -246,22 +288,20 @@ namespace EvolveOS_Optimizer.Pages
 
                     try
                     {
-                        string cmd = uninstall
-                            ? $"uninstall --id \"{pkg.Id}\" --exact"
+                        string cmdArgs = uninstall
+                            ? $"uninstall --id \"{pkg.Id}\" --exact --accept-source-agreements --silent --disable-interactivity"
                             : upgrade
-                                ? $"upgrade --id \"{pkg.Id}\" --exact"
-                                : $"install --id \"{pkg.Id}\" --exact";
+                                ? $"upgrade --id \"{pkg.Id}\" --exact --accept-source-agreements --accept-package-agreements --silent --disable-interactivity"
+                                : $"install --id \"{pkg.Id}\" --exact --accept-source-agreements --accept-package-agreements --silent --disable-interactivity";
 
                         var psi = new ProcessStartInfo
                         {
                             FileName = "cmd.exe",
-                            Arguments = $"/c winget {cmd} --accept-source-agreements --accept-package-agreements --silent",
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
+                            Arguments = $"/c winget {cmdArgs}",
+                            RedirectStandardOutput = false,
+                            RedirectStandardError = false,
                             UseShellExecute = false,
-                            CreateNoWindow = true,
-                            StandardOutputEncoding = Encoding.UTF8,
-                            StandardErrorEncoding = Encoding.UTF8
+                            CreateNoWindow = true
                         };
 
                         using var p = Process.Start(psi);
@@ -297,7 +337,7 @@ namespace EvolveOS_Optimizer.Pages
                             else
                             {
                                 fail++;
-                                ErrorLogging.LogDebug($"Failed to execute '{cmd}' on {pkg.Name}. Exit: {p.ExitCode}");
+                                ErrorLogging.LogDebug($"Failed to execute '{cmdArgs}' on {pkg.Name}. Exit: {p.ExitCode}");
                             }
                         }
                     }
@@ -324,8 +364,12 @@ namespace EvolveOS_Optimizer.Pages
                         ? ResourceString.GetString("status_select_update") ?? "Select packages to update"
                         : ResourceString.GetString("status_select_pkg") ?? "Select a package to install";
 
+                installingStatusBar.IsIndeterminate = false;
                 installingStatusBar.Opacity = 0;
                 installingStatusBar.Value = 0;
+
+                WingetVersionText.Visibility = Visibility.Visible;
+
                 activeView.SelectedItems.Clear();
 
                 if (_isUpdatesMode && UpdatesList.Count == 0)
@@ -658,6 +702,162 @@ namespace EvolveOS_Optimizer.Pages
             StatusText.Text = message;
             StatusText.Visibility = Visibility.Visible;
             _isLoading = false;
+        }
+        #endregion
+
+        #region WinGet Versioning & Management
+        private async Task<string> GetWingetVersionAsync()
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = "/c winget --version",
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    StandardOutputEncoding = Encoding.UTF8
+                };
+                using var p = Process.Start(psi);
+                if (p != null)
+                {
+                    var output = await p.StandardOutput.ReadToEndAsync();
+                    await p.WaitForExitAsync(_cts.Token);
+                    return output.Trim();
+                }
+            }
+            catch { }
+            return "Unknown";
+        }
+
+        private async Task<(bool HasUpdate, string NewVersion)> CheckForWingetUpdateAsync()
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = "/c winget upgrade --id Microsoft.DesktopAppInstaller --exact --accept-source-agreements",
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    StandardOutputEncoding = Encoding.UTF8
+                };
+
+                using var p = Process.Start(psi);
+                if (p == null) return (false, string.Empty);
+
+                var output = await p.StandardOutput.ReadToEndAsync();
+                await p.WaitForExitAsync(_cts.Token);
+
+                if (output.Contains("No applicable update found", StringComparison.OrdinalIgnoreCase))
+                {
+                    return (false, string.Empty);
+                }
+
+                var lines = output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                foreach (var line in lines)
+                {
+                    if (line.Contains("Microsoft.DesktopAppInstaller", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var parts = Regex.Split(line, @"\s{2,}");
+                        if (parts.Length >= 4) return (true, parts[3].Trim());
+                    }
+                }
+            }
+            catch (Exception ex) { ErrorLogging.LogDebug($"Winget update check failed: {ex.Message}"); }
+
+            return (false, string.Empty);
+        }
+
+        private async Task<bool> ShowInstallWingetDialogAsync()
+        {
+            var dialog = new ContentDialog
+            {
+                XamlRoot = this.XamlRoot,
+                Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
+                Title = ResourceString.GetString("dialog_install_winget_title") ?? "WinGet Not Found",
+                Content = ResourceString.GetString("dialog_install_winget_content") ?? "The Windows Package Manager (WinGet) is missing from your system. Would you like to install it now?",
+                PrimaryButtonText = ResourceString.GetString("btn_yes") ?? "Yes",
+                CloseButtonText = ResourceString.GetString("btn_no") ?? "No",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                string actionWord = ResourceString.GetString("status_installing") ?? "Installing";
+                StatusText.Text = $"{actionWord} WinGet...";
+                StatusText.Visibility = Visibility.Visible;
+                LoadingState.Visibility = Visibility.Visible;
+
+                try
+                {
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = "-NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle' -OutFile \\\"$env:TEMP\\winget.msixbundle\\\"; Add-AppxPackage -Path \\\"$env:TEMP\\winget.msixbundle\\\"\"",
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    };
+
+                    using var p = Process.Start(psi);
+                    if (p != null)
+                    {
+                        await p.WaitForExitAsync(_cts.Token);
+                        if (p.ExitCode == 0)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            ErrorLogging.LogDebug($"WinGet silent install failed with exit code: {p.ExitCode}");
+                        }
+                    }
+                }
+                catch (Exception ex) { ErrorLogging.LogDebug($"WinGet silent install exception: {ex.Message}"); }
+            }
+            return false;
+        }
+
+        private async Task<bool> ShowUpgradeWingetDialogAsync(string newVersion)
+        {
+            var dialog = new ContentDialog
+            {
+                XamlRoot = this.XamlRoot,
+                Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
+                Title = ResourceString.GetString("dialog_upgrade_winget_title") ?? "WinGet Update Available",
+                Content = string.Format(ResourceString.GetString("dialog_upgrade_winget_content") ?? "A newer version of WinGet ({0}) is available. Would you like to upgrade it now for better stability?", newVersion),
+                PrimaryButtonText = ResourceString.GetString("btn_yes") ?? "Yes",
+                CloseButtonText = ResourceString.GetString("btn_no") ?? "No",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                StatusText.Text = "Upgrading WinGet...";
+                StatusText.Visibility = Visibility.Visible;
+
+                try
+                {
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = "/c winget upgrade --id Microsoft.DesktopAppInstaller --exact --silent --accept-source-agreements --accept-package-agreements --disable-interactivity",
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = false,
+                        RedirectStandardError = false
+                    };
+                    using var p = Process.Start(psi);
+                    if (p != null) await p.WaitForExitAsync();
+                    return true;
+                }
+                catch (Exception ex) { ErrorLogging.LogDebug($"Winget upgrade failed: {ex.Message}"); }
+            }
+            return false;
         }
         #endregion
 

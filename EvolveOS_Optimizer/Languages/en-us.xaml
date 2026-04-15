@@ -1768,6 +1768,14 @@
     <sys:String x:Key="status_no_installed_packages">No installed packages found.</sys:String>
     <sys:String x:Key="notify_no_packages_uninstall">No packages selected for uninstallation.</sys:String>
     <sys:String x:Key="notify_uninstall_results">Uninstallation completed: {0} succeeded, {1} failed.</sys:String>
+
+    <sys:String x:Key="winget_version">WinGet {0}</sys:String>
+    <sys:String x:Key="dialog_install_winget_title">WinGet Not Found</sys:String>
+    <sys:String x:Key="dialog_install_winget_content">The Windows Package Manager (WinGet) is missing from your system. Would you like to install it now?</sys:String>
+    <sys:String x:Key="dialog_upgrade_winget_title">WinGet Update Available</sys:String>
+    <sys:String x:Key="dialog_upgrade_winget_content">A newer version of WinGet ({0}) is available. Would you like to upgrade it now for better stability?</sys:String>
+    <sys:String x:Key="btn_yes">Yes</sys:String>
+    <sys:String x:Key="btn_no">No</sys:String>
     <!-- endregion App Store Page -->
 
 </ResourceDictionary>

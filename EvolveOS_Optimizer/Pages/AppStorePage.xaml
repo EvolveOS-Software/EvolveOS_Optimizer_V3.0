@@ -212,6 +212,9 @@
             <TextBlock x:Name="installingStatusText" Margin="12,6" Grid.Column="0" Style="{StaticResource CaptionTextBlockStyle}" 
                        helpers:Loc.Key="status_select_pkg" TextWrapping="Wrap"/>
             <ProgressBar x:Name="installingStatusBar" Margin="0,0,12,0" Grid.Column="1" Width="Auto" Minimum="0" Maximum="100" Opacity="0"/>
+
+            <TextBlock x:Name="WingetVersionText" Grid.Column="2" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Visible"
+                       Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
         </Grid>
     </Grid>
 </Page>

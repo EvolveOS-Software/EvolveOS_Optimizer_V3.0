@@ -1754,6 +1754,14 @@
     <sys:String x:Key="status_no_installed_packages">Geen geïnstalleerde pakketten gevonden.</sys:String>
     <sys:String x:Key="notify_no_packages_uninstall">Geen pakketten voor verwijderen geselecteerd.</sys:String>
     <sys:String x:Key="notify_uninstall_results">Verwijderen: {0} succes, {1} mislukt.</sys:String>
+
+    <sys:String x:Key="winget_version">WinGet {0}</sys:String>
+    <sys:String x:Key="dialog_install_winget_title">WinGet niet gevonden</sys:String>
+    <sys:String x:Key="dialog_install_winget_content">De Windows Package Manager (WinGet) ontbreekt op uw systeem. Wilt u deze nu installeren?</sys:String>
+    <sys:String x:Key="dialog_upgrade_winget_title">WinGet-update beschikbaar</sys:String>
+    <sys:String x:Key="dialog_upgrade_winget_content">Er is een nieuwere versie van WinGet ({0}) beschikbaar. Wilt u deze nu upgraden voor een betere stabiliteit?</sys:String>
+    <sys:String x:Key="btn_yes">Ja</sys:String>
+    <sys:String x:Key="btn_no">Nee</sys:String>
     <!-- endregion App Store Page -->
 
 </ResourceDictionary>

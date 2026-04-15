@@ -1761,6 +1761,14 @@
     <sys:String x:Key="status_no_installed_packages">Keine installierten Pakete gefunden.</sys:String>
     <sys:String x:Key="notify_no_packages_uninstall">Keine Pakete zur Deinstallation gewählt.</sys:String>
     <sys:String x:Key="notify_uninstall_results">Deinstallation: {0} erfolgr., {1} fehlgeschl.</sys:String>
+
+    <sys:String x:Key="winget_version">WinGet {0}</sys:String>
+    <sys:String x:Key="dialog_install_winget_title">WinGet nicht gefunden</sys:String>
+    <sys:String x:Key="dialog_install_winget_content">Der Windows Package Manager (WinGet) fehlt auf Ihrem System. Möchten Sie ihn jetzt installieren?</sys:String>
+    <sys:String x:Key="dialog_upgrade_winget_title">WinGet-Update verfügbar</sys:String>
+    <sys:String x:Key="dialog_upgrade_winget_content">Eine neuere Version von WinGet ({0}) ist verfügbar. Möchten Sie jetzt für eine bessere Stabilität aktualisieren?</sys:String>
+    <sys:String x:Key="btn_yes">Ja</sys:String>
+    <sys:String x:Key="btn_no">Nein</sys:String>
     <!-- endregion App Store Page -->
 
 </ResourceDictionary>
