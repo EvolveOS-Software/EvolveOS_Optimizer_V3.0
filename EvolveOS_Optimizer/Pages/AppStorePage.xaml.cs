@@ -213,6 +213,35 @@ namespace EvolveOS_Optimizer.Pages
                     _allPackages.Add(pkg);
                 }
 
+                var knownIds = new HashSet<string>(_allPackages.Where(p => !string.IsNullOrWhiteSpace(p.Id)).Select(p => p.Id), StringComparer.OrdinalIgnoreCase);
+                var knownNames = new HashSet<string>(_allPackages.Where(p => !string.IsNullOrWhiteSpace(p.Name)).Select(p => p.Name), StringComparer.OrdinalIgnoreCase);
+
+                foreach (var inst in _installedSnapshot)
+                {
+                    if (string.IsNullOrWhiteSpace(inst.Name)) continue;
+
+                    if ((!string.IsNullOrWhiteSpace(inst.Id) && knownIds.Contains(inst.Id)) ||
+                        knownNames.Contains(inst.Name))
+                    {
+                        continue;
+                    }
+
+                    var newPkg = new WingetPackage
+                    {
+                        Name = inst.Name,
+                        Id = string.IsNullOrWhiteSpace(inst.Id) ? "Local Package" : inst.Id,
+                        Version = string.IsNullOrWhiteSpace(inst.Version) ? "Installed" : inst.Version,
+                        Category = PackageHelper.GetPublisherDisplayName(inst.Id ?? string.Empty),
+                        IsInstalled = true
+                    };
+
+                    _allPackages.Add(newPkg);
+                    matched++;
+
+                    if (!string.IsNullOrWhiteSpace(newPkg.Id)) knownIds.Add(newPkg.Id);
+                    knownNames.Add(newPkg.Name);
+                }
+
                 _allPackages = _allPackages
                     .OrderBy(p => p.Name, StringComparer.CurrentCultureIgnoreCase)
                     .ToList();
@@ -471,33 +500,63 @@ namespace EvolveOS_Optimizer.Pages
             try
             {
                 await ErrorLogging.LogInfo("Starting background update check…");
+
                 var updatables = await GetUpdatablePackagesFromCliAsync();
+
                 if (_updateCheckVersion != myVersion) return;
                 if (updatables.Count == 0) { await ErrorLogging.LogInfo("No updates found."); return; }
 
-                var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var (id, ver) in updatables) map.TryAdd(id, ver);
+                var updatableDict = new Dictionary<string, (string Name, string Version)>(StringComparer.OrdinalIgnoreCase);
+                foreach (var u in updatables)
+                {
+                    updatableDict.TryAdd(u.Id, (u.Name, u.AvailableVersion));
+                }
 
-                var snapshot = _allPackages;
+                var snapshot = _allPackages.ToList();
+
                 DispatcherQueue.TryEnqueue(async () =>
                 {
                     if (_updateCheckVersion != myVersion) return;
 
                     int count = 0;
+
                     foreach (var pkg in snapshot)
                     {
-                        if (map.TryGetValue(pkg.Id, out var latestVer))
+                        if (updatableDict.TryGetValue(pkg.Id, out var updateInfo))
                         {
                             pkg.HasUpdate = true;
-                            pkg.LatestVersion = latestVer;
+                            pkg.LatestVersion = updateInfo.Version;
+                            pkg.IsInstalled = true;
                             count++;
+
+                            updatableDict.Remove(pkg.Id);
                         }
+                    }
+
+                    foreach (var leftover in updatableDict)
+                    {
+                        var newUpdatePkg = new WingetPackage
+                        {
+                            Name = leftover.Value.Name,
+                            Id = leftover.Key,
+                            Version = "Installed",
+                            LatestVersion = leftover.Value.Version,
+                            HasUpdate = true,
+                            IsInstalled = true,
+                            Category = PackageHelper.GetPublisherDisplayName(leftover.Key)
+                        };
+
+                        _allPackages.Add(newUpdatePkg);
+                        snapshot.Add(newUpdatePkg);
+                        count++;
                     }
 
                     _updateCount = count;
                     _updateablePackages = snapshot.Where(p => p.HasUpdate).ToList();
                     UpdatesList.Clear();
+
                     foreach (var pkg in _updateablePackages) UpdatesList.Add(pkg);
+
                     UpdatesTabLabel.Text = count > 0 ? $"{ResourceString.GetString("tab_updates") ?? "Updates"} ({count})" : (ResourceString.GetString("tab_updates") ?? "Updates");
                     await ErrorLogging.LogInfo($"Update check done — {count} update(s).");
 
@@ -1255,12 +1314,12 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region CLI Fallbacks & Parsing
-        private async Task<List<(string Id, string AvailableVersion)>> GetUpdatablePackagesFromCliAsync()
+        private async Task<List<(string Name, string Id, string AvailableVersion)>> GetUpdatablePackagesFromCliAsync()
         {
             var psi = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = "/c winget upgrade --source winget --accept-source-agreements",
+                Arguments = "/c winget upgrade --accept-source-agreements",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -1280,7 +1339,7 @@ namespace EvolveOS_Optimizer.Pages
             var output = await stdOut;
             _ = await stdErr;
 
-            var results = new List<(string, string)>();
+            var results = new List<(string, string, string)>();
             var lines = output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             bool headerPassed = false, sepPassed = false;
 
@@ -1294,16 +1353,22 @@ namespace EvolveOS_Optimizer.Pages
                     continue;
                 }
                 if (!sepPassed) { if (line.All(c => c == '-' || c == ' ')) { sepPassed = true; continue; } }
+
                 if (line.EndsWith("available.", StringComparison.OrdinalIgnoreCase)) continue;
 
                 var parts = Regex.Split(line, @"\s{2,}");
                 if (parts.Length < 4) continue;
 
+                var name = parts[0].Trim();
                 var id = parts[1].Trim();
                 var available = parts[3].Trim();
-                if (!PackageHelper.IsLikelyWingetPackageId(id)) continue;
-                if (string.IsNullOrWhiteSpace(available) || available.Equals("Unknown", StringComparison.OrdinalIgnoreCase)) continue;
-                results.Add((id, available));
+
+                // Commented out to ensure to get all updates. Uncomment for only traditional WinGet packages.
+                // if (!PackageHelper.IsLikelyWingetPackageId(id)) continue;
+
+                if (string.IsNullOrWhiteSpace(available)) continue;
+
+                results.Add((name, id, available));
             }
 
             return results;
