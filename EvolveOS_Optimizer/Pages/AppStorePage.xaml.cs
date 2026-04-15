@@ -79,20 +79,25 @@ namespace EvolveOS_Optimizer.Pages
                     return;
                 }
 
-                var catalog = await EnsureWingetCatalogAsync();
-                if (catalog is null)
-                {
-                    SetErrorState("Could not connect to the winget source.");
-                    return;
-                }
-
                 _allPackages.Clear();
                 PackageList.Clear();
                 LoadingState.Visibility = Visibility.Visible;
                 PackagesGridView.Visibility = Visibility.Collapsed;
 
                 var installedMap = await GetInstalledPackagesMapAsync();
-                var discovered = await DiscoverPackagesAsync(catalog);
+
+                var catalog = await EnsureWingetCatalogAsync();
+                List<DiscoveredPackageEntry> discovered;
+
+                if (catalog is null)
+                {
+                    ErrorLogging.LogDebug("COM Catalog is null. Forcing CLI Fallback for Package Discovery.");
+                    discovered = await DiscoverPackagesFromWingetCliAsync();
+                }
+                else
+                {
+                    discovered = await DiscoverPackagesAsync(catalog);
+                }
 
                 if (discovered.Count < 200)
                 {
@@ -168,7 +173,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 UpdateInstalledTabLabel();
 
-                if (_isUsingCliDiscoveryFallback)
+                if (_isUsingCliDiscoveryFallback || catalog is null)
                 {
                     await ErrorLogging.LogInfo("Notice: WinGet CLI fallback was used for package discovery.");
                 }
@@ -660,8 +665,43 @@ namespace EvolveOS_Optimizer.Pages
         private async Task<bool> IsWingetAvailableAsync()
         {
             if (_isWingetAvailable.HasValue) return _isWingetAvailable.Value;
-            try { _isWingetAvailable = await EnsureWingetCatalogAsync() is not null; return _isWingetAvailable.Value; }
-            catch { }
+
+            try
+            {
+                if (await EnsureWingetCatalogAsync() is not null)
+                {
+                    _isWingetAvailable = true;
+                    return true;
+                }
+            }
+            catch { /* COM failed, proceed to CLI check */ }
+
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = "/c winget --version",
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    StandardOutputEncoding = Encoding.UTF8
+                };
+
+                using var p = Process.Start(psi);
+                if (p != null)
+                {
+                    await p.WaitForExitAsync(_cts.Token);
+                    if (p.ExitCode == 0)
+                    {
+                        ErrorLogging.LogDebug("COM API failed, but WinGet CLI is available.");
+                        _isWingetAvailable = true;
+                        return true;
+                    }
+                }
+            }
+            catch { /* CLI check failed */ }
+
             _isWingetAvailable = false;
             return false;
         }
@@ -669,6 +709,7 @@ namespace EvolveOS_Optimizer.Pages
         private async Task<PackageCatalog?> EnsureWingetCatalogAsync()
         {
             if (_wingetCatalog is not null) return _wingetCatalog;
+
             try
             {
                 var src = await Task.Run(() =>
@@ -676,12 +717,29 @@ namespace EvolveOS_Optimizer.Pages
                     _packageManager ??= new PackageManager();
                     return _packageManager.GetPackageCatalogByName("winget");
                 });
+
+                if (src is null)
+                {
+                    ErrorLogging.LogDebug("Winget COM source catalog returned null.");
+                    return null;
+                }
+
                 src.AcceptSourceAgreements = true;
                 var r = await Task.Run(() => src.ConnectAsync().AsTask());
-                if (r.Status == ConnectResultStatus.Ok) { _wingetCatalog = r.PackageCatalog; return _wingetCatalog; }
-                ErrorLogging.LogDebug($"Winget source failed: {r.Status}");
+
+                if (r.Status == ConnectResultStatus.Ok)
+                {
+                    _wingetCatalog = r.PackageCatalog;
+                    return _wingetCatalog;
+                }
+
+                ErrorLogging.LogDebug($"Winget source failed to connect. Status: {r.Status}");
             }
-            catch (Exception ex) { ErrorLogging.LogDebug($"Winget connect error: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug($"Winget COM connect error: {ex.Message}");
+            }
+
             return null;
         }
 
