@@ -1763,7 +1763,6 @@
     <sys:String x:Key="sort_version">Version</sys:String>
     <sys:String x:Key="sort_publisher">Publisher</sys:String>
 
-    <sys:String x:Key="status_searching_online">Searching online...</sys:String>
     <sys:String x:Key="status_no_results">No packages found.</sys:String>
 
     <sys:String x:Key="notify_no_selected_part1">No packages selected for</sys:String>

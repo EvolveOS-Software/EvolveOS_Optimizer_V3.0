@@ -1749,7 +1749,6 @@
     <sys:String x:Key="sort_version">Versie</sys:String>
     <sys:String x:Key="sort_publisher">Uitgever</sys:String>
 
-    <sys:String x:Key="status_searching_online">Online zoeken...</sys:String>
     <sys:String x:Key="status_no_results">Geen pakketten gevonden.</sys:String>
 
     <sys:String x:Key="notify_no_selected_part1">Geen pakketten geselecteerd voor</sys:String>

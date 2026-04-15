@@ -115,11 +115,11 @@
 
             <controls:Segmented x:Name="TabSegmented" Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Center" SelectionChanged="TabSegmented_SelectionChanged" SelectedIndex="0">
                 <controls:SegmentedItem helpers:Loc.Key="tab_browse" />
-                
+
                 <controls:SegmentedItem x:Name="UpdatesTabItem">
                     <TextBlock x:Name="UpdatesTabLabel" helpers:Loc.Key="tab_updates" Margin="4,0"/>
                 </controls:SegmentedItem>
-                
+
                 <controls:SegmentedItem x:Name="InstalledTabItem">
                     <TextBlock x:Name="InstalledTabLabel" helpers:Loc.Key="tab_installed" Margin="4,0"/>
                 </controls:SegmentedItem>
@@ -163,6 +163,9 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
+            <ProgressBar x:Name="SearchTopProgressBar" Grid.Row="0" Visibility="Collapsed" IsIndeterminate="True" 
+                         VerticalAlignment="Top" Margin="0,-4,0,0" Canvas.ZIndex="10" HorizontalAlignment="Stretch" Height="4"/>
+
             <Border Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
                     BorderThickness="1" CornerRadius="6" Padding="46,10,16,10" Margin="0,0,0,8">
                 <Grid>
@@ -180,6 +183,7 @@
             </Border>
 
             <Grid Grid.Row="1">
+
                 <StackPanel x:Name="LoadingState" VerticalAlignment="Center" Visibility="Collapsed">
                     <ProgressRing x:Name="SearchProgressRing" Margin="20" Width="100" Height="100" IsActive="False" IsIndeterminate="True"/>
                     <TextBlock x:Name="SearchStatusText" helpers:Loc.Key="status_loading_pkg" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Center"/>

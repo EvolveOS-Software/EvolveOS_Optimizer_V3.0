@@ -691,7 +691,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void ApplySearch(string query)
         {
-            if (StatusText == null || LoadingState == null || SearchProgressRing == null || PackageList == null)
+            if (StatusText == null || PackageList == null || SearchTopProgressBar == null)
             {
                 return;
             }
@@ -699,8 +699,7 @@ namespace EvolveOS_Optimizer.Pages
             var currentVersion = Interlocked.Increment(ref _searchVersion);
 
             StatusText.Visibility = Visibility.Collapsed;
-            LoadingState.Visibility = Visibility.Collapsed;
-            SearchProgressRing.IsActive = false;
+            SearchTopProgressBar.Visibility = Visibility.Collapsed;
             PackageList.Clear();
 
             IEnumerable<WingetPackage> SortPackages(IEnumerable<WingetPackage> packages)
@@ -771,9 +770,7 @@ namespace EvolveOS_Optimizer.Pages
                 await Task.Delay(400);
                 if (currentVersion != _searchVersion) return;
 
-                SearchStatusText.Text = ResourceString.GetString("status_searching_online") ?? "Searching online...";
-                LoadingState.Visibility = Visibility.Visible;
-                SearchProgressRing.IsActive = true;
+                SearchTopProgressBar.Visibility = Visibility.Visible;
 
                 try
                 {
@@ -819,9 +816,7 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     if (currentVersion == _searchVersion)
                     {
-                        LoadingState.Visibility = Visibility.Collapsed;
-                        SearchProgressRing.IsActive = false;
-                        SearchStatusText.Text = ResourceString.GetString("status_loading_pkg") ?? "Loading packages...";
+                        SearchTopProgressBar.Visibility = Visibility.Collapsed;
                     }
                 }
             }

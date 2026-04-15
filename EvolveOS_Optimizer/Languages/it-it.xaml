@@ -1762,7 +1762,6 @@
     <sys:String x:Key="sort_version">Versione</sys:String>
     <sys:String x:Key="sort_publisher">Editore</sys:String>
 
-    <sys:String x:Key="status_searching_online">Ricerca online...</sys:String>
     <sys:String x:Key="status_no_results">Nessun pacchetto trovato.</sys:String>
 
     <sys:String x:Key="notify_no_selected_part1">Nessun pacchetto per</sys:String>
