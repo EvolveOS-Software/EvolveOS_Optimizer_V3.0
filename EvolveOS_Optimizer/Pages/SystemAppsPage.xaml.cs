@@ -32,7 +32,6 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
 
         this.NavigationCacheMode = NavigationCacheMode.Required;
         Loaded += SystemAppsPage_Loaded;
-        Unloaded += SystemAppsPage_Unloaded;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
