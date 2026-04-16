@@ -1773,6 +1773,12 @@
     <sys:String x:Key="dialog_upgrade_winget_content">Une nouvelle version de WinGet ({0}) est disponible. Voulez-vous la mettre à jour maintenant pour une meilleure stabilité ?</sys:String>
     <sys:String x:Key="btn_yes">Oui</sys:String>
     <sys:String x:Key="btn_no">Non</sys:String>
+
+    <sys:String x:Key="menu_install_as_admin">Installer en tant qu'administrateur</sys:String>
+    <sys:String x:Key="menu_skip_integrity">Ignorer les contrôles d'intégrité</sys:String>
+    <sys:String x:Key="menu_install_machine_wide">Installer pour tous les utilisateurs</sys:String>
+    <sys:String x:Key="menu_uninstall_as_admin">Désinstaller en tant qu'administrateur</sys:String>
+    <sys:String x:Key="menu_interactive_uninstall">Désinstallation interactive</sys:String>
     <!-- endregion App Store Page -->
 
     <!-- region Navigation Guard & Busy State -->

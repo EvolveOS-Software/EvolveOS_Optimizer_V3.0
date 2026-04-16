@@ -74,6 +74,8 @@ namespace EvolveOS_Optimizer.Pages
 
             this.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
             Loaded += AppStorePage_Loaded;
+
+            Unloaded += AppStorePage_Unloaded;
         }
 
         private async void AppStorePage_Loaded(object sender, RoutedEventArgs e)
@@ -90,6 +92,19 @@ namespace EvolveOS_Optimizer.Pages
 
             if (_allPackages.Count == 0)
                 await LoadPackagesAsync();
+        }
+
+        private void AppStorePage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _cts.Cancel();
+
+                _wingetCatalog = null;
+                _localCatalog = null;
+                _packageManager = null;
+            }
+            catch { }
         }
         #endregion
 
@@ -172,7 +187,7 @@ namespace EvolveOS_Optimizer.Pages
                 _allPackages.Clear();
                 PackageList.Clear();
 
-                var installedMap = await GetInstalledPackagesMapAsync();
+                var installedMap = await GetInstalledPackagesMapAsync(_cts.Token);
                 var catalog = await EnsureWingetCatalogAsync();
                 List<DiscoveredPackageEntry> discovered;
 
@@ -319,7 +334,32 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private async void InstallSelectedApp_Click(object sender, RoutedEventArgs e)
+        private void InstallSelectedApp_Click(SplitButton sender, SplitButtonClickEventArgs args)
+        {
+            ExecuteInstallAsync(installAsAdmin: false, skipIntegrityCheck: false, installMachineWide: false);
+        }
+
+        private void MenuInstallAsAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            ExecuteInstallAsync(installAsAdmin: true, skipIntegrityCheck: false, installMachineWide: false);
+        }
+
+        private void MenuSkipIntegrity_Click(object sender, RoutedEventArgs e)
+        {
+            ExecuteInstallAsync(installAsAdmin: false, skipIntegrityCheck: true, installMachineWide: false);
+        }
+
+        private void MenuMachineScope_Click(object sender, RoutedEventArgs e)
+        {
+            ExecuteInstallAsync(installAsAdmin: false, skipIntegrityCheck: false, installMachineWide: true);
+        }
+
+        private void MenuInteractive_Click(object sender, RoutedEventArgs e)
+        {
+            ExecuteInstallAsync(installAsAdmin: false, skipIntegrityCheck: false, installMachineWide: false, interactive: true);
+        }
+
+        private async void ExecuteInstallAsync(bool installAsAdmin, bool skipIntegrityCheck, bool installMachineWide, bool interactive = false)
         {
             var activeView = _isInstalledMode ? InstalledGridView : (_isUpdatesMode ? UpdatesGridView : PackagesGridView);
 
@@ -417,20 +457,39 @@ namespace EvolveOS_Optimizer.Pages
                             }
                         }
 
+                        string baseArgs = $"--id \"{pkg.Id}\" --exact --accept-source-agreements --accept-package-agreements";
+
+                        if (!interactive)
+                        {
+                            baseArgs += " --silent --disable-interactivity";
+                        }
+
+                        if (skipIntegrityCheck)
+                        {
+                            baseArgs += " --ignore-security-hash --force";
+                        }
+
+                        if (installMachineWide && !uninstall)
+                        {
+                            baseArgs += " --scope machine";
+                        }
+
                         string cmdArgs = uninstall
-                            ? $"uninstall --id \"{pkg.Id}\" --exact --accept-source-agreements --silent --disable-interactivity"
+                            ? $"uninstall {baseArgs}"
                             : upgrade
-                                ? $"upgrade --id \"{pkg.Id}\" --exact --accept-source-agreements --accept-package-agreements --silent --disable-interactivity"
-                                : $"install --id \"{pkg.Id}\" --exact --accept-source-agreements --accept-package-agreements --silent --disable-interactivity";
+                                ? $"upgrade {baseArgs}"
+                                : $"install {baseArgs}";
 
                         var psi = new ProcessStartInfo
                         {
-                            FileName = "cmd.exe",
-                            Arguments = $"/c winget {cmdArgs}",
+                            FileName = "winget.exe",
+                            Arguments = cmdArgs,
                             RedirectStandardOutput = false,
                             RedirectStandardError = false,
-                            UseShellExecute = false,
-                            CreateNoWindow = true
+                            UseShellExecute = installAsAdmin,
+                            Verb = installAsAdmin ? "runas" : string.Empty,
+                            CreateNoWindow = true,
+                            WindowStyle = ProcessWindowStyle.Hidden
                         };
 
                         using var p = Process.Start(psi);
@@ -548,7 +607,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 await ErrorLogging.LogInfo("Starting background update check…");
 
-                var updatables = await GetUpdatablePackagesFromCliAsync();
+                var updatables = await GetUpdatablePackagesFromCliAsync(_cts.Token);
 
                 if (_updateCheckVersion != myVersion)
                 {
@@ -583,11 +642,23 @@ namespace EvolveOS_Optimizer.Pages
 
                     foreach (var pkg in snapshot)
                     {
-                        if (updatableDict.TryGetValue(pkg.Id, out var updateInfo))
+                        var match = updatableDict.FirstOrDefault(u =>
+                            string.Equals(u.Key, pkg.Id, StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(u.Value.Name, pkg.Name, StringComparison.OrdinalIgnoreCase)
+                        );
+
+                        if (match.Key != null)
                         {
+                            var updateInfo = match.Value;
+
                             pkg.HasUpdate = true;
                             pkg.LatestVersion = updateInfo.AvailableVer;
                             pkg.IsInstalled = true;
+
+                            if (!string.IsNullOrWhiteSpace(match.Key) && match.Key.Contains('.'))
+                            {
+                                pkg.Id = match.Key;
+                            }
 
                             if (string.IsNullOrWhiteSpace(pkg.Version) || pkg.Version == "N/A" || pkg.Version == "Installed")
                             {
@@ -595,13 +666,15 @@ namespace EvolveOS_Optimizer.Pages
                             }
 
                             count++;
-                            updatableDict.Remove(pkg.Id);
+                            updatableDict.Remove(match.Key);
                         }
                     }
 
                     foreach (var leftover in updatableDict)
                     {
-                        if (_allPackages.Any(p => p.Id != null && p.Id.Equals(leftover.Key, StringComparison.OrdinalIgnoreCase)))
+                        if (_allPackages.Any(p =>
+                            string.Equals(p.Id, leftover.Key, StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(p.Name, leftover.Value.Name, StringComparison.OrdinalIgnoreCase)))
                         {
                             continue;
                         }
@@ -635,6 +708,13 @@ namespace EvolveOS_Optimizer.Pages
                     StopUpdatesSpinner();
 
                     await ErrorLogging.LogInfo($"Update check done — {count} update(s).");
+
+                    UpdateInstalledTabLabel();
+
+                    if (_isInstalledMode)
+                    {
+                        RefreshInstalledTabList();
+                    }
 
                     if (_isUpdatesMode) RefreshUpdatesTabList();
                 });
@@ -671,12 +751,16 @@ namespace EvolveOS_Optimizer.Pages
         #region UI Event Handlers (Tabs, Buttons, Search, Selection)
         private void TabSegmented_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (PackageSearchBox == null || InstallButtonText == null || PackagesGridView == null) return;
+
+            PackageSearchBox.Visibility = Visibility.Visible;
+
             if (TabSegmented.SelectedIndex == 0)
             {
                 if (!_isUpdatesMode && !_isInstalledMode) return;
                 _isUpdatesMode = false;
                 _isInstalledMode = false;
-                PackageSearchBox.Visibility = Visibility.Visible;
+
                 InstallButtonText.Text = ResourceString.GetString("btn_install_selected") ?? "Install Selected";
                 InstallButtonIcon.Glyph = "\uE896";
                 installingStatusText.Text = ResourceString.GetString("status_select_pkg") ?? "Select a package to install";
@@ -687,6 +771,11 @@ namespace EvolveOS_Optimizer.Pages
                 StatusText.Visibility = Visibility.Collapsed;
                 PackagesGridView.Visibility = Visibility.Visible;
 
+                if (MenuInstallAsAdmin != null) MenuInstallAsAdmin.Text = ResourceString.GetString("menu_install_as_admin") ?? "Install as Administrator";
+                if (MenuSkipIntegrity != null) MenuSkipIntegrity.Visibility = Visibility.Visible;
+                if (MenuMachineScope != null) MenuMachineScope.Visibility = Visibility.Visible;
+                if (MenuInteractive != null) MenuInteractive.Visibility = Visibility.Collapsed;
+
                 ApplySearch(PackageSearchBox.Text?.Trim() ?? string.Empty);
             }
             else if (TabSegmented.SelectedIndex == 1)
@@ -694,7 +783,7 @@ namespace EvolveOS_Optimizer.Pages
                 if (_isUpdatesMode) return;
                 _isUpdatesMode = true;
                 _isInstalledMode = false;
-                PackageSearchBox.Visibility = Visibility.Collapsed;
+
                 InstallButtonText.Text = ResourceString.GetString("btn_update_selected") ?? "Update Selected";
                 InstallButtonIcon.Glyph = "\uE898";
                 installingStatusText.Text = ResourceString.GetString("status_select_update") ?? "Select packages to update";
@@ -702,14 +791,22 @@ namespace EvolveOS_Optimizer.Pages
                 InstalledGridView.Visibility = Visibility.Collapsed;
                 PackagesGridView.SelectedItems.Clear();
                 InstalledGridView.SelectedItems.Clear();
+
+                if (MenuInstallAsAdmin != null) MenuInstallAsAdmin.Text = ResourceString.GetString("menu_install_as_admin") ?? "Install as Administrator";
+                if (MenuSkipIntegrity != null) MenuSkipIntegrity.Visibility = Visibility.Visible;
+                if (MenuMachineScope != null) MenuMachineScope.Visibility = Visibility.Visible;
+                if (MenuInteractive != null) MenuInteractive.Visibility = Visibility.Collapsed;
+
                 RefreshUpdatesTabList();
+
+                FilterLocalPackages(PackageSearchBox.Text?.Trim() ?? string.Empty);
             }
             else if (TabSegmented.SelectedIndex == 2)
             {
                 if (_isInstalledMode) return;
                 _isUpdatesMode = false;
                 _isInstalledMode = true;
-                PackageSearchBox.Visibility = Visibility.Collapsed;
+
                 InstallButtonText.Text = ResourceString.GetString("btn_uninstall_selected") ?? "Uninstall Selected";
                 InstallButtonIcon.Glyph = "\uE74D";
                 installingStatusText.Text = ResourceString.GetString("status_select_uninstall") ?? "Select packages to uninstall";
@@ -717,7 +814,15 @@ namespace EvolveOS_Optimizer.Pages
                 UpdatesGridView.Visibility = Visibility.Collapsed;
                 PackagesGridView.SelectedItems.Clear();
                 UpdatesGridView.SelectedItems.Clear();
+
+                if (MenuInstallAsAdmin != null) MenuInstallAsAdmin.Text = ResourceString.GetString("menu_uninstall_as_admin") ?? "Uninstall as Administrator";
+                if (MenuSkipIntegrity != null) MenuSkipIntegrity.Visibility = Visibility.Collapsed;
+                if (MenuMachineScope != null) MenuMachineScope.Visibility = Visibility.Collapsed;
+                if (MenuInteractive != null) MenuInteractive.Visibility = Visibility.Visible;
+
                 RefreshInstalledTabList();
+
+                FilterLocalPackages(PackageSearchBox.Text?.Trim() ?? string.Empty);
             }
 
             if (StandardHeader != null && UpdatesHeader != null)
@@ -760,6 +865,11 @@ namespace EvolveOS_Optimizer.Pages
             InstallButtonIcon.Glyph = "\uE896";
             installingStatusText.Text = ResourceString.GetString("status_select_pkg") ?? "Select a package to install";
 
+            if (MenuInstallAsAdmin != null) MenuInstallAsAdmin.Text = ResourceString.GetString("menu_install_as_admin") ?? "Install as Administrator";
+            if (MenuSkipIntegrity != null) MenuSkipIntegrity.Visibility = Visibility.Visible;
+            if (MenuMachineScope != null) MenuMachineScope.Visibility = Visibility.Visible;
+            if (MenuInteractive != null) MenuInteractive.Visibility = Visibility.Collapsed;
+
             _suppressSearch = true;
             try { PackageSearchBox.Text = string.Empty; }
             finally { _suppressSearch = false; }
@@ -792,15 +902,88 @@ namespace EvolveOS_Optimizer.Pages
 
         private void PackageSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            if (_suppressSearch || _isLoading || _isUpdatesMode) return;
+            if (_suppressSearch || _isLoading) return;
+
             if (args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen) return;
-            ApplySearch(sender.Text?.Trim() ?? string.Empty);
+
+            string query = sender.Text?.Trim() ?? string.Empty;
+
+            if (_isInstalledMode || _isUpdatesMode)
+            {
+                FilterLocalPackages(query);
+            }
+            else
+            {
+                ApplySearch(query);
+            }
         }
 
         private void PackageSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             if (_suppressSearch || _isLoading || _isUpdatesMode) return;
             ApplySearch(args.QueryText?.Trim() ?? string.Empty);
+        }
+
+        private void FilterLocalPackages(string query)
+        {
+            if (_isInstalledMode)
+            {
+                InstalledList.Clear();
+                var masterInstalled = _allPackages.Where(p => p.IsInstalled).ToList();
+
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    foreach (var pkg in masterInstalled) InstalledList.Add(pkg);
+                }
+                else
+                {
+                    var filtered = masterInstalled.Where(p =>
+                        (p.Name != null && p.Name.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+                        (p.Id != null && p.Id.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    ).ToList();
+
+                    foreach (var pkg in filtered) InstalledList.Add(pkg);
+                }
+
+                if (InstalledList.Count == 0)
+                {
+                    StatusText.Text = ResourceString.GetString("status_no_results") ?? "No packages found.";
+                    StatusText.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    StatusText.Visibility = Visibility.Collapsed;
+                }
+            }
+            else if (_isUpdatesMode)
+            {
+                UpdatesList.Clear();
+                var masterUpdates = _allPackages.Where(p => p.HasUpdate).ToList();
+
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    foreach (var pkg in masterUpdates) UpdatesList.Add(pkg);
+                }
+                else
+                {
+                    var filtered = masterUpdates.Where(p =>
+                        (p.Name != null && p.Name.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+                        (p.Id != null && p.Id.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    ).ToList();
+
+                    foreach (var pkg in filtered) UpdatesList.Add(pkg);
+                }
+
+                if (UpdatesList.Count == 0)
+                {
+                    StatusText.Text = ResourceString.GetString("status_no_results") ?? "No packages found.";
+                    StatusText.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    StatusText.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private async void ApplySearch(string query)
@@ -1373,7 +1556,7 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private async Task<Dictionary<string, (string Name, string Version)>> GetInstalledPackagesMapAsync()
+        private async Task<Dictionary<string, (string Name, string Version)>> GetInstalledPackagesMapAsync(CancellationToken ct = default)
         {
             var result = new Dictionary<string, (string Name, string Version)>(StringComparer.OrdinalIgnoreCase);
             _installedSnapshot.Clear();
@@ -1381,63 +1564,47 @@ namespace EvolveOS_Optimizer.Pages
 
             try
             {
-                var local = await EnsureLocalCatalogAsync();
+                var cliPackages = await GetInstalledPackagesFromCliAsync(ct);
 
-                if (local is null)
+                foreach (var pkg in cliPackages)
                 {
-                    ErrorLogging.LogDebug("Local catalog is null. Triggering inventory fallback.");
-                    await PopulateInstalledMapFallbackAsync(result);
-                    return result;
-                }
+                    _installedSnapshot.Add(pkg);
 
-                var findOperation = await local.FindPackagesAsync(new FindPackagesOptions()).AsTask();
-
-                if (findOperation.Matches == null || findOperation.Matches.Count < 15)
-                {
-                    ErrorLogging.LogDebug("Native catalog returned suspiciously few apps. Forcing fallback.");
-                    await PopulateInstalledMapFallbackAsync(result);
-                }
-                else
-                {
-                    foreach (var match in findOperation.Matches)
+                    if (!string.IsNullOrWhiteSpace(pkg.Id))
                     {
-                        var ip = match.CatalogPackage;
-                        var ver = ip.InstalledVersion?.Version ?? ip.AvailableVersions.FirstOrDefault()?.Version ?? string.Empty;
-                        var iid = ip.Id ?? string.Empty;
-                        var iname = ip.Name ?? string.Empty;
-
-                        _installedSnapshot.Add(new InstalledPackageEntry(
-                            iid, iname, ver, PackageHelper.NormalizeLookupKey(iid), PackageHelper.NormalizeLookupKey(iname)));
-
-                        if (!string.IsNullOrWhiteSpace(iid))
+                        result[pkg.Id] = (pkg.Name, pkg.Version);
+                        foreach (var key in PackageHelper.GetLookupKeys(pkg.Id, pkg.Name))
                         {
-                            result[iid] = (iname, ver);
-                            foreach (var key in PackageHelper.GetLookupKeys(iid, iname))
-                                result.TryAdd(key, (iname, ver));
+                            result.TryAdd(key, (pkg.Name, pkg.Version));
                         }
-                        if (!string.IsNullOrWhiteSpace(iname))
-                            result.TryAdd(PackageHelper.NormalizeLookupKey(iname), (iname, ver));
+                    }
+                    if (!string.IsNullOrWhiteSpace(pkg.Name))
+                    {
+                        result.TryAdd(PackageHelper.NormalizeLookupKey(pkg.Name), (pkg.Name, pkg.Version));
                     }
                 }
+
+                await PopulateInstalledMapFallbackAsync(result, ct);
             }
-            catch (OperationCanceledException) { throw; }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                ErrorLogging.LogDebug($"Local catalog query failed: {ex.Message}");
-                await PopulateInstalledMapFallbackAsync(result);
+                ErrorLogging.LogDebug($"CLI installed list query failed: {ex.Message}");
+                await PopulateInstalledMapFallbackAsync(result, ct);
             }
 
             return result;
         }
-        #endregion
 
-        #region CLI Fallbacks & Parsing
-        private async Task<List<(string Name, string Id, string CurrentVersion, string AvailableVersion)>> GetUpdatablePackagesFromCliAsync()
+        private async Task<List<InstalledPackageEntry>> GetInstalledPackagesFromCliAsync(CancellationToken ct = default)
         {
             var psi = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
-                Arguments = "/c winget upgrade --accept-source-agreements",
+                FileName = "winget.exe",
+                Arguments = "list --accept-source-agreements",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -1451,8 +1618,91 @@ namespace EvolveOS_Optimizer.Pages
 
             var stdOut = process.StandardOutput.ReadToEndAsync();
             var stdErr = process.StandardError.ReadToEndAsync();
-            try { await process.WaitForExitAsync(_cts.Token); }
-            catch (OperationCanceledException) { TryTerminateProcess(process); throw; }
+
+            try
+            {
+                await process.WaitForExitAsync(ct);
+            }
+            catch (OperationCanceledException)
+            {
+                TryTerminateProcess(process);
+                return [];
+            }
+
+            var output = await stdOut;
+            _ = await stdErr;
+
+            var results = new List<InstalledPackageEntry>();
+            var lines = output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            bool sepPassed = false;
+
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("Name", StringComparison.OrdinalIgnoreCase) && line.Contains("Id")) continue;
+
+                if (line.All(c => c == '-' || c == ' '))
+                {
+                    sepPassed = true;
+                    continue;
+                }
+
+                if (!sepPassed) continue;
+
+                var parts = Regex.Split(line, @"\s{2,}");
+                if (parts.Length < 2) continue;
+
+                string name = parts[0].Trim();
+                string id = parts.Length > 2 ? parts[1].Trim() : name;
+                string version = parts.Length > 2 ? parts[2].Trim() : parts[1].Trim();
+
+                if (name.Equals("Name", StringComparison.OrdinalIgnoreCase) || id.Equals("Id", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                results.Add(new InstalledPackageEntry(
+                    id,
+                    name,
+                    version,
+                    PackageHelper.NormalizeLookupKey(id),
+                    PackageHelper.NormalizeLookupKey(name)
+                ));
+            }
+
+            return results;
+        }
+        #endregion
+
+        #region CLI Fallbacks & Parsing
+        private async Task<List<(string Name, string Id, string CurrentVersion, string AvailableVersion)>> GetUpdatablePackagesFromCliAsync(CancellationToken ct = default)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "winget.exe",
+                Arguments = "upgrade --accept-source-agreements",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8
+            };
+
+            using var process = Process.Start(psi);
+            if (process is null) return [];
+
+            var stdOut = process.StandardOutput.ReadToEndAsync();
+            var stdErr = process.StandardError.ReadToEndAsync();
+
+            try
+            {
+                await process.WaitForExitAsync(ct);
+            }
+            catch (OperationCanceledException)
+            {
+                TryTerminateProcess(process);
+                return [];
+            }
 
             var output = await stdOut;
             _ = await stdErr;
@@ -1463,16 +1713,23 @@ namespace EvolveOS_Optimizer.Pages
 
             foreach (var line in lines)
             {
-                if (!headerPassed)
+                if (line.StartsWith("Name", StringComparison.OrdinalIgnoreCase) && line.Contains("Id"))
                 {
-                    if (line.Contains("Available", StringComparison.OrdinalIgnoreCase) &&
-                        line.Contains("Version", StringComparison.OrdinalIgnoreCase))
-                        headerPassed = true;
+                    headerPassed = true;
                     continue;
                 }
-                if (!sepPassed) { if (line.All(c => c == '-' || c == ' ')) { sepPassed = true; continue; } }
 
-                if (line.EndsWith("available.", StringComparison.OrdinalIgnoreCase)) continue;
+                if (line.All(c => c == '-' || c == ' '))
+                {
+                    if (headerPassed) sepPassed = true;
+                    continue;
+                }
+
+                if (!headerPassed || !sepPassed) continue;
+
+                if (line.EndsWith("available.", StringComparison.OrdinalIgnoreCase) ||
+                    line.Contains("applicable update found", StringComparison.OrdinalIgnoreCase))
+                    continue;
 
                 var parts = Regex.Split(line, @"\s{2,}");
                 if (parts.Length < 4) continue;
@@ -1481,6 +1738,10 @@ namespace EvolveOS_Optimizer.Pages
                 var id = parts[1].Trim();
                 var currentVer = parts[2].Trim();
                 var available = parts[3].Trim();
+
+                if (name.Equals("Name", StringComparison.OrdinalIgnoreCase) ||
+                    id.Equals("Id", StringComparison.OrdinalIgnoreCase))
+                    continue;
 
                 // Commented out to ensure to get all updates. Uncomment for only traditional WinGet packages.
                 // if (!PackageHelper.IsLikelyWingetPackageId(id)) continue;
@@ -1496,10 +1757,11 @@ namespace EvolveOS_Optimizer.Pages
         private async Task<List<DiscoveredPackageEntry>> DiscoverPackagesFromWingetCliAsync()
         {
             _isUsingCliDiscoveryFallback = true;
+
             var psi = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
-                Arguments = "/c winget search --accept-source-agreements",
+                FileName = "winget.exe",
+                Arguments = "search --accept-source-agreements",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -1509,15 +1771,21 @@ namespace EvolveOS_Optimizer.Pages
             };
 
             using var process = Process.Start(psi);
-            if (process is null) { ErrorLogging.LogDebug("Failed to start winget CLI."); return []; }
+            if (process is null)
+            {
+                ErrorLogging.LogDebug("Failed to start winget CLI.");
+                return [];
+            }
 
             var stdOut = process.StandardOutput.ReadToEndAsync();
             var stdErr = process.StandardError.ReadToEndAsync();
+
             try { await process.WaitForExitAsync(_cts.Token); }
             catch (OperationCanceledException) { TryTerminateProcess(process); throw; }
 
             var output = await stdOut;
             _ = await stdErr;
+
             return process.ExitCode != 0 ? [] : ParseWingetSearchOutput(output);
         }
 
@@ -1541,8 +1809,8 @@ namespace EvolveOS_Optimizer.Pages
 
             var psi = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
-                Arguments = $"/c winget search --query \"{query.Replace("\"", "\"\"")}\" --source winget --accept-source-agreements",
+                FileName = "winget.exe",
+                Arguments = $"search --query \"{query.Replace("\"", "\"\"")}\" --source winget --accept-source-agreements", // Removed /c winget
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -1556,11 +1824,13 @@ namespace EvolveOS_Optimizer.Pages
 
             var stdOut = process.StandardOutput.ReadToEndAsync();
             var stdErr = process.StandardError.ReadToEndAsync();
+
             try { await process.WaitForExitAsync(token); }
             catch (OperationCanceledException) { TryTerminateProcess(process); throw; }
 
             var output = await stdOut;
             _ = await stdErr;
+
             return process.ExitCode != 0 ? [] : ParseWingetSearchOutput(output);
         }
 
@@ -1594,7 +1864,7 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Registry Fallback & Heuristics
-        private async Task PopulateInstalledMapFallbackAsync(Dictionary<string, (string Name, string Version)> result)
+        private async Task PopulateInstalledMapFallbackAsync(Dictionary<string, (string Name, string Version)> result, CancellationToken ct = default)
         {
             try
             {
