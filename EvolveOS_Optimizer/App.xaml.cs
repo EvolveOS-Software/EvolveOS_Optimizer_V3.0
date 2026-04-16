@@ -48,6 +48,10 @@ namespace EvolveOS_Optimizer
 
             UnhandledException += OnUnhandledException;
 
+            this.UnhandledException += App_UnhandledException;
+
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+
             AppDomain.CurrentDomain.ProcessExit += (s, ev) => HandleCleanup();
         }
 
@@ -159,11 +163,24 @@ namespace EvolveOS_Optimizer
             });
         }
 
+        private async void App_UnhandledException(object? sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+
+            string errorMessage = $"CRASH: {e.Exception.Message}\nStack: {e.Exception.StackTrace}";
+            await ErrorLogging.LogInfo(errorMessage);
+        }
+
+        private async void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        {
+            string errorMessage = $"BACKGROUND CRASH: {e.Exception.Message}\nStack: {e.Exception.StackTrace}";
+            await ErrorLogging.LogInfo(errorMessage);
+        }
+
         private static async Task ShowMissingStringsDialogAsync()
         {
             if (MainWindow?.Content?.XamlRoot == null) return;
 
-            // Get the report from our tracked UI elements
             var missingStrings = Loc.GetMissingStringsReport();
 
             var panel = new Microsoft.UI.Xaml.Controls.StackPanel { Spacing = 10 };
