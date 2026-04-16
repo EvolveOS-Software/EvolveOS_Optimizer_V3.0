@@ -1762,6 +1762,7 @@
     <sys:String x:Key="sort_publisher">Editore</sys:String>
 
     <sys:String x:Key="status_no_results">Nessun pacchetto trovato.</sys:String>
+    <sys:String x:Key="status_offline">Offline: Connettiti a Internet per utilizzare l'App Store.</sys:String>
 
     <sys:String x:Key="notify_no_selected_part1">Nessun pacchetto per</sys:String>
     <sys:String x:Key="notify_install_completed">Installazione completata</sys:String>

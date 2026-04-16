@@ -1749,6 +1749,7 @@
     <sys:String x:Key="sort_publisher">Uitgever</sys:String>
 
     <sys:String x:Key="status_no_results">Geen pakketten gevonden.</sys:String>
+    <sys:String x:Key="status_offline">Offline: Maak verbinding met internet om de App Store te gebruiken.</sys:String>
 
     <sys:String x:Key="notify_no_selected_part1">Geen pakketten geselecteerd voor</sys:String>
     <sys:String x:Key="notify_install_completed">Installatie voltooid</sys:String>

@@ -1754,6 +1754,7 @@
     <sys:String x:Key="sort_publisher">Éditeur</sys:String>
 
     <sys:String x:Key="status_no_results">Aucun paquet trouvé.</sys:String>
+    <sys:String x:Key="status_offline">Hors ligne : Veuillez vous connecter à Internet pour utiliser l'App Store.</sys:String>
 
     <sys:String x:Key="notify_no_selected_part1">Aucun paquet pour</sys:String>
     <sys:String x:Key="notify_install_completed">Installation terminée</sys:String>

@@ -1763,6 +1763,7 @@
     <sys:String x:Key="sort_publisher">Publisher</sys:String>
 
     <sys:String x:Key="status_no_results">No packages found.</sys:String>
+    <sys:String x:Key="status_offline">Offline: Please connect to the internet to use the App Store.</sys:String>
 
     <sys:String x:Key="notify_no_selected_part1">No packages selected for</sys:String>
     <sys:String x:Key="notify_install_completed">Installation completed</sys:String>

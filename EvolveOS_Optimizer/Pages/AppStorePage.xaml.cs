@@ -113,6 +113,13 @@ namespace EvolveOS_Optimizer.Pages
         {
             _isLoading = true;
 
+            if (!await NetworkHelper.IsConnectedAsync())
+            {
+                SetErrorState(ResourceString.GetString("status_offline") ?? "Internet connection required to load the App Store.");
+                _isLoading = false;
+                return;
+            }
+
             UpdatesLoadingRing.Visibility = Visibility.Visible;
             UpdatesLoadingRing.IsActive = true;
             InstalledLoadingRing.Visibility = Visibility.Visible;
@@ -375,6 +382,11 @@ namespace EvolveOS_Optimizer.Pages
                         : ResourceString.GetString("notify_no_packages_install") ?? "No packages selected for installation.";
 
                 NotificationManager.Show("warning", notifyMsg).Perform();
+                return;
+            }
+
+            if (!await NetworkHelper.IsConnectedAsync())
+            {
                 return;
             }
 
@@ -1066,6 +1078,12 @@ namespace EvolveOS_Optimizer.Pages
             {
                 await Task.Delay(400);
                 if (currentVersion != _searchVersion) return;
+
+                if (!await NetworkHelper.IsConnectedAsync())
+                {
+                    SearchTopProgressBar.Visibility = Visibility.Collapsed;
+                    return;
+                }
 
                 SearchTopProgressBar.Visibility = Visibility.Visible;
 

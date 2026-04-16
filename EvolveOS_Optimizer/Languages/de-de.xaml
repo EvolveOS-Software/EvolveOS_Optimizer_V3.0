@@ -1756,6 +1756,7 @@
     <sys:String x:Key="sort_publisher">Herausgeber</sys:String>
 
     <sys:String x:Key="status_no_results">Keine Pakete gefunden.</sys:String>
+    <sys:String x:Key="status_offline">Offline: Bitte verbinden Sie sich mit dem Internet, um den App Store zu nutzen.</sys:String>
 
     <sys:String x:Key="notify_no_selected_part1">Keine Pakete gewählt für</sys:String>
     <sys:String x:Key="notify_install_completed">Installation beendet</sys:String>
