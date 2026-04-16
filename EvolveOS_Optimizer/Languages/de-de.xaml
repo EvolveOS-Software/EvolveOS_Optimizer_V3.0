@@ -1337,7 +1337,6 @@
     <sys:String x:Key="title_end_session">Sitzung beenden?</sys:String>
     <sys:String x:Key="msg_end_session_confirm">Eine Auto-Login-Sitzung ist derzeit aktiv. Sind Sie sicher, dass Sie diese beenden und Ihre gespeicherten Zugangsdaten entfernen möchten?</sys:String>
     <sys:String x:Key="btn_yes_end_session">Ja, Sitzung beenden</sys:String>
-    <sys:String x:Key="btn_cancel">Abbrechen</sys:String>
     <sys:String x:Key="lbl_session_expire_default">Sitzung läuft ab um: --:--</sys:String>
     <sys:String x:Key="toast_title_autologin">Auto-Login</sys:String>
     <sys:String x:Key="toast_msg_session_ended">Sitzung beendet und Zugangsdaten entfernt.</sys:String>
@@ -1392,7 +1391,6 @@
     <sys:String x:Key="title_password_manager_add">Passwort hinzufügen</sys:String>
     <sys:String x:Key="title_password_manager_edit">Element bearbeiten</sys:String>
     <sys:String x:Key="btn_update">Aktualisieren</sys:String>
-    <sys:String x:Key="btn_cancel">Abbrechen</sys:String>
     <sys:String x:Key="btn_aes">AES-Verschlüsselung</sys:String>
     <sys:String x:Key="btn_encrypt">Verschlüsseln</sys:String>
     <sys:String x:Key="btn_decrypt">Entschlüsseln</sys:String>
@@ -1778,5 +1776,16 @@
     <sys:String x:Key="btn_yes">Ja</sys:String>
     <sys:String x:Key="btn_no">Nein</sys:String>
     <!-- endregion App Store Page -->
+
+    <!-- region Navigation Guard & Busy State -->
+    <sys:String x:Key="dialog_install_in_progress_title">Installation wird ausgeführt</sys:String>
+    <sys:String x:Key="dialog_install_in_progress_content">Wenn Sie diesen Tab verlassen, wird die aktuelle Installation abgebrochen. Fortfahren?</sys:String>
+
+    <sys:String x:Key="dialog_uninstall_in_progress_title">Deinstallation wird ausgeführt</sys:String>
+    <sys:String x:Key="dialog_uninstall_in_progress_content">Wenn Sie diesen Tab verlassen, wird der Entfernungsvorgang abgebrochen. Fortfahren?</sys:String>
+
+    <sys:String x:Key="btn_proceed">Fortfahren</sys:String>
+    <sys:String x:Key="btn_cancel">Abbrechen</sys:String>
+    <!-- endregion Navigation Guard & Busy State -->
 
 </ResourceDictionary>

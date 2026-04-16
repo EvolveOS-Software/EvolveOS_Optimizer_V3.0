@@ -1330,7 +1330,6 @@
     <sys:String x:Key="title_end_session">Sessie beëindigen?</sys:String>
     <sys:String x:Key="msg_end_session_confirm">Er is een auto-login sessie actief. Weet u zeker dat u deze wilt beëindigen en uw opgeslagen gegevens wilt verwijderen?</sys:String>
     <sys:String x:Key="btn_yes_end_session">Ja, sessie beëindigen</sys:String>
-    <sys:String x:Key="btn_cancel">Annuleren</sys:String>
     <sys:String x:Key="lbl_session_expire_default">Sessie verloopt om: --:--</sys:String>
     <sys:String x:Key="toast_title_autologin">Auto-Login</sys:String>
     <sys:String x:Key="toast_msg_session_ended">Sessie beëindigd en gegevens verwijderd.</sys:String>
@@ -1385,7 +1384,6 @@
     <sys:String x:Key="title_password_manager_add">Wachtwoord toevoegen</sys:String>
     <sys:String x:Key="title_password_manager_edit">Item bewerken</sys:String>
     <sys:String x:Key="btn_update">Bijwerken</sys:String>
-    <sys:String x:Key="btn_cancel">Annuleren</sys:String>
     <sys:String x:Key="btn_aes">AES-encryptie</sys:String>
     <sys:String x:Key="btn_encrypt">Versleutelen</sys:String>
     <sys:String x:Key="btn_decrypt">Ontsleutelen</sys:String>
@@ -1771,5 +1769,16 @@
     <sys:String x:Key="btn_yes">Ja</sys:String>
     <sys:String x:Key="btn_no">Nee</sys:String>
     <!-- endregion App Store Page -->
+
+    <!-- region Navigation Guard & Busy State -->
+    <sys:String x:Key="dialog_install_in_progress_title">Installatie bezig</sys:String>
+    <sys:String x:Key="dialog_install_in_progress_content">Als u dit tabblad verlaat, wordt de huidige installatie geannuleerd. Doorgaan?</sys:String>
+
+    <sys:String x:Key="dialog_uninstall_in_progress_title">Verwijderen bezig</sys:String>
+    <sys:String x:Key="dialog_uninstall_in_progress_content">Als u dit tabblad verlaat, wordt het verwijderingsproces geannuleerd. Doorgaan?</sys:String>
+
+    <sys:String x:Key="btn_proceed">Doorgaan</sys:String>
+    <sys:String x:Key="btn_cancel">Annuleren</sys:String>
+    <!-- endregion Navigation Guard & Busy State -->
 
 </ResourceDictionary>

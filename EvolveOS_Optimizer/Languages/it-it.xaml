@@ -1343,7 +1343,6 @@
     <sys:String x:Key="title_end_session">End Session?</sys:String>
     <sys:String x:Key="msg_end_session_confirm">An Auto-Login session is currently active. Are you sure you want to end it and remove your saved credentials?</sys:String>
     <sys:String x:Key="btn_yes_end_session">Yes, End Session</sys:String>
-    <sys:String x:Key="btn_cancel">Cancel</sys:String>
     <sys:String x:Key="lbl_session_expire_default">Session will expire at: --:--</sys:String>
     <sys:String x:Key="toast_title_autologin">Auto-Login</sys:String>
     <sys:String x:Key="toast_msg_session_ended">Session ended and credentials removed.</sys:String>
@@ -1398,7 +1397,6 @@
     <sys:String x:Key="title_password_manager_add">Aggiungi password</sys:String>
     <sys:String x:Key="title_password_manager_edit">Modifica elemento</sys:String>
     <sys:String x:Key="btn_update">Aggiorna</sys:String>
-    <sys:String x:Key="btn_cancel">Annulla</sys:String>
     <sys:String x:Key="btn_aes">Crittografia AES</sys:String>
     <sys:String x:Key="btn_encrypt">Cripta</sys:String>
     <sys:String x:Key="btn_decrypt">Decripta</sys:String>
@@ -1784,5 +1782,16 @@
     <sys:String x:Key="btn_yes">Sì</sys:String>
     <sys:String x:Key="btn_no">No</sys:String>
     <!-- endregion App Store Page -->
+
+    <!-- region Navigation Guard & Busy State -->
+    <sys:String x:Key="dialog_install_in_progress_title">Installazione in corso</sys:String>
+    <sys:String x:Key="dialog_install_in_progress_content">Lasciare questa scheda annullerà l'installazione corrente. Procedere?</sys:String>
+
+    <sys:String x:Key="dialog_uninstall_in_progress_title">Disinstallazione in corso</sys:String>
+    <sys:String x:Key="dialog_uninstall_in_progress_content">Lasciare questa scheda annullerà il processo di rimozione. Procedere?</sys:String>
+
+    <sys:String x:Key="btn_proceed">Procedi</sys:String>
+    <sys:String x:Key="btn_cancel">Annulla</sys:String>
+    <!-- endregion Navigation Guard & Busy State -->
 
 </ResourceDictionary>

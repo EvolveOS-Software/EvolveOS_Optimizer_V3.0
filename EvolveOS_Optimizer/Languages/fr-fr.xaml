@@ -1335,7 +1335,6 @@
     <sys:String x:Key="title_end_session">Terminer la session ?</sys:String>
     <sys:String x:Key="msg_end_session_confirm">Une session de connexion automatique est active. Êtes-vous sûr de vouloir la terminer et supprimer vos identifiants ?</sys:String>
     <sys:String x:Key="btn_yes_end_session">Oui, terminer la session</sys:String>
-    <sys:String x:Key="btn_cancel">Annuler</sys:String>
     <sys:String x:Key="lbl_session_expire_default">La session expirera à : --:--</sys:String>
     <sys:String x:Key="toast_title_autologin">Connexion-Auto</sys:String>
     <sys:String x:Key="toast_msg_session_ended">Session terminée et identifiants supprimés.</sys:String>
@@ -1390,7 +1389,6 @@
     <sys:String x:Key="title_password_manager_add">Ajouter un mot de passe</sys:String>
     <sys:String x:Key="title_password_manager_edit">Modifier l'élément</sys:String>
     <sys:String x:Key="btn_update">Mettre à jour</sys:String>
-    <sys:String x:Key="btn_cancel">Annuler</sys:String>
     <sys:String x:Key="btn_aes">Chiffrement AES</sys:String>
     <sys:String x:Key="btn_encrypt">Chiffrer</sys:String>
     <sys:String x:Key="btn_decrypt">Déchiffrer</sys:String>
@@ -1776,5 +1774,16 @@
     <sys:String x:Key="btn_yes">Oui</sys:String>
     <sys:String x:Key="btn_no">Non</sys:String>
     <!-- endregion App Store Page -->
+
+    <!-- region Navigation Guard & Busy State -->
+    <sys:String x:Key="dialog_install_in_progress_title">Installation en cours</sys:String>
+    <sys:String x:Key="dialog_install_in_progress_content">Quitter cet onglet annulera l'installation en cours. Continuer ?</sys:String>
+
+    <sys:String x:Key="dialog_uninstall_in_progress_title">Désinstallation en cours</sys:String>
+    <sys:String x:Key="dialog_uninstall_in_progress_content">Quitter cet onglet annulera le processus de suppression. Continuer ?</sys:String>
+
+    <sys:String x:Key="btn_proceed">Continuer</sys:String>
+    <sys:String x:Key="btn_cancel">Annuler</sys:String>
+    <!-- endregion Navigation Guard & Busy State -->
 
 </ResourceDictionary>

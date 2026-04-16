@@ -2,20 +2,21 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
-using Microsoft.UI.Dispatching;
 using Microsoft.Management.Deployment;
-using System.IO;
+using Microsoft.UI.Dispatching;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class AppStorePage : Page
+    public sealed partial class AppStorePage : Page, IBusyPage
     {
         #region Data Models & Records
         private sealed record InstalledPackageEntry(string Id, string Name, string Version, string NormalizedId, string NormalizedName);
@@ -35,6 +36,12 @@ namespace EvolveOS_Optimizer.Pages
         private PackageManager? _packageManager;
         private PackageCatalog? _wingetCatalog;
         private PackageCatalog? _localCatalog;
+
+        #region Navigation Guard
+        public bool IsBusy { get; private set; }
+        public string BusyTitle => ResourceString.GetString("dialog_install_in_progress_title") ?? "Installation in Progress";
+        public string BusyMessage => ResourceString.GetString("dialog_install_in_progress_content") ?? "Leaving this tab will cancel the current installation. Proceed?";
+        #endregion
 
         private bool? _isWingetAvailable;
         private bool _isUsingInventoryFallback;
@@ -71,6 +78,12 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void AppStorePage_Loaded(object sender, RoutedEventArgs e)
         {
+            if (_cts.IsCancellationRequested)
+            {
+                _cts.Dispose();
+                _cts = new CancellationTokenSource();
+            }
+
             if (_isLoading) return;
 
             await ErrorLogging.LogInfo("AppStorePage Loaded and starting package load.");
@@ -325,6 +338,8 @@ namespace EvolveOS_Optimizer.Pages
                 return;
             }
 
+            IsBusy = true;
+
             InstallButton.IsEnabled = false;
             RefreshButton.IsEnabled = false;
             activeView.IsEnabled = false;
@@ -486,28 +501,36 @@ namespace EvolveOS_Optimizer.Pages
 
                 activeView.SelectedItems.Clear();
 
-                if (_isUpdatesMode && UpdatesList.Count == 0)
+                if (!_cts.Token.IsCancellationRequested)
                 {
-                    StatusText.Text = ResourceString.GetString("status_updates_success") ?? "All updates installed successfully.";
-                    StatusText.Visibility = Visibility.Visible;
-                }
-                else if (_isInstalledMode && InstalledList.Count == 0)
-                {
-                    StatusText.Text = ResourceString.GetString("status_no_installed_packages") ?? "No installed packages found.";
-                    StatusText.Visibility = Visibility.Visible;
+                    if (_isUpdatesMode && UpdatesList.Count == 0)
+                    {
+                        StatusText.Text = ResourceString.GetString("status_updates_success") ?? "All updates installed successfully.";
+                        StatusText.Visibility = Visibility.Visible;
+                    }
+                    else if (_isInstalledMode && InstalledList.Count == 0)
+                    {
+                        StatusText.Text = ResourceString.GetString("status_no_installed_packages") ?? "No installed packages found.";
+                        StatusText.Visibility = Visibility.Visible;
+                    }
                 }
 
                 UpdateInstalledTabLabel();
 
-                string notifyFormat = _isInstalledMode
-                    ? ResourceString.GetString("notify_uninstall_results") ?? "Uninstallation completed: {0} succeeded, {1} failed."
-                    : _isUpdatesMode
-                        ? ResourceString.GetString("notify_update_results") ?? "Update completed: {0} succeeded, {1} failed."
-                        : ResourceString.GetString("notify_install_results") ?? "Installation completed: {0} succeeded, {1} failed.";
+                if (!_cts.Token.IsCancellationRequested)
+                {
+                    string notifyFormat = _isInstalledMode
+                        ? ResourceString.GetString("notify_uninstall_results") ?? "Uninstallation completed: {0} succeeded, {1} failed."
+                        : _isUpdatesMode
+                            ? ResourceString.GetString("notify_update_results") ?? "Update completed: {0} succeeded, {1} failed."
+                            : ResourceString.GetString("notify_install_results") ?? "Installation completed: {0} succeeded, {1} failed.";
 
-                string finalNotifyMsg = string.Format(notifyFormat, ok, fail);
+                    string finalNotifyMsg = string.Format(notifyFormat, ok, fail);
 
-                NotificationManager.Show(fail == 0 ? "success" : "warning", finalNotifyMsg).Perform();
+                    NotificationManager.Show(fail == 0 ? "success" : "warning", finalNotifyMsg).Perform();
+                }
+
+                IsBusy = false;
             }
         }
 
@@ -578,6 +601,11 @@ namespace EvolveOS_Optimizer.Pages
 
                     foreach (var leftover in updatableDict)
                     {
+                        if (_allPackages.Any(p => p.Id != null && p.Id.Equals(leftover.Key, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            continue;
+                        }
+
                         var newUpdatePkg = new WingetPackage
                         {
                             Name = leftover.Value.Name,
@@ -620,6 +648,23 @@ namespace EvolveOS_Optimizer.Pages
                 ErrorLogging.LogDebug($"Update check failed: {ex.Message}");
                 StopUpdatesSpinner();
             }
+        }
+
+        public async Task CancelWorkAsync()
+        {
+            try
+            {
+                await ErrorLogging.LogInfo("Cancellation requested via navigation guard.");
+                _cts.Cancel();
+
+                IsBusy = false;
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug($"Error during navigation cancellation: {ex.Message}");
+            }
+
+            await Task.CompletedTask;
         }
         #endregion
 

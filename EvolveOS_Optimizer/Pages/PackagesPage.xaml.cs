@@ -1,8 +1,12 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Threading;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Animation;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
@@ -12,8 +16,9 @@ using Microsoft.UI.Xaml.Input;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public partial class PackagesPage : Page, IPurgeable
+    public partial class PackagesPage : Page, IPurgeable, IBusyPage
     {
+        #region Properties & State Fields
         private readonly Dictionary<string, string> _currentCardStates = new();
 
         private CancellationTokenSource? _pageCts;
@@ -28,13 +33,20 @@ namespace EvolveOS_Optimizer.Pages
 
         private int _cardsLoadedCount = 0;
         private bool _isEntranceAnimationActive = true;
-
         public bool IsStaggeredEntranceEnabled { get; set; } = false;
 
         private bool _isHoveringItem = false;
-
         private bool _isUpdating = false;
 
+        #region Navigation Guard
+        public bool IsBusy { get; private set; }
+        public string BusyTitle => ResourceString.GetString("dialog_uninstall_in_progress_title") ?? "Uninstallation in Progress";
+        public string BusyMessage => ResourceString.GetString("dialog_uninstall_in_progress_content") ?? "Leaving this tab will cancel the removal process. Proceed?";
+        #endregion
+
+        #endregion
+
+        #region Constructor & Lifecycle
         public PackagesPage()
         {
             InitializeComponent();
@@ -101,6 +113,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             Purge();
         }
+        #endregion
 
         #region UI Event Handlers (Buttons & Menus)
 
@@ -258,47 +271,6 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
-
-        private async Task ExecuteBulkRemoval(PackagesViewModel vm, bool edgeInSelection)
-        {
-            vm.IsMultiSelectMode = false;
-            var packagesToRemove = new List<PackagesModel>(vm.SelectedPackages);
-            vm.SelectedPackages.Clear();
-            vm.OnPropertyChanged(nameof(vm.RemoveButtonVisibility));
-
-            SyncVisualStates();
-
-            foreach (var package in packagesToRemove)
-            {
-                string packageName = package.Name;
-                bool removeWebView = edgeInSelection && packageName == "Edge";
-
-                await _backgroundQueue.QueueTask(async () =>
-                {
-                    this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, true); });
-
-                    await UninstallingPackages.RemoveAppxPackage(packageName, removeWebView);
-                    await Task.Delay(2000);
-
-                    this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, false); });
-
-                    this.DispatcherQueue?.TryEnqueue(() =>
-                    {
-                        if (!this.IsLoaded) return;
-
-                        if (ExplorerManager.PackageMapping.TryGetValue(packageName, out bool needRestart) && needRestart)
-                        {
-                            ExplorerManager.Restart();
-                        }
-                        UninstallingPackages.OnPackagesChanged();
-                        SyncVisualStates();
-                    });
-                });
-            }
-
-            string notificationMsg = ResourceString.GetString("notif_bulk_completed") ?? "Bulk uninstall Completed";
-            NotificationManager.Show("info", notificationMsg).Perform();
-        }
         #endregion
 
         #region Animations & Staggering
@@ -454,83 +426,150 @@ namespace EvolveOS_Optimizer.Pages
 
             if (_timer != null) _timer.Stop();
 
-            await _backgroundQueue.QueueTask(async () =>
+            IsBusy = true;
+
+            try
             {
-                this.DispatcherQueue?.TryEnqueue(() =>
+                await _backgroundQueue.QueueTask(async () =>
                 {
-                    if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, true);
-                });
-
-                await UninstallingPackages.RemoveAppxPackage(packageName, _isWebViewRemoval);
-
-                await Task.Delay(3000);
-
-                _uninstalling.GetInstalledPackages();
-
-                this.DispatcherQueue?.TryEnqueue(() =>
-                {
-                    if (!this.IsLoaded || vm == null || HcPanel == null)
+                    this.DispatcherQueue?.TryEnqueue(() =>
                     {
-                        if (_timer != null) _timer.Start();
-                        return;
-                    }
+                        if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, true);
+                    });
 
-                    UninstallingPackages.HandleAvailabilityStatus(packageName, false);
+                    await UninstallingPackages.RemoveAppxPackage(packageName, _isWebViewRemoval);
 
-                    if (ExplorerManager.PackageMapping.TryGetValue(packageName, out bool needRestart) && needRestart)
+                    await Task.Delay(3000);
+
+                    _uninstalling.GetInstalledPackages();
+
+                    this.DispatcherQueue?.TryEnqueue(() =>
                     {
-                        ExplorerManager.Restart();
-                    }
-
-                    bool isCurrentlyInstalled = UninstallingPackages.InstalledPackagesCache.Contains(packageName);
-
-                    foreach (var child in HcPanel.Children)
-                    {
-                        var card = child as ContentControl;
-                        if (card != null && card.DataContext is PackagesModel model && model.Name == packageName)
+                        if (!this.IsLoaded || vm == null || HcPanel == null)
                         {
-                            model.Installed = isCurrentlyInstalled;
-                            model.IsSelected = false;
+                            if (_timer != null) _timer.Start();
+                            return;
+                        }
 
-                            try { model.OnPropertyChanged(nameof(model.Installed)); } catch { }
+                        UninstallingPackages.HandleAvailabilityStatus(packageName, false);
 
-                            if (!isCurrentlyInstalled)
+                        if (ExplorerManager.PackageMapping.TryGetValue(packageName, out bool needRestart) && needRestart)
+                        {
+                            ExplorerManager.Restart();
+                        }
+
+                        bool isCurrentlyInstalled = UninstallingPackages.InstalledPackagesCache.Contains(packageName);
+
+                        foreach (var child in HcPanel.Children)
+                        {
+                            var card = child as ContentControl;
+                            if (card != null && card.DataContext is PackagesModel model && model.Name == packageName)
                             {
-                                VisualStateManager.GoToState(card, "Unselected", false);
-                                _currentCardStates[model.Name] = "Unselected";
+                                model.Installed = isCurrentlyInstalled;
+                                model.IsSelected = false;
 
-                                var tb = card.Content as ToggleButton;
-                                if (tb != null)
+                                try { model.OnPropertyChanged(nameof(model.Installed)); } catch { }
+
+                                if (!isCurrentlyInstalled)
                                 {
-                                    tb.IsChecked = false;
+                                    VisualStateManager.GoToState(card, "Unselected", false);
+                                    _currentCardStates[model.Name] = "Unselected";
 
-                                    VisualStateManager.GoToState(tb, "Unchecked", true);
-                                    VisualStateManager.GoToState(tb, "Normal", true);
-
-                                    var iconImage = UIHelper.FindVisualChildByName<Image>(tb, "Icon");
-                                    if (iconImage != null)
+                                    var tb = card.Content as ToggleButton;
+                                    if (tb != null)
                                     {
-                                        iconImage.Opacity = 0.4;
+                                        tb.IsChecked = false;
+                                        VisualStateManager.GoToState(tb, "Unchecked", true);
+                                        VisualStateManager.GoToState(tb, "Normal", true);
+
+                                        var iconImage = UIHelper.FindVisualChildByName<Image>(tb, "Icon");
+                                        if (iconImage != null) iconImage.Opacity = 0.4;
                                     }
                                 }
+                                break;
                             }
-                            break;
                         }
+
+                        UninstallingPackages.OnPackagesChanged();
+                        SyncVisualStates();
+
+                        if (_pageCts?.Token.IsCancellationRequested != true)
+                        {
+                            string friendlyAppName = ResourceString.GetString($"{packageName}_pkg");
+                            if (string.IsNullOrEmpty(friendlyAppName) || friendlyAppName.StartsWith("[Missing"))
+                                friendlyAppName = packageName;
+
+                            string removedMsg = ResourceString.GetString("notif_pkg_removed") ?? "{0} has been successfully removed.";
+                            NotificationManager.Show("info", string.Format(removedMsg, friendlyAppName)).Perform();
+                        }
+
+                        if (_timer != null) _timer.Start();
+                    });
+                });
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        private async Task ExecuteBulkRemoval(PackagesViewModel vm, bool edgeInSelection)
+        {
+            vm.IsMultiSelectMode = false;
+            var packagesToRemove = new List<PackagesModel>(vm.SelectedPackages);
+            vm.SelectedPackages.Clear();
+            vm.OnPropertyChanged(nameof(vm.RemoveButtonVisibility));
+
+            IsBusy = true;
+
+            try
+            {
+                SyncVisualStates();
+
+                foreach (var package in packagesToRemove)
+                {
+                    if (_pageCts?.Token.IsCancellationRequested == true)
+                    {
+                        await ErrorLogging.LogInfo("[PackagesPage] Bulk removal loop aborted due to navigation cancellation.");
+                        break;
                     }
 
-                    UninstallingPackages.OnPackagesChanged();
-                    SyncVisualStates();
+                    string packageName = package.Name;
+                    bool removeWebView = edgeInSelection && packageName == "Edge";
 
-                    string friendlyAppName = ResourceString.GetString($"{packageName}_pkg");
-                    if (string.IsNullOrEmpty(friendlyAppName) || friendlyAppName.StartsWith("[Missing"))
-                        friendlyAppName = packageName;
+                    await _backgroundQueue.QueueTask(async () =>
+                    {
+                        this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, true); });
 
-                    string removedMsg = ResourceString.GetString("notif_pkg_removed") ?? "{0} has been successfully removed.";
-                    NotificationManager.Show("info", string.Format(removedMsg, friendlyAppName)).Perform();
+                        await UninstallingPackages.RemoveAppxPackage(packageName, removeWebView);
+                        await Task.Delay(2000);
 
-                    if (_timer != null) _timer.Start();
-                });
-            });
+                        this.DispatcherQueue?.TryEnqueue(() => { if (this.IsLoaded) UninstallingPackages.HandleAvailabilityStatus(packageName, false); });
+
+                        this.DispatcherQueue?.TryEnqueue(() =>
+                        {
+                            if (!this.IsLoaded) return;
+
+                            if (ExplorerManager.PackageMapping.TryGetValue(packageName, out bool needRestart) && needRestart)
+                            {
+                                ExplorerManager.Restart();
+                            }
+                            UninstallingPackages.OnPackagesChanged();
+                            SyncVisualStates();
+                        });
+                    });
+                }
+
+                if (_pageCts?.Token.IsCancellationRequested != true)
+                {
+                    string notificationMsg = ResourceString.GetString("notif_bulk_completed") ?? "Bulk uninstall Completed";
+                    NotificationManager.Show("info", notificationMsg).Perform();
+                }
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         private async Task HandleOneDriveRestore(string packageName)
@@ -550,6 +589,25 @@ namespace EvolveOS_Optimizer.Pages
                 if (this.IsLoaded && HcPanel != null) HcPanel.IsAnimationEnabled = isEnabled;
             });
         }
+
+        #region Navigation Guard (IBusyPage)
+
+        public async Task CancelWorkAsync()
+        {
+            try
+            {
+                await ErrorLogging.LogInfo("[PackagesPage] Cancellation requested via navigation guard.");
+                _pageCts?.Cancel();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[PackagesPage] Error during cancel: {ex.Message}");
+            }
+            await Task.CompletedTask;
+        }
+
+        #endregion
+
         #endregion
 
         #region Purge Page

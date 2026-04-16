@@ -1344,7 +1344,6 @@
     <sys:String x:Key="title_end_session">End Session?</sys:String>
     <sys:String x:Key="msg_end_session_confirm">An Auto-Login session is currently active. Are you sure you want to end it and remove your saved credentials?</sys:String>
     <sys:String x:Key="btn_yes_end_session">Yes, End Session</sys:String>
-    <sys:String x:Key="btn_cancel">Cancel</sys:String>
     <sys:String x:Key="lbl_session_expire_default">Session will expire at: --:--</sys:String>
     <sys:String x:Key="toast_title_autologin">Auto-Login</sys:String>
     <sys:String x:Key="toast_msg_session_ended">Session ended and credentials removed.</sys:String>
@@ -1399,7 +1398,6 @@
     <sys:String x:Key="title_password_manager_add">Add Password</sys:String>
     <sys:String x:Key="title_password_manager_edit">Edit Item</sys:String>
     <sys:String x:Key="btn_update">Update</sys:String>
-    <sys:String x:Key="btn_cancel">Cancel</sys:String>
     <sys:String x:Key="btn_aes">AES Encryption</sys:String>
     <sys:String x:Key="btn_encrypt">Encrypt</sys:String>
     <sys:String x:Key="btn_decrypt">Decrypt</sys:String>
@@ -1785,5 +1783,16 @@
     <sys:String x:Key="btn_yes">Yes</sys:String>
     <sys:String x:Key="btn_no">No</sys:String>
     <!-- endregion App Store Page -->
+
+    <!-- region Navigation Guard & Busy State -->
+    <sys:String x:Key="dialog_install_in_progress_title">Installation in Progress</sys:String>
+    <sys:String x:Key="dialog_install_in_progress_content">Leaving this tab will cancel the current installation. Proceed?</sys:String>
+
+    <sys:String x:Key="dialog_uninstall_in_progress_title">Uninstallation in Progress</sys:String>
+    <sys:String x:Key="dialog_uninstall_in_progress_content">Leaving this tab will cancel the removal process. Proceed?</sys:String>
+
+    <sys:String x:Key="btn_proceed">Proceed</sys:String>
+    <sys:String x:Key="btn_cancel">Cancel</sys:String>
+    <!-- endregion Navigation Guard & Busy State -->
 
 </ResourceDictionary>
