@@ -518,10 +518,10 @@ namespace EvolveOS_Optimizer.Pages
                             Arguments = cmdArgs,
                             RedirectStandardOutput = false,
                             RedirectStandardError = false,
-                            UseShellExecute = installAsAdmin,
+                            UseShellExecute = installAsAdmin || interactive,
                             Verb = installAsAdmin ? "runas" : string.Empty,
-                            CreateNoWindow = true,
-                            WindowStyle = ProcessWindowStyle.Hidden
+                            CreateNoWindow = !interactive,
+                            WindowStyle = interactive ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden
                         };
 
                         using var p = Process.Start(psi);
@@ -808,8 +808,16 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (MenuInstallAsAdmin != null) MenuInstallAsAdmin.Text = ResourceString.GetString("menu_install_as_admin") ?? "Install as Administrator";
                 if (MenuSkipIntegrity != null) MenuSkipIntegrity.Visibility = Visibility.Visible;
-                if (MenuMachineScope != null) MenuMachineScope.Visibility = Visibility.Visible;
-                if (MenuInteractive != null) MenuInteractive.Visibility = Visibility.Collapsed;
+                if (MenuMachineScope != null)
+                {
+                    MenuMachineScope.Visibility = Visibility.Visible;
+                    MenuMachineScope.Text = ResourceString.GetString("menu_install_machine") ?? "Install for all users";
+                }
+                if (MenuInteractive != null)
+                {
+                    MenuInteractive.Visibility = Visibility.Visible;
+                    MenuInteractive.Text = ResourceString.GetString("menu_interactive_install") ?? "Interactive installation";
+                }
 
                 ApplySearch(PackageSearchBox.Text?.Trim() ?? string.Empty);
             }
@@ -828,10 +836,18 @@ namespace EvolveOS_Optimizer.Pages
                 PackagesGridView.SelectedItems.Clear();
                 InstalledGridView.SelectedItems.Clear();
 
-                if (MenuInstallAsAdmin != null) MenuInstallAsAdmin.Text = ResourceString.GetString("menu_install_as_admin") ?? "Install as Administrator";
+                if (MenuInstallAsAdmin != null) MenuInstallAsAdmin.Text = ResourceString.GetString("menu_update_as_admin") ?? "Update as Administrator";
                 if (MenuSkipIntegrity != null) MenuSkipIntegrity.Visibility = Visibility.Visible;
-                if (MenuMachineScope != null) MenuMachineScope.Visibility = Visibility.Visible;
-                if (MenuInteractive != null) MenuInteractive.Visibility = Visibility.Collapsed;
+                if (MenuMachineScope != null)
+                {
+                    MenuMachineScope.Visibility = Visibility.Visible;
+                    MenuMachineScope.Text = ResourceString.GetString("menu_update_machine") ?? "Update for all users";
+                }
+                if (MenuInteractive != null)
+                {
+                    MenuInteractive.Visibility = Visibility.Visible;
+                    MenuInteractive.Text = ResourceString.GetString("menu_interactive_update") ?? "Interactive update";
+                }
 
                 RefreshUpdatesTabList();
                 FilterLocalPackages(PackageSearchBox.Text?.Trim() ?? string.Empty);
@@ -854,7 +870,11 @@ namespace EvolveOS_Optimizer.Pages
                 if (MenuInstallAsAdmin != null) MenuInstallAsAdmin.Text = ResourceString.GetString("menu_uninstall_as_admin") ?? "Uninstall as Administrator";
                 if (MenuSkipIntegrity != null) MenuSkipIntegrity.Visibility = Visibility.Collapsed;
                 if (MenuMachineScope != null) MenuMachineScope.Visibility = Visibility.Collapsed;
-                if (MenuInteractive != null) MenuInteractive.Visibility = Visibility.Visible;
+                if (MenuInteractive != null)
+                {
+                    MenuInteractive.Visibility = Visibility.Visible;
+                    MenuInteractive.Text = ResourceString.GetString("menu_interactive_uninstall") ?? "Interactive uninstall";
+                }
 
                 RefreshInstalledTabList();
                 FilterLocalPackages(PackageSearchBox.Text?.Trim() ?? string.Empty);
@@ -949,8 +969,16 @@ namespace EvolveOS_Optimizer.Pages
 
             if (MenuInstallAsAdmin != null) MenuInstallAsAdmin.Text = ResourceString.GetString("menu_install_as_admin") ?? "Install as Administrator";
             if (MenuSkipIntegrity != null) MenuSkipIntegrity.Visibility = Visibility.Visible;
-            if (MenuMachineScope != null) MenuMachineScope.Visibility = Visibility.Visible;
-            if (MenuInteractive != null) MenuInteractive.Visibility = Visibility.Collapsed;
+            if (MenuMachineScope != null)
+            {
+                MenuMachineScope.Visibility = Visibility.Visible;
+                MenuMachineScope.Text = ResourceString.GetString("menu_install_machine") ?? "Install for all users";
+            }
+            if (MenuInteractive != null)
+            {
+                MenuInteractive.Visibility = Visibility.Visible;
+                MenuInteractive.Text = ResourceString.GetString("menu_interactive_install") ?? "Interactive installation";
+            }
 
             _suppressSearch = true;
             try { PackageSearchBox.Text = string.Empty; }

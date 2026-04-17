@@ -1780,9 +1780,13 @@
     <sys:String x:Key="btn_no">Nein</sys:String>
 
     <sys:String x:Key="menu_install_as_admin">Als Administrator installieren</sys:String>
+    <sys:String x:Key="menu_update_as_admin">Als Administrator aktualisieren</sys:String>
     <sys:String x:Key="menu_skip_integrity">Integritätsprüfungen überspringen</sys:String>
-    <sys:String x:Key="menu_install_machine_wide">Für alle Benutzer installieren</sys:String>
+    <sys:String x:Key="menu_install_machine">Für alle Benutzer installieren</sys:String>
+    <sys:String x:Key="menu_update_machine">Für alle Benutzer aktualisieren</sys:String>
     <sys:String x:Key="menu_uninstall_as_admin">Als Administrator deinstallieren</sys:String>
+    <sys:String x:Key="menu_interactive_install">Interaktive Installation</sys:String>
+    <sys:String x:Key="menu_interactive_update">Interaktives Update</sys:String>
     <sys:String x:Key="menu_interactive_uninstall">Interaktive Deinstallation</sys:String>
 
     <sys:String x:Key="header_search_mode">Suchmodus</sys:String>

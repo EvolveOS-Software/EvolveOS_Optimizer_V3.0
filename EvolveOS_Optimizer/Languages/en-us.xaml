@@ -1787,9 +1787,13 @@
     <sys:String x:Key="btn_no">No</sys:String>
 
     <sys:String x:Key="menu_install_as_admin">Install as Administrator</sys:String>
+    <sys:String x:Key="menu_update_as_admin">Update as Administrator</sys:String>
     <sys:String x:Key="menu_skip_integrity">Skip Integrity Checks</sys:String>
-    <sys:String x:Key="menu_install_machine_wide">Install For All Users</sys:String>
+    <sys:String x:Key="menu_install_machine">Install For All Users</sys:String>
+    <sys:String x:Key="menu_update_machine">Update for all users</sys:String>
     <sys:String x:Key="menu_uninstall_as_admin">Uninstall as Administrator</sys:String>
+    <sys:String x:Key="menu_interactive_install">Interactive installation</sys:String>
+    <sys:String x:Key="menu_interactive_update">Interactive update</sys:String>
     <sys:String x:Key="menu_interactive_uninstall">Interactive Uninstall</sys:String>
 
     <sys:String x:Key="header_search_mode">Search mode</sys:String>

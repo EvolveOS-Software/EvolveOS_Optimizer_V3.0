@@ -1773,10 +1773,14 @@
     <sys:String x:Key="btn_no">Nee</sys:String>
 
     <sys:String x:Key="menu_install_as_admin">Als administrator installeren</sys:String>
+    <sys:String x:Key="menu_update_as_admin">Als administrator updaten</sys:String>
     <sys:String x:Key="menu_skip_integrity">Integriteitscontroles overslaan</sys:String>
-    <sys:String x:Key="menu_install_machine_wide">Voor alle gebruikers installeren</sys:String>
+    <sys:String x:Key="menu_install_machine">Voor alle gebruikers installeren</sys:String>
+    <sys:String x:Key="menu_update_machine">Voor alle gebruikers updaten</sys:String>
     <sys:String x:Key="menu_uninstall_as_admin">Als administrator verwijderen</sys:String>
-    <sys:String x:Key="menu_interactive_uninstall">Interactieve deïnstallatie</sys:String>
+    <sys:String x:Key="menu_interactive_install">Interactieve installatie</sys:String>
+    <sys:String x:Key="menu_interactive_update">Interactieve update</sys:String>
+    <sys:String x:Key="menu_interactive_uninstall">Interactieve verwijdering</sys:String>
 
     <sys:String x:Key="header_search_mode">Zoekmodus</sys:String>
     <sys:String x:Key="filter_both">Beide (Naam &amp; ID)</sys:String>
