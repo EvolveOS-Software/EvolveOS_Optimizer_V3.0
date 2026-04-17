@@ -275,7 +275,7 @@ namespace EvolveOS_Optimizer.Pages
 
         #region Animations & Staggering
 
-        private void PackageView_Loaded(object sender, RoutedEventArgs e)
+        private async void PackageView_Loaded(object sender, RoutedEventArgs e)
         {
             if (!(sender is FrameworkElement element)) return;
 
@@ -294,6 +294,14 @@ namespace EvolveOS_Optimizer.Pages
             else
             {
                 _cardsLoadedCount++;
+            }
+
+            if (HcPanel != null)
+            {
+                await Task.Yield();
+
+                HcPanel.InvalidateMeasure();
+                HcPanel.InvalidateArrange();
             }
         }
 
