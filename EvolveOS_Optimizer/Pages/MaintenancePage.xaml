@@ -661,36 +661,33 @@
                                 </ItemsControl.ItemTemplate>
                                 
                             </ItemsControl>
-
-                            <Border Background="{ThemeResource MyDynamicAccentBrush}"
-                                    Opacity="0.1"
-                                    CornerRadius="6"
-                                    Padding="12"
-                                    Margin="0,16,0,0"/>
                             
                             <StackPanel Orientation="Horizontal"
-                                        Margin="12,-40,0,0"
+                                        Margin="12,16,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center">
-                                
+
                                 <Grid Width="24"
                                       Height="24"
                                       Margin="0,0,12,0">
 
                                     <Button Command="{x:Bind ViewModel.RefreshCleanupSpaceCommand}"
-                                            Background="Transparent"
-                                            BorderThickness="0"
+                                            Width="24"
+                                            Height="24"
                                             Padding="0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
                                             Visibility="{x:Bind ViewModel.IsScanning, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-                                        
-                                        <FontIcon Glyph="&#xE72C;"
-                                                  Foreground="{ThemeResource Brush_Highlighted}"
-                                                  FontSize="18"/>
+                                        <Button.Content>
+                                            <FontIcon Glyph="&#xE72C;"
+                                                      FontSize="12"
+                                                      Foreground="{ThemeResource Brush_Highlighted}"/>
+                                        </Button.Content>
                                     </Button>
 
                                     <ProgressRing IsActive="{x:Bind ViewModel.IsScanning, Mode=OneWay}"
-                                                  Width="20"
-                                                  Height="20"
+                                                  Width="18"
+                                                  Height="18"
                                                   Foreground="{ThemeResource MyDynamicAccentBrush}"
                                                   Visibility="{x:Bind ViewModel.IsScanning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </Grid>
@@ -705,7 +702,7 @@
                                            FontFamily="{StaticResource Jura-Bold}"
                                            FontSize="14"
                                            Foreground="{ThemeResource Brush_Highlighted}"
-                                           Margin="8,0,0,0"
+                                           Margin="5,2,0,0"
                                            VerticalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>
