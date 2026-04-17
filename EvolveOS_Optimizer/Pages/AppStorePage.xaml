@@ -150,205 +150,250 @@
     </Page.Resources>
 
     <Grid Padding="4,14,0,0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="0,0,24,12">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border CornerRadius="1">
 
-            <controls:Segmented x:Name="TabSegmented" Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Center" SelectionChanged="TabSegmented_SelectionChanged" SelectedIndex="0">
-                <controls:SegmentedItem helpers:Loc.Key="tab_browse" />
+            <SplitView x:Name="FiltersSplitView"
+                       DisplayMode="Inline"
+                       OpenPaneLength="260"
+                       PanePlacement="Left"
+                       IsPaneOpen="False"
+                       PaneBackground="Transparent">
 
-                <controls:SegmentedItem x:Name="UpdatesTabItem">
-                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="4,0">
-                        <TextBlock x:Name="UpdatesTabLabel" helpers:Loc.Key="tab_updates" VerticalAlignment="Center"/>
-                        <ProgressRing x:Name="UpdatesLoadingRing" Width="14" Height="14" IsActive="False" Visibility="Collapsed" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </controls:SegmentedItem>
+                <SplitView.Pane>
+                    <ScrollViewer Padding="0,0,12,0" Background="Transparent">
+                        <StackPanel Spacing="12">
 
-                <controls:SegmentedItem x:Name="InstalledTabItem">
-                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="4,0">
-                        <TextBlock x:Name="InstalledTabLabel" helpers:Loc.Key="tab_installed" VerticalAlignment="Center"/>
-                        <ProgressRing x:Name="InstalledLoadingRing" Width="14" Height="14" IsActive="False" Visibility="Collapsed" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </controls:SegmentedItem>
-            </controls:Segmented>
+                            <Expander IsExpanded="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE773;" FontSize="16"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=header_search_mode}" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Spacing="0">
+                                    <RadioButtons x:Name="SearchModeGroup" SelectionChanged="FilterOptions_Changed">
+                                        <RadioButton x:Name="SearchModeBoth" Content="{helpers:ResourceString Key=filter_both}" IsChecked="True" />
+                                        <RadioButton x:Name="SearchModeName" Content="{helpers:ResourceString Key=filter_name}" />
+                                        <RadioButton x:Name="SearchModeId" Content="{helpers:ResourceString Key=filter_id}" />
+                                        <RadioButton x:Name="SearchModeExact" Content="{helpers:ResourceString Key=filter_exact}" />
+                                        <RadioButton x:Name="SearchModeSimilar" Content="{helpers:ResourceString Key=filter_similar}" />
+                                    </RadioButtons>
+                                </StackPanel>
+                            </Expander>
 
-            <Grid Grid.Column="1" Margin="0,0,10,0" VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                            <Expander IsExpanded="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE71C;" FontSize="16"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=header_filters}" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Spacing="8">
+                                    <CheckBox x:Name="InstantSearchCheckBox" Content="{helpers:ResourceString Key=filter_instant}" Visibility="Collapsed" Checked="FilterOptions_Changed" Unchecked="FilterOptions_Changed"/>
+                                    <CheckBox x:Name="MatchCaseCheckBox" Content="{helpers:ResourceString Key=filter_match_case}" Checked="FilterOptions_Changed" Unchecked="FilterOptions_Changed"/>
+                                    <CheckBox x:Name="IgnoreSpecialCharsCheckBox" Content="{helpers:ResourceString Key=filter_ignore_special}" IsChecked="True" Checked="FilterOptions_Changed" Unchecked="FilterOptions_Changed"/>
+                                </StackPanel>
+                            </Expander>
 
-                <AutoSuggestBox x:Name="PackageSearchBox" Grid.Column="0" HorizontalAlignment="Stretch" MinWidth="80" Height="34" QueryIcon="Find" 
-                                PlaceholderText="{helpers:ResourceString Key=placeholder_search_winget}" 
-                                Margin="0,0,10,0" TextChanged="PackageSearchBox_TextChanged" QuerySubmitted="PackageSearchBox_QuerySubmitted"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </SplitView.Pane>
 
-                <ComboBox x:Name="SortComboBox" Grid.Column="1" SelectedIndex="0" Width="140" Height="34" 
-                          VerticalAlignment="Center" SelectionChanged="SortComboBox_SelectionChanged">
-                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_name}" Tag="Name"/>
-                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_id}" Tag="Id"/>
-                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_version}" Tag="Version"/>
-                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_publisher}" Tag="Category"/>
-                </ComboBox>
-            </Grid>
+                <SplitView.Content>
+                    <Grid Padding="5,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-            <controls:WrapPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <SplitButton x:Name="InstallButton" Click="InstallSelectedApp_Click" IsEnabled="True" Margin="0,0,8,0">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon x:Name="InstallButtonIcon" Glyph="&#xE896;"/>
-                        <TextBlock x:Name="InstallButtonText" helpers:Loc.Key="btn_install_selected"/>
-                    </StackPanel>
-                    <SplitButton.Flyout>
-                        <MenuFlyout>
+                        <Grid Grid.Row="0" Margin="0,0,24,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                            <MenuFlyoutItem x:Name="MenuInstallAsAdmin" 
-                                Text="{helpers:ResourceString Key=menu_install_as_admin}"
-                                Click="MenuInstallAsAdmin_Click">
-                                <MenuFlyoutItem.Icon>
-                                    <FontIcon Glyph="&#xEA18;" />
-                                </MenuFlyoutItem.Icon>
-                            </MenuFlyoutItem>
+                            <controls:Segmented x:Name="TabSegmented" Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Center" SelectionChanged="TabSegmented_SelectionChanged" SelectedIndex="0">
+                                <controls:SegmentedItem helpers:Loc.Key="tab_browse" />
 
-                            <MenuFlyoutItem x:Name="MenuSkipIntegrity" 
-                                Text="{helpers:ResourceString Key=menu_skip_integrity}"
-                                Click="MenuSkipIntegrity_Click">
-                                <MenuFlyoutItem.Icon>
-                                    <PathIcon Data="M 5,2 L 7,2 L 7,6 L 11,6 L 11,2 L 13,2 L 13,6 L 17,6 L 17,8 L 13,8 L 13,12 L 17,12 L 17,14 L 13,14 L 13,18 L 11,18 L 11,14 L 7,14 L 7,18 L 5,18 L 5,14 L 1,14 L 1,12 L 5,12 L 5,8 L 1,8 L 1,6 L 5,6 Z M 7,8 L 7,12 L 11,12 L 11,8 Z" />
-                                </MenuFlyoutItem.Icon>
-                            </MenuFlyoutItem>
+                                <controls:SegmentedItem x:Name="UpdatesTabItem">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="4,0">
+                                        <TextBlock x:Name="UpdatesTabLabel" helpers:Loc.Key="tab_updates" VerticalAlignment="Center"/>
+                                        <ProgressRing x:Name="UpdatesLoadingRing" Width="14" Height="14" IsActive="False" Visibility="Collapsed" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </controls:SegmentedItem>
 
-                            <MenuFlyoutItem x:Name="MenuMachineScope" 
-                                Text="{helpers:ResourceString Key=menu_install_machine_wide}"
-                                Click="MenuMachineScope_Click">
-                                <MenuFlyoutItem.Icon>
-                                    <FontIcon Glyph="&#xE716;" />
-                                </MenuFlyoutItem.Icon>
-                            </MenuFlyoutItem>
+                                <controls:SegmentedItem x:Name="InstalledTabItem">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="4,0">
+                                        <TextBlock x:Name="InstalledTabLabel" helpers:Loc.Key="tab_installed" VerticalAlignment="Center"/>
+                                        <ProgressRing x:Name="InstalledLoadingRing" Width="14" Height="14" IsActive="False" Visibility="Collapsed" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </controls:SegmentedItem>
+                            </controls:Segmented>
 
-                            <MenuFlyoutItem x:Name="MenuInteractive" 
-                                Text="{helpers:ResourceString Key=menu_interactive_uninstall}"
-                                Click="MenuInteractive_Click"
-                                Visibility="Collapsed">
-                                <MenuFlyoutItem.Icon>
-                                    <FontIcon Glyph="&#xE737;" />
-                                </MenuFlyoutItem.Icon>
-                            </MenuFlyoutItem>
+                            <Grid Grid.Column="1" Margin="0,0,10,0" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                        </MenuFlyout>
-                    </SplitButton.Flyout>
-                </SplitButton>
-                <Button x:Name="RefreshButton" Click="RefreshButton_Click" Padding="10,7" MinWidth="0" MinHeight="0">
-                    <FontIcon Glyph="&#xE72C;" FontSize="17"/>
-                </Button>
-            </controls:WrapPanel>
-        </Grid>
+                                <AutoSuggestBox x:Name="PackageSearchBox" Grid.Column="0" HorizontalAlignment="Stretch" MinWidth="80" Height="34" QueryIcon="Find" 
+                                                PlaceholderText="{helpers:ResourceString Key=placeholder_search_winget}" 
+                                                Margin="0,0,10,0" TextChanged="PackageSearchBox_TextChanged" QuerySubmitted="PackageSearchBox_QuerySubmitted"/>
 
-        <Grid Grid.Row="1" Margin="0,0,0,24">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+                                <ToggleButton x:Name="ToggleFiltersButton" Grid.Column="1" Click="ToggleFiltersButton_Click"
+                                              CornerRadius="4" Margin="0,0,10,0" Padding="8,4" Height="34">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE71C;" FontSize="16" />
+                                        <TextBlock Text="{helpers:ResourceString Key=header_filters}" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </ToggleButton>
 
-            <ProgressBar x:Name="SearchTopProgressBar" Grid.Row="0" Visibility="Collapsed" IsIndeterminate="True" 
-                         VerticalAlignment="Top" Margin="0,-4,24,0" Canvas.ZIndex="10" HorizontalAlignment="Stretch" Height="4"/>
+                                <ComboBox x:Name="SortComboBox" Grid.Column="2" SelectedIndex="0" Width="140" Height="34" 
+                                          VerticalAlignment="Center" SelectionChanged="SortComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_name}" Tag="Name"/>
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_id}" Tag="Id"/>
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_version}" Tag="Version"/>
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=sort_publisher}" Tag="Category"/>
+                                </ComboBox>
+                            </Grid>
 
-            <Border x:Name="StandardHeader" Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                    BorderThickness="1" CornerRadius="6" Padding="46,10,16,10" Margin="0,0,24,8">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="1.7*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1.2*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock helpers:Loc.Key="header_pkg_name" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="1" helpers:Loc.Key="header_pkg_id" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="2" helpers:Loc.Key="header_version" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="3" helpers:Loc.Key="header_publisher" FontWeight="SemiBold"/>
-                </Grid>
-            </Border>
+                            <controls:WrapPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <SplitButton x:Name="InstallButton" Click="InstallSelectedApp_Click" IsEnabled="True" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon x:Name="InstallButtonIcon" Glyph="&#xE896;"/>
+                                        <TextBlock x:Name="InstallButtonText" helpers:Loc.Key="btn_install_selected"/>
+                                    </StackPanel>
+                                    <SplitButton.Flyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem x:Name="MenuInstallAsAdmin" Text="{helpers:ResourceString Key=menu_install_as_admin}" Click="MenuInstallAsAdmin_Click">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xEA18;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                            <MenuFlyoutItem x:Name="MenuSkipIntegrity" Text="{helpers:ResourceString Key=menu_skip_integrity}" Click="MenuSkipIntegrity_Click">
+                                                <MenuFlyoutItem.Icon>
+                                                    <PathIcon Data="M 5,2 L 7,2 L 7,6 L 11,6 L 11,2 L 13,2 L 13,6 L 17,6 L 17,8 L 13,8 L 13,12 L 17,12 L 17,14 L 13,14 L 13,18 L 11,18 L 11,14 L 7,14 L 7,18 L 5,18 L 5,14 L 1,14 L 1,12 L 5,12 L 5,8 L 1,8 L 1,6 L 5,6 Z M 7,8 L 7,12 L 11,12 L 11,8 Z" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                            <MenuFlyoutItem x:Name="MenuMachineScope" Text="{helpers:ResourceString Key=menu_install_machine_wide}" Click="MenuMachineScope_Click">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xE716;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                            <MenuFlyoutItem x:Name="MenuInteractive" Text="{helpers:ResourceString Key=menu_interactive_uninstall}" Click="MenuInteractive_Click" Visibility="Collapsed">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xE737;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                        </MenuFlyout>
+                                    </SplitButton.Flyout>
+                                </SplitButton>
+                                <Button x:Name="RefreshButton" Click="RefreshButton_Click" Padding="10,7" MinWidth="0" MinHeight="0">
+                                    <FontIcon Glyph="&#xE72C;" FontSize="17"/>
+                                </Button>
+                            </controls:WrapPanel>
+                        </Grid>
 
-            <Border x:Name="UpdatesHeader" Grid.Row="0" Visibility="Collapsed" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                    BorderThickness="1" CornerRadius="6" Padding="46,10,16,10" Margin="0,0,24,8">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="1.5*"/>
-                        <ColumnDefinition Width="0.9*"/>
-                        <ColumnDefinition Width="0.9*"/>
-                        <ColumnDefinition Width="1.2*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock helpers:Loc.Key="header_pkg_name" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="1" helpers:Loc.Key="header_pkg_id" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="2" helpers:Loc.Key="header_version" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="3" helpers:Loc.Key="header_new_version" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="4" helpers:Loc.Key="header_publisher" FontWeight="SemiBold"/>
-                </Grid>
-            </Border>
+                        <Grid Grid.Row="1" Margin="0,0,0,24">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
 
-            <Grid Grid.Row="1">
+                            <ProgressBar x:Name="SearchTopProgressBar" Grid.Row="0" Visibility="Collapsed" IsIndeterminate="True" 
+                                         VerticalAlignment="Top" Margin="0,-4,24,0" Canvas.ZIndex="10" HorizontalAlignment="Stretch" Height="4"/>
 
-                <StackPanel x:Name="LoadingState" VerticalAlignment="Center" Visibility="Collapsed">
-                    <ProgressRing x:Name="SearchProgressRing" Margin="20" Width="100" Height="100" IsActive="False" IsIndeterminate="True"/>
-                    <TextBlock x:Name="SearchStatusText" helpers:Loc.Key="status_loading_pkg" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Center"/>
-                </StackPanel>
+                            <Border x:Name="StandardHeader" Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                    BorderThickness="1" CornerRadius="6" Padding="46,10,16,10" Margin="0,0,24,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="1.7*"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="1.2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock helpers:Loc.Key="header_pkg_name" FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="1" helpers:Loc.Key="header_pkg_id" FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="2" helpers:Loc.Key="header_version" FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="3" helpers:Loc.Key="header_publisher" FontWeight="SemiBold"/>
+                                </Grid>
+                            </Border>
 
-                <ListView x:Name="PackagesGridView" ItemsSource="{x:Bind PackageList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 
-                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource PackageItemTemplate}"
-                          Padding="0,0,24,0">
-                    <ListView.ItemContainerTransitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition FromVerticalOffset="24"/>
-                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
-                        </TransitionCollection>
-                    </ListView.ItemContainerTransitions>
-                </ListView>
+                            <Border x:Name="UpdatesHeader" Grid.Row="0" Visibility="Collapsed" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                    BorderThickness="1" CornerRadius="6" Padding="46,10,16,10" Margin="0,0,24,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="0.9*"/>
+                                        <ColumnDefinition Width="0.9*"/>
+                                        <ColumnDefinition Width="1.2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock helpers:Loc.Key="header_pkg_name" FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="1" helpers:Loc.Key="header_pkg_id" FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="2" helpers:Loc.Key="header_version" FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="3" helpers:Loc.Key="header_new_version" FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="4" helpers:Loc.Key="header_publisher" FontWeight="SemiBold"/>
+                                </Grid>
+                            </Border>
 
-                <ListView x:Name="UpdatesGridView" ItemsSource="{x:Bind UpdatesList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 
-                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource UpdateItemTemplate}"
-                          Padding="0,0,24,0">
-                    <ListView.ItemContainerTransitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition FromVerticalOffset="24"/>
-                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
-                        </TransitionCollection>
-                    </ListView.ItemContainerTransitions>
-                </ListView>
+                            <Grid Grid.Row="1">
+                                <StackPanel x:Name="LoadingState" VerticalAlignment="Center" Visibility="Collapsed">
+                                    <ProgressRing x:Name="SearchProgressRing" Margin="20" Width="100" Height="100" IsActive="False" IsIndeterminate="True"/>
+                                    <TextBlock x:Name="SearchStatusText" helpers:Loc.Key="status_loading_pkg" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Center"/>
+                                </StackPanel>
 
-                <ListView x:Name="InstalledGridView" ItemsSource="{x:Bind InstalledList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 
-                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource PackageItemTemplate}"
-                          Padding="0,0,24,0">
-                    <ListView.ItemContainerTransitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition FromVerticalOffset="24"/>
-                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
-                        </TransitionCollection>
-                    </ListView.ItemContainerTransitions>
-                </ListView>
+                                <ListView x:Name="PackagesGridView" ItemsSource="{x:Bind PackageList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 
+                                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource PackageItemTemplate}" Padding="0,0,24,0">
+                                    <ListView.ItemContainerTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="24"/>
+                                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                        </TransitionCollection>
+                                    </ListView.ItemContainerTransitions>
+                                </ListView>
 
-                <TextBlock x:Name="StatusText" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Visibility="Collapsed" Margin="0,0,24,0"/>
-            </Grid>
-        </Grid>
+                                <ListView x:Name="UpdatesGridView" ItemsSource="{x:Bind UpdatesList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 
+                                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource UpdateItemTemplate}" Padding="0,0,24,0">
+                                    <ListView.ItemContainerTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="24"/>
+                                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                        </TransitionCollection>
+                                    </ListView.ItemContainerTransitions>
+                                </ListView>
 
-        <Grid Grid.Row="2" Margin="0,0,24,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock x:Name="installingStatusText" Margin="12,6" Grid.Column="0" Style="{StaticResource CaptionTextBlockStyle}" 
-                       helpers:Loc.Key="status_select_pkg" TextWrapping="Wrap"/>
-            <ProgressBar x:Name="installingStatusBar" Margin="0,0,12,0" Grid.Column="1" Width="Auto" Minimum="0" Maximum="100" Opacity="0"/>
+                                <ListView x:Name="InstalledGridView" ItemsSource="{x:Bind InstalledList}" SelectionMode="Multiple" SelectionChanged="PackagesGridView_SelectionChanged" 
+                                          Visibility="Collapsed" ItemContainerStyle="{StaticResource PackageItemContainerStyle}" ItemTemplate="{StaticResource PackageItemTemplate}" Padding="0,0,24,0">
+                                    <ListView.ItemContainerTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="24"/>
+                                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                        </TransitionCollection>
+                                    </ListView.ItemContainerTransitions>
+                                </ListView>
 
-            <TextBlock x:Name="WingetVersionText" Grid.Column="2" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Visible"
-                       Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-        </Grid>
+                                <TextBlock x:Name="StatusText" Style="{StaticResource DetailBodyBaseMediumStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Visibility="Collapsed" Margin="0,0,24,0"/>
+                            </Grid>
+                        </Grid>
+
+                        <Grid Grid.Row="2" Margin="0,0,24,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="installingStatusText" Margin="12,6" Grid.Column="0" Style="{StaticResource CaptionTextBlockStyle}" helpers:Loc.Key="status_select_pkg" TextWrapping="Wrap"/>
+                            <ProgressBar x:Name="installingStatusBar" Margin="0,0,12,0" Grid.Column="1" Width="Auto" Minimum="0" Maximum="100" Opacity="0"/>
+                            <TextBlock x:Name="WingetVersionText" Grid.Column="2" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Visible" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        </Grid>
+
+                    </Grid>
+                </SplitView.Content>
+            </SplitView>
+        </Border>
     </Grid>
 </Page>

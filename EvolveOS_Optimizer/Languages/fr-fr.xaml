@@ -1780,6 +1780,18 @@
     <sys:String x:Key="menu_install_machine_wide">Installer pour tous les utilisateurs</sys:String>
     <sys:String x:Key="menu_uninstall_as_admin">Désinstaller en tant qu'administrateur</sys:String>
     <sys:String x:Key="menu_interactive_uninstall">Désinstallation interactive</sys:String>
+
+    <sys:String x:Key="header_search_mode">Mode de recherche</sys:String>
+    <sys:String x:Key="filter_both">Les deux (Nom &amp; ID)</sys:String>
+    <sys:String x:Key="filter_name">Nom du paquet</sys:String>
+    <sys:String x:Key="filter_id">ID du paquet</sys:String>
+    <sys:String x:Key="filter_exact">Correspondance exacte</sys:String>
+    <sys:String x:Key="filter_similar">Paquets similaires</sys:String>
+
+    <sys:String x:Key="header_filters">Filtres</sys:String>
+    <sys:String x:Key="filter_instant">Recherche instantanée</sys:String>
+    <sys:String x:Key="filter_match_case">Sensible à la casse</sys:String>
+    <sys:String x:Key="filter_ignore_special">Ignorer les caractères spéciaux</sys:String>
     <!-- endregion App Store Page -->
 
     <!-- region Navigation Guard & Busy State -->

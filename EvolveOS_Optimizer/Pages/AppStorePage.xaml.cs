@@ -837,6 +837,25 @@ namespace EvolveOS_Optimizer.Pages
                 FilterLocalPackages(PackageSearchBox.Text?.Trim() ?? string.Empty);
             }
 
+            if (SearchModeSimilar != null)
+            {
+                if (_isInstalledMode || _isUpdatesMode)
+                {
+                    SearchModeSimilar.IsEnabled = false;
+                    if (InstantSearchCheckBox != null) InstantSearchCheckBox.Visibility = Visibility.Visible;
+
+                    if (SearchModeSimilar.IsChecked == true)
+                    {
+                        if (SearchModeBoth != null) SearchModeBoth.IsChecked = true;
+                    }
+                }
+                else
+                {
+                    SearchModeSimilar.IsEnabled = true;
+                    if (InstantSearchCheckBox != null) InstantSearchCheckBox.Visibility = Visibility.Collapsed;
+                }
+            }
+
             if (StandardHeader != null && UpdatesHeader != null)
             {
                 if (_isUpdatesMode)
@@ -912,13 +931,16 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void PackageSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private void ToggleFiltersButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_suppressSearch || _isLoading) return;
+            FiltersSplitView.IsPaneOpen = !FiltersSplitView.IsPaneOpen;
+        }
 
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen) return;
+        private void FilterOptions_Changed(object sender, RoutedEventArgs e)
+        {
+            if (_isLoading || PackageSearchBox == null) return;
 
-            string query = sender.Text?.Trim() ?? string.Empty;
+            string query = PackageSearchBox.Text?.Trim() ?? string.Empty;
 
             if (_isInstalledMode || _isUpdatesMode)
             {
@@ -930,10 +952,41 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void PackageSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (_suppressSearch || _isLoading) return;
+
+            if (args.Reason != AutoSuggestionBoxTextChangeReason.UserInput) return;
+
+            string query = sender.Text?.Trim() ?? string.Empty;
+
+            if (_isInstalledMode || _isUpdatesMode)
+            {
+                if (InstantSearchCheckBox?.IsChecked == true)
+                {
+                    FilterLocalPackages(query);
+                }
+            }
+            else
+            {
+                ApplySearch(query);
+            }
+        }
+
         private void PackageSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            if (_suppressSearch || _isLoading || _isUpdatesMode) return;
-            ApplySearch(args.QueryText?.Trim() ?? string.Empty);
+            if (_suppressSearch || _isLoading) return;
+
+            string query = args.QueryText?.Trim() ?? string.Empty;
+
+            if (_isInstalledMode || _isUpdatesMode)
+            {
+                FilterLocalPackages(query);
+            }
+            else
+            {
+                ApplySearch(query);
+            }
         }
 
         private void FilterLocalPackages(string query)
@@ -949,10 +1002,7 @@ namespace EvolveOS_Optimizer.Pages
                 }
                 else
                 {
-                    var filtered = masterInstalled.Where(p =>
-                        (p.Name != null && p.Name.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
-                        (p.Id != null && p.Id.Contains(query, StringComparison.OrdinalIgnoreCase))
-                    ).ToList();
+                    var filtered = masterInstalled.Where(p => DoesPackageMatchFilter(p, query)).ToList();
 
                     foreach (var pkg in filtered) InstalledList.Add(pkg);
                 }
@@ -978,10 +1028,7 @@ namespace EvolveOS_Optimizer.Pages
                 }
                 else
                 {
-                    var filtered = masterUpdates.Where(p =>
-                        (p.Name != null && p.Name.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
-                        (p.Id != null && p.Id.Contains(query, StringComparison.OrdinalIgnoreCase))
-                    ).ToList();
+                    var filtered = masterUpdates.Where(p => DoesPackageMatchFilter(p, query)).ToList();
 
                     foreach (var pkg in filtered) UpdatesList.Add(pkg);
                 }
@@ -1037,37 +1084,10 @@ namespace EvolveOS_Optimizer.Pages
             }
 
             int localCount = 0;
-            var startsWithResults = new List<WingetPackage>();
-            var containsResults = new List<WingetPackage>();
+            var filteredLocal = _allPackages.Where(p => DoesPackageMatchFilter(p, query)).ToList();
+            var sortedLocal = SortPackages(filteredLocal).ToList();
 
-            foreach (var p in _allPackages)
-            {
-                if (currentVersion != _searchVersion) return;
-
-                string safeName = p.Name ?? string.Empty;
-                string safeId = p.Id ?? string.Empty;
-
-                if (safeName.StartsWith(query, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    startsWithResults.Add(p);
-                }
-                else if (safeName.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
-                         safeId.Contains(query, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    containsResults.Add(p);
-                }
-            }
-
-            var sortedStartsWith = SortPackages(startsWithResults).ToList();
-            foreach (var p in sortedStartsWith)
-            {
-                if (currentVersion != _searchVersion) return;
-                PackageList.Add(p);
-                if (++localCount % 50 == 0) await Task.Delay(1);
-            }
-
-            var sortedContains = SortPackages(containsResults).ToList();
-            foreach (var p in sortedContains)
+            foreach (var p in sortedLocal)
             {
                 if (currentVersion != _searchVersion) return;
                 PackageList.Add(p);
@@ -1082,56 +1102,60 @@ namespace EvolveOS_Optimizer.Pages
                 if (!await NetworkHelper.IsConnectedAsync())
                 {
                     SearchTopProgressBar.Visibility = Visibility.Collapsed;
-                    return;
                 }
-
-                SearchTopProgressBar.Visibility = Visibility.Visible;
-
-                try
+                else
                 {
-                    var webResults = await SearchPackagesFromWingetCliAsync(query);
+                    SearchTopProgressBar.Visibility = Visibility.Visible;
 
-                    if (currentVersion != _searchVersion) return;
-
-                    var newWebPackages = new List<WingetPackage>();
-
-                    foreach (var webItem in webResults)
+                    try
                     {
+                        var webResults = await SearchPackagesFromWingetCliAsync(query);
+
                         if (currentVersion != _searchVersion) return;
 
-                        bool alreadyInList = _allPackages.Any(p => (p.Id ?? string.Empty).Equals(webItem.Id ?? string.Empty, StringComparison.OrdinalIgnoreCase));
+                        var newWebPackages = new List<WingetPackage>();
 
-                        if (!alreadyInList)
+                        foreach (var webItem in webResults)
                         {
-                            var newPkg = new WingetPackage
-                            {
-                                Name = webItem.Name ?? string.Empty,
-                                Id = webItem.Id ?? string.Empty,
-                                Version = webItem.Version ?? "N/A",
-                                Category = PackageHelper.GetPublisherDisplayName(webItem.Id ?? string.Empty),
-                                IsInstalled = false
-                            };
+                            if (currentVersion != _searchVersion) return;
 
-                            newWebPackages.Add(newPkg);
+                            bool alreadyInList = _allPackages.Any(p => (p.Id ?? string.Empty).Equals(webItem.Id ?? string.Empty, StringComparison.OrdinalIgnoreCase));
+
+                            if (!alreadyInList)
+                            {
+                                var newPkg = new WingetPackage
+                                {
+                                    Name = webItem.Name ?? string.Empty,
+                                    Id = webItem.Id ?? string.Empty,
+                                    Version = webItem.Version ?? "N/A",
+                                    Category = PackageHelper.GetPublisherDisplayName(webItem.Id ?? string.Empty),
+                                    IsInstalled = false
+                                };
+
+                                if (DoesPackageMatchFilter(newPkg, query))
+                                {
+                                    newWebPackages.Add(newPkg);
+                                }
+                            }
+                        }
+
+                        var sortedWebPackages = SortPackages(newWebPackages).ToList();
+                        foreach (var p in sortedWebPackages)
+                        {
+                            if (currentVersion != _searchVersion) return;
+                            PackageList.Add(p);
                         }
                     }
-
-                    var sortedWebPackages = SortPackages(newWebPackages).ToList();
-                    foreach (var p in sortedWebPackages)
+                    catch (Exception ex)
                     {
-                        if (currentVersion != _searchVersion) return;
-                        PackageList.Add(p);
+                        await ErrorLogging.LogInfo($"Online search failed: {ex.Message}");
                     }
-                }
-                catch (Exception ex)
-                {
-                    await ErrorLogging.LogInfo($"Online search failed: {ex.Message}");
-                }
-                finally
-                {
-                    if (currentVersion == _searchVersion)
+                    finally
                     {
-                        SearchTopProgressBar.Visibility = Visibility.Collapsed;
+                        if (currentVersion == _searchVersion)
+                        {
+                            SearchTopProgressBar.Visibility = Visibility.Collapsed;
+                        }
                     }
                 }
             }
@@ -1150,6 +1174,51 @@ namespace EvolveOS_Optimizer.Pages
                     StatusText.Visibility = Visibility.Collapsed;
                 }
             }
+        }
+
+        private bool DoesPackageMatchFilter(WingetPackage pkg, string query)
+        {
+            if (string.IsNullOrWhiteSpace(query)) return true;
+
+            string safeName = pkg.Name ?? string.Empty;
+            string safeId = pkg.Id ?? string.Empty;
+            string activeQuery = query;
+
+            StringComparison compMode = MatchCaseCheckBox?.IsChecked == true
+                ? StringComparison.CurrentCulture
+                : StringComparison.CurrentCultureIgnoreCase;
+
+            if (IgnoreSpecialCharsCheckBox?.IsChecked == true)
+            {
+                var regex = new Regex("[^a-zA-Z0-9]");
+                safeName = regex.Replace(safeName, "");
+                safeId = regex.Replace(safeId, "");
+                activeQuery = regex.Replace(activeQuery, "");
+            }
+
+            if (string.IsNullOrWhiteSpace(activeQuery)) return true;
+
+            if (SearchModeExact?.IsChecked == true)
+            {
+                return safeName.Equals(activeQuery, compMode) || safeId.Equals(activeQuery, compMode);
+            }
+
+            if (SearchModeSimilar?.IsChecked == true)
+            {
+                return safeName.StartsWith(activeQuery, compMode) || safeId.Contains(activeQuery, compMode);
+            }
+
+            if (SearchModeName?.IsChecked == true)
+            {
+                return safeName.Contains(activeQuery, compMode);
+            }
+
+            if (SearchModeId?.IsChecked == true)
+            {
+                return safeId.Contains(activeQuery, compMode);
+            }
+
+            return safeName.Contains(activeQuery, compMode) || safeId.Contains(activeQuery, compMode);
         }
 
         private void PackagesGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)

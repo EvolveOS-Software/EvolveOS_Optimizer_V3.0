@@ -1789,6 +1789,18 @@
     <sys:String x:Key="menu_install_machine_wide">Install For All Users</sys:String>
     <sys:String x:Key="menu_uninstall_as_admin">Uninstall as Administrator</sys:String>
     <sys:String x:Key="menu_interactive_uninstall">Interactive Uninstall</sys:String>
+
+    <sys:String x:Key="header_search_mode">Search mode</sys:String>
+    <sys:String x:Key="filter_both">Both (Name &amp; ID)</sys:String>
+    <sys:String x:Key="filter_name">Package Name</sys:String>
+    <sys:String x:Key="filter_id">Package ID</sys:String>
+    <sys:String x:Key="filter_exact">Exact match</sys:String>
+    <sys:String x:Key="filter_similar">Show similar packages</sys:String>
+
+    <sys:String x:Key="header_filters">Filters</sys:String>
+    <sys:String x:Key="filter_instant">Instant search</sys:String>
+    <sys:String x:Key="filter_match_case">Distinguish uppercase/lowercase</sys:String>
+    <sys:String x:Key="filter_ignore_special">Ignore special characters</sys:String>
     <!-- endregion App Store Page -->
 
     <!-- region Navigation Guard & Busy State -->

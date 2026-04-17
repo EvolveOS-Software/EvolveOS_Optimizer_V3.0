@@ -1775,6 +1775,18 @@
     <sys:String x:Key="menu_install_machine_wide">Voor alle gebruikers installeren</sys:String>
     <sys:String x:Key="menu_uninstall_as_admin">Als administrator verwijderen</sys:String>
     <sys:String x:Key="menu_interactive_uninstall">Interactieve deïnstallatie</sys:String>
+
+    <sys:String x:Key="header_search_mode">Zoekmodus</sys:String>
+    <sys:String x:Key="filter_both">Beide (Naam &amp; ID)</sys:String>
+    <sys:String x:Key="filter_name">Pakketnaam</sys:String>
+    <sys:String x:Key="filter_id">Pakket-ID</sys:String>
+    <sys:String x:Key="filter_exact">Exacte match</sys:String>
+    <sys:String x:Key="filter_similar">Vergelijkbare pakketten</sys:String>
+
+    <sys:String x:Key="header_filters">Filters</sys:String>
+    <sys:String x:Key="filter_instant">Direct zoeken</sys:String>
+    <sys:String x:Key="filter_match_case">Hoofdlettergevoelig</sys:String>
+    <sys:String x:Key="filter_ignore_special">Negeer speciale tekens</sys:String>
     <!-- endregion App Store Page -->
 
     <!-- region Navigation Guard & Busy State -->
