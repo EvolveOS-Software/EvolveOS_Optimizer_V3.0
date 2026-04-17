@@ -333,7 +333,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
-#endregion
+        #endregion
 
         #region Byte Array Methods (Used by File/Folder Encryptor)
 

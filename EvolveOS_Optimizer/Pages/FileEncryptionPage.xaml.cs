@@ -5,10 +5,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Security;
 using System.Security.Cryptography;
-using Microsoft.UI.Xaml.Navigation;
-using Windows.Storage.Pickers;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
+using Microsoft.UI.Xaml.Navigation;
+using Windows.Storage.Pickers;
 
 namespace EvolveOS_Optimizer.Pages
 {

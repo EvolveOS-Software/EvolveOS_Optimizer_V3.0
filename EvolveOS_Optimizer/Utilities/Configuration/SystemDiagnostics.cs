@@ -11,8 +11,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using EvolveOS_Optimizer.Utilities.Controls;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 

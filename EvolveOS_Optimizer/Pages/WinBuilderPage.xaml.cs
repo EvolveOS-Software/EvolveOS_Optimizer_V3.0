@@ -4,11 +4,11 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
-using Windows.System;
-using Windows.Storage.Pickers;
-using Microsoft.UI.Xaml.Navigation;
-using EvolveOS_Optimizer.Utilities.WinBuilder;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.WinBuilder;
+using Microsoft.UI.Xaml.Navigation;
+using Windows.Storage.Pickers;
+using Windows.System;
 
 namespace EvolveOS_Optimizer.Pages
 {

@@ -56,7 +56,8 @@ namespace EvolveOS_Optimizer.Views
             NotSupportContent.Visibility = windowState == MessageWindowState.NotSupported ? Visibility.Visible : Visibility.Collapsed;
             AlreadyRunningContent.Visibility = windowState == MessageWindowState.AlreadyRunning ? Visibility.Visible : Visibility.Collapsed;
 
-            this.Closed += (s, e) => {
+            this.Closed += (s, e) =>
+            {
                 _timer?.Stop();
                 _micaController?.Dispose();
             };

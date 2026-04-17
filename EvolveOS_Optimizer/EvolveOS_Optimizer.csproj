@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <LangVersion>preview</LangVersion>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
         <AssetTargetFallback>net8.0-windows10.0.26100;$(AssetTargetFallback)</AssetTargetFallback>
