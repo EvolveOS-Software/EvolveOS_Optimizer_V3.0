@@ -14,6 +14,48 @@ namespace EvolveOS_Optimizer.Core.Model
         private string _latestVersion = string.Empty;
 
         public string Id { get; set; } = string.Empty;
+        public string Source { get; set; } = string.Empty;
+
+        public string DisplaySource
+        {
+            get
+            {
+                string safeId = Id ?? string.Empty;
+                string safeName = Name ?? string.Empty;
+
+                if (safeId.Contains("PowerShell", StringComparison.OrdinalIgnoreCase) ||
+                    safeName.Contains("PowerShell", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "PowerShell";
+                }
+
+                if (safeId.StartsWith("Microsoft.DotNet", StringComparison.OrdinalIgnoreCase) ||
+                    safeName.Contains(".NET", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "DotNet";
+                }
+
+                if (!string.IsNullOrWhiteSpace(Source))
+                {
+                    if (Source.Equals("msstore", StringComparison.OrdinalIgnoreCase)) return "Microsoft Store";
+                    if (Source.Equals("winget", StringComparison.OrdinalIgnoreCase)) return "WinGet";
+
+                    return string.Concat(Source[0].ToString().ToUpper(), Source.AsSpan(1));
+                }
+
+                if (safeId.Length == 12 && System.Text.RegularExpressions.Regex.IsMatch(safeId, "^[a-zA-Z0-9]+$"))
+                {
+                    return "Microsoft Store";
+                }
+
+                if (safeId.Contains("."))
+                {
+                    return "WinGet";
+                }
+
+                return "Local App";
+            }
+        }
 
         private string _name = string.Empty;
         public string Name

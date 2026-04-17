@@ -1714,6 +1714,7 @@
     <sys:String x:Key="header_pkg_id">ID</sys:String>
     <sys:String x:Key="header_version">Versie</sys:String>
     <sys:String x:Key="header_new_version">Nieuwe versie</sys:String>
+    <sys:String x:Key="header_source">Bron</sys:String>
     <sys:String x:Key="header_publisher">Uitgever</sys:String>
 
     <sys:String x:Key="status_loading_pkg">Pakketten laden…</sys:String>
@@ -1746,6 +1747,7 @@
     <sys:String x:Key="sort_name">Naam</sys:String>
     <sys:String x:Key="sort_id">ID</sys:String>
     <sys:String x:Key="sort_version">Versie</sys:String>
+    <sys:String x:Key="sort_source">Bron</sys:String>
     <sys:String x:Key="sort_publisher">Uitgever</sys:String>
 
     <sys:String x:Key="status_no_results">Geen pakketten gevonden.</sys:String>
@@ -1787,6 +1789,13 @@
     <sys:String x:Key="filter_instant">Direct zoeken</sys:String>
     <sys:String x:Key="filter_match_case">Hoofdlettergevoelig</sys:String>
     <sys:String x:Key="filter_ignore_special">Negeer speciale tekens</sys:String>
+
+    <sys:String x:Key="header_sources">Bronnen</sys:String>
+    <sys:String x:Key="source_winget">WinGet</sys:String>
+    <sys:String x:Key="source_msstore">MS Store</sys:String>
+    <sys:String x:Key="source_local">Lokale apps</sys:String>
+    <sys:String x:Key="source_dotnet">.NET-tool</sys:String>
+    <sys:String x:Key="source_powershell">PowerShell</sys:String>
     <!-- endregion App Store Page -->
 
     <!-- region Navigation Guard & Busy State -->

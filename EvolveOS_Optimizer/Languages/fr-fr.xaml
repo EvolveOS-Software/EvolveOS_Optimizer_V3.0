@@ -1719,6 +1719,7 @@
     <sys:String x:Key="header_pkg_id">ID</sys:String>
     <sys:String x:Key="header_version">Version</sys:String>
     <sys:String x:Key="header_new_version">Nouvelle version</sys:String>
+    <sys:String x:Key="header_source">Source</sys:String>
     <sys:String x:Key="header_publisher">Éditeur</sys:String>
 
     <sys:String x:Key="status_loading_pkg">Chargement...</sys:String>
@@ -1751,6 +1752,7 @@
     <sys:String x:Key="sort_name">Nom</sys:String>
     <sys:String x:Key="sort_id">ID</sys:String>
     <sys:String x:Key="sort_version">Version</sys:String>
+    <sys:String x:Key="sort_source">Source</sys:String>
     <sys:String x:Key="sort_publisher">Éditeur</sys:String>
 
     <sys:String x:Key="status_no_results">Aucun paquet trouvé.</sys:String>
@@ -1792,6 +1794,13 @@
     <sys:String x:Key="filter_instant">Recherche instantanée</sys:String>
     <sys:String x:Key="filter_match_case">Sensible à la casse</sys:String>
     <sys:String x:Key="filter_ignore_special">Ignorer les caractères spéciaux</sys:String>
+
+    <sys:String x:Key="header_sources">Sources</sys:String>
+    <sys:String x:Key="source_winget">WinGet</sys:String>
+    <sys:String x:Key="source_msstore">MS Store</sys:String>
+    <sys:String x:Key="source_local">Applications locales</sys:String>
+    <sys:String x:Key="source_dotnet">Outil .NET</sys:String>
+    <sys:String x:Key="source_powershell">PowerShell</sys:String>
     <!-- endregion App Store Page -->
 
     <!-- region Navigation Guard & Busy State -->
