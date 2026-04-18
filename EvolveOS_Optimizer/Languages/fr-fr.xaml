@@ -350,6 +350,10 @@
     <sys:String x:Key="SecurityPage_RemoteDesktop">Bureau à distance</sys:String>
     <sys:String x:Key="SecurityPage_RemoteDesktopDesc">Autorise les utilisateurs à se connecter à distance à cet ordinateur.</sys:String>
 
+    <sys:String x:Key="SecurityPage_RemoteAssistance">Assistance à distance</sys:String>
+    <sys:String x:Key="SecurityPage_RemoteAssistanceDesc">Permet aux utilisateurs d'inviter quelqu'un à se connecter à cet ordinateur pour obtenir de l'aide.</sys:String>
+    <sys:String x:Key="SecurityPage_RemoteAssistanceDisabledWarning">L'assistance à distance doit être activée pour lancer cet outil.</sys:String>
+
     <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
     <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
     <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>

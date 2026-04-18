@@ -350,6 +350,10 @@
     <sys:String x:Key="SecurityPage_RemoteDesktop">Extern bureaublad</sys:String>
     <sys:String x:Key="SecurityPage_RemoteDesktopDesc">Staat gebruikers toe om op afstand verbinding te maken met deze computer.</sys:String>
 
+    <sys:String x:Key="SecurityPage_RemoteAssistance">Hulp op afstand</sys:String>
+    <sys:String x:Key="SecurityPage_RemoteAssistanceDesc">Staat gebruikers toe om iemand uit te nodigen om verbinding te maken met deze computer voor hulp.</sys:String>
+    <sys:String x:Key="SecurityPage_RemoteAssistanceDisabledWarning">Hulp op afstand moet zijn ingeschakeld om dit hulpprogramma te starten.</sys:String>
+
     <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
     <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
     <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>

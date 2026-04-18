@@ -356,6 +356,10 @@
     <sys:String x:Key="SecurityPage_RemoteDesktop">Desktop remoto</sys:String>
     <sys:String x:Key="SecurityPage_RemoteDesktopDesc">Consente agli utenti di connettersi in remoto a questo computer.</sys:String>
 
+    <sys:String x:Key="SecurityPage_RemoteAssistance">Assistenza remota</sys:String>
+    <sys:String x:Key="SecurityPage_RemoteAssistanceDesc">Consente agli utenti di invitare qualcuno a connettersi a questo computer per ricevere assistenza.</sys:String>
+    <sys:String x:Key="SecurityPage_RemoteAssistanceDisabledWarning">L'assistenza remota deve essere abilitata per avviare questo strumento.</sys:String>
+
     <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
     <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
     <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>

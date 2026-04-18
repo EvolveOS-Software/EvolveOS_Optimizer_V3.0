@@ -22,6 +22,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private bool _isSmartAppControlUpdating = false;
     private bool _isPowerShellPolicyUpdating = false;
     private bool _isRdpToggleUpdating = false;
+    private bool _isRaToggleUpdating = false;
     #endregion
 
     #region Constructor & Lifecycle
@@ -108,9 +109,11 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 var psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync(cancellationToken).ConfigureAwait(false);
                 var lsaProtection = await SecurityDiagnostics.IsLsaProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var rdpEnabled = await SecurityDiagnostics.IsRdpEnabledAsync(cancellationToken).ConfigureAwait(false);
+                var raEnabled = await SecurityDiagnostics.IsRemoteAssistanceEnabledAsync(cancellationToken).ConfigureAwait(false);
 
                 return (antivirusInfo, firewallProtection, windowsUpdate, smartscreen, realTimeProtection,
-                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy, lsaProtection, rdpEnabled);
+                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled,
+                        defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy, lsaProtection, rdpEnabled, raEnabled);
             }, cancellationToken).ConfigureAwait(true);
 
             if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
@@ -130,16 +133,21 @@ public sealed partial class SecurityPage : Page, IPurgeable
             UpdateStatusCard(DefenderServiceStatus, DefenderServiceLink, results.defenderServiceEnabled);
 
             RemoteDesktopStatus.Text = results.rdpEnabled ? ResourceString.GetString("Enabled") : ResourceString.GetString("Disabled");
-            RemoteDesktopLink.Visibility = Visibility.Collapsed;
-
+            if (RemoteDesktopLink != null) RemoteDesktopLink.Visibility = Visibility.Collapsed;
             _isRdpToggleUpdating = true;
             RdpToggleSwitch.IsOn = results.rdpEnabled;
             RdpToggleSwitch.IsEnabled = true;
             _isRdpToggleUpdating = false;
 
+            RemoteAssistanceStatus.Text = results.raEnabled ? ResourceString.GetString("Enabled") : ResourceString.GetString("Disabled");
+            if (RemoteAssistanceLink != null) RemoteAssistanceLink.Visibility = Visibility.Collapsed;
+            _isRaToggleUpdating = true;
+            RaToggleSwitch.IsOn = results.raEnabled;
+            RaToggleSwitch.IsEnabled = true;
+            _isRaToggleUpdating = false;
+
             _isUacSliderUpdating = true;
             UacSlider.IsEnabled = true;
-
             try
             {
                 using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
@@ -172,13 +180,10 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 UacSlider.IsEnabled = false;
                 UacLevelDescription.Text = "Access denied reading UAC status.";
             }
-
             _isUacSliderUpdating = false;
 
             _isSmartAppControlUpdating = true;
-
             bool isSmartAppControlSecure = results.smartAppControlState != 0;
-
             if (results.smartAppControlState == -1)
             {
                 SmartAppControlComboBox.IsEnabled = false;
@@ -187,7 +192,6 @@ public sealed partial class SecurityPage : Page, IPurgeable
             else
             {
                 SmartAppControlComboBox.IsEnabled = true;
-
                 if (results.smartAppControlState == 0)
                 {
                     SmartAppControlComboBox.SelectedIndex = 0;
@@ -204,12 +208,10 @@ public sealed partial class SecurityPage : Page, IPurgeable
                     SmartAppControlDescription.Text = ResourceString.GetString("SmartAppControl_Level2") ?? "Evaluating if Smart App Control can protect you without getting in the way.";
                 }
             }
-
             _isSmartAppControlUpdating = false;
 
             _isPowerShellPolicyUpdating = true;
             bool isPsWarning = false;
-
             if (results.psPolicy == "Error")
             {
                 PowerShellPolicyComboBox.IsEnabled = false;
@@ -218,7 +220,6 @@ public sealed partial class SecurityPage : Page, IPurgeable
             else
             {
                 PowerShellPolicyComboBox.IsEnabled = true;
-
                 switch (results.psPolicy)
                 {
                     case "Restricted":
@@ -260,7 +261,6 @@ public sealed partial class SecurityPage : Page, IPurgeable
                     PowerShellPolicyDescription.Opacity = 0.8;
                 }
             }
-
             _isPowerShellPolicyUpdating = false;
 
             AntivirusProductName.Text = results.antivirusInfo.ProductName ?? ResourceString.GetString("None");
@@ -285,6 +285,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
             if (!isSmartAppControlSecure) issuesCount++;
             if (!results.lsaProtection) issuesCount++;
             if (results.rdpEnabled) issuesCount++;
+            if (results.raEnabled) issuesCount++;
 
             bool isPsPolicySecure = results.psPolicy != "Unrestricted" && results.psPolicy != "Bypass" && results.psPolicy != "Error";
             if (!isPsPolicySecure) issuesCount++;
@@ -480,6 +481,28 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private void SmartAppControlLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://smartapp/");
     private void LsaProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://coreisolation/");
     private void RemoteDesktopLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("ms-settings:remotedesktop");
+
+    private void RemoteAssistanceLink_Click(object sender, RoutedEventArgs e)
+    {
+        if (!RaToggleSwitch.IsOn)
+        {
+            App.ShowNotification(
+                ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance",
+                ResourceString.GetString("SecurityPage_RemoteAssistanceDisabledWarning") ?? "Remote Assistance must be enabled to launch this tool.",
+                InfoBarSeverity.Warning,
+                3000);
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo("msra.exe") { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+        }
+    }
 
     private void BitLockerLink_Click(object sender, RoutedEventArgs e)
     {
@@ -737,6 +760,59 @@ public sealed partial class SecurityPage : Page, IPurgeable
         }
 
         _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+    }
+
+    private async void RaToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_isRaToggleUpdating) return;
+
+        RemoteAssistanceStatus.Text = RaToggleSwitch.IsOn
+            ? ResourceString.GetString("Enabled") ?? "Enabled"
+            : ResourceString.GetString("Disabled") ?? "Disabled";
+
+        try
+        {
+            bool enable = RaToggleSwitch.IsOn;
+            await Task.Run(() =>
+            {
+                int val = enable ? 1 : 0;
+                string command = $@"
+                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance' -Name 'fAllowToGetHelp' -Value {val};
+                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name 'fAllowToGetHelp' -Value {val};
+                if ({enable.ToString().ToLower()}) {{
+                    Enable-NetFirewallRule -DisplayGroup '@{{FirewallAPI.dll,-28502}}' -ErrorAction SilentlyContinue;
+                }} else {{
+                    Disable-NetFirewallRule -DisplayGroup '@{{FirewallAPI.dll,-28502}}' -ErrorAction SilentlyContinue;
+                }}";
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{command}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                    // Verb = "runas" */ App is already elevated \*
+                };
+
+                Process.Start(psi)?.WaitForExit();
+            });
+
+            App.ShowNotification(
+                ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance",
+                ResourceString.GetString("text_saved_successfully") ?? "Settings synchronized.",
+                InfoBarSeverity.Success,
+                3000);
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+            _isRaToggleUpdating = true;
+            RaToggleSwitch.IsOn = !RaToggleSwitch.IsOn;
+            _isRaToggleUpdating = false;
+        }
+
+        _ = CheckSecurityStatusAsync();
     }
 
     private void DefenderServiceLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");

@@ -376,6 +376,41 @@
                                 </Grid>
                             </Button>
 
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="RemoteAssistanceLink_Click">
+                                <Grid>
+                                    <Viewbox Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0">
+                                        <PathIcon Data="M12,2A5,5,0,1,0,17,7,5,5,0,0,0,12,2m0,8A3,3,0,1,1,15,7,3,3,0,0,1,12,10M12,12c-4.42,0-8,1.79-8,4v2H20V16c0-2.21-3.58-4-8-4m6,4H6v-.5c0-.83,2.69-2.5,6-2.5s6,1.67,6,2.5ZM21,2h-2v3L16,5v2h3v3h2V7h3V5H21Z" 
+                                                  Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    </Viewbox>
+
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="2">
+                                        <TextBlock x:Name="RemoteAssistanceStatus"
+                                                   FontFamily="{ThemeResource Jura}"
+                                                   Style="{StaticResource DetailBodyBaseMediumStyle}"
+                                                   HorizontalAlignment="Right"/>
+
+                                        <ToggleSwitch x:Name="RaToggleSwitch"
+                                                      Toggled="RaToggleSwitch_Toggled"
+                                                      IsEnabled="False"
+                                                      HorizontalAlignment="Right"
+                                                      OnContent="{x:Null}"
+                                                      OffContent="{x:Null}"
+                                                      MinWidth="0"
+                                                      Margin="0"/>
+
+                                        <HyperlinkButton x:Name="RemoteAssistanceLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="RemoteAssistanceLink_Click"
+                                                         FontSize="12" Padding="0" HorizontalAlignment="Right" Visibility="Collapsed"/>
+                                    </StackPanel>
+
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock helpers:Loc.Key="SecurityPage_RemoteAssistance" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_RemoteAssistanceDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1"
