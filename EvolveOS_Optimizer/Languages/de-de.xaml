@@ -344,6 +344,9 @@
     <sys:String x:Key="SmartAppControl_StateEvaluation">Auswertungsmodus</sys:String>
     <sys:String x:Key="SmartAppControl_StateOn">Ein (erzwungen)</sys:String>
 
+    <sys:String x:Key="SecurityPage_LSAProtection">Lokale Sicherheitsautorität (LSA)</sys:String>
+    <sys:String x:Key="SecurityPage_LSAProtectionDesc">Schützt Anmeldeinformationen, indem der LSA-Prozess von nicht vertrauenswürdigem Code isoliert wird.</sys:String>
+
     <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
     <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
     <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>

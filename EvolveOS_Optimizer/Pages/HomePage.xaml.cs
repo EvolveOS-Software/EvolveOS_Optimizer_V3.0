@@ -1590,6 +1590,7 @@ namespace EvolveOS_Optimizer.Pages
                     bool isUacEnabled = await SecurityDiagnostics.IsUACEnabledAsync();
                     bool isWuEnabled = await SecurityDiagnostics.IsWindowsUpdateEnabledAsync();
                     bool isTpEnabled = await SecurityDiagnostics.IsTamperProtectionEnabledAsync();
+                    bool isLsaEnabled = await SecurityDiagnostics.IsLsaProtectionEnabledAsync();
 
                     int sacState = await SecurityDiagnostics.GetSmartAppControlStateAsync();
                     bool isSmartAppControlSecure = sacState != 0;
@@ -1605,6 +1606,7 @@ namespace EvolveOS_Optimizer.Pages
                     if (!isTpEnabled) issuesCount++;
                     if (!isSmartAppControlSecure) issuesCount++;
                     if (!isPsPolicySecure) issuesCount++;
+                    if (!isLsaEnabled) issuesCount++;
 
                     isCoreProtected = isAvEnabled && isFwEnabled && isRtEnabled;
                 });

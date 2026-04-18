@@ -102,9 +102,10 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 var accountProtectionEnabled = await SecurityDiagnostics.IsAccountProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var smartAppControlState = await SecurityDiagnostics.GetSmartAppControlStateAsync(cancellationToken).ConfigureAwait(false);
                 var psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync(cancellationToken).ConfigureAwait(false);
+                var lsaProtection = await SecurityDiagnostics.IsLsaProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
 
                 return (antivirusInfo, firewallProtection, windowsUpdate, smartscreen, realTimeProtection,
-                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy);
+                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy, lsaProtection);
             }, cancellationToken).ConfigureAwait(true);
 
             if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
@@ -117,6 +118,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
             UpdateStatusCard(CoreIsolationStatus, CoreIsolationLink, results.coreIsolationEnabled);
             UpdateStatusCard(RealTimeProtectionStatus, RealTimeProtectionLink, results.realTimeProtection);
             UpdateStatusCard(AccountProtectionStatus, AccountProtectionLink, results.accountProtectionEnabled);
+            UpdateStatusCard(LsaProtectionStatus, LsaProtectionLink, results.lsaProtection);
 
             _isUacSliderUpdating = true;
             UacSlider.IsEnabled = true;
@@ -269,6 +271,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
             if (!results.windowsUpdate) issuesCount++;
             if (!results.tamperProtection) issuesCount++;
             if (!isSmartAppControlSecure) issuesCount++;
+            if (!results.lsaProtection) issuesCount++;
 
             bool isPsPolicySecure = results.psPolicy != "Unrestricted" && results.psPolicy != "Bypass" && results.psPolicy != "Error";
             if (!isPsPolicySecure) issuesCount++;
@@ -462,6 +465,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private void ControlledFolderAccessLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://ransomwareprotection/");
     private void AccountProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://account/");
     private void SmartAppControlLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://smartapp/");
+    private void LsaProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://coreisolation/");
 
     private void BitLockerLink_Click(object sender, RoutedEventArgs e)
     {

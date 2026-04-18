@@ -322,6 +322,25 @@
                                 </Grid>
                             </Button>
 
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="LsaProtectionLink_Click">
+                                <Grid>
+                                    <FontIcon Glyph="&#xEC06;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                                        <TextBlock x:Name="LsaProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <HyperlinkButton x:Name="LsaProtectionLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="LsaProtectionLink_Click"
+                                                         FontSize="12" Padding="0" Margin="0,4,0,0" Visibility="Collapsed"/>
+                                    </StackPanel>
+
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock helpers:Loc.Key="SecurityPage_LSAProtection" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_LSAProtectionDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1"

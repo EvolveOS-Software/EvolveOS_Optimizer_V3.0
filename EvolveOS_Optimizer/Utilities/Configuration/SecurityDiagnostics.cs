@@ -396,6 +396,27 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }, cancellationToken);
         }
 
+        public static async Task<bool> IsLsaProtectionEnabledAsync(CancellationToken cancellationToken = default)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Lsa");
+                    if (key != null)
+                    {
+                        var value = key.GetValue("RunAsPPL");
+                        return value != null && (int)value == 1;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogDebug(ex);
+                }
+                return false;
+            }, cancellationToken).ConfigureAwait(false);
+        }
+
         public static Task<string> GetPowerShellExecutionPolicyAsync(CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>

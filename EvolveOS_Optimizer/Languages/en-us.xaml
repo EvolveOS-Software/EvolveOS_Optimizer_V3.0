@@ -350,6 +350,9 @@
     <sys:String x:Key="SmartAppControl_StateEvaluation">Evaluation Mode</sys:String>
     <sys:String x:Key="SmartAppControl_StateOn">On (Enforced)</sys:String>
 
+    <sys:String x:Key="SecurityPage_LSAProtection">Local Security Authority (LSA)</sys:String>
+    <sys:String x:Key="SecurityPage_LSAProtectionDesc">Protects credentials by isolating the LSA process from untrusted code.</sys:String>
+
     <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
     <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
     <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>

@@ -344,6 +344,9 @@
     <sys:String x:Key="SmartAppControl_StateEvaluation">Evaluatiemodus</sys:String>
     <sys:String x:Key="SmartAppControl_StateOn">Aan (afgedwongen)</sys:String>
 
+    <sys:String x:Key="SecurityPage_LSAProtection">Lokale beveiligingsautoriteit (LSA)</sys:String>
+    <sys:String x:Key="SecurityPage_LSAProtectionDesc">Beschermt inloggegevens door het LSA-proces te isoleren van niet-vertrouwde code.</sys:String>
+
     <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
     <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
     <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>
