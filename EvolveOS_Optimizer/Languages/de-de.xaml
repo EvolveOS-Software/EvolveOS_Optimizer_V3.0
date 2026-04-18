@@ -343,6 +343,23 @@
     <sys:String x:Key="SmartAppControl_StateOff">Deaktiviert</sys:String>
     <sys:String x:Key="SmartAppControl_StateEvaluation">Auswertungsmodus</sys:String>
     <sys:String x:Key="SmartAppControl_StateOn">Ein (erzwungen)</sys:String>
+
+    <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
+    <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
+    <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>
+    <sys:String x:Key="PSPolicy_Unrestricted">Unrestricted</sys:String>
+    <sys:String x:Key="PSPolicy_Bypass">Bypass</sys:String>
+
+    <sys:String x:Key="SecurityPage_PSExecutionPolicy">PowerShell-Ausführungsrichtlinie</sys:String>
+    <sys:String x:Key="SecurityPage_PSExecutionPolicyDesc">Bestimmt, welche Skripte auf dem System ausgeführt werden dürfen.</sys:String>
+
+    <sys:String x:Key="Dialog_SecurityWarningTitle">Sicherheitswarnung</sys:String>
+    <sys:String x:Key="Dialog_PSPolicyWarningDesc">Wenn Sie diese Richtlinie herabsetzen, können potenziell gefährliche Skripte ohne Warnung ausgeführt werden. Sind Sie sicher, dass Sie fortfahren möchten?</sys:String>
+    <sys:String x:Key="Dialog_YesProceed">Ja, ändern</sys:String>
+    <sys:String x:Key="Dialog_Cancel">Abbrechen</sys:String>
+
+    <sys:String x:Key="text_saved_successfully">Einstellungen sicher gespeichert.</sys:String>
+    <sys:String x:Key="text_ps_policy_restricted">Es sind nur einzelne Befehle zulässig.</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->

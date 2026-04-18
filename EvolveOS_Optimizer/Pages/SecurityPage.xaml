@@ -359,6 +359,46 @@
                                     </StackPanel>
                                 </Grid>
                             </Border>
+
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Width="476" Height="155" Padding="14">
+                                <Grid>
+                                    <FontIcon Glyph="&#xE756;" FontSize="22" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock helpers:Loc.Key="SecurityPage_PSExecutionPolicy" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_PSExecutionPolicyDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+
+                                    <ComboBox x:Name="PowerShellPolicyComboBox"
+                                              HorizontalAlignment="Right"
+                                              VerticalAlignment="Top"
+                                              MinWidth="150"
+                                              FontFamily="{ThemeResource Jura}"
+                                              SelectionChanged="PowerShellPolicyComboBox_SelectionChanged"
+                                              IsEnabled="False">
+                                        <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_Restricted}"/>
+                                        <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_AllSigned}"/>
+                                        <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_RemoteSigned}"/>
+                                        <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_Unrestricted}"/>
+                                        <ComboBoxItem Content="{helpers:ResourceString Key=PSPolicy_Bypass}"/>
+                                    </ComboBox>
+
+                                    <TextBlock x:Name="PowerShellPolicyDescription"
+                                               FontFamily="{ThemeResource Jura}"
+                                               helpers:Loc.Key="text_scanning_system"
+                                               FontSize="11"
+                                               Opacity="0.8"
+                                               TextWrapping="Wrap"
+                                               Width="220"
+                                               TextAlignment="Right"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
                         </panels:SecurityFlowPanel>
                     </Grid>
                 </StackPanel>

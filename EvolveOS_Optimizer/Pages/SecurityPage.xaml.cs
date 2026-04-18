@@ -17,6 +17,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private string? _pendingScrollTarget;
     private bool _isUacSliderUpdating = false;
     private bool _isSmartAppControlUpdating = false;
+    private bool _isPowerShellPolicyUpdating = false;
     #endregion
 
     #region Constructor & Lifecycle
@@ -100,9 +101,10 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 var defenderServiceEnabled = await SecurityDiagnostics.IsDefenderServiceEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var accountProtectionEnabled = await SecurityDiagnostics.IsAccountProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var smartAppControlState = await SecurityDiagnostics.GetSmartAppControlStateAsync(cancellationToken).ConfigureAwait(false);
+                var psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync(cancellationToken).ConfigureAwait(false);
 
                 return (antivirusInfo, firewallProtection, windowsUpdate, smartscreen, realTimeProtection,
-                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled, smartAppControlState);
+                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy);
             }, cancellationToken).ConfigureAwait(true);
 
             if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
@@ -186,6 +188,62 @@ public sealed partial class SecurityPage : Page, IPurgeable
 
             _isSmartAppControlUpdating = false;
 
+            _isPowerShellPolicyUpdating = true;
+            bool isPsWarning = false;
+
+            if (results.psPolicy == "Error")
+            {
+                PowerShellPolicyComboBox.IsEnabled = false;
+                PowerShellPolicyDescription.Text = "Access denied reading PowerShell Execution Policy.";
+            }
+            else
+            {
+                PowerShellPolicyComboBox.IsEnabled = true;
+
+                switch (results.psPolicy)
+                {
+                    case "Restricted":
+                        PowerShellPolicyComboBox.SelectedIndex = 0;
+                        PowerShellPolicyDescription.Text = ResourceString.GetString("text_ps_policy_restricted") ?? "Only individual commands are allowed.";
+                        break;
+                    case "AllSigned":
+                        PowerShellPolicyComboBox.SelectedIndex = 1;
+                        PowerShellPolicyDescription.Text = ResourceString.GetString("text_ps_policy_allsigned") ?? "Only scripts signed by a trusted publisher can run.";
+                        break;
+                    case "RemoteSigned":
+                        PowerShellPolicyComboBox.SelectedIndex = 2;
+                        PowerShellPolicyDescription.Text = ResourceString.GetString("text_ps_policy_remotesigned") ?? "Local scripts allowed; downloaded scripts must be signed.";
+                        break;
+                    case "Unrestricted":
+                        PowerShellPolicyComboBox.SelectedIndex = 3;
+                        PowerShellPolicyDescription.Text = $"⚠️ {ResourceString.GetString("text_ps_policy_unrestricted") ?? "All scripts allowed with a warning for internet files."}";
+                        isPsWarning = true;
+                        break;
+                    case "Bypass":
+                        PowerShellPolicyComboBox.SelectedIndex = 4;
+                        PowerShellPolicyDescription.Text = $"⚠️ {ResourceString.GetString("text_ps_policy_bypass") ?? "All scripts allowed to run without warnings or blocks."}";
+                        isPsWarning = true;
+                        break;
+                    default:
+                        PowerShellPolicyComboBox.SelectedIndex = 0;
+                        PowerShellPolicyDescription.Text = "Unknown policy. Defaulting to Restricted UI state.";
+                        break;
+                }
+
+                if (isPsWarning)
+                {
+                    PowerShellPolicyDescription.Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
+                    PowerShellPolicyDescription.Opacity = 1.0;
+                }
+                else
+                {
+                    PowerShellPolicyDescription.Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+                    PowerShellPolicyDescription.Opacity = 0.8;
+                }
+            }
+
+            _isPowerShellPolicyUpdating = false;
+
             UpdateStatusCard(TamperProtectionStatus, TamperProtectionLink, results.tamperProtection);
             UpdateStatusCard(ControlledFolderAccessStatus, ControlledFolderAccessLink, results.controlledFolderAccess);
             UpdateStatusCard(BitLockerStatus, BitLockerLink, results.bitLockerEnabled);
@@ -211,6 +269,9 @@ public sealed partial class SecurityPage : Page, IPurgeable
             if (!results.windowsUpdate) issuesCount++;
             if (!results.tamperProtection) issuesCount++;
             if (!isSmartAppControlSecure) issuesCount++;
+
+            bool isPsPolicySecure = results.psPolicy != "Unrestricted" && results.psPolicy != "Bypass" && results.psPolicy != "Error";
+            if (!isPsPolicySecure) issuesCount++;
 
             bool isCoreProtected = results.antivirusInfo.IsEnabled &&
                                    results.firewallProtection &&
@@ -499,6 +560,98 @@ public sealed partial class SecurityPage : Page, IPurgeable
         {
             ErrorLogging.LogDebug(ex);
 
+            _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+        }
+    }
+
+    private async void PowerShellPolicyComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_isPowerShellPolicyUpdating) return;
+
+        int selectedIndex = PowerShellPolicyComboBox.SelectedIndex;
+
+        if (selectedIndex == 3 || selectedIndex == 4)
+        {
+            ContentDialog warningDialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("Dialog_SecurityWarningTitle") ?? "Security Warning",
+                Content = ResourceString.GetString("Dialog_PSPolicyWarningDesc") ?? "Lowering this policy allows potentially dangerous scripts to run without warnings. Are you sure you want to proceed?",
+                PrimaryButtonText = ResourceString.GetString("Dialog_YesProceed") ?? "Yes, change it",
+                CloseButtonText = ResourceString.GetString("Dialog_Cancel") ?? "Cancel",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await warningDialog.ShowAsync();
+
+            if (result != ContentDialogResult.Primary)
+            {
+                _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+                return;
+            }
+        }
+
+        try
+        {
+            using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell", true);
+            if (key != null)
+            {
+                string policy = "Restricted";
+                string desc = "";
+                bool isWarning = false;
+
+                switch (selectedIndex)
+                {
+                    case 0:
+                        policy = "Restricted";
+                        desc = ResourceString.GetString("text_ps_policy_restricted") ?? "Only individual commands are allowed.";
+                        break;
+                    case 1:
+                        policy = "AllSigned";
+                        desc = ResourceString.GetString("text_ps_policy_allsigned") ?? "Only scripts signed by a trusted publisher can run.";
+                        break;
+                    case 2:
+                        policy = "RemoteSigned";
+                        desc = ResourceString.GetString("text_ps_policy_remotesigned") ?? "Local scripts allowed; downloaded scripts must be signed.";
+                        break;
+                    case 3:
+                        policy = "Unrestricted";
+                        desc = $"⚠️ {ResourceString.GetString("text_ps_policy_unrestricted") ?? "All scripts allowed with a warning for internet files."}";
+                        isWarning = true;
+                        break;
+                    case 4:
+                        policy = "Bypass";
+                        desc = $"⚠️ {ResourceString.GetString("text_ps_policy_bypass") ?? "All scripts allowed to run without warnings or blocks."}";
+                        isWarning = true;
+                        break;
+                }
+
+                key.SetValue("ExecutionPolicy", policy, RegistryValueKind.String);
+                PowerShellPolicyDescription.Text = desc;
+
+                if (isWarning)
+                {
+                    PowerShellPolicyDescription.Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
+                    PowerShellPolicyDescription.Opacity = 1.0;
+                }
+                else
+                {
+                    PowerShellPolicyDescription.Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+                    PowerShellPolicyDescription.Opacity = 0.8;
+
+                    App.ShowNotification(
+                        ResourceString.GetString("SecurityPage_PSExecutionPolicy") ?? "PowerShell Policy",
+                        ResourceString.GetString("text_saved_successfully") ?? "Settings saved securely.",
+                        InfoBarSeverity.Success,
+                        3000);
+                }
+
+                _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
             _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
         }
     }

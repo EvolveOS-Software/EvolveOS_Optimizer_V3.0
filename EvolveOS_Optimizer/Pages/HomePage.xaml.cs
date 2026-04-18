@@ -1594,6 +1594,9 @@ namespace EvolveOS_Optimizer.Pages
                     int sacState = await SecurityDiagnostics.GetSmartAppControlStateAsync();
                     bool isSmartAppControlSecure = sacState != 0;
 
+                    string psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync();
+                    bool isPsPolicySecure = psPolicy != "Unrestricted" && psPolicy != "Bypass" && psPolicy != "Error";
+
                     if (!isAvEnabled) issuesCount++;
                     if (!isFwEnabled) issuesCount++;
                     if (!isRtEnabled) issuesCount++;
@@ -1601,6 +1604,7 @@ namespace EvolveOS_Optimizer.Pages
                     if (!isWuEnabled) issuesCount++;
                     if (!isTpEnabled) issuesCount++;
                     if (!isSmartAppControlSecure) issuesCount++;
+                    if (!isPsPolicySecure) issuesCount++;
 
                     isCoreProtected = isAvEnabled && isFwEnabled && isRtEnabled;
                 });

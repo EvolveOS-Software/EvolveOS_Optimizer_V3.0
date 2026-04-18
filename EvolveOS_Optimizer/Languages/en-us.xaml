@@ -349,6 +349,23 @@
     <sys:String x:Key="SmartAppControl_StateOff">Disabled</sys:String>
     <sys:String x:Key="SmartAppControl_StateEvaluation">Evaluation Mode</sys:String>
     <sys:String x:Key="SmartAppControl_StateOn">On (Enforced)</sys:String>
+
+    <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
+    <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
+    <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>
+    <sys:String x:Key="PSPolicy_Unrestricted">Unrestricted</sys:String>
+    <sys:String x:Key="PSPolicy_Bypass">Bypass</sys:String>
+
+    <sys:String x:Key="SecurityPage_PSExecutionPolicy">PowerShell Execution Policy</sys:String>
+    <sys:String x:Key="SecurityPage_PSExecutionPolicyDesc">Determines which scripts are allowed to run on the system.</sys:String>
+
+    <sys:String x:Key="Dialog_SecurityWarningTitle">Security Warning</sys:String>
+    <sys:String x:Key="Dialog_PSPolicyWarningDesc">Lowering this policy allows potentially dangerous scripts to run without warnings. Are you sure you want to proceed?</sys:String>
+    <sys:String x:Key="Dialog_YesProceed">Yes, change it</sys:String>
+    <sys:String x:Key="Dialog_Cancel">Cancel</sys:String>
+
+    <sys:String x:Key="text_saved_successfully">Settings saved securely.</sys:String>
+    <sys:String x:Key="text_ps_policy_restricted">Only individual commands are allowed.</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->

@@ -396,6 +396,23 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }, cancellationToken);
         }
 
+        public static Task<string> GetPowerShellExecutionPolicyAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell");
+                    return key?.GetValue("ExecutionPolicy")?.ToString() ?? "Restricted";
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogDebug(ex);
+                    return "Error";
+                }
+            }, cancellationToken);
+        }
+
         private static bool IsFirewallServiceDisabled()
         {
             try
