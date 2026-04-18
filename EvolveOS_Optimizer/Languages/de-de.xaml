@@ -1145,6 +1145,7 @@
     <sys:String x:Key="ScheduleLater">Für später planen</sys:String>
     <sys:String x:Key="ScheduledLater">Für nächsten Neustart geplant</sys:String>
     <sys:String x:Key="ScanInProgress">{0} / {1}: {2} Scan läuft...</sys:String>
+    <sys:String x:Key="ScanResults">Scan Ergebnisse</sys:String>
     <sys:String x:Key="RepairInProgress">{0} / {1}: {2} Reparatur läuft...</sys:String>
     <sys:String x:Key="Health_Poor">Schlecht - Handlung erforderlich</sys:String>
     <sys:String x:Key="Health_Warning">Ausreichend - Optimierung empfohlen</sys:String>
@@ -1176,6 +1177,8 @@
     <sys:String x:Key="toast_health_critical_title">Systemintegrität kritisch</sys:String>
     <sys:String x:Key="toast_health_critical_msg">Systemressourcen sind stark belastet oder es ist wenig Speicherplatz vorhanden. Klicken Sie hier zum Optimieren.</sys:String>
     <sys:String x:Key="placeholder_select_process">Prozess zum Ausschließen auswählen...</sys:String>
+    <sys:String x:Key="StatusTextBlockDefault">Bereit</sys:String>
+    <sys:String x:Key="Close">Schließen</sys:String>
     <!-- endregion System Optimizer -->
 
     <!-- Resource Helper -->

@@ -8,7 +8,6 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using CommunityToolkit.WinUI;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -41,6 +40,8 @@ namespace EvolveOS_Optimizer.Pages
         public int selectedCount = 0;
         private string? _pendingScrollTarget;
         private int _sfcPrefaceLinesSkipped;
+
+        private DateTime _lastProgressUpdateTime = DateTime.MinValue;
         #endregion
 
         #region Constructor & Initialization
@@ -141,6 +142,8 @@ namespace EvolveOS_Optimizer.Pages
             var selectedNames = new List<string>();
             var wasCancelled = false;
             var hasError = false;
+
+            _lastProgressUpdateTime = DateTime.UtcNow;
 
             try
             {
@@ -384,7 +387,11 @@ namespace EvolveOS_Optimizer.Pages
                 return;
             }
 
-            ErrorLogging.LogDebug($"Output: {line}");
+            // DEBUG ONLY!
+            // WARNING: DISM rapidly overwrites its progress bar (\r), causing thousands of log 
+            // entries per second. This severe disk I/O overhead can bottleneck the stream reader 
+            // and cause the underlying DismHost.exe process to hang or crash (Error 1726).
+            // ErrorLogging.LogDebug($"Output: {line}");
             HandleOutputLine(name, line);
         }
 
@@ -455,7 +462,6 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         percentage = int.Parse(match.Groups[1].Value);
                     }
-                    else { }
                 }
                 else if (commandName == "CHKDSK")
                 {
@@ -466,16 +472,22 @@ namespace EvolveOS_Optimizer.Pages
                         var percentageText = match.Groups[1].Value.Replace(',', '.');
                         percentage = (int)Math.Round(double.Parse(percentageText, CultureInfo.InvariantCulture));
                     }
-                    else { }
                 }
 
                 if (percentage > 0 && percentage <= 100)
                 {
-                    DispatcherQueue.TryEnqueue(() =>
+                    var now = DateTime.UtcNow;
+
+                    if ((now - _lastProgressUpdateTime).TotalMilliseconds > 200 || percentage == 100)
                     {
-                        ProgressBar.Value = percentage;
-                        PercentageTextBlock.Text = $"{percentage}%";
-                    });
+                        _lastProgressUpdateTime = now;
+
+                        DispatcherQueue.TryEnqueue(() =>
+                        {
+                            ProgressBar.Value = percentage;
+                            PercentageTextBlock.Text = $"{percentage}%";
+                        });
+                    }
                 }
             }
             catch (Exception ex)
@@ -710,7 +722,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             DispatcherQueue.TryEnqueue(() =>
             {
-                StatusTextBlock.Text = "StatusTextBlockDefault".GetLocalized();
+                StatusTextBlock.Text = ResourceString.GetString("StatusTextBlockDefault") ?? "Ready";
                 ProgressBar.Value = 0;
                 StopButton.Visibility = Visibility.Collapsed;
                 StopButton.IsEnabled = true;
@@ -744,7 +756,7 @@ namespace EvolveOS_Optimizer.Pages
                 XamlRoot = XamlRoot,
                 Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
                 BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentAAFillColorDefaultBrush"],
-                Title = "ScanResults".GetLocalized(),
+                Title = ResourceString.GetString("ScanResults") ?? "Scan Results",
                 Content = new ScrollViewer
                 {
                     Content = stackPanel,
@@ -752,7 +764,8 @@ namespace EvolveOS_Optimizer.Pages
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                     MaxHeight = 350
                 },
-                CloseButtonText = "Close".GetLocalized()
+                CloseButtonText = ResourceString.GetString("Close") ?? "Close",
+                DefaultButton = ContentDialogButton.Close
             };
 
             await dialog.ShowAsync();

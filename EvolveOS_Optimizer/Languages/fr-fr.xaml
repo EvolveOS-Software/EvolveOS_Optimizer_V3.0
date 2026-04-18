@@ -1144,6 +1144,7 @@
     <sys:String x:Key="ScheduleLater">Planifier pour plus tard</sys:String>
     <sys:String x:Key="ScheduledLater">Planifié pour le prochain redémarrage</sys:String>
     <sys:String x:Key="ScanInProgress">{0} / {1} : Analyse {2} en cours...</sys:String>
+    <sys:String x:Key="ScanResults">Résultats de l'analyse</sys:String>
     <sys:String x:Key="RepairInProgress">{0} / {1} : Réparation {2} en cours...</sys:String>
     <sys:String x:Key="Health_Poor">Médiocre - Action requise</sys:String>
     <sys:String x:Key="Health_Warning">Moyen - Optimisation recommandée</sys:String>
@@ -1175,6 +1176,8 @@
     <sys:String x:Key="toast_health_critical_title">État du système critique</sys:String>
     <sys:String x:Key="toast_health_critical_msg">Les ressources système sont fortement sollicitées ou l'espace disque est faible. Cliquez pour optimiser.</sys:String>
     <sys:String x:Key="placeholder_select_process">Sélectionnez un processus à exclure...</sys:String>
+    <sys:String x:Key="StatusTextBlockDefault">Prêt</sys:String>
+    <sys:String x:Key="Close">Fermer</sys:String>
     <!--#endregion-->
 
     <!-- Resource Helper -->

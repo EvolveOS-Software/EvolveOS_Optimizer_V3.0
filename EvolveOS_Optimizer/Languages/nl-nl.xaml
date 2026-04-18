@@ -1139,6 +1139,7 @@
     <sys:String x:Key="ScheduleLater">Later inplannen</sys:String>
     <sys:String x:Key="ScheduledLater">Ingepland voor volgende herstart</sys:String>
     <sys:String x:Key="ScanInProgress">{0} / {1}: {2} scan is bezig...</sys:String>
+    <sys:String x:Key="ScanResults">Scanresultaten</sys:String>
     <sys:String x:Key="RepairInProgress">{0} / {1}: {2} reparatie is bezig...</sys:String>
     <sys:String x:Key="Health_Poor">Slecht - Actie vereist</sys:String>
     <sys:String x:Key="Health_Warning">Matig - Optimalisatie aanbevolen</sys:String>
@@ -1170,6 +1171,8 @@
     <sys:String x:Key="toast_health_critical_title">Systeemstatus kritiek</sys:String>
     <sys:String x:Key="toast_health_critical_msg">Systeembronnen zijn zwaar belast of de schijfruimte is bijna op. Klik om te optimaliseren.</sys:String>
     <sys:String x:Key="placeholder_select_process">Selecteer een proces om uit te sluiten...</sys:String>
+    <sys:String x:Key="StatusTextBlockDefault">Gereed</sys:String>
+    <sys:String x:Key="Close">Sluiten</sys:String>
     <!--#endregion-->
 
     <!-- Resource Helper -->

@@ -1151,6 +1151,7 @@
     <sys:String x:Key="ScheduleLater">Schedule for later</sys:String>
     <sys:String x:Key="ScheduledLater">Scheduled for next restart</sys:String>
     <sys:String x:Key="ScanInProgress">{0} / {1}: {2} scan in progress...</sys:String>
+    <sys:String x:Key="ScanResults">Scan Results</sys:String>
     <sys:String x:Key="RepairInProgress">{0} / {1}: {2} repair in progress...</sys:String>
     <sys:String x:Key="Health_Poor">Poor - Action Required</sys:String>
     <sys:String x:Key="Health_Warning">Fair - Optimization Recommended</sys:String>
@@ -1182,6 +1183,8 @@
     <sys:String x:Key="toast_health_critical_title">System Health Critical</sys:String>
     <sys:String x:Key="toast_health_critical_msg">System resources are heavily loaded or disk space is low. Click to optimize.</sys:String>
     <sys:String x:Key="placeholder_select_process">Select a process to exclude...</sys:String>
+    <sys:String x:Key="StatusTextBlockDefault">Ready</sys:String>
+    <sys:String x:Key="Close">Close</sys:String>
     <!-- endregion System Optimizer -->
 
     <!-- Resource Helper -->
