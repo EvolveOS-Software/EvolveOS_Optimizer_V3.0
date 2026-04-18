@@ -333,6 +333,16 @@
     <sys:String x:Key="UAC_Level2">Nur benachrichtigen, wenn Apps Änderungen vornehmen wollen (Standard)</sys:String>
     <sys:String x:Key="UAC_Level1">Nur benachrichtigen, wenn Apps Änderungen vornehmen wollen (Desktop nicht abblenden)</sys:String>
     <sys:String x:Key="UAC_Level0">Nie benachrichtigen (Nicht empfohlen)</sys:String>
+
+    <sys:String x:Key="SecurityPage_SmartAppControl">Smart App Control</sys:String>
+    <sys:String x:Key="SecurityPage_SmartAppControlDesc">Blockiert nicht vertrauenswürdige und potenziell gefährliche Anwendungen.</sys:String>
+
+    <sys:String x:Key="SmartAppControl_Level0">Deaktiviert</sys:String>
+    <sys:String x:Key="SmartAppControl_Level1">Ein (erzwungen)</sys:String>
+    <sys:String x:Key="SmartAppControl_Level2">Auswertungsmodus</sys:String>
+    <sys:String x:Key="SmartAppControl_StateOff">Deaktiviert</sys:String>
+    <sys:String x:Key="SmartAppControl_StateEvaluation">Auswertungsmodus</sys:String>
+    <sys:String x:Key="SmartAppControl_StateOn">Ein (erzwungen)</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->

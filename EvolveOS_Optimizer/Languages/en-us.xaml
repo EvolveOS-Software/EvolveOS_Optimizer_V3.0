@@ -339,6 +339,16 @@
     <sys:String x:Key="UAC_Level2">Notify me only when apps try to make changes (default)</sys:String>
     <sys:String x:Key="UAC_Level1">Notify me only when apps try to make changes (do not dim desktop)</sys:String>
     <sys:String x:Key="UAC_Level0">Never notify me (Not recommended)</sys:String>
+
+    <sys:String x:Key="SecurityPage_SmartAppControl">Smart App Control</sys:String>
+    <sys:String x:Key="SecurityPage_SmartAppControlDesc">Blocks untrusted and potentially dangerous applications.</sys:String>
+
+    <sys:String x:Key="SmartAppControl_Level0">Disabled</sys:String>
+    <sys:String x:Key="SmartAppControl_Level1">On (Enforced)</sys:String>
+    <sys:String x:Key="SmartAppControl_Level2">Evaluation Mode</sys:String>
+    <sys:String x:Key="SmartAppControl_StateOff">Disabled</sys:String>
+    <sys:String x:Key="SmartAppControl_StateEvaluation">Evaluation Mode</sys:String>
+    <sys:String x:Key="SmartAppControl_StateOn">On (Enforced)</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->

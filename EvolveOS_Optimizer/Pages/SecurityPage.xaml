@@ -167,42 +167,41 @@
                                 </Grid>
                             </Button>
 
-                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1" CornerRadius="8"
-                                    Width="476" Height="155" Padding="14">
+                            <Button Style="{StaticResource SecurityCardStyle}"
+                                    Width="476" Height="155" Padding="10"
+                                    Click="SmartAppControlLink_Click"
+                                    ClickMode="Release">
                                 <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
+                                    <FontIcon Glyph="&#xE8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
-                                    <Grid Grid.Row="0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="6">
+                                        <TextBlock x:Name="SmartAppControlDescription"
+                                                   FontFamily="{ThemeResource Jura}"
+                                                   helpers:Loc.Key="text_scanning_system"
+                                                   Style="{StaticResource DetailBodyBaseMediumStyle}"
+                                                   TextWrapping="Wrap"
+                                                   Width="200"
+                                                   TextAlignment="Right"
+                                                   HorizontalAlignment="Right"/>
 
-                                        <FontIcon Glyph="&#xE7C1;" FontSize="22" Margin="0,0,12,0" VerticalAlignment="Top"/>
+                                        <ComboBox x:Name="SmartAppControlComboBox"
+                                                  HorizontalAlignment="Right"
+                                                  MinWidth="150"
+                                                  FontFamily="{ThemeResource Jura}"
+                                                  SelectionChanged="SmartAppControlComboBox_SelectionChanged"
+                                                  IsEnabled="False">
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=SmartAppControl_StateOff}"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=SmartAppControl_StateEvaluation}"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=SmartAppControl_StateOn}"/>
+                                        </ComboBox>
+                                    </StackPanel>
 
-                                        <StackPanel Grid.Column="1">
-                                            <TextBlock helpers:Loc.Key="SecurityPage_UAC" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
-                                            <TextBlock helpers:Loc.Key="SecurityPage_AdministrativeAccessControl" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Spacing="2">
-                                        <TextBlock x:Name="UacLevelDescription" FontFamily="{ThemeResource Jura}" Text="Scanning..." FontSize="11" Opacity="0.8" TextWrapping="Wrap" MaxHeight="34"/>
-
-                                        <Slider x:Name="UacSlider"
-                                                Minimum="0" Maximum="3"
-                                                StepFrequency="1" TickFrequency="1"
-                                                SnapsTo="Ticks" TickPlacement="Outside"
-                                                ValueChanged="UacSlider_ValueChanged"
-                                                IsEnabled="False"/>
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock helpers:Loc.Key="SecurityPage_SmartAppControl" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_SmartAppControlDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                     </StackPanel>
                                 </Grid>
-                            </Border>
+                            </Button>
 
                             <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="RealTimeProtectionLink_Click">
                                 <Grid>
@@ -322,6 +321,44 @@
                                     </StackPanel>
                                 </Grid>
                             </Button>
+
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Width="476" Height="155" Padding="14">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <FontIcon Glyph="&#xE7C1;" FontSize="22" Margin="0,0,12,0" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock helpers:Loc.Key="SecurityPage_UAC" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
+                                            <TextBlock helpers:Loc.Key="SecurityPage_AdministrativeAccessControl" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Spacing="2">
+                                        <TextBlock x:Name="UacLevelDescription" FontFamily="{ThemeResource Jura}" Text="Scanning..." FontSize="11" Opacity="0.8" TextWrapping="Wrap" MaxHeight="34"/>
+
+                                        <Slider x:Name="UacSlider"
+                                                Minimum="0" Maximum="3"
+                                                StepFrequency="1" TickFrequency="1"
+                                                SnapsTo="Ticks" TickPlacement="Outside"
+                                                ValueChanged="UacSlider_ValueChanged"
+                                                IsEnabled="False"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
                         </panels:SecurityFlowPanel>
                     </Grid>
                 </StackPanel>

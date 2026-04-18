@@ -372,6 +372,30 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }, cancellationToken);
         }
 
+        public static Task<int> GetSmartAppControlStateAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\CI\Policy");
+                    if (key != null)
+                    {
+                        var value = key.GetValue("VerifiedAndReputablePolicyState");
+                        if (value != null)
+                        {
+                            return (int)value;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogDebug(ex);
+                }
+                return 1;
+            }, cancellationToken);
+        }
+
         private static bool IsFirewallServiceDisabled()
         {
             try

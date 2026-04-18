@@ -333,6 +333,16 @@
     <sys:String x:Key="UAC_Level2">M'avertir uniquement quand des applications tentent d'apporter des modifications (par défaut)</sys:String>
     <sys:String x:Key="UAC_Level1">M'avertir uniquement quand des applications tentent d'apporter des modifications (ne pas estomper le bureau)</sys:String>
     <sys:String x:Key="UAC_Level0">Ne jamais m'avertir (Non recommandé)</sys:String>
+
+    <sys:String x:Key="SecurityPage_SmartAppControl">Smart App Control</sys:String>
+    <sys:String x:Key="SecurityPage_SmartAppControlDesc">Bloque les applications non approuvées et potentiellement dangereuses.</sys:String>
+
+    <sys:String x:Key="SmartAppControl_Level0">Désactivé</sys:String>
+    <sys:String x:Key="SmartAppControl_Level1">Activé (appliqué)</sys:String>
+    <sys:String x:Key="SmartAppControl_Level2">Mode d'évaluation</sys:String>
+    <sys:String x:Key="SmartAppControl_StateOff">Désactivé</sys:String>
+    <sys:String x:Key="SmartAppControl_StateEvaluation">Mode d'évaluation</sys:String>
+    <sys:String x:Key="SmartAppControl_StateOn">Activé (appliqué)</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->

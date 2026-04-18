@@ -16,6 +16,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private bool _isCheckInProgress;
     private string? _pendingScrollTarget;
     private bool _isUacSliderUpdating = false;
+    private bool _isSmartAppControlUpdating = false;
     #endregion
 
     #region Constructor & Lifecycle
@@ -98,9 +99,10 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 var coreIsolationEnabled = await SecurityDiagnostics.IsCoreIsolationEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var defenderServiceEnabled = await SecurityDiagnostics.IsDefenderServiceEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var accountProtectionEnabled = await SecurityDiagnostics.IsAccountProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
+                var smartAppControlState = await SecurityDiagnostics.GetSmartAppControlStateAsync(cancellationToken).ConfigureAwait(false);
 
                 return (antivirusInfo, firewallProtection, windowsUpdate, smartscreen, realTimeProtection,
-                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled);
+                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled, smartAppControlState);
             }, cancellationToken).ConfigureAwait(true);
 
             if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
@@ -152,6 +154,38 @@ public sealed partial class SecurityPage : Page, IPurgeable
 
             _isUacSliderUpdating = false;
 
+            _isSmartAppControlUpdating = true;
+
+            bool isSmartAppControlSecure = results.smartAppControlState != 0;
+
+            if (results.smartAppControlState == -1)
+            {
+                SmartAppControlComboBox.IsEnabled = false;
+                SmartAppControlDescription.Text = "Access denied reading Smart App Control status.";
+            }
+            else
+            {
+                SmartAppControlComboBox.IsEnabled = true;
+
+                if (results.smartAppControlState == 0)
+                {
+                    SmartAppControlComboBox.SelectedIndex = 0;
+                    SmartAppControlDescription.Text = ResourceString.GetString("SmartAppControl_Level0") ?? "Smart App Control is off.";
+                }
+                else if (results.smartAppControlState == 1)
+                {
+                    SmartAppControlComboBox.SelectedIndex = 2;
+                    SmartAppControlDescription.Text = ResourceString.GetString("SmartAppControl_Level1") ?? "Smart App Control is on and enforcing protection.";
+                }
+                else
+                {
+                    SmartAppControlComboBox.SelectedIndex = 1;
+                    SmartAppControlDescription.Text = ResourceString.GetString("SmartAppControl_Level2") ?? "Evaluating if Smart App Control can protect you without getting in the way.";
+                }
+            }
+
+            _isSmartAppControlUpdating = false;
+
             UpdateStatusCard(TamperProtectionStatus, TamperProtectionLink, results.tamperProtection);
             UpdateStatusCard(ControlledFolderAccessStatus, ControlledFolderAccessLink, results.controlledFolderAccess);
             UpdateStatusCard(BitLockerStatus, BitLockerLink, results.bitLockerEnabled);
@@ -176,6 +210,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
             if (!results.uac) issuesCount++;
             if (!results.windowsUpdate) issuesCount++;
             if (!results.tamperProtection) issuesCount++;
+            if (!isSmartAppControlSecure) issuesCount++;
 
             bool isCoreProtected = results.antivirusInfo.IsEnabled &&
                                    results.firewallProtection &&
@@ -365,6 +400,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private void CoreIsolationLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://coreisolation/");
     private void ControlledFolderAccessLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://ransomwareprotection/");
     private void AccountProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://account/");
+    private void SmartAppControlLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://smartapp/");
 
     private void BitLockerLink_Click(object sender, RoutedEventArgs e)
     {
@@ -422,6 +458,48 @@ public sealed partial class SecurityPage : Page, IPurgeable
             _isUacSliderUpdating = true;
             UacSlider.Value = e.OldValue;
             _isUacSliderUpdating = false;
+        }
+    }
+
+    private void SmartAppControlComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_isSmartAppControlUpdating) return;
+
+        try
+        {
+            using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\CI\Policy", true);
+            if (key != null)
+            {
+                int selectedIndex = SmartAppControlComboBox.SelectedIndex;
+                int regValue = 2; // Default to Eval
+
+                // Index 0: Off
+                if (selectedIndex == 0)
+                {
+                    regValue = 0;
+                    SmartAppControlDescription.Text = ResourceString.GetString("SmartAppControl_Level0") ?? "Smart App Control is off.";
+                }
+                // Index 1: Evaluation Mode
+                else if (selectedIndex == 1)
+                {
+                    regValue = 2;
+                    SmartAppControlDescription.Text = ResourceString.GetString("SmartAppControl_Level2") ?? "Evaluating if Smart App Control can protect you without getting in the way.";
+                }
+                // Index 2: On (Enforced)
+                else if (selectedIndex == 2)
+                {
+                    regValue = 1;
+                    SmartAppControlDescription.Text = ResourceString.GetString("SmartAppControl_Level1") ?? "Smart App Control is on and enforcing protection.";
+                }
+
+                key.SetValue("VerifiedAndReputablePolicyState", regValue, RegistryValueKind.DWord);
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+
+            _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
         }
     }
 

@@ -339,6 +339,16 @@
     <sys:String x:Key="UAC_Level2">Notifica solo quando le app tentano di apportare modifiche (predefinito)</sys:String>
     <sys:String x:Key="UAC_Level1">Notifica solo quando le app tentano di apportare modifiche (non oscurare il desktop)</sys:String>
     <sys:String x:Key="UAC_Level0">Non notificare mai (Sconsigliato)</sys:String>
+
+    <sys:String x:Key="SecurityPage_SmartAppControl">Smart App Control</sys:String>
+    <sys:String x:Key="SecurityPage_SmartAppControlDesc">Blocca le applicazioni non attendibili e potenzialmente pericolose.</sys:String>
+
+    <sys:String x:Key="SmartAppControl_Level0">Disabilitato</sys:String>
+    <sys:String x:Key="SmartAppControl_Level1">Attivato (forzato)</sys:String>
+    <sys:String x:Key="SmartAppControl_Level2">Modalità di valutazione</sys:String>
+    <sys:String x:Key="SmartAppControl_StateOff">Disabilitato</sys:String>
+    <sys:String x:Key="SmartAppControl_StateEvaluation">Modalità di valutazione</sys:String>
+    <sys:String x:Key="SmartAppControl_StateOn">Attivato (forzato)</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->

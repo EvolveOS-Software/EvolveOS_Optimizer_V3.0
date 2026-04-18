@@ -16,7 +16,7 @@
 **A modern, lightweight, and aggressive system optimization tool built with WinUI 3 and the Windows App SDK.**
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%2011-0078D7.svg?style=flat-square&logo=windows)](https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0)
-[![WinGet](https://img.shields.io/badge/WinGet-Validated%20&%20Safe-0078D7.svg?style=flat-square&logo=windows)](https://github.com/microsoft/winget-pkgs)
+[![WinGet](https://img.shields.io/badge/WinGet-Validated%20&%20Safe-0078D7.svg?style=flat-square&logo=windows)](https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EvolveOS/Optimizer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![WinUI 3](https://img.shields.io/badge/UI-WinUI%203-blueviolet?style=flat-square)](#)
 
