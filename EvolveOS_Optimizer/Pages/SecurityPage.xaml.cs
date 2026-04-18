@@ -537,6 +537,18 @@ public sealed partial class SecurityPage : Page, IPurgeable
         }
     }
 
+    private void UacCard_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo("UserAccountControlSettings.exe") { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+        }
+    }
+
     private void UacSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
         if (_isUacSliderUpdating) return;

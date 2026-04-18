@@ -446,11 +446,7 @@
                                 </Grid>
                             </Button>
 
-                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="8"
-                                    Width="476" Height="155" Padding="14">
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="14" Click="UacCard_Click">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
@@ -461,6 +457,7 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
                                         <FontIcon Glyph="&#xE7C1;" FontSize="22" Margin="5,5,12,0" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
@@ -469,6 +466,11 @@
                                             <TextBlock helpers:Loc.Key="SecurityPage_UAC" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
                                             <TextBlock helpers:Loc.Key="SecurityPage_AdministrativeAccessControl" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                         </StackPanel>
+
+                                        <HyperlinkButton x:Name="UacLink" Grid.Column="2"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="UacCard_Click"
+                                                         FontSize="12" Padding="0" VerticalAlignment="Top" Visibility="Collapsed"/>
                                     </Grid>
 
                                     <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Spacing="2">
@@ -482,7 +484,7 @@
                                                 IsEnabled="False"/>
                                     </StackPanel>
                                 </Grid>
-                            </Border>
+                            </Button>
 
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
