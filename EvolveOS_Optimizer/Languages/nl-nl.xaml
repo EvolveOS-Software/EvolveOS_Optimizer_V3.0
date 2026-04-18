@@ -347,6 +347,9 @@
     <sys:String x:Key="SecurityPage_LSAProtection">Lokale beveiligingsautoriteit (LSA)</sys:String>
     <sys:String x:Key="SecurityPage_LSAProtectionDesc">Beschermt inloggegevens door het LSA-proces te isoleren van niet-vertrouwde code.</sys:String>
 
+    <sys:String x:Key="SecurityPage_RemoteDesktop">Extern bureaublad</sys:String>
+    <sys:String x:Key="SecurityPage_RemoteDesktopDesc">Staat gebruikers toe om op afstand verbinding te maken met deze computer.</sys:String>
+
     <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
     <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
     <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>

@@ -41,7 +41,7 @@
                            Visibility="Collapsed"/>
                 </Grid>
 
-                <TextBlock x:Name="TxtSecurityStatus" Text="Scanning..." FontFamily="{ThemeResource Jura}" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                <TextBlock x:Name="TxtSecurityStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
 
                 <TextBlock x:Name="LastRefreshedText"
                            HorizontalAlignment="Center"
@@ -177,7 +177,7 @@
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="6">
                                         <TextBlock x:Name="SmartAppControlDescription"
                                                    FontFamily="{ThemeResource Jura}"
-                                                   helpers:Loc.Key="text_scanning_system"
+                                                   helpers:Loc.Key="txt_scanning"
                                                    Style="{StaticResource DetailBodyBaseMediumStyle}"
                                                    TextWrapping="Wrap"
                                                    Width="200"
@@ -341,6 +341,41 @@
                                 </Grid>
                             </Button>
 
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="RemoteDesktopLink_Click">
+                                <Grid>
+                                    <Viewbox Width="25" Height="25" Margin="10,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <PathIcon Data="M3,2 A2,2,0,0,0,1,4 L1,16 C1,17.11,1.9,18,3,18 L10,18 L10,20 L8,20 L8,22 L16,22 L16,20 L14,20 L14,18 L21,18 A2,2,0,0,0,23,16 L23,4 A2,2,0,0,0,21,2 M3,4 L21,4 L21,16 L3,16 M15,5 L11.5,8.5 L15,12 L16.4,10.6 L14.3,8.5 L16.4,6.4 M9,8 L7.6,9.4 L9.7,11.5 L7.6,13.6 L9,15 L12.5,11.5"
+                                                  Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    </Viewbox>
+
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="2">
+                                        <TextBlock x:Name="RemoteDesktopStatus"
+                                                   FontFamily="{ThemeResource Jura}"
+                                                   Style="{StaticResource DetailBodyBaseMediumStyle}"
+                                                   HorizontalAlignment="Right"/>
+
+                                        <ToggleSwitch x:Name="RdpToggleSwitch"
+                                                      Toggled="RdpToggleSwitch_Toggled"
+                                                      IsEnabled="False"
+                                                      HorizontalAlignment="Right"
+                                                      OnContent="{x:Null}"
+                                                      OffContent="{x:Null}"
+                                                      MinWidth="0"
+                                                      Margin="0"/>
+
+                                        <HyperlinkButton x:Name="RemoteDesktopLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="RemoteDesktopLink_Click"
+                                                         FontSize="12" Padding="0" HorizontalAlignment="Right" Visibility="Collapsed"/>
+                                    </StackPanel>
+
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock helpers:Loc.Key="SecurityPage_RemoteDesktop" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_RemoteDesktopDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1"
@@ -358,7 +393,7 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <FontIcon Glyph="&#xE7C1;" FontSize="22" Margin="0,0,12,0" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                        <FontIcon Glyph="&#xE7C1;" FontSize="22" Margin="5,0,12,0" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
                                         <StackPanel Grid.Column="1">
                                             <TextBlock helpers:Loc.Key="SecurityPage_UAC" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
@@ -367,7 +402,7 @@
                                     </Grid>
 
                                     <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Spacing="2">
-                                        <TextBlock x:Name="UacLevelDescription" FontFamily="{ThemeResource Jura}" Text="Scanning..." FontSize="11" Opacity="0.8" TextWrapping="Wrap" MaxHeight="34"/>
+                                        <TextBlock x:Name="UacLevelDescription" FontFamily="{ThemeResource Jura}" helpers:Loc.Key="txt_scanning" FontSize="11" Opacity="0.8" TextWrapping="Wrap" MaxHeight="34"/>
 
                                         <Slider x:Name="UacSlider"
                                                 Minimum="0" Maximum="3"
@@ -385,7 +420,7 @@
                                     CornerRadius="8"
                                     Width="476" Height="155" Padding="14">
                                 <Grid>
-                                    <FontIcon Glyph="&#xE756;" FontSize="22" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    <FontIcon Glyph="&#xE756;" FontSize="22" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
                                     <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
                                         <TextBlock helpers:Loc.Key="SecurityPage_PSExecutionPolicy" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
@@ -408,7 +443,7 @@
 
                                     <TextBlock x:Name="PowerShellPolicyDescription"
                                                FontFamily="{ThemeResource Jura}"
-                                               helpers:Loc.Key="text_scanning_system"
+                                               helpers:Loc.Key="txt_scanning"
                                                FontSize="11"
                                                Opacity="0.8"
                                                TextWrapping="Wrap"

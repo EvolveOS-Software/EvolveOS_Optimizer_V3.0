@@ -417,6 +417,28 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }, cancellationToken).ConfigureAwait(false);
         }
 
+        public static async Task<bool> IsRdpEnabledAsync(CancellationToken cancellationToken = default)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey(@"System\CurrentControlSet\Control\Terminal Server");
+                    if (key != null)
+                    {
+                        var value = key.GetValue("fDenyTSConnections");
+                        return value is int regValue && regValue == 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogDebug(ex);
+                }
+
+                return false;
+            }, cancellationToken).ConfigureAwait(false);
+        }
+
         public static Task<string> GetPowerShellExecutionPolicyAsync(CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Threading;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Utilities.Configuration;
@@ -18,6 +21,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private bool _isUacSliderUpdating = false;
     private bool _isSmartAppControlUpdating = false;
     private bool _isPowerShellPolicyUpdating = false;
+    private bool _isRdpToggleUpdating = false;
     #endregion
 
     #region Constructor & Lifecycle
@@ -103,9 +107,10 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 var smartAppControlState = await SecurityDiagnostics.GetSmartAppControlStateAsync(cancellationToken).ConfigureAwait(false);
                 var psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync(cancellationToken).ConfigureAwait(false);
                 var lsaProtection = await SecurityDiagnostics.IsLsaProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
+                var rdpEnabled = await SecurityDiagnostics.IsRdpEnabledAsync(cancellationToken).ConfigureAwait(false);
 
                 return (antivirusInfo, firewallProtection, windowsUpdate, smartscreen, realTimeProtection,
-                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy, lsaProtection);
+                        uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled, defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy, lsaProtection, rdpEnabled);
             }, cancellationToken).ConfigureAwait(true);
 
             if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
@@ -119,6 +124,18 @@ public sealed partial class SecurityPage : Page, IPurgeable
             UpdateStatusCard(RealTimeProtectionStatus, RealTimeProtectionLink, results.realTimeProtection);
             UpdateStatusCard(AccountProtectionStatus, AccountProtectionLink, results.accountProtectionEnabled);
             UpdateStatusCard(LsaProtectionStatus, LsaProtectionLink, results.lsaProtection);
+            UpdateStatusCard(TamperProtectionStatus, TamperProtectionLink, results.tamperProtection);
+            UpdateStatusCard(ControlledFolderAccessStatus, ControlledFolderAccessLink, results.controlledFolderAccess);
+            UpdateStatusCard(BitLockerStatus, BitLockerLink, results.bitLockerEnabled);
+            UpdateStatusCard(DefenderServiceStatus, DefenderServiceLink, results.defenderServiceEnabled);
+
+            RemoteDesktopStatus.Text = results.rdpEnabled ? ResourceString.GetString("Enabled") : ResourceString.GetString("Disabled");
+            RemoteDesktopLink.Visibility = Visibility.Collapsed;
+
+            _isRdpToggleUpdating = true;
+            RdpToggleSwitch.IsOn = results.rdpEnabled;
+            RdpToggleSwitch.IsEnabled = true;
+            _isRdpToggleUpdating = false;
 
             _isUacSliderUpdating = true;
             UacSlider.IsEnabled = true;
@@ -246,11 +263,6 @@ public sealed partial class SecurityPage : Page, IPurgeable
 
             _isPowerShellPolicyUpdating = false;
 
-            UpdateStatusCard(TamperProtectionStatus, TamperProtectionLink, results.tamperProtection);
-            UpdateStatusCard(ControlledFolderAccessStatus, ControlledFolderAccessLink, results.controlledFolderAccess);
-            UpdateStatusCard(BitLockerStatus, BitLockerLink, results.bitLockerEnabled);
-            UpdateStatusCard(DefenderServiceStatus, DefenderServiceLink, results.defenderServiceEnabled);
-
             AntivirusProductName.Text = results.antivirusInfo.ProductName ?? ResourceString.GetString("None");
 
             if (results.antivirusInfo.SignatureUpdated.HasValue)
@@ -272,6 +284,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
             if (!results.tamperProtection) issuesCount++;
             if (!isSmartAppControlSecure) issuesCount++;
             if (!results.lsaProtection) issuesCount++;
+            if (results.rdpEnabled) issuesCount++;
 
             bool isPsPolicySecure = results.psPolicy != "Unrestricted" && results.psPolicy != "Bypass" && results.psPolicy != "Error";
             if (!isPsPolicySecure) issuesCount++;
@@ -466,6 +479,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private void AccountProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://account/");
     private void SmartAppControlLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://smartapp/");
     private void LsaProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://coreisolation/");
+    private void RemoteDesktopLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("ms-settings:remotedesktop");
 
     private void BitLockerLink_Click(object sender, RoutedEventArgs e)
     {
@@ -658,6 +672,71 @@ public sealed partial class SecurityPage : Page, IPurgeable
             ErrorLogging.LogDebug(ex);
             _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
         }
+    }
+
+    private async void RdpToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_isRdpToggleUpdating) return;
+
+        RemoteDesktopStatus.Text = RdpToggleSwitch.IsOn
+            ? ResourceString.GetString("Enabled") ?? "Enabled"
+            : ResourceString.GetString("Disabled") ?? "Disabled";
+
+        try
+        {
+            bool enable = RdpToggleSwitch.IsOn;
+
+            await Task.Run(() =>
+            {
+                int fDenyVal = enable ? 0 : 1;
+
+                string command = $@"
+                $ts = Get-WmiObject -Class Win32_TerminalServiceSetting -Namespace root\cimv2\TerminalServices -ComputerName '.' -Authentication 6;
+                if ($ts) {{
+                    $ts.SetAllowTSConnections({(enable ? 1 : 0)}, 1);
+                }}
+
+                $tsPath = 'HKLM:\System\CurrentControlSet\Control\Terminal Server';
+                Set-ItemProperty -Path $tsPath -Name 'fDenyTSConnections' -Value {fDenyVal};
+                Set-ItemProperty -Path ""$tsPath\WinStations\RDP-Tcp"" -Name 'UserAuthentication' -Value {(enable ? 1 : 0)};
+                
+                if ({enable.ToString().ToLower()}) {{
+                    Enable-NetFirewallRule -DisplayGroup '@{{Microsoft.Windows.RemoteDesktop.RemoteDesktop.Resources.dll,-28752}}';
+                }} else {{
+                    Disable-NetFirewallRule -DisplayGroup '@{{Microsoft.Windows.RemoteDesktop.RemoteDesktop.Resources.dll,-28752}}';
+                }}";
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{command}\"",
+                        UseShellExecute = true,
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        Verb = "runas"
+                    }
+                };
+                process.Start();
+                process.WaitForExit();
+            });
+
+            App.ShowNotification(
+                ResourceString.GetString("SecurityPage_RemoteDesktop") ?? "Remote Desktop",
+                ResourceString.GetString("text_saved_successfully") ?? "Settings synchronized.",
+                InfoBarSeverity.Success,
+                3000);
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+            _isRdpToggleUpdating = true;
+            RdpToggleSwitch.IsOn = !RdpToggleSwitch.IsOn;
+            _isRdpToggleUpdating = false;
+        }
+
+        _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
     }
 
     private void DefenderServiceLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");

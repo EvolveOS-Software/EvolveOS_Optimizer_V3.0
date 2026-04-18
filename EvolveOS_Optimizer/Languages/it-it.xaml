@@ -353,6 +353,9 @@
     <sys:String x:Key="SecurityPage_LSAProtection">Autorità di sicurezza locale (LSA)</sys:String>
     <sys:String x:Key="SecurityPage_LSAProtectionDesc">Protegge le credenziali isolando il processo LSA dal codice non attendibile.</sys:String>
 
+    <sys:String x:Key="SecurityPage_RemoteDesktop">Desktop remoto</sys:String>
+    <sys:String x:Key="SecurityPage_RemoteDesktopDesc">Consente agli utenti di connettersi in remoto a questo computer.</sys:String>
+
     <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
     <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
     <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>
