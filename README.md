@@ -15,7 +15,8 @@
 
 **A modern, lightweight, and aggressive system optimization tool built with WinUI 3 and the Windows App SDK.**
 
-[![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D7.svg?style=flat-square&logo=windows)](https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2011-0078D7.svg?style=flat-square&logo=windows)](https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0)
+[![WinGet](https://img.shields.io/badge/WinGet-Validated%20&%20Safe-0078D7.svg?style=flat-square&logo=windows)](https://github.com/microsoft/winget-pkgs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![WinUI 3](https://img.shields.io/badge/UI-WinUI%203-blueviolet?style=flat-square)](#)
 
@@ -51,11 +52,12 @@ Whether running actively on your dashboard or silently in your system tray, Evol
 * **Advanced Memory & Disk Management:** Intelligently flushes the Working Set, System File Cache, Modified Page Lists, and safely clears system caches, DNS, and Windows Update leftovers.
 * **Ultimate Privacy Shield:** Deep registry tweaks to completely disable Windows telemetry, diagnostic data collection, targeted advertising, and intrusive AI features like Copilot and Recall.
 * **Bloatware Decimation:** Cleanly force-uninstall pre-packaged UWP apps, including deeply embedded software like Microsoft Edge, OneDrive, Cortana, and third-party sponsored bloatware.
+* **Integrated WinGet App Store:** A powerful, fully GUI-driven software center powered by the Windows Package Manager. Easily search, install, update, and uninstall thousands of applications without ever opening a terminal. Features an advanced context menu offering granular control for power users, including interactive visual setups, machine-wide deployments, silent administrative executions, and the ability to safely bypass hash integrity checks.
 * **Network & DNS Optimizer:** Built-in DNS changer that automatically pings and finds the fastest servers. Features deep DNSCrypt integration to fully encrypt your internet routing, prevent ISP snooping, and enforce strict zero-log policies for completely invisible, trace-free web browsing.
 * **Advanced Service & Defender Control:** Safely suspend unnecessary background services (Xbox, Hyper-V, Maps) to free up resources. Features a powerful, ACL-level bypass to completely disable or restore Windows Defender via NSudo.
 * **System & UI Customization:** Fine-tune Windows Explorer, restore classic context menus, adjust keyboard/mouse input delays, and strip away resource-heavy visual effects.
 * **Group Policy Manager:** Includes a dedicated scanner to detect, review, and easily revert customized or corrupted Windows Group Policies back to default OS behavior.
-* **Gaming Mode (Smart Sniper Optimization): Instantly shifts your system into high gear with a single click. Intelligently suspends non-essential background tasks, over 80 Windows services, and scheduled tasks while strictly protecting a "Do Not Touch" whitelist of essential gaming companions (Steam, Discord, OBS, Anti-Cheats). Automatically unleashes GPU power states, unlocks CPU core affinity for games, and seamlessly restores your system to its exact original state when disabled.
+* **Gaming Mode (Smart Sniper Optimization):** Instantly shifts your system into high gear with a single click. Intelligently suspends non-essential background tasks, over 80 Windows services, and scheduled tasks while strictly protecting a "Do Not Touch" whitelist of essential gaming companions (Steam, Discord, OBS, Anti-Cheats). Automatically unleashes GPU power states, unlocks CPU core affinity for games, and seamlessly restores your system to its exact original state when disabled.
 * **Automated Background Monitoring:** A silent background engine that tracks RAM and Disk usage, alerting you only when critical thresholds are reached.
 * **System Tray Integration:** Run silently in the background with an ultra-light footprint, featuring a quick-access context menu to instantly jump to key pages or trigger optimizations directly from the taskbar without opening the full UI.
 * **Portable Execution:** Runs as a standalone, unpacked single executable. No bulky installers or registry bloat.
@@ -114,14 +116,29 @@ Here is how the underlying `GamingModeHelper` safely pushes your system to its l
 ---
 
 ## 🚀 Installation & Usage
+EvolveOS Optimizer is a self-contained, single-file executable requiring no installation! It has successfully passed Microsoft's official SmartScreen and security validations and is proudly available via the Windows Package Manager (WinGet) or as a direct manual download. 
 
-EvolveOS Optimizer is distributed as a portable, single-file executable. No installation is required!
+### Option 1: Download via WinGet (Recommended)
+Open your terminal (Command Prompt or PowerShell) and run the following command:
+```
+winget install EvolveOS.Optimizer
+```
+*(Note: Once WinGet finishes downloading, open your Start Menu, search for **EvolveOS Optimizer**, and launch it to complete the initial setup.)*
 
+---
+
+### Option 2: Manual Download
 1. Click the download button above to get the latest release, or browse the [Releases](../../releases) page for older versions.
 2. Download the `EvolveOS_Optimizer.exe` file (or the `.zip` archive).
 3. Place the executable in your preferred location (e.g., your Desktop or a dedicated `C:\Tools\` folder).
 4. Run `EvolveOS_Optimizer.exe`.
-5. **Pro-Tip:** Enable *"Start with Windows"* and *"Hide to Tray"* in the app settings to let the Background Health Monitor protect your system continuously.
+
+---
+
+### 🔄 Automatic Updates
+You only need to download EvolveOS Optimizer once! Once the app is running on your system, its **built-in auto-updater** will automatically detect, download, and install all future versions.
+
+💡 **Pro-Tip:** Enable **"Start with Windows"** and **"Hide to Tray"** in the app settings to let the Background Health Monitor protect your system continuously.
 
 ---
 
