@@ -24,6 +24,8 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private bool _isRdpToggleUpdating = false;
     private bool _isRaToggleUpdating = false;
     private bool _isDevModeToggleUpdating = false;
+
+    private List<string> _currentSecurityIssues = new();
     #endregion
 
     #region Constructor & Lifecycle
@@ -284,21 +286,30 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 SignatureUpdateText.Visibility = Visibility.Collapsed;
             }
 
-            int issuesCount = 0;
-            if (!results.antivirusInfo.IsEnabled) issuesCount++;
-            if (!results.firewallProtection) issuesCount++;
-            if (!results.realTimeProtection) issuesCount++;
-            if (!results.uac) issuesCount++;
-            if (!results.windowsUpdate) issuesCount++;
-            if (!results.tamperProtection) issuesCount++;
-            if (!isSmartAppControlSecure) issuesCount++;
-            if (!results.lsaProtection) issuesCount++;
-            if (results.rdpEnabled) issuesCount++;
-            if (results.raEnabled) issuesCount++;
-            if (results.devModeEnabled) issuesCount++;
+            // --- NEW: Issues Tally & List Population ---
+            _currentSecurityIssues.Clear();
+
+            if (!results.antivirusInfo.IsEnabled) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_VirusThreatProtection") ?? "Virus & Threat Protection is disabled");
+            if (!results.firewallProtection) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_FirewallNetworkProtection") ?? "Firewall is disabled");
+            if (!results.realTimeProtection) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_RealTimeProtection") ?? "Real-Time Protection is disabled");
+            if (!results.uac) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_UAC") ?? "UAC is set to a low security level");
+            if (!results.windowsUpdate) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_WindowsUpdate") ?? "Windows Update is disabled");
+            if (!results.tamperProtection) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_TamperProtection") ?? "Tamper Protection is disabled");
+            if (!isSmartAppControlSecure) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_SmartAppControl") ?? "Smart App Control is not enforcing protection");
+            if (!results.lsaProtection) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_LSAProtection") ?? "Local Security Authority (LSA) protection is off");
+            if (results.rdpEnabled) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_RemoteDesktop") ?? "Remote Desktop is enabled");
+            if (results.raEnabled) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance is enabled");
+            if (results.devModeEnabled) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_DeveloperMode") ?? "Developer Mode is enabled");
 
             bool isPsPolicySecure = results.psPolicy != "Unrestricted" && results.psPolicy != "Bypass" && results.psPolicy != "Error";
-            if (!isPsPolicySecure) issuesCount++;
+            if (!isPsPolicySecure) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_PSExecutionPolicy") ?? "PowerShell execution policy is insecure");
+
+            int issuesCount = _currentSecurityIssues.Count;
+
+            if (BtnViewIssues != null)
+            {
+                BtnViewIssues.Visibility = issuesCount > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
 
             bool isCoreProtected = results.antivirusInfo.IsEnabled &&
                                    results.firewallProtection &&
@@ -475,6 +486,34 @@ public sealed partial class SecurityPage : Page, IPurgeable
             ErrorLogging.LogDebug(ex);
             App.ShowNotification(ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle"), ResourceString.GetString("SecurityPage_DefinitionsUpdateFailed"), InfoBarSeverity.Error, 5000);
         }
+    }
+
+    private async void BtnViewIssues_Click(object sender, RoutedEventArgs e)
+    {
+        if (_currentSecurityIssues.Count == 0) return;
+
+        var stackPanel = new StackPanel { Spacing = 8, Margin = new Thickness(0, 10, 0, 0) };
+
+        foreach (var issue in _currentSecurityIssues)
+        {
+            stackPanel.Children.Add(new TextBlock
+            {
+                Text = $"• {issue}",
+                TextWrapping = TextWrapping.Wrap,
+                FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/Jura-Regular.ttf#Jura")
+            });
+        }
+
+        var dialog = new ContentDialog
+        {
+            Title = ResourceString.GetString("SecurityPage_WarningsTitle") ?? "Security Warnings Found",
+            Content = new ScrollViewer { Content = stackPanel, MaxHeight = 300, Padding = new Thickness(0, 0, 16, 0) },
+            CloseButtonText = ResourceString.GetString("Dialog_Close") ?? "Close",
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = this.XamlRoot
+        };
+
+        await dialog.ShowAsync();
     }
     #endregion
 

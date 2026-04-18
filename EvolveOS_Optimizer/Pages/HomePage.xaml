@@ -636,17 +636,46 @@
                                 </Button>
                             </Grid>
 
-                            <Grid Grid.Row="1" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <ProgressRing x:Name="DashSecurityLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <Image x:Name="DashSecurityStatusImage" Width="80" Height="80" Source="ms-appx:///Assets/PngImages/secure.png" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>
 
-                            <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
-                                <TextBlock x:Name="TxtSecurityStatus" Text="Scanning..." FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="TxtSecurityLastRefreshed" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" HorizontalAlignment="Center"/>
+                            <StackPanel Grid.Row="2" Spacing="0" Margin="0,4,0,8">
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                    <TextBlock x:Name="TxtSecurityStatus"
+                                               helpers:Loc.Key="txt_scanning"
+                                               FontFamily="Jura Medium"
+                                               FontSize="13"
+                                               VerticalAlignment="Center"
+                                               Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                               FontWeight="SemiBold"/>
+
+                                    <Button x:Name="BtnDashViewIssues"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Padding="6,4"
+                                            MinHeight="0"
+                                            MinWidth="0"
+                                            VerticalAlignment="Center"
+                                            Visibility="Collapsed"
+                                            Click="BtnDashViewIssues_Click"
+                                            ToolTipService.ToolTip="{helpers:ResourceString Key=SecurityPage_ViewIssues}">
+
+                                        <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
+                                    </Button>
+                                </StackPanel>
+
+                                <TextBlock x:Name="TxtSecurityLastRefreshed"
+                                           FontSize="11"
+                                           Foreground="{ThemeResource Brush_Inactive}"
+                                           Opacity="1"
+                                           Margin="0,2,0,0"
+                                           HorizontalAlignment="Center"/>
                             </StackPanel>
 
-                            <Grid Grid.Row="3" Height="4" Margin="4,8" Visibility="Collapsed"/>
+                            <Grid Grid.Row="3" Height="0" Margin="0" Visibility="Collapsed"/>
 
                             <Grid Grid.Row="4" VerticalAlignment="Bottom">
                                 <Button x:Name="BtnRefreshSecurity" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshSecurity_Click" BorderThickness="0" FontFamily="Jura Medium">

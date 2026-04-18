@@ -376,6 +376,10 @@
     <sys:String x:Key="Dialog_PSPolicyWarningDesc">L'abbassamento di questo criterio consente l'esecuzione di script potenzialmente pericolosi senza avvisi. Sei sicuro di voler procedere?</sys:String>
     <sys:String x:Key="Dialog_YesProceed">Sì, modifica</sys:String>
     <sys:String x:Key="Dialog_Cancel">Annulla</sys:String>
+    <sys:String x:Key="Dialog_Close">Chiudi</sys:String>
+
+    <sys:String x:Key="SecurityPage_ViewIssues">Visualizza dettagli</sys:String>
+    <sys:String x:Key="SecurityPage_WarningsTitle">Avvisi di sicurezza trovati</sys:String>
 
     <sys:String x:Key="text_saved_successfully">Impostazioni salvate in modo sicuro.</sys:String>
     <sys:String x:Key="text_ps_policy_restricted">Sono consentiti solo comandi singoli.</sys:String>

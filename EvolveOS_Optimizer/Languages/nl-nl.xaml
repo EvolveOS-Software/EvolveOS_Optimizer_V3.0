@@ -370,6 +370,10 @@
     <sys:String x:Key="Dialog_PSPolicyWarningDesc">Als u dit beleid verlaagt, kunnen mogelijk gevaarlijke scripts zonder waarschuwingen worden uitgevoerd. Weet u zeker dat u wilt doorgaan?</sys:String>
     <sys:String x:Key="Dialog_YesProceed">Ja, wijzig dit</sys:String>
     <sys:String x:Key="Dialog_Cancel">Annuleren</sys:String>
+    <sys:String x:Key="Dialog_Close">Sluiten</sys:String>
+
+    <sys:String x:Key="SecurityPage_ViewIssues">Details bekijken</sys:String>
+    <sys:String x:Key="SecurityPage_WarningsTitle">Beveiligingswaarschuwingen gevonden</sys:String>
 
     <sys:String x:Key="text_saved_successfully">Instellingen veilig opgeslagen.</sys:String>
     <sys:String x:Key="text_ps_policy_restricted">Alleen afzonderlijke opdrachten zijn toegestaan.</sys:String>

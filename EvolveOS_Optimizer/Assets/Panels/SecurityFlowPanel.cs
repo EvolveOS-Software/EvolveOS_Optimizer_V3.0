@@ -1,9 +1,14 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Assets.Panels
 {
     public class SecurityFlowPanel : Panel
     {
+        #region Dependency Properties
+
         public double HorizontalSpacing
         {
             get => (double)GetValue(HorizontalSpacingProperty);
@@ -11,11 +16,7 @@ namespace EvolveOS_Optimizer.Assets.Panels
         }
 
         public static readonly DependencyProperty HorizontalSpacingProperty =
-            DependencyProperty.Register(
-                nameof(HorizontalSpacing),
-                typeof(double),
-                typeof(SecurityFlowPanel),
-                new PropertyMetadata(12.0, OnPanelPropertyChanged));
+            DependencyProperty.Register(nameof(HorizontalSpacing), typeof(double), typeof(SecurityFlowPanel), new PropertyMetadata(12.0, OnPanelPropertyChanged));
 
         public double VerticalSpacing
         {
@@ -24,24 +25,18 @@ namespace EvolveOS_Optimizer.Assets.Panels
         }
 
         public static readonly DependencyProperty VerticalSpacingProperty =
-            DependencyProperty.Register(
-                nameof(VerticalSpacing),
-                typeof(double),
-                typeof(SecurityFlowPanel),
-                new PropertyMetadata(12.0, OnPanelPropertyChanged));
+            DependencyProperty.Register(nameof(VerticalSpacing), typeof(double), typeof(SecurityFlowPanel), new PropertyMetadata(12.0, OnPanelPropertyChanged));
 
-        public int DesiredColumns
+        public double HorizontalOffset
         {
-            get => (int)GetValue(DesiredColumnsProperty);
-            set => SetValue(DesiredColumnsProperty, value);
+            get => (double)GetValue(HorizontalOffsetProperty);
+            set => SetValue(HorizontalOffsetProperty, value);
         }
 
-        public static readonly DependencyProperty DesiredColumnsProperty =
-            DependencyProperty.Register(
-                nameof(DesiredColumns),
-                typeof(int),
-                typeof(SecurityFlowPanel),
-                new PropertyMetadata(0, OnPanelPropertyChanged));
+        public static readonly DependencyProperty HorizontalOffsetProperty =
+            DependencyProperty.Register(nameof(HorizontalOffset), typeof(double), typeof(SecurityFlowPanel), new PropertyMetadata(0.0, OnPanelPropertyChanged));
+
+        #endregion
 
         private static void OnPanelPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -58,66 +53,64 @@ namespace EvolveOS_Optimizer.Assets.Panels
             double currentY = 0;
             double maxRowHeight = 0;
             double panelWidth = 0;
-            int currentColumn = 0;
 
             foreach (UIElement child in Children)
             {
                 child.Measure(availableSize);
                 Size desiredSize = child.DesiredSize;
 
-                bool outOfSpace = currentX + desiredSize.Width > availableSize.Width;
-                bool hitColumnLimit = DesiredColumns > 0 && currentColumn >= DesiredColumns;
-
-                if ((outOfSpace || hitColumnLimit) && currentX > 0)
+                if (currentX + desiredSize.Width > availableSize.Width && currentX > 0)
                 {
                     currentX = 0;
                     currentY += maxRowHeight + VerticalSpacing;
                     maxRowHeight = 0;
-                    currentColumn = 0;
                 }
 
                 maxRowHeight = Math.Max(maxRowHeight, desiredSize.Height);
-
                 currentX += desiredSize.Width + HorizontalSpacing;
-                currentColumn++;
-
                 panelWidth = Math.Max(panelWidth, currentX - HorizontalSpacing);
             }
 
-            double totalHeight = currentY + maxRowHeight;
-
             return new Size(
                 double.IsInfinity(availableSize.Width) ? panelWidth : availableSize.Width,
-                totalHeight);
+                currentY + maxRowHeight);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            double currentX = 0;
             double currentY = 0;
-            double maxRowHeight = 0;
-            int currentColumn = 0;
+            int i = 0;
 
-            foreach (UIElement child in Children)
+            while (i < Children.Count)
             {
-                Size desiredSize = child.DesiredSize;
+                List<UIElement> rowChildren = new List<UIElement>();
+                double rowWidth = 0;
+                double maxRowHeight = 0;
 
-                bool outOfSpace = currentX + desiredSize.Width > finalSize.Width;
-                bool hitColumnLimit = DesiredColumns > 0 && currentColumn >= DesiredColumns;
-
-                if ((outOfSpace || hitColumnLimit) && currentX > 0)
+                while (i < Children.Count)
                 {
-                    currentX = 0;
-                    currentY += maxRowHeight + VerticalSpacing;
-                    maxRowHeight = 0;
-                    currentColumn = 0;
+                    var child = Children[i];
+                    double childWidth = child.DesiredSize.Width;
+
+                    if (rowChildren.Count > 0 && rowWidth + HorizontalSpacing + childWidth > finalSize.Width)
+                        break;
+
+                    rowChildren.Add(child);
+                    rowWidth += (rowChildren.Count > 1 ? HorizontalSpacing : 0) + childWidth;
+                    maxRowHeight = Math.Max(maxRowHeight, child.DesiredSize.Height);
+                    i++;
                 }
 
-                child.Arrange(new Rect(currentX, currentY, desiredSize.Width, desiredSize.Height));
+                double xOffset = ((finalSize.Width - rowWidth) / 2) + HorizontalOffset;
 
-                currentX += desiredSize.Width + HorizontalSpacing;
-                maxRowHeight = Math.Max(maxRowHeight, desiredSize.Height);
-                currentColumn++;
+                double currentX = xOffset;
+                foreach (var child in rowChildren)
+                {
+                    child.Arrange(new Rect(currentX, currentY, child.DesiredSize.Width, child.DesiredSize.Height));
+                    currentX += child.DesiredSize.Width + HorizontalSpacing;
+                }
+
+                currentY += maxRowHeight + VerticalSpacing;
             }
 
             return finalSize;

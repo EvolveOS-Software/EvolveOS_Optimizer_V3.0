@@ -370,6 +370,10 @@
     <sys:String x:Key="Dialog_PSPolicyWarningDesc">Wenn Sie diese Richtlinie herabsetzen, können potenziell gefährliche Skripte ohne Warnung ausgeführt werden. Sind Sie sicher, dass Sie fortfahren möchten?</sys:String>
     <sys:String x:Key="Dialog_YesProceed">Ja, ändern</sys:String>
     <sys:String x:Key="Dialog_Cancel">Abbrechen</sys:String>
+    <sys:String x:Key="Dialog_Close">Schließen</sys:String>
+
+    <sys:String x:Key="SecurityPage_ViewIssues">Details anzeigen</sys:String>
+    <sys:String x:Key="SecurityPage_WarningsTitle">Sicherheitswarnungen gefunden</sys:String>
 
     <sys:String x:Key="text_saved_successfully">Einstellungen sicher gespeichert.</sys:String>
     <sys:String x:Key="text_ps_policy_restricted">Es sind nur einzelne Befehle zulässig.</sys:String>

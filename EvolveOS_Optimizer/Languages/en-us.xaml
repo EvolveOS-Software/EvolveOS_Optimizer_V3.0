@@ -376,6 +376,10 @@
     <sys:String x:Key="Dialog_PSPolicyWarningDesc">Lowering this policy allows potentially dangerous scripts to run without warnings. Are you sure you want to proceed?</sys:String>
     <sys:String x:Key="Dialog_YesProceed">Yes, change it</sys:String>
     <sys:String x:Key="Dialog_Cancel">Cancel</sys:String>
+    <sys:String x:Key="Dialog_Close">Close</sys:String>
+
+    <sys:String x:Key="SecurityPage_ViewIssues">View Details</sys:String>
+    <sys:String x:Key="SecurityPage_WarningsTitle">Security Warnings Found</sys:String>
 
     <sys:String x:Key="text_saved_successfully">Settings saved securely.</sys:String>
     <sys:String x:Key="text_ps_policy_restricted">Only individual commands are allowed.</sys:String>

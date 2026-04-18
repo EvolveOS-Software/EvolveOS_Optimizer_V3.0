@@ -10,9 +10,9 @@
     mc:Ignorable="d" NavigationCacheMode="Disabled">
 
     <Grid x:Name="ContentArea">
-        <ScrollViewer Padding="4,14,24,0">
-            <StackPanel Margin="0,0,0,38">
-                <Grid Margin="0,0,0,10">
+        <ScrollViewer Padding="4,12,24,0">
+            <StackPanel Margin="2,0,0,38">
+                <Grid Margin="0,0,0,5">
                     <TextBlock helpers:Loc.Key="SecurityPage_Status"
                                HorizontalAlignment="Center"
                                FontFamily="{ThemeResource Jura-Bold}"
@@ -30,7 +30,7 @@
                     </Button>
                 </Grid>
 
-                <Grid HorizontalAlignment="Center" Margin="20,10,20,10" Width="96" Height="96">
+                <Grid HorizontalAlignment="Center" Margin="20,5,20,5" Width="96" Height="96">
                     <ProgressRing x:Name="SecurityStatusLoadingRing"
                                   Width="96"
                                   Height="96"
@@ -41,56 +41,62 @@
                            Visibility="Collapsed"/>
                 </Grid>
 
-                <TextBlock x:Name="TxtSecurityStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                <StackPanel HorizontalAlignment="Center" Spacing="4" Margin="0,0,0,10">
+                    <TextBlock x:Name="TxtSecurityStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
 
-                <TextBlock x:Name="LastRefreshedText"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,10"
-                           Opacity="0.7"
-                           FontSize="12"
-                           Visibility="Visible"/>
+                    <HyperlinkButton x:Name="BtnViewIssues"
+                     Content="{helpers:ResourceString Key=SecurityPage_ViewIssues}"
+                     Click="BtnViewIssues_Click"
+                     FontSize="12"
+                     HorizontalAlignment="Center"
+                     Visibility="Collapsed"/>
 
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Spacing="10"
-                            Margin="0,10,0,20">
-                    <Button Click="OpenWindowsSecurity_Click">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon Glyph="&#xE72E;" FontSize="16"/>
-                            <TextBlock FontFamily="{ThemeResource Jura}" helpers:Loc.Key="SecurityPage_OpenWindowsSecurity"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button x:Name="QuickScanButton" Click="RunQuickScan_Click">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ProgressRing x:Name="QuickScanProgressRing" 
-                                          Width="16"
-                                          Height="16"
-                                          Visibility="Collapsed"
-                                          IsActive="True"/>
-                            <FontIcon x:Name="QuickScanIcon" Glyph="&#xE8C8;" FontSize="16"/>
-                            <TextBlock FontFamily="{ThemeResource Jura}" helpers:Loc.Key="SecurityPage_QuickScan"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Click="UpdateDefenderSignatures_Click">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <FontIcon Glyph="&#xE896;" FontSize="16"/>
-                            <TextBlock FontFamily="{ThemeResource Jura}" helpers:Loc.Key="SecurityPage_UpdateDefinitions"/>
-                        </StackPanel>
-                    </Button>
+                    <TextBlock x:Name="LastRefreshedText"
+                               HorizontalAlignment="Center"
+                               Opacity="0.7"
+                               FontSize="12"
+                               Visibility="Visible"/>
                 </StackPanel>
 
-                <StackPanel HorizontalAlignment="Center">
+                <Grid Margin="5,15,5,23">
                     <TextBlock helpers:Loc.Key="SecurityPage_Details"
                                FontFamily="{ThemeResource Jura}"
                                FontSize="18"
-                               Style="{StaticResource TitleTextBlockStyle}"
+                               VerticalAlignment="Center"
                                HorizontalAlignment="Left"
-                               Margin="5,-2,0,10" />
+                               Margin="0,5,0,-25"
+                               Style="{StaticResource TitleTextBlockStyle}" />
 
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                        <Button Click="OpenWindowsSecurity_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8" Padding="4,2">
+                                <FontIcon Glyph="&#xE72E;" FontSize="16"/>
+                                <TextBlock FontFamily="{ThemeResource Jura}" FontSize="14" helpers:Loc.Key="SecurityPage_OpenWindowsSecurity"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="QuickScanButton" Click="RunQuickScan_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8" Padding="4,2">
+                                <ProgressRing x:Name="QuickScanProgressRing"
+                                              Width="16" Height="16"
+                                              Visibility="Collapsed" IsActive="True"/>
+                                <FontIcon x:Name="QuickScanIcon" Glyph="&#xE8C8;" FontSize="16"/>
+                                <TextBlock FontFamily="{ThemeResource Jura}" FontSize="14" helpers:Loc.Key="SecurityPage_QuickScan"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Click="UpdateDefenderSignatures_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8" Padding="4,2">
+                                <FontIcon Glyph="&#xE896;" FontSize="16"/>
+                                <TextBlock FontFamily="{ThemeResource Jura}" FontSize="14" helpers:Loc.Key="SecurityPage_UpdateDefinitions"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel HorizontalAlignment="Center">
                     <Grid>
-                        <panels:SecurityFlowPanel HorizontalSpacing="10" VerticalSpacing="10" HorizontalAlignment="Left">
+                        <panels:SecurityFlowPanel HorizontalSpacing="10" VerticalSpacing="10" HorizontalAlignment="Stretch">
                             <panels:SecurityFlowPanel.ChildrenTransitions>
                                 <TransitionCollection>
                                     <EntranceThemeTransition FromVerticalOffset="50" />
@@ -102,7 +108,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xEA18;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="VirusThreatProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="VirusThreatProtectionStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="VirusThreatProtectionLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="VirusThreatProtectionLink_Click"
@@ -120,7 +126,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xE964;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="FirewallStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="FirewallStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="FirewallLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="FirewallLink_Click"
@@ -137,7 +143,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xE77B;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="AccountProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="AccountProtectionStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="AccountProtectionLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="AccountProtectionLink_Click"
@@ -154,7 +160,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xE895;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="WindowsUpdateStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="WindowsUpdateStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="WindowsUpdateLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="WindowsUpdateLink_Click"
@@ -207,7 +213,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xE7EF;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="RealTimeProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="RealTimeProtectionStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="RealTimeProtectionLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="RealTimeProtectionLink_Click"
@@ -224,7 +230,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xE72E;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="TamperProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="TamperProtectionStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="TamperProtectionLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="TamperProtectionLink_Click"
@@ -241,7 +247,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xEA39;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="CoreIsolationStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="CoreIsolationStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="CoreIsolationLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="CoreIsolationLink_Click"
@@ -258,7 +264,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xE8D7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="BitLockerStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="BitLockerStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="BitLockerLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="BitLockerLink_Click"
@@ -275,7 +281,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xE8B7;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="ControlledFolderAccessStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="ControlledFolderAccessStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="ControlledFolderAccessLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="ControlledFolderAccessLink_Click"
@@ -287,12 +293,12 @@
                                     </StackPanel>
                                 </Grid>
                             </Button>
-                            
+
                             <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="SmartScreenLink_Click">
                                 <Grid>
                                     <FontIcon Glyph="&#xF8A5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="SmartScreenStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="SmartScreenStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="SmartScreenLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="SmartScreenLink_Click"
@@ -309,7 +315,7 @@
                                 <Grid>
                                     <FontIcon Glyph="&#xE9F5;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="DefenderServiceStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="DefenderServiceStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="DefenderServiceLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="DefenderServiceLink_Click"
@@ -327,7 +333,7 @@
                                     <FontIcon Glyph="&#xEC06;" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock x:Name="LsaProtectionStatus" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
+                                        <TextBlock x:Name="LsaProtectionStatus" helpers:Loc.Key="txt_scanning" FontFamily="{ThemeResource Jura}" Style="{StaticResource DetailBodyBaseMediumStyle}"/>
                                         <HyperlinkButton x:Name="LsaProtectionLink"
                                                          Content="{helpers:ResourceString Key=SecurityPage_Enable}"
                                                          Click="LsaProtectionLink_Click"
@@ -350,6 +356,7 @@
 
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="2">
                                         <TextBlock x:Name="RemoteDesktopStatus"
+                                                   helpers:Loc.Key="txt_scanning"
                                                    FontFamily="{ThemeResource Jura}"
                                                    Style="{StaticResource DetailBodyBaseMediumStyle}"
                                                    HorizontalAlignment="Right"/>
@@ -385,6 +392,7 @@
 
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="2">
                                         <TextBlock x:Name="RemoteAssistanceStatus"
+                                                   helpers:Loc.Key="txt_scanning"
                                                    FontFamily="{ThemeResource Jura}"
                                                    Style="{StaticResource DetailBodyBaseMediumStyle}"
                                                    HorizontalAlignment="Right"/>
@@ -420,6 +428,7 @@
 
                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="2">
                                         <TextBlock x:Name="DeveloperModeStatus"
+                                                   helpers:Loc.Key="txt_scanning"
                                                    FontFamily="{ThemeResource Jura}"
                                                    Style="{StaticResource DetailBodyBaseMediumStyle}"
                                                    HorizontalAlignment="Right"/>

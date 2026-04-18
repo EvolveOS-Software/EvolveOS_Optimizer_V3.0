@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Reflection;
@@ -1163,6 +1166,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnRefreshHealth, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenSecurityPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRefreshSecurity, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnDashViewIssues, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnGamingMode, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
@@ -1575,10 +1579,14 @@ namespace EvolveOS_Optimizer.Pages
                 DashSecurityStatusImage.Visibility = Visibility.Collapsed;
                 TxtSecurityLastRefreshed.Visibility = Visibility.Collapsed;
                 BtnRefreshSecurity.IsEnabled = false;
+
+                BtnDashViewIssues.Visibility = Visibility.Collapsed;
+
                 TxtSecurityStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
 
                 int issuesCount = 0;
                 bool isCoreProtected = false;
+                List<string> securityIssues = new List<string>();
 
                 await Task.Run(async () =>
                 {
@@ -1601,45 +1609,57 @@ namespace EvolveOS_Optimizer.Pages
                     string psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync();
                     bool isPsPolicySecure = psPolicy != "Unrestricted" && psPolicy != "Bypass" && psPolicy != "Error";
 
-                    if (!isAvEnabled) issuesCount++;
-                    if (!isFwEnabled) issuesCount++;
-                    if (!isRtEnabled) issuesCount++;
-                    if (!isUacEnabled) issuesCount++;
-                    if (!isWuEnabled) issuesCount++;
-                    if (!isTpEnabled) issuesCount++;
-                    if (!isSmartAppControlSecure) issuesCount++;
-                    if (!isPsPolicySecure) issuesCount++;
-                    if (!isLsaEnabled) issuesCount++;
-                    if (isRdpEnabled) issuesCount++;
-                    if (isRaEnabled) issuesCount++;
-                    if (isDevModeEnabled) issuesCount++;
+                    if (!isAvEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_VirusThreatProtection")); }
+                    if (!isFwEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_FirewallNetworkProtection")); }
+                    if (!isRtEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RealTimeProtection")); }
+                    if (!isUacEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_UAC")); }
+                    if (!isWuEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_WindowsUpdate")); }
+                    if (!isTpEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_TamperProtection")); }
+                    if (!isSmartAppControlSecure) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_SmartAppControl")); }
+                    if (!isPsPolicySecure) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_PSExecutionPolicy")); }
+                    if (!isLsaEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_LSAProtection")); }
+                    if (isRdpEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RemoteDesktop")); }
+                    if (isRaEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RemoteAssistance")); }
+                    if (isDevModeEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_DeveloperMode")); }
 
                     isCoreProtected = isAvEnabled && isFwEnabled && isRtEnabled;
                 });
 
-                string imagePath;
-                string statusText;
-
                 if (!isCoreProtected)
                 {
-                    imagePath = "ms-appx:///Assets/PngImages/unsecure.png";
-                    statusText = $"{issuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
+                    DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/unsecure.png"));
+                    TxtSecurityStatus.Text = $"{issuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
                 }
                 else if (issuesCount > 0)
                 {
-                    imagePath = "ms-appx:///Assets/PngImages/secure.png";
-                    statusText = $"{issuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
+                    DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
+                    TxtSecurityStatus.Text = $"{issuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
                 }
                 else
                 {
-                    imagePath = "ms-appx:///Assets/PngImages/secure.png";
-                    statusText = ResourceString.GetString("text_security_good") ?? "System is Secure";
+                    DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
+                    TxtSecurityStatus.Text = ResourceString.GetString("text_security_good") ?? "System is Secure";
                 }
 
-                DashSecurityStatusImage.Source = new BitmapImage(new Uri(imagePath));
-                TxtSecurityStatus.Text = statusText;
-                TxtSecurityLastRefreshed.Text = $"{ResourceString.GetString("text_last_checked") ?? "Last checked"}: {DateTime.Now:t}";
+                if (issuesCount > 0)
+                {
+                    BtnDashViewIssues.Visibility = Visibility.Visible;
 
+                    var flyout = new MenuFlyout();
+                    foreach (var issue in securityIssues)
+                    {
+                        flyout.Items.Add(new MenuFlyoutItem
+                        {
+                            Text = issue,
+                            Icon = new FontIcon { Glyph = "\uE7BA", FontSize = 14 },
+                            IsEnabled = false
+                        });
+                    }
+
+                    FlyoutBase.SetAttachedFlyout(BtnDashViewIssues, flyout);
+                }
+
+                TxtSecurityLastRefreshed.Text = $"{ResourceString.GetString("text_last_checked") ?? "Last checked"}: {DateTime.Now:t}";
                 DashSecurityStatusImage.Visibility = Visibility.Visible;
                 TxtSecurityLastRefreshed.Visibility = Visibility.Visible;
             }
@@ -1652,6 +1672,14 @@ namespace EvolveOS_Optimizer.Pages
             {
                 DashSecurityLoadingRing.Visibility = Visibility.Collapsed;
                 BtnRefreshSecurity.IsEnabled = true;
+            }
+        }
+
+        private void BtnDashViewIssues_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element)
+            {
+                FlyoutBase.ShowAttachedFlyout(element);
             }
         }
         #endregion
