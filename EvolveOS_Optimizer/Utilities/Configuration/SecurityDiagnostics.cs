@@ -457,6 +457,24 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             }, cancellationToken).ConfigureAwait(false);
         }
 
+        public static async Task<bool> IsDeveloperModeEnabledAsync(CancellationToken cancellationToken = default)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock");
+                    if (key != null)
+                    {
+                        var value = key.GetValue("AllowDevelopmentWithoutDevLicense");
+                        return value is int regValue && regValue == 1;
+                    }
+                }
+                catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+                return false;
+            }, cancellationToken).ConfigureAwait(false);
+        }
+
         public static Task<string> GetPowerShellExecutionPolicyAsync(CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>

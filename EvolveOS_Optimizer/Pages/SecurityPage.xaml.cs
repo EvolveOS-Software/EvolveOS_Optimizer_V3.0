@@ -23,6 +23,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private bool _isPowerShellPolicyUpdating = false;
     private bool _isRdpToggleUpdating = false;
     private bool _isRaToggleUpdating = false;
+    private bool _isDevModeToggleUpdating = false;
     #endregion
 
     #region Constructor & Lifecycle
@@ -110,10 +111,11 @@ public sealed partial class SecurityPage : Page, IPurgeable
                 var lsaProtection = await SecurityDiagnostics.IsLsaProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var rdpEnabled = await SecurityDiagnostics.IsRdpEnabledAsync(cancellationToken).ConfigureAwait(false);
                 var raEnabled = await SecurityDiagnostics.IsRemoteAssistanceEnabledAsync(cancellationToken).ConfigureAwait(false);
+                var devModeEnabled = await SecurityDiagnostics.IsDeveloperModeEnabledAsync(cancellationToken).ConfigureAwait(false);
 
                 return (antivirusInfo, firewallProtection, windowsUpdate, smartscreen, realTimeProtection,
                         uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled,
-                        defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy, lsaProtection, rdpEnabled, raEnabled);
+                        defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy, lsaProtection, rdpEnabled, raEnabled, devModeEnabled);
             }, cancellationToken).ConfigureAwait(true);
 
             if (cancellationToken.IsCancellationRequested || this.XamlRoot == null)
@@ -145,6 +147,13 @@ public sealed partial class SecurityPage : Page, IPurgeable
             RaToggleSwitch.IsOn = results.raEnabled;
             RaToggleSwitch.IsEnabled = true;
             _isRaToggleUpdating = false;
+
+            DeveloperModeStatus.Text = results.devModeEnabled ? ResourceString.GetString("Enabled") : ResourceString.GetString("Disabled");
+            if (DeveloperModeLink != null) DeveloperModeLink.Visibility = Visibility.Collapsed;
+            _isDevModeToggleUpdating = true;
+            DeveloperModeToggleSwitch.IsOn = results.devModeEnabled;
+            DeveloperModeToggleSwitch.IsEnabled = true;
+            _isDevModeToggleUpdating = false;
 
             _isUacSliderUpdating = true;
             UacSlider.IsEnabled = true;
@@ -286,6 +295,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
             if (!results.lsaProtection) issuesCount++;
             if (results.rdpEnabled) issuesCount++;
             if (results.raEnabled) issuesCount++;
+            if (results.devModeEnabled) issuesCount++;
 
             bool isPsPolicySecure = results.psPolicy != "Unrestricted" && results.psPolicy != "Bypass" && results.psPolicy != "Error";
             if (!isPsPolicySecure) issuesCount++;
@@ -478,6 +488,7 @@ public sealed partial class SecurityPage : Page, IPurgeable
     private void CoreIsolationLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://coreisolation/");
     private void ControlledFolderAccessLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://ransomwareprotection/");
     private void AccountProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://account/");
+    private void DefenderServiceLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
     private void SmartAppControlLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://smartapp/");
     private void LsaProtectionLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://coreisolation/");
     private void RemoteDesktopLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("ms-settings:remotedesktop");
@@ -497,6 +508,18 @@ public sealed partial class SecurityPage : Page, IPurgeable
         try
         {
             Process.Start(new ProcessStartInfo("msra.exe") { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+        }
+    }
+
+    private void DeveloperModeLink_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo("ms-settings:developers") { UseShellExecute = true });
         }
         catch (Exception ex)
         {
@@ -815,7 +838,47 @@ public sealed partial class SecurityPage : Page, IPurgeable
         _ = CheckSecurityStatusAsync();
     }
 
-    private void DefenderServiceLink_Click(object sender, RoutedEventArgs e) => OpenWindowsSecurityPage("windowsdefender://threatsettings/");
+    private async void DeveloperModeToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_isDevModeToggleUpdating) return;
+
+        DeveloperModeStatus.Text = DeveloperModeToggleSwitch.IsOn
+            ? ResourceString.GetString("Enabled") ?? "Enabled"
+            : ResourceString.GetString("Disabled") ?? "Disabled";
+
+        try
+        {
+            bool enable = DeveloperModeToggleSwitch.IsOn;
+
+            await Task.Run(() =>
+            {
+                int val = enable ? 1 : 0;
+
+                using var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock");
+                if (key != null)
+                {
+                    key.SetValue("AllowAllTrustedApps", val, RegistryValueKind.DWord);
+                    key.SetValue("AllowDevelopmentWithoutDevLicense", val, RegistryValueKind.DWord);
+                }
+            });
+
+            App.ShowNotification(
+                ResourceString.GetString("SecurityPage_DeveloperMode") ?? "Developer Mode",
+                ResourceString.GetString("text_saved_successfully") ?? "Settings synchronized.",
+                InfoBarSeverity.Success,
+                3000);
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+            _isDevModeToggleUpdating = true;
+            DeveloperModeToggleSwitch.IsOn = !DeveloperModeToggleSwitch.IsOn;
+            _isDevModeToggleUpdating = false;
+        }
+
+        _ = CheckSecurityStatusAsync();
+    }
+
     #endregion
 
     #region Utilities

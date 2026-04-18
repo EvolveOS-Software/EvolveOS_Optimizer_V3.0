@@ -411,6 +411,41 @@
                                 </Grid>
                             </Button>
 
+                            <Button Style="{StaticResource SecurityCardStyle}" Width="476" Height="155" Padding="10" Click="DeveloperModeLink_Click">
+                                <Grid>
+                                    <Viewbox Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0">
+                                        <PathIcon Data="M 9.4 16.6 L 4.8 12 L 9.4 7.4 L 8 6 L 2 12 L 8 18 L 9.4 16.6 Z M 14.6 16.6 L 19.2 12 L 14.6 7.4 L 16 6 L 22 12 L 16 18 L 14.6 16.6 Z" 
+                                                  Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    </Viewbox>
+
+                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Spacing="2">
+                                        <TextBlock x:Name="DeveloperModeStatus"
+                                                   FontFamily="{ThemeResource Jura}"
+                                                   Style="{StaticResource DetailBodyBaseMediumStyle}"
+                                                   HorizontalAlignment="Right"/>
+
+                                        <ToggleSwitch x:Name="DeveloperModeToggleSwitch"
+                                                      Toggled="DeveloperModeToggleSwitch_Toggled"
+                                                      IsEnabled="False"
+                                                      HorizontalAlignment="Right"
+                                                      OnContent="{x:Null}"
+                                                      OffContent="{x:Null}"
+                                                      MinWidth="0"
+                                                      Margin="0"/>
+
+                                        <HyperlinkButton x:Name="DeveloperModeLink"
+                                                         Content="{helpers:ResourceString Key=SecurityPage_Enable}"
+                                                         Click="DeveloperModeLink_Click"
+                                                         FontSize="12" Padding="0" HorizontalAlignment="Right" Visibility="Collapsed"/>
+                                    </StackPanel>
+
+                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                        <TextBlock helpers:Loc.Key="SecurityPage_DeveloperMode" FontFamily="{ThemeResource Jura}" FontSize="16"/>
+                                        <TextBlock helpers:Loc.Key="SecurityPage_DeveloperModeDesc" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0" TextWrapping="Wrap" MaxWidth="380"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1"
@@ -428,9 +463,9 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <FontIcon Glyph="&#xE7C1;" FontSize="22" Margin="5,0,12,0" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                        <FontIcon Glyph="&#xE7C1;" FontSize="22" Margin="5,5,12,0" VerticalAlignment="Top" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
-                                        <StackPanel Grid.Column="1">
+                                        <StackPanel Grid.Column="1" Margin="0,2,0,0">
                                             <TextBlock helpers:Loc.Key="SecurityPage_UAC" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16"/>
                                             <TextBlock helpers:Loc.Key="SecurityPage_AdministrativeAccessControl" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.7" Margin="0,2,0,0"/>
                                         </StackPanel>

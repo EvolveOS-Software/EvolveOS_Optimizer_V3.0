@@ -360,6 +360,9 @@
     <sys:String x:Key="SecurityPage_RemoteAssistanceDesc">Consente agli utenti di invitare qualcuno a connettersi a questo computer per ricevere assistenza.</sys:String>
     <sys:String x:Key="SecurityPage_RemoteAssistanceDisabledWarning">L'assistenza remota deve essere abilitata per avviare questo strumento.</sys:String>
 
+    <sys:String x:Key="SecurityPage_DeveloperMode">Modalità sviluppatore</sys:String>
+    <sys:String x:Key="SecurityPage_DeveloperModeDesc">Consente di installare app da qualsiasi origine e abilita strumenti diagnostici avanzati che riducono la sicurezza del sistema.</sys:String>
+
     <sys:String x:Key="PSPolicy_Restricted">Restricted</sys:String>
     <sys:String x:Key="PSPolicy_AllSigned">AllSigned</sys:String>
     <sys:String x:Key="PSPolicy_RemoteSigned">RemoteSigned</sys:String>
