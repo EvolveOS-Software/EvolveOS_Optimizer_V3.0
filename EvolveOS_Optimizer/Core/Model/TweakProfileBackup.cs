@@ -16,5 +16,11 @@ namespace EvolveOS_Optimizer.Core.Model
 
         public string? ActivePowerPlanGuid { get; set; }
         public string? WindowsUpdatesMode { get; set; }
+        public uint? UacLevel { get; set; }
+        public uint? SmartAppControlState { get; set; }
+        public string? PowerShellExecutionPolicy { get; set; }
+        public bool? IsRemoteDesktopEnabled { get; set; }
+        public bool? IsRemoteAssistanceEnabled { get; set; }
+        public bool? IsDeveloperModeEnabled { get; set; }
     }
 }
