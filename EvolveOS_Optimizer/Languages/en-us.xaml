@@ -216,6 +216,17 @@
 
     <sys:String x:Key="Settings_DbBackup_PersistentTitle">Remember Backup Setting</sys:String>
     <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">If disabled, the backup toggle will automatically turn off after the app restarts.</sys:String>
+
+    <sys:String x:Key="Settings_Recovery_SectionTitle">Recovery</sys:String>
+    <sys:String x:Key="Settings_RevertTitle">Revert to Windows Defaults</sys:String>
+    <sys:String x:Key="Settings_RevertDesc">Undo system optimizations and return your PC to its previous state using Windows System Restore.</sys:String>
+    <sys:String x:Key="Settings_RevertButton">Restore System</sys:String>
+
+    <sys:String x:Key="Settings_RevertDialogTitle">Revert to Defaults?</sys:String>
+    <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer uses Windows System Restore to safely revert all changes made to your system.&#x0a;&#x0a;Clicking 'Continue' will open the Windows System Restore wizard. Please select the restore point named 'EvolveOS Initial Backup' to undo all tweaks.</sys:String>
+
+    <sys:String x:Key="Generic_Continue">Continue</sys:String>
+    <sys:String x:Key="Generic_Cancel">Cancel</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

@@ -839,6 +839,41 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
+        #region System Recovery
+        private async void BtnRevertToDefault_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog confirmDialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("Settings_RevertDialogTitle") ?? "Revert to Defaults?",
+                Content = ResourceString.GetString("Settings_RevertDialogContent") ?? "EvolveOS Optimizer uses Windows System Restore to safely revert all changes made to your system.\n\nClicking 'Continue' will open the Windows System Restore wizard. Please select the restore point named 'EvolveOS Initial Backup' to undo all tweaks.",
+                PrimaryButtonText = ResourceString.GetString("Generic_Continue") ?? "Continue",
+                CloseButtonText = ResourceString.GetString("Generic_Cancel") ?? "Cancel",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await confirmDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "rstrui.exe",
+                        UseShellExecute = true,
+                        Verb = "runas"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogDebug($"Failed to launch rstrui.exe: {ex.Message}");
+                    NativeToastHelper.SendNativeToast("Error", "Could not launch Windows System Restore automatically.");
+                }
+            }
+        }
+        #endregion
+
         #region Auto-Login Session Logic
         private async void BtnAutoLogin_Checked(object sender, RoutedEventArgs e)
         {

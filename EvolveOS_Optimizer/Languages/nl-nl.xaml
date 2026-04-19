@@ -211,6 +211,17 @@
 
     <sys:String x:Key="Settings_DbBackup_PersistentTitle">Back-up instelling onthouden</sys:String>
     <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">Indien uitgeschakeld, wordt de back-upfunctie automatisch uitgezet nadat de app opnieuw is opgestart.</sys:String>
+
+    <sys:String x:Key="Settings_Recovery_SectionTitle">Herstel</sys:String>
+    <sys:String x:Key="Settings_RevertTitle">Terugzetten naar Windows-standaardinstellingen</sys:String>
+    <sys:String x:Key="Settings_RevertDesc">Maak systeemoptimalisaties ongedaan en breng uw pc terug naar de vorige staat met behulp van Windows Systeemherstel.</sys:String>
+    <sys:String x:Key="Settings_RevertButton">Systeem herstellen</sys:String>
+
+    <sys:String x:Key="Settings_RevertDialogTitle">Terugzetten naar standaardinstellingen?</sys:String>
+    <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer gebruikt Windows Systeemherstel om veilig alle wijzigingen aan uw systeem ongedaan te maken.&#x0a;&#x0a;Door op 'Doorgaan' te klikken, wordt de wizard Windows Systeemherstel geopend. Selecteer het herstelpunt met de naam 'EvolveOS Initial Backup' om alle aanpassingen ongedaan te maken.</sys:String>
+
+    <sys:String x:Key="Generic_Continue">Doorgaan</sys:String>
+    <sys:String x:Key="Generic_Cancel">Annuleren</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

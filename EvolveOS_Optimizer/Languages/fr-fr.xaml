@@ -211,6 +211,17 @@
 
     <sys:String x:Key="Settings_DbBackup_PersistentTitle">Mémoriser le paramètre de sauvegarde</sys:String>
     <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">Si désactivé, l'option de sauvegarde s'éteindra automatiquement après le redémarrage de l'application.</sys:String>
+
+    <sys:String x:Key="Settings_Recovery_SectionTitle">Récupération</sys:String>
+    <sys:String x:Key="Settings_RevertTitle">Rétablir les paramètres par défaut de Windows</sys:String>
+    <sys:String x:Key="Settings_RevertDesc">Annulez les optimisations du système et restaurez votre PC à son état précédent à l'aide de la Restauration du système Windows.</sys:String>
+    <sys:String x:Key="Settings_RevertButton">Restaurer le système</sys:String>
+
+    <sys:String x:Key="Settings_RevertDialogTitle">Rétablir les paramètres par défaut ?</sys:String>
+    <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer utilise la Restauration du système Windows pour annuler en toute sécurité toutes les modifications apportées à votre système.&#x0a;&#x0a;En cliquant sur 'Continuer', l'assistant de Restauration du système Windows s'ouvrira. Veuillez sélectionner le point de restauration nommé 'EvolveOS Initial Backup' pour annuler toutes les optimisations.</sys:String>
+
+    <sys:String x:Key="Generic_Continue">Continuer</sys:String>
+    <sys:String x:Key="Generic_Cancel">Annuler</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

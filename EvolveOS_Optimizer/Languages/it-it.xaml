@@ -211,6 +211,17 @@
 
     <sys:String x:Key="Settings_DbBackup_PersistentTitle">Ricorda impostazione di backup</sys:String>
     <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">Se disabilitato, l'opzione di backup si disattiverà automaticamente al riavvio dell'applicazione.</sys:String>
+
+    <sys:String x:Key="Settings_Recovery_SectionTitle">Ripristino</sys:String>
+    <sys:String x:Key="Settings_RevertTitle">Ripristina le impostazioni predefinite di Windows</sys:String>
+    <sys:String x:Key="Settings_RevertDesc">Annulla le ottimizzazioni del sistema e riporta il PC allo stato precedente utilizzando il Ripristino configurazione di sistema di Windows.</sys:String>
+    <sys:String x:Key="Settings_RevertButton">Ripristina il sistema</sys:String>
+
+    <sys:String x:Key="Settings_RevertDialogTitle">Ripristinare le impostazioni predefinite?</sys:String>
+    <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer utilizza il Ripristino configurazione di sistema di Windows per annullare in sicurezza tutte le modifiche apportate al sistema.&#x0a;&#x0a;Facendo clic su 'Continua' si aprirà la procedura guidata di Ripristino configurazione di sistema di Windows. Seleziona il punto di ripristino denominato 'EvolveOS Initial Backup' per annullare tutte le modifiche.</sys:String>
+
+    <sys:String x:Key="Generic_Continue">Continua</sys:String>
+    <sys:String x:Key="Generic_Cancel">Annulla</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
