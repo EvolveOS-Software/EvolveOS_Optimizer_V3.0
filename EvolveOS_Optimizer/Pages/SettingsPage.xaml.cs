@@ -1206,7 +1206,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (file != null && !string.IsNullOrEmpty(file.Path))
                 {
-                    var profile = TweakProfileManager.GenerateExportProfile();
+                    var profile = await TweakProfileManager.GenerateExportProfileAsync();
 
                     string json = JsonSerializer.Serialize(profile, new JsonSerializerOptions { WriteIndented = true });
                     await File.WriteAllTextAsync(file.Path, json);

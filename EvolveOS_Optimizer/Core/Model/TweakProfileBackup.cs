@@ -12,5 +12,9 @@ namespace EvolveOS_Optimizer.Core.Model
         public Dictionary<string, bool> PrivacyTweaks { get; set; } = new();
         public Dictionary<string, bool> SystemTweaks { get; set; } = new();
         public Dictionary<string, bool> InterfaceTweaks { get; set; } = new();
+        public Dictionary<string, uint>? SystemSliders { get; set; }
+
+        public string? ActivePowerPlanGuid { get; set; }
+        public string? WindowsUpdatesMode { get; set; }
     }
 }
