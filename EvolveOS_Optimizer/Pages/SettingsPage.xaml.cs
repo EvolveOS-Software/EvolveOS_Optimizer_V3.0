@@ -6,8 +6,10 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Management;
 using System.Runtime.CompilerServices;
 using System.Security;
+using System.Text.Json;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Animation;
@@ -16,9 +18,12 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
+using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.Windows.Storage.Pickers;
 using Windows.Storage;
+using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -814,6 +819,19 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
+
+        public bool ShowRestorePointOnStart
+        {
+            get => LocalMachineSettingsEngine.IsFirstRun;
+            set
+            {
+                if (LocalMachineSettingsEngine.IsFirstRun != value)
+                {
+                    LocalMachineSettingsEngine.IsFirstRun = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged Implementation
@@ -842,10 +860,23 @@ namespace EvolveOS_Optimizer.Pages
         #region System Recovery
         private async void BtnRevertToDefault_Click(object sender, RoutedEventArgs e)
         {
+            var btn = sender as Button;
+            if (btn != null) btn.IsEnabled = false;
+
+            bool restorePointExists = await DoesEvolveOsRestorePointExistAsync();
+
+            string dialogTitle = restorePointExists
+                ? (ResourceString.GetString("Settings_RevertDialogTitle") ?? "Revert to Defaults?")
+                : (ResourceString.GetString("Settings_RevertMissingTitle") ?? "Restore Point Missing");
+
+            string dialogContent = restorePointExists
+                ? (ResourceString.GetString("Settings_RevertDialogContent") ?? "EvolveOS Optimizer uses Windows System Restore to safely revert all changes made to your system.\n\nClicking 'Continue' will open the Windows System Restore wizard. Please select the restore point named 'EvolveOS Initial Backup' to undo all tweaks.")
+                : (ResourceString.GetString("Settings_RevertMissingContent") ?? "The 'EvolveOS Initial Backup' restore point could not be found. You may have opted out of creating it, or Windows automatically deleted it to free up disk space.\n\nYou can still continue to open the System Restore wizard to look for older, manual restore points.");
+
             ContentDialog confirmDialog = new ContentDialog
             {
-                Title = ResourceString.GetString("Settings_RevertDialogTitle") ?? "Revert to Defaults?",
-                Content = ResourceString.GetString("Settings_RevertDialogContent") ?? "EvolveOS Optimizer uses Windows System Restore to safely revert all changes made to your system.\n\nClicking 'Continue' will open the Windows System Restore wizard. Please select the restore point named 'EvolveOS Initial Backup' to undo all tweaks.",
+                Title = dialogTitle,
+                Content = dialogContent,
                 PrimaryButtonText = ResourceString.GetString("Generic_Continue") ?? "Continue",
                 CloseButtonText = ResourceString.GetString("Generic_Cancel") ?? "Cancel",
                 DefaultButton = ContentDialogButton.Close,
@@ -868,10 +899,396 @@ namespace EvolveOS_Optimizer.Pages
                 catch (Exception ex)
                 {
                     ErrorLogging.LogDebug($"Failed to launch rstrui.exe: {ex.Message}");
-                    NativeToastHelper.SendNativeToast("Error", "Could not launch Windows System Restore automatically.");
+                    NativeToastHelper.SendNativeToast(ResourceString.GetString("toast_error_title") ?? "Error", ResourceString.GetString("toast_rstrui_error") ?? "Could not launch Windows System Restore automatically.");
                 }
             }
+
+            if (btn != null) btn.IsEnabled = true;
         }
+
+        private async Task<bool> DoesEvolveOsRestorePointExistAsync()
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"root\default", "SELECT * FROM SystemRestore"))
+                    {
+                        foreach (ManagementObject obj in searcher.Get())
+                        {
+                            string description = obj["Description"]?.ToString() ?? string.Empty;
+
+                            if (description.Contains("EvolveOS", StringComparison.OrdinalIgnoreCase))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogDebug($"WMI Restore Point Query Failed: {ex.Message}");
+                    return true;
+                }
+            });
+        }
+
+        private async void BtnRestoreOptimizerTweaks_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn != null) btn.IsEnabled = false;
+
+            ContentDialog confirmDialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("Settings_RestoreTweaksDialogTitle") ?? "Restore Optimizer Tweaks?",
+                Content = ResourceString.GetString("Settings_RestoreTweaksDialogContent") ?? "This will safely revert all settings modified by EvolveOS Optimizer back to the exact state they were in when you first launched the app.\n\nAre you sure you want to continue?",
+                PrimaryButtonText = ResourceString.GetString("Generic_Continue") ?? "Continue",
+                CloseButtonText = ResourceString.GetString("Generic_Cancel") ?? "Cancel",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await confirmDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    App.ShowNotification(
+                        ResourceString.GetString("toast_restoring_title") ?? "Restoring",
+                        ResourceString.GetString("toast_restore_snapshot_msg") ?? "Reverting optimizer tweaks to original state...",
+                        InfoBarSeverity.Informational,
+                        4000
+                    );
+
+                    await BackupManager.RestoreInitialSnapshotAsync();
+
+                    new SystemTweaks().AnalyzeAndUpdate();
+                    new InterfaceTweaks().AnalyzeAndUpdate();
+                    new PrivacyTweaks().AnalyzeAndUpdate();
+                    new ServicesTweaks().AnalyzeAndUpdate();
+
+                    App.ShowNotification(
+                        ResourceString.GetString("toast_success_title") ?? "Success",
+                        ResourceString.GetString("toast_restore_snapshot_success") ?? "Optimizer tweaks have been reverted. Please restart your PC.",
+                        InfoBarSeverity.Success,
+                        4000
+                    );
+                }
+                catch (Exception ex)
+                {
+                    NativeToastHelper.SendNativeToast(
+                        ResourceString.GetString("toast_error_title") ?? "Error",
+                        (ResourceString.GetString("toast_restore_error") ?? "Failed to restore tweaks: ") + ex.Message
+                    );
+                }
+            }
+
+            if (btn != null) btn.IsEnabled = true;
+        }
+
+        private async void BtnForceWindowsDefaults_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn != null) btn.IsEnabled = false;
+
+            ContentDialog confirmDialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("Settings_ForceWindowsDefaultsDialogTitle") ?? "Force Windows Defaults?",
+                Content = ResourceString.GetString("Settings_ForceWindowsDefaultsDialogContent") ?? "This will wipe out all custom settings managed by the optimizer and force your system back to standard Microsoft factory defaults.\n\nThis is highly recommended if you used a custom ISO or debloat script before installing EvolveOS.\n\nAre you sure you want to continue?",
+                PrimaryButtonText = ResourceString.GetString("Generic_Continue") ?? "Continue",
+                CloseButtonText = ResourceString.GetString("Generic_Cancel") ?? "Cancel",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await confirmDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    App.ShowNotification(
+                        ResourceString.GetString("toast_restoring_title") ?? "Restoring",
+                        ResourceString.GetString("toast_force_defaults_msg") ?? "Forcing system settings back to Microsoft defaults...",
+                        InfoBarSeverity.Informational,
+                        4000
+                    );
+
+                    await BackupManager.RestoreToFactoryDefaultsAsync();
+
+                    new SystemTweaks().AnalyzeAndUpdate();
+                    new InterfaceTweaks().AnalyzeAndUpdate();
+                    new PrivacyTweaks().AnalyzeAndUpdate();
+                    new ServicesTweaks().AnalyzeAndUpdate();
+
+                    App.ShowNotification(
+                        ResourceString.GetString("toast_success_title") ?? "Success",
+                        ResourceString.GetString("toast_force_defaults_success") ?? "Windows factory defaults restored. Please restart your PC.",
+                        InfoBarSeverity.Success,
+                        4000
+                    );
+                }
+                catch (Exception ex)
+                {
+                    NativeToastHelper.SendNativeToast(
+                        ResourceString.GetString("toast_error_title") ?? "Error",
+                        (ResourceString.GetString("toast_force_defaults_error") ?? "Failed to force defaults: ") + ex.Message
+                    );
+                }
+            }
+
+            if (btn != null) btn.IsEnabled = true;
+        }
+
+        private async void BtnResetAppSettings_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn != null) btn.IsEnabled = false;
+
+            ContentDialog confirmDialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("Settings_ResetAppDialogTitle") ?? "Reset App Preferences?",
+                Content = ResourceString.GetString("Settings_ResetAppDialogContent") ?? "This will reset all EvolveOS Optimizer preferences (themes, dashboard layout, auto-optimization thresholds, etc.) back to their defaults.\n\nThis will NOT revert your Windows tweaks.\n\nContinue?",
+                PrimaryButtonText = ResourceString.GetString("Generic_Continue") ?? "Continue",
+                CloseButtonText = ResourceString.GetString("Generic_Cancel") ?? "Cancel",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await confirmDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    SettingsEngine.Reset();
+                    LocalMachineSettingsEngine.Reset();
+
+                    App.ShowNotification(
+                        ResourceString.GetString("toast_success_title") ?? "Success",
+                        ResourceString.GetString("toast_reset_app_success") ?? "Application preferences have been reset.",
+                        InfoBarSeverity.Success,
+                        4000
+                    );
+                }
+                catch (Exception ex)
+                {
+                    NativeToastHelper.SendNativeToast(
+                        ResourceString.GetString("toast_error_title") ?? "Error",
+                        "Failed to reset app preferences: " + ex.Message
+                    );
+                }
+            }
+
+            if (btn != null) btn.IsEnabled = true;
+        }
+
+        private async void BtnExportAppSettings_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
+                WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+
+                var savePicker = new FileSavePicker(windowId)
+                {
+                    SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+                    SuggestedFileName = "EvolveOS_Preferences_Backup"
+                };
+                savePicker.FileTypeChoices.Add("JSON File", new List<string>() { ".json" });
+
+                var file = await savePicker.PickSaveFileAsync();
+
+                if (file != null && !string.IsNullOrEmpty(file.Path))
+                {
+                    var backup = new AppSettingsBackup
+                    {
+                        CurrentUserSettings = SettingsEngine.ExportSettings(),
+                        LocalMachineSettings = LocalMachineSettingsEngine.ExportSettings()
+                    };
+
+                    string json = JsonSerializer.Serialize(backup, new JsonSerializerOptions { WriteIndented = true });
+
+                    await File.WriteAllTextAsync(file.Path, json);
+
+                    App.ShowNotification(
+                        ResourceString.GetString("toast_export_success_title") ?? "Success",
+                        ResourceString.GetString("toast_export_app_msg") ?? "App preferences exported successfully.",
+                        InfoBarSeverity.Success,
+                        4000
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                NativeToastHelper.SendNativeToast("Error", "Failed to export settings: " + ex.Message);
+            }
+        }
+
+        private async void BtnImportAppSettings_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
+                WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+
+                var openPicker = new FileOpenPicker(windowId)
+                {
+                    SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+                };
+                openPicker.FileTypeFilter.Add(".json");
+
+                var file = await openPicker.PickSingleFileAsync();
+
+                if (file != null && !string.IsNullOrEmpty(file.Path))
+                {
+                    ContentDialog confirmDialog = new ContentDialog
+                    {
+                        Title = ResourceString.GetString("Settings_ImportAppDialogTitle") ?? "Import App Preferences?",
+                        Content = ResourceString.GetString("Settings_ImportAppDialogContent") ?? "This will overwrite your current EvolveOS Optimizer preferences (themes, layout, behavior) with the settings from this file.\n\nAre you sure you want to continue?",
+                        PrimaryButtonText = ResourceString.GetString("Generic_Continue") ?? "Continue",
+                        CloseButtonText = ResourceString.GetString("Generic_Cancel") ?? "Cancel",
+                        DefaultButton = ContentDialogButton.Close,
+                        XamlRoot = this.XamlRoot
+                    };
+
+                    var result = await confirmDialog.ShowAsync();
+
+                    if (result == ContentDialogResult.Primary)
+                    {
+                        string json = await File.ReadAllTextAsync(file.Path);
+                        var backup = JsonSerializer.Deserialize<AppSettingsBackup>(json);
+
+                        if (backup != null)
+                        {
+                            SettingsEngine.ImportSettings(backup.CurrentUserSettings);
+                            LocalMachineSettingsEngine.ImportSettings(backup.LocalMachineSettings);
+
+                            App.ShowNotification(
+                                ResourceString.GetString("toast_import_success_title") ?? "Import Successful",
+                                ResourceString.GetString("toast_import_app_success_msg") ?? "App preferences imported successfully.",
+                                InfoBarSeverity.Success,
+                                4000
+                            );
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                NativeToastHelper.SendNativeToast(
+                    ResourceString.GetString("toast_error_title") ?? "Error",
+                    "Failed to import settings: " + ex.Message
+                );
+            }
+        }
+        #endregion
+
+        #region Tweak Profiles Management
+
+        private async void BtnExportTweakProfile_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
+                WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+
+                var savePicker = new FileSavePicker(windowId)
+                {
+                    SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+                    SuggestedFileName = "EvolveOS_Tweak_Profile"
+                };
+                savePicker.FileTypeChoices.Add("JSON File", new List<string>() { ".json" });
+
+                var file = await savePicker.PickSaveFileAsync();
+
+                if (file != null && !string.IsNullOrEmpty(file.Path))
+                {
+                    var profile = TweakProfileManager.GenerateExportProfile();
+
+                    string json = JsonSerializer.Serialize(profile, new JsonSerializerOptions { WriteIndented = true });
+                    await File.WriteAllTextAsync(file.Path, json);
+
+                    App.ShowNotification(
+                        ResourceString.GetString("toast_export_success_title") ?? "Export Successful",
+                        ResourceString.GetString("toast_profile_exported") ?? "Tweak profile saved successfully.",
+                        InfoBarSeverity.Success,
+                        4000
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                App.ShowNotification(
+                    ResourceString.GetString("toast_error_title") ?? "Error",
+                    ResourceString.GetString("toast_profile_export_error") ?? "Failed to export profile: " + ex.Message,
+                    InfoBarSeverity.Error,
+                    5000
+                );
+            }
+        }
+
+        private async void BtnImportTweakProfile_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
+                WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+
+                var openPicker = new FileOpenPicker(windowId)
+                {
+                    SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+                };
+                openPicker.FileTypeFilter.Add(".json");
+
+                var file = await openPicker.PickSingleFileAsync();
+
+                if (file != null && !string.IsNullOrEmpty(file.Path))
+                {
+                    ContentDialog confirmDialog = new ContentDialog
+                    {
+                        Title = ResourceString.GetString("Settings_ImportProfileDialogTitle") ?? "Apply Tweak Profile?",
+                        Content = ResourceString.GetString("Settings_ImportProfileDialogContent") ?? "This will immediately apply all the Windows settings and optimizations saved in this profile.\n\nAre you sure you want to continue?",
+                        PrimaryButtonText = ResourceString.GetString("Generic_Continue") ?? "Continue",
+                        CloseButtonText = ResourceString.GetString("Generic_Cancel") ?? "Cancel",
+                        DefaultButton = ContentDialogButton.Close,
+                        XamlRoot = this.XamlRoot
+                    };
+
+                    var result = await confirmDialog.ShowAsync();
+
+                    if (result == ContentDialogResult.Primary)
+                    {
+                        string json = await File.ReadAllTextAsync(file.Path);
+                        var profile = JsonSerializer.Deserialize<TweakProfileBackup>(json);
+
+                        if (profile != null)
+                        {
+                            await TweakProfileManager.ApplyImportedProfileAsync(profile);
+
+                            App.ShowNotification(
+                                ResourceString.GetString("toast_profile_import_title") ?? "Optimization Complete",
+                                ResourceString.GetString("toast_profile_imported") ?? "Tweak profile imported and applied to Windows.",
+                                InfoBarSeverity.Success,
+                                4000
+                            );
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.ShowNotification(
+                    ResourceString.GetString("toast_error_title") ?? "Error",
+                    ResourceString.GetString("toast_profile_import_error") ?? "Failed to import profile: " + ex.Message,
+                    InfoBarSeverity.Error,
+                    5000
+                );
+            }
+        }
+
         #endregion
 
         #region Auto-Login Session Logic

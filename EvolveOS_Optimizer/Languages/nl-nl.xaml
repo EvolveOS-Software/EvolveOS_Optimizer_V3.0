@@ -34,6 +34,7 @@
     <sys:String x:Key="status_starting_sql">SQL-engine starten...</sys:String>
     <sys:String x:Key="status_finalizing_access">Toegang afronden...</sys:String>
     <sys:String x:Key="status_db_ready">Database gereed</sys:String>
+    <sys:String x:Key="status_saving_backup">De initiële back-up opslaan...</sys:String>
 
     <sys:String x:Key="step1_load">Trusted Installer Service starten...</sys:String>
     <sys:String x:Key="step2_load">Windows-licentiestatus controleren...</sys:String>
@@ -219,6 +220,79 @@
 
     <sys:String x:Key="Settings_RevertDialogTitle">Terugzetten naar standaardinstellingen?</sys:String>
     <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer gebruikt Windows Systeemherstel om veilig alle wijzigingen aan uw systeem ongedaan te maken.&#x0a;&#x0a;Door op 'Doorgaan' te klikken, wordt de wizard Windows Systeemherstel geopend. Selecteer het herstelpunt met de naam 'EvolveOS Initial Backup' om alle aanpassingen ongedaan te maken.</sys:String>
+
+    <sys:String x:Key="Settings_RevertMissingTitle">Herstelpunt ontbreekt</sys:String>
+    <sys:String x:Key="Settings_RevertMissingContent">Het herstelpunt 'EvolveOS Optimizer Initial Backup' is niet gevonden. U heeft er mogelijk voor gekozen dit niet aan te maken, of Windows heeft het automatisch verwijderd om schijfruimte vrij te maken.&#x0a;&#x0a;U kunt nog steeds doorgaan met het openen van de wizard Systeemherstel om te zoeken naar oudere, handmatige herstelpunten.</sys:String>
+
+    <sys:String x:Key="Settings_ShowRestorePointOnStart">Vragen om een herstelpunt te maken bij opstarten</sys:String>
+    <sys:String x:Key="Settings_ShowRestorePointOnStartDesc">Toont een prompt om een systeemherstelpunt te maken elke keer dat u de applicatie start.</sys:String>
+
+    <sys:String x:Key="Settings_RestoreTweaksTitle">Optimizer aanpassingen herstellen</sys:String>
+    <sys:String x:Key="Settings_RestoreTweaksDesc">Zet alle instellingen die door EvolveOS Optimizer zijn gewijzigd veilig terug naar hun oorspronkelijke staat toen u de app voor het eerst startte.</sys:String>
+    <sys:String x:Key="Settings_RestoreTweaksButton">Aanpassingen herstellen</sys:String>
+
+    <sys:String x:Key="Settings_ForceWindowsDefaultsTitle">Windows standaardinstellingen afdwingen</sys:String>
+    <sys:String x:Key="Settings_ForceWindowsDefaultsDesc">Wis alle aangepaste instellingen en dwing het systeem terug naar de standaard Microsoft-instellingen. Handig als u een aangepaste ISO of debloat-script hebt gebruikt voordat u EvolveOS Optimizer installeerde.</sys:String>
+    <sys:String x:Key="Settings_ForceWindowsDefaultsButton">Fabrieksinstellingen</sys:String>
+
+    <sys:String x:Key="Settings_RestoreTweaksDialogTitle">Optimizer aanpassingen herstellen?</sys:String>
+    <sys:String x:Key="Settings_RestoreTweaksDialogContent">Dit zal alle instellingen die door EvolveOS Optimizer zijn gewijzigd veilig terugzetten naar de exacte staat waarin ze zich bevonden toen u de app voor het eerst startte.&#x0a;&#x0a;Weet u zeker dat u wilt doorgaan?</sys:String>
+    <sys:String x:Key="Settings_ForceWindowsDefaultsDialogTitle">Windows-standaardinstellingen afdwingen?</sys:String>
+    <sys:String x:Key="Settings_ForceWindowsDefaultsDialogContent">Dit zal alle aangepaste instellingen wissen en uw systeem dwingen terug te keren naar de standaard Microsoft fabrieksinstellingen.&#x0a;&#x0a;Dit wordt ten zeerste aanbevolen als u een aangepaste ISO of debloat-script hebt gebruikt voordat u EvolveOS installeerde.&#x0a;&#x0a;Weet u zeker dat u wilt doorgaan?</sys:String>
+
+    <sys:String x:Key="Settings_ResetAppTitle">App voorkeuren resetten</sys:String>
+    <sys:String x:Key="Settings_ResetAppDesc">Herstel alle instellingen van EvolveOS Optimizer (thema's, dashboardindeling, talen) naar hun standaardwaarden.</sys:String>
+    <sys:String x:Key="Settings_ResetAppButton">App resetten</sys:String>
+    <sys:String x:Key="Settings_ResetAppWarning">Opmerking: Dit heeft alleen invloed op de interface en het gedrag van de applicatie. Uw Windows-systeemaanpassingen worden niet ongedaan gemaakt.</sys:String>
+    <sys:String x:Key="Settings_ResetAppDialogTitle">App voorkeuren resetten?</sys:String>
+    <sys:String x:Key="Settings_ResetAppDialogContent">Dit zal alle voorkeuren van EvolveOS Optimizer (thema's, dashboardindeling, drempels voor automatische optimalisatie, enz.) terugzetten naar de standaardwaarden.&#x0a;&#x0a;Dit zal uw Windows-aanpassingen NIET ongedaan maken.&#x0a;&#x0a;Doorgaan?</sys:String>
+
+    <sys:String x:Key="Settings_ExportAppTitle">App voorkeuren exporteren</sys:String>
+    <sys:String x:Key="Settings_ExportAppDesc">Sla uw huidige UI-thema, dashboardindeling en app-gedraginstellingen op in een back-upbestand.</sys:String>
+    <sys:String x:Key="Settings_ExportAppButton">Exporteren</sys:String>
+    <sys:String x:Key="Settings_ImportAppTitle">App voorkeuren importeren</sys:String>
+    <sys:String x:Key="Settings_ImportAppDesc">Herstel uw aangepaste app-instellingen vanuit een eerder opgeslagen JSON-back-upbestand.</sys:String>
+    <sys:String x:Key="Settings_ImportAppButton">Importeren</sys:String>
+
+    <sys:String x:Key="Settings_ImportAppDialogTitle">App voorkeuren importeren?</sys:String>
+    <sys:String x:Key="Settings_ImportAppDialogContent">Dit zal uw huidige EvolveOS Optimizer voorkeuren (thema's, lay-out, gedrag) overschrijven met de instellingen uit dit bestand.&#x0a;&#x0a;Weet u zeker dat u wilt doorgaan?</sys:String>
+
+    <sys:String x:Key="Settings_TweakProfiles_SectionTitle">Tweak profielen</sys:String>
+    <sys:String x:Key="Settings_TweakProfiles_Title">Tweak profielen beheren</sys:String>
+    <sys:String x:Key="Settings_TweakProfiles_Desc">Exporteer uw huidige optimalisatiestatussen om te delen met anderen, of importeer een vooraf geconfigureerd JSON-profiel om direct een nieuwe pc in te stellen.</sys:String>
+
+    <sys:String x:Key="Settings_ExportProfile_Title">Huidig profiel exporteren</sys:String>
+    <sys:String x:Key="Settings_ExportProfile_Desc">Sla alle actieve Windows-tweaks en -optimalisaties (Interface, Services, Privacy, Systeem) op in een implementeerbaar JSON-bestand.</sys:String>
+    <sys:String x:Key="Settings_ExportProfile_Button">Exporteren</sys:String>
+
+    <sys:String x:Key="Settings_ImportProfile_Title">Profiel importeren</sys:String>
+    <sys:String x:Key="Settings_ImportProfile_Desc">Laad een JSON-bestand om direct een vooraf geconfigureerde set Windows-tweaks op deze machine toe te passen.</sys:String>
+    <sys:String x:Key="Settings_ImportProfile_Button">Importeren</sys:String>
+
+    <sys:String x:Key="Settings_ImportProfileDialogTitle">Tweak profiel toepassen?</sys:String>
+    <sys:String x:Key="Settings_ImportProfileDialogContent">Dit zal onmiddellijk alle Windows-instellingen en optimalisaties toepassen die in dit profiel zijn opgeslagen.&#x0a;&#x0a;Weet u zeker dat u wilt doorgaan?</sys:String>
+
+    <sys:String x:Key="toast_success_title">Succes</sys:String>
+    <sys:String x:Key="toast_error_title">Fout</sys:String>
+    <sys:String x:Key="toast_restoring_title">Herstellen</sys:String>
+    <sys:String x:Key="toast_export_success_title">Export succesvol</sys:String>
+    <sys:String x:Key="toast_import_success_title">Import succesvol</sys:String>
+    <sys:String x:Key="toast_profile_export_title">Profiel geëxporteerd</sys:String>
+    <sys:String x:Key="toast_profile_import_title">Optimalisatie voltooid</sys:String>
+    <sys:String x:Key="toast_restore_snapshot_msg">Optimizer-tweaks herstellen naar de originele staat...</sys:String>
+    <sys:String x:Key="toast_restore_snapshot_success">Optimizer-tweaks zijn teruggedraaid. Start uw pc opnieuw op.</sys:String>
+    <sys:String x:Key="toast_force_defaults_msg">Systeeminstellingen terugzetten naar Microsoft-standaarden...</sys:String>
+    <sys:String x:Key="toast_force_defaults_success">Windows-fabrieksinstellingen hersteld. Start uw pc opnieuw op.</sys:String>
+    <sys:String x:Key="toast_reset_app_success">Applicatievoorkeuren zijn gereset.</sys:String>
+    <sys:String x:Key="toast_import_app_success_msg">App-voorkeuren succesvol geïmporteerd.</sys:String>
+    <sys:String x:Key="toast_profile_exported">Tweak-profiel succesvol opgeslagen.</sys:String>
+    <sys:String x:Key="toast_profile_imported">Tweak-profiel geïmporteerd en toegepast op Windows.</sys:String>
+    <sys:String x:Key="toast_export_app_msg">App-voorkeuren succesvol geëxporteerd.</sys:String>
+    <sys:String x:Key="toast_rstrui_error">Kon Windows Systeemherstel niet automatisch starten.</sys:String>
+    <sys:String x:Key="toast_profile_export_error">Fout bij het exporteren van profiel:</sys:String>
+    <sys:String x:Key="toast_profile_import_error">Fout bij het importeren van profiel:</sys:String>
+    <sys:String x:Key="toast_restore_error">Fout bij het herstellen van tweaks:</sys:String>
+    <sys:String x:Key="toast_force_defaults_error">Fout bij het forceren van standaardinstellingen:</sys:String>
 
     <sys:String x:Key="Generic_Continue">Doorgaan</sys:String>
     <sys:String x:Key="Generic_Cancel">Annuleren</sys:String>

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -201,7 +204,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowSecondsInSystemClock", "0");
         }
 
-        internal async void ApplyTweaks(string tweak, bool isDisabled)
+        internal async Task ApplyTweaks(string tweak, bool isDisabled)
         {
             var assembly = Assembly.GetExecutingAssembly();
             INIManager.TempWrite(INIManager.TempTweaksIntf, tweak, isDisabled);
@@ -267,7 +270,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                                     File.Delete(PathLocator.Files.BlankIcon);
                                 }
 
-                                RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Icons");
+                                RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Icons", "29");
                             }
                         });
                     }
@@ -314,8 +317,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         }
                         else
                         {
-                            RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Microsoft\PolicyManager\current\device\Start");
-                            RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Microsoft\PolicyManager\current\device\Education");
+                            RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Microsoft\PolicyManager\current\device\Start", "HideRecommendedSection");
+                            RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Microsoft\PolicyManager\current\device\Education", "IsEducationEnvironment");
                             RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\Explorer", "HideRecommendedSection");
                         }
                     }

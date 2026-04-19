@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -304,7 +307,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     }
                     else
                     {
-                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Microsoft\PolicyManager\current\device\System", "AllowExperimentation");
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\PolicyManager\current\device\System", "AllowExperimentation", 1, RegistryValueKind.DWord);
                     }
 
                     break;

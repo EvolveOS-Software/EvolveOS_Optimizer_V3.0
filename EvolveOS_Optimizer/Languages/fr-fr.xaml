@@ -34,6 +34,7 @@
     <sys:String x:Key="status_starting_sql">Démarrage du moteur SQL...</sys:String>
     <sys:String x:Key="status_finalizing_access">Finalisation de l'accès...</sys:String>
     <sys:String x:Key="status_db_ready">Base de données prête</sys:String>
+    <sys:String x:Key="status_saving_backup">Enregistrement de la sauvegarde initiale...</sys:String>
 
     <sys:String x:Key="step1_load">Démarrage du service Trusted Installer...</sys:String>
     <sys:String x:Key="step2_load">Vérification de l'état de la licence Windows...</sys:String>
@@ -219,6 +220,79 @@
 
     <sys:String x:Key="Settings_RevertDialogTitle">Rétablir les paramètres par défaut ?</sys:String>
     <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer utilise la Restauration du système Windows pour annuler en toute sécurité toutes les modifications apportées à votre système.&#x0a;&#x0a;En cliquant sur 'Continuer', l'assistant de Restauration du système Windows s'ouvrira. Veuillez sélectionner le point de restauration nommé 'EvolveOS Initial Backup' pour annuler toutes les optimisations.</sys:String>
+
+    <sys:String x:Key="Settings_RevertMissingTitle">Point de restauration manquant</sys:String>
+    <sys:String x:Key="Settings_RevertMissingContent">Le point de restauration 'EvolveOS Optimizer Initial Backup' est introuvable. Vous avez peut-être choisi de ne pas le créer, ou Windows l'a supprimé automatiquement pour libérer de l'espace disque.&#x0a;&#x0a;Vous pouvez toujours continuer à ouvrir l'assistant de Restauration du système pour rechercher des points de restauration manuels plus anciens.</sys:String>
+
+    <sys:String x:Key="Settings_ShowRestorePointOnStart">Demander de créer un point de restauration au démarrage</sys:String>
+    <sys:String x:Key="Settings_ShowRestorePointOnStartDesc">Affiche une invite pour créer un point de restauration système à chaque lancement de l'application.</sys:String>
+
+    <sys:String x:Key="Settings_RestoreTweaksTitle">Restaurer les ajustements de l'Optimizer</sys:String>
+    <sys:String x:Key="Settings_RestoreTweaksDesc">Rétablissez en toute sécurité tous les paramètres modifiés par EvolveOS Optimizer à leur état initial lors du premier lancement de l'application.</sys:String>
+    <sys:String x:Key="Settings_RestoreTweaksButton">Restaurer les ajustements</sys:String>
+
+    <sys:String x:Key="Settings_ForceWindowsDefaultsTitle">Forcer les paramètres par défaut de Windows</sys:String>
+    <sys:String x:Key="Settings_ForceWindowsDefaultsDesc">Effacez tous les paramètres personnalisés et forcez le système à revenir aux paramètres par défaut standard de Microsoft. Utile si vous avez utilisé une ISO personnalisée ou un script de nettoyage avant d'installer EvolveOS Optimizer.</sys:String>
+    <sys:String x:Key="Settings_ForceWindowsDefaultsButton">Réinitialisation d'usine</sys:String>
+
+    <sys:String x:Key="Settings_RestoreTweaksDialogTitle">Restaurer les ajustements de l'Optimizer ?</sys:String>
+    <sys:String x:Key="Settings_RestoreTweaksDialogContent">Cela rétablira en toute sécurité tous les paramètres modifiés par EvolveOS Optimizer à l'état exact où ils se trouvaient lors de votre premier lancement de l'application.&#x0a;&#x0a;Êtes-vous sûr de vouloir continuer ?</sys:String>
+    <sys:String x:Key="Settings_ForceWindowsDefaultsDialogTitle">Forcer les paramètres par défaut de Windows ?</sys:String>
+    <sys:String x:Key="Settings_ForceWindowsDefaultsDialogContent">Cela effacera tous les paramètres personnalisés et forcera votre système à revenir aux paramètres par défaut de l'usine Microsoft.&#x0a;&#x0a;Ceci est fortement recommandé si vous avez utilisé une ISO personnalisée ou un script de nettoyage avant d'installer EvolveOS.&#x0a;&#x0a;Êtes-vous sûr de vouloir continuer ?</sys:String>
+
+    <sys:String x:Key="Settings_ResetAppTitle">Réinitialiser les préférences de l'application</sys:String>
+    <sys:String x:Key="Settings_ResetAppDesc">Restaurez tous les paramètres d'EvolveOS Optimizer (thèmes, disposition du tableau de bord, langues) à leurs valeurs par défaut.</sys:String>
+    <sys:String x:Key="Settings_ResetAppButton">Réinitialiser l'application</sys:String>
+    <sys:String x:Key="Settings_ResetAppWarning">Remarque : Cela n'affecte que l'interface et le comportement de l'application. Cela n'annulera pas vos ajustements du système Windows.</sys:String>
+    <sys:String x:Key="Settings_ResetAppDialogTitle">Réinitialiser les préférences de l'application ?</sys:String>
+    <sys:String x:Key="Settings_ResetAppDialogContent">Cela réinitialisera toutes les préférences d'EvolveOS Optimizer (thèmes, disposition du tableau de bord, seuils d'auto-optimisation, etc.) à leurs valeurs par défaut.&#x0a;&#x0a;Cela N'ANNULERA PAS vos ajustements Windows.&#x0a;&#x0a;Continuer ?</sys:String>
+
+    <sys:String x:Key="Settings_ExportAppTitle">Exporter les préférences</sys:String>
+    <sys:String x:Key="Settings_ExportAppDesc">Enregistrez votre thème d'interface utilisateur actuel, la disposition du tableau de bord et les paramètres de comportement de l'application dans un fichier de sauvegarde.</sys:String>
+    <sys:String x:Key="Settings_ExportAppButton">Exporter</sys:String>
+    <sys:String x:Key="Settings_ImportAppTitle">Importer les préférences</sys:String>
+    <sys:String x:Key="Settings_ImportAppDesc">Restaurez vos paramètres d'application personnalisés à partir d'un fichier de sauvegarde JSON précédemment enregistré.</sys:String>
+    <sys:String x:Key="Settings_ImportAppButton">Importer</sys:String>
+
+    <sys:String x:Key="Settings_ImportAppDialogTitle">Importer les préférences de l'application ?</sys:String>
+    <sys:String x:Key="Settings_ImportAppDialogContent">Cela remplacera vos préférences actuelles d'EvolveOS Optimizer (thèmes, disposition, comportement) par les paramètres de ce fichier.&#x0a;&#x0a;Êtes-vous sûr de vouloir continuer ?</sys:String>
+
+    <sys:String x:Key="Settings_TweakProfiles_SectionTitle">Profils d'optimisation</sys:String>
+    <sys:String x:Key="Settings_TweakProfiles_Title">Gérer les profils d'optimisation</sys:String>
+    <sys:String x:Key="Settings_TweakProfiles_Desc">Exportez vos états d'optimisation actuels pour les partager avec d'autres, ou importez un profil JSON préconfiguré pour configurer instantanément un nouveau PC.</sys:String>
+
+    <sys:String x:Key="Settings_ExportProfile_Title">Exporter le profil actuel</sys:String>
+    <sys:String x:Key="Settings_ExportProfile_Desc">Enregistrez tous les réglages et optimisations Windows actifs (Interface, Services, Confidentialité, Système) dans un fichier JSON déployable.</sys:String>
+    <sys:String x:Key="Settings_ExportProfile_Button">Exporter</sys:String>
+
+    <sys:String x:Key="Settings_ImportProfile_Title">Importer un profil</sys:String>
+    <sys:String x:Key="Settings_ImportProfile_Desc">Chargez un fichier JSON pour appliquer immédiatement un ensemble préconfiguré de réglages Windows à cette machine.</sys:String>
+    <sys:String x:Key="Settings_ImportProfile_Button">Importer</sys:String>
+
+    <sys:String x:Key="Settings_ImportProfileDialogTitle">Appliquer le profil d'optimisation ?</sys:String>
+    <sys:String x:Key="Settings_ImportProfileDialogContent">Cela appliquera immédiatement tous les paramètres et optimisations Windows enregistrés dans ce profil.&#x0a;&#x0a;Êtes-vous sûr de vouloir continuer ?</sys:String>
+
+    <sys:String x:Key="toast_success_title">Succès</sys:String>
+    <sys:String x:Key="toast_error_title">Erreur</sys:String>
+    <sys:String x:Key="toast_restoring_title">Restauration</sys:String>
+    <sys:String x:Key="toast_export_success_title">Exportation réussie</sys:String>
+    <sys:String x:Key="toast_import_success_title">Importation réussie</sys:String>
+    <sys:String x:Key="toast_profile_export_title">Profil exporté</sys:String>
+    <sys:String x:Key="toast_profile_import_title">Optimisation terminée</sys:String>
+    <sys:String x:Key="toast_restore_snapshot_msg">Restauration des réglages d'optimisation d'origine...</sys:String>
+    <sys:String x:Key="toast_restore_snapshot_success">Les réglages ont été rétablis. Veuillez redémarrer votre PC.</sys:String>
+    <sys:String x:Key="toast_force_defaults_msg">Restauration des paramètres Microsoft par défaut...</sys:String>
+    <sys:String x:Key="toast_force_defaults_success">Paramètres d'usine Windows rétablis. Veuillez redémarrer votre PC.</sys:String>
+    <sys:String x:Key="toast_reset_app_success">Les préférences de l'application ont été réinitialisées.</sys:String>
+    <sys:String x:Key="toast_import_app_success_msg">Préférences de l'application importées avec succès.</sys:String>
+    <sys:String x:Key="toast_profile_exported">Profil d'optimisation enregistré avec succès.</sys:String>
+    <sys:String x:Key="toast_profile_imported">Profil d'optimisation importé et appliqué à Windows.</sys:String>
+    <sys:String x:Key="toast_export_app_msg">Préférences de l'application exportées avec succès.</sys:String>
+    <sys:String x:Key="toast_rstrui_error">Impossible de lancer la Restauration du système Windows automatiquement.</sys:String>
+    <sys:String x:Key="toast_profile_export_error">Échec de l'exportation du profil :</sys:String>
+    <sys:String x:Key="toast_profile_import_error">Échec de l'importation du profil :</sys:String>
+    <sys:String x:Key="toast_restore_error">Échec de la restauration des réglages :</sys:String>
+    <sys:String x:Key="toast_force_defaults_error">Échec de la restauration des paramètres par défaut :</sys:String>
 
     <sys:String x:Key="Generic_Continue">Continuer</sys:String>
     <sys:String x:Key="Generic_Cancel">Annuler</sys:String>

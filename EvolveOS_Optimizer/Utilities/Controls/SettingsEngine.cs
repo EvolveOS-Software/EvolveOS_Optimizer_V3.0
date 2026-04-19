@@ -445,6 +445,53 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             Application.Current.Exit();
         }
+
+
+        public static void Reset()
+        {
+            foreach (var kvp in _defaultSettings)
+            {
+                ChangingParameters(kvp.Key, kvp.Value);
+            }
+
+            // Optional: Clear user scripts
+            // AllUserScriptsPaths = new List<string>(); 
+        }
+
+        public static Dictionary<string, object> ExportSettings()
+        {
+            return new Dictionary<string, object>(_cachedSettings);
+        }
+
+        public static void ImportSettings(Dictionary<string, object> importedSettings)
+        {
+            foreach (var kvp in importedSettings)
+            {
+                if (_defaultSettings.ContainsKey(kvp.Key))
+                {
+                    object finalValue = kvp.Value;
+
+                    if (kvp.Value is System.Text.Json.JsonElement element)
+                    {
+                        switch (element.ValueKind)
+                        {
+                            case System.Text.Json.JsonValueKind.True:
+                            case System.Text.Json.JsonValueKind.False:
+                                finalValue = element.GetBoolean();
+                                break;
+                            case System.Text.Json.JsonValueKind.Number:
+                                finalValue = element.GetInt32();
+                                break;
+                            case System.Text.Json.JsonValueKind.String:
+                                finalValue = element.GetString() ?? string.Empty;
+                                break;
+                        }
+                    }
+
+                    ChangingParameters(kvp.Key, finalValue);
+                }
+            }
+        }
     }
     #endregion
 
@@ -558,12 +605,46 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         {
             foreach (var kvp in _defaultSettings)
             {
-                _cachedSettings[kvp.Key] = kvp.Value;
+                ChangingParameters(kvp.Key, kvp.Value);
             }
-            ProcessExclusionList.Clear();
 
-            //Save();
+            ProcessExclusionList.Clear();
             SaveExclusionList();
+        }
+
+        public static Dictionary<string, object> ExportSettings()
+        {
+            return new Dictionary<string, object>(_cachedSettings);
+        }
+
+        public static void ImportSettings(Dictionary<string, object> importedSettings)
+        {
+            foreach (var kvp in importedSettings)
+            {
+                if (_defaultSettings.ContainsKey(kvp.Key))
+                {
+                    object finalValue = kvp.Value;
+
+                    if (kvp.Value is System.Text.Json.JsonElement element)
+                    {
+                        switch (element.ValueKind)
+                        {
+                            case System.Text.Json.JsonValueKind.True:
+                            case System.Text.Json.JsonValueKind.False:
+                                finalValue = element.GetBoolean();
+                                break;
+                            case System.Text.Json.JsonValueKind.Number:
+                                finalValue = element.GetInt32();
+                                break;
+                            case System.Text.Json.JsonValueKind.String:
+                                finalValue = element.GetString() ?? string.Empty;
+                                break;
+                        }
+                    }
+
+                    ChangingParameters(kvp.Key, finalValue);
+                }
+            }
         }
 
         internal static void Load()

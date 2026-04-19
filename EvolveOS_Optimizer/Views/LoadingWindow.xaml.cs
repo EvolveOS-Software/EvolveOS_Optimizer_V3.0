@@ -280,7 +280,7 @@ namespace EvolveOS_Optimizer.Views
 
             if (_isSystemBusy)
             {
-                UpdateStatusDirect("Waiting for system to initialize...");
+                UpdateStatusDirect(ResourceString.GetString("status_waiting_system") ?? "Waiting for system to initialize...");
                 await Task.Delay(5000, token);
             }
 
@@ -344,6 +344,24 @@ namespace EvolveOS_Optimizer.Views
                     await Task.Delay(1000, token);
 
                     await Task.WhenAny(weatherTask, Task.Delay(1500, token));
+
+                    if (token.IsCancellationRequested) return;
+
+                    try
+                    {
+                        UpdateStatusDirect(ResourceString.GetString("status_saving_backup") ?? "Saving initial backup state...");
+
+                        var sys = new SystemTweaks(); sys.AnalyzeAndUpdate();
+                        var priv = new PrivacyTweaks(); priv.AnalyzeAndUpdate();
+                        var svc = new ServicesTweaks(); svc.AnalyzeAndUpdate();
+                        var intf = new InterfaceTweaks(); intf.AnalyzeAndUpdate();
+
+                        BackupManager.CreateInitialSnapshot();
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorLogging.LogWritingFile(ex, "Initial_Backup_Fail");
+                    }
 
                     if (token.IsCancellationRequested) return;
 
