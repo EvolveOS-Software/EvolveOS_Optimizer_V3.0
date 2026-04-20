@@ -168,11 +168,26 @@ namespace EvolveOS_Optimizer
             var hwnd = WindowNative.GetWindowHandle(this);
             if (hwnd == IntPtr.Zero) return;
 
+            bool isMinimized = false;
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+
+            if (appWindow?.Presenter is OverlappedPresenter presenter)
+            {
+                isMinimized = presenter.State == OverlappedPresenterState.Minimized;
+            }
+
             uint foregroundThreadId = Win32Helper.GetWindowThreadProcessId(Win32Helper.GetForegroundWindow(), IntPtr.Zero);
             uint appThreadId = Win32Helper.GetCurrentThreadId();
 
-            Win32Helper.ShowWindow(hwnd, 5);
-            Win32Helper.ShowWindow(hwnd, 9);
+            if (isMinimized)
+            {
+                Win32Helper.ShowWindow(hwnd, 9);
+            }
+            else
+            {
+                Win32Helper.ShowWindow(hwnd, 5);
+            }
 
             if (foregroundThreadId != appThreadId)
             {
