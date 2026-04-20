@@ -62,6 +62,35 @@ internal static class TweakProfileManager
             ErrorLogging.LogDebug($"[TweakProfileManager] Failed to export some security settings: {ex.Message}");
         }
 
+        // 4. Network & DNS Settings
+        DnsManager dnsManager = new DnsManager();
+        profile.DnsIpv4Primary = dnsManager.GetCurrentIpv4Primary();
+        profile.DnsIpv4Secondary = dnsManager.GetCurrentIpv4Secondary();
+        profile.DnsIpv6Primary = dnsManager.GetCurrentIpv6Primary();
+        profile.DnsIpv6Secondary = dnsManager.GetCurrentIpv6Secondary();
+
+        // 5. DNSCrypt TOML Configuration
+        if (DNSCryptHelper.IsInstalled())
+        {
+            profile.IsDNSCryptRunning = DNSCryptHelper.IsRunning();
+
+            try
+            {
+                var config = DNSCryptHelper.LoadConfig();
+                profile.DNSCryptSettings = new Dictionary<string, string>();
+
+                var keys = new[] { "ipv4_servers", "ipv6_servers", "dnscrypt_servers", "doh_servers",
+                                   "require_dnssec", "require_nolog", "require_nofilter", "block_ipv6" };
+
+                foreach (var key in keys)
+                {
+                    var val = DNSCryptHelper.GetCurrentSetting(config, key);
+                    if (!string.IsNullOrEmpty(val)) profile.DNSCryptSettings[key] = val;
+                }
+            }
+            catch { /* DNSCrypt file access error */ }
+        }
+
         return profile;
     }
     #endregion
@@ -178,6 +207,64 @@ internal static class TweakProfileManager
                 if (profile.IsRemoteDesktopEnabled.HasValue) await ApplyRemoteDesktopAsync(profile.IsRemoteDesktopEnabled.Value);
                 if (profile.IsRemoteAssistanceEnabled.HasValue) await ApplyRemoteAssistanceAsync(profile.IsRemoteAssistanceEnabled.Value);
                 if (profile.IsDeveloperModeEnabled.HasValue) ApplyDeveloperMode(profile.IsDeveloperModeEnabled.Value);
+
+                // 9. Deploy Network & DNS
+                DnsManager dnsManager = new DnsManager();
+                bool dnsChanged = false;
+
+                if (!string.IsNullOrEmpty(profile.DnsIpv4Primary))
+                {
+                    dnsManager.SetIpv4Dns(profile.DnsIpv4Primary, profile.DnsIpv4Secondary ?? "");
+                    dnsChanged = true;
+                }
+
+                if (!string.IsNullOrEmpty(profile.DnsIpv6Primary) && profile.DnsIpv6Primary != "::")
+                {
+                    dnsManager.SetIpv6Dns(profile.DnsIpv6Primary, profile.DnsIpv6Secondary ?? "");
+                    dnsChanged = true;
+                }
+
+                if (dnsChanged) NetHelper.FlushDns();
+
+                // 10. Deploy DNSCrypt Settings
+                if (profile.DNSCryptSettings != null)
+                {
+                    if (!DNSCryptHelper.IsInstalled())
+                    {
+                        bool installSuccess = await DNSCryptHelper.Install();
+
+                        if (!installSuccess)
+                        {
+                            ErrorLogging.LogDebug("[TweakProfileManager] DNSCrypt auto-install failed during import.");
+                            goto SkipDNSCrypt;
+                        }
+                    }
+
+                    try
+                    {
+                        var config = DNSCryptHelper.LoadConfig();
+                        foreach (var kvp in profile.DNSCryptSettings)
+                        {
+                            config = DNSCryptHelper.SetSetting(config, kvp.Key, kvp.Value);
+                        }
+                        DNSCryptHelper.SaveConfig(config);
+
+                        if (DNSCryptHelper.IsRunning())
+                        {
+                            await DNSCryptHelper.StopService(null!, null!);
+                        }
+
+                        if (profile.IsDNSCryptRunning == true)
+                        {
+                            await DNSCryptHelper.StartService(null!, null!);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorLogging.LogDebug($"[TweakProfileManager] DNSCrypt configuration failed: {ex.Message}");
+                    }
+                }
+            SkipDNSCrypt:;
             }
             catch (Exception ex)
             {

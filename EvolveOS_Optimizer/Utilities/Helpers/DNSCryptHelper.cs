@@ -60,7 +60,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             if (!Directory.Exists(InstallationDirectory))
             {
-
                 return false;
             }
 
@@ -112,15 +111,23 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         #endregion
 
         #region Service & Installation Management
-        public static async Task<bool> Install(ProgressBar progressBar, TextBlock statusLabel)
+        public static async Task<bool> Install(ProgressBar? progressBar = null, TextBlock? statusLabel = null)
         {
-            progressBar.DispatcherQueue.TryEnqueue(() =>
+            void UpdateUI(string status, double? progress = null)
             {
-                progressBar.Minimum = 0;
-                progressBar.Maximum = 5;
-                progressBar.Value = 0;
-                statusLabel.Text = "Initializing installation process...";
-            });
+                var dispatcher = progressBar?.DispatcherQueue ?? statusLabel?.DispatcherQueue;
+                dispatcher?.TryEnqueue(() =>
+                {
+                    if (statusLabel != null) statusLabel.Text = status;
+                    if (progressBar != null)
+                    {
+                        if (progress == 0) { progressBar.Minimum = 0; progressBar.Maximum = 5; }
+                        if (progress.HasValue) progressBar.Value = progress.Value;
+                    }
+                });
+            }
+
+            UpdateUI("Initializing installation process...", 0);
 
             var handler = new HttpClientHandler
             {
@@ -134,27 +141,16 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             try
             {
-                progressBar.DispatcherQueue.TryEnqueue(() =>
-                {
-                    statusLabel.Text = $"Downloading dnscrypt-proxy {DNSCryptRelease} (x{bits}) from GitHub...";
-                });
+                UpdateUI($"Downloading dnscrypt-proxy {DNSCryptRelease} (x{bits}) from GitHub...");
 
                 buffer = await http.GetByteArrayAsync($"https://github.com/DNSCrypt/dnscrypt-proxy/releases/download/{DNSCryptRelease}/dnscrypt-proxy-win{bits}-{DNSCryptRelease}.zip");
 
-                progressBar.DispatcherQueue.TryEnqueue(() =>
-                {
-                    progressBar.Value = 1;
-                    statusLabel.Text = "Preparing installation directory...";
-                });
+                UpdateUI("Preparing installation directory...", 1);
             }
             catch (Exception ex)
             {
                 ErrorLogging.LogDebug(ex);
-
-                progressBar.DispatcherQueue.TryEnqueue(() =>
-                {
-                    statusLabel.Text = $"[!] Error message: {ex.Message}";
-                });
+                UpdateUI($"[!] Error message: {ex.Message}");
                 return false;
             }
 
@@ -167,11 +163,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 Directory.CreateDirectory(UnzipDirectory);
             });
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 2;
-                statusLabel.Text = "Extracting files...";
-            });
+            UpdateUI("Extracting files...", 2);
 
             await Task.Run(() =>
             {
@@ -181,54 +173,47 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 File.Delete(tempPath);
             });
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 3;
-                statusLabel.Text = "Setting up configuration...";
-            });
+            UpdateUI("Setting up configuration...", 3);
 
             await Task.Run(() =>
             {
                 File.Copy(ConfigExamplePath, ConfigPath, true);
             });
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 4;
-                statusLabel.Text = "Installing and starting DNSCrypt service...";
-            });
+            UpdateUI("Installing and starting DNSCrypt service...", 4);
 
             await Task.Run(() => { ExecuteProcessHidden(BinaryPath, "-service install"); });
             await Task.Run(() => { ExecuteProcessHidden(BinaryPath, "-service start"); });
 
             var counter = 1;
-            while (!IsRunning())
+            while (!IsRunning() && counter <= 20)
             {
-                progressBar.DispatcherQueue.TryEnqueue(() =>
-                {
-                    statusLabel.Text = $"Waiting for service to run ({counter++} s)...";
-                });
+                UpdateUI($"Waiting for service to run ({counter++} s)...");
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 5;
-                statusLabel.Text = "Installation successful.";
-            });
+            UpdateUI("Installation successful.", 5);
 
             return true;
         }
 
-        public static bool Uninstall(ProgressBar progressBar, TextBlock statusLabel)
+        public static bool Uninstall(ProgressBar? progressBar = null, TextBlock? statusLabel = null)
         {
-            progressBar.DispatcherQueue.TryEnqueue(() =>
+            void UpdateUI(string status, double? progress = null)
             {
-                progressBar.Minimum = 0;
-                progressBar.Maximum = 1;
-                progressBar.Value = 0;
-                statusLabel.Text = "Deleting DNSCrypt files...";
-            });
+                var dispatcher = progressBar?.DispatcherQueue ?? statusLabel?.DispatcherQueue;
+                dispatcher?.TryEnqueue(() =>
+                {
+                    if (statusLabel != null) statusLabel.Text = status;
+                    if (progressBar != null)
+                    {
+                        if (progress == 0) { progressBar.Minimum = 0; progressBar.Maximum = 1; }
+                        if (progress.HasValue) progressBar.Value = progress.Value;
+                    }
+                });
+            }
+
+            UpdateUI("Deleting DNSCrypt files...", 0);
 
             try
             {
@@ -237,117 +222,93 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             catch (Exception ex)
             {
                 ErrorLogging.LogDebug(ex);
-
-                progressBar.DispatcherQueue.TryEnqueue(() =>
-                {
-                    statusLabel.Text = $"[!] Error message: {ex.Message}";
-                });
+                UpdateUI($"[!] Error message: {ex.Message}");
                 return false;
             }
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 1;
-                statusLabel.Text = "Uninstallation successful.";
-            });
+            UpdateUI("Uninstallation successful.", 1);
 
             return true;
         }
 
-        public static async Task StartService(ProgressBar progressBar, TextBlock statusLabel)
+        public static async Task StartService(ProgressBar? progressBar = null, TextBlock? statusLabel = null)
         {
-            progressBar.DispatcherQueue.TryEnqueue(() =>
+            void UpdateUI(string status, double? progress = null)
             {
-                progressBar.Minimum = 0;
-                progressBar.Maximum = 3;
-                progressBar.Value = 0;
-                statusLabel.Text = "Installing DNSCrypt service...";
-            });
+                var dispatcher = progressBar?.DispatcherQueue ?? statusLabel?.DispatcherQueue;
+                dispatcher?.TryEnqueue(() =>
+                {
+                    if (statusLabel != null) statusLabel.Text = status;
+                    if (progressBar != null)
+                    {
+                        if (progress == 0) { progressBar.Minimum = 0; progressBar.Maximum = 3; }
+                        if (progress.HasValue) progressBar.Value = progress.Value;
+                    }
+                });
+            }
+
+            UpdateUI("Installing DNSCrypt service...", 0);
 
             await Task.Run(() =>
             {
                 ExecuteProcessHidden(BinaryPath, "-service install");
             });
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 1;
-                statusLabel.Text = "Starting DNSCrypt service...";
-            });
+            UpdateUI("Starting DNSCrypt service...", 1);
 
             await Task.Run(() =>
             {
                 ExecuteProcessHidden(BinaryPath, "-service start");
             });
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 2;
-            });
-
             var counter = 1;
-            while (!IsRunning())
+            while (!IsRunning() && counter <= 20)
             {
-                progressBar.DispatcherQueue.TryEnqueue(() =>
-                {
-                    statusLabel.Text = $"Starting DNSCrypt service ({counter++} s)...";
-                });
+                UpdateUI($"Starting DNSCrypt service ({counter++} s)...", 2);
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 3;
-                statusLabel.Text = "Service start successful.";
-            });
+            UpdateUI("Service start successful.", 3);
         }
 
-        public static async Task StopService(ProgressBar progressBar, TextBlock statusLabel)
+        public static async Task StopService(ProgressBar? progressBar = null, TextBlock? statusLabel = null)
         {
-            progressBar.DispatcherQueue.TryEnqueue(() =>
+            void UpdateUI(string status, double? progress = null)
             {
-                progressBar.Minimum = 0;
-                progressBar.Maximum = 3;
-                progressBar.Value = 0;
-                statusLabel.Text = "Stopping DNSCrypt service...";
-            });
+                var dispatcher = progressBar?.DispatcherQueue ?? statusLabel?.DispatcherQueue;
+                dispatcher?.TryEnqueue(() =>
+                {
+                    if (statusLabel != null) statusLabel.Text = status;
+                    if (progressBar != null)
+                    {
+                        if (progress == 0) { progressBar.Minimum = 0; progressBar.Maximum = 3; }
+                        if (progress.HasValue) progressBar.Value = progress.Value;
+                    }
+                });
+            }
+
+            UpdateUI("Stopping DNSCrypt service...", 0);
 
             await Task.Run(() =>
             {
                 ExecuteProcessHidden(BinaryPath, "-service stop");
             });
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 1;
-            });
-
             var counter = 1;
-            while (IsRunning())
+            while (IsRunning() && counter <= 20)
             {
-                progressBar.DispatcherQueue.TryEnqueue(() =>
-                {
-                    statusLabel.Text = $"Stopping DNSCrypt service ({counter++} s)...";
-                });
+                UpdateUI($"Stopping DNSCrypt service ({counter++} s)...", 1);
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 2;
-                statusLabel.Text = "Uninstalling DNSCrypt service...";
-            });
+            UpdateUI("Uninstalling DNSCrypt service...", 2);
 
             await Task.Run(() =>
             {
                 ExecuteProcessHidden(BinaryPath, "-service uninstall");
             });
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 3;
-                statusLabel.Text = "Service stop successful.";
-            });
+            UpdateUI("Service stop successful.", 3);
         }
 
         public static async Task OpenConfig()
@@ -358,26 +319,17 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             });
         }
 
-        public static async Task DebugProcess(ProgressBar progressBar, TextBlock statusLabel)
+        public static async Task DebugProcess(ProgressBar? progressBar = null, TextBlock? statusLabel = null)
         {
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Minimum = 0;
-                progressBar.Maximum = 1;
-                progressBar.Value = 0;
-                statusLabel.Text = "Debugging DNSCrypt process...";
-            });
+            if (statusLabel != null) statusLabel.DispatcherQueue.TryEnqueue(() => statusLabel.Text = "Debugging DNSCrypt process...");
 
             await Task.Run(() =>
             {
                 ExecuteProcess(BinaryPath);
             });
 
-            progressBar.DispatcherQueue.TryEnqueue(() =>
-            {
-                progressBar.Value = 1;
-                statusLabel.Text = "Debug process successful.";
-            });
+            if (statusLabel != null) statusLabel.DispatcherQueue.TryEnqueue(() => statusLabel.Text = "Debug process successful.");
+            if (progressBar != null) progressBar.DispatcherQueue.TryEnqueue(() => progressBar.Value = 1);
         }
         #endregion
 
@@ -437,7 +389,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 Verb = "runas",
             };
 
-            var process = new Process { StartInfo = psi };
+            using var process = new Process { StartInfo = psi };
 
             process.Start();
             process.WaitForExit();

@@ -13,6 +13,7 @@ namespace EvolveOS_Optimizer.Core.Model
         public Dictionary<string, bool> SystemTweaks { get; set; } = new();
         public Dictionary<string, bool> InterfaceTweaks { get; set; } = new();
         public Dictionary<string, uint>? SystemSliders { get; set; }
+        public Dictionary<string, string>? DNSCryptSettings { get; set; }
 
         public string? ActivePowerPlanGuid { get; set; }
         public string? WindowsUpdatesMode { get; set; }
@@ -22,5 +23,10 @@ namespace EvolveOS_Optimizer.Core.Model
         public bool? IsRemoteDesktopEnabled { get; set; }
         public bool? IsRemoteAssistanceEnabled { get; set; }
         public bool? IsDeveloperModeEnabled { get; set; }
+        public string? DnsIpv4Primary { get; set; }
+        public string? DnsIpv4Secondary { get; set; }
+        public string? DnsIpv6Primary { get; set; }
+        public string? DnsIpv6Secondary { get; set; }
+        public bool? IsDNSCryptRunning { get; set; }
     }
 }
