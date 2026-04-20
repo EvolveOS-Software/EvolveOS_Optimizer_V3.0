@@ -782,42 +782,25 @@ public sealed partial class SecurityPage : Page, IPurgeable
         try
         {
             bool enable = RdpToggleSwitch.IsOn;
+            int fDenyVal = enable ? 0 : 1;
 
-            await Task.Run(() =>
-            {
-                int fDenyVal = enable ? 0 : 1;
+            string command = $@"
+            $ts = Get-WmiObject -Class Win32_TerminalServiceSetting -Namespace root\cimv2\TerminalServices -ComputerName '.' -Authentication 6;
+            if ($ts) {{
+                $ts.SetAllowTSConnections({(enable ? 1 : 0)}, 1);
+            }}
 
-                string command = $@"
-                $ts = Get-WmiObject -Class Win32_TerminalServiceSetting -Namespace root\cimv2\TerminalServices -ComputerName '.' -Authentication 6;
-                if ($ts) {{
-                    $ts.SetAllowTSConnections({(enable ? 1 : 0)}, 1);
-                }}
+            $tsPath = 'HKLM:\System\CurrentControlSet\Control\Terminal Server';
+            Set-ItemProperty -Path $tsPath -Name 'fDenyTSConnections' -Value {fDenyVal};
+            Set-ItemProperty -Path ""$tsPath\WinStations\RDP-Tcp"" -Name 'UserAuthentication' -Value {(enable ? 1 : 0)};
+        
+            if ({enable.ToString().ToLower()}) {{
+                Enable-NetFirewallRule -DisplayGroup '@{{Microsoft.Windows.RemoteDesktop.RemoteDesktop.Resources.dll,-28752}}';
+            }} else {{
+                Disable-NetFirewallRule -DisplayGroup '@{{Microsoft.Windows.RemoteDesktop.RemoteDesktop.Resources.dll,-28752}}';
+            }}";
 
-                $tsPath = 'HKLM:\System\CurrentControlSet\Control\Terminal Server';
-                Set-ItemProperty -Path $tsPath -Name 'fDenyTSConnections' -Value {fDenyVal};
-                Set-ItemProperty -Path ""$tsPath\WinStations\RDP-Tcp"" -Name 'UserAuthentication' -Value {(enable ? 1 : 0)};
-                
-                if ({enable.ToString().ToLower()}) {{
-                    Enable-NetFirewallRule -DisplayGroup '@{{Microsoft.Windows.RemoteDesktop.RemoteDesktop.Resources.dll,-28752}}';
-                }} else {{
-                    Disable-NetFirewallRule -DisplayGroup '@{{Microsoft.Windows.RemoteDesktop.RemoteDesktop.Resources.dll,-28752}}';
-                }}";
-
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "powershell.exe",
-                        Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{command}\"",
-                        UseShellExecute = true,
-                        CreateNoWindow = true,
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        Verb = "runas"
-                    }
-                };
-                process.Start();
-                process.WaitForExit();
-            });
+            await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
 
             App.ShowNotification(
                 ResourceString.GetString("SecurityPage_RemoteDesktop") ?? "Remote Desktop",
@@ -847,30 +830,18 @@ public sealed partial class SecurityPage : Page, IPurgeable
         try
         {
             bool enable = RaToggleSwitch.IsOn;
-            await Task.Run(() =>
-            {
-                int val = enable ? 1 : 0;
-                string command = $@"
-                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance' -Name 'fAllowToGetHelp' -Value {val};
-                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name 'fAllowToGetHelp' -Value {val};
-                if ({enable.ToString().ToLower()}) {{
-                    Enable-NetFirewallRule -DisplayGroup '@{{FirewallAPI.dll,-28502}}' -ErrorAction SilentlyContinue;
-                }} else {{
-                    Disable-NetFirewallRule -DisplayGroup '@{{FirewallAPI.dll,-28502}}' -ErrorAction SilentlyContinue;
-                }}";
+            int val = enable ? 1 : 0;
 
-                var psi = new ProcessStartInfo
-                {
-                    FileName = "powershell.exe",
-                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{command}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                    // Verb = "runas" */ App is already elevated \*
-                };
+            string command = $@"
+            Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance' -Name 'fAllowToGetHelp' -Value {val};
+            Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name 'fAllowToGetHelp' -Value {val};
+            if ({enable.ToString().ToLower()}) {{
+                Enable-NetFirewallRule -DisplayGroup '@{{FirewallAPI.dll,-28502}}' -ErrorAction SilentlyContinue;
+            }} else {{
+                Disable-NetFirewallRule -DisplayGroup '@{{FirewallAPI.dll,-28502}}' -ErrorAction SilentlyContinue;
+            }}";
 
-                Process.Start(psi)?.WaitForExit();
-            });
+            await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
 
             App.ShowNotification(
                 ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance",
