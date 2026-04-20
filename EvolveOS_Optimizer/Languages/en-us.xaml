@@ -277,6 +277,9 @@
     <sys:String x:Key="Settings_ImportProfileDialogTitle">Apply Tweak Profile?</sys:String>
     <sys:String x:Key="Settings_ImportProfileDialogContent">This will immediately apply all the Windows settings and optimizations saved in this profile.&#x0a;&#x0a;Are you sure you want to continue?</sys:String>
 
+    <sys:String x:Key="Settings_StartupMonitor_Title">Startup Monitor</sys:String>
+    <sys:String x:Key="Settings_StartupMonitor_Subtitle">Alerts you if a new application adds itself to your startup sequence in the background.</sys:String>
+
     <sys:String x:Key="toast_success_title">Success</sys:String>
     <sys:String x:Key="toast_error_title">Error</sys:String>
     <sys:String x:Key="toast_restoring_title">Restoring</sys:String>
@@ -525,6 +528,7 @@
     <sys:String x:Key="Tab_Recommended">Recommended Debloat</sys:String>
     <sys:String x:Key="Tab_Installed">Installed Apps</sys:String>
     <sys:String x:Key="Tab_AppStore">App Store (WinGet)</sys:String>
+    <sys:String x:Key="Tab_StartupApps">Startup Apps</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
@@ -1958,5 +1962,50 @@
     <sys:String x:Key="btn_proceed">Proceed</sys:String>
     <sys:String x:Key="btn_cancel">Cancel</sys:String>
     <!-- endregion Navigation Guard & Busy State -->
+
+    <!-- region Startup Manager Page -->
+    <sys:String x:Key="startup_manager_page_total_apps">Total Apps</sys:String>
+    <sys:String x:Key="startup_manager_page_enabled_apps">Enabled Apps</sys:String>
+    <sys:String x:Key="startup_manager_page_disabled_apps">Disabled Apps</sys:String>
+
+    <sys:String x:Key="startup_manager_page_search_placeholder">Search startup apps...</sys:String>
+    <sys:String x:Key="startup_manager_page_all">All</sys:String>
+    <sys:String x:Key="startup_manager_page_enabled">Enabled</sys:String>
+    <sys:String x:Key="startup_manager_page_disabled">Disabled</sys:String>
+    <sys:String x:Key="startup_manager_page_refresh">Refresh List</sys:String>
+
+    <sys:String x:Key="startup_manager_page_app_name">App Name</sys:String>
+    <sys:String x:Key="startup_manager_page_status">Status</sys:String>
+    <sys:String x:Key="startup_manager_page_source">Source</sys:String>
+    <sys:String x:Key="startup_manager_page_actions">Actions</sys:String>
+
+    <sys:String x:Key="startup_manager_page_open_location">Open File Location</sys:String>
+    <sys:String x:Key="startup_manager_page_delete">Delete permanently</sys:String>
+
+    <sys:String x:Key="startup_manager_page_smart_profiles">Smart Profiles:</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_gaming">Gaming Mode</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_work">Work Mode</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_save">Save Current as Profile</sys:String>
+
+    <sys:String x:Key="startup_manager_page_profile_saved_title">Profile Saved</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_saved_content_dynamic">Your current startup configuration has been successfully saved to your {0} profile.</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_saved_ok">OK</sys:String>
+
+    <sys:String x:Key="startup_manager_page_profile_gaming_modified">Gaming Mode (Modified)</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_work_modified">Work Mode (Modified)</sys:String>
+
+    <sys:String x:Key="startup_manager_page_delay_tooltip_off">Delay Off : Click to cycle through boot delays (15s, 30s, 45s, 60s, Off).</sys:String>
+    <sys:String x:Key="startup_manager_page_delay_tooltip_active">Delay: {0}s</sys:String>
+
+    <sys:String x:Key="startup_manager_page_results_text">Showing {0} of {1} startup applications.</sys:String>
+
+    <sys:String x:Key="startup_manager_page_delete_title">Remove Startup App</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_content">Are you sure you want to permanently remove '{0}' from startup? This cannot be undone.</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_confirm">Remove</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_cancel">Cancel</sys:String>
+
+    <sys:String x:Key="startup_manager_page_toast_new_app_title">New Startup App Detected!</sys:String>
+    <sys:String x:Key="startup_manager_page_toast_new_app_message">{0} just added itself to your startup sequence.&#10;Check EvolveOS Optimizer to manage it.</sys:String>
+    <!-- endregion Startup Manager Page -->
 
 </ResourceDictionary>

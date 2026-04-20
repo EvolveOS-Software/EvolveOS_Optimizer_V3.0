@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="EvolveOS_Optimizer.Pages.SoftwareCenterPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -22,7 +23,7 @@
                 <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
                 <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
             </ui:NavigationView.Resources>
-            
+
             <ui:NavigationView.MenuItems>
                 <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_Recommended}" Tag="PackagesPage">
                     <ui:NavigationViewItem.Icon>
@@ -39,6 +40,12 @@
                 <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_AppStore}" Tag="AppStorePage">
                     <ui:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE896;"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_StartupApps}" Tag="StartupManagerPage">
+                    <ui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE718;"/>
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>

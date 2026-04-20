@@ -93,5 +93,13 @@ namespace EvolveOS_Optimizer.Core
             NotSupported,
             AlreadyRunning
         }
+
+        public enum StartupSourceType
+        {
+            RegistryHKCU,
+            RegistryHKLM,
+            FolderUser,
+            FolderCommon
+        }
     }
 }

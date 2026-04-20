@@ -272,6 +272,9 @@
     <sys:String x:Key="Settings_ImportProfileDialogTitle">Applicare il profilo di ottimizzazione?</sys:String>
     <sys:String x:Key="Settings_ImportProfileDialogContent">Questo applicherà immediatamente tutte le impostazioni e le ottimizzazioni di Windows salvate in questo profilo.&#x0a;&#x0a;Sei sicuro di voler continuare?</sys:String>
 
+    <sys:String x:Key="Settings_StartupMonitor_Title">Monitor di avvio</sys:String>
+    <sys:String x:Key="Settings_StartupMonitor_Subtitle">Ti avvisa se una nuova applicazione si aggiunge autonomamente alla sequenza di avvio in background.</sys:String>
+
     <sys:String x:Key="toast_success_title">Successo</sys:String>
     <sys:String x:Key="toast_error_title">Errore</sys:String>
     <sys:String x:Key="toast_restoring_title">Ripristino</sys:String>
@@ -525,6 +528,7 @@
     <sys:String x:Key="Tab_Recommended">Debloat Consigliato</sys:String>
     <sys:String x:Key="Tab_Installed">App Installate</sys:String>
     <sys:String x:Key="Tab_AppStore">App Store (WinGet)</sys:String>
+    <sys:String x:Key="Tab_StartupApps">App Di Avvio</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
@@ -1957,5 +1961,50 @@
     <sys:String x:Key="btn_proceed">Procedi</sys:String>
     <sys:String x:Key="btn_cancel">Annulla</sys:String>
     <!-- endregion Navigation Guard & Busy State -->
+
+    <!-- region Startup Manager Page -->
+    <sys:String x:Key="startup_manager_page_total_apps">App Totali</sys:String>
+    <sys:String x:Key="startup_manager_page_enabled_apps">Attive</sys:String>
+    <sys:String x:Key="startup_manager_page_disabled_apps">Disattivate</sys:String>
+
+    <sys:String x:Key="startup_manager_page_search_placeholder">Cerca app all'avvio...</sys:String>
+    <sys:String x:Key="startup_manager_page_all">Tutto</sys:String>
+    <sys:String x:Key="startup_manager_page_enabled">Attivo</sys:String>
+    <sys:String x:Key="startup_manager_page_disabled">Disattivato</sys:String>
+    <sys:String x:Key="startup_manager_page_refresh">Aggiorna elenco</sys:String>
+
+    <sys:String x:Key="startup_manager_page_app_name">Nome App</sys:String>
+    <sys:String x:Key="startup_manager_page_status">Stato</sys:String>
+    <sys:String x:Key="startup_manager_page_source">Sorgente</sys:String>
+    <sys:String x:Key="startup_manager_page_actions">Azioni</sys:String>
+
+    <sys:String x:Key="startup_manager_page_open_location">Apri percorso file</sys:String>
+    <sys:String x:Key="startup_manager_page_delete">Elimina permanentemente</sys:String>
+
+    <sys:String x:Key="startup_manager_page_smart_profiles">Profili Intelligenti:</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_gaming">Modalità Gaming</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_work">Modalità Lavoro</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_save">Salva corrente come Profilo</sys:String>
+
+    <sys:String x:Key="startup_manager_page_profile_saved_title">Profilo Salvato</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_saved_content_dynamic">La configurazione di avvio corrente è stata salvata con successo nel tuo profilo {0}.</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_saved_ok">OK</sys:String>
+
+    <sys:String x:Key="startup_manager_page_profile_gaming_modified">Modalità Gaming (Modificata)</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_work_modified">Modalità Lavoro (Modificata)</sys:String>
+
+    <sys:String x:Key="startup_manager_page_delay_tooltip_off">Ritardo disattivo : Fai clic per scorrere i ritardi di avvio (15s, 30s, 45s, 60s, Disattivo).</sys:String>
+    <sys:String x:Key="startup_manager_page_delay_tooltip_active">Ritardo: {0}s</sys:String>
+
+    <sys:String x:Key="startup_manager_page_results_text">Visualizzazione di {0} su {1} applicazioni all'avvio.</sys:String>
+
+    <sys:String x:Key="startup_manager_page_delete_title">Rimuovi App all'avvio</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_content">Sei sicuro di voler rimuovere permanentemente '{0}' dall'avvio? L'azione non può essere annullata.</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_confirm">Rimuovi</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_cancel">Annulla</sys:String>
+
+    <sys:String x:Key="startup_manager_page_toast_new_app_title">Nuova App all'avvio rilevata!</sys:String>
+    <sys:String x:Key="startup_manager_page_toast_new_app_message">{0} si è appena aggiunta alla sequenza di avvio.&#10;Controlla EvolveOS Optimizer per gestirla.</sys:String>
+    <!-- endregion Startup Manager Page -->
 
 </ResourceDictionary>

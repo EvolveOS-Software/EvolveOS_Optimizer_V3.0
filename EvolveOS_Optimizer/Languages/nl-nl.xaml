@@ -272,6 +272,9 @@
     <sys:String x:Key="Settings_ImportProfileDialogTitle">Tweak profiel toepassen?</sys:String>
     <sys:String x:Key="Settings_ImportProfileDialogContent">Dit zal onmiddellijk alle Windows-instellingen en optimalisaties toepassen die in dit profiel zijn opgeslagen.&#x0a;&#x0a;Weet u zeker dat u wilt doorgaan?</sys:String>
 
+    <sys:String x:Key="Settings_StartupMonitor_Title">Opstart Monitor</sys:String>
+    <sys:String x:Key="Settings_StartupMonitor_Subtitle">Waarschuwt u als een nieuwe applicatie zichzelf op de achtergrond toevoegt aan uw opstartproces.</sys:String>
+
     <sys:String x:Key="toast_success_title">Succes</sys:String>
     <sys:String x:Key="toast_error_title">Fout</sys:String>
     <sys:String x:Key="toast_restoring_title">Herstellen</sys:String>
@@ -516,9 +519,10 @@
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->
-    <sys:String x:Key="Tab_Recommended">Aanbevolen opschoning</sys:String>
-    <sys:String x:Key="Tab_Installed">Geïnstalleerde apps</sys:String>
-    <sys:String x:Key="Tab_AppStore">App-winkel (WinGet)</sys:String>
+    <sys:String x:Key="Tab_Recommended">Aanbevolen Debloat</sys:String>
+    <sys:String x:Key="Tab_Installed">Geïnstalleerde Apps</sys:String>
+    <sys:String x:Key="Tab_AppStore">App Winkel (WinGet)</sys:String>
+    <sys:String x:Key="Tab_StartupApps">Opstart Apps</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
@@ -1944,5 +1948,50 @@
     <sys:String x:Key="btn_proceed">Doorgaan</sys:String>
     <sys:String x:Key="btn_cancel">Annuleren</sys:String>
     <!-- endregion Navigation Guard & Busy State -->
+
+    <!-- region Startup Manager Page -->
+    <sys:String x:Key="startup_manager_page_total_apps">Totaal Aantal Apps</sys:String>
+    <sys:String x:Key="startup_manager_page_enabled_apps">Ingeschakelde Apps</sys:String>
+    <sys:String x:Key="startup_manager_page_disabled_apps">Uitgeschakelde Apps</sys:String>
+
+    <sys:String x:Key="startup_manager_page_search_placeholder">Zoek opstart-apps...</sys:String>
+    <sys:String x:Key="startup_manager_page_all">Alle</sys:String>
+    <sys:String x:Key="startup_manager_page_enabled">Ingeschakeld</sys:String>
+    <sys:String x:Key="startup_manager_page_disabled">Uitgeschakeld</sys:String>
+    <sys:String x:Key="startup_manager_page_refresh">Lijst Vernieuwen</sys:String>
+
+    <sys:String x:Key="startup_manager_page_app_name">Naam</sys:String>
+    <sys:String x:Key="startup_manager_page_status">Status</sys:String>
+    <sys:String x:Key="startup_manager_page_source">Bron</sys:String>
+    <sys:String x:Key="startup_manager_page_actions">Acties</sys:String>
+
+    <sys:String x:Key="startup_manager_page_open_location">Bestandslocatie Openen</sys:String>
+    <sys:String x:Key="startup_manager_page_delete">Permanent verwijderen</sys:String>
+
+    <sys:String x:Key="startup_manager_page_smart_profiles">Slimme Profielen:</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_gaming">Gaming Modus</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_work">Werk Modus</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_save">Huidige Opslaan als Profiel</sys:String>
+
+    <sys:String x:Key="startup_manager_page_profile_saved_title">Profiel Opgeslagen</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_saved_content_dynamic">Uw huidige opstartconfiguratie is succesvol opgeslagen in uw {0} profiel.</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_saved_ok">OK</sys:String>
+
+    <sys:String x:Key="startup_manager_page_profile_gaming_modified">Gaming Modus (Gewijzigd)</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_work_modified">Werk Modus (Gewijzigd)</sys:String>
+
+    <sys:String x:Key="startup_manager_page_delay_tooltip_off">Vertraging Uit : Klik om door de opstartvertragingen te bladeren (15s, 30s, 45s, 60s, Uit).</sys:String>
+    <sys:String x:Key="startup_manager_page_delay_tooltip_active">Vertraging: {0}s</sys:String>
+
+    <sys:String x:Key="startup_manager_page_results_text">{0} van de {1} opstart-applicaties weergegeven.</sys:String>
+
+    <sys:String x:Key="startup_manager_page_delete_title">Opstart-app Verwijderen</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_content">Weet u zeker dat u '{0}' permanent wilt verwijderen uit de opstartlijst? Dit kan niet ongedaan worden gemaakt.</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_confirm">Verwijderen</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_cancel">Annuleren</sys:String>
+
+    <sys:String x:Key="startup_manager_page_toast_new_app_title">Nieuwe Opstart-app Gedetecteerd!</sys:String>
+    <sys:String x:Key="startup_manager_page_toast_new_app_message">{0} heeft zichzelf zojuist toegevoegd aan uw opstartproces.&#10;Controleer EvolveOS Optimizer om dit te beheren.</sys:String>
+    <!-- endregion Startup Manager Page -->
 
 </ResourceDictionary>

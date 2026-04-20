@@ -399,6 +399,26 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="{x:Bind GetText('Settings_StartupMonitor_Title'), Mode=OneWay, FallbackValue='Startup Monitor'}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_StartupMonitor_Subtitle'), Mode=OneWay, FallbackValue='Alerts you if a new application adds itself to your startup sequence in the background.'}"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1" 
+                                      IsOn="{x:Bind EnableStartupMonitor, Mode=TwoWay}" 
+                                      OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
+                                      OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                    </Grid>
+                </Border>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
                         <StackPanel VerticalAlignment="Center" Spacing="2">
                             <TextBlock Text="{x:Bind GetText('Settings_CloseToTray_Title'), Mode=OneWay}" FontWeight="SemiBold"/>

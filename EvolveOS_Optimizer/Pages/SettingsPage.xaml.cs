@@ -832,6 +832,19 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
+
+        public bool EnableStartupMonitor
+        {
+            get => LocalMachineSettingsEngine.EnableStartupMonitor;
+            set
+            {
+                if (LocalMachineSettingsEngine.EnableStartupMonitor != value)
+                {
+                    LocalMachineSettingsEngine.EnableStartupMonitor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged Implementation

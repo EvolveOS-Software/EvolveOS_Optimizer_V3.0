@@ -272,6 +272,9 @@
     <sys:String x:Key="Settings_ImportProfileDialogTitle">Tweak Profil anwenden?</sys:String>
     <sys:String x:Key="Settings_ImportProfileDialogContent">Dadurch werden alle in diesem Profil gespeicherten Windows-Einstellungen und Optimierungen sofort angewendet.&#x0a;&#x0a;Sind Sie sicher, dass Sie fortfahren möchten?</sys:String>
 
+    <sys:String x:Key="Settings_StartupMonitor_Title">Autostart-Monitor</sys:String>
+    <sys:String x:Key="Settings_StartupMonitor_Subtitle">Benachrichtigt Sie, wenn eine neue Anwendung sich im Hintergrund selbst zu Ihrer Autostart-Sequenz hinzufügt.</sys:String>
+
     <sys:String x:Key="toast_success_title">Erfolg</sys:String>
     <sys:String x:Key="toast_error_title">Fehler</sys:String>
     <sys:String x:Key="toast_restoring_title">Wiederherstellung</sys:String>
@@ -518,7 +521,8 @@
     <!-- region Software Center Page (Tabbed) -->
     <sys:String x:Key="Tab_Recommended">Empfohlenes Debloat</sys:String>
     <sys:String x:Key="Tab_Installed">Installierte Apps</sys:String>
-    <sys:String x:Key="Tab_AppStore">App-Store (WinGet)</sys:String>
+    <sys:String x:Key="Tab_AppStore">App Store (WinGet)</sys:String>
+    <sys:String x:Key="Tab_StartupApps">Autostart Apps</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
@@ -1951,5 +1955,50 @@
     <sys:String x:Key="btn_proceed">Fortfahren</sys:String>
     <sys:String x:Key="btn_cancel">Abbrechen</sys:String>
     <!-- endregion Navigation Guard & Busy State -->
+
+    <!-- region Startup Manager Page -->
+    <sys:String x:Key="startup_manager_page_total_apps">Apps Gesamt</sys:String>
+    <sys:String x:Key="startup_manager_page_enabled_apps">Aktiviert</sys:String>
+    <sys:String x:Key="startup_manager_page_disabled_apps">Deaktiviert</sys:String>
+
+    <sys:String x:Key="startup_manager_page_search_placeholder">Autostart Apps suchen...</sys:String>
+    <sys:String x:Key="startup_manager_page_all">Alle</sys:String>
+    <sys:String x:Key="startup_manager_page_enabled">Aktiviert</sys:String>
+    <sys:String x:Key="startup_manager_page_disabled">Deaktiviert</sys:String>
+    <sys:String x:Key="startup_manager_page_refresh">Liste aktualisieren</sys:String>
+
+    <sys:String x:Key="startup_manager_page_app_name">Anwendung</sys:String>
+    <sys:String x:Key="startup_manager_page_status">Status</sys:String>
+    <sys:String x:Key="startup_manager_page_source">Quelle</sys:String>
+    <sys:String x:Key="startup_manager_page_actions">Aktionen</sys:String>
+
+    <sys:String x:Key="startup_manager_page_open_location">Dateipfad öffnen</sys:String>
+    <sys:String x:Key="startup_manager_page_delete">Dauerhaft löschen</sys:String>
+
+    <sys:String x:Key="startup_manager_page_smart_profiles">Smart-Profile:</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_gaming">Gaming Modus</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_work">Arbeits Modus</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_save">Aktuelle als Profil speichern</sys:String>
+
+    <sys:String x:Key="startup_manager_page_profile_saved_title">Profil gespeichert</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_saved_content_dynamic">Ihre aktuelle Autostart Konfiguration wurde erfolgreich im Profil '{0}' gespeichert.</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_saved_ok">OK</sys:String>
+
+    <sys:String x:Key="startup_manager_page_profile_gaming_modified">Gaming-Modus (Geändert)</sys:String>
+    <sys:String x:Key="startup_manager_page_profile_work_modified">Arbeits-Modus (Geändert)</sys:String>
+
+    <sys:String x:Key="startup_manager_page_delay_tooltip_off">Verzögerung Aus : Klicken Sie hier, um durch die Startverzögerungen zu wechseln (15s, 30s, 45s, 60s, Aus).</sys:String>
+    <sys:String x:Key="startup_manager_page_delay_tooltip_active">Verzögerung: {0}s</sys:String>
+
+    <sys:String x:Key="startup_manager_page_results_text">{0} von {1} Autostart-Apps werden angezeigt.</sys:String>
+
+    <sys:String x:Key="startup_manager_page_delete_title">Autostart-Eintrag entfernen</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_content">Sind Sie sicher, dass Sie '{0}' dauerhaft aus dem Autostart entfernen möchten? Dies kann nicht rückgängig gemacht werden.</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_confirm">Entfernen</sys:String>
+    <sys:String x:Key="startup_manager_page_delete_cancel">Abbrechen</sys:String>
+
+    <sys:String x:Key="startup_manager_page_toast_new_app_title">Neue Autostart-App erkannt!</sys:String>
+    <sys:String x:Key="startup_manager_page_toast_new_app_message">{0} wurde soeben zum Autostart hinzugefügt.&#10;Nutzen Sie den EvolveOS Optimizer, um dies zu verwalten.</sys:String>
+    <!-- endregion Startup Manager Page -->
 
 </ResourceDictionary>

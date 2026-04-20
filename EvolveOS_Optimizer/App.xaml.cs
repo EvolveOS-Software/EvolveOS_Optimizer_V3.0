@@ -133,7 +133,7 @@ namespace EvolveOS_Optimizer
             СheckingGlobalParameters.Initialize();
             App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
 
-            _ = Core.ViewModel.MaintenanceViewModel.Current;
+            _ = MaintenanceViewModel.Current;
 
             SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
 
@@ -152,7 +152,7 @@ namespace EvolveOS_Optimizer
                 MainWindow.Activate();
             }
 
-            MainWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
+            MainWindow.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
             {
                 await Task.Delay(500);
                 UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
@@ -160,6 +160,11 @@ namespace EvolveOS_Optimizer
                 NotifyHotkeySettingsChanged();
 
                 _ = StartBackgroundServices();
+
+                if (LocalMachineSettingsEngine.EnableStartupMonitor)
+                {
+                    StartupChangeMonitor.StartWatching();
+                }
             });
         }
 
