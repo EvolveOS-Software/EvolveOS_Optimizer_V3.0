@@ -117,8 +117,8 @@
     <!-- endregion Main Window -->
 
     <!-- region Settings -->
-
-    <sys:String x:Key="Settings_Appearance_Subtitle">Pas de vormgeving van EvolveOS Optimizer aan op uw apparaat</sys:String>
+    <sys:String x:Key="Settings_Title">Instellingen</sys:String>
+    <sys:String x:Key="Settings_Appearance_Title">Uiterlijk</sys:String>
 
     <sys:String x:Key="Settings_Backdrop_Title">Systeemachtergrond</sys:String>
     <sys:String x:Key="Settings_Backdrop_Subtitle">Kies het transparantie-effect voor het venster</sys:String>

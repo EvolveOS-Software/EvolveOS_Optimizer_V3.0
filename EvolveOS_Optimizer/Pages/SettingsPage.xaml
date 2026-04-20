@@ -17,142 +17,139 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,20,0,0" Padding="4,0,28,40">
         <StackPanel Spacing="24" Margin="4,0,0,40">
 
-            <StackPanel Spacing="4">
-                <TextBlock helpers:Loc.Key="Settings_Appearance_Title"
-                           Style="{StaticResource TitleTextBlockStyle}" FontSize="28" FontWeight="Bold"/>
-                <TextBlock helpers:Loc.Key="Settings_Appearance_Subtitle" 
-                           Style="{StaticResource BodyTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
-            </StackPanel>
-
-            <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel VerticalAlignment="Center" Spacing="2">
-                        <TextBlock helpers:Loc.Key="Settings_Language_Title" FontWeight="SemiBold"/>
-                        <TextBlock helpers:Loc.Key="Settings_Language_Subtitle" 
-                                   Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
-                    </StackPanel>
-                    <ComboBox x:Name="LanguageSelector" Grid.Column="1" Width="200" SelectionChanged="LanguageSelector_SelectionChanged">
-                        <ComboBoxItem Content="English (EN)" Tag="en-us"/>
-                        <ComboBoxItem Content="Français (FR)" Tag="fr-fr"/>
-                        <ComboBoxItem Content="German (DE)" Tag="de-de"/>
-                        <ComboBoxItem Content="Italian (IT)" Tag="it-it"/>
-                        <ComboBoxItem Content="Nederlands (NL)" Tag="nl-nl"/>
-                    </ComboBox>
-                </Grid>
-            </Border>
+            <TextBlock Text="{x:Bind GetText('Settings_Title'), Mode=OneWay, FallbackValue='Settings'}"
+                       Style="{StaticResource TitleTextBlockStyle}" FontSize="28" FontWeight="Bold" Margin="0,0,0,12"/>
 
             <StackPanel Spacing="12">
-                <StackPanel Spacing="12">
-                    <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-                        <StackPanel Spacing="12">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_Backdrop_Title"
-                                               FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_Backdrop_Subtitle"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
-                                </StackPanel>
-                                <ComboBox x:Name="BackdropSelector"
-                                          Grid.Column="1"
-                                          Width="200"
-                                          VerticalAlignment="Center"
-                                          SelectionChanged="BackdropSelector_SelectionChanged">
-                                    <ComboBoxItem Tag="None"/>
-                                    <ComboBoxItem Tag="Mica"/>
-                                    <ComboBoxItem Tag="MicaAlt"/>
-                                    <ComboBoxItem Tag="Acrylic"/>
-                                    <ComboBoxItem Tag="AcrylicThin"/>
-                                </ComboBox>
-                            </Grid>
+                <TextBlock Text="{x:Bind GetText('Settings_Appearance_Title'), Mode=OneWay}"
+                           FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
-                            <StackPanel x:Name="AcrylicOptionsPanel" Spacing="16" Margin="0,12,0,0" Visibility="Collapsed" Opacity="0">
-                                <StackPanel.RenderTransform>
-                                    <TranslateTransform x:Name="PanelTransform" Y="-15"/>
-                                </StackPanel.RenderTransform>
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="{x:Bind GetText('Settings_Language_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_Language_Subtitle'), Mode=OneWay}"
+                                       Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                        <ComboBox x:Name="LanguageSelector" Grid.Column="1" Width="200" SelectionChanged="LanguageSelector_SelectionChanged">
+                            <ComboBoxItem Content="English (EN)" Tag="en-us"/>
+                            <ComboBoxItem Content="Français (FR)" Tag="fr-fr"/>
+                            <ComboBoxItem Content="German (DE)" Tag="de-de"/>
+                            <ComboBoxItem Content="Italian (IT)" Tag="it-it"/>
+                            <ComboBoxItem Content="Nederlands (NL)" Tag="nl-nl"/>
+                        </ComboBox>
+                    </Grid>
+                </Border>
 
-                                <StackPanel.Resources>
-                                    <Storyboard x:Name="ShowPanelAnimation">
-                                        <DoubleAnimation Storyboard.TargetName="AcrylicOptionsPanel" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:0.3"/>
-                                        <DoubleAnimation Storyboard.TargetName="PanelTransform" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.3">
-                                            <DoubleAnimation.EasingFunction>
-                                                <ExponentialEase Exponent="6" EasingMode="EaseOut"/>
-                                            </DoubleAnimation.EasingFunction>
-                                        </DoubleAnimation>
-                                    </Storyboard>
-                                </StackPanel.Resources>
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Title'), Mode=OneWay}"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Backdrop_Subtitle'), Mode=OneWay}"
+                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+                            <ComboBox x:Name="BackdropSelector"
+                                      Grid.Column="1"
+                                      Width="200"
+                                      VerticalAlignment="Center"
+                                      SelectionChanged="BackdropSelector_SelectionChanged">
+                                <ComboBoxItem Tag="None"/>
+                                <ComboBoxItem Tag="Mica"/>
+                                <ComboBoxItem Tag="MicaAlt"/>
+                                <ComboBoxItem Tag="Acrylic"/>
+                                <ComboBoxItem Tag="AcrylicThin"/>
+                            </ComboBox>
+                        </Grid>
 
-                                <MenuFlyoutSeparator/>
+                        <StackPanel x:Name="AcrylicOptionsPanel" Spacing="16" Margin="0,12,0,0" Visibility="Collapsed" Opacity="0">
+                            <StackPanel.RenderTransform>
+                                <TranslateTransform x:Name="PanelTransform" Y="-15"/>
+                            </StackPanel.RenderTransform>
 
-                                <StackPanel Spacing="4">
-                                    <Grid>
-                                        <TextBlock Text="Tint Opacity"
-                                                   Style="{StaticResource CaptionTextBlockStyle}"/>
-                                        <TextBlock Text="{x:Bind TintOpacitySlider.Value, Mode=OneWay}"
-                                                   HorizontalAlignment="Right"
-                                                   Style="{StaticResource CaptionTextBlockStyle}"/>
-                                    </Grid>
-                                    <Slider x:Name="TintOpacitySlider"
-                                            Minimum="0" Maximum="1"
-                                            StepFrequency="0.01"
-                                            ValueChanged="AcrylicSlider_ValueChanged"/>
-                                </StackPanel>
+                            <StackPanel.Resources>
+                                <Storyboard x:Name="ShowPanelAnimation">
+                                    <DoubleAnimation Storyboard.TargetName="AcrylicOptionsPanel" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:0.3"/>
+                                    <DoubleAnimation Storyboard.TargetName="PanelTransform" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.3">
+                                        <DoubleAnimation.EasingFunction>
+                                            <ExponentialEase Exponent="6" EasingMode="EaseOut"/>
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </StackPanel.Resources>
 
-                                <StackPanel Spacing="4">
-                                    <Grid>
-                                        <TextBlock Text="Luminosity Opacity"
-                                                   Style="{StaticResource CaptionTextBlockStyle}"/>
-                                        <TextBlock Text="{x:Bind LuminositySlider.Value, Mode=OneWay}"
-                                                   HorizontalAlignment="Right"
-                                                   Style="{StaticResource CaptionTextBlockStyle}"/>
-                                    </Grid>
-                                    <Slider x:Name="LuminositySlider"
-                                            Minimum="0"
-                                            Maximum="1"
-                                            StepFrequency="0.01"
-                                            ValueChanged="AcrylicSlider_ValueChanged"/>
-                                </StackPanel>
+                            <MenuFlyoutSeparator/>
 
-                                <StackPanel Spacing="4">
-                                    <TextBlock Text="Tint Color"
+                            <StackPanel Spacing="4">
+                                <Grid>
+                                    <TextBlock Text="{x:Bind GetText('Settings_TintOpacity_Title'), Mode=OneWay, FallbackValue='Tint Opacity'}"
                                                Style="{StaticResource CaptionTextBlockStyle}"/>
-                                    <DropDownButton x:Name="AcrylicColorButton" HorizontalAlignment="Stretch">
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <Border x:Name="ColorPreview"
-                                                    Width="20" Height="20"
-                                                    CornerRadius="10"
-                                                    Background="{ThemeResource Brush_Accent}"
-                                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                                    BorderThickness="1"/>
-                                            <TextBlock Text="Change Tint Color"/>
-                                        </StackPanel>
-                                        <DropDownButton.Flyout>
-                                            <Flyout Placement="Bottom">
-                                                <StackPanel Spacing="10">
-                                                    <ColorPicker x:Name="AcrylicColorPicker"
-                                                                 IsColorSliderVisible="True"
-                                                                 IsAlphaSliderVisible="False"
-                                                                 ColorChanged="AcrylicColorPicker_ColorChanged"/>
-                                                    <Button Content="Reset to Default"
-                                                            HorizontalAlignment="Stretch"
-                                                            Click="ResetAcrylicColor_Click"/>
-                                                </StackPanel>
-                                            </Flyout>
-                                        </DropDownButton.Flyout>
-                                    </DropDownButton>
-                                </StackPanel>
+                                    <TextBlock Text="{x:Bind TintOpacitySlider.Value, Mode=OneWay}"
+                                               HorizontalAlignment="Right"
+                                               Style="{StaticResource CaptionTextBlockStyle}"/>
+                                </Grid>
+                                <Slider x:Name="TintOpacitySlider"
+                                        Minimum="0" Maximum="1"
+                                        StepFrequency="0.01"
+                                        ValueChanged="AcrylicSlider_ValueChanged"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="4">
+                                <Grid>
+                                    <TextBlock Text="{x:Bind GetText('Settings_LuminosityOpacity_Title'), Mode=OneWay, FallbackValue='Luminosity Opacity'}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"/>
+                                    <TextBlock Text="{x:Bind LuminositySlider.Value, Mode=OneWay}"
+                                               HorizontalAlignment="Right"
+                                               Style="{StaticResource CaptionTextBlockStyle}"/>
+                                </Grid>
+                                <Slider x:Name="LuminositySlider"
+                                        Minimum="0"
+                                        Maximum="1"
+                                        StepFrequency="0.01"
+                                        ValueChanged="AcrylicSlider_ValueChanged"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{x:Bind GetText('Settings_TintColor_Title'), Mode=OneWay, FallbackValue='Tint Color'}"
+                                           Style="{StaticResource CaptionTextBlockStyle}"/>
+                                <DropDownButton x:Name="AcrylicColorButton" HorizontalAlignment="Stretch">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border x:Name="ColorPreview"
+                                                Width="20" Height="20"
+                                                CornerRadius="10"
+                                                Background="{ThemeResource Brush_Accent}"
+                                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                BorderThickness="1"/>
+                                        <TextBlock Text="{x:Bind GetText('Settings_ChangeTintColor_Button'), Mode=OneWay, FallbackValue='Change Tint Color'}"/>
+                                    </StackPanel>
+                                    <DropDownButton.Flyout>
+                                        <Flyout Placement="Bottom">
+                                            <StackPanel Spacing="10">
+                                                <ColorPicker x:Name="AcrylicColorPicker"
+                                                 IsColorSliderVisible="True"
+                                                 IsAlphaSliderVisible="False"
+                                                 ColorChanged="AcrylicColorPicker_ColorChanged"/>
+                                                <Button Content="{x:Bind GetText('Settings_ResetToDefault_Button'), Mode=OneWay, FallbackValue='Reset to Default'}"
+                                                        HorizontalAlignment="Stretch"
+                                                        Click="ResetAcrylicColor_Click"/>
+                                            </StackPanel>
+                                        </Flyout>
+                                    </DropDownButton.Flyout>
+                                </DropDownButton>
                             </StackPanel>
                         </StackPanel>
-                    </Border>
-                </StackPanel>
+                    </StackPanel>
+                </Border>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
@@ -162,8 +159,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_Theme_Title" FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_Theme_Subtitle" 
+                                <TextBlock Text="{x:Bind GetText('Settings_Theme_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Theme_Subtitle'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <ComboBox x:Name="ThemeSelector" Grid.Column="1" Width="200" VerticalAlignment="Center" SelectionChanged="ThemeSelector_SelectionChanged" IsEnabled="{x:Bind IsManualThemeEnabled, Mode=OneWay}">
@@ -181,14 +178,14 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_Theme_SyncOsTitle" FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_Theme_SyncOsSubtitle" 
+                                <TextBlock Text="{x:Bind GetText('Settings_Theme_SyncOsTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Theme_SyncOsSubtitle'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
-                            <ToggleSwitch Grid.Column="1" 
-                                          IsOn="{x:Bind SyncOsThemeWithApp, Mode=TwoWay}" 
+                            <ToggleSwitch Grid.Column="1"
+                                          IsOn="{x:Bind SyncOsThemeWithApp, Mode=TwoWay}"
                                           IsEnabled="{x:Bind IsManualThemeEnabled, Mode=OneWay}"
-                                          OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
+                                          OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
                                           OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
                         </Grid>
                     </StackPanel>
@@ -202,13 +199,13 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_AutoTheme_Title" FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_AutoTheme_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_AutoTheme_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_AutoTheme_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
-                            <ToggleSwitch Grid.Column="1" 
-                          IsOn="{x:Bind IsAutoThemeEnabled, Mode=TwoWay}" 
-                          OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
-                          OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
+                            <ToggleSwitch Grid.Column="1"
+                                          IsOn="{x:Bind IsAutoThemeEnabled, Mode=TwoWay}"
+                                          OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
+                                          OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
                         </Grid>
 
                         <StackPanel Visibility="{x:Bind IsAutoThemeEnabled, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Spacing="12">
@@ -220,7 +217,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_AutoTheme_LightTime" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_AutoTheme_LightTime'), Mode=OneWay}" FontWeight="SemiBold"/>
                                 </StackPanel>
                                 <TimePicker Grid.Column="1" Time="{x:Bind LightThemeTime, Mode=TwoWay}" HorizontalAlignment="Right"/>
                             </Grid>
@@ -231,7 +228,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_AutoTheme_DarkTime" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_AutoTheme_DarkTime'), Mode=OneWay}" FontWeight="SemiBold"/>
                                 </StackPanel>
                                 <TimePicker Grid.Column="1" Time="{x:Bind DarkThemeTime, Mode=TwoWay}" HorizontalAlignment="Right"/>
                             </Grid>
@@ -246,13 +243,13 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock helpers:Loc.Key="Settings_WindowBorder_Title" FontWeight="SemiBold"/>
-                            <TextBlock helpers:Loc.Key="Settings_WindowBorder_Subtitle" 
+                            <TextBlock Text="{x:Bind GetText('Settings_WindowBorder_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_WindowBorder_Subtitle'), Mode=OneWay}"
                                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
-                        <ToggleSwitch Grid.Column="1" 
-                                      IsOn="{x:Bind IsWindowBorderEnabled, Mode=TwoWay}" 
-                                      OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" 
+                        <ToggleSwitch Grid.Column="1"
+                                      IsOn="{x:Bind IsWindowBorderEnabled, Mode=TwoWay}"
+                                      OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}"
                                       OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
                     </Grid>
                 </Border>
@@ -261,16 +258,16 @@
                     <StackPanel Spacing="16">
                         <StackPanel Spacing="2">
                             <TextBlock Text="{x:Bind GetText('Settings_AccentColor_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{x:Bind GetText('Settings_AccentColor_Subtitle'), Mode=OneWay}" 
+                            <TextBlock Text="{x:Bind GetText('Settings_AccentColor_Subtitle'), Mode=OneWay}"
                                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                         </StackPanel>
 
                         <StackPanel Width="412" HorizontalAlignment="Left" Spacing="8">
-                            <GridView x:Name="ColorPalette" 
-                                      SelectionMode="Single" 
+                            <GridView x:Name="ColorPalette"
+                                      SelectionMode="Single"
                                       SelectionChanged="ColorPalette_SelectionChanged"
                                       HorizontalAlignment="Center"
-                                      Padding="6" 
+                                      Padding="6"
                                       IsItemClickEnabled="True">
                                 <GridView.ItemContainerStyle>
                                     <Style TargetType="GridViewItem">
@@ -296,11 +293,11 @@
                                                             <CompositeTransform/>
                                                         </Grid.RenderTransform>
                                                         <ContentPresenter/>
-                                                        <Border x:Name="SelectionBorder" 
-                                                                BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}" 
-                                                                BorderThickness="2" 
-                                                                Margin="-5" 
-                                                                CornerRadius="6" 
+                                                        <Border x:Name="SelectionBorder"
+                                                                BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                                                                BorderThickness="2"
+                                                                Margin="-5"
+                                                                CornerRadius="6"
                                                                 IsHitTestVisible="False"
                                                                 Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                                     </Grid>
@@ -356,15 +353,15 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <ColorPicker x:Name="AdvancedColorPicker" 
-                                                 IsAlphaEnabled="False" 
-                                                 IsHexInputVisible="True" 
-                                                 IsColorSliderVisible="True" 
+                                    <ColorPicker x:Name="AdvancedColorPicker"
+                                                 IsAlphaEnabled="False"
+                                                 IsHexInputVisible="True"
+                                                 IsColorSliderVisible="True"
                                                  IsMoreButtonVisible="True"
                                                  ColorSpectrumShape="Ring"
                                                  HorizontalAlignment="Center"
                                                  ColorChanged="AdvancedColorPicker_ColorChanged"/>
-                                    <Button Grid.Row="1" Content="{x:Bind GetText('Settings_ApplyColor_Button'), Mode=OneWay}" 
+                                    <Button Grid.Row="1" Content="{x:Bind GetText('Settings_ApplyColor_Button'), Mode=OneWay}"
                                             HorizontalAlignment="Stretch"
                                             Padding="10"
                                             Style="{StaticResource AccentButtonStyle}"
@@ -377,7 +374,7 @@
             </StackPanel>
 
             <StackPanel Spacing="12">
-                <TextBlock helpers:Loc.Key="Settings_System_Title" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock Text="{x:Bind GetText('Settings_System_Title'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <Grid>
@@ -386,8 +383,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock helpers:Loc.Key="Settings_Startup_Title" FontWeight="SemiBold"/>
-                            <TextBlock helpers:Loc.Key="Settings_Startup_Subtitle"
+                            <TextBlock Text="{x:Bind GetText('Settings_Startup_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_Startup_Subtitle'), Mode=OneWay}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                        TextWrapping="Wrap"/>
@@ -404,8 +401,8 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock helpers:Loc.Key="Settings_CloseToTray_Title" FontWeight="SemiBold"/>
-                            <TextBlock helpers:Loc.Key="Settings_CloseToTray_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_CloseToTray_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_CloseToTray_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
 
                         <ToggleSwitch Grid.Column="1" IsOn="{x:Bind IsCloseToTray, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
@@ -419,8 +416,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel VerticalAlignment="Center" Spacing="2">
-                            <TextBlock helpers:Loc.Key="Settings_StartMinimized_Title" FontWeight="SemiBold"/>
-                            <TextBlock helpers:Loc.Key="Settings_StartMinimized_Subtitle" 
+                            <TextBlock Text="{x:Bind GetText('Settings_StartMinimized_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_StartMinimized_Subtitle'), Mode=OneWay}" 
                                        Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1" IsOn="{x:Bind IsStartMinimized, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay, FallbackValue='On'}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay, FallbackValue='Off'}"/>
@@ -440,7 +437,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="lbl_autologin_header" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('lbl_autologin_header'), Mode=OneWay}" FontWeight="SemiBold"/>
                                 <TextBlock Text="Bypass the login screen and encrypt your session securely." 
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
@@ -454,12 +451,12 @@
 
                             <StackPanel Spacing="4">
                                 <Grid>
-                                    <TextBlock helpers:Loc.Key="lbl_session_duration" 
+                                    <TextBlock Text="{x:Bind GetText('lbl_session_duration'), Mode=OneWay}" 
                                                Style="{StaticResource CaptionTextBlockStyle}"/>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
                                         <TextBlock Text="{x:Bind SliderSessionHours.Value, Mode=OneWay}" 
                                                    Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemAccentColor}" FontWeight="Bold"/>
-                                        <TextBlock helpers:Loc.Key="lbl_unit_hours" 
+                                        <TextBlock Text="{x:Bind GetText('lbl_unit_hours'), Mode=OneWay}" 
                                                    Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemAccentColor}" FontWeight="Bold"/>
                                     </StackPanel>
                                 </Grid>
@@ -474,7 +471,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE823;" Foreground="{ThemeResource SystemAccentColor}" FontSize="16"/>
                                     <TextBlock x:Name="LblSessionExpiry" 
-                                               helpers:Loc.Key="lbl_session_expiry_default" 
+                                               Text="{x:Bind GetText('lbl_session_expiry_default'), Mode=OneWay}" 
                                                FontSize="12" VerticalAlignment="Center" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
                                 </StackPanel>
                             </Border>
@@ -488,15 +485,15 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="btgl_developer_mode_main" FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="btgl_developer_mode_subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="{x:Bind GetText('btgl_developer_mode_main'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('btgl_developer_mode_subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <ToggleSwitch x:Name="BtnDeveloperMode" Grid.Column="1" Toggled="BtnDeveloperMode_ChangedState" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
                         </Grid>
 
                         <StackPanel Visibility="{x:Bind BtnDeveloperMode.IsOn, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Spacing="12" Margin="0,8,0,0">
                             <MenuFlyoutSeparator/>
-                            <TextBlock helpers:Loc.Key="Settings_DevTools_Title" FontWeight="SemiBold" FontSize="14" Foreground="{ThemeResource SystemAccentColor}"/>
+                            <TextBlock Text="{x:Bind GetText('Settings_DevTools_Title'), Mode=OneWay}" FontWeight="SemiBold" FontSize="14" Foreground="{ThemeResource SystemAccentColor}"/>
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -504,8 +501,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_TranslationHotkey_Title" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_TranslationHotkey_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_TranslationHotkey_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_TranslationHotkey_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <ToggleSwitch x:Name="BtnTranslationHotkey" Grid.Column="1" IsOn="{x:Bind IsTranslationHotkeyEnabled, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"/>
                             </Grid>
@@ -531,10 +528,10 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_ViewLog_Title" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_ViewLog_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_ViewLog_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_ViewLog_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <Button Grid.Column="1" helpers:Loc.Key="Settings_DevTools_ViewLog_Button" Click="OpenMissingStringsJson_Click" MinWidth="150"/>
+                                <Button Grid.Column="1" Content="{x:Bind GetText('Settings_DevTools_ViewLog_Button'), Mode=OneWay}" Click="OpenMissingStringsJson_Click" MinWidth="150"/>
                             </Grid>
 
                             <MenuFlyoutSeparator Opacity="0.3"/>
@@ -544,10 +541,10 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_LocateFile_Title" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_LocateFile_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_LocateFile_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_LocateFile_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <Button Grid.Column="1" helpers:Loc.Key="Settings_DevTools_LocateFile_Button" Click="LocateLanguageFile_Click" MinWidth="150"/>
+                                <Button Grid.Column="1" Content="{x:Bind GetText('Settings_DevTools_LocateFile_Button'), Mode=OneWay}" Click="LocateLanguageFile_Click" MinWidth="150"/>
                             </Grid>
 
                             <MenuFlyoutSeparator Opacity="0.3"/>
@@ -557,13 +554,13 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_CreateTemplate_Title" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_CreateTemplate_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_CreateTemplate_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_CreateTemplate_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
                                     <TextBox x:Name="TxtNewLangCode" PlaceholderText="es-es" Width="80" MaxLength="5" VerticalAlignment="Center"/>
-                                    <Button helpers:Loc.Key="Settings_DevTools_CreateTemplate_Button" Click="CreateNewLanguage_Click" VerticalAlignment="Center"/>
+                                    <Button Content="{x:Bind GetText('Settings_DevTools_CreateTemplate_Button'), Mode=OneWay}" Click="CreateNewLanguage_Click" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Grid>
 
@@ -574,10 +571,10 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_Merge_Title" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_DevTools_Merge_Subtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_Merge_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DevTools_Merge_Subtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
-                                <Button Grid.Column="1" helpers:Loc.Key="Settings_DevTools_Merge_Button" Click="MergeStrings_Click" Style="{StaticResource AccentButtonStyle}" MinWidth="150"/>
+                                <Button Grid.Column="1" Content="{x:Bind GetText('Settings_DevTools_Merge_Button'), Mode=OneWay}" Click="MergeStrings_Click" Style="{StaticResource AccentButtonStyle}" MinWidth="150"/>
                             </Grid>
                         </StackPanel>
                     </StackPanel>
@@ -585,7 +582,7 @@
             </StackPanel>
 
             <StackPanel Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock helpers:Loc.Key="Settings_DbBackup_SectionTitle" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock Text="{x:Bind GetText('Settings_DbBackup_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
@@ -596,8 +593,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_DbBackup_AutoTitle" FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_DbBackup_AutoSubtitle"
+                                <TextBlock Text="{x:Bind GetText('Settings_DbBackup_AutoTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_DbBackup_AutoSubtitle'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
                             <ToggleSwitch x:Name="CbPerformDbBackup" Grid.Column="1"
@@ -615,8 +612,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_PersistentTitle" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_PersistentSubtitle"
+                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_PersistentTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_PersistentSubtitle'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <ToggleSwitch Grid.Column="1"
@@ -633,8 +630,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_EncryptTitle" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_EncryptSubtitle"
+                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_EncryptTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_EncryptSubtitle'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <ToggleSwitch Grid.Column="1"
@@ -651,14 +648,14 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
-                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_LocationTitle" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_DbBackup_LocationSubtitle"
+                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_LocationTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DbBackup_LocationSubtitle'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                                    <TextBox Text="{x:Bind DatabaseBackupPath, Mode=OneWay}" IsReadOnly="True" Width="220" VerticalAlignment="Center" PlaceholderText="{helpers:ResourceString Key=Settings_DbBackup_SelectFolder}"/>
-                                    <Button helpers:Loc.Key="Settings_DbBackup_BrowseButton" Click="BrowseBackupFolder_Click" VerticalAlignment="Center"/>
+                                    <TextBox Text="{x:Bind DatabaseBackupPath, Mode=OneWay}" IsReadOnly="True" Width="220" VerticalAlignment="Center" PlaceholderText="{x:Bind GetText('Settings_DbBackup_SelectFolder'), Mode=OneWay}"/>
+                                    <Button Content="{x:Bind GetText('Settings_DbBackup_BrowseButton'), Mode=OneWay}" Click="BrowseBackupFolder_Click" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -668,7 +665,7 @@
             </StackPanel>
 
             <StackPanel Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock helpers:Loc.Key="Settings_TweakProfiles_SectionTitle" Text="Tweak Profiles" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock Text="{x:Bind GetText('Settings_TweakProfiles_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Expander HorizontalAlignment="Stretch"
                           HorizontalContentAlignment="Stretch"
@@ -684,8 +681,8 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
-                                <TextBlock helpers:Loc.Key="Settings_TweakProfiles_Title" FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_TweakProfiles_Desc"
+                                <TextBlock Text="{x:Bind GetText('Settings_TweakProfiles_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_TweakProfiles_Desc'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                            TextWrapping="Wrap"
@@ -710,8 +707,8 @@
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
-                                    <TextBlock helpers:Loc.Key="Settings_ExportProfile_Title" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_ExportProfile_Desc"
+                                    <TextBlock Text="{x:Bind GetText('Settings_ExportProfile_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_ExportProfile_Desc'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                                TextWrapping="Wrap"/>
@@ -725,13 +722,13 @@
                                         VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE72D;" FontSize="16"/>
-                                        <TextBlock helpers:Loc.Key="Settings_ExportProfile_Button"/>
+                                        <TextBlock Text="{x:Bind GetText('Settings_ExportProfile_Button'), Mode=OneWay}"/>
                                     </StackPanel>
                                 </Button>
 
                                 <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
-                                    <TextBlock helpers:Loc.Key="Settings_ImportProfile_Title" FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_ImportProfile_Desc"
+                                    <TextBlock Text="{x:Bind GetText('Settings_ImportProfile_Title'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_ImportProfile_Desc'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                                TextWrapping="Wrap"/>
@@ -745,7 +742,7 @@
                                         VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE8B5;" FontSize="16"/>
-                                        <TextBlock helpers:Loc.Key="Settings_ImportProfile_Button"/>
+                                        <TextBlock Text="{x:Bind GetText('Settings_ImportProfile_Button'), Mode=OneWay}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -755,7 +752,7 @@
             </StackPanel>
 
             <StackPanel Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock helpers:Loc.Key="Settings_Recovery_SectionTitle" Text="Recovery" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock Text="{x:Bind GetText('Settings_Recovery_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Expander HorizontalAlignment="Stretch"
                           HorizontalContentAlignment="Stretch"
@@ -772,9 +769,9 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_RestoreTweaksTitle"
+                                <TextBlock Text="{x:Bind GetText('Settings_RestoreTweaksTitle'), Mode=OneWay}"
                                            FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_RestoreTweaksDesc"
+                                <TextBlock Text="{x:Bind GetText('Settings_RestoreTweaksDesc'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                            TextWrapping="Wrap"
@@ -789,7 +786,7 @@
                                     VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE777;" FontSize="16"/>
-                                    <TextBlock helpers:Loc.Key="Settings_RestoreTweaksButton"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_RestoreTweaksButton'), Mode=OneWay}"/>
                                 </StackPanel>
                             </Button>
                         </Grid>
@@ -803,9 +800,9 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_ForceWindowsDefaultsTitle"
+                                <TextBlock Text="{x:Bind GetText('Settings_ForceWindowsDefaultsTitle'), Mode=OneWay}"
                                            FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_ForceWindowsDefaultsDesc"
+                                <TextBlock Text="{x:Bind GetText('Settings_ForceWindowsDefaultsDesc'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                            TextWrapping="Wrap"
@@ -819,7 +816,7 @@
                                     VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE72C;" FontSize="16"/>
-                                    <TextBlock helpers:Loc.Key="Settings_ForceWindowsDefaultsButton"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_ForceWindowsDefaultsButton'), Mode=OneWay}"/>
                                 </StackPanel>
                             </Button>
                         </Grid>
@@ -841,9 +838,9 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_ResetAppTitle"
+                                <TextBlock Text="{x:Bind GetText('Settings_ResetAppTitle'), Mode=OneWay}"
                                            FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_ResetAppDesc"
+                                <TextBlock Text="{x:Bind GetText('Settings_ResetAppDesc'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                            TextWrapping="Wrap"
@@ -858,7 +855,7 @@
                                     VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE777;" FontSize="16"/>
-                                    <TextBlock helpers:Loc.Key="Settings_ResetAppButton"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_ResetAppButton'), Mode=OneWay}"/>
                                 </StackPanel>
                             </Button>
                         </Grid>
@@ -867,7 +864,7 @@
                     <Expander.Content>
                         <StackPanel Spacing="16" Padding="0,12,0,8">
 
-                            <TextBlock helpers:Loc.Key="Settings_ResetAppWarning"
+                            <TextBlock Text="{x:Bind GetText('Settings_ResetAppWarning'), Mode=OneWay}"
                                        FontStyle="Italic"
                                        Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
 
@@ -885,9 +882,9 @@
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
-                                    <TextBlock helpers:Loc.Key="Settings_ExportAppTitle"
+                                    <TextBlock Text="{x:Bind GetText('Settings_ExportAppTitle'), Mode=OneWay}"
                                                FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_ExportAppDesc"
+                                    <TextBlock Text="{x:Bind GetText('Settings_ExportAppDesc'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                                TextWrapping="Wrap"/>
@@ -901,14 +898,14 @@
                                         VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE72D;" FontSize="16"/>
-                                        <TextBlock helpers:Loc.Key="Settings_ExportAppButton"/>
+                                        <TextBlock Text="{x:Bind GetText('Settings_ExportAppButton'), Mode=OneWay}"/>
                                     </StackPanel>
                                 </Button>
 
                                 <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
-                                    <TextBlock helpers:Loc.Key="Settings_ImportAppTitle"
+                                    <TextBlock Text="{x:Bind GetText('Settings_ImportAppTitle'), Mode=OneWay}"
                                                FontWeight="SemiBold"/>
-                                    <TextBlock helpers:Loc.Key="Settings_ImportAppDesc"
+                                    <TextBlock Text="{x:Bind GetText('Settings_ImportAppDesc'), Mode=OneWay}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                                TextWrapping="Wrap"/>
@@ -922,7 +919,7 @@
                                         VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE8B5;" FontSize="16"/>
-                                        <TextBlock helpers:Loc.Key="Settings_ImportAppButton"/>
+                                        <TextBlock Text="{x:Bind GetText('Settings_ImportAppButton'), Mode=OneWay}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -946,8 +943,8 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_RevertTitle" FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_RevertDesc"
+                                <TextBlock Text="{x:Bind GetText('Settings_RevertTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_RevertDesc'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                            TextWrapping="Wrap"
@@ -962,7 +959,7 @@
                                     Margin="0,0,16,0">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE7A7;" FontSize="16"/>
-                                    <TextBlock helpers:Loc.Key="Settings_RevertButton"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_RevertButton'), Mode=OneWay}"/>
                                 </StackPanel>
                             </Button>
                         </Grid>
@@ -976,9 +973,9 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
-                                <TextBlock Text="{helpers:ResourceString Key=Settings_ShowRestorePointOnStart}"
+                                <TextBlock Text="{x:Bind GetText('Settings_ShowRestorePointOnStart'), Mode=OneWay}"
                                            FontWeight="SemiBold"/>
-                                <TextBlock Text="{helpers:ResourceString Key=Settings_ShowRestorePointOnStartDesc}"
+                                <TextBlock Text="{x:Bind GetText('Settings_ShowRestorePointOnStartDesc'), Mode=OneWay}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                            TextWrapping="Wrap"
@@ -989,15 +986,15 @@
                                           Grid.Column="1"
                                           VerticalAlignment="Center"
                                           IsOn="{x:Bind ShowRestorePointOnStart, Mode=TwoWay}"
-                                          OffContent="{helpers:ResourceString Key=Settings_ToggleOff}"
-                                          OnContent="{helpers:ResourceString Key=Settings_ToggleOn}"/>
+                                          OffContent="{x:Bind GetText('Settings_ToggleOff'), Mode=OneWay}"
+                                          OnContent="{x:Bind GetText('Settings_ToggleOn'), Mode=OneWay}"/>
                         </Grid>
                     </Expander.Content>
                 </Expander>
             </StackPanel>
 
             <StackPanel Spacing="12">
-                <TextBlock helpers:Loc.Key="Settings_Update_SectionTitle" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+                <TextBlock Text="{x:Bind GetText('Settings_Update_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
                     <StackPanel Spacing="16">
@@ -1007,8 +1004,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_Update_AutoTitle" FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_Update_AutoSubtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_AutoTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_AutoSubtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <ToggleSwitch Grid.Column="1" IsOn="{x:Bind IsUpdateCheckRequired, Mode=TwoWay}" OnContent="{x:Bind GetText('Settings_Update_ToggleOn'), Mode=OneWay}" OffContent="{x:Bind GetText('Settings_Update_ToggleOff'), Mode=OneWay}"/>
                         </Grid>
@@ -1021,8 +1018,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock helpers:Loc.Key="Settings_Update_ManualTitle" FontWeight="SemiBold"/>
-                                <TextBlock helpers:Loc.Key="Settings_Update_ManualSubtitle" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_ManualTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_Update_ManualSubtitle'), Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                             </StackPanel>
                             <Button Grid.Column="1" Content="{x:Bind GetText('Settings_Update_CheckButton'), Mode=OneWay}" Width="200" Click="ManualUpdateCheck_Click"/>
                         </Grid>
