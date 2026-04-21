@@ -898,8 +898,8 @@
                     </Border>
 
                     <Border x:Name="CardNetworkGraph" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-        CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
+                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
 
                         <Grid>
                             <Grid.RowDefinitions>
@@ -907,15 +907,29 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <Grid Grid.Row="0" Margin="0,0,0,16">
-                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Grid Grid.Row="0" Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,2,0,0">
                                     <FontIcon Glyph="&#xE839;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
                                     <TextBlock Text="Network History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                    <TextBlock x:Name="TxtCurrentDown" Text="D: 0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="14" Foreground="#0078D7"/>
-                                    <TextBlock x:Name="TxtCurrentUp" Text="U: 0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="14" Foreground="#881798"/>
+                                <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+
+                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
+                                        <FontIcon Glyph="&#xE896;" FontSize="12" Foreground="#0078D7" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="TxtCurrentDown" Text="0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#0078D7" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
+                                        <FontIcon Glyph="&#xE898;" FontSize="12" Foreground="#881798" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="TxtCurrentUp" Text="0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#881798" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
+                                    </StackPanel>
+
                                 </StackPanel>
                             </Grid>
 
@@ -982,6 +996,24 @@
                                     </Grid>
 
                                     <Canvas x:Name="NetGraphCanvas" SizeChanged="NetGraphCanvas_SizeChanged">
+
+                                        <Path x:Name="NetGraphFillUp" Opacity="0.15">
+                                            <Path.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Color="#881798" Offset="0.0" />
+                                                    <GradientStop Color="Transparent" Offset="1.0" />
+                                                </LinearGradientBrush>
+                                            </Path.Fill>
+                                        </Path>
+
+                                        <Path x:Name="NetGraphFillDown" Opacity="0.15">
+                                            <Path.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Color="#0078D7" Offset="0.0" />
+                                                    <GradientStop Color="Transparent" Offset="1.0" />
+                                                </LinearGradientBrush>
+                                            </Path.Fill>
+                                        </Path>
 
                                         <Path x:Name="NetGraphLineUp" Stroke="#881798" StrokeThickness="2" StrokeLineJoin="Round"/>
                                         <Ellipse x:Name="NetGraphDotUp" Width="8" Height="8" Fill="#881798" Margin="-4,-4,0,0" Visibility="Collapsed"/>

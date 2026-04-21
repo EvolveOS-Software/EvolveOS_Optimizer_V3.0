@@ -388,8 +388,8 @@ namespace EvolveOS_Optimizer.Pages
             while (_netDownHistory.Count > _maxNetDataPoints) _netDownHistory.RemoveAt(0);
             while (_netUpHistory.Count > _maxNetDataPoints) _netUpHistory.RemoveAt(0);
 
-            if (TxtCurrentDown != null) TxtCurrentDown.Text = $"D: {Math.Round(dlMbps, 1)} Mbps";
-            if (TxtCurrentUp != null) TxtCurrentUp.Text = $"U: {Math.Round(ulMbps, 1)} Mbps";
+            if (TxtCurrentDown != null) TxtCurrentDown.Text = $"{Math.Round(dlMbps, 1)} Mbps";
+            if (TxtCurrentUp != null) TxtCurrentUp.Text = $"{Math.Round(ulMbps, 1)} Mbps";
 
             DrawNetGraph();
         }
@@ -401,7 +401,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void DrawNetGraph()
         {
-            if (NetGraphCanvas == null || NetGraphLineDown == null || NetGraphLineUp == null) return;
+            if (NetGraphCanvas == null || NetGraphLineDown == null || NetGraphLineUp == null || NetGraphFillDown == null || NetGraphFillUp == null) return;
             if (_netDownHistory.Count < 2 || NetGraphCanvas.ActualWidth == 0 || NetGraphCanvas.ActualHeight == 0) return;
 
             double width = NetGraphCanvas.ActualWidth;
@@ -428,11 +428,22 @@ namespace EvolveOS_Optimizer.Pages
             var downFig = new PathFigure();
             var upFig = new PathFigure();
 
+            var downFillGeo = new PathGeometry();
+            var upFillGeo = new PathGeometry();
+            var downFillFig = new PathFigure();
+            var upFillFig = new PathFigure();
+
             double startYDown = height - (_netDownHistory[0] / maxNetScale * height);
             double startYUp = height - (_netUpHistory[0] / maxNetScale * height);
 
             downFig.StartPoint = new Windows.Foundation.Point(0, Math.Max(0, Math.Min(height, startYDown)));
             upFig.StartPoint = new Windows.Foundation.Point(0, Math.Max(0, Math.Min(height, startYUp)));
+
+            downFillFig.StartPoint = new Windows.Foundation.Point(0, height);
+            downFillFig.Segments.Add(new LineSegment { Point = downFig.StartPoint });
+
+            upFillFig.StartPoint = new Windows.Foundation.Point(0, height);
+            upFillFig.Segments.Add(new LineSegment { Point = upFig.StartPoint });
 
             Windows.Foundation.Point lastDownPoint = downFig.StartPoint;
             Windows.Foundation.Point lastUpPoint = upFig.StartPoint;
@@ -452,13 +463,25 @@ namespace EvolveOS_Optimizer.Pages
 
                 downFig.Segments.Add(new LineSegment { Point = lastDownPoint });
                 upFig.Segments.Add(new LineSegment { Point = lastUpPoint });
+
+                downFillFig.Segments.Add(new LineSegment { Point = lastDownPoint });
+                upFillFig.Segments.Add(new LineSegment { Point = lastUpPoint });
             }
+
+            downFillFig.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(width, height) });
+            upFillFig.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(width, height) });
 
             downGeo.Figures.Add(downFig);
             upGeo.Figures.Add(upFig);
 
+            downFillGeo.Figures.Add(downFillFig);
+            upFillGeo.Figures.Add(upFillFig);
+
             NetGraphLineDown.Data = downGeo;
             NetGraphLineUp.Data = upGeo;
+
+            NetGraphFillDown.Data = downFillGeo;
+            NetGraphFillUp.Data = upFillGeo;
 
             NetGraphDotDown.Visibility = Visibility.Visible;
             NetGraphDotUp.Visibility = Visibility.Visible;
@@ -560,7 +583,6 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region CPU Graph Logic
-        // Default to 60 seconds (30 ticks at 2s per tick)
         private int _maxCpuDataPoints = 30;
 
         private void UpdateAxisLabels(int totalSeconds)
