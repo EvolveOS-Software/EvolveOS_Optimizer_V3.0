@@ -219,12 +219,14 @@
 
                                 <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
 
-                                    <ToggleSwitch IsOn="{Binding IsEnabled, Mode=OneWay}" 
+                                    <ToggleSwitch IsOn="{Binding IsEnabled, Mode=OneWay}"
                                                   Toggled="StartupToggle_Toggled"
                                                   Tag="{Binding Id}"
                                                   MinWidth="0"
                                                   Margin="0,0,0,0"
-                                                  VerticalAlignment="Center"/>
+                                                  VerticalAlignment="Center"
+                                                  OnContent="{helpers:ResourceString Key=Settings_ToggleOn}"
+                                                  OffContent="{helpers:ResourceString Key=Settings_ToggleOff}"/>
 
                                     <Button Tag="{Binding Id}"
                                             Click="DelayApp_Click"
@@ -254,7 +256,7 @@
                                         <FontIcon Glyph="&#xE74D;" FontSize="14"/>
                                     </Button>
                                 </StackPanel>
-
+                                
                             </Grid>
                         </Border>
                     </DataTemplate>

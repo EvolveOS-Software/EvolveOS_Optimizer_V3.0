@@ -15,7 +15,8 @@ using System.Runtime.InteropServices;
 #>
 
 [assembly: AssemblyTitle("EvolveOS_Optimizer")]
-[assembly: AssemblyDescription("Portable Tool for an Ideal Windows Setup")]
+[assembly: AssemblyDescription("An advanced, self-contained Windows management suite for deep system optimization, privacy, and security.")]
+[assembly: AssemblyCompany("EvolveOS Software")]
 [assembly: AssemblyProduct("EvolveOS_Optimizer")]
 [assembly: AssemblyCopyright("© 2024-<#= DateTime.Now.Year #> EvolveOS")]
 [assembly: AssemblyTrademark("EvolveOS")]

@@ -13,7 +13,7 @@
 
 <br/><a href="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/releases/latest/download/EvolveOS_Optimizer.exe"><img src="https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/blob/master-net10.0/.github/button.png" width="260" height="68" alt="Download the latest version"></a><br/><br/>
 
-**A modern, lightweight, and aggressive system optimization tool built with WinUI 3 and the Windows App SDK.**
+**A modern, self-contained Windows management suite built with WinUI 3. It combines aggressive system optimization, deep privacy controls, and military-grade security tools into a single lightweight executable.**
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%2011-0078D7.svg?style=flat-square&logo=windows)](https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0)
 [![WinGet](https://img.shields.io/badge/WinGet-Validated%20&%20Safe-0078D7.svg?style=flat-square&logo=windows)](https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EvolveOS/Optimizer)
@@ -25,14 +25,13 @@
 ---
 
 ## 📖 About The Project
+The inspiration for this project came from navigating the fragmented landscape of Windows optimizers and debloat scripts. While many tools serve a specific niche, I wanted to build a unified powerhouse that perfectly aligned with my vision of the ultimate Windows companion. The result is a comprehensive suite designed from the ground up to merge aggressive system optimization with a highly refined, modern user experience.
 
-The inspiration for this project came from navigating the current landscape of Windows optimizers and debloat utilities. While many of these tools are useful, I wanted to build an application that perfectly aligned with my own vision of an optimization hub. The result is a tool designed from the ground up to offer a refined interface, fluid usability, and powerful under-the-hood tweaks that significantly elevate the Windows experience.
+EvolveOS Optimizer has evolved far beyond a simple debloat utility. It is a premium, open-source Windows management, security, and cryptographic suite. Built on the modern WinUI 3 and Windows App SDK frameworks, it runs entirely as a zero-footprint standalone executable—delivering deep OS control without adding to system bloat.
 
-EvolveOS Optimizer is a premium, open-source system maintenance utility designed to keep your Windows environment running at peak performance. Built on the modern **WinUI 3** framework, it features a deeply integrated background health monitor, native OS notifications, and a highly customizable, gorgeous UI. 
+Under the hood, it empowers users with features previously scattered across dozens of separate programs: military-grade AES-256 encryption, a custom Windows 11 ISO builder, an integrated WinGet software store, advanced registry startup management, and a robust profile deployment system. This raw power is wrapped in a dynamic, drag-and-drop dashboard brought to life with smooth Fluent animations, full Light and Dark theme support, and customizable UI backdrops (Mica and Acrylic).
 
-Experience a dynamic dashboard where you can effortlessly drag and drop cards like System Health, System Security, and DNS Encryption to fit your workflow. The interface is brought to life with smooth Fluent animations, full Light and Dark theme support, and advanced window backdrops (Mica, Mica Alt, Acrylic, and Acrylic Thin) complete with precise color and translucency sliders.
-
-Whether running actively on your dashboard or silently in your system tray, EvolveOS Optimizer continuously protects your system from memory leaks, cache bloat, and resource exhaustion without interrupting your workflow.
+Whether you are actively using it to lock down telemetry and generate custom offline boot media, or letting its Autopilot engine run silently in your system tray, EvolveOS Optimizer continuously defends your privacy, secures your data, and ensures your PC runs at absolute peak performance—all without ever interrupting your workflow.
 
 ## ✨ Key Features
 
@@ -53,10 +52,15 @@ Whether running actively on your dashboard or silently in your system tray, Evol
 * **Ultimate Privacy Shield:** Deep registry tweaks to completely disable Windows telemetry, diagnostic data collection, targeted advertising, and intrusive AI features like Copilot and Recall.
 * **Bloatware Decimation:** Cleanly force-uninstall pre-packaged UWP apps, including deeply embedded software like Microsoft Edge, OneDrive, Cortana, and third-party sponsored bloatware.
 * **Integrated WinGet App Store:** A powerful, fully GUI-driven software center powered by the Windows Package Manager. Easily search, install, update, and uninstall thousands of applications without ever opening a terminal. Features an advanced context menu offering granular control for power users, including interactive visual setups, machine-wide deployments, silent administrative executions, and the ability to safely bypass hash integrity checks.
+* **Advanced Startup & Boot Manager:** Take absolute control over your Windows boot sequence. Easily detect, toggle, or permanently delete auto-start applications from the registry and startup folders. Features an innovative "Cycle-Click" delay system to stagger application launches (15s–60s) preventing CPU "thundering herd" spikes during boot. Includes Authenticode digital signature verification to spot unverified publishers, and supports saving complex configurations into switchable Smart Profiles (Gaming/Work).
+* **Active Startup Monitor:** A silent background sentinel that actively guards your registry and boot folders. It instantly triggers a system-wide alert if a new application stealthily adds itself to your startup sequence without your permission, giving you the immediate power to block it.
 * **Network & DNS Optimizer:** Built-in DNS changer that automatically pings and finds the fastest servers. Features deep DNSCrypt integration to fully encrypt your internet routing, prevent ISP snooping, and enforce strict zero-log policies for completely invisible, trace-free web browsing.
 * **Advanced Service & Defender Control:** Safely suspend unnecessary background services (Xbox, Hyper-V, Maps) to free up resources. Features a powerful, ACL-level bypass to completely disable or restore Windows Defender via NSudo.
 * **System & UI Customization:** Fine-tune Windows Explorer, restore classic context menus, adjust keyboard/mouse input delays, and strip away resource-heavy visual effects.
 * **Group Policy Manager:** Includes a dedicated scanner to detect, review, and easily revert customized or corrupted Windows Group Policies back to default OS behavior.
+* **Advanced System Recovery & Safety Engine:** Tweak with absolute confidence. Features a multi-tiered recovery system allowing you to safely revert tweaks to their exact pre-optimized state, force a complete "Factory Reset" to standard Microsoft defaults (ideal for recovering from aggressive custom ISOs or old debloat scripts), and utilize seamless Windows System Restore integration with proactive initial backup prompts.
+* **Portable Tweak Profiles:** Export your highly customized Windows optimization states—including privacy toggles, services, and network tweaks—into easily deployable JSON files. Instantly import pre-configured profiles to set up new machines in seconds, or share your ultimate gaming/work configurations with the community.
+* **App Preferences Management:** Fully decouple your application settings from your OS tweaks. Safely reset, export, or import your custom UI themes, dashboard layouts, and automated background behavior configurations to keep your EvolveOS experience consistent across different installations.
 * **Gaming Mode (Smart Sniper Optimization):** Instantly shifts your system into high gear with a single click. Intelligently suspends non-essential background tasks, over 80 Windows services, and scheduled tasks while strictly protecting a "Do Not Touch" whitelist of essential gaming companions (Steam, Discord, OBS, Anti-Cheats). Automatically unleashes GPU power states, unlocks CPU core affinity for games, and seamlessly restores your system to its exact original state when disabled.
 * **Automated Background Monitoring:** A silent background engine that tracks RAM and Disk usage, alerting you only when critical thresholds are reached.
 * **System Tray Integration:** Run silently in the background with an ultra-light footprint, featuring a quick-access context menu to instantly jump to key pages or trigger optimizations directly from the taskbar without opening the full UI.
