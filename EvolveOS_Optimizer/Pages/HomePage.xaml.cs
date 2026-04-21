@@ -4,6 +4,7 @@
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using EvolveOS_Optimizer.Assets.UserControl;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -24,6 +25,9 @@ namespace EvolveOS_Optimizer.Pages
     public sealed partial class HomePage : Page, IPurgeable
     {
         #region Fields
+        private GridViewItem? _draggedWrapper;
+        private GridViewItem? _targetWrapper;
+
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
         private readonly DispatcherQueue _dispatcherQueue;
 
@@ -43,8 +47,6 @@ namespace EvolveOS_Optimizer.Pages
         private long _lastUploadBytes = 0;
         private DateTime _lastUpdateTime = DateTime.Now;
         private bool _isFirstTick = true;
-
-        private UIElement? _draggedCard;
 
         private List<double> _cpuHistory = new List<double>();
         private List<double> _ramHistory = new List<double>();
@@ -965,6 +967,7 @@ namespace EvolveOS_Optimizer.Pages
         #region Dashboard Customization (Drag, Drop, Visibility)
         private void LoadDashboardLayout()
         {
+            ToggleWeather.IsOn = SettingsEngine.Dashboard_CardWeather;
             ToggleNetwork.IsOn = SettingsEngine.Dashboard_CardNetwork;
             ToggleRam.IsOn = SettingsEngine.Dashboard_CardRam;
             ToggleCpu.IsOn = SettingsEngine.Dashboard_CardCpu;
@@ -979,21 +982,20 @@ namespace EvolveOS_Optimizer.Pages
             ToggleNetworkGraph.IsOn = SettingsEngine.Dashboard_CardNetworkGraph;
             ToggleGpuGraph.IsOn = SettingsEngine.Dashboard_CardGpuGraph;
 
-            CardWeather.Visibility = Visibility.Visible;
-            CardNetwork.Visibility = ToggleNetwork.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardRam.Visibility = ToggleRam.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardCpu.Visibility = ToggleCpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardGpu.Visibility = ToggleGpu.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardDisk.Visibility = ToggleDisk.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardDns.Visibility = ToggleDns.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardMaintenance.Visibility = ToggleHealth.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardSecurity.Visibility = ToggleSecurity.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardCpuGraph.Visibility = ToggleCpuGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardRamGraph.Visibility = ToggleRamGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardNetworkGraph.Visibility = ToggleNetworkGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
-            CardGpuGraph.Visibility = ToggleGpuGraph.IsOn ? Visibility.Visible : Visibility.Collapsed;
-
-            CardGamingMode.Visibility = ToggleGamingMode.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            SetCardVisibility("CardWeather", ToggleWeather.IsOn);
+            SetCardVisibility("CardNetwork", ToggleNetwork.IsOn);
+            SetCardVisibility("CardRam", ToggleRam.IsOn);
+            SetCardVisibility("CardCpu", ToggleCpu.IsOn);
+            SetCardVisibility("CardGpu", ToggleGpu.IsOn);
+            SetCardVisibility("CardDisk", ToggleDisk.IsOn);
+            SetCardVisibility("CardDns", ToggleDns.IsOn);
+            SetCardVisibility("CardMaintenance", ToggleHealth.IsOn);
+            SetCardVisibility("CardSecurity", ToggleSecurity.IsOn);
+            SetCardVisibility("CardCpuGraph", ToggleCpuGraph.IsOn);
+            SetCardVisibility("CardRamGraph", ToggleRamGraph.IsOn);
+            SetCardVisibility("CardNetworkGraph", ToggleNetworkGraph.IsOn);
+            SetCardVisibility("CardGpuGraph", ToggleGpuGraph.IsOn);
+            SetCardVisibility("CardGamingMode", ToggleGamingMode.IsOn);
 
             bool isGamingActive = GamingModeHelper.IsGamingModeActive;
             if (isGamingActive)
@@ -1020,31 +1022,20 @@ namespace EvolveOS_Optimizer.Pages
             string savedOrder = SettingsEngine.DashboardCardOrder;
             if (!string.IsNullOrWhiteSpace(savedOrder))
             {
-                var order = savedOrder.Split(',');
-                var currentCards = DashboardPanel.Children.OfType<FrameworkElement>().ToList();
+                var orderNames = savedOrder.Split(',');
 
-                DashboardPanel.Children.Clear();
-
-                var weatherCard = currentCards.FirstOrDefault(c => c.Name == "CardWeather");
-                if (weatherCard != null)
+                for (int i = 0; i < orderNames.Length; i++)
                 {
-                    DashboardPanel.Children.Add(weatherCard);
-                    currentCards.Remove(weatherCard);
-                }
+                    var name = orderNames[i];
 
-                foreach (var name in order)
-                {
-                    var card = currentCards.FirstOrDefault(c => c.Name == name);
-                    if (card != null)
+                    var wrapper = DashboardGridView.Items.OfType<GridViewItem>()
+                        .FirstOrDefault(gvi => gvi.Content is FrameworkElement fe && fe.Name == name);
+
+                    if (wrapper != null)
                     {
-                        DashboardPanel.Children.Add(card);
-                        currentCards.Remove(card);
+                        DashboardGridView.Items.Remove(wrapper);
+                        DashboardGridView.Items.Insert(i, wrapper);
                     }
-                }
-
-                foreach (var card in currentCards)
-                {
-                    DashboardPanel.Children.Add(card);
                 }
             }
 
@@ -1054,14 +1045,33 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void SetCardVisibility(string cardName, bool isVisible)
+        {
+            var container = DashboardGridView.Items.OfType<GridViewItem>()
+                .FirstOrDefault(i => i.Content is FrameworkElement fe && fe.Name == cardName);
+
+            if (container != null)
+            {
+                container.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+
+                if (cardName == "CardWeather" && DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+                {
+                    panel.InvalidateMeasure();
+                }
+            }
+        }
+
         private void SaveDashboardLayout()
         {
-            var order = DashboardPanel.Children.OfType<FrameworkElement>()
-                .Where(c => c.Name != "CardWeather")
-                .Select(c => c.Name).ToList();
+            var order = DashboardGridView.Items.OfType<GridViewItem>()
+                .Select(i => i.Content)
+                .OfType<FrameworkElement>()
+                .Select(fe => fe.Name)
+                .ToList();
 
             SettingsEngine.DashboardCardOrder = string.Join(",", order);
 
+            SettingsEngine.Dashboard_CardWeather = ToggleWeather.IsOn;
             SettingsEngine.Dashboard_CardNetwork = ToggleNetwork.IsOn;
             SettingsEngine.Dashboard_CardRam = ToggleRam.IsOn;
             SettingsEngine.Dashboard_CardCpu = ToggleCpu.IsOn;
@@ -1081,73 +1091,112 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is ToggleSwitch ts && ts.Tag is string cardName)
             {
-                var card = DashboardPanel.Children.OfType<FrameworkElement>().FirstOrDefault(c => c.Name == cardName);
-                if (card != null)
-                {
-                    card.Visibility = ts.IsOn ? Visibility.Visible : Visibility.Collapsed;
+                SetCardVisibility(cardName, ts.IsOn);
+                SaveDashboardLayout();
+            }
+        }
 
-                    /*if (cardName == "CardCpu")
-                    {
-                        var graphCard = DashboardPanel.Children.OfType<FrameworkElement>().FirstOrDefault(c => c.Name == "CardCpuGraph");
-                        if (graphCard != null) graphCard.Visibility = ts.IsOn ? Visibility.Visible : Visibility.Collapsed;
-                    }*/
+        private void DashboardGridView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+        {
+            if (e.Items.Count > 0)
+            {
+                _draggedWrapper = DashboardGridView.ContainerFromItem(e.Items[0]) as GridViewItem;
+
+                if (_draggedWrapper == null && e.Items[0] is GridViewItem gvi)
+                {
+                    _draggedWrapper = gvi;
+                }
+
+                if (_draggedWrapper == null && e.Items[0] is FrameworkElement fe)
+                {
+                    _draggedWrapper = DashboardGridView.Items.OfType<GridViewItem>()
+                        .FirstOrDefault(i => (i.Content as FrameworkElement) == fe || i == fe);
+                }
+
+                if (_draggedWrapper != null)
+                {
+                    e.Data.SetText("Swap");
+                    e.Data.RequestedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move;
+                    Debug.WriteLine($"[Drag] SUCCESS: Started dragging {(_draggedWrapper.Content as FrameworkElement)?.Name}");
+                }
+                else
+                {
+                    Debug.WriteLine("[Drag] ERROR: Could not identify the dragged wrapper.");
+                }
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.IsDragInProgress = true;
+            }
+        }
+
+        private void DashboardGridView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            Debug.WriteLine($"[Drag] Final Check - Dragged: {_draggedWrapper != null}, Target: {_targetWrapper != null}");
+
+            if (_draggedWrapper != null && _targetWrapper != null && _draggedWrapper != _targetWrapper)
+            {
+                int oldIndex = DashboardGridView.Items.IndexOf(_draggedWrapper);
+                int newIndex = DashboardGridView.Items.IndexOf(_targetWrapper);
+
+                if (oldIndex != -1 && newIndex != -1)
+                {
+                    Debug.WriteLine($"[Drag] EXECUTING SWAP: {oldIndex} -> {newIndex}");
+
+                    DashboardGridView.Items.RemoveAt(oldIndex);
+                    DashboardGridView.Items.Insert(newIndex, _draggedWrapper);
 
                     SaveDashboardLayout();
                 }
             }
+
+            _draggedWrapper = null;
+            _targetWrapper = null;
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.IsDragInProgress = false;
+                panel.InvalidateMeasure();
+            }
         }
 
-        private void DashCard_DragStarting(UIElement sender, DragStartingEventArgs args)
+        private void Card_DragOver(object sender, DragEventArgs e)
         {
-            _draggedCard = sender;
-            args.AllowedOperations = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move;
+            e.AcceptedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move;
+            e.DragUIOverride.Clear();
 
-            if (sender is FrameworkElement card)
+            if (sender is FrameworkElement targetCard)
             {
-                string cleanName = card.Name.Replace("Card", "");
-                args.Data.SetText($"Moving {cleanName}...");
+                string cleanName = targetCard.Name.Replace("Card", "");
+                string formatString = ResourceString.GetString("txt_swap_with_format");
+
+                e.DragUIOverride.Caption = string.Format(formatString, cleanName);
+            }
+            else
+            {
+                e.DragUIOverride.Caption = ResourceString.GetString("txt_swap_positions");
             }
 
-            sender.Opacity = 0.5;
+            //e.DragUIOverride.Caption = ResourceString.GetString("txt_release_to_swap");
+            e.DragUIOverride.IsCaptionVisible = true;
+
+            e.Handled = true;
         }
 
-        private void DashCard_DragOver(object sender, DragEventArgs e)
+        private void Card_DragEnter(object sender, DragEventArgs e)
         {
-            if (_draggedCard != null && sender is FrameworkElement targetCard)
+            if (sender is FrameworkElement fe && _draggedWrapper != null)
             {
-                if (targetCard.Name == "CardWeather" || targetCard == _draggedCard)
+                var container = DashboardGridView.Items.OfType<GridViewItem>()
+                    .FirstOrDefault(i => (i.Content as FrameworkElement) == fe);
+
+                if (container != null && container != _draggedWrapper)
                 {
-                    e.AcceptedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.None;
-                    e.Handled = true;
-                    return;
-                }
-
-                e.AcceptedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move;
-                e.Handled = true;
-            }
-        }
-
-        private void DashCard_Drop(object sender, DragEventArgs e)
-        {
-            if (_draggedCard != null && sender is FrameworkElement targetCard && targetCard.Name != "CardWeather")
-            {
-                int draggedIndex = DashboardPanel.Children.IndexOf(_draggedCard);
-                int targetIndex = DashboardPanel.Children.IndexOf(targetCard);
-
-                if (draggedIndex >= 0 && targetIndex > 0 && draggedIndex != targetIndex)
-                {
-                    DashboardPanel.Children.RemoveAt(draggedIndex);
-                    DashboardPanel.Children.Insert(targetIndex, _draggedCard);
-
-                    SaveDashboardLayout();
+                    _targetWrapper = container;
+                    Debug.WriteLine($"[Drag] Sticky Target Set: {fe.Name}");
                 }
             }
-        }
-
-        private void DashCard_DropCompleted(UIElement sender, DropCompletedEventArgs args)
-        {
-            sender.Opacity = 1.0;
-            _draggedCard = null;
         }
 
         private void SetCustomCursor(UIElement element, Microsoft.UI.Input.InputSystemCursorShape shape)
@@ -1165,6 +1214,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void DashboardDragCursor()
         {
+            SetCustomCursor(CardWeather, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardNetwork, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardRam, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardCpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
@@ -1180,6 +1230,9 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CardNetworkGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardGpuGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
 
+            SetCustomCursor(RefreshWeatherButton, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(LocationButton, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(Calendar, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnVision, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenDnsPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnStartService, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
@@ -1197,7 +1250,8 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsEngine.DashboardCardOrder = "CardDns,CardSecurity,CardGamingMode,CardMaintenance,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk";
+            SettingsEngine.DashboardCardOrder = "CardWeather,CardDns,CardSecurity,CardGamingMode,CardMaintenance,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk";
+            SettingsEngine.Dashboard_CardWeather = true;
             SettingsEngine.Dashboard_CardNetwork = true;
             SettingsEngine.Dashboard_CardRam = true;
             SettingsEngine.Dashboard_CardCpu = true;
@@ -1213,6 +1267,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_GraphTimeframe = 0;
             SettingsEngine.Dashboard_CardGpuGraph = true;
 
+            ToggleWeather.IsOn = true;
             ToggleNetwork.IsOn = true;
             ToggleRam.IsOn = true;
             ToggleCpu.IsOn = true;
@@ -1841,7 +1896,6 @@ namespace EvolveOS_Optimizer.Pages
         {
             Debug.WriteLine("[HomePage] Deep Purge Initiated...");
 
-
             if (_monitoringTimer != null)
             {
                 _monitoringTimer.Stop();
@@ -1856,9 +1910,12 @@ namespace EvolveOS_Optimizer.Pages
                 _wallpaperTimer = null;
             }
 
-            if (DashboardPanel != null)
+            if (DashboardGridView != null)
             {
-                DashboardPanel.Children.Clear();
+                DashboardGridView.DragItemsStarting -= DashboardGridView_DragItemsStarting;
+                DashboardGridView.DragItemsCompleted -= DashboardGridView_DragItemsCompleted;
+
+                DashboardGridView.Items.Clear();
             }
 
             HardwareData.ClearResources();

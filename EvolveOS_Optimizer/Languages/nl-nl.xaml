@@ -308,6 +308,9 @@
     <sys:String x:Key="text_customize_dashboard">Dashboard aanpassen</sys:String>
     <sys:String x:Key="tooltip_customize_layout">Dashboard-indeling aanpassen</sys:String>
 
+    <sys:String x:Key="txt_swap_with_format">Wisselen met {0}</sys:String>
+    <sys:String x:Key="txt_swap_positions">Posities wisselen</sys:String>
+
     <!-- Security Card -->
     <sys:String x:Key="title_security_card">État de la sécurité</sys:String>
     <sys:String x:Key="tooltip_open_security">Ouvrir le centre de sécurité</sys:String>

@@ -308,6 +308,9 @@
     <sys:String x:Key="text_customize_dashboard">Personnaliser le tableau de bord</sys:String>
     <sys:String x:Key="tooltip_customize_layout">Personnaliser la disposition du tableau de bord</sys:String>
 
+    <sys:String x:Key="txt_swap_with_format">Échanger avec {0}</sys:String>
+    <sys:String x:Key="txt_swap_positions">Échanger les positions</sys:String>
+
     <!-- Security Card -->
     <sys:String x:Key="title_security_card">État de la sécurité</sys:String>
     <sys:String x:Key="tooltip_open_security">Ouvrir le centre de sécurité</sys:String>

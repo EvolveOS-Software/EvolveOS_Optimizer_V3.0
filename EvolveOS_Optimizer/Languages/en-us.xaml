@@ -313,6 +313,9 @@
     <sys:String x:Key="text_customize_dashboard">Customize Dashboard</sys:String>
     <sys:String x:Key="tooltip_customize_layout">Customize Dashboard Layout</sys:String>
 
+    <sys:String x:Key="txt_swap_with_format">Swap with {0}</sys:String>
+    <sys:String x:Key="txt_swap_positions">Swap positions</sys:String>
+
     <!-- Security Card -->
     <sys:String x:Key="title_security_card">Security Status</sys:String>
     <sys:String x:Key="tooltip_open_security">Open Security Hub</sys:String>

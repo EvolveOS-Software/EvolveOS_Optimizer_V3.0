@@ -69,7 +69,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableStartMinimized"] = false,
             ["EncryptionMode"] = KeyDerivationMode.Balanced.ToString(),
 
-            ["DashboardCardOrder"] = "CardDns,CardSecurity,CardGamingMode,CardMaintenance,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk",
+            ["DashboardCardOrder"] = "CardWeather,CardDns,CardSecurity,CardGamingMode,CardMaintenance,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk",
+            ["Dashboard_CardWeather"] = true,
             ["Dashboard_CardNetwork"] = true,
             ["Dashboard_CardRam"] = true,
             ["Dashboard_CardCpu"] = true,
@@ -148,6 +149,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static int PasswordGenHotkeyKey { get => (int)_cachedSettings["PasswordGenHotkeyKey"]; set => ChangingParameters("PasswordGenHotkeyKey", value); }
 
         internal static string DashboardCardOrder { get => (string)_cachedSettings["DashboardCardOrder"]; set => ChangingParameters("DashboardCardOrder", value); }
+        internal static bool Dashboard_CardWeather { get => (bool)_cachedSettings["Dashboard_CardWeather"]; set => ChangingParameters("Dashboard_CardWeather", value); }
         internal static bool Dashboard_CardNetwork { get => (bool)_cachedSettings["Dashboard_CardNetwork"]; set => ChangingParameters("Dashboard_CardNetwork", value); }
         internal static bool Dashboard_CardRam { get => (bool)_cachedSettings["Dashboard_CardRam"]; set => ChangingParameters("Dashboard_CardRam", value); }
         internal static bool Dashboard_CardCpu { get => (bool)_cachedSettings["Dashboard_CardCpu"]; set => ChangingParameters("Dashboard_CardCpu", value); }

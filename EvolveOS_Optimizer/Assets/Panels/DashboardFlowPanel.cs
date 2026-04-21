@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
@@ -8,6 +11,8 @@ namespace EvolveOS_Optimizer.Assets.UserControl
     public sealed class DashboardFlowPanel : Panel
     {
         private readonly Dictionary<UIElement, Point> _lastPos = new();
+
+        public bool IsDragInProgress { get; set; } = false;
 
         public static readonly DependencyProperty HorizontalSpacingProperty = DependencyProperty.Register(
             nameof(HorizontalSpacing), typeof(double), typeof(DashboardFlowPanel),
@@ -40,161 +45,147 @@ namespace EvolveOS_Optimizer.Assets.UserControl
 
         private const int LargeCardColumnSpan = 2;
         private const int LargeCardRowSpan = 2;
-
         private const double SmallCardFixedUnitWidth = 356.0;
         private const double SmallCardFixedUnitHeight = 220.0;
 
-        private const double Bleed = 0;
-
-        private double _smallCardWidth = SmallCardFixedUnitWidth;
-        private double _smallCardHeight = SmallCardFixedUnitHeight;
         private readonly List<bool[]> _cellOccupancy = new List<bool[]>();
 
-        private UIElement? BigCard => Children.FirstOrDefault(c => c.Visibility == Visibility.Visible);
+        private UIElement? BigCard
+        {
+            get
+            {
+                foreach (var child in Children)
+                {
+                    if (child.Visibility != Visibility.Visible) continue;
+                    if (child is GridViewItem gvi && gvi.Content is FrameworkElement fe && fe.Name == "CardWeather")
+                        return child;
+                    if (child is FrameworkElement directFe && directFe.Name == "CardWeather")
+                        return child;
+                }
+                return null;
+            }
+        }
+
+        private void EnsureRowExists(int rowIndex, int totalColumns)
+        {
+            while (_cellOccupancy.Count <= rowIndex)
+                _cellOccupancy.Add(new bool[totalColumns]);
+        }
+
+        private (int row, int col) FindNextAvailableCellWithSpan(int colSpan, int rowSpan, int totalColumns)
+        {
+            for (int r = 0; ; r++)
+            {
+                EnsureRowExists(r + rowSpan - 1, totalColumns);
+                for (int c = 0; c <= totalColumns - colSpan; c++)
+                {
+                    bool isAreaFree = true;
+                    for (int ar = r; ar < r + rowSpan; ar++)
+                    {
+                        for (int ac = c; ac < c + colSpan; ac++)
+                        {
+                            if (_cellOccupancy[ar][ac]) { isAreaFree = false; break; }
+                        }
+                        if (!isAreaFree) break;
+                    }
+                    if (isAreaFree) return (r, c);
+                }
+            }
+        }
 
         private int CalculateTotalColumns(double availableWidth)
         {
             if (availableWidth <= 0 || double.IsInfinity(availableWidth)) return 4;
-            double slotWidth = _smallCardWidth + Bleed;
-            int dynamicTotalColumns = (int)Math.Floor((availableWidth + HorizontalSpacing) / (slotWidth + HorizontalSpacing));
+            int dynamicTotalColumns = (int)Math.Floor((availableWidth + HorizontalSpacing) / (SmallCardFixedUnitWidth + HorizontalSpacing));
             return Math.Max(LargeCardColumnSpan, dynamicTotalColumns);
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
             _cellOccupancy.Clear();
-            _smallCardWidth = SmallCardFixedUnitWidth;
-            _smallCardHeight = SmallCardFixedUnitHeight;
-
             var visibleChildren = Children.Where(c => c.Visibility != Visibility.Collapsed).ToList();
             if (visibleChildren.Count == 0) return new Size(0, 0);
 
             int totalColumns = CalculateTotalColumns(availableSize.Width);
-
-            var bigCardWidth = (_smallCardWidth * LargeCardColumnSpan) + HorizontalSpacing;
-            var bigCardHeight = ((_smallCardHeight * LargeCardRowSpan) + (VerticalSpacing * (LargeCardRowSpan - 1)));
-
             var bigCard = BigCard;
-            if (bigCard != null)
+
+            var bigCardWidth = (SmallCardFixedUnitWidth * LargeCardColumnSpan) + HorizontalSpacing;
+            var bigCardHeight = (SmallCardFixedUnitHeight * LargeCardRowSpan) + VerticalSpacing;
+
+            double maxLayoutHeight = 0;
+
+            foreach (var child in visibleChildren)
             {
-                bigCard.Measure(new Size(bigCardWidth + Bleed, bigCardHeight + Bleed));
+                bool isBig = (child == bigCard);
+                int colSpan = isBig ? LargeCardColumnSpan : 1;
+                int rowSpan = isBig ? LargeCardRowSpan : 1;
+
+                (int row, int col) = FindNextAvailableCellWithSpan(colSpan, rowSpan, totalColumns);
+
+                for (int r = row; r < row + rowSpan; r++)
+                {
+                    EnsureRowExists(r, totalColumns);
+                    for (int c = col; c < col + colSpan; c++) _cellOccupancy[r][c] = true;
+                }
+
+                double w = isBig ? bigCardWidth : SmallCardFixedUnitWidth;
+                double h = isBig ? bigCardHeight : SmallCardFixedUnitHeight;
+
+                child.Measure(new Size(w, h));
+
+                maxLayoutHeight = Math.Max(maxLayoutHeight, (row + rowSpan) * (SmallCardFixedUnitHeight + VerticalSpacing));
             }
 
-            var unitConstraint = new Size(_smallCardWidth + Bleed, _smallCardHeight + Bleed);
-            foreach (var child in visibleChildren.Where(c => c != bigCard))
-            {
-                child.Measure(unitConstraint);
-            }
-
-            var desiredWidth = (totalColumns * _smallCardWidth) + (Math.Max(0, totalColumns - 1) * HorizontalSpacing);
-
-            int smallCardCount = visibleChildren.Except(new[] { BigCard }).Count();
-            int requiredRows = LargeCardRowSpan;
-            int cellsAvailableBesideBigCard = (totalColumns * LargeCardRowSpan) - (LargeCardColumnSpan * LargeCardRowSpan);
-            int smallCardsOverflowing = Math.Max(0, smallCardCount - cellsAvailableBesideBigCard);
-            int overflowRows = (int)Math.Ceiling((double)smallCardsOverflowing / totalColumns);
-
-            requiredRows += overflowRows;
-
-            double requiredHeight = (requiredRows * _smallCardHeight) + (Math.Max(0, requiredRows - 1) * VerticalSpacing);
-
-            if (requiredHeight <= 0 && bigCard != null) requiredHeight = bigCardHeight;
-
-            return new Size(desiredWidth, requiredHeight + Bleed);
+            double desiredWidth = (totalColumns * SmallCardFixedUnitWidth) + ((totalColumns - 1) * HorizontalSpacing);
+            return new Size(desiredWidth, maxLayoutHeight);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
+            _cellOccupancy.Clear();
             var visibleChildren = Children.Where(c => c.Visibility != Visibility.Collapsed).ToList();
-            if (visibleChildren.Count == 0)
-            {
-                double fixedWidth = CalculateTotalColumns(finalSize.Width) * SmallCardFixedUnitWidth + (Math.Max(0, CalculateTotalColumns(finalSize.Width) - 1) * HorizontalSpacing);
-                return new Size(fixedWidth, finalSize.Height);
-            }
-
-            _smallCardWidth = SmallCardFixedUnitWidth;
-            _smallCardHeight = SmallCardFixedUnitHeight;
-
-            var bigCardWidth = (_smallCardWidth * LargeCardColumnSpan) + (HorizontalSpacing * (LargeCardColumnSpan - 1));
-            var bigCardHeight = ((_smallCardHeight * LargeCardRowSpan) + (VerticalSpacing * (LargeCardRowSpan - 1)));
+            if (visibleChildren.Count == 0) return finalSize;
 
             int totalColumns = CalculateTotalColumns(finalSize.Width);
-            _cellOccupancy.Clear();
-            int currentRow = 0;
-            int currentCol = 0;
-
-            void EnsureRowExists(int rowIndex)
-            {
-                while (_cellOccupancy.Count <= rowIndex) _cellOccupancy.Add(new bool[totalColumns]);
-            }
-
-            (int row, int col) FindNextAvailableCell(int startRow, int startCol = 0)
-            {
-                for (int r = startRow; ; r++)
-                {
-                    EnsureRowExists(r);
-                    for (int c = startCol; c < totalColumns; c++)
-                    {
-                        if (!_cellOccupancy[r][c]) return (r, c);
-                    }
-                    startCol = 0;
-                }
-            }
-
             var bigCard = BigCard;
-            double maxLayoutHeight = 0;
 
-            if (bigCard != null)
+            var bigCardWidth = (SmallCardFixedUnitWidth * LargeCardColumnSpan) + HorizontalSpacing;
+            var bigCardHeight = (SmallCardFixedUnitHeight * LargeCardRowSpan) + VerticalSpacing;
+
+            foreach (var child in visibleChildren)
             {
-                for (int r = 0; r < LargeCardRowSpan; r++)
+                bool isBig = (child == bigCard);
+                int colSpan = isBig ? LargeCardColumnSpan : 1;
+                int rowSpan = isBig ? LargeCardRowSpan : 1;
+
+                (int row, int col) = FindNextAvailableCellWithSpan(colSpan, rowSpan, totalColumns);
+
+                for (int r = row; r < row + rowSpan; r++)
                 {
-                    for (int c = 0; c < LargeCardColumnSpan; c++)
-                    {
-                        EnsureRowExists(r);
-                        if (c < totalColumns) _cellOccupancy[r][c] = true;
-                    }
+                    EnsureRowExists(r, totalColumns);
+                    for (int c = col; c < col + colSpan; c++) _cellOccupancy[r][c] = true;
                 }
 
-                var rect = new Rect(0, 0, bigCardWidth + Bleed, bigCardHeight + Bleed);
-                bigCard.Arrange(rect);
+                double w = isBig ? bigCardWidth : SmallCardFixedUnitWidth;
+                double h = isBig ? bigCardHeight : SmallCardFixedUnitHeight;
+                double targetX = col * (SmallCardFixedUnitWidth + HorizontalSpacing);
+                double targetY = row * (SmallCardFixedUnitHeight + VerticalSpacing);
 
-                AnimateChild(bigCard, new Point(0, 0));
-
-                currentCol = LargeCardColumnSpan;
-                currentRow = 0;
-                maxLayoutHeight = bigCardHeight;
-            }
-
-            foreach (UIElement child in visibleChildren)
-            {
-                if (child == bigCard) continue;
-
-                (currentRow, currentCol) = FindNextAvailableCell(currentRow, currentCol);
-
-                if (currentRow < _cellOccupancy.Count && currentCol < totalColumns)
-                {
-                    _cellOccupancy[currentRow][currentCol] = true;
-                }
-
-                double targetX = (currentCol * (_smallCardWidth + HorizontalSpacing));
-                double targetY = (currentRow * (_smallCardHeight + VerticalSpacing));
-
-                var rect = new Rect(0, 0, _smallCardWidth + Bleed, _smallCardHeight + Bleed);
-                child.Arrange(rect);
+                child.Arrange(new Rect(targetX, targetY, w, h));
 
                 AnimateChild(child, new Point(targetX, targetY));
-
-                maxLayoutHeight = Math.Max(maxLayoutHeight, targetY + _smallCardHeight);
-                currentCol++;
             }
 
-            return new Size(finalSize.Width, maxLayoutHeight + Bleed);
+            return finalSize;
         }
 
         private void AnimateChild(UIElement child, Point newPos)
         {
+            if (IsDragInProgress) return;
+
             Visual visual = ElementCompositionPreview.GetElementVisual(child);
-            Vector3 targetOffset = new Vector3((float)newPos.X, (float)newPos.Y, 0f);
+
+            Vector3 targetOffset = Vector3.Zero;
 
             if (!_lastPos.ContainsKey(child))
             {
@@ -203,13 +194,19 @@ namespace EvolveOS_Optimizer.Assets.UserControl
                 return;
             }
 
-            if (Math.Abs(_lastPos[child].X - newPos.X) < 0.5 && Math.Abs(_lastPos[child].Y - newPos.Y) < 0.5) return;
+            if (Math.Abs(_lastPos[child].X - newPos.X) > 0.5 || Math.Abs(_lastPos[child].Y - newPos.Y) > 0.5)
+            {
+                var oldPos = _lastPos[child];
+                _lastPos[child] = newPos;
 
-            _lastPos[child] = newPos;
-            var moveAnim = visual.Compositor.CreateVector3KeyFrameAnimation();
-            moveAnim.InsertKeyFrame(1.0f, targetOffset, visual.Compositor.CreateCubicBezierEasingFunction(new Vector2(0.4f, 0.0f), new Vector2(0.2f, 1.0f)));
-            moveAnim.Duration = TimeSpan.FromMilliseconds(450);
-            visual.StartAnimation("Offset", moveAnim);
+                Vector3 startOffset = new Vector3((float)(oldPos.X - newPos.X), (float)(oldPos.Y - newPos.Y), 0f);
+                visual.Offset = startOffset;
+
+                var moveAnim = visual.Compositor.CreateVector3KeyFrameAnimation();
+                moveAnim.InsertKeyFrame(1.0f, Vector3.Zero);
+                moveAnim.Duration = TimeSpan.FromMilliseconds(450);
+                visual.StartAnimation("Offset", moveAnim);
+            }
         }
     }
 }

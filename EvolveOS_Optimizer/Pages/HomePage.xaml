@@ -22,6 +22,35 @@
         <SolidColorBrush x:Key="Brush_Inactive" Color="#808080"/>
         <SolidColorBrush x:Key="Brush_Highlighted" Color="White"/>
 
+        <SolidColorBrush x:Key="GridViewItemPlaceholderBackground" Color="Transparent" />
+        <SolidColorBrush x:Key="GridViewItemDragBackground" Color="Transparent" />
+
+        <Style x:Key="CleanGridViewItemStyle" TargetType="GridViewItem">
+            <Setter Property="UseSystemFocusVisuals" Value="False"/>
+            <Setter Property="FocusVisualPrimaryThickness" Value="0"/>
+            <Setter Property="FocusVisualSecondaryThickness" Value="0"/>
+
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="IsHitTestVisible" Value="True"/>
+            <Setter Property="IsSelected" Value="False"/>
+            <Setter Property="AllowDrop" Value="True"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewItem">
+                        <Grid Background="Transparent" AllowDrop="True">
+                            <ContentPresenter x:Name="ContentPresenter"
+                                              ContentTransitions="{TemplateBinding ContentTransitions}"
+                                              Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="DashCard" TargetType="Border">
             <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
             <Setter Property="CornerRadius" Value="8"/>
@@ -165,6 +194,7 @@
                         <Flyout>
                             <StackPanel Spacing="10" MinWidth="200">
                                 <TextBlock helpers:Loc.Key="text_customize_dashboard" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,0,5"/>
+                                <ToggleSwitch x:Name="ToggleWeather" Header="Weather" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardWeather"/>
                                 <ToggleSwitch x:Name="ToggleNetwork" Header="Network Status" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetwork"/>
                                 <ToggleSwitch x:Name="ToggleRam" Header="RAM Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRam"/>
                                 <ToggleSwitch x:Name="ToggleCpu" Header="CPU Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpu"/>
@@ -199,939 +229,960 @@
             </StackPanel>
         </Grid>
 
-        <ScrollViewer Grid.Row="1" Margin="0,0,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,-20">
+        <GridView x:Name="DashboardGridView"
+                  Grid.Row="1"
+                  Margin="0,0,0,-20"
+                  Padding="0,0,0,0"
+                  SelectionMode="None"
+                  CanReorderItems="False"
+                  CanDragItems="True"
+                  AllowDrop="True"
+                  DragItemsStarting="DashboardGridView_DragItemsStarting"
+                  DragItemsCompleted="DashboardGridView_DragItemsCompleted"
+                  ItemContainerStyle="{StaticResource CleanGridViewItemStyle}"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
 
-            <StackPanel>
-                <uc:DashboardFlowPanel x:Name="DashboardPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,0,0" HorizontalSpacing="10" VerticalSpacing="10">
-                    <uc:DashboardFlowPanel.ChildrenTransitions>
-                        <TransitionCollection>
-                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
-                        </TransitionCollection>
-                    </uc:DashboardFlowPanel.ChildrenTransitions>
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <uc:DashboardFlowPanel HorizontalSpacing="10" VerticalSpacing="10" />
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
 
-                    <Border x:Name="CardWeather" Style="{StaticResource DashCard}" Padding="15" Margin="0" AllowDrop="True" DragOver="DashCard_DragOver">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="294"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0">
+            <GridViewItem>
+                <Border x:Name="CardWeather" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="294"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0" VerticalAlignment="Top">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0" VerticalAlignment="Top">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <StackPanel Grid.Row="0" VerticalAlignment="Top" Margin="0, 10, 0, 10">
-                                            <TextBlock Text="{x:Bind ViewModel.CurrentTime, Mode=OneWay}" FontSize="82" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="{x:Bind ViewModel.CurrentDate, Mode=OneWay}" FontSize="18" FontFamily="{ThemeResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="5,0,0,0"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Vertical" Margin="0,-5,0,0">
-                                            <Grid HorizontalAlignment="Right">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Image Grid.Column="0" Source="{x:Bind ViewModel.CurrentWeatherIcon, Mode=OneWay}" Width="70" Height="70" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                    <TextBlock Text="{x:Bind ViewModel.WeatherTemperature, Mode=OneWay}" FontFamily="Jura Medium" Style="{StaticResource InfoValue}" FontSize="48" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,-5,10,0"/>
-                                                </StackPanel>
-                                            </Grid>
-                                            <StackPanel HorizontalAlignment="Right">
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
-                                                    <TextBlock Text="{x:Bind ViewModel.WeatherLocation, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Brush_Highlighted}" VerticalAlignment="Center"/>
-                                                    <Button x:Name="RefreshWeatherButton" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" ToolTipService.ToolTip="Refresh Weather" Click="RefreshWeatherButton_Click">
-                                                        <SymbolIcon x:Name="RefreshIcon" Symbol="Refresh" Foreground="{ThemeResource Brush_Inactive}"/>
-                                                    </Button>
-                                                    <Button x:Name="LocationButton" IsTabStop="False" Background="Transparent" BorderThickness="0" Margin="0,0,10,0" Padding="6" ToolTipService.ToolTip="{helpers:ResourceString Key=txt_select_location}">
-                                                        <Button.Flyout>
-                                                            <Flyout x:Name="LocationFlyout">
-                                                                <StackPanel Spacing="12" MinWidth="220">
-                                                                    <TextBlock helpers:Loc.Key="txt_select_location" Style="{StaticResource BodyStrongTextBlockStyle}"/>
-                                                                    <ComboBox x:Name="CityPicker" ItemsSource="{x:Bind ViewModel.AvailableCities, Mode=OneWay}" HorizontalAlignment="Stretch" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_city}" SelectionChanged="CityPicker_SelectionChanged"/>
-                                                                    <TextBlock Text="Or enter custom:" Style="{StaticResource CaptionTextBlockStyle}"/>
-                                                                    <TextBox x:Name="CustomLocationBox" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_location}" KeyDown="CustomLocationBox_KeyDown"/>
-                                                                    <Button Content="{helpers:ResourceString Key=btn_update_location}" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Click="UpdateLocation_Click"/>
-                                                                </StackPanel>
-                                                            </Flyout>
-                                                        </Button.Flyout>
-                                                        <SymbolIcon Symbol="Map" Foreground="{ThemeResource Brush_Inactive}"/>
-                                                    </Button>
-                                                </StackPanel>
-                                                <TextBlock Text="{x:Bind ViewModel.WeatherDescription, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="16" Foreground="{StaticResource Brush_Highlighted}" HorizontalAlignment="Right" Margin="0,5,10,0"/>
+                                    <StackPanel Grid.Row="0" VerticalAlignment="Top" Margin="0, 10, 0, 10">
+                                        <TextBlock Text="{x:Bind ViewModel.CurrentTime, Mode=OneWay}" FontSize="82" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Left"/>
+                                        <TextBlock Text="{x:Bind ViewModel.CurrentDate, Mode=OneWay}" FontSize="18" FontFamily="{ThemeResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="5,0,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Vertical" Margin="0,-5,0,0">
+                                        <Grid HorizontalAlignment="Right">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Source="{x:Bind ViewModel.CurrentWeatherIcon, Mode=OneWay}" Width="70" Height="70" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{x:Bind ViewModel.WeatherTemperature, Mode=OneWay}" FontFamily="Jura Medium" Style="{StaticResource InfoValue}" FontSize="48" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,-5,10,0"/>
                                             </StackPanel>
+                                        </Grid>
+                                        <StackPanel HorizontalAlignment="Right">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                                                <TextBlock Text="{x:Bind ViewModel.WeatherLocation, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource Brush_Highlighted}" VerticalAlignment="Center"/>
+                                                <Button x:Name="RefreshWeatherButton" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" ToolTipService.ToolTip="Refresh Weather" Click="RefreshWeatherButton_Click">
+                                                    <SymbolIcon x:Name="RefreshIcon" Symbol="Refresh" Foreground="{ThemeResource Brush_Inactive}"/>
+                                                </Button>
+                                                <Button x:Name="LocationButton" IsTabStop="False" Background="Transparent" BorderThickness="0" Margin="0,0,10,0" Padding="6" ToolTipService.ToolTip="{helpers:ResourceString Key=txt_select_location}">
+                                                    <Button.Flyout>
+                                                        <Flyout x:Name="LocationFlyout">
+                                                            <StackPanel Spacing="12" MinWidth="220">
+                                                                <TextBlock helpers:Loc.Key="txt_select_location" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                                                <ComboBox x:Name="CityPicker" ItemsSource="{x:Bind ViewModel.AvailableCities, Mode=OneWay}" HorizontalAlignment="Stretch" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_city}" SelectionChanged="CityPicker_SelectionChanged"/>
+                                                                <TextBlock Text="Or enter custom:" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                                                <TextBox x:Name="CustomLocationBox" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_location}" KeyDown="CustomLocationBox_KeyDown"/>
+                                                                <Button Content="{helpers:ResourceString Key=btn_update_location}" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Click="UpdateLocation_Click"/>
+                                                            </StackPanel>
+                                                        </Flyout>
+                                                    </Button.Flyout>
+                                                    <SymbolIcon Symbol="Map" Foreground="{ThemeResource Brush_Inactive}"/>
+                                                </Button>
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind ViewModel.WeatherDescription, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontSize="16" Foreground="{StaticResource Brush_Highlighted}" HorizontalAlignment="Right" Margin="0,5,10,0"/>
                                         </StackPanel>
-                                    </Grid>
-                                    <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="0, 0, 0, -5">
-                                        <TextBlock helpers:Loc.Key="txt_weather_forecast" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" FontSize="16" Margin="0, 10, 0, 5"/>
-                                        <ItemsControl x:Name="ForecastList" ItemsSource="{x:Bind ViewModel.FiveDayForecast, Mode=OneWay}" HorizontalAlignment="Stretch">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <ui:UniformGrid Rows="1" Columns="5" HorizontalAlignment="Stretch"/>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate x:DataType="model:DailyForecast">
-                                                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
-                                                        <TextBlock Text="{x:Bind Day}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                                        <Image Source="{x:Bind IconSource}" Width="32" Height="32" Margin="0, 5, 0, 0" />
-                                                        <TextBlock Text="{x:Bind MaxTemp}" Style="{StaticResource InfoValue}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                                        <TextBlock Text="{x:Bind MinTemp}" Style="{StaticResource InfoLabel}" HorizontalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
                                     </StackPanel>
                                 </Grid>
-
-                                <Border Grid.Column="1" Width="1" Background="{StaticResource Brush_Inactive}" Opacity="0.3" Margin="4,0,22,0"/>
-
-                                <StackPanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                    <CalendarView VerticalAlignment="Center" Background="Transparent" Width="310" Margin="-11,0,-4,0" HorizontalAlignment="Center" PointerEntered="Calendar_MouseEnter" PointerExited="Calendar_MouseLeave"/>
-                                </StackPanel>
-                            </Grid>
-                        </Grid>
-                    </Border>
-
-                    <Border x:Name="CardGamingMode" Style="{StaticResource DashCard}" Padding="16" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-
-                        <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
-                            <Grid Grid.Row="0" Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <FontIcon Glyph="&#xE7FC;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" helpers:Loc.Key="gm_card_title" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
-                                <ToggleButton x:Name="BtnToggleGamingConsole" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnToggleGamingConsole_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=gm_tooltip_toggle_console}">
-                                    <FontIcon x:Name="IconToggleConsole" Glyph="&#xE70D;" FontSize="14" Opacity="0.6"/>
-                                </ToggleButton>
-                            </Grid>
-
-                            <Grid x:Name="GamingVisualGrid" Grid.Row="1" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Image x:Name="DashGamingStatusImage" Width="80" Height="80" Source="ms-appx:///Assets/PngImages/gamingmode_off.png" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="1.0"/>
-                                <ProgressRing x:Name="GamingSpinner" IsActive="False" Width="16" Height="16" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                            </Grid>
-
-                            <Border x:Name="GamingConsoleBorder" Grid.Row="1" Margin="0,10" Background="Transparent" CornerRadius="6" BorderThickness="1" BorderBrush="{ThemeResource MyDynamicAccentBrush}" Visibility="Collapsed">
-                                <ScrollViewer x:Name="GamingProgressScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <TextBlock x:Name="GamingProgressText"
-                                               helpers:Loc.Key="gm_progress_idle"
-                                               FontSize="10"
-                                               FontFamily="Jura Medium"
-                                               TextWrapping="Wrap"
-                                               Padding="10"
-                                               Opacity="0.7"
-                                               Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                </ScrollViewer>
-                            </Border>
-
-                            <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
-                                <TextBlock x:Name="GamingModeButtonLabel" helpers:Loc.Key="gm_label_normal" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="GamingStatusLabel" helpers:Loc.Key="gm_mode_standard" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" HorizontalAlignment="Center" FontFamily="Jura Medium"/>
-                            </StackPanel>
-
-                            <Grid Grid.Row="3" Height="4" Margin="4,8" Visibility="Collapsed"/>
-
-                            <Grid Grid.Row="4" VerticalAlignment="Bottom">
-                                <Button x:Name="BtnGamingMode" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnGamingMode_Click" FontFamily="Jura Medium">
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <FontIcon Glyph="&#xE7E8;" FontSize="14"/>
-                                            <TextBlock x:Name="GamingModeBtnText" helpers:Loc.Key="gm_btn_enable"/>
-                                        </StackPanel>
-                                    </Button.Content>
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Border>
-
-                    <Border x:Name="CardNetwork" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <FontIcon Glyph="&#xE839;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" helpers:Loc.Key="title_netadapter_sysinfo"/>
-                            </StackPanel>
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
-                                <StackPanel>
-                                    <TextBlock Text="{x:Bind ViewModel.NetworkName, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
-                                    <Grid Margin="0,5,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="0">
-                                            <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_ip_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,0,0,0"/>
-                                            <Grid Margin="10,0,0,10" MinHeight="30">
-                                                <TextBlock x:Name="IpAddress" Text="{x:Bind ViewModel.PublicIP, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
-                                                <Border x:Name="IpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
-                                                    <Border.Background>
-                                                        <LinearGradientBrush x:Name="IpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
-                                                            <GradientStop x:Name="Stop1" Color="Transparent" Offset="0.0" />
-                                                            <GradientStop x:Name="Stop2" Color="#B3000000" Offset="0.0" />
-                                                            <GradientStop x:Name="Stop3" Color="Transparent" Offset="1.0" />
-                                                        </LinearGradientBrush>
-                                                    </Border.Background>
-                                                    <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                            </Grid>
-                                            <TextBlock helpers:Loc.Key="title_localip_sysinfo" Style="{StaticResource InfoLabel}" FontFamily="Jura Medium" FontWeight="Normal" Margin="0,0,0,0"/>
-                                            <Grid Margin="10,0,0,0" MinHeight="30">
-                                                <TextBlock x:Name="LocalIpAddress" Text="{x:Bind ViewModel.LocalIPValue, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
-                                                <Border x:Name="LocalIpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
-                                                    <Border.Background>
-                                                        <LinearGradientBrush x:Name="LocalIpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
-                                                            <GradientStop x:Name="LocalStop1" Color="Transparent" Offset="0.0" />
-                                                            <GradientStop x:Name="LocalStop2" Color="#B3000000" Offset="0.0" />
-                                                            <GradientStop x:Name="LocalStop3" Color="Transparent" Offset="1.0" />
-                                                        </LinearGradientBrush>
-                                                    </Border.Background>
-                                                    <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                            </Grid>
-                                        </StackPanel>
-                                        <ToggleButton x:Name="BtnVision" Grid.Column="1" Margin="15,0,170,0" Width="26" Height="26" Visibility="{x:Bind ViewModel.VisionVisibility, Mode=OneWay}" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource TglVision}" IsChecked="{x:Bind ViewModel.IsVisionChecked, Mode=TwoWay}" PreviewKeyDown="BtnVision_PreviewKeyDown" Click="BtnVision_Click" />
-                                    </Grid>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Grid>
-                    </Border>
-
-                    <Border x:Name="CardRam" Style="{StaticResource DashCard}" Height="220" Padding="15" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" helpers:Loc.Key="title_ram_sysinfo"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,0">
-                                <TextBlock Text="{Binding [Memory].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
-                                <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_mtype_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,10,0,5"/>
-                                <TextBlock Text="{Binding [Type].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" PointerPressed="HandleCopyingData_PointerPressed" />
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-
-                    <Border x:Name="CardCpu" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon Glyph="&#xE950;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock helpers:Loc.Key="title_cpu_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
-                            </StackPanel>
-                            <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
-                                <TextBlock Text="{Binding [CPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22"/>
-                            </ScrollViewer>
-                        </StackPanel>
-                    </Border>
-
-                    <Border x:Name="CardGpu" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon Glyph="&#xEC06;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock helpers:Loc.Key="title_gpu_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
-                            </StackPanel>
-                            <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
-                                <TextBlock Text="{Binding [GPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22"/>
-                            </ScrollViewer>
-                            <StackPanel Spacing="4" Margin="0,-3,0,0">
-                                <TextBlock helpers:Loc.Key="title_gpu_liveinfo" FontSize="12" Opacity="0.6"/>
-                                <Grid ColumnDefinitions="*, Auto">
-                                    <ProgressBar Value="{Binding GpuUsageDisplay}" Maximum="100" Width="300" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                    <TextBlock Grid.Column="1" FontFamily="Jura Medium" Text="{Binding GpuUsageDisplay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="12"/>
-                                </Grid>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-
-                    <Border x:Name="CardDisk"
-                            Style="{StaticResource DashCard}"
-                            Padding="15"
-                            Margin="0"
-                            CanDrag="True"
-                            AllowDrop="True"
-                            DragStarting="DashCard_DragStarting"
-                            DragOver="DashCard_DragOver"
-                            Drop="DashCard_Drop"
-                            DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" 
-                            PointerExited="DashCard_PointerExited" 
-                            PointerPressed="DashCard_PointerPressed" 
-                            PointerReleased="DashCard_PointerReleased" 
-                            PointerCanceled="DashCard_PointerReleased">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
-                            <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10">
-
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                    <FontIcon Glyph="&#xEDA2;" Margin="0,-12,0,0" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
-                                    <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,0" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16" helpers:Loc.Key="txt_header_disk_space_card"/>
-                                </StackPanel>
-
-                                <TextBlock Text="{Binding [Storage].Data}"
-                                           Style="{StaticResource InfoValue}"
-                                           FontFamily="Jura Medium"
-                                           FontWeight="Normal"
-                                           TextAlignment="Left"
-                                           TextWrapping="Wrap"
-                                           PointerPressed="HandleCopyingData_PointerPressed"
-                                           Opacity="0.8"/>
-                            </StackPanel>
-
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,-5,0">
-                                <ItemsControl x:Name="DiskDrivesList" ItemsSource="{Binding DiskDrives}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <ui:WrapPanel HorizontalSpacing="5" VerticalSpacing="5"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Width="150" Height="80" Margin="5" Background="Transparent" PointerEntered="DiskCard_PointerEntered" PointerExited="DiskCard_PointerExited">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <Grid Grid.Column="0" Width="60" Height="60" Margin="0,0,10,0">
-                                                    <ProgressRing Value="{Binding UsedPercentage}" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}" Width="55" Height="55"/>
-                                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Brush_Inactive}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="12" Text="{Binding UsedPercentage, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N0}%'}"/>
-                                                </Grid>
-
-                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                    <TextBlock Style="{StaticResource InfoValue}" FontWeight="Bold" FontSize="12" TextTrimming="CharacterEllipsis">
-                                                        <Run Text="{Binding Name}"/>
-                                                        <Run Text=" - "/>
-                                                        <Run Text="{Binding VolumeLabel}"/>
-                                                    </TextBlock>
-                                                    <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                                        <TextBlock Style="{StaticResource InfoLabel}" Text="Free: " FontSize="10" VerticalAlignment="Center"/>
-                                                        <TextBlock Style="{StaticResource InfoValue}" FontSize="10" VerticalAlignment="Center" Text="{Binding FreeSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} GB'}"/>
-                                                    </StackPanel>
+                                <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="0, 0, 0, -5">
+                                    <TextBlock helpers:Loc.Key="txt_weather_forecast" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" FontSize="16" Margin="0, 10, 0, 5"/>
+                                    <ItemsControl x:Name="ForecastList" ItemsSource="{x:Bind ViewModel.FiveDayForecast, Mode=OneWay}" HorizontalAlignment="Stretch">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <ui:UniformGrid Rows="1" Columns="5" HorizontalAlignment="Stretch"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="model:DailyForecast">
+                                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                                    <TextBlock Text="{x:Bind Day}" Style="{StaticResource InfoLabel}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                                    <Image Source="{x:Bind IconSource}" Width="32" Height="32" Margin="0, 5, 0, 0" />
+                                                    <TextBlock Text="{x:Bind MaxTemp}" Style="{StaticResource InfoValue}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                                    <TextBlock Text="{x:Bind MinTemp}" Style="{StaticResource InfoLabel}" HorizontalAlignment="Center"/>
                                                 </StackPanel>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Grid>
+
+                            <Border Grid.Column="1" Width="1" Background="{StaticResource Brush_Inactive}" Opacity="0.3" Margin="4,0,22,0"/>
+
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <CalendarView x:Name="Calendar" VerticalAlignment="Center" Background="Transparent" Width="310" Margin="-11,0,-4,0" HorizontalAlignment="Center" PointerEntered="Calendar_MouseEnter" PointerExited="Calendar_MouseLeave"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardGamingMode" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+                        <Grid Grid.Row="0" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Glyph="&#xE7FC;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="gm_card_title" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <ToggleButton x:Name="BtnToggleGamingConsole" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnToggleGamingConsole_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=gm_tooltip_toggle_console}">
+                                <FontIcon x:Name="IconToggleConsole" Glyph="&#xE70D;" FontSize="14" Opacity="0.6"/>
+                            </ToggleButton>
+                        </Grid>
+
+                        <Grid x:Name="GamingVisualGrid" Grid.Row="1" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Image x:Name="DashGamingStatusImage" Width="80" Height="80" Source="ms-appx:///Assets/PngImages/gamingmode_off.png" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="1.0"/>
+                            <ProgressRing x:Name="GamingSpinner" IsActive="False" Width="16" Height="16" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                        </Grid>
+
+                        <Border x:Name="GamingConsoleBorder" Grid.Row="1" Margin="0,10" Background="Transparent" CornerRadius="6" BorderThickness="1" BorderBrush="{ThemeResource MyDynamicAccentBrush}" Visibility="Collapsed">
+                            <ScrollViewer x:Name="GamingProgressScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <TextBlock x:Name="GamingProgressText"
+                                           helpers:Loc.Key="gm_progress_idle"
+                                           FontSize="10"
+                                           FontFamily="Jura Medium"
+                                           TextWrapping="Wrap"
+                                           Padding="10"
+                                           Opacity="0.7"
+                                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                             </ScrollViewer>
-                        </Grid>
-                    </Border>
+                        </Border>
 
-                    <Border x:Name="CardDns" Style="{StaticResource DashCard}" Padding="16" Margin="0" CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-                        <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
-                            <Grid Grid.Row="0" Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <FontIcon Glyph="&#xE774;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" helpers:Loc.Key="title_dns_encryption" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
-                                <Button x:Name="BtnOpenDnsPage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDnsPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_dns_page}">
-                                    <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
-                                </Button>
-                            </Grid>
-                            <Grid Grid.Row="1" Height="120" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <FontIcon x:Name="IconServiceStopped" Glyph="&#xE7E8;" FontSize="50" Foreground="{ThemeResource Brush_Error}" Opacity="0.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <Image x:Name="ImgServiceRunning" Source="ms-appx:///Assets/PngImages/secure.png" Width="80" Height="80" Margin="0,0,0,3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
-                                <ProgressRing x:Name="ProgressRingRunServices" IsActive="True" Width="15" Height="15" Canvas.ZIndex="10" Margin="0,0,16,28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
-                            </Grid>
-                            <StackPanel Grid.Row="2" Spacing="2" Margin="0,0">
-                                <TextBlock x:Name="TxtServicesRunning" helpers:Loc.Key="text_services_running" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="statusLabel" helpers:Loc.Key="text_status" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
-                            </StackPanel>
-                            <ProgressBar x:Name="progressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8"/>
-                            <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="12" VerticalAlignment="Bottom">
-                                <Button x:Name="BtnDebug" IsTabStop="False" Grid.Column="0" Content="{helpers:ResourceString Key=btn_debug_process}" HorizontalAlignment="Stretch" Click="BtnDebug_Click" FontFamily="Jura Medium"/>
-                                <Button x:Name="BtnStartService" IsTabStop="False" Grid.Column="1" Content="{helpers:ResourceString Key=btn_start_service}" HorizontalAlignment="Stretch" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="Jura Medium"/>
-                            </Grid>
-                        </Grid>
-                    </Border>
+                        <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
+                            <TextBlock x:Name="GamingModeButtonLabel" helpers:Loc.Key="gm_label_normal" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="GamingStatusLabel" helpers:Loc.Key="gm_mode_standard" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" HorizontalAlignment="Center" FontFamily="Jura Medium"/>
+                        </StackPanel>
 
-                    <Border x:Name="CardMaintenance" Style="{StaticResource DashCard}" Padding="16" Margin="0" CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-                        <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
-                            <Grid Grid.Row="0" Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <FontIcon Glyph="&#xE9D9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" helpers:Loc.Key="title_system_health_status" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
-                                <Button x:Name="BtnOpenMaintenancePage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenMaintenancePage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_maintenance}">
-                                    <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
-                                </Button>
-                            </Grid>
-                            <Grid Grid.Row="1" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <ProgressRing x:Name="DashMaintenanceLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Visible" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <Image x:Name="DashMaintenanceStatusImage" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
-                            </Grid>
-                            <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
-                                <TextBlock x:Name="TxtHealthStatus" helpers:Loc.Key="text_scanning_system" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="TxtLastRefreshed" helpers:Loc.Key="text_never_updated" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="1" FontSize="11"/>
-                            </StackPanel>
-                            <ProgressBar x:Name="MaintenanceProgressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8" Visibility="Collapsed"/>
-                            <Grid Grid.Row="4" VerticalAlignment="Bottom">
-                                <Button x:Name="BtnRefreshHealth" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshHealth_Click" FontFamily="Jura Medium">
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                                            <TextBlock helpers:Loc.Key="btn_refresh_status"/>
-                                        </StackPanel>
-                                    </Button.Content>
-                                </Button>
-                            </Grid>
+                        <Grid Grid.Row="3" Height="4" Margin="4,8" Visibility="Collapsed"/>
 
-                        </Grid>
-                    </Border>
-
-                    <Border x:Name="CardSecurity" Style="{StaticResource DashCard}" Padding="16" Margin="0" CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-                        <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
-
-                            <Grid Grid.Row="0" Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <FontIcon Glyph="&#xE773;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" helpers:Loc.Key="title_security_card" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
-
-                                <Button x:Name="BtnOpenSecurityPage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenSecurityPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_security}">
-                                    <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
-                                </Button>
-                            </Grid>
-
-                            <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <ProgressRing x:Name="DashSecurityLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <Image x:Name="DashSecurityStatusImage" Width="80" Height="80" Source="ms-appx:///Assets/PngImages/secure.png" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Grid>
-
-                            <StackPanel Grid.Row="2" Spacing="0" Margin="0,4,0,8">
-
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                                    <TextBlock x:Name="TxtSecurityStatus"
-                                               helpers:Loc.Key="txt_scanning"
-                                               FontFamily="Jura Medium"
-                                               FontSize="13"
-                                               VerticalAlignment="Center"
-                                               Foreground="{ThemeResource MyDynamicAccentBrush}"
-                                               FontWeight="SemiBold"/>
-
-                                    <Button x:Name="BtnDashViewIssues"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            Padding="6,4"
-                                            MinHeight="0"
-                                            MinWidth="0"
-                                            VerticalAlignment="Center"
-                                            Visibility="Collapsed"
-                                            Click="BtnDashViewIssues_Click"
-                                            ToolTipService.ToolTip="{helpers:ResourceString Key=SecurityPage_ViewIssues}">
-
-                                        <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
-                                    </Button>
-                                </StackPanel>
-
-                                <TextBlock x:Name="TxtSecurityLastRefreshed"
-                                           FontSize="11"
-                                           Foreground="{ThemeResource Brush_Inactive}"
-                                           Opacity="1"
-                                           Margin="0,2,0,0"
-                                           HorizontalAlignment="Center"/>
-                            </StackPanel>
-
-                            <Grid Grid.Row="3" Height="0" Margin="0" Visibility="Collapsed"/>
-
-                            <Grid Grid.Row="4" VerticalAlignment="Bottom">
-                                <Button x:Name="BtnRefreshSecurity" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshSecurity_Click" BorderThickness="0" FontFamily="Jura Medium">
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <FontIcon Glyph="&#xE72C;" FontSize="14"/>
-                                            <TextBlock helpers:Loc.Key="btn_quick_scan"/>
-                                        </StackPanel>
-                                    </Button.Content>
-                                </Button>
-                            </Grid>
-
-                        </Grid>
-                    </Border>
-
-                    <Border x:Name="CardCpuGraph" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0" Margin="0,0,0,16">
-                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
-                                    <FontIcon Glyph="&#xE950;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                    <TextBlock Text="CPU History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="TxtCurrentCpu" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#0078D7" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
-                                </StackPanel>
-                            </Grid>
-
-                            <Grid Grid.Row="1" MinHeight="140">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="20" />
-                                </Grid.RowDefinitions>
-
-                                <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,8,0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
-                                </Grid>
-
-                                <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="TxtAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
-                                </Grid>
-
-                                <Grid Grid.Row="0" Grid.Column="1">
-
-                                    <Grid Opacity="0.15" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Grid.RowSpan="4" Grid.Column="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-                                        <Border Grid.RowSpan="4" Grid.Column="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-                                        <Border Grid.RowSpan="4" Grid.Column="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-
-                                        <Border Grid.ColumnSpan="4" Grid.Row="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                        <Border Grid.ColumnSpan="4" Grid.Row="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                        <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                    </Grid>
-
-                                    <Canvas x:Name="CpuGraphCanvas" SizeChanged="CpuGraphCanvas_SizeChanged">
-
-                                        <Path x:Name="CpuGraphFill" Opacity="0.15">
-                                            <Path.Fill>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Color="#0078D7" Offset="0.0" />
-                                                    <GradientStop Color="Transparent" Offset="1.0" />
-                                                </LinearGradientBrush>
-                                            </Path.Fill>
-                                        </Path>
-
-                                        <Path x:Name="CpuGraphLine" Stroke="#0078D7" StrokeThickness="2.5" StrokeLineJoin="Round"/>
-
-                                        <Ellipse x:Name="CpuGraphDot" Width="10" Height="10" Fill="#0078D7" Margin="-5,-5,0,0" Visibility="Collapsed"/>
-                                    </Canvas>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Border>
-
-                    <Border x:Name="CardRamGraph" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0" Margin="0,0,0,16">
-                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
-                                    <FontIcon Glyph="&#xE964;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                    <TextBlock Text="Memory History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="TxtCurrentRam" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#881798" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
-                                </StackPanel>
-                            </Grid>
-
-                            <Grid Grid.Row="1" MinHeight="140">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="20" />
-                                </Grid.RowDefinitions>
-
-                                <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,8,0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
-                                </Grid>
-
-                                <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="TxtRamAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtRamAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtRamAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtRamAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
-                                </Grid>
-
-                                <Grid Grid.Row="0" Grid.Column="1">
-                                    <Grid Opacity="0.15" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Grid.RowSpan="4" Grid.Column="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-                                        <Border Grid.RowSpan="4" Grid.Column="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-                                        <Border Grid.RowSpan="4" Grid.Column="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-
-                                        <Border Grid.ColumnSpan="4" Grid.Row="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                        <Border Grid.ColumnSpan="4" Grid.Row="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                        <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                    </Grid>
-
-                                    <Canvas x:Name="RamGraphCanvas" SizeChanged="RamGraphCanvas_SizeChanged">
-                                        <Path x:Name="RamGraphFill" Opacity="0.15">
-                                            <Path.Fill>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Color="#881798" Offset="0.0" />
-                                                    <GradientStop Color="Transparent" Offset="1.0" />
-                                                </LinearGradientBrush>
-                                            </Path.Fill>
-                                        </Path>
-
-                                        <Path x:Name="RamGraphLine" Stroke="#881798" StrokeThickness="2.5" StrokeLineJoin="Round"/>
-
-                                        <Ellipse x:Name="RamGraphDot" Width="10" Height="10" Fill="#881798" Margin="-5,-5,0,0" Visibility="Collapsed"/>
-                                    </Canvas>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Border>
-
-                    <Border x:Name="CardNetworkGraph" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
-
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0" Margin="0,0,0,4">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,2,0,0">
-                                    <FontIcon Glyph="&#xE839;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                    <TextBlock Text="Network History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-
-                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
-                                        <FontIcon Glyph="&#xE896;" FontSize="12" Foreground="#0078D7" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="TxtCurrentDown" Text="0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#0078D7" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
+                        <Grid Grid.Row="4" VerticalAlignment="Bottom">
+                            <Button x:Name="BtnGamingMode" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnGamingMode_Click" FontFamily="Jura Medium">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE7E8;" FontSize="14"/>
+                                        <TextBlock x:Name="GamingModeBtnText" helpers:Loc.Key="gm_btn_enable"/>
                                     </StackPanel>
-
-                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
-                                        <FontIcon Glyph="&#xE898;" FontSize="12" Foreground="#881798" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="TxtCurrentUp" Text="0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#881798" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
-                                    </StackPanel>
-
-                                </StackPanel>
-                            </Grid>
-
-                            <Grid Grid.Row="1" MinHeight="140">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="28" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="20" />
-                                </Grid.RowDefinitions>
-
-                                <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,4,0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock x:Name="TxtNetY4" Grid.Row="0" Text="100" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock x:Name="TxtNetY3" Grid.Row="1" Text="75" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock x:Name="TxtNetY2" Grid.Row="2" Text="50" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock x:Name="TxtNetY1" Grid.Row="3" Text="25" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock x:Name="TxtNetY0" Grid.Row="3" Text="0" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
-                                </Grid>
-
-                                <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="TxtNetAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtNetAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtNetAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtNetAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
-                                </Grid>
-
-                                <Grid Grid.Row="0" Grid.Column="1">
-                                    <Grid Opacity="0.15" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Grid.RowSpan="4" Grid.Column="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-                                        <Border Grid.RowSpan="4" Grid.Column="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-                                        <Border Grid.RowSpan="4" Grid.Column="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-
-                                        <Border Grid.ColumnSpan="4" Grid.Row="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                        <Border Grid.ColumnSpan="4" Grid.Row="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                        <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                    </Grid>
-
-                                    <Canvas x:Name="NetGraphCanvas" SizeChanged="NetGraphCanvas_SizeChanged">
-
-                                        <Path x:Name="NetGraphFillUp" Opacity="0.15">
-                                            <Path.Fill>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Color="#881798" Offset="0.0" />
-                                                    <GradientStop Color="Transparent" Offset="1.0" />
-                                                </LinearGradientBrush>
-                                            </Path.Fill>
-                                        </Path>
-
-                                        <Path x:Name="NetGraphFillDown" Opacity="0.15">
-                                            <Path.Fill>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Color="#0078D7" Offset="0.0" />
-                                                    <GradientStop Color="Transparent" Offset="1.0" />
-                                                </LinearGradientBrush>
-                                            </Path.Fill>
-                                        </Path>
-
-                                        <Path x:Name="NetGraphLineUp" Stroke="#881798" StrokeThickness="2" StrokeLineJoin="Round"/>
-                                        <Ellipse x:Name="NetGraphDotUp" Width="8" Height="8" Fill="#881798" Margin="-4,-4,0,0" Visibility="Collapsed"/>
-
-                                        <Path x:Name="NetGraphLineDown" Stroke="#0078D7" StrokeThickness="2.5" StrokeLineJoin="Round"/>
-                                        <Ellipse x:Name="NetGraphDotDown" Width="10" Height="10" Fill="#0078D7" Margin="-5,-5,0,0" Visibility="Collapsed"/>
-
-                                    </Canvas>
-                                </Grid>
-                            </Grid>
+                                </Button.Content>
+                            </Button>
                         </Grid>
-                    </Border>
+                    </Grid>
+                </Border>
+            </GridViewItem>
 
-                    <Border x:Name="CardGpuGraph" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                            CanDrag="True" AllowDrop="True" DragStarting="DashCard_DragStarting" DragOver="DashCard_DragOver" Drop="DashCard_Drop" DropCompleted="DashCard_DropCompleted"
-                            PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+            <GridViewItem>
+                <Border x:Name="CardNetwork" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE839;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" helpers:Loc.Key="title_netadapter_sysinfo"/>
+                        </StackPanel>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                            <StackPanel>
+                                <TextBlock Text="{x:Bind ViewModel.NetworkName, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_ip_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,0,0,0"/>
+                                        <Grid Margin="10,0,0,10" MinHeight="30">
+                                            <TextBlock x:Name="IpAddress" Text="{x:Bind ViewModel.PublicIP, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
+                                            <Border x:Name="IpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
+                                                <Border.Background>
+                                                    <LinearGradientBrush x:Name="IpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop x:Name="Stop1" Color="Transparent" Offset="0.0" />
+                                                        <GradientStop x:Name="Stop2" Color="#B3000000" Offset="0.0" />
+                                                        <GradientStop x:Name="Stop3" Color="Transparent" Offset="1.0" />
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                        <TextBlock helpers:Loc.Key="title_localip_sysinfo" Style="{StaticResource InfoLabel}" FontFamily="Jura Medium" FontWeight="Normal" Margin="0,0,0,0"/>
+                                        <Grid Margin="10,0,0,0" MinHeight="30">
+                                            <TextBlock x:Name="LocalIpAddress" Text="{x:Bind ViewModel.LocalIPValue, Mode=OneWay}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" HorizontalAlignment="Left" TextWrapping="Wrap" PointerPressed="HandleCopyingData_PointerPressed" VerticalAlignment="Center"/>
+                                            <Border x:Name="LocalIpBlurMask" Height="20" MinWidth="100" CornerRadius="6" Margin="-6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
+                                                <Border.Background>
+                                                    <LinearGradientBrush x:Name="LocalIpShimmerBrush" StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop x:Name="LocalStop1" Color="Transparent" Offset="0.0" />
+                                                        <GradientStop x:Name="LocalStop2" Color="#B3000000" Offset="0.0" />
+                                                        <GradientStop x:Name="LocalStop3" Color="Transparent" Offset="1.0" />
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <FontIcon Glyph="&#xED1A;" FontSize="12" Foreground="White" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                    </StackPanel>
+                                    <ToggleButton x:Name="BtnVision" Grid.Column="1" Margin="15,0,170,0" Width="26" Height="26" Visibility="{x:Bind ViewModel.VisionVisibility, Mode=OneWay}" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource TglVision}" IsChecked="{x:Bind ViewModel.IsVisionChecked, Mode=TwoWay}" PreviewKeyDown="BtnVision_PreviewKeyDown" Click="BtnVision_Click" />
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </GridViewItem>
 
-                        <Grid>
+            <GridViewItem>
+                <Border x:Name="CardRam" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Height="220" Padding="15" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,-10" FontFamily="Jura Medium" FontSize="16" helpers:Loc.Key="title_ram_sysinfo"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,0">
+                            <TextBlock Text="{Binding [Memory].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,10" PointerPressed="HandleCopyingData_PointerPressed" />
+                            <TextBlock Style="{StaticResource InfoLabel}" helpers:Loc.Key="title_mtype_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" Margin="0,10,0,5"/>
+                            <TextBlock Text="{Binding [Type].Data}" Style="{StaticResource InfoValue}" FontFamily="Jura Medium" FontWeight="Normal" TextAlignment="Left" PointerPressed="HandleCopyingData_PointerPressed" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardCpu" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                    <StackPanel Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE950;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                            <TextBlock helpers:Loc.Key="title_cpu_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                        </StackPanel>
+                        <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                            <TextBlock Text="{Binding [CPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22"/>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardGpu" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                    <StackPanel Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xEC06;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                            <TextBlock helpers:Loc.Key="title_gpu_sysinfo" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                        </StackPanel>
+                        <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                            <TextBlock Text="{Binding [GPU].Data}" FontFamily="Jura Medium" FontWeight="Normal" TextWrapping="Wrap" Opacity="0.85" LineHeight="22"/>
+                        </ScrollViewer>
+                        <StackPanel Spacing="4" Margin="0,-3,0,0">
+                            <TextBlock helpers:Loc.Key="title_gpu_liveinfo" FontSize="12" Opacity="0.6"/>
+                            <Grid ColumnDefinitions="*, Auto">
+                                <ProgressBar Value="{Binding GpuUsageDisplay}" Maximum="100" Width="300" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                <TextBlock Grid.Column="1" FontFamily="Jura Medium" Text="{Binding GpuUsageDisplay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="12"/>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardDisk" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter"
+                        Style="{StaticResource DashCard}"
+                        Padding="15"
+                        Margin="0"
+                        PointerEntered="DashCard_PointerEntered"
+                        PointerExited="DashCard_PointerExited"
+                        PointerPressed="DashCard_PointerPressed"
+                        PointerReleased="DashCard_PointerReleased"
+                        PointerCanceled="DashCard_PointerReleased">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10">
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <FontIcon Glyph="&#xEDA2;" Margin="0,-12,0,0" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource CardTitle}" Margin="10,0,0,0" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="16" helpers:Loc.Key="txt_header_disk_space_card"/>
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding [Storage].Data}"
+                                       Style="{StaticResource InfoValue}"
+                                       FontFamily="Jura Medium"
+                                       FontWeight="Normal"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       PointerPressed="HandleCopyingData_PointerPressed"
+                                       Opacity="0.8"/>
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,-5,0">
+                            <ItemsControl x:Name="DiskDrivesList" ItemsSource="{Binding DiskDrives}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ui:WrapPanel HorizontalSpacing="5" VerticalSpacing="5"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Width="150" Height="80" Margin="5" Background="Transparent" PointerEntered="DiskCard_PointerEntered" PointerExited="DiskCard_PointerExited">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Grid Grid.Column="0" Width="60" Height="60" Margin="0,0,10,0">
+                                                <ProgressRing Value="{Binding UsedPercentage}" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}" Width="55" Height="55"/>
+                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Brush_Inactive}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="12" Text="{Binding UsedPercentage, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N0}%'}"/>
+                                            </Grid>
+
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Style="{StaticResource InfoValue}" FontWeight="Bold" FontSize="12" TextTrimming="CharacterEllipsis">
+                                            <Run Text="{Binding Name}"/>
+                                            <Run Text=" - "/>
+                                            <Run Text="{Binding VolumeLabel}"/>
+                                                </TextBlock>
+                                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                    <TextBlock Style="{StaticResource InfoLabel}" Text="Free: " FontSize="10" VerticalAlignment="Center"/>
+                                                    <TextBlock Style="{StaticResource InfoValue}" FontSize="10" VerticalAlignment="Center" Text="{Binding FreeSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} GB'}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardDns" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+                        <Grid Grid.Row="0" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Glyph="&#xE774;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_dns_encryption" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <Button x:Name="BtnOpenDnsPage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDnsPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_dns_page}">
+                                <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Row="1" Height="120" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <FontIcon x:Name="IconServiceStopped" Glyph="&#xE7E8;" FontSize="50" Foreground="{ThemeResource Brush_Error}" Opacity="0.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image x:Name="ImgServiceRunning" Source="ms-appx:///Assets/PngImages/secure.png" Width="80" Height="80" Margin="0,0,0,3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                            <ProgressRing x:Name="ProgressRingRunServices" IsActive="True" Width="15" Height="15" Canvas.ZIndex="10" Margin="0,0,16,28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                        </Grid>
+                        <StackPanel Grid.Row="2" Spacing="2" Margin="0,0">
+                            <TextBlock x:Name="TxtServicesRunning" helpers:Loc.Key="text_services_running" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="statusLabel" helpers:Loc.Key="text_status" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </StackPanel>
+                        <ProgressBar x:Name="progressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8"/>
+                        <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="12" VerticalAlignment="Bottom">
+                            <Button x:Name="BtnDebug" IsTabStop="False" Grid.Column="0" Content="{helpers:ResourceString Key=btn_debug_process}" HorizontalAlignment="Stretch" Click="BtnDebug_Click" FontFamily="Jura Medium"/>
+                            <Button x:Name="BtnStartService" IsTabStop="False" Grid.Column="1" Content="{helpers:ResourceString Key=btn_start_service}" HorizontalAlignment="Stretch" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="Jura Medium"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardMaintenance" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+                        <Grid Grid.Row="0" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Glyph="&#xE9D9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_system_health_status" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <Button x:Name="BtnOpenMaintenancePage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenMaintenancePage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_maintenance}">
+                                <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Row="1" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ProgressRing x:Name="DashMaintenanceLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Visible" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <Image x:Name="DashMaintenanceStatusImage" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                        </Grid>
+                        <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
+                            <TextBlock x:Name="TxtHealthStatus" helpers:Loc.Key="text_scanning_system" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="TxtLastRefreshed" helpers:Loc.Key="text_never_updated" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="1" FontSize="11"/>
+                        </StackPanel>
+                        <ProgressBar x:Name="MaintenanceProgressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8" Visibility="Collapsed"/>
+                        <Grid Grid.Row="4" VerticalAlignment="Bottom">
+                            <Button x:Name="BtnRefreshHealth" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshHealth_Click" FontFamily="Jura Medium">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE72C;" FontSize="14"/>
+                                        <TextBlock helpers:Loc.Key="btn_refresh_status"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardSecurity" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+
+                        <Grid Grid.Row="0" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <FontIcon Glyph="&#xE773;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" helpers:Loc.Key="title_security_card" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+
+                            <Button x:Name="BtnOpenSecurityPage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenSecurityPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_security}">
+                                <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
+                            </Button>
+                        </Grid>
+
+                        <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ProgressRing x:Name="DashSecurityLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <Image x:Name="DashSecurityStatusImage" Width="80" Height="80" Source="ms-appx:///Assets/PngImages/secure.png" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <StackPanel Grid.Row="2" Spacing="0" Margin="0,4,0,8">
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                <TextBlock x:Name="TxtSecurityStatus"
+                                   helpers:Loc.Key="txt_scanning"
+                                   FontFamily="Jura Medium"
+                                   FontSize="13"
+                                   VerticalAlignment="Center"
+                                   Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                   FontWeight="SemiBold"/>
+
+                                <Button x:Name="BtnDashViewIssues"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="6,4"
+                                        MinHeight="0"
+                                        MinWidth="0"
+                                        VerticalAlignment="Center"
+                                        Visibility="Collapsed"
+                                        Click="BtnDashViewIssues_Click"
+                                        ToolTipService.ToolTip="{helpers:ResourceString Key=SecurityPage_ViewIssues}">
+
+                                    <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
+                                </Button>
+                            </StackPanel>
+
+                            <TextBlock x:Name="TxtSecurityLastRefreshed"
+                                       FontSize="11"
+                                       Foreground="{ThemeResource Brush_Inactive}"
+                                       Opacity="1"
+                                       Margin="0,2,0,0"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <Grid Grid.Row="3" Height="0" Margin="0" Visibility="Collapsed"/>
+
+                        <Grid Grid.Row="4" VerticalAlignment="Bottom">
+                            <Button x:Name="BtnRefreshSecurity" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshSecurity_Click" BorderThickness="0" FontFamily="Jura Medium">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE72C;" FontSize="14"/>
+                                        <TextBlock helpers:Loc.Key="btn_quick_scan"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardCpuGraph" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
+                                <FontIcon Glyph="&#xE950;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                <TextBlock Text="CPU History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
+                                <TextBlock x:Name="TxtCurrentCpu" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#0078D7" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1" MinHeight="140">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="20" />
                             </Grid.RowDefinitions>
 
-                            <Grid Grid.Row="0" Margin="0,0,0,16">
-                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
-                                    <FontIcon Glyph="&#xECA5;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                    <TextBlock Text="GPU History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="TxtCurrentGpu" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#107C10" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
-                                </StackPanel>
+                            <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,8,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
                             </Grid>
 
-                            <Grid Grid.Row="1" MinHeight="140">
+                            <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="28" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="20" />
-                                </Grid.RowDefinitions>
+                                <TextBlock x:Name="TxtAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+                            </Grid>
 
-                                <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,4,0">
+                            <Grid Grid.Row="0" Grid.Column="1">
+
+                                <Grid Opacity="0.15" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
                                         <RowDefinition/>
                                         <RowDefinition/>
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                    <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
-                                </Grid>
-
-                                <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition/>
                                         <ColumnDefinition/>
                                         <ColumnDefinition/>
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="TxtGpuAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtGpuAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtGpuAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock x:Name="TxtGpuAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                    <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+
+                                    <Border Grid.RowSpan="4" Grid.Column="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                    <Border Grid.RowSpan="4" Grid.Column="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                    <Border Grid.RowSpan="4" Grid.Column="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+
+                                    <Border Grid.ColumnSpan="4" Grid.Row="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                    <Border Grid.ColumnSpan="4" Grid.Row="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                    <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
                                 </Grid>
 
-                                <Grid Grid.Row="0" Grid.Column="1">
-                                    <Grid Opacity="0.15" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
+                                <Canvas x:Name="CpuGraphCanvas" SizeChanged="CpuGraphCanvas_SizeChanged">
 
-                                        <Border Grid.RowSpan="4" Grid.Column="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-                                        <Border Grid.RowSpan="4" Grid.Column="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
-                                        <Border Grid.RowSpan="4" Grid.Column="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                    <Path x:Name="CpuGraphFill" Opacity="0.15">
+                                        <Path.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#0078D7" Offset="0.0" />
+                                                <GradientStop Color="Transparent" Offset="1.0" />
+                                            </LinearGradientBrush>
+                                        </Path.Fill>
+                                    </Path>
 
-                                        <Border Grid.ColumnSpan="4" Grid.Row="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                        <Border Grid.ColumnSpan="4" Grid.Row="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                        <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
-                                    </Grid>
+                                    <Path x:Name="CpuGraphLine" Stroke="#0078D7" StrokeThickness="2.5" StrokeLineJoin="Round"/>
 
-                                    <Canvas x:Name="GpuGraphCanvas" SizeChanged="GpuGraphCanvas_SizeChanged">
-                                        <Path x:Name="GpuGraphFill" Opacity="0.15">
-                                            <Path.Fill>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Color="#107C10" Offset="0.0" />
-                                                    <GradientStop Color="Transparent" Offset="1.0" />
-                                                </LinearGradientBrush>
-                                            </Path.Fill>
-                                        </Path>
-
-                                        <Path x:Name="GpuGraphLine" Stroke="#107C10" StrokeThickness="2.5" StrokeLineJoin="Round"/>
-
-                                        <Ellipse x:Name="GpuGraphDot" Width="10" Height="10" Fill="#107C10" Margin="-5,-5,0,0" Visibility="Collapsed"/>
-                                    </Canvas>
-                                </Grid>
+                                    <Ellipse x:Name="CpuGraphDot" Width="10" Height="10" Fill="#0078D7" Margin="-5,-5,0,0" Visibility="Collapsed"/>
+                                </Canvas>
                             </Grid>
                         </Grid>
-                    </Border>
+                    </Grid>
+                </Border>
+            </GridViewItem>
 
-                </uc:DashboardFlowPanel>
-            </StackPanel>
-        </ScrollViewer>
+            <GridViewItem>
+                <Border x:Name="CardRamGraph" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
+                                <FontIcon Glyph="&#xE964;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                <TextBlock Text="Memory History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
+                                <TextBlock x:Name="TxtCurrentRam" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#881798" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1" MinHeight="140">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="20" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,8,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
+                            </Grid>
+
+                            <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="TxtRamAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtRamAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtRamAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtRamAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+                            </Grid>
+
+                            <Grid Grid.Row="0" Grid.Column="1">
+                                <Grid Opacity="0.15" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.RowSpan="4" Grid.Column="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                    <Border Grid.RowSpan="4" Grid.Column="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                    <Border Grid.RowSpan="4" Grid.Column="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+
+                                    <Border Grid.ColumnSpan="4" Grid.Row="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                    <Border Grid.ColumnSpan="4" Grid.Row="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                    <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                </Grid>
+
+                                <Canvas x:Name="RamGraphCanvas" SizeChanged="RamGraphCanvas_SizeChanged">
+                                    <Path x:Name="RamGraphFill" Opacity="0.15">
+                                        <Path.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#881798" Offset="0.0" />
+                                                <GradientStop Color="Transparent" Offset="1.0" />
+                                            </LinearGradientBrush>
+                                        </Path.Fill>
+                                    </Path>
+
+                                    <Path x:Name="RamGraphLine" Stroke="#881798" StrokeThickness="2.5" StrokeLineJoin="Round"/>
+
+                                    <Ellipse x:Name="RamGraphDot" Width="10" Height="10" Fill="#881798" Margin="-5,-5,0,0" Visibility="Collapsed"/>
+                                </Canvas>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardNetworkGraph" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,2,0,0">
+                                <FontIcon Glyph="&#xE839;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                <TextBlock Text="Network History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+
+                                <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
+                                    <FontIcon Glyph="&#xE896;" FontSize="12" Foreground="#0078D7" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtCurrentDown" Text="0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#0078D7" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
+                                    <FontIcon Glyph="&#xE898;" FontSize="12" Foreground="#881798" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtCurrentUp" Text="0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#881798" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1" MinHeight="140">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="20" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,4,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock x:Name="TxtNetY4" Grid.Row="0" Text="100" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock x:Name="TxtNetY3" Grid.Row="1" Text="75" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock x:Name="TxtNetY2" Grid.Row="2" Text="50" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock x:Name="TxtNetY1" Grid.Row="3" Text="25" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock x:Name="TxtNetY0" Grid.Row="3" Text="0" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
+                            </Grid>
+
+                            <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="TxtNetAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtNetAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtNetAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtNetAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+                            </Grid>
+
+                            <Grid Grid.Row="0" Grid.Column="1">
+                                <Grid Opacity="0.15" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.RowSpan="4" Grid.Column="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                    <Border Grid.RowSpan="4" Grid.Column="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                    <Border Grid.RowSpan="4" Grid.Column="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+
+                                    <Border Grid.ColumnSpan="4" Grid.Row="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                    <Border Grid.ColumnSpan="4" Grid.Row="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                    <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                </Grid>
+
+                                <Canvas x:Name="NetGraphCanvas" SizeChanged="NetGraphCanvas_SizeChanged">
+
+                                    <Path x:Name="NetGraphFillUp" Opacity="0.15">
+                                        <Path.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#881798" Offset="0.0" />
+                                                <GradientStop Color="Transparent" Offset="1.0" />
+                                            </LinearGradientBrush>
+                                        </Path.Fill>
+                                    </Path>
+
+                                    <Path x:Name="NetGraphFillDown" Opacity="0.15">
+                                        <Path.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#0078D7" Offset="0.0" />
+                                                <GradientStop Color="Transparent" Offset="1.0" />
+                                            </LinearGradientBrush>
+                                        </Path.Fill>
+                                    </Path>
+
+                                    <Path x:Name="NetGraphLineUp" Stroke="#881798" StrokeThickness="2" StrokeLineJoin="Round"/>
+                                    <Ellipse x:Name="NetGraphDotUp" Width="8" Height="8" Fill="#881798" Margin="-4,-4,0,0" Visibility="Collapsed"/>
+
+                                    <Path x:Name="NetGraphLineDown" Stroke="#0078D7" StrokeThickness="2.5" StrokeLineJoin="Round"/>
+                                    <Ellipse x:Name="NetGraphDotDown" Width="10" Height="10" Fill="#0078D7" Margin="-5,-5,0,0" Visibility="Collapsed"/>
+
+                                </Canvas>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
+            <GridViewItem>
+                <Border x:Name="CardGpuGraph" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
+                                <FontIcon Glyph="&#xECA5;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                <TextBlock Text="GPU History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
+                                <TextBlock x:Name="TxtCurrentGpu" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#107C10" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1" MinHeight="140">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="20" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,4,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="100%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="1" Text="75%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="2" Text="50%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="25%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="0%" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
+                            </Grid>
+
+                            <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="TxtGpuAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtGpuAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtGpuAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock x:Name="TxtGpuAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
+                            </Grid>
+
+                            <Grid Grid.Row="0" Grid.Column="1">
+                                <Grid Opacity="0.15" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.RowSpan="4" Grid.Column="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                    <Border Grid.RowSpan="4" Grid.Column="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+                                    <Border Grid.RowSpan="4" Grid.Column="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1,0,0,0"/>
+
+                                    <Border Grid.ColumnSpan="4" Grid.Row="1" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                    <Border Grid.ColumnSpan="4" Grid.Row="2" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                    <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
+                                </Grid>
+
+                                <Canvas x:Name="GpuGraphCanvas" SizeChanged="GpuGraphCanvas_SizeChanged">
+                                    <Path x:Name="GpuGraphFill" Opacity="0.15">
+                                        <Path.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#107C10" Offset="0.0" />
+                                                <GradientStop Color="Transparent" Offset="1.0" />
+                                            </LinearGradientBrush>
+                                        </Path.Fill>
+                                    </Path>
+
+                                    <Path x:Name="GpuGraphLine" Stroke="#107C10" StrokeThickness="2.5" StrokeLineJoin="Round"/>
+
+                                    <Ellipse x:Name="GpuGraphDot" Width="10" Height="10" Fill="#107C10" Margin="-5,-5,0,0" Visibility="Collapsed"/>
+                                </Canvas>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
+        </GridView>
 
         <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,10">
             <Border x:Name="AdminWarningBanner"

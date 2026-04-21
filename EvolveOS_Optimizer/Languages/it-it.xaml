@@ -302,13 +302,14 @@
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
-    <sys:String x:Key="Settings_ToggleOn">Attivato</sys:String>
-    <sys:String x:Key="Settings_ToggleOff">Disattivato</sys:String>
     <sys:String x:Key="label_proc_sysinfo">Processi in esecuzione:</sys:String>
     <sys:String x:Key="label_svc_sysinfo">Servizi in esecuzione:</sys:String>
     <sys:String x:Key="button_reset_default">Ripristina predefiniti</sys:String>
     <sys:String x:Key="text_customize_dashboard">Personalizza Dashboard</sys:String>
     <sys:String x:Key="tooltip_customize_layout">Personalizza layout della Dashboard</sys:String>
+
+    <sys:String x:Key="txt_swap_with_format">Scambia con {0}</sys:String>
+    <sys:String x:Key="txt_swap_positions">Scambia posizioni</sys:String>
 
     <!-- Security Card -->
     <sys:String x:Key="title_security_card">Stato di Sicurezza</sys:String>
