@@ -108,7 +108,7 @@
     <sys:String x:Key="Nav_GroupPolicy">Policies</sys:String>
     <sys:String x:Key="Nav_Services">Service Tweaks</sys:String>
     <sys:String x:Key="Nav_System">System</sys:String>
-    <sys:String x:Key="Nav_Maintenance">Maintenance</sys:String>
+    <sys:String x:Key="Nav_CommandCenter">Command Center</sys:String>
     <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Settings</sys:String>
     <sys:String x:Key="Nav_Users">User Accounts</sys:String>
@@ -2010,5 +2010,122 @@
     <sys:String x:Key="startup_manager_page_toast_new_app_title">New Startup App Detected!</sys:String>
     <sys:String x:Key="startup_manager_page_toast_new_app_message">{0} just added itself to your startup sequence.&#10;Check EvolveOS Optimizer to manage it.</sys:String>
     <!-- endregion Startup Manager Page -->
+
+
+    <!-- region Diagnostics Page -->
+    <sys:String x:Key="diag_header_subtitle">PROACTIVE SYSTEM HEALTH DIAGNOSTICS</sys:String>
+    <sys:String x:Key="diag_header_title">COMMAND CENTER v1.0</sys:String>
+    <sys:String x:Key="diag_btn_start_scan">Start Full Scan</sys:String>
+
+    <sys:String x:Key="diag_sys_status">SYSTEM STATUS</sys:String>
+    <sys:String x:Key="diag_sys_healthy">HEALTHY / SECURE</sys:String>
+    <sys:String x:Key="diag_sys_last_checked">Last Checked: Just Now / No immediate actions required.</sys:String>
+
+    <sys:String x:Key="diag_live_miner">LIVE TELEMETRY MINER</sys:String>
+    <sys:String x:Key="diag_tgl_standby">STANDBY</sys:String>
+    <sys:String x:Key="diag_tgl_active">ACTIVE</sys:String>
+    <sys:String x:Key="diag_active_hardware">ACTIVE HARDWARE</sys:String>
+
+    <sys:String x:Key="diag_hw_scan_title">HARDWARE &amp; DRIVER COMPATIBILITY SCAN</sys:String>
+    <sys:String x:Key="diag_btn_enable">ENABLE</sys:String>
+
+    <sys:String x:Key="diag_stability_trend">SYSTEM STABILITY TREND (24H)</sys:String>
+    <sys:String x:Key="diag_event_miner_title">EVENT LOG MINER &amp; ANALYSIS</sys:String>
+    <sys:String x:Key="diag_event_id_prefix">ID:</sys:String>
+    <sys:String x:Key="diag_btn_fix">FIX</sys:String>
+    <sys:String x:Key="diag_no_events">No critical events isolated in the specified timeframe.</sys:String>
+
+    <sys:String x:Key="diag_cpu_load">SYS LOAD %</sys:String>
+    <sys:String x:Key="diag_ram_load">RAM:</sys:String>
+    <sys:String x:Key="diag_pagefile_load">PAGE:</sys:String>
+    <sys:String x:Key="diag_io_load">I/O:</sys:String>
+
+    <sys:String x:Key="diag_graph_60sec">60 Seconds</sys:String>
+    <sys:String x:Key="diag_graph_5min">5 Minutes</sys:String>
+    <sys:String x:Key="diag_graph_10min">10 Minutes</sys:String>
+    <sys:String x:Key="diag_graph_15min">15 Minutes</sys:String>
+
+    <sys:String x:Key="live_watcher_pending">Live Interception: Detailed logs pending...</sys:String>
+
+    <sys:String x:Key="wmi_unknown_device">Unknown Device</sys:String>
+    <sys:String x:Key="hw_generic">Generic Controller</sys:String>
+    <sys:String x:Key="hw_gpu">Graphics Processor</sys:String>
+    <sys:String x:Key="hw_usb">USB Host/Hub</sys:String>
+    <sys:String x:Key="hw_audio">Sound Device</sys:String>
+    <sys:String x:Key="hw_network">Network Adapter</sys:String>
+    <sys:String x:Key="hw_system">System Device</sys:String>
+    <sys:String x:Key="hw_bluetooth">Bluetooth Radio</sys:String>
+
+    <sys:String x:Key="wmi_code_default_summary">A cryptic error code (Code {0}) was detected by the proactive scan.</sys:String>
+    <sys:String x:Key="wmi_code_default_fix">Windows encountered an internal error with this driver. Check Device Manager or reinstall the standard driver.</sys:String>
+    <sys:String x:Key="wmi_code_extended_summary">Extended PnP Error (Code {0}) detected on the hardware bus.</sys:String>
+    <sys:String x:Key="wmi_code_extended_fix">This is a complex hardware conflict or driver crash. Use the EvolveOS auto-remediation tool to reset the PnP state.</sys:String>
+
+    <sys:String x:Key="wmi_code_1_summary">Device is not configured correctly.</sys:String>
+    <sys:String x:Key="wmi_code_1_fix">Update or roll back the driver.</sys:String>
+
+    <sys:String x:Key="wmi_code_3_summary">Driver for this device might be corrupted.</sys:String>
+    <sys:String x:Key="wmi_code_3_fix">Uninstall the device and scan for hardware changes.</sys:String>
+
+    <sys:String x:Key="wmi_code_10_summary">This device cannot start (Code 10).</sys:String>
+    <sys:String x:Key="wmi_code_10_fix">Try updating the device drivers.</sys:String>
+
+    <sys:String x:Key="wmi_code_14_summary">This device cannot work properly until you restart your computer.</sys:String>
+    <sys:String x:Key="wmi_code_14_fix">Restart your computer.</sys:String>
+
+    <sys:String x:Key="wmi_code_18_summary">Reinstall the drivers for this device.</sys:String>
+    <sys:String x:Key="wmi_code_18_fix">Click 'Update Driver' in Device Manager.</sys:String>
+
+    <sys:String x:Key="wmi_code_19_summary">Your registry might be corrupted.</sys:String>
+    <sys:String x:Key="wmi_code_19_fix">Windows cannot start this hardware device because its configuration information (in the registry) is incomplete or damaged.</sys:String>
+
+    <sys:String x:Key="wmi_code_21_summary">Windows is removing this device.</sys:String>
+    <sys:String x:Key="wmi_code_21_fix">Wait a few seconds, then refresh Device Manager.</sys:String>
+
+    <sys:String x:Key="wmi_code_22_summary">This device is disabled (Code 22).</sys:String>
+    <sys:String x:Key="wmi_code_22_fix">Enable the device in Device Manager.</sys:String>
+
+    <sys:String x:Key="wmi_code_24_summary">This device is not present, is not working properly, or does not have all its drivers installed.</sys:String>
+    <sys:String x:Key="wmi_code_24_fix">Check physical connections or reinstall drivers.</sys:String>
+
+    <sys:String x:Key="wmi_code_28_summary">The drivers for this device are not installed.</sys:String>
+    <sys:String x:Key="wmi_code_28_fix">Install the latest drivers from the manufacturer.</sys:String>
+
+    <sys:String x:Key="wmi_code_29_summary">This device is disabled because the firmware did not give it the required resources.</sys:String>
+    <sys:String x:Key="wmi_code_29_fix">Check BIOS/UEFI settings for hardware conflicts.</sys:String>
+
+    <sys:String x:Key="wmi_code_31_summary">This device is not working properly because Windows cannot load the drivers.</sys:String>
+    <sys:String x:Key="wmi_code_31_fix">Download and install the specific driver for this device.</sys:String>
+
+    <sys:String x:Key="wmi_code_32_summary">A driver (service) for this device has been disabled.</sys:String>
+    <sys:String x:Key="wmi_code_32_fix">An alternate driver may be providing this functionality.</sys:String>
+
+    <sys:String x:Key="wmi_code_37_summary">Windows cannot initialize the device driver for this hardware.</sys:String>
+    <sys:String x:Key="wmi_code_37_fix">Uninstall the device and restart the PC.</sys:String>
+
+    <sys:String x:Key="wmi_code_38_summary">Windows cannot load the device driver for this hardware because a previous instance of the device driver is still in memory.</sys:String>
+    <sys:String x:Key="wmi_code_38_fix">Restart your computer.</sys:String>
+
+    <sys:String x:Key="wmi_code_39_summary">Windows cannot load the device driver for this hardware. The driver may be corrupted or missing.</sys:String>
+    <sys:String x:Key="wmi_code_39_fix">Reinstall the driver.</sys:String>
+
+    <sys:String x:Key="wmi_code_41_summary">Windows successfully loaded the device driver, but cannot find the hardware device.</sys:String>
+    <sys:String x:Key="wmi_code_41_fix">Check if the device is plugged in properly.</sys:String>
+
+    <sys:String x:Key="wmi_code_43_summary">Windows has stopped this device because it has reported problems (Code 43).</sys:String>
+    <sys:String x:Key="wmi_code_43_fix">This often indicates a hardware failure or a deeply corrupted driver.</sys:String>
+
+    <sys:String x:Key="wmi_code_45_summary">Currently, this hardware device is not connected to the computer.</sys:String>
+    <sys:String x:Key="wmi_code_45_fix">Reconnect the device to the computer.</sys:String>
+
+    <sys:String x:Key="wmi_code_47_summary">Windows cannot use this hardware device because it has been prepared for safe removal.</sys:String>
+    <sys:String x:Key="wmi_code_47_fix">Unplug the device and plug it back in.</sys:String>
+
+    <sys:String x:Key="wmi_code_48_summary">The software for this device has been blocked from starting because it is known to have problems with Windows.</sys:String>
+    <sys:String x:Key="wmi_code_48_fix">Check for an updated driver from the manufacturer.</sys:String>
+
+    <sys:String x:Key="wmi_code_52_summary">Windows cannot verify the digital signature for the drivers required for this device.</sys:String>
+    <sys:String x:Key="wmi_code_52_fix">You may need to disable Driver Signature Enforcement or download a signed driver.</sys:String>
+    <!-- endregion Diagnostics Page -->
 
 </ResourceDictionary>

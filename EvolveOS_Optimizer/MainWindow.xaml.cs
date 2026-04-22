@@ -450,7 +450,7 @@ namespace EvolveOS_Optimizer
                 "Utilities" => typeof(Pages.UtilitiesPage),
                 "Scripts" => typeof(Pages.ScriptsPage),
                 "System" => typeof(Pages.SystemPage),
-                "Maintenance" => typeof(Pages.MaintenancePage),
+                "Diagnostics" => typeof(Pages.DiagnosticsPage),
                 "Settings" => typeof(Pages.SettingsPage),
                 "UserAccounts" => typeof(Pages.UserAccountsPage),
                 _ => typeof(Pages.HomePage)
@@ -500,7 +500,7 @@ namespace EvolveOS_Optimizer
             {
                 BtnNavUtilities.IsChecked = true;
             }
-            else if (tag == "Maintenance") { BtnNavMaintenance.IsChecked = true; }
+            else if (tag == "Diagnostics") { BtnNavDiagnostics.IsChecked = true; }
             else if (tag == "Security") { BtnNavSecurity.IsChecked = true; }
         }
 

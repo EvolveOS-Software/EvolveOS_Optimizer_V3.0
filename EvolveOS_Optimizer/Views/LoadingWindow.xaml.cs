@@ -14,6 +14,7 @@ using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks;
+using EvolveOS_Optimizer.Core.ViewModel;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -25,6 +26,8 @@ namespace EvolveOS_Optimizer.Views
 {
     public sealed partial class LoadingWindow : Window
     {
+        public static DiagnosticsPageViewModel? GlobalDiagnosticsVM { get; private set; }
+
         #region Private Fields & Constants
         private const string PlainDb = "EvolveOS_OptimizerDb.mdf";
         private const string SecureDb = "EvolveOS_OptimizerDb.dat";
@@ -413,6 +416,11 @@ namespace EvolveOS_Optimizer.Views
 
                     _dispatcherQueue.TryEnqueue(() =>
                     {
+                        if (GlobalDiagnosticsVM == null)
+                        {
+                            GlobalDiagnosticsVM = new DiagnosticsPageViewModel();
+                        }
+
                         FinalizeTransition();
 
                         if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)

@@ -267,11 +267,11 @@
                             <FontIcon Glyph="&#xEDA2;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton x:Name="BtnNavMaintenance" Style="{StaticResource BtnNavigation}"
+                        <RadioButton x:Name="BtnNavDiagnostics" Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
-                                     CommandParameter="Maintenance"
+                                     CommandParameter="Diagnostics"
                                      IsTabStop="False"
-                                     Tag="{x:Bind GetText('Nav_Maintenance'), Mode=OneWay}">
+                                     Tag="{x:Bind GetText('Nav_CommandCenter'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE772;" FontSize="18"/>
                         </RadioButton>
 
