@@ -1,5 +1,5 @@
 // Copyright (c) 2026 EvolveOS Software
-// Licensed under the MIT License
+// Licensed under the MIT License.
 
 using System.Management;
 using EvolveOS_Optimizer.Core.Model;
@@ -28,10 +28,13 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                             if (freePercentage < 15.0) // Less than 15% RAM available
                             {
+                                string source = ResourceString.GetString("diag_alert_source_ram") ?? "Memory Manager";
+                                string msgTemplate = ResourceString.GetString("diag_alert_msg_ram") ?? "CRITICAL: System RAM is low ({0:F1}% free).";
+
                                 performanceAlerts.Add(CreateAlert(
                                     8001,
-                                    "Memory Manager",
-                                    $"CRITICAL: System RAM is nearly exhausted ({freePercentage:F1}% free). High risk of pagefile thrashing and system stuttering."
+                                    source,
+                                    string.Format(msgTemplate, freePercentage)
                                 ));
                             }
                         }
@@ -47,10 +50,13 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                             if (cpuLoad > 90) // CPU over 90%
                             {
+                                string source = ResourceString.GetString("diag_alert_source_cpu") ?? "Processor Telemetry";
+                                string msgTemplate = ResourceString.GetString("diag_alert_msg_cpu") ?? "WARNING: CPU load is high ({0}%).";
+
                                 performanceAlerts.Add(CreateAlert(
                                     8002,
-                                    "Processor Telemetry",
-                                    $"WARNING: CPU load is exceptionally high ({cpuLoad}%). Background tasks may be restricting foreground performance."
+                                    source,
+                                    string.Format(msgTemplate, cpuLoad)
                                 ));
                             }
                         }
@@ -66,10 +72,13 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                             if (diskLoad > 95)
                             {
+                                string source = ResourceString.GetString("diag_alert_source_disk") ?? "Storage Controller";
+                                string message = ResourceString.GetString("diag_alert_msg_disk") ?? "WARNING: Disk I/O is saturated.";
+
                                 performanceAlerts.Add(CreateAlert(
                                     8003,
-                                    "Storage Controller",
-                                    $"WARNING: Disk I/O is saturated. System responsiveness is severely degraded. Check for aggressive background indexing or failing drives."
+                                    source,
+                                    message
                                 ));
                             }
                         }

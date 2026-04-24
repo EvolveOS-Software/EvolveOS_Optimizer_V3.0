@@ -14,11 +14,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             await Task.Run(() =>
             {
-                // This XPath string tells Windows: "Give me Level 1, 2, or 3 events from the last X hours"
                 long milliseconds = hoursToLookBack * 60 * 60 * 1000;
                 string queryStr = $"*[System[(Level=1 or Level=2 or Level=3) and TimeCreated[timediff(@SystemTime) <= {milliseconds}]]]";
 
-                // Try System log first, then Application log
                 string[] logsToMine = { "System", "Application" };
 
                 foreach (var logName in logsToMine)
@@ -27,7 +25,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     {
                         var query = new EventLogQuery(logName, PathType.LogName, queryStr)
                         {
-                            ReverseDirection = true // Newest first
+                            ReverseDirection = true
                         };
 
                         using var reader = new EventLogReader(query);
@@ -44,8 +42,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                                     EventId = record.Id,
                                     Level = record.Level ?? 2,
 
-                                    // Windows Event messages can be massively long paragraphs. 
-                                    // We grab just the first sentence for the UI dashboard.
                                     Message = CleanUpMessage(record.FormatDescription() ?? "No description available.")
                                 });
                             }
@@ -62,7 +58,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 }
             });
 
-            // Sort so the absolute newest events are at the top, regardless of which log they came from
             results.Sort((a, b) => b.TimeCreated.CompareTo(a.TimeCreated));
 
             return results;

@@ -372,7 +372,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
             batch.End();
         }
 
-        public static async Task ExecuteBackgroundOptimizationAsync(Core.ViewModel.MaintenanceViewModel sharedViewModel)
+        public static async Task ExecuteBackgroundOptimizationAsync(Core.ViewModel.DiagnosticsPageViewModel sharedViewModel)
         {
             if (sharedViewModel == null) return;
 

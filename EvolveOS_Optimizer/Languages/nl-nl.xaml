@@ -1150,140 +1150,6 @@
     <sys:String x:Key="process_manager_page_search_placeholder">Processen zoeken...</sys:String>
     <!-- endregion Process Manager Page -->
 
-    <!-- System Optimizer -->
-    <sys:String x:Key="title_system_health_status">Gezondheidsstatus</sys:String>
-    <sys:String x:Key="text_system_optimizer_description">Verbeter de reactiesnelheid van het systeem door verkeerd beheerd geheugen terug te winnen en overbodige bestanden te verwijderen. Richt zich efficiënt op geheugenlekken, leegt DNS-caches en verwijdert tijdelijke gegevens om topprestaties te herstellen.</sys:String>
-    <sys:String x:Key="btn_open_system_optimizer">Open Systeemoptimalisatie</sys:String>
-
-    <sys:String x:Key="txt_header_physical_memory">Fysiek Geheugen</sys:String>
-    <sys:String x:Key="txt_physical_memory_used">Gebruikt:</sys:String>
-    <sys:String x:Key="txt_physical_memory_free">Vrij:</sys:String>
-    <sys:String x:Key="txt_header_virtual_memory">Virtueel Geheugen</sys:String>
-    <sys:String x:Key="txt_virtual_memory_used">Gebruikt:</sys:String>
-    <sys:String x:Key="txt_virtual_memory_free">Vrij:</sys:String>
-    <sys:String x:Key="txt_header_process_exlusions">Procesuitsluitingen</sys:String>
-    <sys:String x:Key="txt_header_cleaning_targets">Schoonmaakdoelen</sys:String>
-    <sys:String x:Key="txt_header_auto_optimizations">Automatische Optimalisaties</sys:String>
-    <sys:String x:Key="txt_header_optimization_hotkey">Optimalisatie Sneltoets</sys:String>
-    <sys:String x:Key="txt_header_settings">Instellingen</sys:String>
-    <sys:String x:Key="btn_clean_now">Nu Schoonmaken</sys:String>
-    <sys:String x:Key="notify_mem_clean_successfull">Geheugen succesvol schoongemaakt</sys:String>
-    <sys:String x:Key="txt_progress_step">Optimaliseren</sys:String>
-    <sys:String x:Key="txt_virtual_memory_header">virtueel geheugen</sys:String>
-    <sys:String x:Key="title_memory_areas_combined_page_list">Gecombineerde Paginalijst</sys:String>
-    <sys:String x:Key="description_memory_areas_combined_page_list">Verplaatst pagina's met identieke inhoud naar de stand-bylijst.</sys:String>
-    <sys:String x:Key="title_memory_areas_modified_file_cache">Gewijzigde Bestandscache</sys:String>
-    <sys:String x:Key="description_memory_system_file_cache">Schrijft de gewijzigde bestandscache weg naar de schijf.</sys:String>
-    <sys:String x:Key="title_memory_areas_modified_page_list">Gewijzigde Paginalijst</sys:String>
-    <sys:String x:Key="description_memory_areas_modified_page_list">Verplaatst geheugen van de gewijzigde lijst naar de stand-bylijst.</sys:String>
-    <sys:String x:Key="title_memory_areas_registry_cache">Registercache</sys:String>
-    <sys:String x:Key="description_memory_areas_registry_cache">Verkleint de werkset van de register-hive.</sys:String>
-    <sys:String x:Key="title_memory_areas_standby_list">Stand-bylijst</sys:String>
-    <sys:String x:Key="description_memory_areas_standby_list">Verwijdert alle pagina's uit de stand-bylijst.</sys:String>
-    <sys:String x:Key="title_memory_areas_standby_list_low_priority">Stand-bylijst (Lage Prioriteit)</sys:String>
-    <sys:String x:Key="description_memory_areas_standby_list_low_priority">Verwijdert alleen pagina's met een lage prioriteit uit de stand-bylijst.</sys:String>
-    <sys:String x:Key="title_memory_areas_system_file_cache">Systeembestandscache</sys:String>
-    <sys:String x:Key="description_memory_areas_system_file_cache">Verkleint de systeembrede werkset.</sys:String>
-    <sys:String x:Key="title_memory_areas_working_set">Werkset</sys:String>
-    <sys:String x:Key="description_memory_areas_working_set">Verkleint de werksets van alle processen.</sys:String>
-    <sys:String x:Key="title_settings_items_close_afer_optimization">Sluiten na optimalisatie</sys:String>
-    <sys:String x:Key="description_settings_items_close_afer_optimization">Sluit het venster voor systeemoptimalisatie automatisch nadat het proces is voltooid.</sys:String>
-    <sys:String x:Key="title_settings_items_show_notification">Toon optimalisatiemeldingen</sys:String>
-    <sys:String x:Key="description_settings_items_show_notification">Toont een melding in het systeemvak in plaats van een pop-upvenster wanneer de optimalisatie is voltooid.</sys:String>
-    <sys:String x:Key="title_settings_items_show_no_result">Schakel alle optimalisatieresultaten uit</sys:String>
-    <sys:String x:Key="description_settings_items_show_no_result">Toon geen melding of pop-upvenster wanneer de optimalisatie is voltooid.</sys:String>
-    <sys:String x:Key="title_settings_items_low_priority">Uitvoeren met lage prioriteit</sys:String>
-    <sys:String x:Key="description_settings_items_low_priority">Stelt het optimalisatieproces in op een lagere CPU-prioriteit om systeemvertraging tijdens het schoonmaken te voorkomen.</sys:String>
-    <sys:String x:Key="title_settings_items_show_virtual_memory">Virtueel Geheugen</sys:String>
-    <sys:String x:Key="description_settings_items_show_virtual_memory">Schakelt de zichtbaarheid in/uit van het wisselbestand en virtueel geheugenstatistieken op het hoofddashboard.</sys:String>
-    <sys:String x:Key="title_settings_items_restart_explorer">Windows Verkenner herstarten</sys:String>
-    <sys:String x:Key="description_settings_items_restart_explorer">Herstart de shell om het opschonen van de pictogramcache volledig toe te passen en het systeemvak te vernieuwen. De taakbalk kan hierdoor enkele seconden verdwijnen.</sys:String>
-    <sys:String x:Key="txt_auto_opt_interval_singular">Elke {0} uur</sys:String>
-    <sys:String x:Key="txt_auto_opt_interval_plural">Elke {0} uur</sys:String>
-    <sys:String x:Key="txt_disabled">Uitgeschakeld</sys:String>
-    <sys:String x:Key="txt_auto_opt_usage_limit">Wanneer het gebruik de {0}% overschrijdt</sys:String>
-    <sys:String x:Key="txt_auto_opt_usage_warning">Automatische optimalisatie kan slechts om de paar minuten worden uitgevoerd om lussen te voorkomen.</sys:String>
-    <sys:String x:Key="msg_hotkey_in_use">De sneltoets ({0}) is in gebruik door het besturingssysteem</sys:String>
-    <sys:String x:Key="msg_mem_optimized">GEHEUGEN GEOPTIMALISEERD:</sys:String>
-    <sys:String x:Key="optimizations_step_working_set">werkset</sys:String>
-    <sys:String x:Key="optimizations_step_system_file_cache">systeembestandscache</sys:String>
-    <sys:String x:Key="optimizations_step_modified_page_list">gewijzigde paginalijst</sys:String>
-    <sys:String x:Key="optimizations_step_standby_list">stand-bylijst</sys:String>
-    <sys:String x:Key="optimizations_step_standby_list_lp">stand-bylijst (lage prioriteit)</sys:String>
-    <sys:String x:Key="optimizations_step_combined_page_list">gecombineerde paginalijst</sys:String>
-    <sys:String x:Key="optimizations_step_registry_cache">registercache</sys:String>
-    <sys:String x:Key="optimizations_step_modified_file_cache">gewijzigde bestandscache</sys:String>
-    <sys:String x:Key="optimizations_step_modified_garbage_collector">garbage collector</sys:String>
-    <sys:String x:Key="title_warning_priority">Beveiligings- &amp; Prestatiewaarschuwing</sys:String>
-    <sys:String x:Key="msg_warning_windows_old_deletion">Waarschuwing: Het verwijderen van Windows.old is permanent. U kunt NIET meer terugkeren naar een eerdere versie van Windows als u problemen ondervindt. Wilt u doorgaan?</sys:String>
-    <sys:String x:Key="optimizations_step_disk_cleanup">Tijdelijke Bestanden Opschonen...</sys:String>
-    <sys:String x:Key="optimizations_step_windows_old">Windows.old Verwijderen (Rechten aanpassen)...</sys:String>
-    <sys:String x:Key="optimizations_step_update_cache">Windows Update-cache Opschonen...</sys:String>
-    <sys:String x:Key="label_disk_recovered">Schijfruimte Vrijgemaakt</sys:String>
-    <sys:String x:Key="title_memory_areas_disk_cleanup">Schijfopruiming (Temp Bestanden)</sys:String>
-    <sys:String x:Key="title_memory_areas_windows_old">Windows.old Map</sys:String>
-    <sys:String x:Key="description_memory_areas_disk_cleanup">Verwijdert tijdelijke bestanden, prefetch en miniatuurcaches om schijfruimte vrij te maken.</sys:String>
-    <sys:String x:Key="description_memory_areas_windows_old">Verwijdert back-ups van eerdere Windows-installaties. WAARSCHUWING: Dit proces is permanent en voorkomt systeem-rollbacks.</sys:String>
-    <sys:String x:Key="title_memory_areas_flush_dns">DNS-cache Leegmaken</sys:String>
-    <sys:String x:Key="description_memory_areas_flush_dns">Leegt de DNS-resolver-cache om verbindingsproblemen op te lossen en domeintoewijzingen te vernieuwen.</sys:String>
-    <sys:String x:Key="optimizations_step_flush_dns">DNS-cache leegmaken</sys:String>
-    <sys:String x:Key="txt_total_estimated_space">Totale Geschatte Ruimte:</sys:String>
-    <sys:String x:Key="tooltip_refresh_space">Bereken schoonmaakgrootte opnieuw</sys:String>
-    <sys:String x:Key="txt_scanning">Scannen...</sys:String>
-    <sys:String x:Key="txt_header_memory_areas">Geheugenoptimalisatie</sys:String>
-    <sys:String x:Key="txt_header_system_cleanup">Systeemopschoning</sys:String>
-    <sys:String x:Key="txt_progress_preparing">Systeemanalyse voorbereiden...</sys:String>
-    <sys:String x:Key="txt_progress_optimizing">Geheugenoptimalisatie uitvoeren...</sys:String>
-    <sys:String x:Key="txt_progress_finalizing">Afronden en statistieken vernieuwen...</sys:String>
-    <sys:String x:Key="txt_optimization_completed">Optimalisatie succesvol afgerond!</sys:String>
-    <sys:String x:Key="UnexpectedError">Er is een onverwachte fout opgetreden</sys:String>
-    <sys:String x:Key="Repair">Repareren</sys:String>
-    <sys:String x:Key="OperationStopped">Bewerking gestopt</sys:String>
-    <sys:String x:Key="OperationCompleted">Bewerking voltooid</sys:String>
-    <sys:String x:Key="BatteryStatus">Batterijstatus</sys:String>
-    <sys:String x:Key="ReportSaved">Rapport opgeslagen op Bureaublad</sys:String>
-    <sys:String x:Key="MemoryDiagnosticDialogTitle">Geheugendiagnose</sys:String>
-    <sys:String x:Key="MemoryDiagnosticDialogText">Geheugenproblemen kunnen ertoe leiden dat uw computer informatie verliest of stopt met werken.</sys:String>
-    <sys:String x:Key="RestartNow">Nu herstarten</sys:String>
-    <sys:String x:Key="ScheduleLater">Later inplannen</sys:String>
-    <sys:String x:Key="ScheduledLater">Ingepland voor volgende herstart</sys:String>
-    <sys:String x:Key="ScanInProgress">{0} / {1}: {2} scan is bezig...</sys:String>
-    <sys:String x:Key="ScanResults">Scanresultaten</sys:String>
-    <sys:String x:Key="RepairInProgress">{0} / {1}: {2} reparatie is bezig...</sys:String>
-    <sys:String x:Key="Health_Poor">Slecht - Actie vereist</sys:String>
-    <sys:String x:Key="Health_Warning">Matig - Optimalisatie aanbevolen</sys:String>
-    <sys:String x:Key="Health_Good">Goed - Systeem is gezond</sys:String>
-    <sys:String x:Key="txt_header_drive_c_space">Systeemschijf (C:)</sys:String>
-    <sys:String x:Key="txt_drive_c_used">Gebruikte ruimte:</sys:String>
-    <sys:String x:Key="txt_drive_c_free">Vrije ruimte:</sys:String>
-    <sys:String x:Key="txt_header_system_repair">Systeemherstel</sys:String>
-    <sys:String x:Key="txt_dism">DISM</sys:String>
-    <sys:String x:Key="txt_sfc">SFC</sys:String>
-    <sys:String x:Key="txt_chkdsk">CHKDSK</sys:String>
-    <sys:String x:Key="btn_scan">Scannen</sys:String>
-    <sys:String x:Key="btn_repair">Herstellen</sys:String>
-    <sys:String x:Key="btn_stop">Stoppen</sys:String>
-    <sys:String x:Key="txt_header_diagnostic_options">Diagnostische opties</sys:String>
-    <sys:String x:Key="txt_battery_health">Batterijgezondheid</sys:String>
-    <sys:String x:Key="btn_generate">Genereren</sys:String>
-    <sys:String x:Key="txt_disk_optimizations">Schijfoptimalisaties</sys:String>
-    <sys:String x:Key="btn_optimize">Optimaliseren</sys:String>
-    <sys:String x:Key="txt_event_viewer">Logboeken</sys:String>
-    <sys:String x:Key="txt_memory_diagnostic">Geheugendiagnose</sys:String>
-    <sys:String x:Key="btn_check">Controleren</sys:String>
-    <sys:String x:Key="txt_ready">Klaar</sys:String>
-    <sys:String x:Key="txt_invalid">Ongeldig</sys:String>
-    <sys:String x:Key="toast_btn_optimize">Nu optimaliseren</sys:String>
-    <sys:String x:Key="toast_btn_ignore">Negeren</sys:String>
-    <sys:String x:Key="toast_optimization_complete_title">Optimalisatie voltooid</sys:String>
-    <sys:String x:Key="toast_optimization_complete_msg">Systeembronnen zijn met succes vrijgemaakt en geoptimaliseerd.</sys:String>
-    <sys:String x:Key="toast_health_critical_title">Systeemstatus kritiek</sys:String>
-    <sys:String x:Key="toast_health_critical_msg">Systeembronnen zijn zwaar belast of de schijfruimte is bijna op. Klik om te optimaliseren.</sys:String>
-    <sys:String x:Key="placeholder_select_process">Selecteer een proces om uit te sluiten...</sys:String>
-    <sys:String x:Key="StatusTextBlockDefault">Gereed</sys:String>
-    <sys:String x:Key="Close">Sluiten</sys:String>
-    <!--#endregion-->
-
     <!-- Resource Helper -->
     <sys:String x:Key="unit_B">B</sys:String>
     <sys:String x:Key="unit_KB">KB</sys:String>
@@ -1997,4 +1863,339 @@
     <sys:String x:Key="startup_manager_page_toast_new_app_message">{0} heeft zichzelf zojuist toegevoegd aan uw opstartproces.&#10;Controleer EvolveOS Optimizer om dit te beheren.</sys:String>
     <!-- endregion Startup Manager Page -->
 
+    <!-- region Diagnostics Page -->
+    <sys:String x:Key="diag_header_subtitle">PROACTIEVE SYSTEEMGEZONDHEIDSDIAGNOSTIEK</sys:String>
+    <sys:String x:Key="diag_header_title">COMMAND CENTER v1.0</sys:String>
+    <sys:String x:Key="diag_btn_start_scan">Start Volledige Scan</sys:String>
+
+    <sys:String x:Key="diag_sys_status">SYSTEEMSTATUS</sys:String>
+    <sys:String x:Key="diag_sys_healthy">GEZOND / VEILIG</sys:String>
+    <sys:String x:Key="diag_sys_last_checked">Laatst gecontroleerd: Zojuist / Geen onmiddellijke actie vereist.</sys:String>
+
+    <sys:String x:Key="diag_live_miner">LIVE TELEMETRIE MINER</sys:String>
+    <sys:String x:Key="diag_tgl_standby">STAND-BY</sys:String>
+    <sys:String x:Key="diag_tgl_active">ACTIEF</sys:String>
+    <sys:String x:Key="diag_active_hardware">ACTIEVE HARDWARE</sys:String>
+
+    <sys:String x:Key="diag_hw_scan_title">HARDWARE &amp; DRIVER COMPATIBILITEITSSCAN</sys:String>
+    <sys:String x:Key="diag_btn_enable">INSCHAKELEN</sys:String>
+
+    <sys:String x:Key="diag_stability_trend">SYSTEEMSTABILITEITSTREND (24U)</sys:String>
+    <sys:String x:Key="diag_event_miner_title">EVENT LOG MINER &amp; ANALYSE</sys:String>
+    <sys:String x:Key="diag_event_id_prefix">ID:</sys:String>
+    <sys:String x:Key="diag_btn_fix">HERSTELLEN</sys:String>
+    <sys:String x:Key="diag_no_events">Geen kritieke gebeurtenissen geïsoleerd in het opgegeven tijdsbestek.</sys:String>
+
+    <sys:String x:Key="diag_cpu_load">CPU BELASTING</sys:String>
+    <sys:String x:Key="diag_cpu_load_small">CPU:</sys:String>
+    <sys:String x:Key="diag_gpu_load">GPU BELASTING</sys:String>
+    <sys:String x:Key="diag_gpu_load_small">GPU:</sys:String>
+    <sys:String x:Key="diag_ram_load">RAM BELASTING</sys:String>
+    <sys:String x:Key="diag_ram_load_small">RAM:</sys:String>
+    <sys:String x:Key="diag_network_load">NETWERKSNELHEID</sys:String>
+    <sys:String x:Key="diag_network_load_small">NET:</sys:String>
+    <sys:String x:Key="diag_pagefile_load">WISSELBESTAND</sys:String>
+    <sys:String x:Key="diag_pagefile_load_small">PAGE:</sys:String>
+    <sys:String x:Key="diag_io_load">I/O BELASTING</sys:String>
+    <sys:String x:Key="diag_io_load_small">I/O:</sys:String>
+
+    <sys:String x:Key="diag_graph_60sec">60 Seconden</sys:String>
+    <sys:String x:Key="diag_graph_5min">5 Minuten</sys:String>
+    <sys:String x:Key="diag_graph_10min">10 Minuten</sys:String>
+    <sys:String x:Key="diag_graph_15min">15 Minuten</sys:String>
+
+    <sys:String x:Key="diag_toggle_maintenance">Onderhoudshulpmiddelen</sys:String>
+    <sys:String x:Key="diag_pane_header">ONDERHOUD &amp; REPARATIE</sys:String>
+    <sys:String x:Key="diag_health_status_label">HUIDIGE GEZONDHEIDSSTATUS</sys:String>
+    <sys:String x:Key="diag_btn_refresh_data">Gegevens Vernieuwen</sys:String>
+    <sys:String x:Key="diag_expander_memory">Geheugenbeheer</sys:String>
+    <sys:String x:Key="diag_expander_exclusions">Procesuitsluitingen</sys:String>
+    <sys:String x:Key="diag_placeholder_select_process">Selecteer een proces...</sys:String>
+    <sys:String x:Key="diag_expander_auto_opt">Auto-Optimalisaties</sys:String>
+    <sys:String x:Key="diag_expander_hotkey">Optimalisatie Sneltoets</sys:String>
+    <sys:String x:Key="diag_hotkey_enabled">Sneltoets Ingeschakeld</sys:String>
+    <sys:String x:Key="diag_hotkey_disabled">Sneltoets Uitgeschakeld</sys:String>
+    <sys:String x:Key="diag_expander_cleanup">Systeemopruiming</sys:String>
+    <sys:String x:Key="diag_btn_clean_now">Nu Opruimen</sys:String>
+    <sys:String x:Key="diag_expander_repair">Reparatiebewerkingen</sys:String>
+    <sys:String x:Key="diag_check_dism">DISM Image Reparatie</sys:String>
+    <sys:String x:Key="diag_check_sfc">SFC System Scannow</sys:String>
+    <sys:String x:Key="diag_check_chkdsk">CHKDSK Bestandssysteem</sys:String>
+    <sys:String x:Key="diag_btn_scan_action">SCANNEN</sys:String>
+    <sys:String x:Key="diag_btn_repair_action">REPAREREN</sys:String>
+    <sys:String x:Key="diag_btn_stop_op">BEWERKING STOPPEN</sys:String>
+    <sys:String x:Key="diag_status_ready">Gereed</sys:String>
+    <sys:String x:Key="diag_expander_utilities">Systeemhulpprogramma's</sys:String>
+    <sys:String x:Key="diag_btn_open">Openen</sys:String>
+    <sys:String x:Key="diag_expander_settings">Onderhoudsinstellingen</sys:String>
+    <sys:String x:Key="diag_ai_analysis_title">AI NEURALE ANALYSE</sys:String>
+    <sys:String x:Key="diag_btn_cpu">CPU</sys:String>
+    <sys:String x:Key="diag_btn_gpu">GPU</sys:String>
+    <sys:String x:Key="diag_btn_ram">RAM</sys:String>
+    <sys:String x:Key="diag_btn_disk">SCHIJF</sys:String>
+    <sys:String x:Key="diag_btn_page">PAGE</sys:String>
+    <sys:String x:Key="diag_graph_now">NU</sys:String>
+
+    <sys:String x:Key="live_watcher_pending">Live Interceptie: Gedetailleerde logboeken in afwachting...</sys:String>
+
+    <sys:String x:Key="diag_alert_source_ram">Geheugenbeheer</sys:String>
+    <sys:String x:Key="diag_alert_source_cpu">Processor Telemetrie</sys:String>
+    <sys:String x:Key="diag_alert_source_disk">Opslagcontroller</sys:String>
+    <sys:String x:Key="diag_alert_msg_ram">KRITIEK: Systeem RAM is bijna uitgeput ({0:F1}% vrij). Hoog risico op pagefile thrashing en systeemvertraging.</sys:String>
+    <sys:String x:Key="diag_alert_msg_cpu">WAARSCHUWING: CPU-belasting is uitzonderlijk hoog ({0}%). Achtergrondtaken kunnen voorgrondprestaties beperken.</sys:String>
+    <sys:String x:Key="diag_alert_msg_disk">WAARSCHUWING: Schijf-I/O is verzadigd. Systeemrespons is ernstig verslechterd. Controleer op agressieve achtergrondindexering of falende schijven.</sys:String>
+
+    <sys:String x:Key="wmi_unknown_device">Onbekend Apparaat</sys:String>
+    <sys:String x:Key="hw_generic">Generieke Controller</sys:String>
+    <sys:String x:Key="hw_gpu">Grafische Processor</sys:String>
+    <sys:String x:Key="hw_usb">USB Host/Hub</sys:String>
+    <sys:String x:Key="hw_audio">Geluidsapparaat</sys:String>
+    <sys:String x:Key="hw_network">Netwerkadapter</sys:String>
+    <sys:String x:Key="hw_system">Systeemapparaat</sys:String>
+    <sys:String x:Key="hw_bluetooth">Bluetooth Radio</sys:String>
+
+    <sys:String x:Key="diag_hw_interrogating">BUS ONDERVRAGEN...</sys:String>
+    <sys:String x:Key="diag_hw_optimal">HARDWARE OPTIMAAL. BUS BEWAKEN...</sys:String>
+    <sys:String x:Key="diag_sys_optimal">SYSTEEM OPTIMAAL. BEWAKEN...</sys:String>
+    <sys:String x:Key="diag_scan_idle">Systeem inactief. Klaar om diagnostische scan te starten.</sys:String>
+    <sys:String x:Key="diag_cpu_load">CPU BELASTING</sys:String>
+    <sys:String x:Key="diag_ai_sleeping">AI Engine in rust. Voer een scan uit om een systeemgezondheidssamenvatting te genereren.</sys:String>
+
+    <sys:String x:Key="diag_fix_event_attempt">Poging tot geautomatiseerd herstel voor Gebeurtenis {0}...</sys:String>
+    <sys:String x:Key="diag_fix_event_success">Gebeurtenis {0} succesvol hersteld.</sys:String>
+    <sys:String x:Key="diag_fix_event_deploy">AUTO-FIX INGEZET: Het probleem geassocieerd met ID {0} is opgelost.</sys:String>
+    <sys:String x:Key="diag_fix_event_fail">Herstel mislukt voor Gebeurtenis {0}. Beheerdersrechten vereist.</sys:String>
+    <sys:String x:Key="diag_fix_hw_init">Hardwaresequentie initiëren voor {0}...</sys:String>
+    <sys:String x:Key="diag_fix_hw_wait">Opdracht verzonden. Wachten tot OS driver stack initialiseert...</sys:String>
+    <sys:String x:Key="diag_fix_hw_verified">HERSTEL GEVERIFIEERD: {0} driver stack gesignaleerd en opnieuw geïnitialiseerd.</sys:String>
+    <sys:String x:Key="diag_fix_hw_fail">Herstellen van {0} mislukt. Controleer Beheerdersrechten.</sys:String>
+
+    <sys:String x:Key="diag_scan_running">Uitvoeren van diepe systeem- en hardwareanalyse...</sys:String>
+    <sys:String x:Key="diag_ai_analyzing">Neurale engine analyseert telemetriegegevens...</sys:String>
+    <sys:String x:Key="diag_scan_interrogating_hw">HARDWARE ONDERVRAGEN...</sys:String>
+    <sys:String x:Key="diag_scan_complete">Scan voltooid. {0} hardwareproble(e)m(en) | {1} systeemgebeurtenis(sen).</sys:String>
+    <sys:String x:Key="diag_ai_analysis_issue">AI Analyse: {0} systeemcrashes/fouten of knelpunten gedetecteerd. Hardwareconflict geïdentificeerd in {1} appara(a)t(en). Aanbeveling: Voer beschikbare auto-fixes uit vanuit de Event Miner.</sys:String>
+    <sys:String x:Key="diag_ai_analysis_nominal">AI Analyse: Systeemtelemetrie is nominaal. Geen tekenen van degradatie of instabiliteit gevonden in recente logboeken.</sys:String>
+    <sys:String x:Key="diag_status_critical_faults">KRITIEK. {0} HARDWAREFOUTEN GEDETECTEERD.</sys:String>
+    <sys:String x:Key="diag_status_warning_events">WAARSCHUWING. {0} SYSTEEMGEBEURTENISSEN GEREGISTREERD.</sys:String>
+
+    <sys:String x:Key="diag_ram_exhaustion_title">Geheugenuitputting Waarschuwing</sys:String>
+    <sys:String x:Key="diag_ram_exhaustion_msg">Fysiek geheugengebruik heeft {0}% bereikt. Systeemprestaties kunnen verslechteren.</sys:String>
+    <sys:String x:Key="diag_pf_saturation_title">Pagefile Verzadiging Waarschuwing</sys:String>
+    <sys:String x:Key="diag_pf_saturation_msg">Pagefile-gebruik is kritiek hoog op {0}%. Schijf thrashing waarschijnlijk.</sys:String>
+    <sys:String x:Key="diag_live_active">Live Telemetrie Interceptor: ACTIEF</sys:String>
+    <sys:String x:Key="diag_live_standby">Live Telemetrie Interceptor: STAND-BY</sys:String>
+    <sys:String x:Key="diag_live_intercept_msg">LIVE INTERCEPTIE: {0} rapporteerde een Niveau {1} gebeurtenis. Stabiliteit bijgewerkt.</sys:String>
+    <sys:String x:Key="diag_critical_error_title">Kritieke Systeemfout Gedetecteerd</sys:String>
+    <sys:String x:Key="diag_critical_error_msg">Gebeurtenis-ID {0} gelogd door {1}.</sys:String>
+    <sys:String x:Key="diag_ai_summary_nominal">AI Analyse: Systeemtelemetrie is nominaal. Geen tekenen van degradatie of instabiliteit gevonden in recente logboeken.</sys:String>
+    <sys:String x:Key="diag_ai_summary_issues">AI Analyse: {0} systeemcrashes/fouten of knelpunten gedetecteerd. Hardwareconflict geïdentificeerd in {1} appara(a)t(en). Aanbeveling: Voer beschikbare auto-fixes uit vanuit de Event Miner.</sys:String>
+    <sys:String x:Key="diag_alert_source_neural">EvolveOS Neurale Engine</sys:String>
+    <sys:String x:Key="diag_alert_ram_usage_msg">KRITIEK: Fysiek geheugengebruik op {0}%. Onmiddellijke cache-opschoning aanbevolen om paging thrash te voorkomen.</sys:String>
+    <sys:String x:Key="diag_alert_pf_usage_msg">WAARSCHUWING: Pagefile-gebruik overschrijdt {0}%. Schijf-I/O knelpunt op handen. Aanbevolen om virtueel geheugen te wissen.</sys:String>
+
+    <sys:String x:Key="wmi_code_default_summary">Een cryptische foutcode (Code {0}) is gedetecteerd door de proactieve scan.</sys:String>
+    <sys:String x:Key="wmi_code_default_fix">Windows heeft een interne fout ondervonden met dit stuurprogramma. Controleer Apparaatbeheer of installeer het standaard stuurprogramma opnieuw.</sys:String>
+    <sys:String x:Key="wmi_code_extended_summary">Uitgebreide PnP-fout (Code {0}) gedetecteerd op de hardwarebus.</sys:String>
+    <sys:String x:Key="wmi_code_extended_fix">Dit is een complex hardwareconflict of drivercrash. Gebruik de EvolveOS auto-remediatietool om de PnP-status te resetten.</sys:String>
+
+    <sys:String x:Key="wmi_code_1_summary">Apparaat is niet juist geconfigureerd.</sys:String>
+    <sys:String x:Key="wmi_code_1_fix">Werk het stuurprogramma bij of herstel de vorige versie.</sys:String>
+
+    <sys:String x:Key="wmi_code_3_summary">Stuurprogramma voor dit apparaat is mogelijk beschadigd.</sys:String>
+    <sys:String x:Key="wmi_code_3_fix">Verwijder het apparaat en scan naar hardwarewijzigingen.</sys:String>
+
+    <sys:String x:Key="wmi_code_10_summary">Dit apparaat kan niet starten (Code 10).</sys:String>
+    <sys:String x:Key="wmi_code_10_fix">Probeer de apparaatstuurprogramma's bij te werken.</sys:String>
+
+    <sys:String x:Key="wmi_code_14_summary">Dit apparaat werkt pas goed nadat u de computer opnieuw hebt opgestart.</sys:String>
+    <sys:String x:Key="wmi_code_14_fix">Start uw computer opnieuw op.</sys:String>
+
+    <sys:String x:Key="wmi_code_18_summary">Installeer de stuurprogramma's voor dit apparaat opnieuw.</sys:String>
+    <sys:String x:Key="wmi_code_18_fix">Klik op 'Stuurprogramma bijwerken' in Apparaatbeheer.</sys:String>
+
+    <sys:String x:Key="wmi_code_19_summary">Uw register is mogelijk beschadigd.</sys:String>
+    <sys:String x:Key="wmi_code_19_fix">Windows kan dit hardwareapparaat niet starten omdat de configuratie-informatie in het register onvolledig of beschadigd is.</sys:String>
+
+    <sys:String x:Key="wmi_code_21_summary">Windows is dit apparaat aan het verwijderen.</sys:String>
+    <sys:String x:Key="wmi_code_21_fix">Wacht een paar seconden en vernieuw Apparaatbeheer.</sys:String>
+
+    <sys:String x:Key="wmi_code_22_summary">Dit apparaat is uitgeschakeld (Code 22).</sys:String>
+    <sys:String x:Key="wmi_code_22_fix">Schakel het apparaat in Apparaatbeheer in.</sys:String>
+
+    <sys:String x:Key="wmi_code_24_summary">Dit apparaat is niet aanwezig, werkt niet goed of de stuurprogramma's zijn niet geïnstalleerd.</sys:String>
+    <sys:String x:Key="wmi_code_24_fix">Controleer fysieke verbindingen of installeer stuurprogramma's opnieuw.</sys:String>
+
+    <sys:String x:Key="wmi_code_28_summary">De stuurprogramma's voor dit apparaat zijn niet geïnstalleerd.</sys:String>
+    <sys:String x:Key="wmi_code_28_fix">Installeer de nieuwste stuurprogramma's van de fabrikant.</sys:String>
+
+    <sys:String x:Key="wmi_code_29_summary">Dit apparaat is uitgeschakeld omdat de firmware de vereiste bronnen niet heeft toegewezen.</sys:String>
+    <sys:String x:Key="wmi_code_29_fix">Controleer BIOS/UEFI instellingen op hardwareconflicten.</sys:String>
+
+    <sys:String x:Key="wmi_code_31_summary">Dit apparaat werkt niet goed omdat Windows de stuurprogramma's niet kan laden.</sys:String>
+    <sys:String x:Key="wmi_code_31_fix">Download en installeer het specifieke stuurprogramma voor dit apparaat.</sys:String>
+
+    <sys:String x:Key="wmi_code_32_summary">Een stuurprogramma (service) voor dit apparaat is uitgeschakeld.</sys:String>
+    <sys:String x:Key="wmi_code_32_fix">Een alternatief stuurprogramma biedt deze functionaliteit mogelijk.</sys:String>
+
+    <sys:String x:Key="wmi_code_37_summary">Windows kan het apparaatstuurprogramma voor deze hardware niet initialiseren.</sys:String>
+    <sys:String x:Key="wmi_code_37_fix">Verwijder het apparaat en start de pc opnieuw op.</sys:String>
+
+    <sys:String x:Key="wmi_code_38_summary">Windows kan het apparaatstuurprogramma niet laden omdat een eerdere instantie nog in het geheugen staat.</sys:String>
+    <sys:String x:Key="wmi_code_38_fix">Start uw computer opnieuw op.</sys:String>
+
+    <sys:String x:Key="wmi_code_39_summary">Windows kan het apparaatstuurprogramma niet laden. Het stuurprogramma is mogelijk beschadigd of ontbreekt.</sys:String>
+    <sys:String x:Key="wmi_code_39_fix">Installeer het stuurprogramma opnieuw.</sys:String>
+
+    <sys:String x:Key="wmi_code_41_summary">Windows heeft het stuurprogramma geladen, maar kan het hardwareapparaat niet vinden.</sys:String>
+    <sys:String x:Key="wmi_code_41_fix">Controleer of het apparaat correct is aangesloten.</sys:String>
+
+    <sys:String x:Key="wmi_code_43_summary">Windows heeft dit apparaat gestopt omdat het problemen heeft gerapporteerd (Code 43).</sys:String>
+    <sys:String x:Key="wmi_code_43_fix">Dit duidt vaak op een hardwarestoring of een zwaar beschadigd stuurprogramma.</sys:String>
+
+    <sys:String x:Key="wmi_code_45_summary">Momenteel is dit hardwareapparaat niet aangesloten op de computer.</sys:String>
+    <sys:String x:Key="wmi_code_45_fix">Sluit het apparaat opnieuw aan op de computer.</sys:String>
+
+    <sys:String x:Key="wmi_code_47_summary">Windows kan dit hardwareapparaat niet gebruiken omdat het is voorbereid op veilig verwijderen.</sys:String>
+    <sys:String x:Key="wmi_code_47_fix">Koppel het apparaat los en sluit het weer aan.</sys:String>
+
+    <sys:String x:Key="wmi_code_48_summary">De software voor dit apparaat mag niet worden gestart omdat het problemen met Windows heeft.</sys:String>
+    <sys:String x:Key="wmi_code_48_fix">Controleer op een bijgewerkt stuurprogramma van de fabrikant.</sys:String>
+
+    <sys:String x:Key="wmi_code_52_summary">Windows kan de digitale handtekening voor de vereiste stuurprogramma's niet verifiëren.</sys:String>
+    <sys:String x:Key="wmi_code_52_fix">Schakel het afdwingen van handtekeningen uit of download een ondertekend stuurprogramma.</sys:String>
+
+    <sys:String x:Key="title_system_health_status">Gezondheidsstatus</sys:String>
+    <sys:String x:Key="text_system_optimizer_description">Verbeter de reactiesnelheid van het systeem door verkeerd beheerd geheugen terug te winnen en overbodige bestanden te verwijderen. Richt zich efficiënt op geheugenlekken, leegt DNS-caches en verwijdert tijdelijke gegevens om topprestaties te herstellen.</sys:String>
+    <sys:String x:Key="btn_open_system_optimizer">Open Systeemoptimalisatie</sys:String>
+
+    <sys:String x:Key="txt_header_physical_memory">Fysiek Geheugen</sys:String>
+    <sys:String x:Key="txt_physical_memory_used">Gebruikt:</sys:String>
+    <sys:String x:Key="txt_physical_memory_free">Vrij:</sys:String>
+    <sys:String x:Key="txt_header_virtual_memory">Virtueel Geheugen</sys:String>
+    <sys:String x:Key="txt_virtual_memory_used">Gebruikt:</sys:String>
+    <sys:String x:Key="txt_virtual_memory_free">Vrij:</sys:String>
+    <sys:String x:Key="txt_header_process_exlusions">Procesuitsluitingen</sys:String>
+    <sys:String x:Key="txt_header_cleaning_targets">Schoonmaakdoelen</sys:String>
+    <sys:String x:Key="txt_header_auto_optimizations">Automatische Optimalisaties</sys:String>
+    <sys:String x:Key="txt_header_optimization_hotkey">Optimalisatie Sneltoets</sys:String>
+    <sys:String x:Key="txt_header_settings">Instellingen</sys:String>
+    <sys:String x:Key="btn_clean_now">Nu Schoonmaken</sys:String>
+    <sys:String x:Key="notify_mem_clean_successfull">Geheugen succesvol schoongemaakt</sys:String>
+    <sys:String x:Key="txt_progress_step">Optimaliseren</sys:String>
+    <sys:String x:Key="txt_virtual_memory_header">virtueel geheugen</sys:String>
+    <sys:String x:Key="title_memory_areas_combined_page_list">Gecombineerde Paginalijst</sys:String>
+    <sys:String x:Key="description_memory_areas_combined_page_list">Verplaatst pagina's met identieke inhoud naar de stand-bylijst.</sys:String>
+    <sys:String x:Key="title_memory_areas_modified_file_cache">Gewijzigde Bestandscache</sys:String>
+    <sys:String x:Key="description_memory_system_file_cache">Schrijft de gewijzigde bestandscache weg naar de schijf.</sys:String>
+    <sys:String x:Key="title_memory_areas_modified_page_list">Gewijzigde Paginalijst</sys:String>
+    <sys:String x:Key="description_memory_areas_modified_page_list">Verplaatst geheugen van de gewijzigde lijst naar de stand-bylijst.</sys:String>
+    <sys:String x:Key="title_memory_areas_registry_cache">Registercache</sys:String>
+    <sys:String x:Key="description_memory_areas_registry_cache">Verkleint de werkset van de register-hive.</sys:String>
+    <sys:String x:Key="title_memory_areas_standby_list">Stand-bylijst</sys:String>
+    <sys:String x:Key="description_memory_areas_standby_list">Verwijdert alle pagina's uit de stand-bylijst.</sys:String>
+    <sys:String x:Key="title_memory_areas_standby_list_low_priority">Stand-bylijst (Lage Prioriteit)</sys:String>
+    <sys:String x:Key="description_memory_areas_standby_list_low_priority">Verwijdert alleen pagina's met een lage prioriteit uit de stand-bylijst.</sys:String>
+    <sys:String x:Key="title_memory_areas_system_file_cache">Systeembestandscache</sys:String>
+    <sys:String x:Key="description_memory_areas_system_file_cache">Verkleint de systeembrede werkset.</sys:String>
+    <sys:String x:Key="title_memory_areas_working_set">Werkset</sys:String>
+    <sys:String x:Key="description_memory_areas_working_set">Verkleint de werksets van alle processen.</sys:String>
+    <sys:String x:Key="title_settings_items_close_afer_optimization">Sluiten na optimalisatie</sys:String>
+    <sys:String x:Key="description_settings_items_close_afer_optimization">Sluit het venster voor systeemoptimalisatie automatisch nadat het proces is voltooid.</sys:String>
+    <sys:String x:Key="title_settings_items_show_notification">Toon optimalisatiemeldingen</sys:String>
+    <sys:String x:Key="description_settings_items_show_notification">Toont een melding in het systeemvak in plaats van een pop-upvenster wanneer de optimalisatie is voltooid.</sys:String>
+    <sys:String x:Key="title_settings_items_show_no_result">Schakel alle optimalisatieresultaten uit</sys:String>
+    <sys:String x:Key="description_settings_items_show_no_result">Toon geen melding of pop-upvenster wanneer de optimalisatie is voltooid.</sys:String>
+    <sys:String x:Key="title_settings_items_low_priority">Uitvoeren met lage prioriteit</sys:String>
+    <sys:String x:Key="description_settings_items_low_priority">Stelt het optimalisatieproces in op een lagere CPU-prioriteit om systeemvertraging tijdens het schoonmaken te voorkomen.</sys:String>
+    <sys:String x:Key="title_settings_items_show_virtual_memory">Virtueel Geheugen</sys:String>
+    <sys:String x:Key="description_settings_items_show_virtual_memory">Schakelt de zichtbaarheid in/uit van het wisselbestand en virtueel geheugenstatistieken op het hoofddashboard.</sys:String>
+    <sys:String x:Key="title_settings_items_restart_explorer">Windows Verkenner herstarten</sys:String>
+    <sys:String x:Key="description_settings_items_restart_explorer">Herstart de shell om het opschonen van de pictogramcache volledig toe te passen en het systeemvak te vernieuwen. De taakbalk kan hierdoor enkele seconden verdwijnen.</sys:String>
+    <sys:String x:Key="txt_auto_opt_interval_singular">Elke {0} uur</sys:String>
+    <sys:String x:Key="txt_auto_opt_interval_plural">Elke {0} uur</sys:String>
+    <sys:String x:Key="txt_disabled">Uitgeschakeld</sys:String>
+    <sys:String x:Key="txt_auto_opt_usage_limit">Wanneer het gebruik de {0}% overschrijdt</sys:String>
+    <sys:String x:Key="txt_auto_opt_usage_warning">Automatische optimalisatie kan slechts om de paar minuten worden uitgevoerd om lussen te voorkomen.</sys:String>
+    <sys:String x:Key="msg_hotkey_in_use">De sneltoets ({0}) is in gebruik door het besturingssysteem</sys:String>
+    <sys:String x:Key="msg_mem_optimized">GEHEUGEN GEOPTIMALISEERD:</sys:String>
+    <sys:String x:Key="optimizations_step_working_set">werkset</sys:String>
+    <sys:String x:Key="optimizations_step_system_file_cache">systeembestandscache</sys:String>
+    <sys:String x:Key="optimizations_step_modified_page_list">gewijzigde paginalijst</sys:String>
+    <sys:String x:Key="optimizations_step_standby_list">stand-bylijst</sys:String>
+    <sys:String x:Key="optimizations_step_standby_list_lp">stand-bylijst (lage prioriteit)</sys:String>
+    <sys:String x:Key="optimizations_step_combined_page_list">gecombineerde paginalijst</sys:String>
+    <sys:String x:Key="optimizations_step_registry_cache">registercache</sys:String>
+    <sys:String x:Key="optimizations_step_modified_file_cache">gewijzigde bestandscache</sys:String>
+    <sys:String x:Key="optimizations_step_modified_garbage_collector">garbage collector</sys:String>
+    <sys:String x:Key="title_warning_priority">Beveiligings- &amp; Prestatiewaarschuwing</sys:String>
+    <sys:String x:Key="msg_warning_windows_old_deletion">Waarschuwing: Het verwijderen van Windows.old is permanent. U kunt NIET meer terugkeren naar een eerdere versie van Windows als u problemen ondervindt. Wilt u doorgaan?</sys:String>
+    <sys:String x:Key="optimizations_step_disk_cleanup">Tijdelijke Bestanden Opschonen...</sys:String>
+    <sys:String x:Key="optimizations_step_windows_old">Windows.old Verwijderen (Rechten aanpassen)...</sys:String>
+    <sys:String x:Key="optimizations_step_update_cache">Windows Update-cache Opschonen...</sys:String>
+    <sys:String x:Key="label_disk_recovered">Schijfruimte Vrijgemaakt</sys:String>
+    <sys:String x:Key="title_memory_areas_disk_cleanup">Schijfopruiming (Temp Bestanden)</sys:String>
+    <sys:String x:Key="title_memory_areas_windows_old">Windows.old Map</sys:String>
+    <sys:String x:Key="description_memory_areas_disk_cleanup">Verwijdert tijdelijke bestanden, prefetch en miniatuurcaches om schijfruimte vrij te maken.</sys:String>
+    <sys:String x:Key="description_memory_areas_windows_old">Verwijdert back-ups van eerdere Windows-installaties. WAARSCHUWING: Dit proces is permanent en voorkomt systeem-rollbacks.</sys:String>
+    <sys:String x:Key="title_memory_areas_flush_dns">DNS-cache Leegmaken</sys:String>
+    <sys:String x:Key="description_memory_areas_flush_dns">Leegt de DNS-resolver-cache om verbindingsproblemen op te lossen en domeintoewijzingen te vernieuwen.</sys:String>
+    <sys:String x:Key="optimizations_step_flush_dns">DNS-cache leegmaken</sys:String>
+    <sys:String x:Key="txt_total_estimated_space">Totale Geschatte Ruimte:</sys:String>
+    <sys:String x:Key="tooltip_refresh_space">Bereken schoonmaakgrootte opnieuw</sys:String>
+    <sys:String x:Key="txt_scanning">Scannen...</sys:String>
+    <sys:String x:Key="txt_header_memory_areas">Geheugenoptimalisatie</sys:String>
+    <sys:String x:Key="txt_header_system_cleanup">Systeemopschoning</sys:String>
+    <sys:String x:Key="txt_progress_preparing">Systeemanalyse voorbereiden...</sys:String>
+    <sys:String x:Key="txt_progress_optimizing">Geheugenoptimalisatie uitvoeren...</sys:String>
+    <sys:String x:Key="txt_progress_finalizing">Afronden en statistieken vernieuwen...</sys:String>
+    <sys:String x:Key="txt_optimization_completed">Optimalisatie succesvol afgerond!</sys:String>
+    <sys:String x:Key="UnexpectedError">Er is een onverwachte fout opgetreden</sys:String>
+    <sys:String x:Key="Repair">Repareren</sys:String>
+    <sys:String x:Key="OperationStopped">Bewerking gestopt</sys:String>
+    <sys:String x:Key="OperationCompleted">Bewerking voltooid</sys:String>
+    <sys:String x:Key="BatteryStatus">Batterijstatus</sys:String>
+    <sys:String x:Key="ReportSaved">Rapport opgeslagen op Bureaublad</sys:String>
+    <sys:String x:Key="MemoryDiagnosticDialogTitle">Geheugendiagnose</sys:String>
+    <sys:String x:Key="MemoryDiagnosticDialogText">Geheugenproblemen kunnen ertoe leiden dat uw computer informatie verliest of stopt met werken.</sys:String>
+    <sys:String x:Key="RestartNow">Nu herstarten</sys:String>
+    <sys:String x:Key="ScheduleLater">Later inplannen</sys:String>
+    <sys:String x:Key="ScheduledLater">Ingepland voor volgende herstart</sys:String>
+    <sys:String x:Key="ScanInProgress">{0} / {1}: {2} scan is bezig...</sys:String>
+    <sys:String x:Key="ScanResults">Scanresultaten</sys:String>
+    <sys:String x:Key="RepairInProgress">{0} / {1}: {2} reparatie is bezig...</sys:String>
+    <sys:String x:Key="Health_Poor">Slecht - Actie vereist</sys:String>
+    <sys:String x:Key="Health_Warning">Matig - Optimalisatie aanbevolen</sys:String>
+    <sys:String x:Key="Health_Good">Goed - Systeem is gezond</sys:String>
+    <sys:String x:Key="txt_header_drive_c_space">Systeemschijf (C:)</sys:String>
+    <sys:String x:Key="txt_drive_c_used">Gebruikte ruimte:</sys:String>
+    <sys:String x:Key="txt_drive_c_free">Vrije ruimte:</sys:String>
+    <sys:String x:Key="txt_header_system_repair">Systeemherstel</sys:String>
+    <sys:String x:Key="txt_dism">DISM</sys:String>
+    <sys:String x:Key="txt_sfc">SFC</sys:String>
+    <sys:String x:Key="txt_chkdsk">CHKDSK</sys:String>
+    <sys:String x:Key="btn_scan">Scannen</sys:String>
+    <sys:String x:Key="btn_repair">Herstellen</sys:String>
+    <sys:String x:Key="btn_stop">Stoppen</sys:String>
+    <sys:String x:Key="txt_header_diagnostic_options">Diagnostische opties</sys:String>
+    <sys:String x:Key="txt_battery_health">Batterijgezondheid</sys:String>
+    <sys:String x:Key="btn_generate">Genereren</sys:String>
+    <sys:String x:Key="txt_disk_optimizations">Schijfoptimalisaties</sys:String>
+    <sys:String x:Key="btn_optimize">Optimaliseren</sys:String>
+    <sys:String x:Key="txt_event_viewer">Logboeken</sys:String>
+    <sys:String x:Key="txt_memory_diagnostic">Geheugendiagnose</sys:String>
+    <sys:String x:Key="btn_check">Controleren</sys:String>
+    <sys:String x:Key="txt_ready">Klaar</sys:String>
+    <sys:String x:Key="txt_invalid">Ongeldig</sys:String>
+    <sys:String x:Key="toast_btn_optimize">Nu optimaliseren</sys:String>
+    <sys:String x:Key="toast_btn_ignore">Negeren</sys:String>
+    <sys:String x:Key="toast_optimization_complete_title">Optimalisatie voltooid</sys:String>
+    <sys:String x:Key="toast_optimization_complete_msg">Systeembronnen zijn met succes vrijgemaakt en geoptimaliseerd.</sys:String>
+    <sys:String x:Key="toast_health_critical_title">Systeemstatus kritiek</sys:String>
+    <sys:String x:Key="toast_health_critical_msg">Systeembronnen zijn zwaar belast of de schijfruimte is bijna op. Klik om te optimaliseren.</sys:String>
+    <sys:String x:Key="placeholder_select_process">Selecteer een proces om uit te sluiten...</sys:String>
+    <sys:String x:Key="StatusTextBlockDefault">Gereed</sys:String>
+    <sys:String x:Key="Close">Sluiten</sys:String>
+    <!-- endregion Diagnostics Page -->
+    
 </ResourceDictionary>

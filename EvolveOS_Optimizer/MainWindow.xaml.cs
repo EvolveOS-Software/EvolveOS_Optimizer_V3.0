@@ -27,9 +27,13 @@ namespace EvolveOS_Optimizer
     {
         public static MainWindow? Instance { get; private set; }
 
+        public DiagnosticsPageViewModel DiagnosticsVM => DiagnosticsPageViewModel.Current;
+
         public event PropertyChangedEventHandler? PropertyChanged;
         private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue =
             Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+        private Pages.DiagnosticsPage? _cachedDiagnosticsPage;
 
         private static Frame? _permanentFrameReference;
 
@@ -110,6 +114,20 @@ namespace EvolveOS_Optimizer
             };
 
             this.RootGrid.Loaded += MainWindow_Loaded;
+
+            DiagnosticsVM.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(DiagnosticsVM.IsBusy))
+                {
+                    this.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        if (GlobalOptimizationOverlay != null)
+                        {
+                            AnimateOptimizationOverlay(DiagnosticsVM.IsBusy);
+                        }
+                    });
+                }
+            };
         }
 
         #region Window Configuration
@@ -461,18 +479,28 @@ namespace EvolveOS_Optimizer
             try
             {
                 var oldPage = ContentFrame.Content as Page;
+                Page? newPage = null;
 
-                var newPage = Activator.CreateInstance(pageType) as Page;
+                if (pageType == typeof(Pages.DiagnosticsPage))
+                {
+                    if (_cachedDiagnosticsPage == null)
+                    {
+                        _cachedDiagnosticsPage = new Pages.DiagnosticsPage();
+                    }
+                    newPage = _cachedDiagnosticsPage;
+                }
+                else
+                {
+                    newPage = Activator.CreateInstance(pageType) as Page;
+                }
 
                 ContentFrame.Content = newPage;
-                //Debug.WriteLine($"[Navigation] Manually swapped to {tag}.");
 
                 this.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
                 {
-                    if (oldPage != null)
+                    if (oldPage != null && !(oldPage is Pages.DiagnosticsPage))
                     {
                         NavigationHelper.PurgePage(oldPage);
-
                         oldPage = null;
                     }
                 });
@@ -632,6 +660,37 @@ namespace EvolveOS_Optimizer
             {
                 Debug.WriteLine($"[RestorePoint Error] {ex.Message}");
             }
+        }
+
+        public void AnimateOptimizationOverlay(bool show)
+        {
+            if (show)
+            {
+                GlobalOptimizationOverlay.Visibility = Visibility.Visible;
+
+                OverlayHeartbeatStoryboard.Begin();
+            }
+
+            var visual = ElementCompositionPreview.GetElementVisual(GlobalOptimizationOverlay);
+            var compositor = visual.Compositor;
+
+            var fadeAnim = compositor.CreateScalarKeyFrameAnimation();
+            fadeAnim.InsertKeyFrame(1.0f, show ? 1.0f : 0.0f);
+            fadeAnim.Duration = TimeSpan.FromMilliseconds(450);
+
+            var batch = compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+            visual.StartAnimation("Opacity", fadeAnim);
+
+            batch.Completed += (s, e) =>
+            {
+                if (!show)
+                {
+                    GlobalOptimizationOverlay.Visibility = Visibility.Collapsed;
+
+                    OverlayHeartbeatStoryboard.Stop();
+                }
+            };
+            batch.End();
         }
         #endregion
 

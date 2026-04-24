@@ -11,12 +11,13 @@
     xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     mc:Ignorable="d"
-    Background="Transparent">
+    Background="Transparent" NavigationCacheMode="Required">
 
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+        <converters:KeyDisplayConverter x:Key="KeyDisplayConverter" />
 
-        <SolidColorBrush x:Key="Brush_DiagnosticBlue" Color="#FF00D6E8" />
         <SolidColorBrush x:Key="PanelBackgroundBrush" Color="Transparent" />
 
         <LinearGradientBrush x:Key="Brush_GraphGradientFill" StartPoint="0,0" EndPoint="0,1">
@@ -76,6 +77,15 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="MaintenanceCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
     </Page.Resources>
 
     <Grid>
@@ -109,446 +119,777 @@
                                   Height="25" Width="25" 
                                   Visibility="{x:Bind ViewModel.ScanningVisibility, Mode=OneWay}" />
 
-                    <Button Content="{helpers:ResourceString Key=diag_btn_start_scan}" Click="StartFullScan_Click" Width="150" IsEnabled="{x:Bind ViewModel.IsNotScanning, Mode=OneWay}"/>
+                    <Button Content="{helpers:ResourceString Key=diag_btn_start_scan}" Click="StartFullScan_Click" Width="150" FontFamily="{ThemeResource Jura}" IsEnabled="{x:Bind ViewModel.IsNotScanning, Mode=OneWay}"/>
+
+                    <AppBarSeparator/>
+
+                    <ToggleButton x:Name="MaintenanceToggle" Click="MaintenanceToggle_Click" Padding="12,6" CornerRadius="4">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE713;" FontSize="16"/>
+                            <TextBlock helpers:Loc.Key="diag_toggle_maintenance" FontFamily="{StaticResource Jura}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </ToggleButton>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <Grid Grid.Row="1" Margin="5,0,5,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="125"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <SplitView x:Name="MainSplitView" 
+                   Grid.Row="1"
+                   DisplayMode="Inline" 
+                   OpenPaneLength="380" 
+                   PanePlacement="Right"
+                   IsPaneOpen="False"
+                   PaneBackground="Transparent">
 
-            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource DiagnosticPanelStyle}" Margin="0,0,12,10" >
-                <Grid >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+            <SplitView.Pane>
+                <Border BorderThickness="1,0,0,0" BorderBrush="#22FFFFFF" Background="Transparent">
+                    <ScrollViewer Padding="20">
+                        <StackPanel Spacing="12">
+                            <TextBlock helpers:Loc.Key="diag_pane_header" FontFamily="{StaticResource Jura}" FontSize="16" FontWeight="Bold" Margin="0,-5,0,-5" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
 
-                    <Grid Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="76" Width="76" Margin="15,0,25,0" Loaded="SystemSonar_Loaded" Unloaded="SystemSonar_Unloaded">
-                        <Grid.Resources>
-                            <Storyboard x:Name="SystemSonarStoryboard" RepeatBehavior="Forever">
-                                <DoubleAnimation Storyboard.TargetName="SonarRing1Scale" Storyboard.TargetProperty="ScaleX" From="0.55" To="1.0" Duration="0:0:2.5">
-                                    <DoubleAnimation.EasingFunction>
-                                        <QuadraticEase EasingMode="EaseOut"/>
-                                    </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetName="SonarRing1Scale" Storyboard.TargetProperty="ScaleY" From="0.55" To="1.0" Duration="0:0:2.5">
-                                    <DoubleAnimation.EasingFunction>
-                                        <QuadraticEase EasingMode="EaseOut"/>
-                                    </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetName="SonarRing1" Storyboard.TargetProperty="Opacity" From="0.8" To="0" Duration="0:0:2.5" />
-
-                                <DoubleAnimation Storyboard.TargetName="SonarRing2Scale" Storyboard.TargetProperty="ScaleX" From="0.55" To="1.0" Duration="0:0:2.5" BeginTime="0:0:1.25">
-                                    <DoubleAnimation.EasingFunction>
-                                        <QuadraticEase EasingMode="EaseOut"/>
-                                    </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetName="SonarRing2Scale" Storyboard.TargetProperty="ScaleY" From="0.55" To="1.0" Duration="0:0:2.5" BeginTime="0:0:1.25">
-                                    <DoubleAnimation.EasingFunction>
-                                        <QuadraticEase EasingMode="EaseOut"/>
-                                    </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetName="SonarRing2" Storyboard.TargetProperty="Opacity" From="0.8" To="0" Duration="0:0:2.5" BeginTime="0:0:1.25" />
-                            </Storyboard>
-                        </Grid.Resources>
-
-                        <Ellipse x:Name="SonarRing1" Stroke="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" StrokeThickness="1.5" Width="76" Height="76" RenderTransformOrigin="0.52,0.5" UseLayoutRounding="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Ellipse.RenderTransform>
-                                <ScaleTransform x:Name="SonarRing1Scale" ScaleX="0.55" ScaleY="0.55" />
-                            </Ellipse.RenderTransform>
-                        </Ellipse>
-
-                        <Ellipse x:Name="SonarRing2" Stroke="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" StrokeThickness="1.5" Width="76" Height="76" RenderTransformOrigin="0.52,0.5" Opacity="0" UseLayoutRounding="False" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Ellipse.RenderTransform>
-                                <ScaleTransform x:Name="SonarRing2Scale" ScaleX="0.55" ScaleY="0.55" />
-                            </Ellipse.RenderTransform>
-                        </Ellipse>
-
-                        <Border Width="45" Height="45" CornerRadius="22" Background="#1AFFFFFF" BorderBrush="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" BorderThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <FontIcon Glyph="&#xE9A1;" FontSize="24" Foreground="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" />
-                        </Border>
-                    </Grid>
-
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                        <TextBlock helpers:Loc.Key="diag_sys_status" FontFamily="{ThemeResource Jura}" Style="{StaticResource TechnicalLabelStyle}"/>
-
-                        <TextBlock Text="{x:Bind ViewModel.ScannerText, Mode=OneWay, FallbackValue='SYSTEM OPTIMAL'}"
-                                   Style="{StaticResource TechnicalValueStyle}"
-                                   FontFamily="{ThemeResource Jura}"
-                                   FontSize="28"
-                                   Foreground="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}"/>
-
-                        <TextBlock helpers:Loc.Key="diag_sys_last_checked" Style="{StaticResource TechnicalLabelStyle}"/>
-                    </StackPanel>
-
-                    <Grid Grid.Column="2" ColumnSpacing="40" Padding="0,0,20,0" HorizontalAlignment="Right">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Spacing="5" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock helpers:Loc.Key="diag_live_miner" Style="{StaticResource TechnicalLabelStyle}" FontSize="10" HorizontalAlignment="Center"/>
-                            <ToggleSwitch IsOn="{x:Bind ViewModel.IsLiveMonitoringEnabled, Mode=TwoWay}" OffContent="STANDBY" OnContent="ACTIVE" HorizontalAlignment="Center" MinWidth="0"/>
-                        </StackPanel>
-
-                        <StackPanel Grid.Column="1" Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <FontIcon Glyph="&#xEB42;" FontSize="18" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
-                            <TextBlock Text="{x:Bind ViewModel.ActiveHardwareCount, Mode=OneWay}" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="28" HorizontalAlignment="Center"/>
-                            <TextBlock helpers:Loc.Key="diag_active_hardware" Style="{StaticResource TechnicalLabelStyle}" FontSize="10"/>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-            </Border>
-
-            <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource DiagnosticPanelStyle}" Margin="0,0,10,10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <Grid Grid.Row="0" Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                            <FontIcon Glyph="&#xE9D9;" FontSize="24" Foreground="{StaticResource Brush_DiagnosticBlue}" Margin="0,0,5,0" />
-
-                            <ToggleButton Content="CPU" IsChecked="{x:Bind ViewModel.IsCpuSelected, Mode=TwoWay}" CornerRadius="4" Width="55" FontSize="11" FontWeight="SemiBold"/>
-                            <ToggleButton Content="RAM" IsChecked="{x:Bind ViewModel.IsRamSelected, Mode=TwoWay}" CornerRadius="4" Width="55" FontSize="11" FontWeight="SemiBold"/>
-                            <ToggleButton Content="DISK" IsChecked="{x:Bind ViewModel.IsDiskSelected, Mode=TwoWay}" CornerRadius="4" Width="55" FontSize="11" FontWeight="SemiBold"/>
-                            <ToggleButton Content="PAGE" IsChecked="{x:Bind ViewModel.IsPageSelected, Mode=TwoWay}" CornerRadius="4" Width="55" FontSize="11" FontWeight="SemiBold"/>
-                        </StackPanel>
-
-                        <ComboBox ItemsSource="{x:Bind ViewModel.TimeScaleOptions}"
-                                  DisplayMemberPath="Title"
-                                  SelectedValuePath="Seconds"
-                                  SelectedValue="{x:Bind ViewModel.MaxGraphSeconds, Mode=TwoWay}"
-                                  Width="120" Height="28" FontSize="11"
-                                  HorizontalAlignment="Right" VerticalAlignment="Center"
-                                  Background="#11FFFFFF" BorderBrush="#33FFFFFF" />
-                    </Grid>
-
-                    <Grid Grid.Row="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="35"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Grid Grid.Row="0" Grid.Column="0" Margin="0,15,8,5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Text="100" VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
-                            <TextBlock Grid.Row="0" Grid.RowSpan="2" Text="75" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
-                            <TextBlock Grid.Row="1" Grid.RowSpan="2" Text="50" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
-                            <TextBlock Grid.Row="2" Grid.RowSpan="2" Text="25" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
-                            <TextBlock Grid.Row="3" Text="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
-                        </Grid>
-
-                        <Grid Grid.Row="0" Grid.Column="1" Background="#0500D6E8" BorderBrush="#1A00D6E8" BorderThickness="1" CornerRadius="4">
-                            <Path Stroke="#1AFFFFFF" StrokeThickness="1" StrokeDashArray="4,4" Stretch="Fill"
-                                  Data="M 0,25 L 100,25 M 0,50 L 100,50 M 0,75 L 100,75 M 25,0 L 25,100 M 50,0 L 50,100 M 75,0 L 75,100" />
-
-                            <Viewbox Stretch="Fill" Margin="5,15,5,5" Canvas.ZIndex="1" HorizontalAlignment="Right">
-                                <Canvas Width="400" Height="100">
-                                    <Polygon Points="{x:Bind ViewModel.PerformanceAreaPoints, Mode=OneWay}"
-                                             Fill="{StaticResource Brush_GraphGradientFill}" />
-
-                                    <Polyline Points="{x:Bind ViewModel.PerformanceGraphPoints, Mode=OneWay}"
-                                              Stroke="{StaticResource Brush_DiagnosticBlue}"
-                                              StrokeThickness="2" />
-                                </Canvas>
-                            </Viewbox>
-
-                            <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Padding="10,8" Background="#E6050505" BorderBrush="{StaticResource Brush_DiagnosticBlue}" BorderThickness="1" CornerRadius="4" UseLayoutRounding="True" Canvas.ZIndex="10">
-                                <Grid ColumnSpacing="15">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="{x:Bind ViewModel.ActivePrimaryValueStr, Mode=OneWay, FallbackValue='0%'}" Foreground="White" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="{x:Bind ViewModel.ActivePrimaryLabel, Mode=OneWay}" Foreground="{StaticResource Brush_DiagnosticBlue}" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,-5,0,0"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-                                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                            <TextBlock helpers:Loc.Key="diag_ram_load" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                            <TextBlock Text="{x:Bind ViewModel.CurrentRamLoadStr, Mode=OneWay, FallbackValue='0%'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                            <TextBlock helpers:Loc.Key="diag_io_load" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                            <TextBlock Text="{x:Bind ViewModel.CurrentIoLoadStr, Mode=OneWay, FallbackValue='0%'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                            <TextBlock helpers:Loc.Key="diag_pagefile_load" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                            <TextBlock Text="{x:Bind ViewModel.CurrentPagefileLoadStr, Mode=OneWay, FallbackValue='0%'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </Grid>
-
-                        <Grid Grid.Row="1" Grid.Column="1" Margin="5,5,5,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" HorizontalAlignment="Left" Style="{StaticResource AxisLabelStyle}"/>
-                            <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" HorizontalAlignment="Center" Style="{StaticResource AxisLabelStyle}"/>
-                            <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" HorizontalAlignment="Center" Style="{StaticResource AxisLabelStyle}"/>
-                            <TextBlock Grid.Column="2" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" HorizontalAlignment="Center" Style="{StaticResource AxisLabelStyle}"/>
-                            <TextBlock Grid.Column="3" Text="NOW" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}" Foreground="{StaticResource Brush_DiagnosticBlue}" Opacity="1" FontWeight="Bold"/>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Border>
-
-            <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource DiagnosticPanelStyle}" Margin="0,0,10,10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,10">
-                        <FontIcon Glyph="&#xEB42;" FontSize="24" Foreground="{StaticResource Brush_DiagnosticBlue}" />
-                        <TextBlock helpers:Loc.Key="diag_hw_scan_title" Style="{StaticResource TechnicalValueHighlightedStyle}"/>
-                    </StackPanel>
-
-                    <ListView x:Name="HardwareIssuesListView"
-                  Visibility="{x:Bind ViewModel.HardwareListVisibility, Mode=OneWay}"
-                  ItemsSource="{x:Bind ViewModel.DetectedHardwareIssues}"
-                  SelectionMode="None"
-                  Padding="0"
-                  Margin="0,0,5,0">
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="m:HardwareIssue">
-                                <Grid Style="{StaticResource DiagnosticListPanelStyle}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <FontIcon Glyph="{x:Bind StatusGlyph}" FontSize="24" Foreground="{x:Bind StatusBrush}" Margin="0,0,15,0" />
-
-                                    <StackPanel Grid.Column="1" Spacing="2">
-                                        <TextBlock Text="{x:Bind ComponentDisplayName}" Style="{StaticResource TechnicalValueHighlightedStyle}"/>
-                                        <StackPanel Orientation="Horizontal" Spacing="10">
-                                            <TextBlock Text="{x:Bind HardwareType}" Style="{StaticResource TechnicalLabelStyle}"/>
-                                            <TextBlock Text=" | " Style="{StaticResource TechnicalLabelStyle}"/>
-                                            <TextBlock Text="{x:Bind IssueSummary}" Style="{StaticResource TechnicalLabelStyle}" TextTrimming="CharacterEllipsis" MaxWidth="250"/>
-                                        </StackPanel>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10">
-                                        <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="{x:Bind ErrorCodeHex}" Style="{StaticResource TechnicalValueStyle}" FontSize="11" Opacity="0.8" HorizontalAlignment="Right"/>
-                                            <TextBlock Text="{x:Bind ErrorCodeDescription}" Style="{StaticResource TechnicalLabelStyle}" FontSize="10" HorizontalAlignment="Right"/>
-                                        </StackPanel>
-
-                                        <Button Content="{helpers:ResourceString Key=diag_btn_enable}"
-                                    FontSize="10" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}"
-                                    Background="#1100D6E8" BorderBrush="{StaticResource Brush_DiagnosticBlue}"
-                                    BorderThickness="1" CornerRadius="4" Height="28" Margin="10,0,0,0"
-                                    Visibility="{x:Bind FixButtonVisibility}" Click="FixHardwareButton_Click"/>
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-
-                    <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,10,0,0"
-      Visibility="{x:Bind ViewModel.HardwareScannerVisibility, Mode=OneWay}" Loaded="HeartbeatScanner_Loaded">
-
-    <Grid.RowDefinitions>
-        <RowDefinition Height="*"/>    <RowDefinition Height="Auto"/> </Grid.RowDefinitions>
-
-    <Grid.Resources>
-                            <LinearGradientBrush x:Key="SweepBrush" StartPoint="0,0" EndPoint="1,0">
-                                <LinearGradientBrush.RelativeTransform>
-                                    <TranslateTransform x:Name="SweepTransform" X="-1.0"/>
-                                </LinearGradientBrush.RelativeTransform>
-
-                                <GradientStop Color="Transparent" Offset="0.0"/>
-                                <GradientStop Color="#4400D6E8" Offset="0.80"/>
-                                <GradientStop Color="#FF00D6E8" Offset="0.97"/>
-                                <GradientStop Color="#FFFFFF" Offset="0.985"/>
-                                <GradientStop Color="#FFFFFF" Offset="0.999"/>
-
-                                <GradientStop Color="Transparent" Offset="1.0"/>
-                            </LinearGradientBrush>
-
-                            <Storyboard x:Name="HeartbeatStoryboard" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="SweepTransform" Storyboard.TargetProperty="X" 
-                 From="-1.0" To="1.0" Duration="0:0:3.0" EnableDependentAnimation="True" />
-        </Storyboard>
-    </Grid.Resources>
-
-    <Viewbox Grid.Row="0" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,0,15">
-        <Grid Width="1000" Height="300">
-            <Path Data="M 0,25 L 1000,25 M 0,50 L 1000,50 M 0,75 L 1000,75 M 0,100 L 1000,100 
-            M 0,125 L 1000,125 M 0,150 L 1000,150 M 0,175 L 1000,175 M 0,200 L 1000,200 
-            M 0,225 L 1000,225 M 0,250 L 1000,250 M 0,275 L 1000,275 
-            M 25,0 L 25,300 M 50,0 L 50,300 M 75,0 L 75,300 M 100,0 L 100,300 M 125,0 L 125,300 
-            M 150,0 L 150,300 M 175,0 L 175,300 M 200,0 L 200,300 M 225,0 L 225,300 M 250,0 L 250,300 
-            M 275,0 L 275,300 M 300,0 L 300,300 M 325,0 L 325,300 M 350,0 L 350,300 M 375,0 L 375,300 
-            M 400,0 L 400,300 M 425,0 L 425,300 M 450,0 L 450,300 M 475,0 L 475,300 M 500,0 L 500,300 
-            M 525,0 L 525,300 M 550,0 L 550,300 M 575,0 L 575,300 M 600,0 L 600,300 M 625,0 L 625,300 
-            M 650,0 L 650,300 M 675,0 L 675,300 M 700,0 L 700,300 M 725,0 L 725,300 M 750,0 L 750,300 
-            M 775,0 L 775,300 M 800,0 L 800,300 M 825,0 L 825,300 M 850,0 L 850,300 M 875,0 L 875,300 
-            M 900,0 L 900,300 M 925,0 L 925,300 M 950,0 L 950,300 M 975,0 L 975,300" 
-            Stroke="#1AFFFFFF" StrokeThickness="1" />
-
-            <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" 
-            Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Opacity="0.15" StrokeLineJoin="Round" />
-
-            <Canvas>
-                <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" 
-                Stroke="{StaticResource SweepBrush}" StrokeThickness="18" Opacity="0.25" StrokeLineJoin="Round" />
-
-                <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" 
-                Stroke="{StaticResource SweepBrush}" StrokeThickness="8" Opacity="0.60" StrokeLineJoin="Round" />
-
-                <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" 
-                Stroke="{StaticResource SweepBrush}" StrokeThickness="2" StrokeLineJoin="Round" />
-            </Canvas>
-        </Grid>
-    </Viewbox>
-
-    <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.HardwareScannerText, Mode=OneWay}" Foreground="{StaticResource Brush_DiagnosticBlue}" FontSize="10" FontWeight="SemiBold" CharacterSpacing="150" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10" Opacity="0.8"/>
-</Grid>
-                </Grid>
-            </Border>
-
-            <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Margin="0,0,10,10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <Border Grid.Row="0" Style="{StaticResource DiagnosticPanelStyle}" Background="#1500D6E8" BorderBrush="#3000D6E8" Margin="0,0,0,10">
-                    <StackPanel Spacing="8">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <FontIcon Glyph="&#xE994;" FontSize="18" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
-                            <TextBlock Text="AI NEURAL ANALYSIS" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="14"/>
-                        </StackPanel>
-                        <TextBlock Text="{x:Bind ViewModel.AiSummary, Mode=OneWay}" Foreground="LightGray" FontSize="12" TextWrapping="Wrap" LineHeight="16"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Grid.Row="1" Style="{StaticResource DiagnosticPanelStyle}" Margin="0,0,0,10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel>
-                            <TextBlock helpers:Loc.Key="diag_stability_trend" Style="{StaticResource TechnicalLabelStyle}" />
-                            <TextBlock Text="{x:Bind ViewModel.StabilityScore, Mode=OneWay}" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="24"/>
-                        </StackPanel>
-
-                        <ItemsControl Grid.Row="1" ItemsSource="{x:Bind ViewModel.StabilityTrendData}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="100" Margin="0,0,0,0">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ItemsStackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="m:HourlyMetric">
-                                    <Grid VerticalAlignment="Bottom" Margin="0,0,4,0" Width="10">
-                                        <Rectangle Height="{x:Bind BarHeight}" Fill="{x:Bind BarColor}" RadiusX="2" RadiusY="2" VerticalAlignment="Bottom"/>
+                            <Border Style="{StaticResource MaintenanceCardStyle}" Padding="16,20" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                                <StackPanel HorizontalAlignment="Center" Spacing="10">
+                                    <TextBlock helpers:Loc.Key="diag_health_status_label" Style="{StaticResource TechnicalLabelStyle}" HorizontalAlignment="Center" FontSize="10"/>
+                                    <Grid Width="64" Height="64">
+                                        <ProgressRing x:Name="MaintenanceStatusLoadingRing" IsActive="True" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <Image x:Name="MaintenanceStatusImage" Width="64" Height="64" Stretch="Uniform"/>
                                     </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Grid>
-                </Border>
+                                    <Button x:Name="RefreshButton" Content="{helpers:ResourceString Key=diag_btn_refresh_data}" Click="RefreshButton_Click" HorizontalAlignment="Center" FontSize="11" Padding="15,5"/>
+                                </StackPanel>
+                            </Border>
 
-                <Border Grid.Row="2" Style="{StaticResource DiagnosticPanelStyle}" Margin="0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                        <TextBlock helpers:Loc.Key="diag_expander_memory" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Padding="0,5,0,0">
+                                    <ItemsControl ItemsSource="{x:Bind ViewModel.MemoryAreaItems, Mode=OneWay}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding Value, Mode=TwoWay}" FontFamily="{StaticResource Jura}" FontSize="13" Margin="0,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Expander>
 
-                        <StackPanel Grid.Row="0" Spacing="5" Margin="0,0,0,10">
-                            <TextBlock helpers:Loc.Key="diag_event_miner_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="16"/>
-                        </StackPanel>
+                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xECE4;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                        <TextBlock helpers:Loc.Key="diag_expander_exclusions" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Padding="0,5,0,0">
+                                    <ListBox Name="ProcessExclusionList"
+                                               FontFamily="{StaticResource Jura}"
+                                               ItemsSource="{x:Bind ViewModel.ProcessExclusionList, Mode=OneWay}"
+                                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                               ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                               Background="Transparent"
+                                               BorderThickness="0"
+                                               Margin="0,0,0,12"
+                                               MaxHeight="150"
+                                               MinHeight="80">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate x:DataType="x:String">
+                                                <Grid Margin="0,4">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Button Content="×" Command="{Binding ElementName=ProcessExclusionList, Path=DataContext.RemoveProcessFromExclusionListCommand}" CommandParameter="{x:Bind}" Width="30" Height="30" Padding="0"/>
+                                                    <TextBlock Text="{x:Bind}" Grid.Column="1" Margin="12,0,0,0" Foreground="{ThemeResource Brush_Error}" FontSize="13" VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
 
-                        <TextBlock Grid.Row="1" 
-                       helpers:Loc.Key="diag_no_events" 
-                       Style="{StaticResource TechnicalLabelStyle}" 
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Top"
-                       Margin="0,20,0,0"
-                       Visibility="{x:Bind ViewModel.EventEmptyStateVisibility, Mode=OneWay}"/>
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ComboBox ItemsSource="{x:Bind ViewModel.Processes, Mode=OneWay}" SelectedValue="{x:Bind ViewModel.SelectedProcess, Mode=TwoWay}" PlaceholderText="{helpers:ResourceString Key=diag_placeholder_select_process}" HorizontalAlignment="Stretch"/>
+                                        <Button Grid.Column="1" Content="+" Command="{x:Bind ViewModel.AddProcessToExclusionListCommand}" CommandParameter="{x:Bind ViewModel.SelectedProcess, Mode=OneWay}" Width="36" Height="32"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Expander>
 
-                        <ListView x:Name="EventLogsListView" 
-                      Grid.Row="1" 
-                      ItemsSource="{x:Bind ViewModel.MinedSystemEvents}" 
-                      SelectionMode="None" 
-                      ShowsScrollingPlaceholders="False" 
-                      Padding="0" 
-                      Margin="0,0,-10,0">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="m:SystemEventItem">
-                                    <Grid Margin="0,0,15,8" Padding="10" CornerRadius="4" Background="#0AFFFFFF" BorderThickness="1,0,0,0" BorderBrush="{x:Bind StatusBrush}">
+                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE762;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                        <TextBlock helpers:Loc.Key="diag_expander_auto_opt" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Padding="0,5,0,0">
+                                    <TextBlock Text="{x:Bind ViewModel.AutoOptimizationMemoryIntervalDescription, Mode=OneWay}"
+                                               Foreground="{ThemeResource Brush_Highlighted}" FontFamily="{StaticResource Jura}" FontSize="13" Margin="0,0,0,8"/>
+                                    <Slider x:Name="AutoOptimizationIntervalSlider" Minimum="0" Maximum="168"
+                                            Value="{x:Bind ViewModel.AutoOptimizationInterval, Mode=TwoWay}"
+                                            PointerPressed="OnSliderPointerPressed" Margin="0,0,0,24"/>
+
+                                    <TextBlock Text="{x:Bind ViewModel.AutoOptimizationMemoryUsageDescription, Mode=OneWay}"
+                                               Foreground="{ThemeResource Brush_Highlighted}" FontFamily="{StaticResource Jura}" FontSize="13" Margin="0,0,0,8"/>
+                                    <Slider x:Name="AutoOptimizationMemoryUsageSlider" Minimum="0" Maximum="100"
+                                            Value="{x:Bind ViewModel.AutoOptimizationMemoryUsage, Mode=TwoWay}"
+                                            PointerPressed="OnSliderPointerPressed" Margin="0,0,0,8"/>
+                                </StackPanel>
+                            </Expander>
+
+                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8"
+                                      Visibility="{x:Bind ViewModel.Computer.OperatingSystem.HasHotkeyManager, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE765;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                        <TextBlock helpers:Loc.Key="diag_expander_hotkey" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Padding="0,5,0,0" Spacing="16">
+                                    <ToggleSwitch IsOn="{x:Bind ViewModel.UseHotkey, Mode=TwoWay}"
+                                                  OnContent="{helpers:ResourceString Key=diag_hotkey_enabled}" OffContent="{helpers:ResourceString Key=diag_hotkey_disabled}" Margin="0"
+                                                  FontFamily="{StaticResource Jura}" Foreground="{ThemeResource Brush_Highlighted}" />
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                        <ComboBox ItemsSource="{x:Bind ViewModel.KeyboardModifiers, Mode=OneWay}"
+                                                  SelectedValue="{x:Bind ViewModel.OptimizationModifiers, Mode=TwoWay}"
+                                                  SelectedValuePath="Key" IsEnabled="{x:Bind ViewModel.UseHotkey, Mode=OneWay}" MinWidth="120">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Value}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+
+                                        <TextBlock Text="+" Foreground="{ThemeResource Brush_Highlighted}" FontSize="18" VerticalAlignment="Center" FontFamily="{StaticResource Jura-Bold}"/>
+
+                                        <ComboBox ItemsSource="{x:Bind ViewModel.KeyboardKeys, Mode=OneWay}"
+                                                  SelectedValue="{x:Bind ViewModel.OptimizationKey, Mode=TwoWay}"
+                                                  IsEnabled="{x:Bind ViewModel.UseHotkey, Mode=OneWay}" MinWidth="80">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Converter={StaticResource KeyDisplayConverter}}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <TextBlock helpers:Loc.Key="txt_invalid" Foreground="{ThemeResource Brush_Error}" FontFamily="{StaticResource Jura}" FontSize="13"
+                                               Visibility="{x:Bind ViewModel.IsOptimizationKeyValid, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+                                </StackPanel>
+                            </Expander>
+
+                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                        <TextBlock helpers:Loc.Key="diag_expander_cleanup" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Padding="0,5,0,0">
+                                    <ItemsControl ItemsSource="{x:Bind ViewModel.SystemCleanupAreaItems, Mode=OneWay}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding Value, Mode=TwoWay}" FontFamily="{StaticResource Jura}" FontSize="13" Margin="0,2"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Button Content="{helpers:ResourceString Key=diag_btn_clean_now}" Click="CleanNowButton_Click" HorizontalAlignment="Stretch" Margin="0,15,0,0" Style="{StaticResource AccentButtonStyle}"/>
+                                </StackPanel>
+                            </Expander>
+
+                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE90F;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                        <TextBlock helpers:Loc.Key="diag_expander_repair" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Padding="0,5,0,0" Spacing="5">
+                                    <CheckBox x:Name="DismCheckBox" Content="{helpers:ResourceString Key=diag_check_dism}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+                                    <CheckBox x:Name="SfcCheckBox" Content="{helpers:ResourceString Key=diag_check_sfc}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+                                    <CheckBox x:Name="ChkdskCheckBox" Content="{helpers:ResourceString Key=diag_check_chkdsk}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+
+                                    <StackPanel x:Name="ScanRepairPanel" Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+                                        <Button Content="{helpers:ResourceString Key=diag_btn_scan_action}" Click="OnScanButtonClick" Width="145"/>
+                                        <Button Content="{helpers:ResourceString Key=diag_btn_repair_action}" Click="OnRepairButtonClick" Style="{StaticResource AccentButtonStyle}" Width="145"/>
+                                    </StackPanel>
+
+                                    <Button x:Name="StopButton" Content="{helpers:ResourceString Key=diag_btn_stop_op}" Click="OnStopButtonClick" Visibility="Collapsed" HorizontalAlignment="Stretch" Margin="0,10,0,0"/>
+
+                                    <StackPanel Margin="0,15,0,0">
+                                        <Grid>
+                                            <TextBlock x:Name="RepairStatusText" helpers:Loc.Key="diag_status_ready" FontSize="11" Opacity="0.6" FontFamily="{StaticResource Jura}"/>
+                                            <TextBlock x:Name="RepairPercentageText" HorizontalAlignment="Right" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                        </Grid>
+                                        <ProgressBar x:Name="RepairProgressBar" Height="4" Margin="0,5,0,0" Background="#11FFFFFF" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Expander>
+
+                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE9D9;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                        <TextBlock helpers:Loc.Key="diag_expander_utilities" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Padding="0,5,0,0" Spacing="12">
+
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <FontIcon Grid.Column="0" Glyph="{x:Bind StatusGlyph}" Foreground="{x:Bind StatusBrush}" FontSize="18" VerticalAlignment="Top" Margin="0,2,12,0"/>
-
-                                        <StackPanel Grid.Column="1" Spacing="4">
-                                            <StackPanel Orientation="Horizontal" Spacing="8" Opacity="0.7">
-                                                <TextBlock Text="{x:Bind FormattedTime}" FontFamily="Consolas" FontSize="11" Foreground="White" />
-                                                <TextBlock Text="|" Foreground="Gray" FontSize="11"/>
-                                                <TextBlock Text="{x:Bind SourceName}" FontSize="11" Foreground="LightGray" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
-                                                <TextBlock Text="|" Foreground="Gray" FontSize="11"/>
-                                                <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="Gray" FontSize="11"/>
-                                                <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="11" Foreground="LightGray"/>
-                                            </StackPanel>
-                                            <TextBlock Text="{x:Bind Message}" Foreground="White" FontSize="12" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
-                                        </StackPanel>
-
-                                        <Button Grid.Column="2" Content="{helpers:ResourceString Key=diag_btn_fix}"
-                                    FontSize="10" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}"
-                                    Background="#1100D6E8" BorderBrush="{StaticResource Brush_DiagnosticBlue}"
-                                    BorderThickness="1" CornerRadius="4" Height="28" VerticalAlignment="Center" Margin="10,0,0,0"
-                                    Visibility="{x:Bind FixButtonVisibility}"
-                                    Command="{Binding ElementName=EventLogsListView, Path=DataContext.FixEventCommand}"
-                                    CommandParameter="{x:Bind EventId}"/>
+                                        <FontIcon Glyph="&#xF5FC;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                        <TextBlock helpers:Loc.Key="txt_battery_health" Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
+                                        <Button Content="{helpers:ResourceString Key=btn_generate}" Grid.Column="2" Click="BatteryHealthButton_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
                                     </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock helpers:Loc.Key="txt_memory_diagnostic" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
+                                            <TextBlock x:Name="MemStatusText" FontFamily="{StaticResource Jura}" FontSize="11" Opacity="0.7" Foreground="{ThemeResource Brush_Highlighted}" Margin="0,2,0,0" Visibility="Collapsed"/>
+                                        </StackPanel>
+                                        <Button x:Name="MemCheckButton" Content="{helpers:ResourceString Key=btn_check}" Grid.Column="2" Click="MemoryHealthButton_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="&#xEB05;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                        <TextBlock helpers:Loc.Key="txt_disk_optimizations" Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
+                                        <Button Content="{helpers:ResourceString Key=btn_optimize}" Grid.Column="2" Click="DiskOptimizationsButton_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="&#xE82D;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                        <TextBlock helpers:Loc.Key="txt_event_viewer" Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
+                                        <Button Content="{helpers:ResourceString Key=diag_btn_open}" Grid.Column="2" Click="EventViewerSettingsCard_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
+                                    </Grid>
+
+                                </StackPanel>
+                            </Expander>
+
+                            <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                        <TextBlock helpers:Loc.Key="diag_expander_settings" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <StackPanel Padding="0,5,0,0">
+                                    <ItemsControl ItemsSource="{x:Bind ViewModel.SettingItems, Mode=OneWay}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Content="{Binding Name}" ToolTipService.ToolTip="{Binding Tooltip}"
+                                                          IsChecked="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}"
+                                                          Margin="0,0,0,12" VerticalAlignment="Center" FontFamily="{StaticResource Jura}" FontSize="13"
+                                                          Foreground="{ThemeResource Brush_Highlighted}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Border>
-            </Grid>
-        </Grid>
+            </SplitView.Pane>
+
+            <SplitView.Content>
+                <Grid Margin="5,0,5,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="125"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource DiagnosticPanelStyle}" Margin="0,0,12,10" >
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="76" Width="76" Margin="15,0,25,0" Loaded="SystemSonar_Loaded" Unloaded="SystemSonar_Unloaded">
+                                <Grid.Resources>
+                                    <Storyboard x:Name="SystemSonarStoryboard" RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="SonarRing1Scale" Storyboard.TargetProperty="ScaleX" From="0.55" To="1.0" Duration="0:0:2.5">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="SonarRing1Scale" Storyboard.TargetProperty="ScaleY" From="0.55" To="1.0" Duration="0:0:2.5">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="SonarRing1" Storyboard.TargetProperty="Opacity" From="0.8" To="0" Duration="0:0:2.5" />
+                                        <DoubleAnimation Storyboard.TargetName="SonarRing2Scale" Storyboard.TargetProperty="ScaleX" From="0.55" To="1.0" Duration="0:0:2.5" BeginTime="0:0:1.25">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="SonarRing2Scale" Storyboard.TargetProperty="ScaleY" From="0.55" To="1.0" Duration="0:0:2.5" BeginTime="0:0:1.25">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="SonarRing2" Storyboard.TargetProperty="Opacity" From="0.8" To="0" Duration="0:0:2.5" BeginTime="0:0:1.25" />
+                                    </Storyboard>
+                                </Grid.Resources>
+                                <Ellipse x:Name="SonarRing1" Stroke="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" StrokeThickness="1.5" Width="76" Height="76" RenderTransformOrigin="0.52,0.5" UseLayoutRounding="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Ellipse.RenderTransform>
+                                        <ScaleTransform x:Name="SonarRing1Scale" ScaleX="0.55" ScaleY="0.55" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                                <Ellipse x:Name="SonarRing2" Stroke="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" StrokeThickness="1.5" Width="76" Height="76" RenderTransformOrigin="0.52,0.5" Opacity="0" UseLayoutRounding="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Ellipse.RenderTransform>
+                                        <ScaleTransform x:Name="SonarRing2Scale" ScaleX="0.55" ScaleY="0.55" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                                <Border Width="45" Height="45" CornerRadius="22" Background="#1AFFFFFF" BorderBrush="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" BorderThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <FontIcon Glyph="&#xE9A1;" FontSize="24" Foreground="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" />
+                                </Border>
+                            </Grid>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                <TextBlock helpers:Loc.Key="diag_sys_status" FontFamily="{ThemeResource Jura}" Style="{StaticResource TechnicalLabelStyle}"/>
+                                <TextBlock Text="{x:Bind ViewModel.ScannerText, Mode=OneWay, FallbackValue='SYSTEM OPTIMAL'}" Style="{StaticResource TechnicalValueStyle}" FontFamily="{ThemeResource Jura}" FontSize="28" Foreground="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}"/>
+                                <TextBlock helpers:Loc.Key="diag_sys_last_checked" Style="{StaticResource TechnicalLabelStyle}"/>
+                            </StackPanel>
+
+                            <Grid Grid.Column="2" ColumnSpacing="40" Padding="0,0,20,0" HorizontalAlignment="Right">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Spacing="5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock helpers:Loc.Key="diag_live_miner" Style="{StaticResource TechnicalLabelStyle}" FontSize="10" HorizontalAlignment="Center"/>
+                                    <ToggleSwitch IsOn="{x:Bind ViewModel.IsLiveMonitoringEnabled, Mode=TwoWay}" OffContent="STANDBY" OnContent="ACTIVE" HorizontalAlignment="Center" MinWidth="0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <FontIcon Glyph="&#xEB42;" FontSize="18" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                    <TextBlock Text="{x:Bind ViewModel.ActiveHardwareCount, Mode=OneWay}" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="28" HorizontalAlignment="Center"/>
+                                    <TextBlock helpers:Loc.Key="diag_active_hardware" Style="{StaticResource TechnicalLabelStyle}" FontSize="10"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource DiagnosticPanelStyle}" Margin="0,0,10,10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="0,0,0,10">
+                                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <FontIcon Glyph="&#xE9D9;" FontSize="24" Foreground="{StaticResource Brush_DiagnosticBlue}" Margin="0,0,5,0" />
+                                    <ToggleButton Content="{helpers:ResourceString Key=diag_btn_cpu}" IsChecked="{x:Bind ViewModel.IsCpuSelected, Mode=TwoWay}" CornerRadius="4" Width="55" FontSize="11" FontWeight="SemiBold"/>
+                                    <ToggleButton Content="{helpers:ResourceString Key=diag_btn_gpu}" IsChecked="{x:Bind ViewModel.IsGpuSelected, Mode=TwoWay}" CornerRadius="4" Width="55" FontSize="11" FontWeight="SemiBold"/>
+                                    <ToggleButton Content="{helpers:ResourceString Key=diag_btn_ram}" IsChecked="{x:Bind ViewModel.IsRamSelected, Mode=TwoWay}" CornerRadius="4" Width="55" FontSize="11" FontWeight="SemiBold"/>
+                                    <ToggleButton Content="{helpers:ResourceString Key=diag_btn_network}" IsChecked="{x:Bind ViewModel.IsNetworkSelected, Mode=TwoWay}" CornerRadius="4" Width="65" FontSize="11" FontWeight="SemiBold"/>
+                                    <ToggleButton Content="{helpers:ResourceString Key=diag_btn_disk}" IsChecked="{x:Bind ViewModel.IsDiskSelected, Mode=TwoWay}" CornerRadius="4" Width="55" FontSize="11" FontWeight="SemiBold"/>
+                                    <ToggleButton Content="{helpers:ResourceString Key=diag_btn_page}" IsChecked="{x:Bind ViewModel.IsPageSelected, Mode=TwoWay}" CornerRadius="4" Width="55" FontSize="11" FontWeight="SemiBold"/>
+
+                                    <ToggleButton x:Name="DiskDetailsToggle" Content="Storage Info" IsChecked="{x:Bind ViewModel.IsStorageInfoSelected, Mode=TwoWay}"
+                                                  Visibility="{x:Bind ViewModel.IsDiskSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                  CornerRadius="4" FontSize="11" FontWeight="SemiBold" Margin="15,0,0,0" Foreground="{ThemeResource SystemAccentColor}"/>
+                                </StackPanel>
+                                <ComboBox ItemsSource="{x:Bind ViewModel.TimeScaleOptions}" DisplayMemberPath="Title" SelectedValuePath="Seconds" SelectedValue="{x:Bind ViewModel.MaxGraphSeconds, Mode=TwoWay}" Width="120" Height="28" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center" Background="#11FFFFFF" BorderBrush="#33FFFFFF" />
+                            </Grid>
+                            <Grid Grid.Row="1">
+
+                                <Grid Visibility="{x:Bind ViewModel.IsStorageInfoSelected, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}, FallbackValue=Visible}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="20"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="35"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Grid.Row="0" Grid.Column="0" Margin="0,15,8,5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Text="100" VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
+                                        <TextBlock Grid.Row="0" Grid.RowSpan="2" Text="75" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
+                                        <TextBlock Grid.Row="1" Grid.RowSpan="2" Text="50" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
+                                        <TextBlock Grid.Row="2" Grid.RowSpan="2" Text="25" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
+                                        <TextBlock Grid.Row="3" Text="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
+                                    </Grid>
+
+                                    <Grid Grid.Row="0" Grid.Column="1" Background="#0500D6E8" BorderBrush="#1A00D6E8" BorderThickness="1" CornerRadius="4">
+                                        <Path Stroke="#1AFFFFFF" StrokeThickness="1" StrokeDashArray="4,4" Stretch="Fill" Data="M 0,25 L 100,25 M 0,50 L 100,50 M 0,75 L 100,75 M 25,0 L 25,100 M 50,0 L 50,100 M 75,0 L 75,100" />
+                                        <Viewbox Stretch="Fill" Margin="5,15,5,5" Canvas.ZIndex="1" HorizontalAlignment="Right">
+                                            <Canvas Width="400" Height="100">
+
+                                                <Polygon Points="{x:Bind ViewModel.PerformanceAreaPoints, Mode=OneWay}" Fill="{StaticResource Brush_GraphGradientFill}" />
+                                                <Polyline Points="{x:Bind ViewModel.PerformanceGraphPoints, Mode=OneWay}" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" />
+
+                                                <Polygon Points="{x:Bind ViewModel.PerformanceAreaPointsAlt, Mode=OneWay}" Fill="#33FF3366" Visibility="{x:Bind ViewModel.IsNetworkSelected, Mode=OneWay}" />
+                                                <Polyline Points="{x:Bind ViewModel.PerformanceGraphPointsAlt, Mode=OneWay}" Stroke="#FFFF3366" StrokeThickness="2" Visibility="{x:Bind ViewModel.IsNetworkSelected, Mode=OneWay}" />
+
+                                            </Canvas>
+                                        </Viewbox>
+                                        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Padding="10,8" Background="#E6050505" BorderBrush="{StaticResource Brush_DiagnosticBlue}" BorderThickness="1" CornerRadius="4" UseLayoutRounding="True" Canvas.ZIndex="10">
+                                            <Grid ColumnSpacing="15">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Width="100">
+
+                                                    <TextBlock Text="{x:Bind ViewModel.ActivePrimaryValueStr, Mode=OneWay}"
+                                                               Visibility="{x:Bind ViewModel.HeroStandardVisibility, Mode=OneWay}"
+                                                               Foreground="White" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
+
+                                                    <StackPanel Visibility="{x:Bind ViewModel.IsNetworkSelected, Mode=OneWay}" Spacing="-2">
+                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay}"
+                                                                   Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay}"
+                                                                   Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                        <TextBlock Text="Mbps" Foreground="Gray" FontSize="9" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                                    </StackPanel>
+
+                                                    <TextBlock Text="{x:Bind ViewModel.ActivePrimaryLabel, Mode=OneWay}"
+                                                               Foreground="{StaticResource Brush_DiagnosticBlue}" FontSize="10"
+                                                               FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.CpuSecondaryVisibility, Mode=OneWay}">
+                                                        <TextBlock helpers:Loc.Key="diag_cpu_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
+                                                        <TextBlock Text="{x:Bind ViewModel.CurrentCpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.GpuSecondaryVisibility, Mode=OneWay}">
+                                                        <TextBlock helpers:Loc.Key="diag_gpu_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
+                                                        <TextBlock Text="{x:Bind ViewModel.CurrentGpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.RamSecondaryVisibility, Mode=OneWay}">
+                                                        <TextBlock helpers:Loc.Key="diag_ram_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
+                                                        <TextBlock Text="{x:Bind ViewModel.CurrentRamLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.NetworkSecondaryVisibility, Mode=OneWay}" VerticalAlignment="Center">
+                                                        <TextBlock helpers:Loc.Key="diag_network_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30" VerticalAlignment="Center"/>
+                                                        <StackPanel Orientation="Vertical" Spacing="0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay, TargetNullValue=0 ▼, FallbackValue=0 ▼}" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                                            <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay, TargetNullValue=0 ▲, FallbackValue=0 ▲}" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.DiskSecondaryVisibility, Mode=OneWay}">
+                                                        <TextBlock helpers:Loc.Key="diag_io_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
+                                                        <TextBlock Text="{x:Bind ViewModel.CurrentIoLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.PageSecondaryVisibility, Mode=OneWay}">
+                                                        <TextBlock helpers:Loc.Key="diag_pagefile_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
+                                                        <TextBlock Text="{x:Bind ViewModel.CurrentPagefileLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                    </StackPanel>
+
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+
+                                    <Grid Grid.Row="1" Grid.Column="1" Margin="5,5,5,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" HorizontalAlignment="Left" Style="{StaticResource AxisLabelStyle}"/>
+                                        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" HorizontalAlignment="Center" Style="{StaticResource AxisLabelStyle}"/>
+                                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" HorizontalAlignment="Center" Style="{StaticResource AxisLabelStyle}"/>
+                                        <TextBlock Grid.Column="2" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" HorizontalAlignment="Center" Style="{StaticResource AxisLabelStyle}"/>
+                                        <TextBlock Grid.Column="3" helpers:Loc.Key="diag_graph_now" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}" Foreground="{StaticResource Brush_DiagnosticBlue}" Opacity="1" FontWeight="Bold"/>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid Visibility="{x:Bind ViewModel.IsStorageInfoSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0,5,0,0" Padding="0,0,0,20">
+                                        <ItemsControl ItemsSource="{x:Bind ViewModel.SystemDrives, Mode=OneTime}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal" Spacing="40" HorizontalAlignment="Center"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="m:DriveSpaceInfo">
+                                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8" MinWidth="160">
+
+                                                        <TextBlock Text="{x:Bind DisplayName, Mode=OneTime}" FontSize="11" FontWeight="SemiBold" Foreground="LightGray" HorizontalAlignment="Center"/>
+
+                                                        <Grid Width="100" Height="100" Margin="0,5">
+                                                            <ProgressRing IsIndeterminate="False"
+                                                                          Minimum="0" Maximum="100"
+                                                                          Value="{x:Bind UsedPercentage, Mode=OneTime}"
+                                                                          Width="100" Height="100"
+                                                                          Foreground="{StaticResource Brush_DiagnosticBlue}"
+                                                                          Background="#15FFFFFF"/>
+
+                                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                                <TextBlock Text="{x:Bind UsedPercentageStr, Mode=OneTime}" FontSize="22" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                                                <TextBlock Text="USED" FontSize="9" Foreground="{StaticResource Brush_DiagnosticBlue}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                                                            </StackPanel>
+                                                        </Grid>
+
+                                                        <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
+                                                            <StackPanel>
+                                                                <TextBlock Text="USED" FontSize="9" Foreground="Gray" HorizontalAlignment="Center"/>
+                                                                <TextBlock Text="{x:Bind UsedSpaceStr, Mode=OneTime}" FontSize="12" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+                                                            <Border Width="1" Background="#33FFFFFF" Margin="0,2"/>
+                                                            <StackPanel>
+                                                                <TextBlock Text="FREE" FontSize="9" Foreground="Gray" HorizontalAlignment="Center"/>
+                                                                <TextBlock Text="{x:Bind FreeSpaceStr, Mode=OneTime}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Brush_DiagnosticBlue}" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource DiagnosticPanelStyle}" Margin="0,0,10,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,10">
+                                <FontIcon Glyph="&#xEB42;" FontSize="24" Foreground="{StaticResource Brush_DiagnosticBlue}" />
+                                <TextBlock helpers:Loc.Key="diag_hw_scan_title" Style="{StaticResource TechnicalValueHighlightedStyle}"/>
+                            </StackPanel>
+
+                            <ListView x:Name="HardwareIssuesListView" Visibility="{x:Bind ViewModel.HardwareListVisibility, Mode=OneWay}" ItemsSource="{x:Bind ViewModel.DetectedHardwareIssues}" SelectionMode="None" Padding="0" Margin="0,0,5,0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="m:HardwareIssue">
+                                        <Grid Style="{StaticResource DiagnosticListPanelStyle}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="{x:Bind StatusGlyph}" FontSize="24" Foreground="{x:Bind StatusBrush}" Margin="0,0,15,0" />
+                                            <StackPanel Grid.Column="1" Spacing="2">
+                                                <TextBlock Text="{x:Bind ComponentDisplayName}" Style="{StaticResource TechnicalValueHighlightedStyle}"/>
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <TextBlock Text="{x:Bind HardwareType}" Style="{StaticResource TechnicalLabelStyle}"/>
+                                                    <TextBlock Text=" | " Style="{StaticResource TechnicalLabelStyle}"/>
+                                                    <TextBlock Text="{x:Bind IssueSummary}" Style="{StaticResource TechnicalLabelStyle}" TextTrimming="CharacterEllipsis" MaxWidth="250"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10">
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="{x:Bind ErrorCodeHex}" Style="{StaticResource TechnicalValueStyle}" FontSize="11" Opacity="0.8" HorizontalAlignment="Right"/>
+                                                    <TextBlock Text="{x:Bind ErrorCodeDescription}" Style="{StaticResource TechnicalLabelStyle}" FontSize="10" HorizontalAlignment="Right"/>
+                                                </StackPanel>
+                                                <Button Content="{helpers:ResourceString Key=diag_btn_enable}" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}" Background="#1100D6E8" BorderBrush="{StaticResource Brush_DiagnosticBlue}" BorderThickness="1" CornerRadius="4" Height="28" Margin="10,0,0,0" Visibility="{x:Bind FixButtonVisibility}" Click="FixHardwareButton_Click"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                            <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,10,0,0" Visibility="{x:Bind ViewModel.HardwareScannerVisibility, Mode=OneWay}" Loaded="HeartbeatScanner_Loaded">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.Resources>
+                                    <LinearGradientBrush x:Key="SweepBrush" StartPoint="0,0" EndPoint="1,0">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TranslateTransform x:Name="SweepTransform" X="-1.0"/>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="Transparent" Offset="0.0"/>
+                                        <GradientStop Color="#4400D6E8" Offset="0.80"/>
+                                        <GradientStop Color="#FF00D6E8" Offset="0.97"/>
+                                        <GradientStop Color="#FFFFFF" Offset="0.985"/>
+                                        <GradientStop Color="#FFFFFF" Offset="0.999"/>
+                                        <GradientStop Color="Transparent" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                    <Storyboard x:Name="HeartbeatStoryboard" RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="SweepTransform" Storyboard.TargetProperty="X" From="-1.0" To="1.0" Duration="0:0:3.0" EnableDependentAnimation="True" />
+                                    </Storyboard>
+                                </Grid.Resources>
+                                <Viewbox Grid.Row="0" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,0,15">
+                                    <Grid Width="1000" Height="300">
+                                        <Path Data="M 0,25 L 1000,25 M 0,50 L 1000,50 M 0,75 L 1000,75 M 0,100 L 1000,100 M 0,125 L 1000,125 M 0,150 L 1000,150 M 0,175 L 1000,175 M 0,200 L 1000,200 M 0,225 L 1000,225 M 0,250 L 1000,250 M 0,275 L 1000,275 M 25,0 L 25,300 M 50,0 L 50,300 M 75,0 L 75,300 M 100,0 L 100,300 M 125,0 L 125,300 M 150,0 L 150,300 M 175,0 L 175,300 M 200,0 L 200,300 M 225,0 L 225,300 M 250,0 L 250,300 M 275,0 L 275,300 M 300,0 L 300,300 M 325,0 L 325,300 M 350,0 L 350,300 M 375,0 L 375,300 M 400,0 L 400,300 M 425,0 L 425,300 M 450,0 L 450,300 M 475,0 L 475,300 M 500,0 L 500,300 M 525,0 L 525,300 M 550,0 L 550,300 M 575,0 L 575,300 M 600,0 L 600,300 M 625,0 L 625,300 M 650,0 L 650,300 M 675,0 L 675,300 M 700,0 L 700,300 M 725,0 L 725,300 M 750,0 L 750,300 M 775,0 L 775,300 M 800,0 L 800,300 M 825,0 L 825,300 M 850,0 L 850,300 M 875,0 L 875,300 M 900,0 L 900,300 M 925,0 L 925,300 M 950,0 L 950,300 M 975,0 L 975,300" Stroke="#1AFFFFFF" StrokeThickness="1" />
+                                        <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Opacity="0.15" StrokeLineJoin="Round" />
+                                        <Canvas>
+                                            <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" Stroke="{StaticResource SweepBrush}" StrokeThickness="18" Opacity="0.25" StrokeLineJoin="Round" />
+                                            <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" Stroke="{StaticResource SweepBrush}" StrokeThickness="8" Opacity="0.60" StrokeLineJoin="Round" />
+                                            <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" Stroke="{StaticResource SweepBrush}" StrokeThickness="2" StrokeLineJoin="Round" />
+                                        </Canvas>
+                                    </Grid>
+                                </Viewbox>
+                                <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.HardwareScannerText, Mode=OneWay}" Foreground="{StaticResource Brush_DiagnosticBlue}" FontSize="10" FontWeight="SemiBold" CharacterSpacing="150" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10" Opacity="0.8"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Margin="0,0,10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" Style="{StaticResource DiagnosticPanelStyle}" Background="#1500D6E8" BorderBrush="#3000D6E8" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+                                    <FontIcon Glyph="&#xE994;" FontSize="18" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                    <TextBlock helpers:Loc.Key="diag_ai_analysis_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="14"/>
+                                </StackPanel>
+
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" MaxHeight="33">
+                                    <TextBlock Text="{x:Bind ViewModel.AiSummary, Mode=OneWay}" Foreground="LightGray" FontSize="12" TextWrapping="Wrap" LineHeight="16"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1" Style="{StaticResource DiagnosticPanelStyle}" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel>
+                                    <TextBlock helpers:Loc.Key="diag_stability_trend" Style="{StaticResource TechnicalLabelStyle}" />
+                                    <TextBlock Text="{x:Bind ViewModel.StabilityScore, Mode=OneWay}" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="24"/>
+                                </StackPanel>
+
+                                <ItemsControl Grid.Row="1" ItemsSource="{x:Bind ViewModel.StabilityTrendData}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="100" Margin="0,0,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <ItemsStackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="m:HourlyMetric">
+                                            <Grid VerticalAlignment="Bottom" Margin="0,0,4,0" Width="10">
+                                                <Rectangle Height="{x:Bind BarHeight}" Fill="{x:Bind BarColor}" RadiusX="2" RadiusY="2" VerticalAlignment="Bottom"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="2" Style="{StaticResource DiagnosticPanelStyle}" Margin="0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Spacing="5" Margin="0,0,0,10">
+                                    <TextBlock helpers:Loc.Key="diag_event_miner_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="16"/>
+                                </StackPanel>
+
+                                <TextBlock Grid.Row="1" 
+                                           helpers:Loc.Key="diag_no_events" 
+                                           Style="{StaticResource TechnicalLabelStyle}" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Top"
+                                           Margin="0,20,0,0"
+                                           Visibility="{x:Bind ViewModel.EventEmptyStateVisibility, Mode=OneWay}"/>
+
+                                <ListView x:Name="EventLogsListView" 
+                                          Grid.Row="1" 
+                                          ItemsSource="{x:Bind ViewModel.MinedSystemEvents}" 
+                                          SelectionMode="None" 
+                                          ShowsScrollingPlaceholders="False" 
+                                          Padding="0" 
+                                          Margin="0,0,-10,0">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="m:SystemEventItem">
+                                            <Grid Margin="0,0,15,8" Padding="10" CornerRadius="4" Background="#0AFFFFFF" BorderThickness="1,0,0,0" BorderBrush="{x:Bind StatusBrush}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <FontIcon Grid.Column="0" Glyph="{x:Bind StatusGlyph}" Foreground="{x:Bind StatusBrush}" FontSize="18" VerticalAlignment="Top" Margin="0,2,12,0"/>
+
+                                                <StackPanel Grid.Column="1" Spacing="4">
+                                                    <StackPanel Orientation="Horizontal" Spacing="8" Opacity="0.7">
+                                                        <TextBlock Text="{x:Bind FormattedTime}" FontFamily="Consolas" FontSize="11" Foreground="White" />
+                                                        <TextBlock Text="|" Foreground="Gray" FontSize="11"/>
+                                                        <TextBlock Text="{x:Bind SourceName}" FontSize="11" Foreground="LightGray" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
+                                                        <TextBlock Text="|" Foreground="Gray" FontSize="11"/>
+                                                        <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="Gray" FontSize="11"/>
+                                                        <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="11" Foreground="LightGray"/>
+                                                    </StackPanel>
+                                                    <TextBlock Text="{x:Bind Message}" Foreground="White" FontSize="12" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
+                                                </StackPanel>
+
+                                                <Button Grid.Column="2" Content="{helpers:ResourceString Key=diag_btn_fix}"
+                                                        FontSize="10" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}"
+                                                        Background="#1100D6E8" BorderBrush="{StaticResource Brush_DiagnosticBlue}"
+                                                        BorderThickness="1" CornerRadius="4" Height="28" VerticalAlignment="Center" Margin="10,0,0,0"
+                                                        Visibility="{x:Bind FixButtonVisibility}"
+                                                        Command="{Binding ElementName=EventLogsListView, Path=DataContext.FixEventCommand}"
+                                                        CommandParameter="{x:Bind EventId}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </SplitView.Content>
+        </SplitView>
     </Grid>
 </Page>

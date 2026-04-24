@@ -76,7 +76,20 @@ namespace EvolveOS_Optimizer.Utilities.Services
             var infoRuntime = new TimeSpan();
             var optimizationReason = reason.ToString();
             var stopwatch = new Stopwatch();
-            var value = (byte)0;
+
+            int totalSteps = 1;
+            if ((areas & Enums.Memory.Areas.WorkingSet) != 0) totalSteps++;
+            if ((areas & Enums.Memory.Areas.SystemFileCache) != 0) totalSteps++;
+            if ((areas & Enums.Memory.Areas.ModifiedPageList) != 0) totalSteps++;
+            if ((areas & (Enums.Memory.Areas.StandbyList | Enums.Memory.Areas.StandbyListLowPriority)) != 0) totalSteps++;
+            if ((areas & Enums.Memory.Areas.CombinedPageList) != 0) totalSteps++;
+            if ((areas & Enums.Memory.Areas.RegistryCache) != 0) totalSteps++;
+            if ((areas & Enums.Memory.Areas.ModifiedFileCache) != 0) totalSteps++;
+            if ((areas & Enums.Memory.Areas.DiskCleanup) != 0) totalSteps += 2;
+            if ((areas & Enums.Memory.Areas.FlushDns) != 0) totalSteps++;
+            if ((areas & Enums.Memory.Areas.WindowsOld) != 0) totalSteps++;
+
+            int currentStep = 0;
 
             var error = new LogOptimizationData { Reason = optimizationReason };
             var info = new LogOptimizationData { Reason = optimizationReason };
@@ -87,8 +100,9 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 {
                     if (OnOptimizeProgressUpdate != null)
                     {
-                        value++;
-                        OnOptimizeProgressUpdate(value, name);
+                        currentStep++;
+                        byte percentage = (byte)Math.Min(100, (currentStep * 100) / totalSteps);
+                        OnOptimizeProgressUpdate(percentage, name);
                     }
 
                     stopwatch.Restart();
@@ -123,17 +137,17 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             if ((areas & Enums.Memory.Areas.WorkingSet) != 0)
             {
-                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_working_set"), () => ClearingMemory.EmptyWorkingSetFunction());
+                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_working_set") ?? "Working Set", () => ClearingMemory.EmptyWorkingSetFunction());
             }
 
             if ((areas & Enums.Memory.Areas.SystemFileCache) != 0)
             {
-                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_system_file_cache"), () => ClearingMemory.ClearFileSystemCache(false));
+                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_system_file_cache") ?? "System File Cache", () => ClearingMemory.ClearFileSystemCache(false));
             }
 
             if ((areas & Enums.Memory.Areas.ModifiedPageList) != 0)
             {
-                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_modified_page_list"), () => ClearingMemory.OptimizeModifiedPageList());
+                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_modified_page_list") ?? "Modified Page List", () => ClearingMemory.OptimizeModifiedPageList());
             }
 
             if ((areas & (Enums.Memory.Areas.StandbyList | Enums.Memory.Areas.StandbyListLowPriority)) != 0)
@@ -141,46 +155,47 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 bool lowPriority = (areas & Enums.Memory.Areas.StandbyListLowPriority) != 0;
                 string label = lowPriority ? "optimizations_step_standby_list_lp" : "optimizations_step_standby_list";
 
-                await RunSyncStepAsync(ResourceString.GetString(label), () => ClearingMemory.ClearFileSystemCache(true, lowPriority));
+                await RunSyncStepAsync(ResourceString.GetString(label) ?? "Standby List", () => ClearingMemory.ClearFileSystemCache(true, lowPriority));
             }
 
             if ((areas & Enums.Memory.Areas.CombinedPageList) != 0)
             {
-                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_combined_page_list"), () => ClearingMemory.OptimizeCombinedPageList());
+                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_combined_page_list") ?? "Combined Page List", () => ClearingMemory.OptimizeCombinedPageList());
             }
 
             if ((areas & Enums.Memory.Areas.RegistryCache) != 0)
             {
-                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_registry_cache"), () => ClearingMemory.OptimizeRegistryCache());
+                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_registry_cache") ?? "Registry Cache", () => ClearingMemory.OptimizeRegistryCache());
             }
 
             if ((areas & Enums.Memory.Areas.ModifiedFileCache) != 0)
             {
-                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_modified_file_cache"), () => ClearingMemory.OptimizeModifiedFileCache());
+                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_modified_file_cache") ?? "Modified File Cache", () => ClearingMemory.OptimizeModifiedFileCache());
             }
 
             if ((areas & Enums.Memory.Areas.DiskCleanup) != 0)
             {
-                await RunOptimizationStepAsync(ResourceString.GetString("optimizations_step_disk_cleanup"), async () => await ClearingMemory.StartMemoryCleanup(clearRamCache: true, optimizeWorkingSet: false));
-                await RunOptimizationStepAsync(ResourceString.GetString("optimizations_step_update_cache"), async () => await ClearingMemory.CleanSoftwareDistribution());
+                await RunOptimizationStepAsync(ResourceString.GetString("optimizations_step_disk_cleanup") ?? "Disk Cleanup", async () => await ClearingMemory.StartMemoryCleanup(clearRamCache: true, optimizeWorkingSet: false));
+                await RunOptimizationStepAsync(ResourceString.GetString("optimizations_step_update_cache") ?? "Update Cache", async () => await ClearingMemory.CleanSoftwareDistribution());
             }
 
             if ((areas & Enums.Memory.Areas.FlushDns) != 0)
             {
-                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_flush_dns"), () => ClearingMemory.FlushDnsCache());
+                await RunSyncStepAsync(ResourceString.GetString("optimizations_step_flush_dns") ?? "Flush DNS", () => ClearingMemory.FlushDnsCache());
             }
 
             if ((areas & Enums.Memory.Areas.WindowsOld) != 0)
             {
-                await RunOptimizationStepAsync(ResourceString.GetString("optimizations_step_windows_old"), async () => await ClearingMemory.CleanWindowsOld());
+                await RunOptimizationStepAsync(ResourceString.GetString("optimizations_step_windows_old") ?? "Windows.old", async () => await ClearingMemory.CleanWindowsOld());
             }
 
             try
             {
                 if (OnOptimizeProgressUpdate != null)
                 {
-                    value++;
-                    OnOptimizeProgressUpdate(value, ResourceString.GetString("optimizations_step_modified_garbage_collector"));
+                    currentStep++;
+                    byte percentage = (byte)Math.Min(100, (currentStep * 100) / totalSteps);
+                    OnOptimizeProgressUpdate(percentage, ResourceString.GetString("optimizations_step_modified_garbage_collector") ?? "Garbage Collector");
                 }
 
                 App.ReleaseMemory();

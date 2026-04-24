@@ -495,6 +495,64 @@
             </Border>
         </Grid>
 
+        <Grid x:Name="GlobalOptimizationOverlay"
+              Visibility="Collapsed"
+              Background="#CC000000"
+              Canvas.ZIndex="10000"
+              Grid.RowSpan="10">
+            <Border Background="Transparent"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="40"
+                    MinWidth="450" MaxWidth="600"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch" Spacing="4">
+                    <Grid Height="160" Width="160" Margin="0,0,0,20">
+                        <Grid.Resources>
+                            <Storyboard x:Name="OverlayHeartbeatStoryboard" RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetName="RadarSweepTransform"
+                                             Storyboard.TargetProperty="Angle"
+                                             From="0" To="360" Duration="0:0:1.5" />
+                            </Storyboard>
+                        </Grid.Resources>
+
+                        <Ellipse Stroke="#1AFFFFFF" StrokeThickness="2" Width="160" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <Ellipse StrokeThickness="3" Width="160" Height="160" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                            <Ellipse.RenderTransform>
+                                <RotateTransform x:Name="RadarSweepTransform" Angle="0"/>
+                            </Ellipse.RenderTransform>
+                            <Ellipse.Stroke>
+                                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                    <GradientStop Color="{ThemeResource SystemAccentColor}" Offset="0.0"/>
+                                    <GradientStop Color="#8800D6E8" Offset="0.1"/>
+                                    <GradientStop Color="Transparent" Offset="0.8"/>
+                                </LinearGradientBrush>
+                            </Ellipse.Stroke>
+                        </Ellipse>
+
+                        <ProgressRing Minimum="0" Maximum="100"
+                                  Value="{x:Bind DiagnosticsVM.OptimizationProgressPercentage, Mode=OneWay}"
+                                  IsIndeterminate="False"
+                                  Width="130" Height="130"
+                                  Foreground="{StaticResource Brush_DiagnosticBlue}"
+                                  Background="#15FFFFFF"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                        <Ellipse Width="8" Height="8" Fill="{StaticResource Brush_DiagnosticBlue}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.5"/>
+                    </Grid>
+                    
+                    <TextBlock Text="{x:Bind DiagnosticsVM.OptimizationProgressStep, Mode=OneWay}"
+                               FontFamily="{StaticResource Jura}" FontWeight="SemiBold"
+                               HorizontalAlignment="Center" FontSize="16" Foreground="White" Margin="0,0,0,4"/>
+
+                    <TextBlock Text="{x:Bind DiagnosticsVM.OptimizationProgressValue, Mode=OneWay}"
+                               FontFamily="{StaticResource Jura}" HorizontalAlignment="Center"
+                               Foreground="LightGray" FontStyle="Italic" Margin="0,0,0,8" FontSize="14" Opacity="0.8"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
         <Grid x:Name="WindowDimOverlay" Grid.Row="0" Grid.RowSpan="10" Canvas.ZIndex="999980" Background="#B3000000" IsHitTestVisible="False" Visibility="Collapsed" Opacity="0">
             <ContentControl x:Name="PopupHost" HorizontalAlignment="Center" VerticalAlignment="Center" IsTabStop="False"/>
         </Grid>

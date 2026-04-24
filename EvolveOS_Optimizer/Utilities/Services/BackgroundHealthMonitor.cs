@@ -63,7 +63,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             }
         }
 
-        public static void SendCriticalHealthToast(string title, string message, Core.ViewModel.MaintenanceViewModel sharedViewModel)
+        public static void SendCriticalHealthToast(string title, string message, Core.ViewModel.DiagnosticsPageViewModel sharedViewModel)
         {
             try
             {

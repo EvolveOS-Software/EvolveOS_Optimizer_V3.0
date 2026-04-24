@@ -60,7 +60,7 @@ namespace EvolveOS_Optimizer
             string aumid = "EvolveOS.Optimizer.App";
             SetCurrentProcessAppId(aumid);
 
-            UIThreadDispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+            UIThreadDispatcher = DispatcherQueue.GetForCurrentThread();
 
             try
             {
@@ -133,7 +133,7 @@ namespace EvolveOS_Optimizer
             СheckingGlobalParameters.Initialize();
             App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
 
-            _ = MaintenanceViewModel.Current;
+            _ = DiagnosticsPageViewModel.Current;
 
             SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
 
@@ -403,7 +403,7 @@ namespace EvolveOS_Optimizer
 
         private static async Task RunGlobalOptimizationAsync()
         {
-            var sharedViewModel = MaintenanceViewModel.Current;
+            var sharedViewModel = DiagnosticsPageViewModel.Current;
 
             if (sharedViewModel != null)
             {

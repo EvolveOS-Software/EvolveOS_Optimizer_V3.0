@@ -522,7 +522,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["TranslationHotkeyModifier"] = (int)(VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift),
             ["TranslationHotkeyKey"] = (int)VirtualKey.L,
             ["EnableStartupMonitor"] = true,
-            ["EnableLiveDiagnostics"] = false
+            ["EnableLiveDiagnostics"] = false,
+            ["DiagnosticsGraphTime"] = 60
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -550,6 +551,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static int TranslationHotkeyKey { get => (int)_cachedSettings["TranslationHotkeyKey"]; set => ChangingParameters("TranslationHotkeyKey", value); }
         internal static bool EnableStartupMonitor { get => (bool)_cachedSettings["EnableStartupMonitor"]; set => ChangingParameters("EnableStartupMonitor", value); }
         internal static bool EnableLiveDiagnostics { get => (bool)_cachedSettings["EnableLiveDiagnostics"]; set => ChangingParameters("EnableLiveDiagnostics", value); }
+        internal static int DiagnosticsGraphTime { get => (int)_cachedSettings["DiagnosticsGraphTime"]; set => ChangingParameters("DiagnosticsGraphTime", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)

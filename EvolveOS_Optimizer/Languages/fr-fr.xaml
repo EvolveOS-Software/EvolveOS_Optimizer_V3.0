@@ -1155,140 +1155,6 @@
     <sys:String x:Key="process_manager_page_search_placeholder">Rechercher des processus...</sys:String>
     <!-- endregion Process Manager Page -->
 
-    <!-- System Optimizer -->
-    <sys:String x:Key="title_system_health_status">État de santé</sys:String>
-    <sys:String x:Key="text_system_optimizer_description">Améliorez la réactivité du système en récupérant la mémoire mal gérée et en purgeant les fichiers redondants. Cible efficacement les fuites de mémoire, vide les caches DNS et élimine les données temporaires pour restaurer des performances optimales.</sys:String>
-    <sys:String x:Key="btn_open_system_optimizer">Ouvrir l'Optimiseur Système</sys:String>
-
-    <sys:String x:Key="txt_header_physical_memory">Mémoire Physique</sys:String>
-    <sys:String x:Key="txt_physical_memory_used">Utilisée :</sys:String>
-    <sys:String x:Key="txt_physical_memory_free">Libre :</sys:String>
-    <sys:String x:Key="txt_header_virtual_memory">Mémoire Virtuelle</sys:String>
-    <sys:String x:Key="txt_virtual_memory_used">Utilisée :</sys:String>
-    <sys:String x:Key="txt_virtual_memory_free">Libre :</sys:String>
-    <sys:String x:Key="txt_header_process_exlusions">Exclusions de Processus</sys:String>
-    <sys:String x:Key="txt_header_cleaning_targets">Cibles de Nettoyage</sys:String>
-    <sys:String x:Key="txt_header_auto_optimizations">Optimisations Automatiques</sys:String>
-    <sys:String x:Key="txt_header_optimization_hotkey">Raccourci d'Optimisation</sys:String>
-    <sys:String x:Key="txt_header_settings">Paramètres</sys:String>
-    <sys:String x:Key="btn_clean_now">Nettoyer Maintenant</sys:String>
-    <sys:String x:Key="notify_mem_clean_successfull">Nettoyage de la mémoire réussi</sys:String>
-    <sys:String x:Key="txt_progress_step">Optimiser</sys:String>
-    <sys:String x:Key="txt_virtual_memory_header">mémoire virtuelle</sys:String>
-    <sys:String x:Key="title_memory_areas_combined_page_list">Liste de Pages Combinées</sys:String>
-    <sys:String x:Key="description_memory_areas_combined_page_list">Vide les pages ayant un contenu identique vers la liste d'attente.</sys:String>
-    <sys:String x:Key="title_memory_areas_modified_file_cache">Cache des Fichiers Modifiés</sys:String>
-    <sys:String x:Key="description_memory_system_file_cache">Écrit le cache des fichiers modifiés sur le disque.</sys:String>
-    <sys:String x:Key="title_memory_areas_modified_page_list">Liste de Pages Modifiées</sys:String>
-    <sys:String x:Key="description_memory_areas_modified_page_list">Vide la mémoire de la liste modifiée vers la liste d'attente.</sys:String>
-    <sys:String x:Key="title_memory_areas_registry_cache">Cache du Registre</sys:String>
-    <sys:String x:Key="description_memory_areas_registry_cache">Réduit l'ensemble de travail de la ruche du registre.</sys:String>
-    <sys:String x:Key="title_memory_areas_standby_list">Liste d'Attente (Standby)</sys:String>
-    <sys:String x:Key="description_memory_areas_standby_list">Supprime toutes les pages de la liste d'attente.</sys:String>
-    <sys:String x:Key="title_memory_areas_standby_list_low_priority">Liste d'Attente (Basse Priorité)</sys:String>
-    <sys:String x:Key="description_memory_areas_standby_list_low_priority">Supprime uniquement les pages de basse priorité de la liste d'attente.</sys:String>
-    <sys:String x:Key="title_memory_areas_system_file_cache">Cache des Fichiers Système</sys:String>
-    <sys:String x:Key="description_memory_areas_system_file_cache">Réduit l'ensemble de travail à l'échelle du système.</sys:String>
-    <sys:String x:Key="title_memory_areas_working_set">Ensemble de Travail (Working Set)</sys:String>
-    <sys:String x:Key="description_memory_areas_working_set">Réduit les ensembles de travail de tous les processus.</sys:String>
-    <sys:String x:Key="title_settings_items_close_afer_optimization">Fermer après l'optimisation</sys:String>
-    <sys:String x:Key="description_settings_items_close_afer_optimization">Ferme automatiquement la fenêtre de l'optimiseur système une fois le processus d'optimisation terminé.</sys:String>
-    <sys:String x:Key="title_settings_items_show_notification">Afficher les notifications d'optimisation</sys:String>
-    <sys:String x:Key="description_settings_items_show_notification">Affiche une notification dans la zone de notification au lieu d'une boîte de dialogue lorsque l'optimisation est terminée.</sys:String>
-    <sys:String x:Key="title_settings_items_show_no_result">Désactiver tous les résultats d'optimisation</sys:String>
-    <sys:String x:Key="description_settings_items_show_no_result">Ne pas afficher de notification ou de boîte de dialogue lorsque l'optimisation est terminée.</sys:String>
-    <sys:String x:Key="title_settings_items_low_priority">Exécuter en basse priorité</sys:String>
-    <sys:String x:Key="description_settings_items_low_priority">Définit le processus d'optimisation sur une priorité processeur inférieure pour éviter les ralentissements du système pendant le nettoyage.</sys:String>
-    <sys:String x:Key="title_settings_items_show_virtual_memory">Mémoire Virtuelle</sys:String>
-    <sys:String x:Key="description_settings_items_show_virtual_memory">Active ou désactive la visibilité du fichier d'échange et des statistiques de mémoire virtuelle dans le tableau de bord principal.</sys:String>
-    <sys:String x:Key="title_settings_items_restart_explorer">Redémarrer l'Explorateur Windows</sys:String>
-    <sys:String x:Key="description_settings_items_restart_explorer">Redémarre l'interface pour appliquer entièrement le nettoyage du cache des icônes et rafraîchir la zone de notification. La barre des tâches peut disparaître pendant quelques secondes.</sys:String>
-    <sys:String x:Key="txt_auto_opt_interval_singular">Toutes les {0} heure</sys:String>
-    <sys:String x:Key="txt_auto_opt_interval_plural">Toutes les {0} heures</sys:String>
-    <sys:String x:Key="txt_disabled">Désactivé</sys:String>
-    <sys:String x:Key="txt_auto_opt_usage_limit">Lorsque l'utilisation dépasse {0} %</sys:String>
-    <sys:String x:Key="txt_auto_opt_usage_warning">L'optimisation automatique ne peut s'exécuter que toutes les quelques minutes pour éviter les boucles infinies.</sys:String>
-    <sys:String x:Key="msg_hotkey_in_use">Le raccourci ({0}) est utilisé par le système d'exploitation</sys:String>
-    <sys:String x:Key="msg_mem_optimized">MÉMOIRE OPTIMISÉE :</sys:String>
-    <sys:String x:Key="optimizations_step_working_set">ensemble de travail</sys:String>
-    <sys:String x:Key="optimizations_step_system_file_cache">cache des fichiers système</sys:String>
-    <sys:String x:Key="optimizations_step_modified_page_list">liste de pages modifiées</sys:String>
-    <sys:String x:Key="optimizations_step_standby_list">liste d'attente</sys:String>
-    <sys:String x:Key="optimizations_step_standby_list_lp">liste d'attente (basse priorité)</sys:String>
-    <sys:String x:Key="optimizations_step_combined_page_list">liste de pages combinées</sys:String>
-    <sys:String x:Key="optimizations_step_registry_cache">cache du registre</sys:String>
-    <sys:String x:Key="optimizations_step_modified_file_cache">cache des fichiers modifiés</sys:String>
-    <sys:String x:Key="optimizations_step_modified_garbage_collector">ramasse-miettes (garbage collector)</sys:String>
-    <sys:String x:Key="title_warning_priority">Avertissement de Sécurité et de Performance</sys:String>
-    <sys:String x:Key="msg_warning_windows_old_deletion">Avertissement : La suppression de Windows.old est définitive. Vous ne pourrez PAS revenir à une version précédente de Windows si vous rencontrez des problèmes. Voulez-vous continuer ?</sys:String>
-    <sys:String x:Key="optimizations_step_disk_cleanup">Nettoyage des fichiers temporaires...</sys:String>
-    <sys:String x:Key="optimizations_step_windows_old">Suppression de Windows.old (Ajustement des permissions)...</sys:String>
-    <sys:String x:Key="optimizations_step_update_cache">Nettoyage du cache de Windows Update...</sys:String>
-    <sys:String x:Key="label_disk_recovered">Espace Disque Récupéré</sys:String>
-    <sys:String x:Key="title_memory_areas_disk_cleanup">Nettoyage de Disque (Fichiers Temp)</sys:String>
-    <sys:String x:Key="title_memory_areas_windows_old">Dossier Windows.old</sys:String>
-    <sys:String x:Key="description_memory_areas_disk_cleanup">Nettoie les fichiers temporaires, le prefetch et les caches de vignettes pour récupérer de l'espace disque.</sys:String>
-    <sys:String x:Key="description_memory_areas_windows_old">Supprime les sauvegardes des installations précédentes de Windows. AVERTISSEMENT : Ce processus est irréversible et empêche les retours arrière du système.</sys:String>
-    <sys:String x:Key="title_memory_areas_flush_dns">Vider le Cache DNS</sys:String>
-    <sys:String x:Key="description_memory_areas_flush_dns">Efface le cache du résolveur DNS pour résoudre les problèmes de connexion et rafraîchir les mappages de domaine.</sys:String>
-    <sys:String x:Key="optimizations_step_flush_dns">Vidage du cache DNS</sys:String>
-    <sys:String x:Key="txt_total_estimated_space">Espace Total Estimé :</sys:String>
-    <sys:String x:Key="tooltip_refresh_space">Recalculer la taille de nettoyage</sys:String>
-    <sys:String x:Key="txt_scanning">Analyse en cours...</sys:String>
-    <sys:String x:Key="txt_header_memory_areas">Optimisation de la Mémoire</sys:String>
-    <sys:String x:Key="txt_header_system_cleanup">Nettoyage du Système</sys:String>
-    <sys:String x:Key="txt_progress_preparing">Préparation de l'analyse du système...</sys:String>
-    <sys:String x:Key="txt_progress_optimizing">Exécution de l'optimisation de la mémoire...</sys:String>
-    <sys:String x:Key="txt_progress_finalizing">Finalisation et rafraîchissement des métriques...</sys:String>
-    <sys:String x:Key="txt_optimization_completed">Optimisation terminée avec succès !</sys:String>
-    <sys:String x:Key="UnexpectedError">Une erreur inattendue s'est produite</sys:String>
-    <sys:String x:Key="Repair">Réparer</sys:String>
-    <sys:String x:Key="OperationStopped">Opération arrêtée</sys:String>
-    <sys:String x:Key="OperationCompleted">Opération terminée</sys:String>
-    <sys:String x:Key="BatteryStatus">État de la batterie</sys:String>
-    <sys:String x:Key="ReportSaved">Rapport enregistré sur le Bureau</sys:String>
-    <sys:String x:Key="MemoryDiagnosticDialogTitle">Memory Diagnostic</sys:String>
-    <sys:String x:Key="MemoryDiagnosticDialogText">Memory problems can cause your computer to lose information or stop working.</sys:String>
-    <sys:String x:Key="RestartNow">Redémarrer maintenant</sys:String>
-    <sys:String x:Key="ScheduleLater">Planifier pour plus tard</sys:String>
-    <sys:String x:Key="ScheduledLater">Planifié pour le prochain redémarrage</sys:String>
-    <sys:String x:Key="ScanInProgress">{0} / {1} : Analyse {2} en cours...</sys:String>
-    <sys:String x:Key="ScanResults">Résultats de l'analyse</sys:String>
-    <sys:String x:Key="RepairInProgress">{0} / {1} : Réparation {2} en cours...</sys:String>
-    <sys:String x:Key="Health_Poor">Médiocre - Action requise</sys:String>
-    <sys:String x:Key="Health_Warning">Moyen - Optimisation recommandée</sys:String>
-    <sys:String x:Key="Health_Good">Bon - Le système est sain</sys:String>
-    <sys:String x:Key="txt_header_drive_c_space">Lecteur système (C:)</sys:String>
-    <sys:String x:Key="txt_drive_c_used">Espace utilisé:</sys:String>
-    <sys:String x:Key="txt_drive_c_free">Espace libre:</sys:String>
-    <sys:String x:Key="txt_header_system_repair">Réparation du système</sys:String>
-    <sys:String x:Key="txt_dism">DISM</sys:String>
-    <sys:String x:Key="txt_sfc">SFC</sys:String>
-    <sys:String x:Key="txt_chkdsk">CHKDSK</sys:String>
-    <sys:String x:Key="btn_scan">Analyser</sys:String>
-    <sys:String x:Key="btn_repair">Réparer</sys:String>
-    <sys:String x:Key="btn_stop">Arrêter</sys:String>
-    <sys:String x:Key="txt_header_diagnostic_options">Options de diagnostic</sys:String>
-    <sys:String x:Key="txt_battery_health">État de la batterie</sys:String>
-    <sys:String x:Key="btn_generate">Générer</sys:String>
-    <sys:String x:Key="txt_disk_optimizations">Optimisations de disque</sys:String>
-    <sys:String x:Key="btn_optimize">Optimiser</sys:String>
-    <sys:String x:Key="txt_event_viewer">Observateur d'événements</sys:String>
-    <sys:String x:Key="txt_memory_diagnostic">Diagnostic de la mémoire</sys:String>
-    <sys:String x:Key="btn_check">Vérifier</sys:String>
-    <sys:String x:Key="txt_ready">Prêt</sys:String>
-    <sys:String x:Key="txt_invalid">Invalide</sys:String>
-    <sys:String x:Key="toast_btn_optimize">Optimiser maintenant</sys:String>
-    <sys:String x:Key="toast_btn_ignore">Ignorer</sys:String>
-    <sys:String x:Key="toast_optimization_complete_title">Optimisation terminée</sys:String>
-    <sys:String x:Key="toast_optimization_complete_msg">Les ressources système ont été libérées et optimisées avec succès.</sys:String>
-    <sys:String x:Key="toast_health_critical_title">État du système critique</sys:String>
-    <sys:String x:Key="toast_health_critical_msg">Les ressources système sont fortement sollicitées ou l'espace disque est faible. Cliquez pour optimiser.</sys:String>
-    <sys:String x:Key="placeholder_select_process">Sélectionnez un processus à exclure...</sys:String>
-    <sys:String x:Key="StatusTextBlockDefault">Prêt</sys:String>
-    <sys:String x:Key="Close">Fermer</sys:String>
-    <!--#endregion-->
-
     <!-- Resource Helper -->
     <sys:String x:Key="unit_B">B</sys:String>
     <sys:String x:Key="unit_KB">KB</sys:String>
@@ -2001,5 +1867,340 @@
     <sys:String x:Key="startup_manager_page_toast_new_app_title">Nouvelle application au démarrage !</sys:String>
     <sys:String x:Key="startup_manager_page_toast_new_app_message">{0} vient de s'ajouter à votre séquence de démarrage.&#10;Consultez EvolveOS Optimizer pour la gérer.</sys:String>
     <!-- endregion Startup Manager Page -->
+
+    <!-- region Diagnostics Page -->
+    <sys:String x:Key="diag_header_subtitle">DIAGNOSTICS PROACTIFS DE LA SANTÉ DU SYSTÈME</sys:String>
+    <sys:String x:Key="diag_header_title">CENTRE DE COMMANDE v1.0</sys:String>
+    <sys:String x:Key="diag_btn_start_scan">Démarrer l'analyse complète</sys:String>
+
+    <sys:String x:Key="diag_sys_status">ÉTAT DU SYSTÈME</sys:String>
+    <sys:String x:Key="diag_sys_healthy">SAIN / SÉCURISÉ</sys:String>
+    <sys:String x:Key="diag_sys_last_checked">Dernière vérification : À l'instant / Aucune action immédiate requise.</sys:String>
+
+    <sys:String x:Key="diag_live_miner">RÉCUPÉRATEUR DE TÉLÉMÉTRIE EN DIRECT</sys:String>
+    <sys:String x:Key="diag_tgl_standby">EN VEILLE</sys:String>
+    <sys:String x:Key="diag_tgl_active">ACTIF</sys:String>
+    <sys:String x:Key="diag_active_hardware">MATÉRIEL ACTIF</sys:String>
+
+    <sys:String x:Key="diag_hw_scan_title">ANALYSE DE COMPATIBILITÉ DU MATÉRIEL &amp; DES PILOTES</sys:String>
+    <sys:String x:Key="diag_btn_enable">ACTIVER</sys:String>
+
+    <sys:String x:Key="diag_stability_trend">TENDANCE DE STABILITÉ DU SYSTÈME (24H)</sys:String>
+    <sys:String x:Key="diag_event_miner_title">ANALYSE &amp; RÉCUPÉRATION DU JOURNAL DES ÉVÉNEMENTS</sys:String>
+    <sys:String x:Key="diag_event_id_prefix">ID :</sys:String>
+    <sys:String x:Key="diag_btn_fix">RÉPARER</sys:String>
+    <sys:String x:Key="diag_no_events">Aucun événement critique isolé dans le délai spécifié.</sys:String>
+
+    <sys:String x:Key="diag_cpu_load">CHARGE CPU</sys:String>
+    <sys:String x:Key="diag_cpu_load_small">CPU :</sys:String>
+    <sys:String x:Key="diag_gpu_load">CHARGE GPU</sys:String>
+    <sys:String x:Key="diag_gpu_load_small">GPU :</sys:String>
+    <sys:String x:Key="diag_ram_load">CHARGE RAM</sys:String>
+    <sys:String x:Key="diag_ram_load_small">RAM :</sys:String>
+    <sys:String x:Key="diag_network_load">VITESSE RÉSEAU</sys:String>
+    <sys:String x:Key="diag_network_load_small">RÉS :</sys:String>
+    <sys:String x:Key="diag_pagefile_load">FICHIER D'ÉCHANGE</sys:String>
+    <sys:String x:Key="diag_pagefile_load_small">PAGE :</sys:String>
+    <sys:String x:Key="diag_io_load">CHARGE E/S</sys:String>
+    <sys:String x:Key="diag_io_load_small">E/S :</sys:String>
+
+    <sys:String x:Key="diag_graph_60sec">60 Secondes</sys:String>
+    <sys:String x:Key="diag_graph_5min">5 Minutes</sys:String>
+    <sys:String x:Key="diag_graph_10min">10 Minutes</sys:String>
+    <sys:String x:Key="diag_graph_15min">15 Minutes</sys:String>
+
+    <sys:String x:Key="diag_toggle_maintenance">Outils de maintenance</sys:String>
+    <sys:String x:Key="diag_pane_header">MAINTENANCE &amp; RÉPARATION</sys:String>
+    <sys:String x:Key="diag_health_status_label">ÉTAT DE SANTÉ ACTUEL</sys:String>
+    <sys:String x:Key="diag_btn_refresh_data">Actualiser les données</sys:String>
+    <sys:String x:Key="diag_expander_memory">Gestion de la mémoire</sys:String>
+    <sys:String x:Key="diag_expander_exclusions">Exclusions de processus</sys:String>
+    <sys:String x:Key="diag_placeholder_select_process">Sélectionnez un processus...</sys:String>
+    <sys:String x:Key="diag_expander_auto_opt">Optimisations automatiques</sys:String>
+    <sys:String x:Key="diag_expander_hotkey">Raccourci d'optimisation</sys:String>
+    <sys:String x:Key="diag_hotkey_enabled">Raccourci activé</sys:String>
+    <sys:String x:Key="diag_hotkey_disabled">Raccourci désactivé</sys:String>
+    <sys:String x:Key="diag_expander_cleanup">Nettoyage du système</sys:String>
+    <sys:String x:Key="diag_btn_clean_now">Nettoyer maintenant</sys:String>
+    <sys:String x:Key="diag_expander_repair">Opérations de réparation</sys:String>
+    <sys:String x:Key="diag_check_dism">Réparation de l'image DISM</sys:String>
+    <sys:String x:Key="diag_check_sfc">SFC System Scannow</sys:String>
+    <sys:String x:Key="diag_check_chkdsk">Système de fichiers CHKDSK</sys:String>
+    <sys:String x:Key="diag_btn_scan_action">ANALYSER</sys:String>
+    <sys:String x:Key="diag_btn_repair_action">RÉPARER</sys:String>
+    <sys:String x:Key="diag_btn_stop_op">ARRÊTER L'OPÉRATION</sys:String>
+    <sys:String x:Key="diag_status_ready">Prêt</sys:String>
+    <sys:String x:Key="diag_expander_utilities">Utilitaires système</sys:String>
+    <sys:String x:Key="diag_btn_open">Ouvrir</sys:String>
+    <sys:String x:Key="diag_expander_settings">Paramètres de maintenance</sys:String>
+    <sys:String x:Key="diag_ai_analysis_title">ANALYSE NEURONALE IA</sys:String>
+    <sys:String x:Key="diag_btn_cpu">CPU</sys:String>
+    <sys:String x:Key="diag_btn_gpu">GPU</sys:String>
+    <sys:String x:Key="diag_btn_ram">RAM</sys:String>
+    <sys:String x:Key="diag_btn_disk">DISQUE</sys:String>
+    <sys:String x:Key="diag_btn_page">PAGIN</sys:String>
+    <sys:String x:Key="diag_graph_now">MNTNT</sys:String>
+
+    <sys:String x:Key="live_watcher_pending">Interception en direct : Journaux détaillés en attente...</sys:String>
+
+    <sys:String x:Key="diag_alert_source_ram">Gestionnaire de mémoire</sys:String>
+    <sys:String x:Key="diag_alert_source_cpu">Télémétrie du processeur</sys:String>
+    <sys:String x:Key="diag_alert_source_disk">Contrôleur de stockage</sys:String>
+    <sys:String x:Key="diag_alert_msg_ram">CRITIQUE : La mémoire RAM est presque épuisée ({0:F1}% libre). Risque élevé de saturation du fichier d'échange et de ralentissement du système.</sys:String>
+    <sys:String x:Key="diag_alert_msg_cpu">AVERTISSEMENT : La charge CPU est exceptionnellement élevée ({0}%). Les tâches en arrière-plan peuvent restreindre les performances au premier plan.</sys:String>
+    <sys:String x:Key="diag_alert_msg_disk">AVERTISSEMENT : Les E/S disque sont saturées. La réactivité du système est gravement dégradée. Vérifiez l'indexation agressive ou les disques défaillants.</sys:String>
+
+    <sys:String x:Key="wmi_unknown_device">Périphérique inconnu</sys:String>
+    <sys:String x:Key="hw_generic">Contrôleur générique</sys:String>
+    <sys:String x:Key="hw_gpu">Processeur graphique</sys:String>
+    <sys:String x:Key="hw_usb">Hôte/Hub USB</sys:String>
+    <sys:String x:Key="hw_audio">Périphérique audio</sys:String>
+    <sys:String x:Key="hw_network">Adaptateur réseau</sys:String>
+    <sys:String x:Key="hw_system">Périphérique système</sys:String>
+    <sys:String x:Key="hw_bluetooth">Radio Bluetooth</sys:String>
+
+    <sys:String x:Key="diag_hw_interrogating">INTERROGATION DU BUS...</sys:String>
+    <sys:String x:Key="diag_hw_optimal">MATÉRIEL OPTIMAL. SURVEILLANCE DU BUS...</sys:String>
+    <sys:String x:Key="diag_sys_optimal">SYSTÈME OPTIMAL. SURVEILLANCE...</sys:String>
+    <sys:String x:Key="diag_scan_idle">Système inactif. Prêt à lancer l'analyse de diagnostic.</sys:String>
+    <sys:String x:Key="diag_cpu_load">CHARGE CPU</sys:String>
+    <sys:String x:Key="diag_ai_sleeping">Moteur IA en veille. Lancez une analyse pour générer un résumé de santé du système.</sys:String>
+
+    <sys:String x:Key="diag_fix_event_attempt">Tentative de correction automatisée pour l'Événement {0}...</sys:String>
+    <sys:String x:Key="diag_fix_event_success">Événement {0} réparé avec succès.</sys:String>
+    <sys:String x:Key="diag_fix_event_deploy">AUTO-FIX DÉPLOYÉ : Le problème associé à l'ID {0} a été résolu.</sys:String>
+    <sys:String x:Key="diag_fix_event_fail">Échec de la correction pour l'Événement {0}. Privilèges d'administrateur requis.</sys:String>
+    <sys:String x:Key="diag_fix_hw_init">Lancement de la séquence matérielle pour {0}...</sys:String>
+    <sys:String x:Key="diag_fix_hw_wait">Commande envoyée. En attente de l'initialisation de la pile de pilotes par l'OS...</sys:String>
+    <sys:String x:Key="diag_fix_hw_verified">RÉMÉDIATION VÉRIFIÉE : La pile de pilotes {0} a été signalée et réinitialisée.</sys:String>
+    <sys:String x:Key="diag_fix_hw_fail">Échec de la correction de {0}. Vérifiez les privilèges d'administrateur.</sys:String>
+
+    <sys:String x:Key="diag_scan_running">Exécution de l'analyse approfondie du système et du matériel...</sys:String>
+    <sys:String x:Key="diag_ai_analyzing">Le moteur neuronal analyse les données télémétriques...</sys:String>
+    <sys:String x:Key="diag_scan_interrogating_hw">INTERROGATION DU MATÉRIEL...</sys:String>
+    <sys:String x:Key="diag_scan_complete">Analyse terminée. {0} problème(s) matériel(s) | {1} événement(s) système.</sys:String>
+    <sys:String x:Key="diag_ai_analysis_issue">Analyse IA : Détection de {0} crashs/erreurs système ou de goulots d'étranglement. Conflit matériel identifié dans {1} périphérique(s). Recommandation : Exécutez les auto-fixes disponibles depuis l'Event Miner.</sys:String>
+    <sys:String x:Key="diag_ai_analysis_nominal">Analyse IA : La télémétrie du système est nominale. Aucun signe de dégradation ou d'instabilité trouvé dans les journaux récents.</sys:String>
+    <sys:String x:Key="diag_status_critical_faults">CRITIQUE. {0} DÉFAUTS MATÉRIELS DÉTECTÉS.</sys:String>
+    <sys:String x:Key="diag_status_warning_events">AVERTISSEMENT. {0} ÉVÉNEMENTS SYSTÈME ENREGISTRÉS.</sys:String>
+
+    <sys:String x:Key="diag_ram_exhaustion_title">Avertissement d'épuisement de la mémoire</sys:String>
+    <sys:String x:Key="diag_ram_exhaustion_msg">L'utilisation de la mémoire physique a atteint {0}%. Les performances du système peuvent se dégrader.</sys:String>
+    <sys:String x:Key="diag_pf_saturation_title">Avertissement de saturation du fichier d'échange</sys:String>
+    <sys:String x:Key="diag_pf_saturation_msg">L'utilisation du fichier d'échange est extrêmement élevée à {0}%. Saturation du disque probable.</sys:String>
+    <sys:String x:Key="diag_live_active">Intercepteur de télémétrie en direct : ACTIF</sys:String>
+    <sys:String x:Key="diag_live_standby">Intercepteur de télémétrie en direct : EN VEILLE</sys:String>
+    <sys:String x:Key="diag_live_intercept_msg">INTERCEPTION DIRECTE : {0} a signalé un événement de Niveau {1}. Stabilité mise à jour.</sys:String>
+    <sys:String x:Key="diag_critical_error_title">Erreur système critique détectée</sys:String>
+    <sys:String x:Key="diag_critical_error_msg">L'événement ID {0} a été consigné par {1}.</sys:String>
+    <sys:String x:Key="diag_ai_summary_nominal">Analyse IA : La télémétrie du système est nominale. Aucun signe de dégradation ou d'instabilité trouvé dans les journaux récents.</sys:String>
+    <sys:String x:Key="diag_ai_summary_issues">Analyse IA : Détection de {0} crashs/erreurs système ou de goulots d'étranglement. Conflit matériel identifié dans {1} périphérique(s). Recommandation : Exécutez les auto-fixes disponibles depuis l'Event Miner.</sys:String>
+    <sys:String x:Key="diag_alert_source_neural">Moteur neuronal EvolveOS</sys:String>
+    <sys:String x:Key="diag_alert_ram_usage_msg">CRITIQUE : Utilisation de la mémoire physique à {0}%. Purge immédiate du cache recommandée pour éviter la saturation de la pagination.</sys:String>
+    <sys:String x:Key="diag_alert_pf_usage_msg">AVERTISSEMENT : L'utilisation du fichier d'échange dépasse {0}%. Goulot d'étranglement des E/S disque imminent. Il est recommandé d'effacer la mémoire virtuelle.</sys:String>
+
+    <sys:String x:Key="wmi_code_default_summary">Un code d'erreur cryptique (Code {0}) a été détecté par l'analyse proactive.</sys:String>
+    <sys:String x:Key="wmi_code_default_fix">Windows a rencontré une erreur interne avec ce pilote. Vérifiez le Gestionnaire de périphériques ou réinstallez le pilote standard.</sys:String>
+    <sys:String x:Key="wmi_code_extended_summary">Erreur PnP étendue (Code {0}) détectée sur le bus matériel.</sys:String>
+    <sys:String x:Key="wmi_code_extended_fix">Il s'agit d'un conflit matériel complexe ou d'un crash du pilote. Utilisez l'outil d'auto-remédiation d'EvolveOS pour réinitialiser l'état PnP.</sys:String>
+
+    <sys:String x:Key="wmi_code_1_summary">Le périphérique n'est pas configuré correctement.</sys:String>
+    <sys:String x:Key="wmi_code_1_fix">Mettez à jour ou restaurez le pilote.</sys:String>
+
+    <sys:String x:Key="wmi_code_3_summary">Le pilote de ce périphérique est peut-être corrompu.</sys:String>
+    <sys:String x:Key="wmi_code_3_fix">Désinstallez le périphérique et recherchez les modifications sur le matériel.</sys:String>
+
+    <sys:String x:Key="wmi_code_10_summary">Ce périphérique ne peut pas démarrer (Code 10).</sys:String>
+    <sys:String x:Key="wmi_code_10_fix">Essayez de mettre à jour les pilotes du périphérique.</sys:String>
+
+    <sys:String x:Key="wmi_code_14_summary">Ce périphérique ne fonctionnera pas correctement tant que vous n'aurez pas redémarré votre ordinateur.</sys:String>
+    <sys:String x:Key="wmi_code_14_fix">Redémarrez votre ordinateur.</sys:String>
+
+    <sys:String x:Key="wmi_code_18_summary">Réinstallez les pilotes de ce périphérique.</sys:String>
+    <sys:String x:Key="wmi_code_18_fix">Cliquez sur 'Mettre à jour le pilote' dans le Gestionnaire de périphériques.</sys:String>
+
+    <sys:String x:Key="wmi_code_19_summary">Votre registre est peut-être corrompu.</sys:String>
+    <sys:String x:Key="wmi_code_19_fix">Windows ne peut pas démarrer ce périphérique matériel car ses informations de configuration (dans le registre) sont incomplètes ou endommagées.</sys:String>
+
+    <sys:String x:Key="wmi_code_21_summary">Windows supprime ce périphérique.</sys:String>
+    <sys:String x:Key="wmi_code_21_fix">Attendez quelques secondes, puis actualisez le Gestionnaire de périphériques.</sys:String>
+
+    <sys:String x:Key="wmi_code_22_summary">Ce périphérique est désactivé (Code 22).</sys:String>
+    <sys:String x:Key="wmi_code_22_fix">Activez le périphérique dans le Gestionnaire de périphériques.</sys:String>
+
+    <sys:String x:Key="wmi_code_24_summary">Ce périphérique est absent, ne fonctionne pas correctement ou tous ses pilotes ne sont pas installés.</sys:String>
+    <sys:String x:Key="wmi_code_24_fix">Vérifiez les connexions physiques ou réinstallez les pilotes.</sys:String>
+
+    <sys:String x:Key="wmi_code_28_summary">Les pilotes de ce périphérique ne sont pas installés.</sys:String>
+    <sys:String x:Key="wmi_code_28_fix">Installez les derniers pilotes du fabricant.</sys:String>
+
+    <sys:String x:Key="wmi_code_29_summary">Ce périphérique est désactivé car le firmware ne lui a pas alloué les ressources nécessaires.</sys:String>
+    <sys:String x:Key="wmi_code_29_fix">Vérifiez les paramètres BIOS/UEFI pour détecter les conflits matériels.</sys:String>
+
+    <sys:String x:Key="wmi_code_31_summary">Ce périphérique ne fonctionne pas correctement car Windows ne peut pas charger les pilotes.</sys:String>
+    <sys:String x:Key="wmi_code_31_fix">Téléchargez et installez le pilote spécifique pour ce périphérique.</sys:String>
+
+    <sys:String x:Key="wmi_code_32_summary">Un pilote (service) pour ce périphérique a été désactivé.</sys:String>
+    <sys:String x:Key="wmi_code_32_fix">Un autre pilote peut fournir cette fonctionnalité.</sys:String>
+
+    <sys:String x:Key="wmi_code_37_summary">Windows ne peut pas initialiser le pilote de ce matériel.</sys:String>
+    <sys:String x:Key="wmi_code_37_fix">Désinstallez le périphérique et redémarrez le PC.</sys:String>
+
+    <sys:String x:Key="wmi_code_38_summary">Windows ne peut pas charger le pilote car une instance précédente est encore en mémoire.</sys:String>
+    <sys:String x:Key="wmi_code_38_fix">Redémarrez votre ordinateur.</sys:String>
+
+    <sys:String x:Key="wmi_code_39_summary">Windows ne peut pas charger le pilote de ce matériel. Le pilote est peut-être corrompu ou manquant.</sys:String>
+    <sys:String x:Key="wmi_code_39_fix">Réinstallez le pilote.</sys:String>
+
+    <sys:String x:Key="wmi_code_41_summary">Windows a chargé le pilote avec succès, mais ne trouve pas le périphérique matériel.</sys:String>
+    <sys:String x:Key="wmi_code_41_fix">Vérifiez si le périphérique est branché correctement.</sys:String>
+
+    <sys:String x:Key="wmi_code_43_summary">Windows a arrêté ce périphérique car il a signalé des problèmes (Code 43).</sys:String>
+    <sys:String x:Key="wmi_code_43_fix">Cela indique souvent une panne matérielle ou un pilote gravement corrompu.</sys:String>
+
+    <sys:String x:Key="wmi_code_45_summary">Actuellement, ce périphérique matériel n'est pas connecté à l'ordinateur.</sys:String>
+    <sys:String x:Key="wmi_code_45_fix">Reconnectez le périphérique à l'ordinateur.</sys:String>
+
+    <sys:String x:Key="wmi_code_47_summary">Windows ne peut pas utiliser ce périphérique matériel car il a été préparé pour un retrait en toute sécurité.</sys:String>
+    <sys:String x:Key="wmi_code_47_fix">Débranchez le périphérique et rebranchez-le.</sys:String>
+
+    <sys:String x:Key="wmi_code_48_summary">Le démarrage du logiciel de ce périphérique a été bloqué car il présente des problèmes avec Windows.</sys:String>
+    <sys:String x:Key="wmi_code_48_fix">Vérifiez s'il existe un pilote mis à jour par le fabricant.</sys:String>
+
+    <sys:String x:Key="wmi_code_52_summary">Windows ne peut pas vérifier la signature numérique des pilotes requis pour ce périphérique.</sys:String>
+    <sys:String x:Key="wmi_code_52_fix">Il se peut que vous deviez désactiver l'application de la signature des pilotes ou télécharger un pilote signé.</sys:String>
+
+    <sys:String x:Key="title_system_health_status">État de santé</sys:String>
+    <sys:String x:Key="text_system_optimizer_description">Améliorez la réactivité du système en récupérant la mémoire mal gérée et en purgeant les fichiers redondants. Cible efficacement les fuites de mémoire, vide les caches DNS et élimine les données temporaires pour restaurer des performances optimales.</sys:String>
+    <sys:String x:Key="btn_open_system_optimizer">Ouvrir l'Optimiseur Système</sys:String>
+
+    <sys:String x:Key="txt_header_physical_memory">Mémoire Physique</sys:String>
+    <sys:String x:Key="txt_physical_memory_used">Utilisée :</sys:String>
+    <sys:String x:Key="txt_physical_memory_free">Libre :</sys:String>
+    <sys:String x:Key="txt_header_virtual_memory">Mémoire Virtuelle</sys:String>
+    <sys:String x:Key="txt_virtual_memory_used">Utilisée :</sys:String>
+    <sys:String x:Key="txt_virtual_memory_free">Libre :</sys:String>
+    <sys:String x:Key="txt_header_process_exlusions">Exclusions de Processus</sys:String>
+    <sys:String x:Key="txt_header_cleaning_targets">Cibles de Nettoyage</sys:String>
+    <sys:String x:Key="txt_header_auto_optimizations">Optimisations Automatiques</sys:String>
+    <sys:String x:Key="txt_header_optimization_hotkey">Raccourci d'Optimisation</sys:String>
+    <sys:String x:Key="txt_header_settings">Paramètres</sys:String>
+    <sys:String x:Key="btn_clean_now">Nettoyer Maintenant</sys:String>
+    <sys:String x:Key="notify_mem_clean_successfull">Nettoyage de la mémoire réussi</sys:String>
+    <sys:String x:Key="txt_progress_step">Optimiser</sys:String>
+    <sys:String x:Key="txt_virtual_memory_header">mémoire virtuelle</sys:String>
+    <sys:String x:Key="title_memory_areas_combined_page_list">Liste de Pages Combinées</sys:String>
+    <sys:String x:Key="description_memory_areas_combined_page_list">Vide les pages ayant un contenu identique vers la liste d'attente.</sys:String>
+    <sys:String x:Key="title_memory_areas_modified_file_cache">Cache des Fichiers Modifiés</sys:String>
+    <sys:String x:Key="description_memory_system_file_cache">Écrit le cache des fichiers modifiés sur le disque.</sys:String>
+    <sys:String x:Key="title_memory_areas_modified_page_list">Liste de Pages Modifiées</sys:String>
+    <sys:String x:Key="description_memory_areas_modified_page_list">Vide la mémoire de la liste modifiée vers la liste d'attente.</sys:String>
+    <sys:String x:Key="title_memory_areas_registry_cache">Cache du Registre</sys:String>
+    <sys:String x:Key="description_memory_areas_registry_cache">Réduit l'ensemble de travail de la ruche du registre.</sys:String>
+    <sys:String x:Key="title_memory_areas_standby_list">Liste d'Attente (Standby)</sys:String>
+    <sys:String x:Key="description_memory_areas_standby_list">Supprime toutes les pages de la liste d'attente.</sys:String>
+    <sys:String x:Key="title_memory_areas_standby_list_low_priority">Liste d'Attente (Basse Priorité)</sys:String>
+    <sys:String x:Key="description_memory_areas_standby_list_low_priority">Supprime uniquement les pages de basse priorité de la liste d'attente.</sys:String>
+    <sys:String x:Key="title_memory_areas_system_file_cache">Cache des Fichiers Système</sys:String>
+    <sys:String x:Key="description_memory_areas_system_file_cache">Réduit l'ensemble de travail à l'échelle du système.</sys:String>
+    <sys:String x:Key="title_memory_areas_working_set">Ensemble de Travail (Working Set)</sys:String>
+    <sys:String x:Key="description_memory_areas_working_set">Réduit les ensembles de travail de tous les processus.</sys:String>
+    <sys:String x:Key="title_settings_items_close_afer_optimization">Fermer après l'optimisation</sys:String>
+    <sys:String x:Key="description_settings_items_close_afer_optimization">Ferme automatiquement la fenêtre de l'optimiseur système une fois le processus d'optimisation terminé.</sys:String>
+    <sys:String x:Key="title_settings_items_show_notification">Afficher les notifications d'optimisation</sys:String>
+    <sys:String x:Key="description_settings_items_show_notification">Affiche une notification dans la zone de notification au lieu d'une boîte de dialogue lorsque l'optimisation est terminée.</sys:String>
+    <sys:String x:Key="title_settings_items_show_no_result">Désactiver tous les résultats d'optimisation</sys:String>
+    <sys:String x:Key="description_settings_items_show_no_result">Ne pas afficher de notification ou de boîte de dialogue lorsque l'optimisation est terminée.</sys:String>
+    <sys:String x:Key="title_settings_items_low_priority">Exécuter en basse priorité</sys:String>
+    <sys:String x:Key="description_settings_items_low_priority">Définit le processus d'optimisation sur une priorité processeur inférieure pour éviter les ralentissements du système pendant le nettoyage.</sys:String>
+    <sys:String x:Key="title_settings_items_show_virtual_memory">Mémoire Virtuelle</sys:String>
+    <sys:String x:Key="description_settings_items_show_virtual_memory">Active ou désactive la visibilité du fichier d'échange et des statistiques de mémoire virtuelle dans le tableau de bord principal.</sys:String>
+    <sys:String x:Key="title_settings_items_restart_explorer">Redémarrer l'Explorateur Windows</sys:String>
+    <sys:String x:Key="description_settings_items_restart_explorer">Redémarre l'interface pour appliquer entièrement le nettoyage du cache des icônes et rafraîchir la zone de notification. La barre des tâches peut disparaître pendant quelques secondes.</sys:String>
+    <sys:String x:Key="txt_auto_opt_interval_singular">Toutes les {0} heure</sys:String>
+    <sys:String x:Key="txt_auto_opt_interval_plural">Toutes les {0} heures</sys:String>
+    <sys:String x:Key="txt_disabled">Désactivé</sys:String>
+    <sys:String x:Key="txt_auto_opt_usage_limit">Lorsque l'utilisation dépasse {0} %</sys:String>
+    <sys:String x:Key="txt_auto_opt_usage_warning">L'optimisation automatique ne peut s'exécuter que toutes les quelques minutes pour éviter les boucles infinies.</sys:String>
+    <sys:String x:Key="msg_hotkey_in_use">Le raccourci ({0}) est utilisé par le système d'exploitation</sys:String>
+    <sys:String x:Key="msg_mem_optimized">MÉMOIRE OPTIMISÉE :</sys:String>
+    <sys:String x:Key="optimizations_step_working_set">ensemble de travail</sys:String>
+    <sys:String x:Key="optimizations_step_system_file_cache">cache des fichiers système</sys:String>
+    <sys:String x:Key="optimizations_step_modified_page_list">liste de pages modifiées</sys:String>
+    <sys:String x:Key="optimizations_step_standby_list">liste d'attente</sys:String>
+    <sys:String x:Key="optimizations_step_standby_list_lp">liste d'attente (basse priorité)</sys:String>
+    <sys:String x:Key="optimizations_step_combined_page_list">liste de pages combinées</sys:String>
+    <sys:String x:Key="optimizations_step_registry_cache">cache du registre</sys:String>
+    <sys:String x:Key="optimizations_step_modified_file_cache">cache des fichiers modifiés</sys:String>
+    <sys:String x:Key="optimizations_step_modified_garbage_collector">ramasse-miettes (garbage collector)</sys:String>
+    <sys:String x:Key="title_warning_priority">Avertissement de Sécurité et de Performance</sys:String>
+    <sys:String x:Key="msg_warning_windows_old_deletion">Avertissement : La suppression de Windows.old est définitive. Vous ne pourrez PAS revenir à une version précédente de Windows si vous rencontrez des problèmes. Voulez-vous continuer ?</sys:String>
+    <sys:String x:Key="optimizations_step_disk_cleanup">Nettoyage des fichiers temporaires...</sys:String>
+    <sys:String x:Key="optimizations_step_windows_old">Suppression de Windows.old (Ajustement des permissions)...</sys:String>
+    <sys:String x:Key="optimizations_step_update_cache">Nettoyage du cache de Windows Update...</sys:String>
+    <sys:String x:Key="label_disk_recovered">Espace Disque Récupéré</sys:String>
+    <sys:String x:Key="title_memory_areas_disk_cleanup">Nettoyage de Disque (Fichiers Temp)</sys:String>
+    <sys:String x:Key="title_memory_areas_windows_old">Dossier Windows.old</sys:String>
+    <sys:String x:Key="description_memory_areas_disk_cleanup">Nettoie les fichiers temporaires, le prefetch et les caches de vignettes pour récupérer de l'espace disque.</sys:String>
+    <sys:String x:Key="description_memory_areas_windows_old">Supprime les sauvegardes des installations précédentes de Windows. AVERTISSEMENT : Ce processus est irréversible et empêche les retours arrière du système.</sys:String>
+    <sys:String x:Key="title_memory_areas_flush_dns">Vider le Cache DNS</sys:String>
+    <sys:String x:Key="description_memory_areas_flush_dns">Efface le cache du résolveur DNS pour résoudre les problèmes de connexion et rafraîchir les mappages de domaine.</sys:String>
+    <sys:String x:Key="optimizations_step_flush_dns">Vidage du cache DNS</sys:String>
+    <sys:String x:Key="txt_total_estimated_space">Espace Total Estimé :</sys:String>
+    <sys:String x:Key="tooltip_refresh_space">Recalculer la taille de nettoyage</sys:String>
+    <sys:String x:Key="txt_scanning">Analyse en cours...</sys:String>
+    <sys:String x:Key="txt_header_memory_areas">Optimisation de la Mémoire</sys:String>
+    <sys:String x:Key="txt_header_system_cleanup">Nettoyage du Système</sys:String>
+    <sys:String x:Key="txt_progress_preparing">Préparation de l'analyse du système...</sys:String>
+    <sys:String x:Key="txt_progress_optimizing">Exécution de l'optimisation de la mémoire...</sys:String>
+    <sys:String x:Key="txt_progress_finalizing">Finalisation et rafraîchissement des métriques...</sys:String>
+    <sys:String x:Key="txt_optimization_completed">Optimisation terminée avec succès !</sys:String>
+    <sys:String x:Key="UnexpectedError">Une erreur inattendue s'est produite</sys:String>
+    <sys:String x:Key="Repair">Réparer</sys:String>
+    <sys:String x:Key="OperationStopped">Opération arrêtée</sys:String>
+    <sys:String x:Key="OperationCompleted">Opération terminée</sys:String>
+    <sys:String x:Key="BatteryStatus">État de la batterie</sys:String>
+    <sys:String x:Key="ReportSaved">Rapport enregistré sur le Bureau</sys:String>
+    <sys:String x:Key="MemoryDiagnosticDialogTitle">Memory Diagnostic</sys:String>
+    <sys:String x:Key="MemoryDiagnosticDialogText">Memory problems can cause your computer to lose information or stop working.</sys:String>
+    <sys:String x:Key="RestartNow">Redémarrer maintenant</sys:String>
+    <sys:String x:Key="ScheduleLater">Planifier pour plus tard</sys:String>
+    <sys:String x:Key="ScheduledLater">Planifié pour le prochain redémarrage</sys:String>
+    <sys:String x:Key="ScanInProgress">{0} / {1} : Analyse {2} en cours...</sys:String>
+    <sys:String x:Key="ScanResults">Résultats de l'analyse</sys:String>
+    <sys:String x:Key="RepairInProgress">{0} / {1} : Réparation {2} en cours...</sys:String>
+    <sys:String x:Key="Health_Poor">Médiocre - Action requise</sys:String>
+    <sys:String x:Key="Health_Warning">Moyen - Optimisation recommandée</sys:String>
+    <sys:String x:Key="Health_Good">Bon - Le système est sain</sys:String>
+    <sys:String x:Key="txt_header_drive_c_space">Lecteur système (C:)</sys:String>
+    <sys:String x:Key="txt_drive_c_used">Espace utilisé:</sys:String>
+    <sys:String x:Key="txt_drive_c_free">Espace libre:</sys:String>
+    <sys:String x:Key="txt_header_system_repair">Réparation du système</sys:String>
+    <sys:String x:Key="txt_dism">DISM</sys:String>
+    <sys:String x:Key="txt_sfc">SFC</sys:String>
+    <sys:String x:Key="txt_chkdsk">CHKDSK</sys:String>
+    <sys:String x:Key="btn_scan">Analyser</sys:String>
+    <sys:String x:Key="btn_repair">Réparer</sys:String>
+    <sys:String x:Key="btn_stop">Arrêter</sys:String>
+    <sys:String x:Key="txt_header_diagnostic_options">Options de diagnostic</sys:String>
+    <sys:String x:Key="txt_battery_health">État de la batterie</sys:String>
+    <sys:String x:Key="btn_generate">Générer</sys:String>
+    <sys:String x:Key="txt_disk_optimizations">Optimisations de disque</sys:String>
+    <sys:String x:Key="btn_optimize">Optimiser</sys:String>
+    <sys:String x:Key="txt_event_viewer">Observateur d'événements</sys:String>
+    <sys:String x:Key="txt_memory_diagnostic">Diagnostic de la mémoire</sys:String>
+    <sys:String x:Key="btn_check">Vérifier</sys:String>
+    <sys:String x:Key="txt_ready">Prêt</sys:String>
+    <sys:String x:Key="txt_invalid">Invalide</sys:String>
+    <sys:String x:Key="toast_btn_optimize">Optimiser maintenant</sys:String>
+    <sys:String x:Key="toast_btn_ignore">Ignorer</sys:String>
+    <sys:String x:Key="toast_optimization_complete_title">Optimisation terminée</sys:String>
+    <sys:String x:Key="toast_optimization_complete_msg">Les ressources système ont été libérées et optimisées avec succès.</sys:String>
+    <sys:String x:Key="toast_health_critical_title">État du système critique</sys:String>
+    <sys:String x:Key="toast_health_critical_msg">Les ressources système sont fortement sollicitées ou l'espace disque est faible. Cliquez pour optimiser.</sys:String>
+    <sys:String x:Key="placeholder_select_process">Sélectionnez un processus à exclure...</sys:String>
+    <sys:String x:Key="StatusTextBlockDefault">Prêt</sys:String>
+    <sys:String x:Key="Close">Fermer</sys:String>
+    <!-- endregion Diagnostics Page -->
 
 </ResourceDictionary>
