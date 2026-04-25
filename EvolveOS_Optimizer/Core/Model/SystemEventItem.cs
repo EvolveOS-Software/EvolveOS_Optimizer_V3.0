@@ -10,6 +10,7 @@ namespace EvolveOS_Optimizer.Core.Model
         public int EventId { get; set; }
         public byte Level { get; set; } // 1=Critical, 2=Error, 3=Warning
         public string Message { get; set; } = string.Empty;
+        public string? FullMessage { get; set; }
 
         public string FormattedTime => TimeCreated.ToString("HH:mm:ss");
 

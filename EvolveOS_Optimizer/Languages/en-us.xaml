@@ -1887,7 +1887,7 @@
     <sys:String x:Key="diag_sys_healthy">HEALTHY / SECURE</sys:String>
     <sys:String x:Key="diag_sys_last_checked">Last Checked: Just Now / No immediate actions required.</sys:String>
 
-    <sys:String x:Key="diag_live_miner">LIVE TELEMETRY MINER</sys:String>
+    <sys:String x:Key="diag_live_miner">LIVE TELEMETRY</sys:String>
     <sys:String x:Key="diag_tgl_standby">STANDBY</sys:String>
     <sys:String x:Key="diag_tgl_active">ACTIVE</sys:String>
     <sys:String x:Key="diag_active_hardware">ACTIVE HARDWARE</sys:String>
@@ -1896,10 +1896,14 @@
     <sys:String x:Key="diag_btn_enable">ENABLE</sys:String>
 
     <sys:String x:Key="diag_stability_trend">SYSTEM STABILITY TREND (24H)</sys:String>
-    <sys:String x:Key="diag_event_miner_title">EVENT LOG MINER &amp; ANALYSIS</sys:String>
+    <sys:String x:Key="diag_event_miner_title">EVENT LOG &amp; ANALYSIS</sys:String>
     <sys:String x:Key="diag_event_id_prefix">ID:</sys:String>
     <sys:String x:Key="diag_btn_fix">FIX</sys:String>
     <sys:String x:Key="diag_no_events">No critical events isolated in the specified timeframe.</sys:String>
+
+    <sys:String x:Key="diag_tooltip_copy_msg">Copy full message</sys:String>
+    <sys:String x:Key="diag_copy_success_title">Copied to Clipboard</sys:String>
+    <sys:String x:Key="diag_copy_success_msg">The event log message has been copied.</sys:String>
 
     <sys:String x:Key="diag_cpu_load">CPU LOAD</sys:String>
     <sys:String x:Key="diag_cpu_load_small">CPU:</sys:String>
@@ -1970,7 +1974,6 @@
     <sys:String x:Key="hw_system">System Device</sys:String>
     <sys:String x:Key="hw_bluetooth">Bluetooth Radio</sys:String>
 
-
     <sys:String x:Key="diag_hw_interrogating">INTERROGATING BUS...</sys:String>
     <sys:String x:Key="diag_hw_optimal">HARDWARE OPTIMAL. MONITORING BUS...</sys:String>
     <sys:String x:Key="diag_sys_optimal">SYSTEM OPTIMAL. MONITORING...</sys:String>
@@ -2006,9 +2009,24 @@
     <sys:String x:Key="diag_critical_error_msg">Event ID {0} logged by {1}.</sys:String>
     <sys:String x:Key="diag_ai_summary_nominal">AI Analysis: System telemetry is nominal. No signs of degradation or instability found in recent logs.</sys:String>
     <sys:String x:Key="diag_ai_summary_issues">AI Analysis: Detected {0} system crashes/errors or high load bottlenecks. Hardware conflict identified in {1} device(s). Recommendation: Run available auto-fixes from the Event Miner.</sys:String>
+    <sys:String x:Key="diag_ai_summary_critical">AI Analysis: CRITICAL. Detected {0} system errors ({1:0.#}/hour) and {2} hardware issues. Immediate action recommended.</sys:String>
+    <sys:String x:Key="diag_ai_summary_crash">AI Analysis: Event log corruption detected. Windows has auto-repaired the log file. This usually indicates a recent forced shutdown or power failure.</sys:String>
     <sys:String x:Key="diag_alert_source_neural">EvolveOS Neural Engine</sys:String>
     <sys:String x:Key="diag_alert_ram_usage_msg">CRITICAL: Physical Memory utilization at {0}%. Immediate cache purge recommended to prevent paging thrash.</sys:String>
     <sys:String x:Key="diag_alert_pf_usage_msg">WARNING: Pagefile usage exceeds {0}%. Disk I/O bottleneck imminent. Recommend clearing virtual memory.</sys:String>
+
+    <sys:String x:Key="diag_secureboot_fix_msg">Secure Boot update staged. CRITICAL: You must RESTART your computer TWICE for the hardware to enroll the new keys.</sys:String>
+    <sys:String x:Key="diag_status_critical_hw">CRITICAL. {0} HARDWARE FAULTS DETECTED.</sys:String>
+    <sys:String x:Key="diag_status_critical_sw">CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).</sys:String>
+    <sys:String x:Key="diag_status_warning_crash">WARNING. RECENT SYSTEM CRASH OR POWER LOSS DETECTED.</sys:String>
+    <sys:String x:Key="diag_tooltip_dismiss_msg">Dismiss event</sys:String>
+
+    <sys:String x:Key="diag_notify_restore_title">Event Restored</sys:String>
+    <sys:String x:Key="diag_notify_restore_msg">Event ID {0} will appear in your next scan.</sys:String>
+
+    <sys:String x:Key="diag_btn_history">History</sys:String>
+    <sys:String x:Key="diag_history_empty">History is empty.</sys:String>
+    <sys:String x:Key="diag_btn_restore">Restore</sys:String>
 
     <sys:String x:Key="wmi_code_default_summary">A cryptic error code (Code {0}) was detected by the proactive scan.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows encountered an internal error with this driver. Check Device Manager or reinstall the standard driver.</sys:String>

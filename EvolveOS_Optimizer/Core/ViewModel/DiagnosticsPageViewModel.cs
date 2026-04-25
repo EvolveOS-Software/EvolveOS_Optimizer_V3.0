@@ -48,6 +48,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly List<double> _networkUpHistoryBuffer = new List<double>();
         private readonly List<double> _networkDownHistoryBuffer = new List<double>();
         private const int MaxHistoryCapacity = 900;
+        private readonly HashSet<string> _dismissedEventHashes = new();
 
         private Dictionary<string, PerformanceCounter> _gpuCounters = new Dictionary<string, PerformanceCounter>();
         private Dictionary<string, PerformanceCounter> _networkUpCounters = new Dictionary<string, PerformanceCounter>();
@@ -83,6 +84,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Constructor
         public DiagnosticsPageViewModel()
         {
+            LocalMachineSettingsEngine.LoadDismissedEventsList();
+
             PerformanceGraphPoints.Add(new Point(400, 100));
 
             if (LocalMachineSettingsEngine.EnableLiveDiagnostics)
@@ -118,6 +121,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Standard Properties (Diagnostics)
+        public ObservableCollection<DismissedEventCard> HistoryCards { get; } = new();
+
         public Visibility EventEmptyStateVisibility =>
             !IsScanning && MinedSystemEvents.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
@@ -175,6 +180,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             get => _scanStatus;
             set => SetProperty(ref _scanStatus, value);
+        }
+
+        private Visibility _historyPanelVisibility = Visibility.Collapsed;
+        public Visibility HistoryPanelVisibility
+        {
+            get => _historyPanelVisibility;
+            set
+            {
+                SetProperty(ref _historyPanelVisibility, value);
+                OnPropertyChanged(nameof(ActiveListVisibility));
+            }
+        }
+        public Visibility ActiveListVisibility => HistoryPanelVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+
+        private Visibility _historyEmptyStateVisibility = Visibility.Visible;
+        public Visibility HistoryEmptyStateVisibility
+        {
+            get => _historyEmptyStateVisibility;
+            set => SetProperty(ref _historyEmptyStateVisibility, value);
         }
         #endregion
 
@@ -882,7 +906,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (success)
             {
                 ScanStatus = string.Format(ResourceString.GetString("diag_fix_event_success") ?? "Successfully repaired Event {0}.", eventId);
-                AiSummary = string.Format(ResourceString.GetString("diag_fix_event_deploy") ?? "AUTO-FIX DEPLOYED: The issue associated with ID {0} has been resolved.", eventId);
+
+                if (eventId == 1801)
+                {
+                    AiSummary = ResourceString.GetString("diag_secureboot_fix_msg")
+                        ?? "Secure Boot update staged. CRITICAL: You must RESTART your computer TWICE for the hardware to enroll the new keys.";
+                }
+
+                else if (eventId == 7026 || eventId == 7000)
+                {
+                    AiSummary = "LUAFV virtualization repaired. Note: This re-enabled UAC. A reboot is required.";
+                }
+                else
+                {
+                    AiSummary = string.Format(ResourceString.GetString("diag_fix_event_deploy") ?? "AUTO-FIX DEPLOYED: The issue associated with ID {0} has been resolved.", eventId);
+                }
 
                 var fixedEvent = MinedSystemEvents.FirstOrDefault(e => e.EventId == eventId);
                 if (fixedEvent != null) MinedSystemEvents.Remove(fixedEvent);
@@ -913,6 +951,113 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 ScanStatus = string.Format(ResourceString.GetString("diag_fix_hw_fail") ?? "Failed to remediate {0}.", issue.ComponentDisplayName);
             }
+        }
+
+        [RelayCommand]
+        public void CopyEventMessage(string message)
+        {
+            if (!string.IsNullOrEmpty(message))
+            {
+                var dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
+                dataPackage.SetText(message);
+                Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
+
+                SendSystemNotification(1,
+                    ResourceString.GetString("diag_copy_success_title") ?? "Copied to Clipboard",
+                    ResourceString.GetString("diag_copy_success_msg") ?? "The event log message has been copied.");
+            }
+        }
+
+        [RelayCommand]
+        public void DismissEvent(SystemEventItem ev)
+        {
+            if (ev == null) return;
+
+            MinedSystemEvents.Remove(ev);
+
+            string eventFingerprint = $"{ev.EventId}_{ev.SourceName}_{ev.TimeCreated.Ticks}";
+
+            LocalMachineSettingsEngine.DismissedEventsList.Add(eventFingerprint);
+            LocalMachineSettingsEngine.SaveDismissedEventsList();
+
+            CalculateStabilityTrend(MinedSystemEvents);
+
+            int currentCriticalCount = MinedSystemEvents.Count(e => e.Level == 1 || e.Level == 2);
+            TimeSpan uptime = TimeSpan.FromMilliseconds(Environment.TickCount64);
+            double errorsPerHour = currentCriticalCount / Math.Max(1, uptime.TotalHours);
+
+            bool isUptimeReliable = uptime.TotalMinutes > 30;
+            bool isStabilityCritical = isUptimeReliable && errorsPerHour > 5.0;
+            bool isHardwareCritical = DetectedHardwareIssues.Count > 0;
+
+            if (isHardwareCritical || isStabilityCritical)
+            {
+                SystemHealthBrush = new SolidColorBrush(Colors.Red);
+                ScannerText = isHardwareCritical
+                    ? string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count)
+                    : string.Format(ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).", errorsPerHour);
+            }
+            else if (currentCriticalCount > 0)
+            {
+                SystemHealthBrush = new SolidColorBrush(Colors.Gold);
+                ScannerText = string.Format(ResourceString.GetString("diag_status_warning_events") ?? "WARNING. {0} SYSTEM EVENTS LOGGED.", currentCriticalCount);
+            }
+            else
+            {
+                SystemHealthBrush = new SolidColorBrush(Colors.LimeGreen);
+                ScannerText = ResourceString.GetString("diag_sys_optimal") ?? "SYSTEM OPTIMAL. MONITORING...";
+            }
+
+            OnPropertyChanged(nameof(SystemHealthBrush));
+            OnPropertyChanged(nameof(ScannerText));
+            OnPropertyChanged(nameof(EventEmptyStateVisibility));
+        }
+
+        [RelayCommand]
+        public void ToggleHistoryPanel()
+        {
+            if (HistoryPanelVisibility == Visibility.Visible)
+            {
+                HistoryPanelVisibility = Visibility.Collapsed;
+            }
+            else
+            {
+                HistoryCards.Clear();
+                foreach (var hash in LocalMachineSettingsEngine.DismissedEventsList)
+                {
+                    var parts = hash.Split('_');
+                    if (parts.Length == 3 && long.TryParse(parts[2], out long ticks))
+                    {
+                        HistoryCards.Add(new DismissedEventCard
+                        {
+                            EventId = parts[0],
+                            SourceName = parts[1],
+                            DateString = new DateTime(ticks).ToString("g"),
+                            OriginalHash = hash
+                        });
+                    }
+                }
+
+                HistoryEmptyStateVisibility = HistoryCards.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+                HistoryPanelVisibility = Visibility.Visible;
+
+            }
+        }
+
+        [RelayCommand]
+        public void RestoreEvent(DismissedEventCard card)
+        {
+            if (card == null) return;
+
+            LocalMachineSettingsEngine.DismissedEventsList.Remove(card.OriginalHash);
+            LocalMachineSettingsEngine.SaveDismissedEventsList();
+            HistoryCards.Remove(card);
+
+            HistoryEmptyStateVisibility = HistoryCards.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+            SendSystemNotification(1,
+                ResourceString.GetString("diag_notify_restore_title") ?? "Event Restored",
+                string.Format(ResourceString.GetString("diag_notify_restore_msg") ?? "Event ID {0} will appear in your next scan.", card.EventId));
         }
         #endregion
 
@@ -1028,20 +1173,36 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         36887, 36888, 40961, 40962,
 
                         // Custom Actionable Event IDs
-                        9001, 9002
+                        9001, 9002,
+                        1801
+                    };
+
+                    string[] ignoredSources = {
+                         "MSBuild",
+                         "DistributedCOM",
+                         "Security-SPP",
+                         "Kernel-Processor-Power",
+                         "BTHUSB",
+                         "WLAN-AutoConfig",
+                         "ServiceHub",
+                         "VBCSCompiler",
+                         "devenv"
                     };
 
                     foreach (var ev in systemEvents)
                     {
-                        if (fixableEvents.Contains(ev.EventId))
-                        {
-                            ev.IsFixable = true;
-                        }
+                        string eventFingerprint = $"{ev.EventId}_{ev.SourceName}_{ev.TimeCreated.Ticks}";
+                        if (LocalMachineSettingsEngine.DismissedEventsList.Contains(eventFingerprint)) continue;
 
-                        if (ev.Level == 1 || ev.Level == 2)
-                        {
-                            criticalCount++;
-                        }
+                        bool isNoisySource = !string.IsNullOrEmpty(ev.SourceName) &&
+                                             ignoredSources.Any(s => ev.SourceName.Contains(s, StringComparison.OrdinalIgnoreCase));
+
+                        // Filter out noise unless it's a Level 1 (Critical) system fault
+                        if (isNoisySource && ev.Level > 1) continue;
+
+                        if (fixableEvents.Contains(ev.EventId)) ev.IsFixable = true;
+
+                        if (ev.Level == 1 || ev.Level == 2) criticalCount++;
 
                         MinedSystemEvents.Add(ev);
                     }
@@ -1052,49 +1213,77 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     if (ramUsagePct > 80)
                     {
-                        string ramTemplate = ResourceString.GetString("diag_alert_ram_usage_msg")
-                            ?? "CRITICAL: Physical Memory utilization at {0}%. Purge recommended.";
-
-                        var memAlert = CreateAlert(9001, neuralSource, string.Format(ramTemplate, Math.Round(ramUsagePct)));
+                        var memAlert = CreateAlert(9001, neuralSource, string.Format(ResourceString.GetString("diag_alert_ram_usage_msg") ?? "CRITICAL: Physical Memory utilization at {0}%. Purge recommended.", Math.Round(ramUsagePct)));
                         MinedSystemEvents.Insert(0, memAlert);
                         criticalCount++;
                     }
 
                     float pagefileUsage = _pagefileCounter?.NextValue() ?? 0;
-
                     if (pagefileUsage > 75)
                     {
-                        string pfTemplate = ResourceString.GetString("diag_alert_pf_usage_msg")
-                            ?? "WARNING: Pagefile usage exceeds {0}%. Disk bottleneck imminent.";
-
-                        var pfAlert = CreateAlert(9002, neuralSource, string.Format(pfTemplate, Math.Round(pagefileUsage)));
+                        var pfAlert = CreateAlert(9002, neuralSource, string.Format(ResourceString.GetString("diag_alert_pf_usage_msg") ?? "WARNING: Pagefile usage exceeds {0}%. Disk bottleneck imminent.", Math.Round(pagefileUsage)));
                         MinedSystemEvents.Insert(0, pfAlert);
                         criticalCount++;
                     }
 
-                    CalculateStabilityTrend(systemEvents);
+                    TimeSpan uptime = TimeSpan.FromMilliseconds(Environment.TickCount64);
+                    double errorsPerHour = criticalCount / Math.Max(1, uptime.TotalHours);
 
-                    if (criticalCount > 0 || DetectedHardwareIssues.Count > 0)
+                    // Only consider the error rate critical if the system has been up for > 30 mins
+                    bool isUptimeReliable = uptime.TotalMinutes > 30;
+                    bool isStabilityCritical = isUptimeReliable && errorsPerHour > 5.0;
+                    bool isHardwareCritical = hardwareIssues.Count > 0;
+
+                    CalculateStabilityTrend(MinedSystemEvents);
+
+                    // --- 1. AI Summary Logic ---
+                    if (isHardwareCritical || isStabilityCritical)
+                    {
+                        string template = ResourceString.GetString("diag_ai_summary_critical")
+                            ?? "AI Analysis: CRITICAL. Detected {0} system errors ({1:0.#}/hour) and {2} hardware issues. Immediate action recommended.";
+
+                        AiSummary = string.Format(template, criticalCount, errorsPerHour, DetectedHardwareIssues.Count);
+                    }
+                    else if (MinedSystemEvents.Any(e => e.EventId == 42))
+                    {
+                        AiSummary = ResourceString.GetString("diag_ai_summary_crash")
+                            ?? "AI Analysis: Event log corruption detected. Windows has auto-repaired the log file. This usually indicates a recent forced shutdown or power failure.";
+                    }
+                    else if (criticalCount > 0)
                     {
                         string template = ResourceString.GetString("diag_ai_summary_issues")
-                            ?? "AI Analysis: Detected {0} system errors and {1} hardware issues. Action recommended.";
+                            ?? "AI Analysis: Detected {0} minor system events and {1} hardware issues. Stability remains within normal tolerances.";
 
                         AiSummary = string.Format(template, criticalCount, DetectedHardwareIssues.Count);
                     }
                     else
                     {
-                        AiSummary = ResourceString.GetString("diag_ai_summary_nominal")
-                            ?? "AI Analysis: System telemetry is nominal.";
+                        AiSummary = ResourceString.GetString("diag_ai_summary_nominal") ?? "AI Analysis: System telemetry is completely nominal.";
                     }
 
                     ScanStatus = string.Format(ResourceString.GetString("diag_scan_complete") ?? "Scan complete. {0} issues | {1} events.", DetectedHardwareIssues.Count, MinedSystemEvents.Count);
 
-                    if (hardwareIssues.Count > 0)
+                    // --- 2. System Status / Color Logic ---
+                    if (isHardwareCritical || isStabilityCritical)
                     {
                         SystemHealthBrush = new SolidColorBrush(Colors.Red); // Critical
-                        ScannerText = string.Format(ResourceString.GetString("diag_status_critical_faults") ?? "CRITICAL. {0} FAULTS DETECTED.", hardwareIssues.Count);
+
+                        if (isHardwareCritical)
+                        {
+                            ScannerText = string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS DETECTED.", hardwareIssues.Count);
+                        }
+                        else
+                        {
+                            ScannerText = string.Format(ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).", errorsPerHour);
+                        }
                     }
-                    else if (criticalCount > 15) // Tolerance for (normal) Windows background noise.
+                    else if (MinedSystemEvents.Any(e => e.EventId == 42))
+                    {
+                        SystemHealthBrush = new SolidColorBrush(Colors.Gold); // Warning
+                        ScannerText = ResourceString.GetString("diag_status_warning_crash")
+                            ?? "WARNING. RECENT SYSTEM CRASH OR POWER LOSS DETECTED.";
+                    }
+                    else if (criticalCount > 0)
                     {
                         SystemHealthBrush = new SolidColorBrush(Colors.Gold); // Warning
                         ScannerText = string.Format(ResourceString.GetString("diag_status_warning_events") ?? "WARNING. {0} SYSTEM EVENTS LOGGED.", criticalCount);
@@ -1415,7 +1604,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Telemetry Teardown Error] {ex.Message}");
+                Debug.WriteLine($"[Telemetry Teardown Error] {ex.Message}");
             }
         }
 
@@ -1432,8 +1621,37 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     if (MinedSystemEvents.Count > 150) MinedSystemEvents.RemoveAt(MinedSystemEvents.Count - 1);
 
                     CalculateStabilityTrend(MinedSystemEvents);
+
+                    int currentCriticalCount = MinedSystemEvents.Count(e => e.Level == 1 || e.Level == 2);
+                    TimeSpan uptime = TimeSpan.FromMilliseconds(Environment.TickCount64);
+                    double errorsPerHour = currentCriticalCount / Math.Max(1, uptime.TotalHours);
+
+                    bool isUptimeReliable = uptime.TotalMinutes > 30;
+                    bool isStabilityCritical = isUptimeReliable && errorsPerHour > 5.0;
+                    bool isHardwareCritical = DetectedHardwareIssues.Count > 0;
+
+                    if (isHardwareCritical || isStabilityCritical)
+                    {
+                        SystemHealthBrush = new SolidColorBrush(Colors.Red); // Critical
+                        ScannerText = isHardwareCritical
+                            ? string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count)
+                            : string.Format(ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).", errorsPerHour);
+                    }
+                    else if (currentCriticalCount > 0)
+                    {
+                        SystemHealthBrush = new SolidColorBrush(Colors.Gold); // Warning
+                        ScannerText = string.Format(ResourceString.GetString("diag_status_warning_events") ?? "WARNING. {0} SYSTEM EVENTS LOGGED.", currentCriticalCount);
+                    }
+                    else
+                    {
+                        SystemHealthBrush = new SolidColorBrush(Colors.LimeGreen); // Healthy
+                        ScannerText = ResourceString.GetString("diag_sys_optimal") ?? "SYSTEM OPTIMAL. MONITORING...";
+                    }
+
                     AiSummary = string.Format(ResourceString.GetString("diag_live_intercept_msg") ?? "LIVE INTERCEPT: {0} reported a Level {1} event. Stability updated.", newEvent.SourceName, newEvent.Level);
 
+                    OnPropertyChanged(nameof(SystemHealthBrush));
+                    OnPropertyChanged(nameof(ScannerText));
                     OnPropertyChanged(nameof(EventEmptyStateVisibility));
 
                     if (newEvent.Level <= 2 && (DateTime.Now - _lastEventNotification).TotalMinutes > 5)
@@ -1442,7 +1660,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         SendSystemNotification(3,
                             ResourceString.GetString("diag_critical_error_title") ?? "Critical System Error Detected",
                             string.Format(ResourceString.GetString("diag_critical_error_msg") ?? "Event ID {0} logged by {1}.", newEvent.EventId, newEvent.SourceName));
-
                     }
                 });
             });

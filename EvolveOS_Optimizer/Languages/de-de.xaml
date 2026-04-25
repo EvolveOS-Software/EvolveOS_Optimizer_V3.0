@@ -2001,6 +2001,24 @@
     <sys:String x:Key="diag_alert_ram_usage_msg">KRITISCH: Auslastung des physischen Speichers bei {0}%. Sofortige Cache-Leerung empfohlen, um Paging-Thrash zu verhindern.</sys:String>
     <sys:String x:Key="diag_alert_pf_usage_msg">WARNUNG: Die Auslastung der Auslagerungsdatei übersteigt {0}%. Festplatten-E/A-Engpass steht unmittelbar bevor. Empfehlung: Virtuellen Speicher bereinigen.</sys:String>
 
+    <sys:String x:Key="diag_ai_summary_critical">KI-Analyse: KRITISCH. {0} Systemfehler ({1:0.#}/Stunde) und {2} Hardwareprobleme erkannt. Sofortiges Handeln wird empfohlen.</sys:String>
+    <sys:String x:Key="diag_ai_summary_crash">KI-Analyse: Beschädigung des Ereignisprotokolls erkannt. Windows hat die Protokolldatei automatisch repariert. Dies deutet meist auf ein kürzlich erzwungenes Herunterfahren oder einen Stromausfall hin.</sys:String>
+    <sys:String x:Key="diag_secureboot_fix_msg">Secure Boot-Update bereitgestellt. KRITISCH: Sie müssen Ihren Computer ZWEIMAL NEUSTARTEN, damit die Hardware die neuen Schlüssel registriert.</sys:String>
+    <sys:String x:Key="diag_status_critical_hw">KRITISCH. {0} HARDWAREFEHLER ERKANNT.</sys:String>
+    <sys:String x:Key="diag_status_critical_sw">KRITISCH. HOHE SOFTWAREFEHLERRATE ({0:0.#}/H).</sys:String>
+    <sys:String x:Key="diag_status_warning_crash">WARNUNG. KÜRZLICHER SYSTEMABSTURZ ODER STROMAUSFALL ERKANNT.</sys:String>
+    <sys:String x:Key="diag_tooltip_dismiss_msg">Ereignis ignorieren</sys:String>
+
+    <sys:String x:Key="diag_notify_restore_title">Ereignis wiederhergestellt</sys:String>
+    <sys:String x:Key="diag_notify_restore_msg">Ereignis-ID {0} wird bei Ihrem nächsten Scan angezeigt.</sys:String>
+
+    <sys:String x:Key="diag_btn_history">Verlauf</sys:String>
+    <sys:String x:Key="diag_history_empty">Der Verlauf ist leer.</sys:String>
+    <sys:String x:Key="diag_btn_restore">Wiederherstellen</sys:String>
+    <sys:String x:Key="diag_tooltip_copy_msg">Vollständige Nachricht kopieren</sys:String>
+    <sys:String x:Key="diag_copy_success_title">In die Zwischenablage kopiert</sys:String>
+    <sys:String x:Key="diag_copy_success_msg">Die Ereignisprotokollnachricht wurde kopiert.</sys:String>
+
     <sys:String x:Key="wmi_code_default_summary">Ein kryptischer Fehlercode (Code {0}) wurde durch den proaktiven Scan erkannt.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows hat bei diesem Treiber einen internen Fehler festgestellt. Überprüfen Sie den Geräte-Manager oder installieren Sie den Standardtreiber neu.</sys:String>
     <sys:String x:Key="wmi_code_extended_summary">Erweiterter PnP-Fehler (Code {0}) auf dem Hardware-Bus erkannt.</sys:String>

@@ -1999,6 +1999,24 @@
     <sys:String x:Key="diag_alert_ram_usage_msg">CRITIQUE : Utilisation de la mémoire physique à {0}%. Purge immédiate du cache recommandée pour éviter la saturation de la pagination.</sys:String>
     <sys:String x:Key="diag_alert_pf_usage_msg">AVERTISSEMENT : L'utilisation du fichier d'échange dépasse {0}%. Goulot d'étranglement des E/S disque imminent. Il est recommandé d'effacer la mémoire virtuelle.</sys:String>
 
+    <sys:String x:Key="diag_ai_summary_critical">Analyse IA : CRITIQUE. {0} erreurs système ({1:0.#}/heure) et {2} problèmes matériels détectés. Action immédiate recommandée.</sys:String>
+    <sys:String x:Key="diag_ai_summary_crash">Analyse IA : Corruption du journal d'événements détectée. Windows a réparé automatiquement le fichier journal. Cela indique généralement un arrêt forcé récent ou une panne de courant.</sys:String>
+    <sys:String x:Key="diag_secureboot_fix_msg">Mise à jour du Secure Boot préparée. CRITIQUE : Vous devez REDÉMARRER votre ordinateur DEUX FOIS pour que le matériel enregistre les nouvelles clés.</sys:String>
+    <sys:String x:Key="diag_status_critical_hw">CRITIQUE. {0} DÉFAILLANCES MATÉRIELLES DÉTECTÉES.</sys:String>
+    <sys:String x:Key="diag_status_critical_sw">CRITIQUE. TAUX D'ERREUR LOGICIEL ÉLEVÉ ({0:0.#}/H).</sys:String>
+    <sys:String x:Key="diag_status_warning_crash">AVERTISSEMENT. PLANTAGE SYSTÈME RÉCENT OU PANNE DE COURANT DÉTECTÉE.</sys:String>
+    <sys:String x:Key="diag_tooltip_dismiss_msg">Ignorer l'événement</sys:String>
+
+    <sys:String x:Key="diag_notify_restore_title">Événement restauré</sys:String>
+    <sys:String x:Key="diag_notify_restore_msg">L'ID d'événement {0} apparaîtra lors de votre prochaine analyse.</sys:String>
+
+    <sys:String x:Key="diag_btn_history">Historique</sys:String>
+    <sys:String x:Key="diag_history_empty">L'historique est vide.</sys:String>
+    <sys:String x:Key="diag_btn_restore">Restaurer</sys:String>
+    <sys:String x:Key="diag_tooltip_copy_msg">Copier le message complet</sys:String>
+    <sys:String x:Key="diag_copy_success_title">Copié dans le presse-papiers</sys:String>
+    <sys:String x:Key="diag_copy_success_msg">Le message du journal d'événements a été copié.</sys:String>
+
     <sys:String x:Key="wmi_code_default_summary">Un code d'erreur cryptique (Code {0}) a été détecté par l'analyse proactive.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows a rencontré une erreur interne avec ce pilote. Vérifiez le Gestionnaire de périphériques ou réinstallez le pilote standard.</sys:String>
     <sys:String x:Key="wmi_code_extended_summary">Erreur PnP étendue (Code {0}) détectée sur le bus matériel.</sys:String>

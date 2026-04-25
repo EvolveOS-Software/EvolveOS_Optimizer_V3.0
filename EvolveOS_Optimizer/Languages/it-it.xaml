@@ -2005,6 +2005,24 @@
     <sys:String x:Key="diag_alert_ram_usage_msg">CRITICO: Utilizzo Memoria Fisica al {0}%. Eliminazione immediata della cache raccomandata per prevenire il paging thrash.</sys:String>
     <sys:String x:Key="diag_alert_pf_usage_msg">AVVISO: L'utilizzo del file di paging supera il {0}%. Collo di bottiglia I/O del disco imminente. Si consiglia di cancellare la memoria virtuale.</sys:String>
 
+    <sys:String x:Key="diag_ai_summary_critical">Analisi IA: CRITICO. Rilevati {0} errori di sistema ({1:0.#}/ora) e {2} problemi hardware. Azione immediata consigliata.</sys:String>
+    <sys:String x:Key="diag_ai_summary_crash">Analisi IA: Rilevato danneggiamento del registro eventi. Windows ha riparato automaticamente il file di registro. Questo indica solitamente un recente arresto forzato o un'interruzione di corrente.</sys:String>
+    <sys:String x:Key="diag_secureboot_fix_msg">Aggiornamento Secure Boot preparato. CRITICO: Devi RIAVVIARE il computer DUE VOLTE affinché l'hardware registri le nuove chiavi.</sys:String>
+    <sys:String x:Key="diag_status_critical_hw">CRITICO. {0} GUASTI HARDWARE RILEVATI.</sys:String>
+    <sys:String x:Key="diag_status_critical_sw">CRITICO. ALTO TASSO DI ERRORI SOFTWARE ({0:0.#}/H).</sys:String>
+    <sys:String x:Key="diag_status_warning_crash">AVVISO. RILEVATO RECENTE ARRESTO ANOMALO DEL SISTEMA O INTERRUZIONE DI CORRENTE.</sys:String>
+    <sys:String x:Key="diag_tooltip_dismiss_msg">Ignora evento</sys:String>
+
+    <sys:String x:Key="diag_notify_restore_title">Evento ripristinato</sys:String>
+    <sys:String x:Key="diag_notify_restore_msg">L'ID evento {0} apparirà nella tua prossima scansione.</sys:String>
+
+    <sys:String x:Key="diag_btn_history">Cronologia</sys:String>
+    <sys:String x:Key="diag_history_empty">La cronologia è vuota.</sys:String>
+    <sys:String x:Key="diag_btn_restore">Ripristina</sys:String>
+    <sys:String x:Key="diag_tooltip_copy_msg">Copia messaggio completo</sys:String>
+    <sys:String x:Key="diag_copy_success_title">Copiato negli appunti</sys:String>
+    <sys:String x:Key="diag_copy_success_msg">Il messaggio del registro eventi è stato copiato.</sys:String>
+
     <sys:String x:Key="wmi_code_default_summary">Un codice di errore criptico (Codice {0}) è stato rilevato dalla scansione proattiva.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows ha riscontrato un errore interno con questo driver. Controllare Gestione Dispositivi o reinstallare il driver standard.</sys:String>
     <sys:String x:Key="wmi_code_extended_summary">Errore PnP Esteso (Codice {0}) rilevato sul bus hardware.</sys:String>

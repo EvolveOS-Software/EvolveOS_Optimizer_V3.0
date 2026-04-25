@@ -1872,7 +1872,7 @@
     <sys:String x:Key="diag_sys_healthy">GEZOND / VEILIG</sys:String>
     <sys:String x:Key="diag_sys_last_checked">Laatst gecontroleerd: Zojuist / Geen onmiddellijke actie vereist.</sys:String>
 
-    <sys:String x:Key="diag_live_miner">LIVE TELEMETRIE MINER</sys:String>
+    <sys:String x:Key="diag_live_miner">LIVE TELEMETRIE</sys:String>
     <sys:String x:Key="diag_tgl_standby">STAND-BY</sys:String>
     <sys:String x:Key="diag_tgl_active">ACTIEF</sys:String>
     <sys:String x:Key="diag_active_hardware">ACTIEVE HARDWARE</sys:String>
@@ -1881,7 +1881,7 @@
     <sys:String x:Key="diag_btn_enable">INSCHAKELEN</sys:String>
 
     <sys:String x:Key="diag_stability_trend">SYSTEEMSTABILITEITSTREND (24U)</sys:String>
-    <sys:String x:Key="diag_event_miner_title">EVENT LOG MINER &amp; ANALYSE</sys:String>
+    <sys:String x:Key="diag_event_miner_title">EVENT LOG &amp; ANALYSE</sys:String>
     <sys:String x:Key="diag_event_id_prefix">ID:</sys:String>
     <sys:String x:Key="diag_btn_fix">HERSTELLEN</sys:String>
     <sys:String x:Key="diag_no_events">Geen kritieke gebeurtenissen geïsoleerd in het opgegeven tijdsbestek.</sys:String>
@@ -1993,6 +1993,24 @@
     <sys:String x:Key="diag_alert_source_neural">EvolveOS Neurale Engine</sys:String>
     <sys:String x:Key="diag_alert_ram_usage_msg">KRITIEK: Fysiek geheugengebruik op {0}%. Onmiddellijke cache-opschoning aanbevolen om paging thrash te voorkomen.</sys:String>
     <sys:String x:Key="diag_alert_pf_usage_msg">WAARSCHUWING: Pagefile-gebruik overschrijdt {0}%. Schijf-I/O knelpunt op handen. Aanbevolen om virtueel geheugen te wissen.</sys:String>
+
+    <sys:String x:Key="diag_ai_summary_critical">AI-analyse: KRITIEK. {0} systeemfouten ({1:0.#}/uur) en {2} hardwareproblemen gedetecteerd. Onmiddellijke actie aanbevolen.</sys:String>
+    <sys:String x:Key="diag_ai_summary_crash">AI-analyse: Corruptie in het gebeurtenislogboek gedetecteerd. Windows heeft het logboekbestand automatisch hersteld. Dit wijst meestal op een recente geforceerde uitschakeling of stroomstoring.</sys:String>
+    <sys:String x:Key="diag_secureboot_fix_msg">Secure Boot-update klaargezet. KRITIEK: U moet uw computer TWEE KEER OPNIEUW OPSTARTEN zodat de hardware de nieuwe sleutels kan registreren.</sys:String>
+    <sys:String x:Key="diag_status_critical_hw">KRITIEK. {0} HARDWAREFOUTEN GEDETECTEERD.</sys:String>
+    <sys:String x:Key="diag_status_critical_sw">KRITIEK. HOOG SOFTWAREFOUTPERCENTAGE ({0:0.#}/U).</sys:String>
+    <sys:String x:Key="diag_status_warning_crash">WAARSCHUWING. RECENTE SYSTEEMCRASH OF STROOMSTORING GEDETECTEERD.</sys:String>
+    <sys:String x:Key="diag_tooltip_dismiss_msg">Gebeurtenis negeren</sys:String>
+
+    <sys:String x:Key="diag_notify_restore_title">Gebeurtenis hersteld</sys:String>
+    <sys:String x:Key="diag_notify_restore_msg">Gebeurtenis-ID {0} verschijnt in uw volgende scan.</sys:String>
+
+    <sys:String x:Key="diag_btn_history">Geschiedenis</sys:String>
+    <sys:String x:Key="diag_history_empty">Geschiedenis is leeg.</sys:String>
+    <sys:String x:Key="diag_btn_restore">Herstellen</sys:String>
+    <sys:String x:Key="diag_tooltip_copy_msg">Volledig bericht kopiëren</sys:String>
+    <sys:String x:Key="diag_copy_success_title">Gekopieerd naar klembord</sys:String>
+    <sys:String x:Key="diag_copy_success_msg">Het gebeurtenislogboekbericht is gekopieerd.</sys:String>
 
     <sys:String x:Key="wmi_code_default_summary">Een cryptische foutcode (Code {0}) is gedetecteerd door de proactieve scan.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows heeft een interne fout ondervonden met dit stuurprogramma. Controleer Apparaatbeheer of installeer het standaard stuurprogramma opnieuw.</sys:String>

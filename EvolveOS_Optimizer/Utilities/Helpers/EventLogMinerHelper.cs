@@ -35,6 +35,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         {
                             using (record)
                             {
+                                string rawDescription = record.FormatDescription() ?? "No description available.";
+
                                 results.Add(new SystemEventItem
                                 {
                                     TimeCreated = record.TimeCreated ?? DateTime.Now,
@@ -42,7 +44,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                                     EventId = record.Id,
                                     Level = record.Level ?? 2,
 
-                                    Message = CleanUpMessage(record.FormatDescription() ?? "No description available.")
+                                    FullMessage = rawDescription,
+
+                                    Message = CleanUpMessage(rawDescription)
                                 });
                             }
                         }

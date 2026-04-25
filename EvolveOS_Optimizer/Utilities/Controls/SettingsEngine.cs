@@ -1,4 +1,6 @@
+using System.IO;
 using System.Reflection;
+using System.Text.Json;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -501,6 +503,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
     internal sealed class LocalMachineSettingsEngine
     {
+        private static readonly string _dismissedEventsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EvolveOS_Optimizer", "DismissedEvents.json");
+
         private static readonly Dictionary<string, object> _defaultSettings = new Dictionary<string, object>
         {
             ["AutoOptimizationInterval"] = 0,
@@ -528,6 +532,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
         public static SortedSet<string> ProcessExclusionList { get; private set; } = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+        public static HashSet<string> DismissedEventsList { get; private set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         internal static bool KeepDevModeOnExit { get; set; } = false;
 
@@ -751,7 +756,34 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             }
             catch (Exception e) { ErrorLogging.LogDebug(e); }
         }
-    }
+
+        internal static void LoadDismissedEventsList()
+        {
+            try
+            {
+                if (File.Exists(_dismissedEventsFile))
+                {
+                    string json = File.ReadAllText(_dismissedEventsFile);
+                    var loaded = JsonSerializer.Deserialize<HashSet<string>>(json);
+                    if (loaded != null) DismissedEventsList = loaded;
+                }
+            }
+            catch { System.Diagnostics.Debug.WriteLine("Failed to load dismissed events."); }
+        }
+
+        internal static void SaveDismissedEventsList()
+        {
+            try
+            {
+                string? dir = Path.GetDirectoryName(_dismissedEventsFile);
+                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+
+                string json = JsonSerializer.Serialize(DismissedEventsList);
+                File.WriteAllText(_dismissedEventsFile, json);
+            }
+            catch { System.Diagnostics.Debug.WriteLine("Failed to save dismissed events."); }
+        }
 
     #endregion
+    }
 }

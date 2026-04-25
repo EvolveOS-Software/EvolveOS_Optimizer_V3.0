@@ -41,7 +41,21 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             10114, 10115, 10116, 10117, 10118, 10119, 10120, 10200, 10400, 11001, 11002, 11004, 11005, 11006, 11706, 11707,
             11708, 11724, 11728, 12001, 12010, 12011, 12012, 12013, 12289, 12290, 12291, 12292, 12293, 12294, 12295, 12296,
             12297, 12298, 12300, 12301, 12302, 12303, 12304, 36870, 36871, 36874, 36880, 36881, 36882, 36884, 36885, 36886,
-            36887, 36888, 40961, 40962
+            36887, 36888, 40961, 40962,
+
+            1801, 9002
+        };
+
+        private readonly string[] _ignoredSources = {
+            "MSBuild",
+            "DistributedCOM",
+            "Security-SPP",
+            "Kernel-Processor-Power",
+            "BTHUSB",
+            "WLAN-AutoConfig",
+            "ServiceHub",
+            "VBCSCompiler",
+            "devenv"
         };
 
         public LiveEventWatcherHelper(Action<SystemEventItem> onEventDetected)
@@ -86,9 +100,15 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             {
                 int eventId = record.Id;
                 string source = record.ProviderName ?? "Unknown";
+                byte level = (byte)(record.Level ?? 2);
+
+                bool isNoisy = _ignoredSources.Any(s => source.Contains(s, StringComparison.OrdinalIgnoreCase));
+                if (isNoisy && level > 1)
+                {
+                    return;
+                }
 
                 string eventHash = $"{eventId}_{source}";
-
                 if (_eventDebouncer.TryGetValue(eventHash, out DateTime lastSeen))
                 {
                     if ((DateTime.Now - lastSeen).TotalSeconds < _debounceSeconds)
@@ -96,16 +116,20 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         return;
                     }
                 }
-
                 _eventDebouncer[eventHash] = DateTime.Now;
+
+                string rawDescription = record.FormatDescription() ??
+                                        ResourceString.GetString("live_watcher_pending") ??
+                                        "Live Interception: Detailed logs pending...";
 
                 var newItem = new SystemEventItem
                 {
                     TimeCreated = record.TimeCreated ?? DateTime.Now,
                     SourceName = source,
                     EventId = eventId,
-                    Level = record.Level ?? 2,
-                    Message = CleanUpMessage(record.FormatDescription() ?? ResourceString.GetString("live_watcher_pending") ?? "Live Interception: Detailed logs pending...")
+                    Level = level,
+                    FullMessage = rawDescription,
+                    Message = CleanUpMessage(rawDescription)
                 };
 
                 if (_fixableEventIds.Contains(eventId))

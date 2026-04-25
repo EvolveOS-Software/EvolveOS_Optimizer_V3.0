@@ -59,6 +59,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     1000 or 1001 or 33 or 35 or 11 or 59 or 60 or 6008 or 7023 or 7024 or 7031
                         => await RunSystemFileRepairAsync(),
 
+                    // "High-Level" repair. Secure Boot CA/Keys
+                    1801 => await FixSecureBootKeysAsync(),
+
                     // Windows Time & NTP synchronization (Client sync timeouts, stratum discovery failures)
                     131 or 36 or 144 or 17 or 29 or 34 or 35 or 37 or 38 or 47 or 49
                         => await FixTimeSyncAsync(),
@@ -66,6 +69,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     // Resource & DWM exhaustion repair (GDI handle leaks, desktop window manager crashes)
                     2004 or 2001 or 2002 or 2003 or 2005
                         => await FixResourceExhaustionAsync(),
+
+                    // Service Control Manager (Driver failed to load)
+                    7026 => await FixLuafvServiceAsync(),
 
                     // SSL/TLS (Schannel) cache reset (Handshake failures, revoked certs, protocol mismatch)
                     36888 or 36887 or 36870 or 36871 or 36874 or 36880 or 36881 or 36882 or 36884 or 36885 or 36886
@@ -381,7 +387,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         private static async Task<bool> FixPerformanceCountersAsync()
         {
             string script = @"
-                lodctr /R
+                cd \windows\system32
+                lodctr /r
+                cd \windows\syswow64
+                lodctr /r
                 WINMGMT.EXE /RESYNCPERF
             ";
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: false);
@@ -439,6 +448,35 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         Write-Output 'Repairing DCOM ACLs for path: $path'
                     }
                 }";
+            await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
+            return true;
+        }
+
+        private static async Task<bool> FixLuafvServiceAsync()
+        {
+            string script = @"
+                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\luafv' -Name 'Start' -Value 2 -Type DWord -Force
+                Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name 'EnableLUA' -Value 1 -Type DWord -Force
+            ";
+
+            await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
+
+            return true;
+        }
+
+        private static async Task<bool> FixSecureBootKeysAsync()
+        {
+
+            string script = @"
+                $bitlocker = Get-BitLockerVolume -MountPoint 'C:' -ErrorAction SilentlyContinue
+                if ($bitlocker.ProtectionStatus -eq 'On') {
+                    Suspend-BitLocker -MountPoint 'C:' -RebootCount 2 -ErrorAction SilentlyContinue
+                }
+        
+                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\SecureBoot' -Name 'AvailableUpdates' -Value 22852 -Force
+                Start-ScheduledTask -TaskName '\Microsoft\Windows\PI\Secure-Boot-Update' -ErrorAction SilentlyContinue
+            ";
+
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
