@@ -24,6 +24,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         {
             if (_vm.IsScanning) return;
 
+            _dispatcherQueue.TryEnqueue(() => _vm.MinedSystemEvents.Clear());
+
             _scanCts = new CancellationTokenSource();
             var token = _scanCts.Token;
 

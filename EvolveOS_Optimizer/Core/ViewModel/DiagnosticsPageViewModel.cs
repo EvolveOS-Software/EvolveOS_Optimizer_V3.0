@@ -9,7 +9,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -122,6 +121,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             MonitorAsync();
 
             RefreshAllDrivesInfo();
+
+            MinedSystemEvents.CollectionChanged += (s, e) =>
+            {
+                _dispatcherQueue.TryEnqueue(() => UpdateSystemStatus());
+            };
         }
         #endregion
 
@@ -129,7 +133,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public ObservableCollection<DismissedEventCard> HistoryCards { get; } = new();
 
         public Visibility EventEmptyStateVisibility =>
-            !IsScanning && MinedSystemEvents.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            !IsScanning && MinedSystemEvents.Count <= 5 && !ShowMinorEvents ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility MinorEventsButtonVisibility =>
+            !IsScanning && MinedSystemEvents.Count > 0 && MinedSystemEvents.Count <= 5 ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility MinorEventsTextVisibility =>
+            !IsScanning && MinedSystemEvents.Count > 0 && MinedSystemEvents.Count <= 5 && !ShowMinorEvents ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility EventListVisibility =>
+            !IsScanning && (MinedSystemEvents.Count > 5 || (MinedSystemEvents.Count > 0 && ShowMinorEvents))
+                ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility Dot1Visibility => !IsScanning && MinedSystemEvents.Count >= 1 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Dot2Visibility => !IsScanning && MinedSystemEvents.Count >= 2 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Dot3Visibility => !IsScanning && MinedSystemEvents.Count >= 3 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Dot4Visibility => !IsScanning && MinedSystemEvents.Count >= 4 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Dot5Visibility => !IsScanning && MinedSystemEvents.Count >= 5 ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility HardwareScannerVisibility =>
             IsScanning || DetectedHardwareIssues.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -148,7 +168,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             set => SetProperty(ref _scannerText, value);
         }
 
-        private SolidColorBrush _systemHealthBrush = new SolidColorBrush(Microsoft.UI.Colors.LimeGreen);
+        private SolidColorBrush _systemHealthBrush = new SolidColorBrush(Colors.LimeGreen);
         public SolidColorBrush SystemHealthBrush
         {
             get => _systemHealthBrush;
@@ -170,7 +190,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(HardwareListVisibility));
                     OnPropertyChanged(nameof(HardwareScannerText));
                     OnPropertyChanged(nameof(ScannerText));
-                    OnPropertyChanged(nameof(EventEmptyStateVisibility));
+
+                    RefreshHUD();
                 }
             }
         }
@@ -205,12 +226,31 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             get => _historyEmptyStateVisibility;
             set => SetProperty(ref _historyEmptyStateVisibility, value);
         }
+
+        private bool _showMinorEvents;
+        public bool ShowMinorEvents
+        {
+            get => _showMinorEvents;
+            set
+            {
+                if (SetProperty(ref _showMinorEvents, value))
+                {
+                    if (value && HistoryPanelVisibility == Visibility.Visible)
+                    {
+                        HistoryPanelVisibility = Visibility.Collapsed;
+                    }
+
+                    OnPropertyChanged(nameof(EventEmptyStateVisibility));
+                    OnPropertyChanged(nameof(EventListVisibility));
+                    OnPropertyChanged(nameof(MinorEventsTextVisibility));
+                }
+            }
+        }
         #endregion
 
         #region Storage Monitoring Properties
 
         public ObservableCollection<DriveSpaceInfo> SystemDrives { get; } = new ObservableCollection<DriveSpaceInfo>();
-        //private int _telemetryTickCounter = 0; // "Live" Storage Monitoring
 
         private bool _isStorageInfoSelected;
         public bool IsStorageInfoSelected
@@ -1099,65 +1139,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             LocalMachineSettingsEngine.SaveDismissedEventsList();
 
             CalculateStabilityTrend(MinedSystemEvents);
-
-            double.TryParse(StabilityScore.Replace("%", ""), out double currentScore);
-
-            int currentCriticalCount = MinedSystemEvents.Count(e => e.Level == 1 || e.Level == 2);
-            TimeSpan uptime = TimeSpan.FromMilliseconds(Environment.TickCount64);
-            double errorsPerHour = currentCriticalCount / Math.Max(1, uptime.TotalHours);
-
-            bool isUptimeReliable = uptime.TotalMinutes > 30;
-            bool isStabilityCritical = (isUptimeReliable && errorsPerHour > 5.0) || currentScore < 70;
-            bool isHardwareCritical = DetectedHardwareIssues.Count > 0;
-
-            bool hasCriticalAppCrash = MinedSystemEvents.Any(e => e.EventId == 9003);
-
-            if (isHardwareCritical || isStabilityCritical || hasCriticalAppCrash)
-            {
-                SystemHealthBrush = new SolidColorBrush(Colors.Red);
-
-                if (hasCriticalAppCrash && !isHardwareCritical && !isStabilityCritical)
-                {
-                    ScannerText = ResourceString.GetString("diag_status_critical_app") ?? "CRITICAL. RENDERING ENGINE CORRUPTION DETECTED.";
-                }
-                else if (isHardwareCritical)
-                {
-                    ScannerText = string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count);
-                }
-                else
-                {
-                    ScannerText = ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. SYSTEM STABILITY COMPROMISED.";
-                }
-            }
-            else if (MinedSystemEvents.Any(e => e.EventId == 42))
-            {
-                SystemHealthBrush = new SolidColorBrush(Colors.Gold);
-                ScannerText = ResourceString.GetString("diag_status_warning_crash")
-                    ?? "WARNING. RECENT SYSTEM CRASH OR POWER LOSS DETECTED.";
-            }
-            else if (currentCriticalCount > 5 || currentScore < 90)
-            {
-                SystemHealthBrush = new SolidColorBrush(Colors.Gold);
-                ScannerText = string.Format(ResourceString.GetString("diag_status_warning_events") ?? "WARNING. {0} SYSTEM EVENTS LOGGED.", currentCriticalCount);
-            }
-            else
-            {
-                SystemHealthBrush = new SolidColorBrush(Colors.LimeGreen);
-
-                if (currentCriticalCount > 0)
-                {
-                    ScannerText = string.Format(ResourceString.GetString("diag_status_optimal_minor")
-                        ?? "SYSTEM OPTIMAL. {0} MINOR LOGS IGNORED.", currentCriticalCount);
-                }
-                else
-                {
-                    ScannerText = ResourceString.GetString("diag_sys_optimal") ?? "SYSTEM OPTIMAL. MONITORING...";
-                }
-            }
-
-            OnPropertyChanged(nameof(SystemHealthBrush));
-            OnPropertyChanged(nameof(ScannerText));
-            OnPropertyChanged(nameof(EventEmptyStateVisibility));
         }
 
         [RelayCommand]
@@ -1169,6 +1150,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             else
             {
+                if (ShowMinorEvents)
+                {
+                    ShowMinorEvents = false;
+                }
+
                 HistoryCards.Clear();
                 foreach (var hash in LocalMachineSettingsEngine.DismissedEventsList)
                 {
@@ -1206,7 +1192,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
 
         [RelayCommand]
-        public void RestoreEvent(DismissedEventCard card)
+        public async Task RestoreEvent(DismissedEventCard card)
         {
             if (card == null) return;
 
@@ -1219,10 +1205,105 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             SendSystemNotification(1,
                 ResourceString.GetString("diag_notify_restore_title") ?? "Event Restored",
                 string.Format(ResourceString.GetString("diag_notify_restore_msg") ?? "Event ID {0} will appear in your next scan.", card.EventId));
+
+            //Debug.WriteLine($"[RESTORE] Attempting to find Event {card.EventId} from {card.SourceName}...");
+
+            await ExecuteFullScanAsync();
+
+            /*bool found = MinedSystemEvents.Any(e => e.EventId.ToString() == card.EventId);
+            if (!found)
+            {
+                Debug.WriteLine($"[RESTORE WARNING] Event {card.EventId} was not found in the fresh scan. It may have been purged by Windows or filtered by severity.");
+            }*/
         }
         #endregion
 
         #region Diagnostics & Hardware Deep Scan Logic
+
+        private void UpdateSystemStatus()
+        {
+            double.TryParse(StabilityScore.Replace("%", ""), out double currentScore);
+
+            int currentCriticalCount = MinedSystemEvents.Count(e => e.Level == 1 || e.Level == 2);
+            TimeSpan uptime = TimeSpan.FromMilliseconds(Environment.TickCount64);
+            double errorsPerHour = currentCriticalCount / Math.Max(1, uptime.TotalHours);
+
+            bool isUptimeReliable = uptime.TotalMinutes > 30;
+            bool isStabilityCritical = (isUptimeReliable && errorsPerHour > 5.0) || currentScore < 70;
+            bool isHardwareCritical = DetectedHardwareIssues.Count > 0;
+            bool hasCriticalAppCrash = MinedSystemEvents.Any(e => e.EventId == 9003);
+
+            int totalEventCount = MinedSystemEvents.Count;
+
+            // 1. Evaluate Critical State
+            if (isHardwareCritical || isStabilityCritical || hasCriticalAppCrash)
+            {
+                SystemHealthBrush = new SolidColorBrush(Colors.Red);
+
+                if (hasCriticalAppCrash && !isHardwareCritical && !isStabilityCritical)
+                {
+                    ScannerText = ResourceString.GetString("diag_status_critical_app") ?? "CRITICAL. RENDERING ENGINE CORRUPTION DETECTED.";
+                }
+                else if (isHardwareCritical)
+                {
+                    ScannerText = string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count);
+                }
+                else
+                {
+                    ScannerText = ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. SYSTEM STABILITY COMPROMISED.";
+                }
+            }
+            // 2. Evaluate Warning State (Crashes)
+            else if (MinedSystemEvents.Any(e => e.EventId == 42))
+            {
+                SystemHealthBrush = new SolidColorBrush(Colors.Gold);
+                ScannerText = ResourceString.GetString("diag_status_warning_crash") ?? "WARNING. RECENT SYSTEM CRASH OR POWER LOSS DETECTED.";
+            }
+            // 3. Evaluate Warning State (High Event Count)
+            else if (totalEventCount > 5 || currentScore < 90)
+            {
+                SystemHealthBrush = new SolidColorBrush(Colors.Gold);
+                ScannerText = string.Format(ResourceString.GetString("diag_status_warning_events") ?? "WARNING. {0} SYSTEM EVENTS LOGGED.", totalEventCount);
+            }
+            // 4. Evaluate Optimal State
+            else
+            {
+                SystemHealthBrush = new SolidColorBrush(Colors.LimeGreen);
+
+                if (totalEventCount > 0)
+                {
+                    ScannerText = string.Format(ResourceString.GetString("diag_status_optimal_minor") ?? "SYSTEM OPTIMAL. {0} MINOR LOGS IGNORED.", totalEventCount);
+                }
+                else
+                {
+                    ScannerText = ResourceString.GetString("diag_sys_optimal") ?? "SYSTEM OPTIMAL. MONITORING...";
+                }
+            }
+
+            if (totalEventCount == 0)
+            {
+                ShowMinorEvents = false;
+            }
+
+            OnPropertyChanged(nameof(SystemHealthBrush));
+            OnPropertyChanged(nameof(ScannerText));
+
+            RefreshHUD();
+        }
+
+        private void RefreshHUD()
+        {
+            OnPropertyChanged(nameof(EventEmptyStateVisibility));
+            OnPropertyChanged(nameof(EventListVisibility));
+            OnPropertyChanged(nameof(MinorEventsButtonVisibility));
+            OnPropertyChanged(nameof(MinorEventsTextVisibility));
+            OnPropertyChanged(nameof(Dot1Visibility));
+            OnPropertyChanged(nameof(Dot2Visibility));
+            OnPropertyChanged(nameof(Dot3Visibility));
+            OnPropertyChanged(nameof(Dot4Visibility));
+            OnPropertyChanged(nameof(Dot5Visibility));
+        }
+
         internal SystemEventItem CreateAlert(int eventId, string source, string message)
         {
             return new SystemEventItem
@@ -1384,14 +1465,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (diskUsage > 100) diskUsage = 100;
 
                 float pagefileUsage = _pagefileCounter?.NextValue() ?? 0;
-
-                // "Live" Storage Monitoring
-                /*_telemetryTickCounter++;
-                if (_telemetryTickCounter >= 5)
-                {
-                    RefreshAllDrivesInfo();
-                    _telemetryTickCounter = 0;
-                }*/
 
                 var netUsage = GetNetworkUsage();
                 float downMbps = netUsage.downMbps;
@@ -1558,67 +1631,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     CalculateStabilityTrend(MinedSystemEvents);
 
-                    int currentCriticalCount = MinedSystemEvents.Count(e => e.Level == 1 || e.Level == 2);
-                    TimeSpan uptime = TimeSpan.FromMilliseconds(Environment.TickCount64);
-                    double errorsPerHour = currentCriticalCount / Math.Max(1, uptime.TotalHours);
-
-                    bool isUptimeReliable = uptime.TotalMinutes > 30;
-                    bool isStabilityCritical = isUptimeReliable && errorsPerHour > 5.0;
-                    bool isHardwareCritical = DetectedHardwareIssues.Count > 0;
-
-                    double.TryParse(StabilityScore.Replace("%", ""), out double currentScore);
-                    int countForUI = MinedSystemEvents.Count(e => e.Level == 1 || e.Level == 2);
-
-                    bool hasCriticalAppCrash = MinedSystemEvents.Any(e => e.EventId == 9003);
-
-                    if (isHardwareCritical || isStabilityCritical || hasCriticalAppCrash)
-                    {
-                        SystemHealthBrush = new SolidColorBrush(Colors.Red);
-
-                        if (hasCriticalAppCrash && !isHardwareCritical && !isStabilityCritical)
-                        {
-                            ScannerText = ResourceString.GetString("diag_status_critical_app") ?? "CRITICAL. RENDERING ENGINE CORRUPTION DETECTED.";
-                        }
-                        else if (isHardwareCritical)
-                        {
-                            ScannerText = string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count);
-                        }
-                        else
-                        {
-                            ScannerText = string.Format(ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).", errorsPerHour);
-                        }
-                    }
-                    else if (MinedSystemEvents.Any(e => e.EventId == 42))
-                    {
-                        SystemHealthBrush = new SolidColorBrush(Colors.Gold);
-                        ScannerText = ResourceString.GetString("diag_status_warning_crash")
-                            ?? "WARNING. RECENT SYSTEM CRASH OR POWER LOSS DETECTED.";
-                    }
-                    else if (countForUI > 5 || currentScore < 90) // <--- The strict "Under 6" and "Score >= 90" rule
-                    {
-                        SystemHealthBrush = new SolidColorBrush(Colors.Gold);
-                        ScannerText = string.Format(ResourceString.GetString("diag_status_warning_events") ?? "WARNING. {0} SYSTEM EVENTS LOGGED.", countForUI);
-                    }
-                    else
-                    {
-                        SystemHealthBrush = new SolidColorBrush(Colors.LimeGreen);
-
-                        if (countForUI > 0)
-                        {
-                            ScannerText = string.Format(ResourceString.GetString("diag_status_optimal_minor")
-                                ?? "SYSTEM OPTIMAL. {0} MINOR LOGS IGNORED.", countForUI);
-                        }
-                        else
-                        {
-                            ScannerText = ResourceString.GetString("diag_sys_optimal") ?? "SYSTEM OPTIMAL. MONITORING...";
-                        }
-                    }
-
                     AiSummary = string.Format(ResourceString.GetString("diag_live_intercept_msg") ?? "LIVE INTERCEPT: {0} reported a Level {1} event. Stability updated.", newEvent.SourceName, newEvent.Level);
-
-                    OnPropertyChanged(nameof(SystemHealthBrush));
-                    OnPropertyChanged(nameof(ScannerText));
-                    OnPropertyChanged(nameof(EventEmptyStateVisibility));
 
                     if (newEvent.Level <= 2 && (DateTime.Now - _lastEventNotification).TotalMinutes > 5)
                     {
@@ -1862,6 +1875,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             return description.Replace('(', '[').Replace(')', ']').Replace('#', '_').Replace('/', '_').Replace('\\', '_');
         }
+
         #endregion
 
         #region Background Monitoring Loops (Maintenance)

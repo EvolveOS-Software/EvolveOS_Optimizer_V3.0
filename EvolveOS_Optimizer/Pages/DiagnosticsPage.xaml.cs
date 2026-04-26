@@ -50,21 +50,45 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Loaded += DiagnosticsPage_Loaded;
 
-            /*this.Unloaded += (s, e) =>
+            this.Unloaded += (s, e) =>
             {
-                if (DataContext is DiagnosticsPageViewModel vm)
+                if (ViewModel != null)
                 {
-                    vm.Cleanup();
+                    RadarSpinStoryboard?.Stop();
                 }
-
-                ViewModel.PauseUiUpdates();
-            };*/
+            };
 
             if (ViewModel != null)
             {
+                ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
                 ViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
                 ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
                 ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
+            }
+        }
+        #endregion
+
+        #region View Model Property Changed (Animation Controller)
+        private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (ViewModel == null) return;
+
+            if (e.PropertyName == nameof(ViewModel.EventEmptyStateVisibility))
+            {
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    if (ViewModel.EventEmptyStateVisibility == Visibility.Visible)
+                    {
+                        await Task.Delay(100);
+
+                        RadarSpinStoryboard?.Begin();
+                    }
+                    else
+                    {
+                        RadarSpinStoryboard?.Stop();
+                    }
+                });
             }
         }
         #endregion
@@ -76,6 +100,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 SystemSonarStoryboard?.Begin();
                 HeartbeatStoryboard?.Begin();
+                RadarSpinStoryboard?.Begin();
             }
 
             var vm = ViewModel;
@@ -186,6 +211,7 @@ namespace EvolveOS_Optimizer.Pages
 
             SystemSonarStoryboard?.Stop();
             HeartbeatStoryboard?.Stop();
+            RadarSpinStoryboard?.Stop();
 
             this.Bindings.StopTracking();
 
@@ -693,6 +719,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is Slider slider) slider.Focus(FocusState.Pointer);
         }
+
         #endregion
 
         #region View Model Callbacks

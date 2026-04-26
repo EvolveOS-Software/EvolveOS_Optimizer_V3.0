@@ -1892,6 +1892,7 @@
     <sys:String x:Key="diag_event_id_prefix">ID:</sys:String>
     <sys:String x:Key="diag_btn_fix">BEHEBEN</sys:String>
     <sys:String x:Key="diag_no_events">Keine kritischen Ereignisse im angegebenen Zeitraum isoliert.</sys:String>
+    <sys:String x:Key="diag_minor_events_nominal">Geringfügige Telemetrie Ereignisse erkannt. System nominal.</sys:String>
 
     <sys:String x:Key="diag_cpu_load">CPU AUSLASTUNG</sys:String>
     <sys:String x:Key="diag_cpu_load_small">CPU:</sys:String>

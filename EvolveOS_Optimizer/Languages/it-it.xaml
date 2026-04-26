@@ -1896,6 +1896,7 @@
     <sys:String x:Key="diag_event_id_prefix">ID:</sys:String>
     <sys:String x:Key="diag_btn_fix">RIPARA</sys:String>
     <sys:String x:Key="diag_no_events">Nessun evento critico isolato nell'intervallo specificato.</sys:String>
+    <sys:String x:Key="diag_minor_events_nominal">Rilevati eventi di telemetria minori. Sistema nominale.</sys:String>
 
     <sys:String x:Key="diag_cpu_load">CARICO CPU</sys:String>
     <sys:String x:Key="diag_cpu_load_small">CPU:</sys:String>

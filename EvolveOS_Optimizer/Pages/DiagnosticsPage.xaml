@@ -842,30 +842,50 @@
                                         <TextBlock helpers:Loc.Key="diag_event_miner_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="16"/>
                                     </StackPanel>
 
-                                    <Button Grid.Column="1"
-                                            VerticalAlignment="Center"
-                                            Background="Transparent"
-                                            BorderThickness="1"
-                                            BorderBrush="#30FFFFFF"
-                                            CornerRadius="4"
-                                            Padding="8,4"
-                                            Command="{x:Bind ViewModel.ToggleHistoryPanelCommand}">
-                                        <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <FontIcon Glyph="&#xE81C;" FontSize="12" Foreground="LightGray"/>
-                                            <TextBlock helpers:Loc.Key="diag_btn_history" FontSize="12" Foreground="LightGray"/>
-                                        </StackPanel>
-                                    </Button>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+
+                                        <ToggleButton Background="Transparent"
+                                                      BorderThickness="1"
+                                                      BorderBrush="#30FFFFFF"
+                                                      CornerRadius="4"
+                                                      Padding="8,4"
+                                                      IsChecked="{x:Bind ViewModel.ShowMinorEvents, Mode=TwoWay}"
+                                                      Visibility="{x:Bind ViewModel.MinorEventsButtonVisibility, Mode=OneWay}">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <FontIcon Glyph="&#xE8F1;" FontSize="12" Foreground="LightGray"/>
+                                                <TextBlock Text="View Minor Events" FontSize="12" Foreground="LightGray"/>
+                                            </StackPanel>
+                                        </ToggleButton>
+
+                                        <Button Background="Transparent"
+                                                BorderThickness="1"
+                                                BorderBrush="#30FFFFFF"
+                                                CornerRadius="4"
+                                                Padding="8,4"
+                                                Command="{x:Bind ViewModel.ToggleHistoryPanelCommand}">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <FontIcon Glyph="&#xE81C;" FontSize="12" Foreground="LightGray"/>
+                                                <TextBlock helpers:Loc.Key="diag_btn_history" FontSize="12" Foreground="LightGray"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                    </StackPanel>
                                 </Grid>
 
                                 <Grid Grid.Row="1" Visibility="{x:Bind ViewModel.ActiveListVisibility, Mode=OneWay}">
-                                    <TextBlock helpers:Loc.Key="diag_no_events"
+
+                                    <TextBlock helpers:Loc.Key="diag_minor_events_nominal"
+                                               Visibility="{x:Bind ViewModel.MinorEventsTextVisibility, Mode=OneWay}"
                                                Style="{StaticResource TechnicalLabelStyle}"
+                                               FontFamily="{ThemeResource Jura}"
                                                HorizontalAlignment="Center"
-                                               VerticalAlignment="Top"
-                                               Margin="0,20,0,0"
-                                               Visibility="{x:Bind ViewModel.EventEmptyStateVisibility, Mode=OneWay}"/>
+                                               VerticalAlignment="Bottom"
+                                               MaxWidth="360"
+                                               TextWrapping="Wrap"
+                                               Margin="0,0,0,-12"/>
 
                                     <ListView x:Name="EventLogsListView"
+                                              Visibility="{x:Bind ViewModel.EventListVisibility, Mode=OneWay}"
                                               ItemsSource="{x:Bind ViewModel.MinedSystemEvents}"
                                               SelectionMode="None"
                                               ShowsScrollingPlaceholders="False"
@@ -921,6 +941,125 @@
                                             </DataTemplate>
                                         </ListView.ItemTemplate>
                                     </ListView>
+
+                                    <Viewbox x:Name="RadarContainer"
+                                             Stretch="Uniform"
+                                             MaxWidth="400"
+                                             MaxHeight="400"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Visibility="{x:Bind ViewModel.EventEmptyStateVisibility, Mode=OneWay}">
+
+                                        <Grid Width="230" Height="230">
+                                            <Grid.Resources>
+                                                <Storyboard x:Name="RadarSpinStoryboard">
+                                                    <DoubleAnimation Storyboard.TargetName="RadarSweepRotate" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:4" RepeatBehavior="Forever" />
+                                                    <DoubleAnimation Storyboard.TargetName="OuterRing1Rotate" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:15" RepeatBehavior="Forever" />
+                                                    <DoubleAnimation Storyboard.TargetName="OuterRing2Rotate" Storyboard.TargetProperty="Angle" From="360" To="0" Duration="0:0:25" RepeatBehavior="Forever" />
+                                                    <DoubleAnimation Storyboard.TargetName="OuterRing3Rotate" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:8" RepeatBehavior="Forever" />
+                                                    <DoubleAnimation Storyboard.TargetName="CenterGlowPulse" Storyboard.TargetProperty="Opacity" From="0.2" To="0.8" Duration="0:0:2.5" AutoReverse="True" RepeatBehavior="Forever" />
+
+                                                    <DoubleAnimation Storyboard.TargetName="Dot1" Storyboard.TargetProperty="Opacity" From="1.0" To="0.1" Duration="0:0:4" BeginTime="0:0:3.5" RepeatBehavior="Forever"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot1RippleScale" Storyboard.TargetProperty="ScaleX" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:3.5" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot1RippleScale" Storyboard.TargetProperty="ScaleY" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:3.5" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot1Ripple" Storyboard.TargetProperty="Opacity" From="0.8" To="0.0" Duration="0:0:1" BeginTime="0:0:3.5" RepeatBehavior="Forever"/>
+
+                                                    <DoubleAnimation Storyboard.TargetName="Dot2" Storyboard.TargetProperty="Opacity" From="1.0" To="0.1" Duration="0:0:4" BeginTime="0:0:0.33" RepeatBehavior="Forever"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot2RippleScale" Storyboard.TargetProperty="ScaleX" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:0.33" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot2RippleScale" Storyboard.TargetProperty="ScaleY" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:0.33" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot2Ripple" Storyboard.TargetProperty="Opacity" From="0.8" To="0.0" Duration="0:0:1" BeginTime="0:0:0.33" RepeatBehavior="Forever"/>
+
+                                                    <DoubleAnimation Storyboard.TargetName="Dot3" Storyboard.TargetProperty="Opacity" From="1.0" To="0.1" Duration="0:0:4" BeginTime="0:0:1.22" RepeatBehavior="Forever"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot3RippleScale" Storyboard.TargetProperty="ScaleX" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:1.22" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot3RippleScale" Storyboard.TargetProperty="ScaleY" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:1.22" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot3Ripple" Storyboard.TargetProperty="Opacity" From="0.8" To="0.0" Duration="0:0:1" BeginTime="0:0:1.22" RepeatBehavior="Forever"/>
+
+                                                    <DoubleAnimation Storyboard.TargetName="Dot4" Storyboard.TargetProperty="Opacity" From="1.0" To="0.1" Duration="0:0:4" BeginTime="0:0:2.11" RepeatBehavior="Forever"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot4RippleScale" Storyboard.TargetProperty="ScaleX" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:2.11" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot4RippleScale" Storyboard.TargetProperty="ScaleY" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:2.11" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot4Ripple" Storyboard.TargetProperty="Opacity" From="0.8" To="0.0" Duration="0:0:1" BeginTime="0:0:2.11" RepeatBehavior="Forever"/>
+
+                                                    <DoubleAnimation Storyboard.TargetName="Dot5" Storyboard.TargetProperty="Opacity" From="1.0" To="0.1" Duration="0:0:4" BeginTime="0:0:2.66" RepeatBehavior="Forever"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot5RippleScale" Storyboard.TargetProperty="ScaleX" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:2.66" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot5RippleScale" Storyboard.TargetProperty="ScaleY" From="1.0" To="3.0" Duration="0:0:1" BeginTime="0:0:2.66" RepeatBehavior="Forever" EnableDependentAnimation="True"/>
+                                                    <DoubleAnimation Storyboard.TargetName="Dot5Ripple" Storyboard.TargetProperty="Opacity" From="0.8" To="0.0" Duration="0:0:1" BeginTime="0:0:2.66" RepeatBehavior="Forever"/>
+                                                </Storyboard>
+
+                                                <LinearGradientBrush x:Key="RadarSweepBrush" StartPoint="1,1" EndPoint="0,0">
+                                                    <GradientStop Color="{StaticResource SystemAccentColor}" Offset="0.0"/>
+                                                    <GradientStop Color="#00000000" Offset="0.8"/>
+                                                </LinearGradientBrush>
+                                            </Grid.Resources>
+
+                                            <Ellipse Fill="{StaticResource Brush_DiagnosticBlue}" Width="90" Height="90" Opacity="0.05"/>
+                                            <Ellipse Fill="{StaticResource Brush_DiagnosticBlue}" Width="60" Height="60" Opacity="0.15"/>
+                                            <Ellipse x:Name="CenterGlowPulse" Fill="{StaticResource Brush_DiagnosticBlue}" Width="40" Height="40" Opacity="0.5"/>
+                                            <TextBlock Text="AI" FontSize="42" FontWeight="Bold" FontFamily="{StaticResource Jura}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-4,0,0"/>
+
+                                            <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="1" Width="110" Height="110" Opacity="0.4"/>
+                                            <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="1" Width="140" Height="140" Opacity="0.2" StrokeDashArray="2,4"/>
+                                            <Path Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="1" Opacity="0.2" Data="M 115,5 L 115,225 M 5,115 L 225,115 M 35,35 L 195,195 M 35,195 L 195,35"/>
+
+                                            <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="8" Width="180" Height="180" StrokeDashArray="6, 8" RenderTransformOrigin="0.5,0.5" Opacity="0.7">
+                                                <Ellipse.RenderTransform>
+                                                    <RotateTransform x:Name="OuterRing1Rotate" Angle="0"/>
+                                                </Ellipse.RenderTransform>
+                                            </Ellipse>
+                                            <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="3" Width="200" Height="200" StrokeDashArray="20, 10, 5, 10" RenderTransformOrigin="0.5,0.5" Opacity="0.9">
+                                                <Ellipse.RenderTransform>
+                                                    <RotateTransform x:Name="OuterRing2Rotate" Angle="0"/>
+                                                </Ellipse.RenderTransform>
+                                            </Ellipse>
+                                            <Ellipse Stroke="White" StrokeThickness="1.5" Width="220" Height="220" StrokeDashArray="1, 30" RenderTransformOrigin="0.5,0.5" Opacity="0.6">
+                                                <Ellipse.RenderTransform>
+                                                    <RotateTransform x:Name="OuterRing3Rotate" Angle="0"/>
+                                                </Ellipse.RenderTransform>
+                                            </Ellipse>
+
+                                            <Path Fill="{StaticResource RadarSweepBrush}" Opacity="0.4" Data="M 115,115 L 115,5 A 110,110 0 0,1 225,115 Z" RenderTransformOrigin="0.5,0.5">
+                                                <Path.RenderTransform>
+                                                    <RotateTransform x:Name="RadarSweepRotate" Angle="0"/>
+                                                </Path.RenderTransform>
+                                            </Path>
+
+                                            <Canvas>
+                                                <Ellipse x:Name="Dot1Ripple" Visibility="{x:Bind ViewModel.Dot1Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="158.5" Canvas.Top="59.5" RenderTransformOrigin="0.5,0.5">
+                                                    <Ellipse.RenderTransform>
+                                                        <ScaleTransform x:Name="Dot1RippleScale" ScaleX="1" ScaleY="1"/>
+                                                    </Ellipse.RenderTransform>
+                                                </Ellipse>
+                                                <Ellipse x:Name="Dot1" Visibility="{x:Bind ViewModel.Dot1Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="160.5" Canvas.Top="61.5" />
+
+                                                <Ellipse x:Name="Dot2Ripple" Visibility="{x:Bind ViewModel.Dot2Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="169.6" Canvas.Top="144" RenderTransformOrigin="0.5,0.5">
+                                                    <Ellipse.RenderTransform>
+                                                        <ScaleTransform x:Name="Dot2RippleScale" ScaleX="1" ScaleY="1"/>
+                                                    </Ellipse.RenderTransform>
+                                                </Ellipse>
+                                                <Ellipse x:Name="Dot2" Visibility="{x:Bind ViewModel.Dot2Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="171.6" Canvas.Top="146" />
+
+                                                <Ellipse x:Name="Dot3Ripple" Visibility="{x:Bind ViewModel.Dot3Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="85" Canvas.Top="174.7" RenderTransformOrigin="0.5,0.5">
+                                                    <Ellipse.RenderTransform>
+                                                        <ScaleTransform x:Name="Dot3RippleScale" ScaleX="1" ScaleY="1"/>
+                                                    </Ellipse.RenderTransform>
+                                                </Ellipse>
+                                                <Ellipse x:Name="Dot3" Visibility="{x:Bind ViewModel.Dot3Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="87" Canvas.Top="176.7" />
+
+                                                <Ellipse x:Name="Dot4Ripple" Visibility="{x:Bind ViewModel.Dot4Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="40" Canvas.Top="96.8" RenderTransformOrigin="0.5,0.5">
+                                                    <Ellipse.RenderTransform>
+                                                        <ScaleTransform x:Name="Dot4RippleScale" ScaleX="1" ScaleY="1"/>
+                                                    </Ellipse.RenderTransform>
+                                                </Ellipse>
+                                                <Ellipse x:Name="Dot4" Visibility="{x:Bind ViewModel.Dot4Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="42" Canvas.Top="98.8" />
+
+                                                <Ellipse x:Name="Dot5Ripple" Visibility="{x:Bind ViewModel.Dot5Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="74" Canvas.Top="48.3" RenderTransformOrigin="0.5,0.5">
+                                                    <Ellipse.RenderTransform>
+                                                        <ScaleTransform x:Name="Dot5RippleScale" ScaleX="1" ScaleY="1"/>
+                                                    </Ellipse.RenderTransform>
+                                                </Ellipse>
+                                                <Ellipse x:Name="Dot5" Visibility="{x:Bind ViewModel.Dot5Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="76" Canvas.Top="50.3" />
+                                            </Canvas>
+                                        </Grid>
+                                    </Viewbox>
                                 </Grid>
 
                                 <Grid Grid.Row="1" Visibility="{x:Bind ViewModel.HistoryPanelVisibility, Mode=OneWay}">

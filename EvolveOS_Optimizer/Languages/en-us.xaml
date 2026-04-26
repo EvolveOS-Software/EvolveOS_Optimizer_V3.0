@@ -1900,6 +1900,7 @@
     <sys:String x:Key="diag_event_id_prefix">ID:</sys:String>
     <sys:String x:Key="diag_btn_fix">FIX</sys:String>
     <sys:String x:Key="diag_no_events">No critical events isolated in the specified timeframe.</sys:String>
+    <sys:String x:Key="diag_minor_events_nominal">Minor telemetry events detected. System nominal.</sys:String>
 
     <sys:String x:Key="diag_tooltip_copy_msg">Copy full message</sys:String>
     <sys:String x:Key="diag_copy_success_title">Copied to Clipboard</sys:String>
