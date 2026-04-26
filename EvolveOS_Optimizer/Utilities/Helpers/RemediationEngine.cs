@@ -466,18 +466,69 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private static async Task<bool> FixSecureBootKeysAsync()
         {
-
             string script = @"
                 $bitlocker = Get-BitLockerVolume -MountPoint 'C:' -ErrorAction SilentlyContinue
-                if ($bitlocker.ProtectionStatus -eq 'On') {
+                if ($bitlocker -and $bitlocker.ProtectionStatus -eq 'On') {
                     Suspend-BitLocker -MountPoint 'C:' -RebootCount 2 -ErrorAction SilentlyContinue
                 }
+
+                $regPath = 'HKLM:\SYSTEM\CurrentControlSet\Control\SecureBoot'
+                $taskPath = '\Microsoft\Windows\PI\Secure-Boot-Update'
+
+                # 1. Apply DBX Update (0x40) as explicit DWORD
+                Set-ItemProperty -Path $regPath -Name 'AvailableUpdates' -Value ([uint32]0x40) -PropertyType DWord -Force
+                Start-ScheduledTask -TaskName $taskPath -ErrorAction SilentlyContinue
         
-                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\SecureBoot' -Name 'AvailableUpdates' -Value 22852 -Force
-                Start-ScheduledTask -TaskName '\Microsoft\Windows\PI\Secure-Boot-Update' -ErrorAction SilentlyContinue
+                # Wait for the task to actually start/trigger processing
+                Start-Sleep -Seconds 3
+
+                # 2. Force the task to stop so it can be re-triggered for the next key
+                Stop-ScheduledTask -TaskName $taskPath -ErrorAction SilentlyContinue
+                Start-Sleep -Seconds 1
+
+                # 3. Apply DB CA Update (0x5944) as explicit DWORD
+                # This matches your manual 'reg add' /d 0x5944 logic exactly
+                Set-ItemProperty -Path $regPath -Name 'AvailableUpdates' -Value ([uint32]0x5944) -PropertyType DWord -Force
+                Start-ScheduledTask -TaskName $taskPath -ErrorAction SilentlyContinue
             ";
 
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
+
+            var currentXamlRoot = App.MainWindow?.Content?.XamlRoot;
+
+            if (currentXamlRoot != null)
+            {
+                ContentDialog restartDialog = new ContentDialog
+                {
+                    XamlRoot = currentXamlRoot,
+                    Title = ResourceString.GetString("diag_reboot_required_title") ?? "Restart Required",
+                    Content = ResourceString.GetString("diag_secureboot_reboot_msg") ?? "Secure Boot update staged successfully. CRITICAL: You must restart your computer TWICE for your motherboard firmware to enroll the new keys. Would you like to restart your computer now?",
+                    PrimaryButtonText = ResourceString.GetString("txt_restart_now") ?? "Restart Now",
+                    CloseButtonText = ResourceString.GetString("txt_later") ?? "Later",
+                    DefaultButton = ContentDialogButton.Primary
+                };
+
+                if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                {
+                    restartDialog.Style = (Style)style;
+                }
+
+                ContentDialogResult result = await restartDialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    string shutdownComment = ResourceString.GetString("diag_secureboot_shutdown_comment") ?? "EvolveOS Optimizer: Secure Boot Key Enrollment";
+
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "shutdown.exe",
+                        Arguments = $"/r /t 5 /c \"{shutdownComment}\"",
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    });
+                }
+            }
+
             return true;
         }
 

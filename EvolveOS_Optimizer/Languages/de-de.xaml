@@ -2041,6 +2041,9 @@
     <sys:String x:Key="diag_fix_dwm_cancelled">Cache-Bereinigung abgebrochen. Neustart erforderlich.</sys:String>
     <sys:String x:Key="diag_fix_dwm_pending">AUSSTEHEND: Der UI Rendering-Cache ist entsperrt, erfordert aber einen Neustart der App zur Bereinigung.</sys:String>
 
+    <sys:String x:Key="diag_secureboot_shutdown_comment">EvolveOS Optimizer: Secure Boot Schlüsselregistrierung</sys:String>
+    <sys:String x:Key="diag_secureboot_reboot_msg">Das Secure Boot-Update wurde erfolgreich vorbereitet. KRITISCH: Sie müssen Ihren Computer ZWEIMAL neu starten, damit die Motherboard Firmware die neuen Schlüssel registrieren kann. Möchten Sie Ihren Computer jetzt neu starten?</sys:String>
+
     <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>
     <sys:String x:Key="txt_later">Später</sys:String>
     

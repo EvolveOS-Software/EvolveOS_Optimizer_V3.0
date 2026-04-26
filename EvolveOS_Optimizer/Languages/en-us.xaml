@@ -2045,6 +2045,9 @@
     <sys:String x:Key="diag_fix_dwm_cancelled">Cache purge aborted. Restart required.</sys:String>
     <sys:String x:Key="diag_fix_dwm_pending">PENDING: The ui rendering cache is unlocked but requires an app restart to purge.</sys:String>
 
+    <sys:String x:Key="diag_secureboot_shutdown_comment">EvolveOS Optimizer: Secure Boot Key Enrollment</sys:String>
+    <sys:String x:Key="diag_secureboot_reboot_msg">Secure Boot update staged successfully. CRITICAL: You must restart your computer TWICE for your motherboard firmware to enroll the new keys. Would you like to restart your computer now?</sys:String>
+
     <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

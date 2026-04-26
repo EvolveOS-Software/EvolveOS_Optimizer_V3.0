@@ -1291,6 +1291,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 systemEvents.AddRange(performanceIssues);
 
+                bool physicallyEnrolled = false;
+                try
+                {
+                    physicallyEnrolled = await SecureBootHelper.IsCa2023EnrolledAsync();
+                }
+                catch { /* Fallback */ }
+
                 _dispatcherQueue.TryEnqueue(() =>
                 {
                     int baselineHardware = 85;
@@ -1376,6 +1383,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     foreach (var ev in systemEvents)
                     {
+                        if (ev.EventId == 1801 && physicallyEnrolled)
+                        {
+                            continue;
+                        }
+
                         string eventFingerprint = $"{ev.EventId}_{ev.SourceName}_{ev.TimeCreated.Ticks}";
                         if (LocalMachineSettingsEngine.DismissedEventsList.Contains(eventFingerprint)) continue;
 
@@ -1882,8 +1894,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (_liveWatcher != null) return;
             ScanStatus = ResourceString.GetString("diag_live_active") ?? "Live Telemetry Interceptor: ACTIVE";
 
-            _liveWatcher = new LiveEventWatcherHelper(newEvent =>
+            _liveWatcher = new LiveEventWatcherHelper(async newEvent =>
             {
+                if (newEvent.EventId == 1801)
+                {
+                    bool physicallyEnrolled = false;
+                    try
+                    {
+                        physicallyEnrolled = await SecureBootHelper.IsCa2023EnrolledAsync();
+                    }
+                    catch { }
+
+                    if (physicallyEnrolled) return;
+                }
+
                 _dispatcherQueue.TryEnqueue(() =>
                 {
                     MinedSystemEvents.Insert(0, newEvent);

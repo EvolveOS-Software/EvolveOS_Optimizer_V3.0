@@ -2040,6 +2040,9 @@
     <sys:String x:Key="diag_fix_dwm_cancelled">Svuotamento cache annullato. Riavvio richiesto.</sys:String>
     <sys:String x:Key="diag_fix_dwm_pending">IN ATTESA: La cache di rendering dell'interfaccia utente è sbloccata ma richiede il riavvio dell'app per essere svuotata.</sys:String>
 
+    <sys:String x:Key="diag_secureboot_shutdown_comment">EvolveOS Optimizer: Registrazione chiave Secure Boot</sys:String>
+    <sys:String x:Key="diag_secureboot_reboot_msg">Aggiornamento di Secure Boot preparato con successo. CRITICO: Devi riavviare il computer DUE VOLTE affinché il firmware della scheda madre registri le nuove chiavi. Vuoi riavviare il computer ora?</sys:String>
+
     <sys:String x:Key="txt_restart_now">Riavvia ora</sys:String>
     <sys:String x:Key="txt_later">Più tardi</sys:String>
 

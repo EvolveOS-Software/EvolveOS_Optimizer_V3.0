@@ -2034,6 +2034,9 @@
     <sys:String x:Key="diag_fix_dwm_cancelled">Purge du cache annulée. Redémarrage requis.</sys:String>
     <sys:String x:Key="diag_fix_dwm_pending">EN ATTENTE : Le cache de rendu de l'interface est déverrouillé mais nécessite un redémarrage de l'application pour être purgé.</sys:String>
 
+    <sys:String x:Key="diag_secureboot_shutdown_comment">EvolveOS Optimizer : Enregistrement de la clé Secure Boot</sys:String>
+    <sys:String x:Key="diag_secureboot_reboot_msg">La mise à jour Secure Boot a été préparée avec succès. CRITIQUE : Vous devez redémarrer votre ordinateur DEUX FOIS pour que le firmware de votre carte mère enregistre les nouvelles clés. Voulez-vous redémarrer votre ordinateur maintenant ?</sys:String>
+
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
     <sys:String x:Key="txt_later">Plus tard</sys:String>
 
