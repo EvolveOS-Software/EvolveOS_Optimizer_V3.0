@@ -2023,6 +2023,20 @@
     <sys:String x:Key="diag_status_optimal_minor">SYSTÈME OPTIMAL. {0} JOURNAUX MINEURS IGNORÉS.</sys:String>
     <sys:String x:Key="diag_history_system_state">Configuration Active</sys:String>
 
+    <sys:String x:Key="diag_alert_dwm_crash">CRITIQUE : Plantage du moteur de rendu de l'interface détecté dans l'historique. Le cache natif .NET doit être purgé.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_attempt">Purge du cache natif .NET corrompu...</sys:String>
+    <sys:String x:Key="diag_fix_dwm_success">Cache de l'interface purgé. Veuillez redémarrer l'application.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_ai">CORRECTION AUTO DÉPLOYÉE : Le cache de rendu de l'interface a été effacé. Un redémarrage est recommandé.</sys:String>
+    <sys:String x:Key="diag_status_critical_app">CRITIQUE. CORRUPTION DU MOTEUR DE RENDU DÉTECTÉE.</sys:String>
+
+    <sys:String x:Key="diag_reboot_required_title">Redémarrage Requis</sys:String>
+    <sys:String x:Key="diag_reboot_required_msg">L'application doit être redémarrée pour purger le cache d'interface corrompu. Voulez-vous redémarrer maintenant ?</sys:String>
+    <sys:String x:Key="diag_fix_dwm_cancelled">Purge du cache annulée. Redémarrage requis.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_pending">EN ATTENTE : Le cache de rendu de l'interface est déverrouillé mais nécessite un redémarrage de l'application pour être purgé.</sys:String>
+
+    <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
+    <sys:String x:Key="txt_later">Plus tard</sys:String>
+
     <sys:String x:Key="wmi_code_default_summary">Un code d'erreur cryptique (Code {0}) a été détecté par l'analyse proactive.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows a rencontré une erreur interne avec ce pilote. Vérifiez le Gestionnaire de périphériques ou réinstallez le pilote standard.</sys:String>
     <sys:String x:Key="wmi_code_extended_summary">Erreur PnP étendue (Code {0}) détectée sur le bus matériel.</sys:String>

@@ -938,12 +938,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                     else if (eventId == 9117)
                     {
-
                         Process.Start(new ProcessStartInfo("ms-settings:privacy") { UseShellExecute = true });
                     }
 
                     ScanStatus = ResourceString.GetString("diag_security_fix_launched") ?? "Opened system settings. Please adjust the required protection.";
-
                     return;
                 }
                 catch (Exception ex)
@@ -954,7 +952,66 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             }
 
+            if (eventId == 9003)
+            {
+                ScanStatus = ResourceString.GetString("diag_fix_dwm_attempt") ?? "Unlocking .NET native cache...";
+
+                string netTempPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Temp", ".net");
+
+                try
+                {
+                    UnlockHandleHelper.UnlockDirectory(netTempPath);
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogDebug(ex);
+                }
+
+                var currentXamlRoot = App.MainWindow?.Content?.XamlRoot;
+
+                if (currentXamlRoot == null)
+                {
+                    ScanStatus = "UI context unavailable. Please restart the application manually.";
+                    return;
+                }
+
+                ScanStatus = ResourceString.GetString("diag_fix_dwm_success") ?? "Cache unlocked. Pending restart...";
+
+                ContentDialog restartDialog = new ContentDialog
+                {
+                    XamlRoot = currentXamlRoot,
+                    Title = ResourceString.GetString("diag_reboot_required_title") ?? "Restart Required",
+                    Content = ResourceString.GetString("diag_reboot_required_msg") ?? "The application must be restarted to purge the corrupted UI cache. Would you like to restart now?",
+                    PrimaryButtonText = ResourceString.GetString("txt_restart_now") ?? "Restart Now",
+                    CloseButtonText = ResourceString.GetString("txt_later") ?? "Later",
+                    DefaultButton = ContentDialogButton.Primary
+                };
+
+                if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                {
+                    restartDialog.Style = (Style)style;
+                }
+
+                ContentDialogResult result = await restartDialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    LocalMachineSettingsEngine.LastCachePurgeTime = DateTime.Now;
+
+                    string deleteCmd = $"rd /s /q \"{netTempPath}\"";
+                    SettingsEngine.SelfReboot(deleteCmd);
+                }
+                else
+                {
+                    ScanStatus = ResourceString.GetString("diag_fix_dwm_cancelled") ?? "Cache purge aborted. Restart required.";
+                    AiSummary = ResourceString.GetString("diag_fix_dwm_pending") ?? "PENDING: The ui rendering cache is unlocked but requires an app restart to purge.";
+                }
+
+                return;
+            }
+
             ScanStatus = string.Format(ResourceString.GetString("diag_fix_event_attempt") ?? "Attempting remediation for {0}...", eventId);
+
             bool success = await RemediationEngine.RunFixAsync(eventId);
 
             if (success)
@@ -977,6 +1034,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 var fixedEvent = MinedSystemEvents.FirstOrDefault(e => e.EventId == eventId);
                 if (fixedEvent != null) MinedSystemEvents.Remove(fixedEvent);
+
+                CalculateStabilityTrend(MinedSystemEvents);
             }
             else
             {
@@ -1047,11 +1106,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             bool isStabilityCritical = (isUptimeReliable && errorsPerHour > 5.0) || currentScore < 70;
             bool isHardwareCritical = DetectedHardwareIssues.Count > 0;
 
-            if (isHardwareCritical || isStabilityCritical)
+            bool hasCriticalAppCrash = MinedSystemEvents.Any(e => e.EventId == 9003);
+
+            if (isHardwareCritical || isStabilityCritical || hasCriticalAppCrash)
             {
                 SystemHealthBrush = new SolidColorBrush(Colors.Red);
 
-                if (isHardwareCritical)
+                if (hasCriticalAppCrash && !isHardwareCritical && !isStabilityCritical)
+                {
+                    ScannerText = ResourceString.GetString("diag_status_critical_app") ?? "CRITICAL. RENDERING ENGINE CORRUPTION DETECTED.";
+                }
+                else if (isHardwareCritical)
                 {
                     ScannerText = string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count);
                 }
@@ -1290,7 +1355,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         36887, 36888, 40961, 40962,
 
                         // Custom Actionable Event IDs
-                        9001, 9002, 1801,
+                        9001, 9002, 9003, 1801,
 
                         // --- FULL SECURITY SUITE IDs ---
                         9101, 9102, 9103, 9104, 9105, 9106, 9107, 9108, 9109,
@@ -1345,6 +1410,27 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         criticalCount++;
                     }
 
+                    DateTime lastPurge = LocalMachineSettingsEngine.LastCachePurgeTime;
+
+                    bool hasDwmCrash = systemEvents.Any(e => e.EventId == 1000 &&
+                                                             e.TimeCreated > lastPurge &&
+                                                             e.FullMessage != null &&
+                                                             e.FullMessage.Contains("dwmcorei.dll", StringComparison.OrdinalIgnoreCase) &&
+                                                             e.FullMessage.Contains("EvolveOS_Optimizer.exe", StringComparison.OrdinalIgnoreCase));
+
+                    if (hasDwmCrash)
+                    {
+                        var uiCrashAlert = CreateAlert(9003, neuralSource, ResourceString.GetString("diag_alert_dwm_crash")
+                            ?? "CRITICAL: UI Rendering Engine crash detected in history. The .NET Native Cache requires a purge.");
+
+                        string fingerprint = $"9003_{neuralSource}_SECURE";
+                        if (!LocalMachineSettingsEngine.DismissedEventsList.Contains(fingerprint))
+                        {
+                            MinedSystemEvents.Insert(0, uiCrashAlert);
+                            criticalCount++;
+                        }
+                    }
+
                     string securitySource = ResourceString.GetString("diag_alert_source_security") ?? "Security Engine";
 
                     Action<int, string, byte> AddSecurityAlert = (id, msg, level) =>
@@ -1393,10 +1479,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     bool hasSecurityRisks = MinedSystemEvents.Any(e => e.EventId >= 9101 && e.EventId <= 9117);
                     bool hasCriticalSecurity = MinedSystemEvents.Any(e => e.EventId >= 9101 && e.EventId <= 9117 && e.Level == 1);
 
-                    // Priority 1: Hard Failures or Critical Vulnerabilities
                     if (isHardwareCritical || isStabilityCritical || hasCriticalSecurity)
                     {
-                        // If it's purely a security vulnerability without a system crash, use the Vulnerable template
                         if (hasCriticalSecurity && !isHardwareCritical && !isStabilityCritical)
                         {
                             AiSummary = ResourceString.GetString("diag_ai_summary_vulnerable")
@@ -1404,20 +1488,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         }
                         else
                         {
-                            // General Critical (Hardware or high crash rate)
                             string template = ResourceString.GetString("diag_ai_summary_critical")
                                 ?? "AI Analysis: CRITICAL. Detected {0} system errors ({1:0.#}/hour) and {2} hardware issues. Immediate action recommended.";
 
                             AiSummary = string.Format(template, criticalCount, errorsPerHour, DetectedHardwareIssues.Count);
                         }
                     }
-                    // Priority 2: Specific Windows Recovery Events
                     else if (MinedSystemEvents.Any(e => e.EventId == 42))
                     {
                         AiSummary = ResourceString.GetString("diag_ai_summary_crash")
                             ?? "AI Analysis: Event log corruption detected. Windows has auto-repaired the log file. This usually indicates a recent forced shutdown or power failure.";
                     }
-                    // Priority 3: Minor Issues (Stability or Security Warnings)
                     else if (criticalCount > 0 || hasSecurityRisks)
                     {
                         string template = ResourceString.GetString("diag_ai_summary_issues")
@@ -1425,7 +1506,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                         AiSummary = string.Format(template, criticalCount, DetectedHardwareIssues.Count);
                     }
-                    // Priority 4: All Clear
                     else
                     {
                         AiSummary = ResourceString.GetString("diag_ai_summary_nominal") ?? "AI Analysis: System telemetry is completely nominal.";
@@ -1433,63 +1513,37 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     CalculateStabilityTrend(MinedSystemEvents);
 
-                    if (isHardwareCritical || isStabilityCritical || hasCriticalSecurity)
-                    {
-                        // If it's purely a security vulnerability without a system crash, use the Vulnerable template
-                        if (hasCriticalSecurity && !isHardwareCritical && !isStabilityCritical)
-                        {
-                            AiSummary = ResourceString.GetString("diag_ai_summary_vulnerable")
-                                ?? "AI Analysis: VULNERABLE. Critical security features are disabled. Your system is exposed to external threats.";
-                        }
-                        else
-                        {
-                            // General Critical (Hardware or high crash rate)
-                            string template = ResourceString.GetString("diag_ai_summary_critical")
-                                ?? "AI Analysis: CRITICAL. Detected {0} system errors ({1:0.#}/hour) and {2} hardware issues. Immediate action recommended.";
-
-                            AiSummary = string.Format(template, criticalCount, errorsPerHour, DetectedHardwareIssues.Count);
-                        }
-                    }
-                    // Priority 2: Specific Windows Recovery Events
-                    else if (MinedSystemEvents.Any(e => e.EventId == 42))
-                    {
-                        AiSummary = ResourceString.GetString("diag_ai_summary_crash")
-                            ?? "AI Analysis: Event log corruption detected. Windows has auto-repaired the log file. This usually indicates a recent forced shutdown or power failure.";
-                    }
-                    // Priority 3: Minor Issues (Stability or Security Warnings)
-                    else if (criticalCount > 0 || hasSecurityRisks)
-                    {
-                        string template = ResourceString.GetString("diag_ai_summary_issues")
-                            ?? "AI Analysis: Detected {0} minor system events and {1} hardware issues. Stability remains within normal tolerances.";
-
-                        AiSummary = string.Format(template, criticalCount, DetectedHardwareIssues.Count);
-                    }
-                    // Priority 4: All Clear
-                    else
-                    {
-                        AiSummary = ResourceString.GetString("diag_ai_summary_nominal") ?? "AI Analysis: System telemetry is completely nominal.";
-                    }
-
                     ScanStatus = string.Format(ResourceString.GetString("diag_scan_complete") ?? "Scan complete. {0} issues | {1} events.", DetectedHardwareIssues.Count, MinedSystemEvents.Count);
 
                     double.TryParse(StabilityScore.Replace("%", ""), out double currentScore);
                     int countForUI = MinedSystemEvents.Count(e => e.Level == 1 || e.Level == 2);
 
-                    if (isHardwareCritical || isStabilityCritical)
+                    bool hasCriticalAppCrash = MinedSystemEvents.Any(e => e.EventId == 9003);
+
+                    if (isHardwareCritical || isStabilityCritical || hasCriticalAppCrash)
                     {
                         SystemHealthBrush = new SolidColorBrush(Colors.Red);
-                        ScannerText = isHardwareCritical
-                            ? string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count)
-                            : string.Format(ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).", errorsPerHour);
+
+                        if (hasCriticalAppCrash && !isHardwareCritical && !isStabilityCritical)
+                        {
+                            ScannerText = ResourceString.GetString("diag_status_critical_app") ?? "CRITICAL. RENDERING ENGINE CORRUPTION DETECTED.";
+                        }
+                        else if (isHardwareCritical)
+                        {
+                            ScannerText = string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count);
+                        }
+                        else
+                        {
+                            ScannerText = string.Format(ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).", errorsPerHour);
+                        }
                     }
                     else if (MinedSystemEvents.Any(e => e.EventId == 42))
                     {
-                        // Unclean Shutdown / Crash always triggers a warning
                         SystemHealthBrush = new SolidColorBrush(Colors.Gold);
                         ScannerText = ResourceString.GetString("diag_status_warning_crash")
                             ?? "WARNING. RECENT SYSTEM CRASH OR POWER LOSS DETECTED.";
                     }
-                    else if (countForUI > 5 || currentScore < 90) // <--- The strict "Under 6" and "Score >= 90" rule
+                    else if (countForUI > 5 || currentScore < 90)
                     {
                         SystemHealthBrush = new SolidColorBrush(Colors.Gold);
                         ScannerText = string.Format(ResourceString.GetString("diag_status_warning_events") ?? "WARNING. {0} SYSTEM EVENTS LOGGED.", countForUI);
@@ -1848,16 +1902,27 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     double.TryParse(StabilityScore.Replace("%", ""), out double currentScore);
                     int countForUI = MinedSystemEvents.Count(e => e.Level == 1 || e.Level == 2);
 
-                    if (isHardwareCritical || isStabilityCritical)
+                    bool hasCriticalAppCrash = MinedSystemEvents.Any(e => e.EventId == 9003);
+
+                    if (isHardwareCritical || isStabilityCritical || hasCriticalAppCrash)
                     {
                         SystemHealthBrush = new SolidColorBrush(Colors.Red);
-                        ScannerText = isHardwareCritical
-                            ? string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count)
-                            : string.Format(ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).", errorsPerHour);
+
+                        if (hasCriticalAppCrash && !isHardwareCritical && !isStabilityCritical)
+                        {
+                            ScannerText = ResourceString.GetString("diag_status_critical_app") ?? "CRITICAL. RENDERING ENGINE CORRUPTION DETECTED.";
+                        }
+                        else if (isHardwareCritical)
+                        {
+                            ScannerText = string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", DetectedHardwareIssues.Count);
+                        }
+                        else
+                        {
+                            ScannerText = string.Format(ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).", errorsPerHour);
+                        }
                     }
                     else if (MinedSystemEvents.Any(e => e.EventId == 42))
                     {
-                        // Unclean Shutdown / Crash always triggers a warning
                         SystemHealthBrush = new SolidColorBrush(Colors.Gold);
                         ScannerText = ResourceString.GetString("diag_status_warning_crash")
                             ?? "WARNING. RECENT SYSTEM CRASH OR POWER LOSS DETECTED.";

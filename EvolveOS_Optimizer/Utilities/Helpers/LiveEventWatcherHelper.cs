@@ -47,7 +47,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             9101, 9102, 9103, 9104, 9105, 9106, 9107, 9108, 9109,
             9110, 9111, 9112, 9113, 9114, 9115, 9116, 9117,
 
-            1801, 9002
+            9002, 9003, 1801
         };
 
         private readonly string[] _ignoredSources = {

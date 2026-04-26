@@ -2034,6 +2034,20 @@
     <sys:String x:Key="diag_status_optimal_minor">SYSTEM OPTIMAL. {0} MINOR LOGS IGNORED.</sys:String>
     <sys:String x:Key="diag_history_system_state">Active Configuration</sys:String>
 
+    <sys:String x:Key="diag_alert_dwm_crash">CRITICAL: UI Rendering Engine crash detected in history. The .NET Native Cache requires a purge.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_attempt">Purging corrupted .NET native cache...</sys:String>
+    <sys:String x:Key="diag_fix_dwm_success">UI Cache purged. Please restart the application.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_ai">AUTO-FIX DEPLOYED: The ui rendering cache was cleared. A restart is recommended.</sys:String>
+    <sys:String x:Key="diag_status_critical_app">CRITICAL. RENDERING ENGINE CORRUPTION DETECTED.</sys:String>
+
+    <sys:String x:Key="diag_reboot_required_title">Restart Required</sys:String>
+    <sys:String x:Key="diag_reboot_required_msg">The application must be restarted to purge the corrupted UI cache. Would you like to restart now?</sys:String>
+    <sys:String x:Key="diag_fix_dwm_cancelled">Cache purge aborted. Restart required.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_pending">PENDING: The ui rendering cache is unlocked but requires an app restart to purge.</sys:String>
+
+    <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
+    <sys:String x:Key="txt_later">Later</sys:String>
+
     <sys:String x:Key="wmi_code_default_summary">A cryptic error code (Code {0}) was detected by the proactive scan.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows encountered an internal error with this driver. Check Device Manager or reinstall the standard driver.</sys:String>
     <sys:String x:Key="wmi_code_extended_summary">Extended PnP Error (Code {0}) detected on the hardware bus.</sys:String>

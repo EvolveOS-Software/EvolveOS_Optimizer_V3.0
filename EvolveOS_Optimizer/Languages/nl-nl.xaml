@@ -2018,6 +2018,20 @@
     <sys:String x:Key="diag_status_optimal_minor">SYSTEEM OPTIMAAL. {0} KLEINE MELDINGEN GENEGEERD.</sys:String>
     <sys:String x:Key="diag_history_system_state">Actieve Configuratie</sys:String>
 
+    <sys:String x:Key="diag_alert_dwm_crash">KRITIEK: Crash van de UI-weergave-engine gedetecteerd in de geschiedenis. De .NET Native Cache moet worden gewist.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_attempt">De beschadigde .NET native cache wissen...</sys:String>
+    <sys:String x:Key="diag_fix_dwm_success">UI-cache gewist. Start de applicatie opnieuw.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_ai">AUTO FIX UITGEVOERD: De weergavecache van de UI is gewist. Een herstart wordt aanbevolen.</sys:String>
+    <sys:String x:Key="diag_status_critical_app">KRITIEK. CORRUPTIE VAN WEERGAVE-ENGINE GEDETECTEERD.</sys:String>
+
+    <sys:String x:Key="diag_reboot_required_title">Herstart Vereist</sys:String>
+    <sys:String x:Key="diag_reboot_required_msg">De applicatie moet opnieuw worden gestart om de beschadigde UI cache te wissen. Wilt u nu opnieuw opstarten?</sys:String>
+    <sys:String x:Key="diag_fix_dwm_cancelled">Wissen van cache afgebroken. Herstart vereist.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_pending">IN AFWACHTING: De weergavecache van de UI is ontgrendeld, maar de app moet opnieuw worden opgestart om deze te wissen.</sys:String>
+
+    <sys:String x:Key="txt_restart_now">Nu herstarten</sys:String>
+    <sys:String x:Key="txt_later">Later</sys:String>
+
     <sys:String x:Key="wmi_code_default_summary">Een cryptische foutcode (Code {0}) is gedetecteerd door de proactieve scan.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows heeft een interne fout ondervonden met dit stuurprogramma. Controleer Apparaatbeheer of installeer het standaard stuurprogramma opnieuw.</sys:String>
     <sys:String x:Key="wmi_code_extended_summary">Uitgebreide PnP-fout (Code {0}) gedetecteerd op de hardwarebus.</sys:String>

@@ -2029,6 +2029,20 @@
     <sys:String x:Key="diag_status_optimal_minor">SISTEMA OTTIMALE. {0} LOG MINORI IGNORATI.</sys:String>
     <sys:String x:Key="diag_history_system_state">Configurazione Attiva</sys:String>
 
+    <sys:String x:Key="diag_alert_dwm_crash">CRITICO: Rilevato arresto anomalo del motore di rendering dell'interfaccia utente nella cronologia. La cache nativa .NET richiede uno svuotamento.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_attempt">Svuotamento della cache nativa .NET danneggiata in corso...</sys:String>
+    <sys:String x:Key="diag_fix_dwm_success">Cache dell'interfaccia utente svuotata. Riavviare l'applicazione.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_ai">AUTO FIX DISTRIBUITO: La cache di rendering dell'interfaccia utente è stata cancellata. Si consiglia un riavvio.</sys:String>
+    <sys:String x:Key="diag_status_critical_app">CRITICO. RILEVATO DANNEGGIAMENTO DEL MOTORE DI RENDERING.</sys:String>
+
+    <sys:String x:Key="diag_reboot_required_title">Riavvio Richiesto</sys:String>
+    <sys:String x:Key="diag_reboot_required_msg">L'applicazione deve essere riavviata per svuotare la cache dell'interfaccia utente danneggiata. Vuoi riavviare ora?</sys:String>
+    <sys:String x:Key="diag_fix_dwm_cancelled">Svuotamento cache annullato. Riavvio richiesto.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_pending">IN ATTESA: La cache di rendering dell'interfaccia utente è sbloccata ma richiede il riavvio dell'app per essere svuotata.</sys:String>
+
+    <sys:String x:Key="txt_restart_now">Riavvia ora</sys:String>
+    <sys:String x:Key="txt_later">Più tardi</sys:String>
+
     <sys:String x:Key="wmi_code_default_summary">Un codice di errore criptico (Codice {0}) è stato rilevato dalla scansione proattiva.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows ha riscontrato un errore interno con questo driver. Controllare Gestione Dispositivi o reinstallare il driver standard.</sys:String>
     <sys:String x:Key="wmi_code_extended_summary">Errore PnP Esteso (Codice {0}) rilevato sul bus hardware.</sys:String>

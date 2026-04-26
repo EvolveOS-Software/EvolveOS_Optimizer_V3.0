@@ -2027,9 +2027,23 @@
 
     <sys:String x:Key="wmi_code_default_summary">Ein kryptischer Fehlercode (Code {0}) wurde durch den proaktiven Scan erkannt.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows hat bei diesem Treiber einen internen Fehler festgestellt. Überprüfen Sie den Geräte-Manager oder installieren Sie den Standardtreiber neu.</sys:String>
-    <sys:String x:Key="wmi_code_extended_summary">Erweiterter PnP-Fehler (Code {0}) auf dem Hardware-Bus erkannt.</sys:String>
-    <sys:String x:Key="wmi_code_extended_fix">Dies ist ein komplexer Hardwarekonflikt oder Treiberabsturz. Verwenden Sie das EvolveOS-Auto-Remediation-Tool, um den PnP-Status zurückzusetzen.</sys:String>
+    <sys:String x:Key="wmi_code_extended_summary">Erweiterter PnP Fehler (Code {0}) auf dem Hardware-Bus erkannt.</sys:String>
+    <sys:String x:Key="wmi_code_extended_fix">Dies ist ein komplexer Hardwarekonflikt oder Treiberabsturz. Verwenden Sie das EvolveOS-Auto Remediation Tool, um den PnP-Status zurückzusetzen.</sys:String>
 
+    <sys:String x:Key="diag_alert_dwm_crash">KRITISCH: Absturz der UI-Rendering-Engine im Verlauf erkannt. Der .NET Native Cache muss bereinigt werden.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_attempt">Beschädigter .NET Native Cache wird bereinigt...</sys:String>
+    <sys:String x:Key="diag_fix_dwm_success">UI-Cache bereinigt. Bitte starten Sie die Anwendung neu.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_ai">AUTO FIX BEREITGESTELLT: Der UI Rendering Cache wurde geleert. Ein Neustart wird empfohlen.</sys:String>
+    <sys:String x:Key="diag_status_critical_app">KRITISCH. BESCHÄDIGUNG DER RENDERING-ENGINE ERKANNT.</sys:String>
+
+    <sys:String x:Key="diag_reboot_required_title">Neustart Erforderlich</sys:String>
+    <sys:String x:Key="diag_reboot_required_msg">Die Anwendung muss neu gestartet werden, um den beschädigten UI Cache zu bereinigen. Möchten Sie jetzt neu starten?</sys:String>
+    <sys:String x:Key="diag_fix_dwm_cancelled">Cache-Bereinigung abgebrochen. Neustart erforderlich.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_pending">AUSSTEHEND: Der UI Rendering-Cache ist entsperrt, erfordert aber einen Neustart der App zur Bereinigung.</sys:String>
+
+    <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>
+    <sys:String x:Key="txt_later">Später</sys:String>
+    
     <sys:String x:Key="wmi_code_1_summary">Das Gerät ist nicht richtig konfiguriert.</sys:String>
     <sys:String x:Key="wmi_code_1_fix">Aktualisieren Sie den Treiber oder setzen Sie ihn auf die vorherige Version zurück.</sys:String>
 

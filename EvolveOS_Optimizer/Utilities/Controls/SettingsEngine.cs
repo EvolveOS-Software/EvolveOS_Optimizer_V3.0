@@ -433,15 +433,18 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             catch { }
         }
 
-        internal static async void SelfReboot()
+        internal static async void SelfReboot(string injectedCommand = "")
         {
             string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
             if (!string.IsNullOrEmpty(exePath))
             {
+
+                string extra = string.IsNullOrWhiteSpace(injectedCommand) ? "" : $"{injectedCommand} & ";
+
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = $"/c ping 127.0.0.1 -n 3 > nul & start \"\" \"{exePath}\"",
+                    Arguments = $"/c ping 127.0.0.1 -n 3 > nul & {extra}start \"\" \"{exePath}\"",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true
                 });
@@ -527,7 +530,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["TranslationHotkeyKey"] = (int)VirtualKey.L,
             ["EnableStartupMonitor"] = true,
             ["EnableLiveDiagnostics"] = false,
-            ["DiagnosticsGraphTime"] = 60
+            ["DiagnosticsGraphTime"] = 60,
+            ["LastCachePurgeTime"] = DateTime.MinValue.ToString("o")
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -782,6 +786,17 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 File.WriteAllText(_dismissedEventsFile, json);
             }
             catch { System.Diagnostics.Debug.WriteLine("Failed to save dismissed events."); }
+        }
+
+        internal static DateTime LastCachePurgeTime
+        {
+            get
+            {
+                if (DateTime.TryParse(_cachedSettings["LastCachePurgeTime"].ToString(), out DateTime dt))
+                    return dt;
+                return DateTime.MinValue;
+            }
+            set => ChangingParameters("LastCachePurgeTime", value.ToString("o"));
         }
 
     #endregion
