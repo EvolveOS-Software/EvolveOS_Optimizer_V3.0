@@ -31,6 +31,7 @@
 
         <PublishReadyToRun>False</PublishReadyToRun>
         <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <!-- <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile> // For 0xc0000005 issues -->
 
         <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
         <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>

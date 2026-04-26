@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.Eventing.Reader;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -42,6 +43,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             11708, 11724, 11728, 12001, 12010, 12011, 12012, 12013, 12289, 12290, 12291, 12292, 12293, 12294, 12295, 12296,
             12297, 12298, 12300, 12301, 12302, 12303, 12304, 36870, 36871, 36874, 36880, 36881, 36882, 36884, 36885, 36886,
             36887, 36888, 40961, 40962,
+
+            9101, 9102, 9103, 9104, 9105, 9106, 9107, 9108, 9109,
+            9110, 9111, 9112, 9113, 9114, 9115, 9116, 9117,
 
             1801, 9002
         };
@@ -104,6 +108,15 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 bool isNoisy = _ignoredSources.Any(s => source.Contains(s, StringComparison.OrdinalIgnoreCase));
                 if (isNoisy && level > 1)
+                {
+                    return;
+                }
+
+                string eventFingerprint = eventId >= 9101
+                    ? $"{eventId}_{source}_SECURE"
+                    : $"{eventId}_{source}_{(record.TimeCreated?.Ticks ?? DateTime.Now.Ticks)}";
+
+                if (LocalMachineSettingsEngine.DismissedEventsList.Contains(eventFingerprint))
                 {
                     return;
                 }

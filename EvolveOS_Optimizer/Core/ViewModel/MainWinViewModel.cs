@@ -228,7 +228,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             MinimizeCommand = new RelayCommand<object>(_ => ExecuteMinimize());
             CloseCommand = new RelayCommand<object>(_ => ExecuteClose());
             OpenSecurityCommand = new RelayCommand<object>(_ => OpenPageFromTray("Security"));
-            OpenMaintenanceCommand = new RelayCommand<object>(_ => OpenPageFromTray("Maintenance"));
+            OpenMaintenanceCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics"));
             OpenDnsCommand = new RelayCommand<object>(_ => OpenPageFromTray("Utilities")); // DNS is inside Utilities
             ToggleWindowVisibilityCommand = new RelayCommand<object>(_ => ExecuteToggleVisibility());
 

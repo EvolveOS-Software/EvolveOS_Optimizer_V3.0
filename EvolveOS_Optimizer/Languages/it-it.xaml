@@ -1253,7 +1253,7 @@
     <sys:String x:Key="systray_close_window">Esci da EvolveOS</sys:String>
     <sys:String x:Key="systray_click_show">Fai doppio clic per aprire EvolveOS Optimizer</sys:String>
     <sys:String x:Key="systray_security">Centro di sicurezza</sys:String>
-    <sys:String x:Key="systray_maintenance">Manutenzione del sistema</sys:String>
+    <sys:String x:Key="systray_maintenance">Command Center</sys:String>
     <sys:String x:Key="systray_dns">Cambia DNS</sys:String>
     <!-- endregion System TrayIcon -->
 
@@ -2022,6 +2022,12 @@
     <sys:String x:Key="diag_tooltip_copy_msg">Copia messaggio completo</sys:String>
     <sys:String x:Key="diag_copy_success_title">Copiato negli appunti</sys:String>
     <sys:String x:Key="diag_copy_success_msg">Il messaggio del registro eventi è stato copiato.</sys:String>
+
+    <sys:String x:Key="diag_alert_source_security">Motore di sicurezza</sys:String>
+    <sys:String x:Key="diag_security_fix_launched">Impostazioni di sistema aperte. Si prega di regolare la protezione richiesta.</sys:String>
+    <sys:String x:Key="diag_ai_summary_vulnerable">Analisi IA: VULNERABILE. Le funzioni di sicurezza critiche sono disabilitate. Il sistema è esposto a minacce esterne.</sys:String>
+    <sys:String x:Key="diag_status_optimal_minor">SISTEMA OTTIMALE. {0} LOG MINORI IGNORATI.</sys:String>
+    <sys:String x:Key="diag_history_system_state">Configurazione Attiva</sys:String>
 
     <sys:String x:Key="wmi_code_default_summary">Un codice di errore criptico (Codice {0}) è stato rilevato dalla scansione proattiva.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows ha riscontrato un errore interno con questo driver. Controllare Gestione Dispositivi o reinstallare il driver standard.</sys:String>

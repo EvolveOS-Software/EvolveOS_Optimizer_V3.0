@@ -1247,7 +1247,7 @@
     <sys:String x:Key="systray_close_window">Quitter EvolveOS</sys:String>
     <sys:String x:Key="systray_click_show">Double-cliquez pour ouvrir EvolveOS Optimizer</sys:String>
     <sys:String x:Key="systray_security">Centre de sécurité</sys:String>
-    <sys:String x:Key="systray_maintenance">Maintenance du système</sys:String>
+    <sys:String x:Key="systray_maintenance">Command Center</sys:String>
     <sys:String x:Key="systray_dns">Changeur de DNS</sys:String>
     <!-- endregion System TrayIcon -->
 
@@ -2016,6 +2016,12 @@
     <sys:String x:Key="diag_tooltip_copy_msg">Copier le message complet</sys:String>
     <sys:String x:Key="diag_copy_success_title">Copié dans le presse-papiers</sys:String>
     <sys:String x:Key="diag_copy_success_msg">Le message du journal d'événements a été copié.</sys:String>
+
+    <sys:String x:Key="diag_alert_source_security">Moteur de sécurité</sys:String>
+    <sys:String x:Key="diag_security_fix_launched">Paramètres système ouverts. Veuillez ajuster la protection requise.</sys:String>
+    <sys:String x:Key="diag_ai_summary_vulnerable">Analyse IA : VULNÉRABLE. Des fonctions de sécurité critiques sont désactivées. Votre système est exposé à des menaces externes.</sys:String>
+    <sys:String x:Key="diag_status_optimal_minor">SYSTÈME OPTIMAL. {0} JOURNAUX MINEURS IGNORÉS.</sys:String>
+    <sys:String x:Key="diag_history_system_state">Configuration Active</sys:String>
 
     <sys:String x:Key="wmi_code_default_summary">Un code d'erreur cryptique (Code {0}) a été détecté par l'analyse proactive.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows a rencontré une erreur interne avec ce pilote. Vérifiez le Gestionnaire de périphériques ou réinstallez le pilote standard.</sys:String>

@@ -1249,7 +1249,7 @@
     <sys:String x:Key="systray_close_window">EvolveOS beenden</sys:String>
     <sys:String x:Key="systray_click_show">Doppelklicken, um den EvolveOS Optimizer zu öffnen</sys:String>
     <sys:String x:Key="systray_security">Sicherheitscenter</sys:String>
-    <sys:String x:Key="systray_maintenance">Systemwartung</sys:String>
+    <sys:String x:Key="systray_maintenance">Command Center</sys:String>
     <sys:String x:Key="systray_dns">DNS-Wechsler</sys:String>
     <!-- endregion System TrayIcon -->
 
@@ -2018,6 +2018,12 @@
     <sys:String x:Key="diag_tooltip_copy_msg">Vollständige Nachricht kopieren</sys:String>
     <sys:String x:Key="diag_copy_success_title">In die Zwischenablage kopiert</sys:String>
     <sys:String x:Key="diag_copy_success_msg">Die Ereignisprotokollnachricht wurde kopiert.</sys:String>
+
+    <sys:String x:Key="diag_alert_source_security">Sicherheits Engine</sys:String>
+    <sys:String x:Key="diag_security_fix_launched">Systemeinstellungen geöffnet. Bitte passen Sie den erforderlichen Schutz an.</sys:String>
+    <sys:String x:Key="diag_ai_summary_vulnerable">KI Analyse: GEFÄHRDET. Kritische Sicherheitsfunktionen sind deaktiviert. Ihr System ist externen Bedrohungen ausgesetzt.</sys:String>
+    <sys:String x:Key="diag_status_optimal_minor">SYSTEM OPTIMAL. {0} PROTOKOLLE IGNORIERT.</sys:String>
+    <sys:String x:Key="diag_history_system_state">Aktive Konfiguration</sys:String>
 
     <sys:String x:Key="wmi_code_default_summary">Ein kryptischer Fehlercode (Code {0}) wurde durch den proaktiven Scan erkannt.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows hat bei diesem Treiber einen internen Fehler festgestellt. Überprüfen Sie den Geräte-Manager oder installieren Sie den Standardtreiber neu.</sys:String>

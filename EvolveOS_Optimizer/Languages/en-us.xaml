@@ -1256,7 +1256,7 @@
     <sys:String x:Key="systray_click_show">Double-click to open EvolveOS Optimizer</sys:String>
 
     <sys:String x:Key="systray_security">Security Center</sys:String>
-    <sys:String x:Key="systray_maintenance">System Maintenance</sys:String>
+    <sys:String x:Key="systray_maintenance">Command Center</sys:String>
     <sys:String x:Key="systray_dns">DNS Changer</sys:String>
     <!-- endregion System TrayIcon -->
 
@@ -2027,6 +2027,12 @@
     <sys:String x:Key="diag_btn_history">History</sys:String>
     <sys:String x:Key="diag_history_empty">History is empty.</sys:String>
     <sys:String x:Key="diag_btn_restore">Restore</sys:String>
+
+    <sys:String x:Key="diag_alert_source_security">Security Engine</sys:String>
+    <sys:String x:Key="diag_security_fix_launched">Opened system settings. Please adjust the required protection.</sys:String>
+    <sys:String x:Key="diag_ai_summary_vulnerable">AI Analysis: VULNERABLE. Critical security features are disabled. Your system is exposed to external threats.</sys:String>
+    <sys:String x:Key="diag_status_optimal_minor">SYSTEM OPTIMAL. {0} MINOR LOGS IGNORED.</sys:String>
+    <sys:String x:Key="diag_history_system_state">Active Configuration</sys:String>
 
     <sys:String x:Key="wmi_code_default_summary">A cryptic error code (Code {0}) was detected by the proactive scan.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows encountered an internal error with this driver. Check Device Manager or reinstall the standard driver.</sys:String>

@@ -74,7 +74,7 @@
                                     Command="{Binding OpenSecurityCommand}"
                                     FontFamily="{StaticResource Jura-Regular}">
                         <MenuFlyoutItem.Icon>
-                            <FontIcon Glyph="&#xE773;" FontSize="14" Margin="0,0,0,2" />
+                            <FontIcon Glyph="&#xEA18;" FontSize="14" Margin="0,0,0,2" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
 
@@ -83,7 +83,7 @@
                                     Command="{Binding OpenMaintenanceCommand}"
                                     FontFamily="{StaticResource Jura-Regular}">
                         <MenuFlyoutItem.Icon>
-                            <FontIcon Glyph="&#xE9D9;" FontSize="14" Margin="0,0,0,2" />
+                            <FontIcon Glyph="&#xE772;" FontSize="14" Margin="0,0,0,2" />
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
 
