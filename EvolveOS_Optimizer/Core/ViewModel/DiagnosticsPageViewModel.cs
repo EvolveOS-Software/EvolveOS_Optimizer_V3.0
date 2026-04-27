@@ -1897,7 +1897,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         if (Computer != null && _isUiActive)
                         {
                             Computer.Memory = currentMemory;
-                            OnPropertyChanged(nameof(Computer));
                         }
                     });
 
@@ -1984,7 +1983,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         if (Computer != null && _isUiActive)
                         {
                             Computer.Memory = mem;
-                            OnPropertyChanged(nameof(Computer));
                         }
                     });
 
@@ -2322,7 +2320,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         Computer.Memory = _computerService.Memory;
                     }
 
-                    OnPropertyChanged(string.Empty);
+                    OnPropertyChanged(nameof(IsOptimizationKeyValid));
+                    OnPropertyChanged(nameof(UseHotkey));
+
                     App.ReleaseMemory();
                 }
             }
