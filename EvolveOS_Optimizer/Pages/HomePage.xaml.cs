@@ -1142,10 +1142,19 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (oldIndex != -1 && newIndex != -1)
                 {
-                    Debug.WriteLine($"[Drag] EXECUTING SWAP: {oldIndex} -> {newIndex}");
+                    Debug.WriteLine($"[Drag] EXECUTING TRUE SWAP: {oldIndex} <-> {newIndex}");
 
-                    DashboardGridView.Items.RemoveAt(oldIndex);
-                    DashboardGridView.Items.Insert(newIndex, _draggedWrapper);
+                    int firstIndex = Math.Min(oldIndex, newIndex);
+                    int secondIndex = Math.Max(oldIndex, newIndex);
+
+                    var firstItem = DashboardGridView.Items[firstIndex];
+                    var secondItem = DashboardGridView.Items[secondIndex];
+
+                    DashboardGridView.Items.RemoveAt(secondIndex);
+                    DashboardGridView.Items.RemoveAt(firstIndex);
+
+                    DashboardGridView.Items.Insert(firstIndex, secondItem);
+                    DashboardGridView.Items.Insert(secondIndex, firstItem);
 
                     SaveDashboardLayout();
                 }
