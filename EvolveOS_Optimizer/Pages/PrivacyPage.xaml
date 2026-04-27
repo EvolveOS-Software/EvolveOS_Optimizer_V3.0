@@ -21,23 +21,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <CommandBar Grid.Row="0" Background="Transparent" DefaultLabelPosition="Collapsed" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <CommandBar.PrimaryCommands>
-                <AppBarButton Icon="Setting" Width="48">
-                    <AppBarButton.Flyout>
-                        <Flyout Placement="Bottom">
-                            <StackPanel Spacing="10" MinWidth="200">
-                                <TextBlock helpers:Loc.Key="settings_card_effects" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                                <CheckBox Content="{helpers:ResourceString Key=settings_hover_glow}" IsChecked="{Binding IsHoverGlowEnabled, Mode=TwoWay}"/>
-                                <CheckBox Content="{helpers:ResourceString Key=settings_selection_glow}" IsChecked="{Binding IsSelectionGlowEnabled, Mode=TwoWay}"/>
-                            </StackPanel>
-                        </Flyout>
-                    </AppBarButton.Flyout>
-                </AppBarButton>
-            </CommandBar.PrimaryCommands>
-        </CommandBar>
-
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="4,12.5,12.5,12.5">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="8,12.5,12.5,12.5">
             <pa:TweakFlowPanel ItemWidth="469" HorizontalSpacing="10" VerticalSpacing="10">
 
                 <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="82" Tag="TglButton1">

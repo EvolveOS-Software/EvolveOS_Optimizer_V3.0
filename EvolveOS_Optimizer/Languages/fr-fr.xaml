@@ -525,8 +525,13 @@
     <sys:String x:Key="Tab_Recommended">Nettoyage recommandé</sys:String>
     <sys:String x:Key="Tab_Installed">Applications installées</sys:String>
     <sys:String x:Key="Tab_AppStore">Boutique d'applications (WinGet)</sys:String>
-    <sys:String x:Key="Tab_StartupApps">Démarrage</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
+
+    <!-- region System Manager Page (Tabbed) -->
+    <sys:String x:Key="Tab_Processes">Processus</sys:String>
+    <sys:String x:Key="Tab_Services">Services</sys:String>
+    <sys:String x:Key="Tab_StartupApps">Applications de démarrage</sys:String>
+    <!-- endregion System Manager Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
     <sys:String x:Key="warn_part1_pkg">Les applications seront supprimées</sys:String>

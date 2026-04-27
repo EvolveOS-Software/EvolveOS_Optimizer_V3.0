@@ -102,7 +102,6 @@ public sealed partial class SoftwareCenterPage : Page
             "PackagesPage" => typeof(PackagesPage),
             "SystemAppsPage" => typeof(SystemAppsPage),
             "AppStorePage" => typeof(AppStorePage),
-            "StartupManagerPage" => typeof(StartupManagerPage),
             _ => typeof(PackagesPage)
         };
 

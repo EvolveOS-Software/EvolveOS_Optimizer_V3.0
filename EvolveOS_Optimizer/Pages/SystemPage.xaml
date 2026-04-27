@@ -30,28 +30,12 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <CommandBar Grid.Row="0" Background="Transparent" DefaultLabelPosition="Collapsed" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <CommandBar.PrimaryCommands>
-                <AppBarButton Icon="Setting" Width="48" HorizontalAlignment="Center">
-                    <AppBarButton.Flyout>
-                        <Flyout Placement="Bottom">
-                            <StackPanel Spacing="10" MinWidth="200">
-                                <TextBlock helpers:Loc.Key="settings_card_effects" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                                <CheckBox Content="{helpers:ResourceString Key=settings_hover_glow}" IsChecked="{Binding IsHoverGlowEnabled, Mode=TwoWay}"/>
-                                <CheckBox Content="{helpers:ResourceString Key=settings_selection_glow}" IsChecked="{Binding IsSelectionGlowEnabled, Mode=TwoWay}"/>
-                            </StackPanel>
-                        </Flyout>
-                    </AppBarButton.Flyout>
-                </AppBarButton>
-            </CommandBar.PrimaryCommands>
-        </CommandBar>
-
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="8,0,0,0" Padding="0">
             <StackPanel Spacing="10">
 
                 <TextBlock helpers:Loc.Key="SystemPage_BasicOptimization" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 
-                <pa:SystemFlowPanel ItemWidth="464" HorizontalSpacing="10" VerticalSpacing="10">
+                <pa:SystemFlowPanel ItemWidth="464" HorizontalSpacing="10" VerticalSpacing="10" Margin="0,0,0,0">
 
                     <ContentControl Style="{StaticResource SystemCardStyle}" PointerEntered="Tweak_MouseEnter" PointerExited="Tweak_MouseLeave" Height="274" Tag="PowerPlanGroup">
                         <StackPanel VerticalAlignment="Center" Padding="15,5">

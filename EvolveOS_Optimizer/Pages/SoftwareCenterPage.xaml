@@ -42,12 +42,6 @@
                         <FontIcon Glyph="&#xE896;"/>
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
-
-                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_StartupApps}" Tag="StartupManagerPage">
-                    <ui:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE718;"/>
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>
 
             <Frame x:Name="ContentFrame" Background="Transparent" Margin="0,10,0,0"/>

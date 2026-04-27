@@ -31,6 +31,10 @@ namespace EvolveOS_Optimizer.Pages
                     case "ServiceManagerPage":
                         ContentFrame.Navigate(typeof(ServiceManagerPage));
                         break;
+
+                    case "StartupManagerPage":
+                        ContentFrame.Navigate(typeof(StartupManagerPage));
+                        break;
                 }
             }
         }

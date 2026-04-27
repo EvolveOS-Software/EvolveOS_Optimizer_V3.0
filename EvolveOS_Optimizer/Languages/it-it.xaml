@@ -529,8 +529,13 @@
     <sys:String x:Key="Tab_Recommended">Debloat Consigliato</sys:String>
     <sys:String x:Key="Tab_Installed">App Installate</sys:String>
     <sys:String x:Key="Tab_AppStore">App Store (WinGet)</sys:String>
-    <sys:String x:Key="Tab_StartupApps">App Di Avvio</sys:String>
     <!-- endregion Software Center Page (Tabbed) -->
+
+    <!-- region System Manager Page (Tabbed) -->
+    <sys:String x:Key="Tab_Processes">Processi</sys:String>
+    <sys:String x:Key="Tab_Services">Servizi</sys:String>
+    <sys:String x:Key="Tab_StartupApps">App di avvio</sys:String>
+    <!-- endregion System Manager Page (Tabbed) -->
 
     <!-- region Windows Packages (Tab 1) -->
     <sys:String x:Key="warn_part1_pkg">Le app verranno eliminate</sys:String>
