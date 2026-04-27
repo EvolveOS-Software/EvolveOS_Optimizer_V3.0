@@ -1,5 +1,9 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.IO;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -61,6 +65,67 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             catch (Exception ex)
             {
                 ErrorLogging.LogWritingFile(ex);
+            }
+        }
+
+        public static bool RestoreDatabase(string selectedBackupFilePath)
+        {
+            Microsoft.Data.SqlClient.SqlConnection.ClearAllPools();
+
+            string targetDbName = "EvolveOS_OptimizerDb_Main";
+
+            string masterConnString = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True";
+
+            string workingBakPath = selectedBackupFilePath;
+            bool usingTempDecryptedFile = false;
+
+            try
+            {
+                if (selectedBackupFilePath.EndsWith(".dat", StringComparison.OrdinalIgnoreCase))
+                {
+                    workingBakPath = Path.Combine(Path.GetTempPath(), "EvolveOS_TempRestore.bak");
+
+                    DatabaseSecurityService.DecryptDatabase(selectedBackupFilePath, workingBakPath);
+                    usingTempDecryptedFile = true;
+                }
+
+                using (var conn = new Microsoft.Data.SqlClient.SqlConnection(masterConnString))
+                {
+                    conn.Open();
+
+                    string sql = $@"
+                        ALTER DATABASE [{targetDbName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+                
+                        RESTORE DATABASE [{targetDbName}] FROM DISK = '{workingBakPath}' WITH REPLACE;
+                
+                        ALTER DATABASE [{targetDbName}] SET MULTI_USER;
+                    ";
+
+                    using (var cmd = new Microsoft.Data.SqlClient.SqlCommand(sql, conn))
+                    {
+                        cmd.CommandTimeout = 120;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                Debug.WriteLine("[App] Database restored successfully!");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[App] Failed to restore database: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                if (usingTempDecryptedFile && File.Exists(workingBakPath))
+                {
+                    try
+                    {
+                        File.Delete(workingBakPath);
+                    }
+                    catch { /* Ignore cleanup errors */ }
+                }
             }
         }
     }

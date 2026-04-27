@@ -213,6 +213,18 @@
     <sys:String x:Key="Settings_DbBackup_PersistentTitle">Backup-Einstellung merken</sys:String>
     <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">Wenn deaktiviert, wird die Backup-Funktion nach einem Neustart der App automatisch ausgeschaltet.</sys:String>
 
+    <sys:String x:Key="Settings_DbRestore_Title">Datenbank wiederherstellen</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Subtitle">Stellen Sie Ihre Einstellungen aus einer früheren .bak- oder .dat-Datei wieder her. Die App wird bei Erfolg neu gestartet.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Button">Backup wiederherstellen</sys:String>
+
+    <sys:String x:Key="Settings_DbRestore_Success_Title">Wiederherstellung erfolgreich</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Success_Content">Die Datenbank wurde erfolgreich wiederhergestellt! Die Anwendung wird nun automatisch neu gestartet, um die neue Konfiguration anzuwenden.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Success_Button">Jetzt neu starten</sys:String>
+
+    <sys:String x:Key="Settings_DbRestore_Error_Title">Wiederherstellung fehlgeschlagen</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Error_Content">Beim Versuch, die Datenbank wiederherzustellen, ist ein Fehler aufgetreten. Stellen Sie sicher, dass die Datei nicht beschädigt ist.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Error_Button">OK</sys:String>
+
     <sys:String x:Key="Settings_Recovery_SectionTitle">Wiederherstellung</sys:String>
     <sys:String x:Key="Settings_RevertTitle">Auf Windows-Standardeinstellungen zurücksetzen</sys:String>
     <sys:String x:Key="Settings_RevertDesc">Machen Sie Systemoptimierungen rückgängig und setzen Sie Ihren PC mithilfe der Windows-Systemwiederherstellung auf seinen vorherigen Zustand zurück.</sys:String>

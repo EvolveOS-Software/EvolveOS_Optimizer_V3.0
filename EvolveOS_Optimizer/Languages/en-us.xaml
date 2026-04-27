@@ -219,6 +219,18 @@
     <sys:String x:Key="Settings_DbBackup_PersistentTitle">Remember Backup Setting</sys:String>
     <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">If disabled, the backup toggle will automatically turn off after the app restarts.</sys:String>
 
+    <sys:String x:Key="Settings_DbRestore_Title">Restore Database</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Subtitle">Restore your settings from a previous .bak or .dat file. The app will restart upon success.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Button">Restore Backup</sys:String>
+
+    <sys:String x:Key="Settings_DbRestore_Success_Title">Restore Successful</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Success_Content">The database has been successfully restored! The application will now restart automatically to apply the new configuration.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Success_Button">Restart Now</sys:String>
+
+    <sys:String x:Key="Settings_DbRestore_Error_Title">Restore Failed</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Error_Content">An error occurred while attempting to restore the database. Make sure the file is not corrupted.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Error_Button">OK</sys:String>
+
     <sys:String x:Key="Settings_Recovery_SectionTitle">Recovery</sys:String>
     <sys:String x:Key="Settings_RevertTitle">Revert to Windows Defaults</sys:String>
     <sys:String x:Key="Settings_RevertDesc">Undo system optimizations and return your PC to its previous state using Windows System Restore.</sys:String>

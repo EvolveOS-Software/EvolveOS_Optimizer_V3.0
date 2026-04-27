@@ -213,6 +213,18 @@
     <sys:String x:Key="Settings_DbBackup_PersistentTitle">Ricorda impostazione di backup</sys:String>
     <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">Se disabilitato, l'opzione di backup si disattiverà automaticamente al riavvio dell'applicazione.</sys:String>
 
+    <sys:String x:Key="Settings_DbRestore_Title">Ripristina database</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Subtitle">Ripristina le tue impostazioni da un file .bak o .dat precedente. L'app si riavvierà in caso di successo.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Button">Ripristina backup</sys:String>
+
+    <sys:String x:Key="Settings_DbRestore_Success_Title">Ripristino completato</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Success_Content">Il database è stato ripristinato con successo! L'applicazione si riavvierà automaticamente per applicare la nuova configurazione.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Success_Button">Riavvia ora</sys:String>
+
+    <sys:String x:Key="Settings_DbRestore_Error_Title">Ripristino non riuscito</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Error_Content">Si è verificato un errore durante il tentativo di ripristino del database. Assicurati che il file non sia danneggiato.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Error_Button">OK</sys:String>
+
     <sys:String x:Key="Settings_Recovery_SectionTitle">Ripristino</sys:String>
     <sys:String x:Key="Settings_RevertTitle">Ripristina le impostazioni predefinite di Windows</sys:String>
     <sys:String x:Key="Settings_RevertDesc">Annulla le ottimizzazioni del sistema e riporta il PC allo stato precedente utilizzando il Ripristino configurazione di sistema di Windows.</sys:String>

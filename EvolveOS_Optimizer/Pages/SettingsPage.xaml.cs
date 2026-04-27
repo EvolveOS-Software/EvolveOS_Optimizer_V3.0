@@ -868,6 +868,60 @@ namespace EvolveOS_Optimizer.Pages
                 DatabaseBackupPath = folder.Path;
             }
         }
+
+        private async void RestoreDatabase_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var window = App.MainWindow;
+                if (window == null) return;
+
+                var windowId = window.AppWindow.Id;
+
+                var picker = new FileOpenPicker(windowId);
+
+                picker.FileTypeFilter.Add(".bak");
+                picker.FileTypeFilter.Add(".dat");
+
+                var pickResult = await picker.PickSingleFileAsync();
+
+                if (pickResult != null && !string.IsNullOrEmpty(pickResult.Path))
+                {
+                    bool success = SqlConnectionHelper.RestoreDatabase(pickResult.Path);
+
+                    if (success)
+                    {
+                        ContentDialog successDialog = new ContentDialog
+                        {
+                            Title = ResourceString.GetString("Settings_DbRestore_Success_Title"),
+                            Content = ResourceString.GetString("Settings_DbRestore_Success_Content"),
+                            CloseButtonText = ResourceString.GetString("Settings_DbRestore_Success_Button"),
+                            XamlRoot = this.XamlRoot
+                        };
+
+                        await successDialog.ShowAsync();
+
+                        SettingsEngine.SelfReboot();
+                    }
+                    else
+                    {
+                        ContentDialog errorDialog = new ContentDialog
+                        {
+                            Title = ResourceString.GetString("Settings_DbRestore_Error_Title"),
+                            Content = ResourceString.GetString("Settings_DbRestore_Error_Content"),
+                            CloseButtonText = ResourceString.GetString("Settings_DbRestore_Error_Button"),
+                            XamlRoot = this.XamlRoot
+                        };
+
+                        await errorDialog.ShowAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SettingsPage] File picker error: {ex.Message}");
+            }
+        }
         #endregion
 
         #region System Recovery

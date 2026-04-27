@@ -11,6 +11,7 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
+using Microsoft.Data.SqlClient;
 using Microsoft.UI.Dispatching;
 using Microsoft.Windows.AppNotifications;
 using static EvolveOS_Optimizer.Core.Enums;
@@ -541,7 +542,8 @@ namespace EvolveOS_Optimizer
             ExitApp();
         }
 
-        private static void HandleCleanup()
+        #region Cleanup & Offline Database Backup Logic
+        /*private static void HandleCleanup()
         {
             if (_isCleanupRunning)
             {
@@ -574,7 +576,8 @@ namespace EvolveOS_Optimizer
 
             try
             {
-                var stopInfo = new ProcessStartInfo("sqllocaldb", "stop MSSQLLocalDB -i")
+                //var stopInfo = new ProcessStartInfo("sqllocaldb", "stop MSSQLLocalDB -i") // -i -> Force
+                var stopInfo = new ProcessStartInfo("sqllocaldb", "stop MSSQLLocalDB")
                 {
                     CreateNoWindow = true,
                     WindowStyle = ProcessWindowStyle.Hidden
@@ -583,11 +586,7 @@ namespace EvolveOS_Optimizer
 
                 Thread.Sleep(500);
             }
-            catch { /* Log error */ }
-
-            // Note: _systemDiagnostics is handled correctly via IDisposable in LoadingWindow
-            // When implemented the static BackupScheduler in this project, uncomment the next line:
-            // BackupScheduler?.StopScheduler(); 
+            catch { /* Log error */ /*}
 
             string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? AppContext.BaseDirectory;
             string baseDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
@@ -721,7 +720,197 @@ namespace EvolveOS_Optimizer
             {
                 Debug.WriteLine($"[App] Failed to execute raw database backup: {ex.Message}");
             }
+        }*/
+        #endregion
+
+        #region Cleanup & Online Database Backup Logic
+        private static void HandleCleanup()
+        {
+            if (_isCleanupRunning)
+            {
+                return;
+            }
+
+            _isCleanupRunning = true;
+
+            try
+            {
+                bool hasActiveAutoLogin = TokenManager.TokenExists();
+
+                if (LocalMachineSettingsEngine.KeepDevModeOnExit || hasActiveAutoLogin)
+                {
+                    // Respect the explicit session choice or the auto-login state
+                }
+                else
+                {
+                    LocalMachineSettingsEngine.IsDeveloperMode = false;
+                    LocalMachineSettingsEngine.IsTranslationHotkeyEnabled = false;
+                }
+            }
+            catch { }
+
+            try
+            {
+                if (SettingsEngine.PerformDbBackup)
+                {
+                    ExecuteOnlineDatabaseBackup();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogWritingFile(ex, "App_OnlineBackup_Fail");
+            }
+
+            try
+            {
+                SqlConnectionHelper.ReleaseDatabase();
+            }
+            catch { }
+
+            try
+            {
+                var stopInfo = new ProcessStartInfo("sqllocaldb", "stop MSSQLLocalDB")
+                {
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
+                Process.Start(stopInfo)?.WaitForExit();
+
+                Thread.Sleep(500);
+            }
+            catch { /* Log error */ }
+
+            string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? AppContext.BaseDirectory;
+            string baseDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
+
+            string mdfPath = Path.Combine(baseDir, PlainDb);
+            string ldfPath = Path.Combine(baseDir, PlainLdf);
+            string securePath = Path.Combine(baseDir, SecureDb);
+            string secureLdfPath = Path.Combine(baseDir, SecureLdf);
+
+            if (!File.Exists(mdfPath))
+            {
+                Debug.WriteLine("[App] No MDF file found. Skipping encryption.");
+                ReleaseMemory();
+                return;
+            }
+
+            bool isReady = false;
+            for (int i = 0; i < 20; i++)
+            {
+                if (!DatabaseSecurityService.IsFileLocked(mdfPath))
+                {
+                    isReady = true;
+                    break;
+                }
+                Thread.Sleep(500);
+            }
+
+            if (isReady)
+            {
+                try
+                {
+                    DatabaseSecurityService.EncryptDatabase(mdfPath, securePath);
+
+                    if (File.Exists(ldfPath))
+                    {
+                        DatabaseSecurityService.EncryptDatabase(ldfPath, secureLdfPath);
+                    }
+
+                    if (File.Exists(securePath))
+                    {
+                        File.Delete(mdfPath);
+                    }
+                    if (File.Exists(secureLdfPath))
+                    {
+                        File.Delete(ldfPath);
+                    }
+
+                    Debug.WriteLine("[App] Database successfully encrypted and plain files deleted.");
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogWritingFile(ex, "App_HandleCleanup_Fail");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("[App] Timeout waiting for SQL Server to release the database files.");
+            }
+
+            try
+            {
+                _hotkeyService?.Dispose();
+
+                if (_mutex != null)
+                {
+                    _mutex.ReleaseMutex();
+                    _mutex.Dispose();
+                }
+            }
+            catch { }
+
+            ReleaseMemory();
         }
+
+
+        private static void ExecuteOnlineDatabaseBackup()
+        {
+            try
+            {
+                string backupDir = SettingsEngine.DatabaseBackupPath;
+                if (string.IsNullOrEmpty(backupDir) || !Directory.Exists(backupDir))
+                {
+                    return;
+                }
+
+                string stamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                bool encrypt = SettingsEngine.EncryptDbBackupCopies;
+
+                string plainBakPath = Path.Combine(backupDir, $"EvolveOS_Backup_{stamp}.bak");
+
+                using (var connection = new SqlConnection(SqlConnectionHelper.connectReturn()))
+                {
+                    connection.Open();
+
+                    string activeDbName = connection.Database;
+
+                    string query = $"BACKUP DATABASE [{activeDbName}] TO DISK = '{plainBakPath}'";
+
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                if (encrypt && File.Exists(plainBakPath))
+                {
+                    string encryptedBakPath = Path.Combine(backupDir, $"EvolveOS_Backup_{stamp}.dat");
+                    DatabaseSecurityService.EncryptDatabase(plainBakPath, encryptedBakPath);
+
+                    if (File.Exists(encryptedBakPath))
+                    {
+                        File.Delete(plainBakPath);
+                    }
+                }
+
+                if (!SettingsEngine.KeepBackupEnabled)
+                {
+                    ResetBackupSettings();
+                    Debug.WriteLine("[App] Backup settings reset as requested.");
+                }
+                else
+                {
+                    Debug.WriteLine("[App] Backup settings preserved for next session.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[App] Failed to execute online database backup: {ex.Message}");
+                throw;
+            }
+        }
+        #endregion
 
         private static void ResetBackupSettings()
         {

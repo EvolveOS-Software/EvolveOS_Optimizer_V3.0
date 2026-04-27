@@ -678,6 +678,27 @@
                                     <Button Content="{x:Bind GetText('Settings_DbBackup_BrowseButton'), Mode=OneWay}" Click="BrowseBackupFolder_Click" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Grid>
+
+                            <MenuFlyoutSeparator Opacity="0.5"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Spacing="2" Margin="0,0,16,0">
+                                    <TextBlock Text="{x:Bind GetText('Settings_DbRestore_Title'), Mode=OneWay, FallbackValue='Restore Database'}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{x:Bind GetText('Settings_DbRestore_Subtitle'), Mode=OneWay, FallbackValue='Restore your settings from a previous .bak or .dat file. The app will restart upon success.'}"
+                                               Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+
+                                <Button Grid.Column="1" Click="RestoreDatabase_Click" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE8B5;" FontSize="14"/>
+                                        <TextBlock Text="{x:Bind GetText('Settings_DbRestore_Button'), Mode=OneWay, FallbackValue='Restore Backup'}"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
                         </StackPanel>
 
                     </StackPanel>

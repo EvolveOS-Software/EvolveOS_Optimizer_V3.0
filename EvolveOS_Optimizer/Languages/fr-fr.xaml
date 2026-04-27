@@ -213,6 +213,18 @@
     <sys:String x:Key="Settings_DbBackup_PersistentTitle">Mémoriser le paramètre de sauvegarde</sys:String>
     <sys:String x:Key="Settings_DbBackup_PersistentSubtitle">Si désactivé, l'option de sauvegarde s'éteindra automatiquement après le redémarrage de l'application.</sys:String>
 
+    <sys:String x:Key="Settings_DbRestore_Title">Restaurer la base de données</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Subtitle">Restaurez vos paramètres à partir d'un ancien fichier .bak ou .dat. L'application redémarrera en cas de succès.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Button">Restaurer la sauvegarde</sys:String>
+
+    <sys:String x:Key="Settings_DbRestore_Success_Title">Restauration réussie</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Success_Content">La base de données a été restaurée avec succès ! L'application va maintenant redémarrer automatiquement pour appliquer la nouvelle configuration.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Success_Button">Redémarrer maintenant</sys:String>
+
+    <sys:String x:Key="Settings_DbRestore_Error_Title">Échec de la restauration</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Error_Content">Une erreur s'est produite lors de la tentative de restauration de la base de données. Assurez-vous que le fichier n'est pas corrompu.</sys:String>
+    <sys:String x:Key="Settings_DbRestore_Error_Button">OK</sys:String>
+
     <sys:String x:Key="Settings_Recovery_SectionTitle">Récupération</sys:String>
     <sys:String x:Key="Settings_RevertTitle">Rétablir les paramètres par défaut de Windows</sys:String>
     <sys:String x:Key="Settings_RevertDesc">Annulez les optimisations du système et restaurez votre PC à son état précédent à l'aide de la Restauration du système Windows.</sys:String>
