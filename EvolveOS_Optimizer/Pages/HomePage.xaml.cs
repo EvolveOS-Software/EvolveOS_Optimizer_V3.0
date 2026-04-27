@@ -1567,7 +1567,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (MainWindow.Instance != null)
             {
-                MainWindow.Instance.SwitchPage("Maintenance");
+                MainWindow.Instance.SwitchPage("Diagnostics", "Maintenance");
             }
             else
             {
@@ -1635,7 +1635,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (MainWindow.Instance != null)
             {
-                MainWindow.Instance.SwitchPage("Security");
+                MainWindow.Instance.SwitchPage("Diagnostics", "Security");
             }
             else
             {

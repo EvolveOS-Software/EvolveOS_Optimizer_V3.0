@@ -187,20 +187,20 @@
                             <FontIcon Glyph="&#xE80F;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton x:Name="BtnNavSecurity" Style="{StaticResource BtnNavigation}"
+                        <RadioButton x:Name="BtnNavDiagnostics" Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
-                                     CommandParameter="Security"
+                                     CommandParameter="Diagnostics"
                                      IsTabStop="False"
-                                     Tag="{x:Bind GetText('Nav_Security'),Mode=OneWay}">
-                            <FontIcon Glyph="&#xEA18;" FontSize="18"/>
+                                     Tag="{x:Bind GetText('Nav_CommandCenter'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xF246;" FontSize="18"/>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
-                                     CommandParameter="Confidentiality"
+                                     CommandParameter="SystemManager"
                                      IsTabStop="False"
-                                     Tag="{x:Bind GetText('Nav_Privacy'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xEE3F;" FontSize="18"/>
+                                     Tag="{x:Bind GetText('Nav_System_Manager'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xE9D9;" FontSize="18"/>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -209,6 +209,22 @@
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_GroupPolicy'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE9D5;" FontSize="18"/>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Software"
+                                     IsTabStop="False"
+                                     Tag="{x:Bind GetText('Nav_Software_Center'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xE74C;" FontSize="18"/>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Confidentiality"
+                                     IsTabStop="False"
+                                     Tag="{x:Bind GetText('Nav_Privacy'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xEE3F;" FontSize="18"/>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -225,22 +241,6 @@
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Services'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEC05;" FontSize="18"/>
-                        </RadioButton>
-
-                        <RadioButton Style="{StaticResource BtnNavigation}"
-                                     Command="{Binding ExecuteNavigateCommand}"
-                                     CommandParameter="SystemManager"
-                                     IsTabStop="False"
-                                     Tag="{x:Bind GetText('Nav_System_Manager'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE9D9;" FontSize="18"/>
-                        </RadioButton>
-
-                        <RadioButton Style="{StaticResource BtnNavigation}"
-                                     Command="{Binding ExecuteNavigateCommand}"
-                                     CommandParameter="Software"
-                                     IsTabStop="False"
-                                     Tag="{x:Bind GetText('Nav_Software_Center'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE74C;" FontSize="18"/>
                         </RadioButton>
 
                         <RadioButton x:Name="BtnNavUtilities" Style="{StaticResource BtnNavigation}"
@@ -265,14 +265,6 @@
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_System'), Mode=OneWay}">
                             <FontIcon Glyph="&#xEDA2;" FontSize="18"/>
-                        </RadioButton>
-
-                        <RadioButton x:Name="BtnNavDiagnostics" Style="{StaticResource BtnNavigation}"
-                                     Command="{Binding ExecuteNavigateCommand}"
-                                     CommandParameter="Diagnostics"
-                                     IsTabStop="False"
-                                     Tag="{x:Bind GetText('Nav_CommandCenter'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE772;" FontSize="18"/>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"

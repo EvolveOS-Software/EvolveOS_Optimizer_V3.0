@@ -23,6 +23,9 @@ namespace EvolveOS_Optimizer.Pages
 
         private bool _isCurrentPageActive = false;
 
+        public static string RequestedPaneOnLoad = "";
+        public static Action<string>? ExternalPaneRequest;
+
         #region Fields (Maintenance)
         private bool _isShowingResult = false;
         private readonly Dictionary<string, StringBuilder> _scanResults = new()
@@ -49,19 +52,13 @@ namespace EvolveOS_Optimizer.Pages
             this.DataContext = ViewModel;
 
             this.Loaded += DiagnosticsPage_Loaded;
-
-            this.Unloaded += (s, e) =>
-            {
-                if (ViewModel != null)
-                {
-                    RadarSpinStoryboard?.Stop();
-                }
-            };
+            this.Unloaded += DiagnosticsPage_Unloaded;
 
             if (ViewModel != null)
             {
                 ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
+                ViewModel.ShowSecurityIssuesRequested += ViewModel_ShowSecurityIssuesRequested;
                 ViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
                 ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
                 ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
@@ -96,11 +93,19 @@ namespace EvolveOS_Optimizer.Pages
         #region Event Handlers
         private async void DiagnosticsPage_Loaded(object sender, RoutedEventArgs e)
         {
+            ExternalPaneRequest = SwitchToPane;
+
             if (_isCurrentPageActive)
             {
                 SystemSonarStoryboard?.Begin();
                 HeartbeatStoryboard?.Begin();
                 RadarSpinStoryboard?.Begin();
+            }
+
+            if (!string.IsNullOrEmpty(RequestedPaneOnLoad))
+            {
+                SwitchToPane(RequestedPaneOnLoad);
+                RequestedPaneOnLoad = ""; // Clear the mailbox
             }
 
             var vm = ViewModel;
@@ -124,6 +129,61 @@ namespace EvolveOS_Optimizer.Pages
                 await ScrollToElementHelper.ScrollToElementAsync(this, _pendingScrollTarget);
                 _pendingScrollTarget = null;
             }
+        }
+
+        private void DiagnosticsPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                RadarSpinStoryboard?.Stop();
+            }
+
+            ExternalPaneRequest = null;
+        }
+
+        private void SwitchToPane(string paneName)
+        {
+            if (paneName == "Security" && SecurityToggle != null)
+            {
+                SecurityToggle.IsChecked = true;
+                SecurityToggle_Click(this, new RoutedEventArgs());
+            }
+            else if (paneName == "Maintenance" && MaintenanceToggle != null)
+            {
+                MaintenanceToggle.IsChecked = true;
+                MaintenanceToggle_Click(this, new RoutedEventArgs());
+            }
+        }
+
+        private async void ViewModel_ShowSecurityIssuesRequested(List<string> issues)
+        {
+            var stackPanel = new StackPanel { Spacing = 8, Margin = new Thickness(0, 10, 0, 0) };
+
+            foreach (var issue in issues)
+            {
+                stackPanel.Children.Add(new TextBlock
+                {
+                    Text = $"• {issue}",
+                    TextWrapping = TextWrapping.Wrap,
+                    FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/Jura-Regular.ttf#Jura")
+                });
+            }
+
+            var dialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("SecurityPage_WarningsTitle") ?? "Security Warnings Found",
+                Content = new ScrollViewer { Content = stackPanel, MaxHeight = 300, Padding = new Thickness(0, 0, 16, 0) },
+                CloseButtonText = ResourceString.GetString("Dialog_Close") ?? "Close",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+            {
+                dialog.Style = (Style)style;
+            }
+
+            await dialog.ShowAsync();
         }
 
         private void HeartbeatScanner_Loaded(object sender, RoutedEventArgs e)
@@ -167,14 +227,6 @@ namespace EvolveOS_Optimizer.Pages
             {
                 AnimationDesired = true
             });
-        }
-
-        private void MaintenanceToggle_Click(object sender, RoutedEventArgs e)
-        {
-            if (MainSplitView != null)
-            {
-                MainSplitView.IsPaneOpen = !MainSplitView.IsPaneOpen;
-            }
         }
         #endregion
 
@@ -784,6 +836,50 @@ namespace EvolveOS_Optimizer.Pages
                     _isShowingResult = false;
                 }
             });
+        }
+
+        private void MaintenanceToggle_Click(object sender, RoutedEventArgs e)
+        {
+            bool isOpen = MaintenanceToggle.IsChecked ?? false;
+
+            if (isOpen)
+            {
+                if (SecurityToggle.IsChecked == true)
+                {
+                    SecurityToggle.IsChecked = false;
+                    if (SecuritySplitView != null) SecuritySplitView.IsPaneOpen = false;
+                }
+
+                if (MainSplitView != null) MainSplitView.IsPaneOpen = true;
+            }
+            else
+            {
+                if (MainSplitView != null) MainSplitView.IsPaneOpen = false;
+            }
+        }
+
+        private void SecurityToggle_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel == null) return;
+
+            bool isOpen = SecurityToggle.IsChecked ?? false;
+
+            if (isOpen)
+            {
+                if (MaintenanceToggle.IsChecked == true)
+                {
+                    MaintenanceToggle.IsChecked = false;
+                    if (MainSplitView != null) MainSplitView.IsPaneOpen = false;
+                }
+
+                if (SecuritySplitView != null) SecuritySplitView.IsPaneOpen = true;
+
+                ViewModel.InitializeSecurityScan();
+            }
+            else
+            {
+                if (SecuritySplitView != null) SecuritySplitView.IsPaneOpen = false;
+            }
         }
         #endregion
 

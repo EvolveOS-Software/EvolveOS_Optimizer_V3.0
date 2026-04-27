@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -81,6 +82,162 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private bool _isBusy;
         private bool _isUiActive = true;
         private string _totalSpaceToFree = "0 MB";
+        #endregion
+
+        #region Security Properties (Security)
+        private DispatcherTimer? _securityRefreshTimer;
+        private bool _isSecurityCheckInProgress;
+        private bool _isUacSliderUpdating = false;
+        private bool _isSmartAppControlUpdating = false;
+        private bool _isPowerShellPolicyUpdating = false;
+        private bool _isRdpToggleUpdating = false;
+        private bool _isRaToggleUpdating = false;
+        private bool _isDevModeToggleUpdating = false;
+        private bool _hasSecurityInitialized = false;
+        private List<string> _currentSecurityIssues = new();
+
+        private string _securityStatusText = "Scanning...";
+        public string SecurityStatusText { get => _securityStatusText; set => SetProperty(ref _securityStatusText, value); }
+
+        private string _securityStatusImageUri = "ms-appx:///Assets/PngImages/Secure.png";
+        public string SecurityStatusImageUri { get => _securityStatusImageUri; set => SetProperty(ref _securityStatusImageUri, value); }
+
+        private Visibility _securityStatusLoadingRingVisibility = Visibility.Visible;
+        public Visibility SecurityStatusLoadingRingVisibility { get => _securityStatusLoadingRingVisibility; set => SetProperty(ref _securityStatusLoadingRingVisibility, value); }
+
+        private bool _isSecurityStatusLoadingRingActive = true;
+        public bool IsSecurityStatusLoadingRingActive { get => _isSecurityStatusLoadingRingActive; set => SetProperty(ref _isSecurityStatusLoadingRingActive, value); }
+
+        private string _securityLastRefreshedText = "";
+        public string SecurityLastRefreshedText { get => _securityLastRefreshedText; set => SetProperty(ref _securityLastRefreshedText, value); }
+
+        private Visibility _btnViewIssuesVisibility = Visibility.Collapsed;
+        public Visibility BtnViewIssuesVisibility { get => _btnViewIssuesVisibility; set => SetProperty(ref _btnViewIssuesVisibility, value); }
+
+        // Feature Cards
+        private string _virusThreatProtectionStatus = "";
+        public string VirusThreatProtectionStatus { get => _virusThreatProtectionStatus; set => SetProperty(ref _virusThreatProtectionStatus, value); }
+        private Visibility _virusThreatProtectionLinkVisibility = Visibility.Collapsed;
+        public Visibility VirusThreatProtectionLinkVisibility { get => _virusThreatProtectionLinkVisibility; set => SetProperty(ref _virusThreatProtectionLinkVisibility, value); }
+
+        private string _firewallStatus = "";
+        public string FirewallStatus { get => _firewallStatus; set => SetProperty(ref _firewallStatus, value); }
+        private Visibility _firewallLinkVisibility = Visibility.Collapsed;
+        public Visibility FirewallLinkVisibility { get => _firewallLinkVisibility; set => SetProperty(ref _firewallLinkVisibility, value); }
+
+        private string _windowsUpdateStatus = "";
+        public string WindowsUpdateStatus { get => _windowsUpdateStatus; set => SetProperty(ref _windowsUpdateStatus, value); }
+        private Visibility _windowsUpdateLinkVisibility = Visibility.Collapsed;
+        public Visibility WindowsUpdateLinkVisibility { get => _windowsUpdateLinkVisibility; set => SetProperty(ref _windowsUpdateLinkVisibility, value); }
+
+        private string _smartScreenStatus = "";
+        public string SmartScreenStatus { get => _smartScreenStatus; set => SetProperty(ref _smartScreenStatus, value); }
+        private Visibility _smartScreenLinkVisibility = Visibility.Collapsed;
+        public Visibility SmartScreenLinkVisibility { get => _smartScreenLinkVisibility; set => SetProperty(ref _smartScreenLinkVisibility, value); }
+
+        private string _coreIsolationStatus = "";
+        public string CoreIsolationStatus { get => _coreIsolationStatus; set => SetProperty(ref _coreIsolationStatus, value); }
+        private Visibility _coreIsolationLinkVisibility = Visibility.Collapsed;
+        public Visibility CoreIsolationLinkVisibility { get => _coreIsolationLinkVisibility; set => SetProperty(ref _coreIsolationLinkVisibility, value); }
+
+        private string _realTimeProtectionStatus = "";
+        public string RealTimeProtectionStatus { get => _realTimeProtectionStatus; set => SetProperty(ref _realTimeProtectionStatus, value); }
+        private Visibility _realTimeProtectionLinkVisibility = Visibility.Collapsed;
+        public Visibility RealTimeProtectionLinkVisibility { get => _realTimeProtectionLinkVisibility; set => SetProperty(ref _realTimeProtectionLinkVisibility, value); }
+
+        private string _accountProtectionStatus = "";
+        public string AccountProtectionStatus { get => _accountProtectionStatus; set => SetProperty(ref _accountProtectionStatus, value); }
+        private Visibility _accountProtectionLinkVisibility = Visibility.Collapsed;
+        public Visibility AccountProtectionLinkVisibility { get => _accountProtectionLinkVisibility; set => SetProperty(ref _accountProtectionLinkVisibility, value); }
+
+        private string _lsaProtectionStatus = "";
+        public string LsaProtectionStatus { get => _lsaProtectionStatus; set => SetProperty(ref _lsaProtectionStatus, value); }
+        private Visibility _lsaProtectionLinkVisibility = Visibility.Collapsed;
+        public Visibility LsaProtectionLinkVisibility { get => _lsaProtectionLinkVisibility; set => SetProperty(ref _lsaProtectionLinkVisibility, value); }
+
+        private string _tamperProtectionStatus = "";
+        public string TamperProtectionStatus { get => _tamperProtectionStatus; set => SetProperty(ref _tamperProtectionStatus, value); }
+        private Visibility _tamperProtectionLinkVisibility = Visibility.Collapsed;
+        public Visibility TamperProtectionLinkVisibility { get => _tamperProtectionLinkVisibility; set => SetProperty(ref _tamperProtectionLinkVisibility, value); }
+
+        private string _controlledFolderAccessStatus = "";
+        public string ControlledFolderAccessStatus { get => _controlledFolderAccessStatus; set => SetProperty(ref _controlledFolderAccessStatus, value); }
+        private Visibility _controlledFolderAccessLinkVisibility = Visibility.Collapsed;
+        public Visibility ControlledFolderAccessLinkVisibility { get => _controlledFolderAccessLinkVisibility; set => SetProperty(ref _controlledFolderAccessLinkVisibility, value); }
+
+        private string _bitLockerStatus = "";
+        public string BitLockerStatus { get => _bitLockerStatus; set => SetProperty(ref _bitLockerStatus, value); }
+        private Visibility _bitLockerLinkVisibility = Visibility.Collapsed;
+        public Visibility BitLockerLinkVisibility { get => _bitLockerLinkVisibility; set => SetProperty(ref _bitLockerLinkVisibility, value); }
+
+        private string _defenderServiceStatus = "";
+        public string DefenderServiceStatus { get => _defenderServiceStatus; set => SetProperty(ref _defenderServiceStatus, value); }
+        private Visibility _defenderServiceLinkVisibility = Visibility.Collapsed;
+        public Visibility DefenderServiceLinkVisibility { get => _defenderServiceLinkVisibility; set => SetProperty(ref _defenderServiceLinkVisibility, value); }
+
+        // Toggles and Selectors
+        private string _remoteDesktopStatus = "";
+        public string RemoteDesktopStatus { get => _remoteDesktopStatus; set => SetProperty(ref _remoteDesktopStatus, value); }
+        private Visibility _remoteDesktopLinkVisibility = Visibility.Collapsed;
+        public Visibility RemoteDesktopLinkVisibility { get => _remoteDesktopLinkVisibility; set => SetProperty(ref _remoteDesktopLinkVisibility, value); }
+        private bool _isRdpEnabled;
+        public bool IsRdpEnabled { get => _isRdpEnabled; set { if (SetProperty(ref _isRdpEnabled, value) && !_isRdpToggleUpdating) { _ = ToggleRdpAsync(value); } } }
+        private bool _isRdpToggleEnabled = false;
+        public bool IsRdpToggleEnabled { get => _isRdpToggleEnabled; set => SetProperty(ref _isRdpToggleEnabled, value); }
+
+        private string _remoteAssistanceStatus = "";
+        public string RemoteAssistanceStatus { get => _remoteAssistanceStatus; set => SetProperty(ref _remoteAssistanceStatus, value); }
+        private Visibility _remoteAssistanceLinkVisibility = Visibility.Collapsed;
+        public Visibility RemoteAssistanceLinkVisibility { get => _remoteAssistanceLinkVisibility; set => SetProperty(ref _remoteAssistanceLinkVisibility, value); }
+        private bool _isRaEnabled;
+        public bool IsRaEnabled { get => _isRaEnabled; set { if (SetProperty(ref _isRaEnabled, value) && !_isRaToggleUpdating) { _ = ToggleRaAsync(value); } } }
+        private bool _isRaToggleEnabled = false;
+        public bool IsRaToggleEnabled { get => _isRaToggleEnabled; set => SetProperty(ref _isRaToggleEnabled, value); }
+
+        private string _developerModeStatus = "";
+        public string DeveloperModeStatus { get => _developerModeStatus; set => SetProperty(ref _developerModeStatus, value); }
+        private Visibility _developerModeLinkVisibility = Visibility.Collapsed;
+        public Visibility DeveloperModeLinkVisibility { get => _developerModeLinkVisibility; set => SetProperty(ref _developerModeLinkVisibility, value); }
+        private bool _isDevModeEnabled;
+        public bool IsDevModeEnabled { get => _isDevModeEnabled; set { if (SetProperty(ref _isDevModeEnabled, value) && !_isDevModeToggleUpdating) { _ = ToggleDevModeAsync(value); } } }
+        private bool _isDevModeToggleEnabled = false;
+        public bool IsDevModeToggleEnabled { get => _isDevModeToggleEnabled; set => SetProperty(ref _isDevModeToggleEnabled, value); }
+
+        private int _uacSliderValue;
+        public int UacSliderValue { get => _uacSliderValue; set { if (SetProperty(ref _uacSliderValue, value) && !_isUacSliderUpdating) { UpdateUacLevel(value); } } }
+        private string _uacLevelDescription = "";
+        public string UacLevelDescription { get => _uacLevelDescription; set => SetProperty(ref _uacLevelDescription, value); }
+        private bool _isUacSliderEnabled = false;
+        public bool IsUacSliderEnabled { get => _isUacSliderEnabled; set => SetProperty(ref _isUacSliderEnabled, value); }
+
+        private int _smartAppControlSelectedIndex;
+        public int SmartAppControlSelectedIndex { get => _smartAppControlSelectedIndex; set { if (SetProperty(ref _smartAppControlSelectedIndex, value) && !_isSmartAppControlUpdating) { UpdateSmartAppControl(value); } } }
+        private string _smartAppControlDescription = "";
+        public string SmartAppControlDescription { get => _smartAppControlDescription; set => SetProperty(ref _smartAppControlDescription, value); }
+        private bool _isSmartAppControlComboBoxEnabled = false;
+        public bool IsSmartAppControlComboBoxEnabled { get => _isSmartAppControlComboBoxEnabled; set => SetProperty(ref _isSmartAppControlComboBoxEnabled, value); }
+
+        private int _powerShellPolicySelectedIndex;
+        public int PowerShellPolicySelectedIndex { get => _powerShellPolicySelectedIndex; set { if (SetProperty(ref _powerShellPolicySelectedIndex, value) && !_isPowerShellPolicyUpdating) { _ = UpdatePowerShellPolicyAsync(value); } } }
+        private string _powerShellPolicyDescription = "";
+        public string PowerShellPolicyDescription { get => _powerShellPolicyDescription; set => SetProperty(ref _powerShellPolicyDescription, value); }
+        private bool _isPowerShellPolicyComboBoxEnabled = false;
+        public bool IsPowerShellPolicyComboBoxEnabled { get => _isPowerShellPolicyComboBoxEnabled; set => SetProperty(ref _isPowerShellPolicyComboBoxEnabled, value); }
+        private Microsoft.UI.Xaml.Media.Brush _powerShellPolicyDescriptionForeground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightGray);
+        public Microsoft.UI.Xaml.Media.Brush PowerShellPolicyDescriptionForeground { get => _powerShellPolicyDescriptionForeground; set => SetProperty(ref _powerShellPolicyDescriptionForeground, value); }
+        private double _powerShellPolicyDescriptionOpacity = 0.8;
+        public double PowerShellPolicyDescriptionOpacity { get => _powerShellPolicyDescriptionOpacity; set => SetProperty(ref _powerShellPolicyDescriptionOpacity, value); }
+
+        private string _signatureUpdateText = "";
+        public string SignatureUpdateText { get => _signatureUpdateText; set => SetProperty(ref _signatureUpdateText, value); }
+        private Visibility _signatureUpdateTextVisibility = Visibility.Collapsed;
+        public Visibility SignatureUpdateTextVisibility { get => _signatureUpdateTextVisibility; set => SetProperty(ref _signatureUpdateTextVisibility, value); }
+
+        private string _antivirusProductName = "";
+        public string AntivirusProductName { get => _antivirusProductName; set => SetProperty(ref _antivirusProductName, value); }
+
+        private bool _isQuickScanRunning;
+        public bool IsQuickScanRunning { get => _isQuickScanRunning; set => SetProperty(ref _isQuickScanRunning, value); }
         #endregion
 
         #region Constructor
@@ -1218,6 +1375,113 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
         #endregion
 
+        #region Security Action Commands (Security)
+        public event Action<List<string>>? ShowSecurityIssuesRequested;
+
+        [RelayCommand]
+        public void ViewSecurityIssues()
+        {
+            if (_currentSecurityIssues.Count > 0)
+            {
+                ShowSecurityIssuesRequested?.Invoke(_currentSecurityIssues);
+            }
+        }
+
+        [RelayCommand]
+        public void OpenWindowsSecurity(string uri)
+        {
+            string targetUri = string.IsNullOrEmpty(uri) ? "windowsdefender://" : uri;
+
+            try { Process.Start(new ProcessStartInfo { FileName = targetUri, UseShellExecute = true }); }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                try { Process.Start(new ProcessStartInfo { FileName = "windowsdefender://", UseShellExecute = true }); }
+                catch (Exception fallbackEx) { ErrorLogging.LogDebug(fallbackEx); }
+            }
+        }
+
+        [RelayCommand]
+        public async Task RunQuickScanAsync()
+        {
+            try
+            {
+                IsQuickScanRunning = true;
+
+                await Task.Run(() =>
+                {
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "powershell.exe",
+                            Arguments = "-NoProfile -ExecutionPolicy Bypass -Command \"Start-MpScan -ScanType QuickScan\"",
+                            UseShellExecute = true,
+                            CreateNoWindow = false,
+                            WindowStyle = ProcessWindowStyle.Hidden
+                        }
+                    };
+                    process.Start();
+                    process.WaitForExit();
+                }).ConfigureAwait(true);
+
+                SendSystemNotification(1, ResourceString.GetString("SecurityPage_QuickScanTitle") ?? "Quick Scan", ResourceString.GetString("SecurityPage_QuickScanCompleted") ?? "Scan completed.");
+
+                await Task.Delay(1000);
+                await CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                SendSystemNotification(3, ResourceString.GetString("SecurityPage_QuickScanTitle") ?? "Quick Scan", ResourceString.GetString("SecurityPage_QuickScanFailed") ?? "Scan failed.");
+            }
+            finally
+            {
+                IsQuickScanRunning = false;
+            }
+        }
+
+        [RelayCommand]
+        public async Task UpdateDefenderSignaturesAsync()
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "powershell.exe",
+                            Arguments = "-NoProfile -ExecutionPolicy Bypass -Command \"Update-MpSignature\"",
+                            UseShellExecute = true,
+                            CreateNoWindow = false,
+                            WindowStyle = ProcessWindowStyle.Hidden
+                        }
+                    };
+                    process.Start();
+                    process.WaitForExit();
+                }).ConfigureAwait(true);
+
+                SendSystemNotification(1, ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle") ?? "Security Intelligence", ResourceString.GetString("SecurityPage_DefinitionsUpdated") ?? "Definitions updated successfully.");
+
+                await Task.Delay(2000);
+                await CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                SendSystemNotification(3, ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle") ?? "Security Intelligence", ResourceString.GetString("SecurityPage_DefinitionsUpdateFailed") ?? "Update failed.");
+            }
+        }
+
+        [RelayCommand]
+        public async Task RefreshSecurityStatusAsync()
+        {
+            await CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+        }
+        #endregion
+
         #region Diagnostics & Hardware Deep Scan Logic
 
         private void UpdateSystemStatus()
@@ -1404,6 +1668,372 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
             }
+        }
+        #endregion
+
+        #region Security Core Engine & Control Handlers (Security)
+        public void InitializeSecurityScan()
+        {
+            // Only run this the very first time the pane is opened!
+            if (_hasSecurityInitialized) return;
+            _hasSecurityInitialized = true;
+
+            _securityRefreshTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
+            _securityRefreshTimer.Tick += async (s, e) =>
+            {
+                if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
+                {
+                    await CheckSecurityStatusAsync(_cancellationTokenSource.Token);
+                }
+            };
+            _securityRefreshTimer.Start();
+
+            _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+        }
+
+        private async Task CheckSecurityStatusAsync(CancellationToken cancellationToken = default)
+        {
+            if (_isSecurityCheckInProgress || cancellationToken.IsCancellationRequested) return;
+
+            _isSecurityCheckInProgress = true;
+
+            try
+            {
+                _dispatcherQueue?.TryEnqueue(() =>
+                {
+                    SecurityStatusText = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
+                    IsSecurityStatusLoadingRingActive = true;
+                    SecurityStatusLoadingRingVisibility = Visibility.Visible;
+                });
+
+                var results = await Task.Run(async () =>
+                {
+                    var antivirusInfo = await SecurityDiagnostics.GetAntivirusInfoAsync(cancellationToken).ConfigureAwait(false);
+                    var firewallProtection = await SecurityDiagnostics.IsFirewallEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var windowsUpdate = await SecurityDiagnostics.IsWindowsUpdateEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var smartscreen = await SecurityDiagnostics.IsSmartScreenEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var realTimeProtection = await SecurityDiagnostics.IsRealTimeProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var uac = await SecurityDiagnostics.IsUACEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var tamperProtection = await SecurityDiagnostics.IsTamperProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var controlledFolderAccess = await SecurityDiagnostics.IsControlledFolderAccessEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var bitLockerEnabled = await SecurityDiagnostics.IsBitLockerEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var coreIsolationEnabled = await SecurityDiagnostics.IsCoreIsolationEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var defenderServiceEnabled = await SecurityDiagnostics.IsDefenderServiceEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var accountProtectionEnabled = await SecurityDiagnostics.IsAccountProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var smartAppControlState = await SecurityDiagnostics.GetSmartAppControlStateAsync(cancellationToken).ConfigureAwait(false);
+                    var psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync(cancellationToken).ConfigureAwait(false);
+                    var lsaProtection = await SecurityDiagnostics.IsLsaProtectionEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var rdpEnabled = await SecurityDiagnostics.IsRdpEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var raEnabled = await SecurityDiagnostics.IsRemoteAssistanceEnabledAsync(cancellationToken).ConfigureAwait(false);
+                    var devModeEnabled = await SecurityDiagnostics.IsDeveloperModeEnabledAsync(cancellationToken).ConfigureAwait(false);
+
+                    return (antivirusInfo, firewallProtection, windowsUpdate, smartscreen, realTimeProtection,
+                            uac, tamperProtection, controlledFolderAccess, bitLockerEnabled, coreIsolationEnabled,
+                            defenderServiceEnabled, accountProtectionEnabled, smartAppControlState, psPolicy, lsaProtection, rdpEnabled, raEnabled, devModeEnabled);
+                }, cancellationToken).ConfigureAwait(true);
+
+                if (cancellationToken.IsCancellationRequested) return;
+
+                _dispatcherQueue?.TryEnqueue(() =>
+                {
+                    UpdateSecurityCardState(ref _virusThreatProtectionStatus, ref _virusThreatProtectionLinkVisibility, results.antivirusInfo.IsEnabled, nameof(VirusThreatProtectionStatus), nameof(VirusThreatProtectionLinkVisibility));
+                    UpdateSecurityCardState(ref _firewallStatus, ref _firewallLinkVisibility, results.firewallProtection, nameof(FirewallStatus), nameof(FirewallLinkVisibility));
+                    UpdateSecurityCardState(ref _windowsUpdateStatus, ref _windowsUpdateLinkVisibility, results.windowsUpdate, nameof(WindowsUpdateStatus), nameof(WindowsUpdateLinkVisibility));
+                    UpdateSecurityCardState(ref _smartScreenStatus, ref _smartScreenLinkVisibility, results.smartscreen, nameof(SmartScreenStatus), nameof(SmartScreenLinkVisibility));
+                    UpdateSecurityCardState(ref _coreIsolationStatus, ref _coreIsolationLinkVisibility, results.coreIsolationEnabled, nameof(CoreIsolationStatus), nameof(CoreIsolationLinkVisibility));
+                    UpdateSecurityCardState(ref _realTimeProtectionStatus, ref _realTimeProtectionLinkVisibility, results.realTimeProtection, nameof(RealTimeProtectionStatus), nameof(RealTimeProtectionLinkVisibility));
+                    UpdateSecurityCardState(ref _accountProtectionStatus, ref _accountProtectionLinkVisibility, results.accountProtectionEnabled, nameof(AccountProtectionStatus), nameof(AccountProtectionLinkVisibility));
+                    UpdateSecurityCardState(ref _lsaProtectionStatus, ref _lsaProtectionLinkVisibility, results.lsaProtection, nameof(LsaProtectionStatus), nameof(LsaProtectionLinkVisibility));
+                    UpdateSecurityCardState(ref _tamperProtectionStatus, ref _tamperProtectionLinkVisibility, results.tamperProtection, nameof(TamperProtectionStatus), nameof(TamperProtectionLinkVisibility));
+                    UpdateSecurityCardState(ref _controlledFolderAccessStatus, ref _controlledFolderAccessLinkVisibility, results.controlledFolderAccess, nameof(ControlledFolderAccessStatus), nameof(ControlledFolderAccessLinkVisibility));
+                    UpdateSecurityCardState(ref _bitLockerStatus, ref _bitLockerLinkVisibility, results.bitLockerEnabled, nameof(BitLockerStatus), nameof(BitLockerLinkVisibility));
+                    UpdateSecurityCardState(ref _defenderServiceStatus, ref _defenderServiceLinkVisibility, results.defenderServiceEnabled, nameof(DefenderServiceStatus), nameof(DefenderServiceLinkVisibility));
+
+                    RemoteDesktopStatus = results.rdpEnabled ? ResourceString.GetString("Enabled") ?? "Enabled" : ResourceString.GetString("Disabled") ?? "Disabled";
+                    RemoteDesktopLinkVisibility = Visibility.Collapsed;
+                    _isRdpToggleUpdating = true; IsRdpEnabled = results.rdpEnabled; IsRdpToggleEnabled = true; _isRdpToggleUpdating = false;
+
+                    RemoteAssistanceStatus = results.raEnabled ? ResourceString.GetString("Enabled") ?? "Enabled" : ResourceString.GetString("Disabled") ?? "Disabled";
+                    RemoteAssistanceLinkVisibility = Visibility.Collapsed;
+                    _isRaToggleUpdating = true; IsRaEnabled = results.raEnabled; IsRaToggleEnabled = true; _isRaToggleUpdating = false;
+
+                    DeveloperModeStatus = results.devModeEnabled ? ResourceString.GetString("Enabled") ?? "Enabled" : ResourceString.GetString("Disabled") ?? "Disabled";
+                    DeveloperModeLinkVisibility = Visibility.Collapsed;
+                    _isDevModeToggleUpdating = true; IsDevModeEnabled = results.devModeEnabled; IsDevModeToggleEnabled = true; _isDevModeToggleUpdating = false;
+
+                    _isUacSliderUpdating = true;
+                    IsUacSliderEnabled = true;
+                    try
+                    {
+                        using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
+                        int consentBehavior = (int)(key?.GetValue("ConsentPromptBehaviorAdmin") ?? 5);
+                        int secureDesktop = (int)(key?.GetValue("PromptOnSecureDesktop") ?? 1);
+
+                        if (consentBehavior == 2 && secureDesktop == 1) { UacSliderValue = 3; UacLevelDescription = ResourceString.GetString("UAC_Level3") ?? "Always notify me"; }
+                        else if (consentBehavior == 5 && secureDesktop == 1) { UacSliderValue = 2; UacLevelDescription = ResourceString.GetString("UAC_Level2") ?? "Notify me only when apps try to make changes (default)"; }
+                        else if (consentBehavior == 5 && secureDesktop == 0) { UacSliderValue = 1; UacLevelDescription = ResourceString.GetString("UAC_Level1") ?? "Notify me only when apps try to make changes (do not dim desktop)"; }
+                        else { UacSliderValue = 0; UacLevelDescription = ResourceString.GetString("UAC_Level0") ?? "Never notify me (Not recommended)"; }
+                    }
+                    catch { IsUacSliderEnabled = true; UacLevelDescription = "Access denied reading UAC status."; }
+                    _isUacSliderUpdating = false;
+
+                    _isSmartAppControlUpdating = true;
+                    bool isSmartAppControlSecure = results.smartAppControlState != 0;
+                    if (results.smartAppControlState == -1)
+                    {
+                        IsSmartAppControlComboBoxEnabled = true; SmartAppControlDescription = "Access denied reading Smart App Control status.";
+                    }
+                    else
+                    {
+                        IsSmartAppControlComboBoxEnabled = true;
+                        if (results.smartAppControlState == 0) { SmartAppControlSelectedIndex = 0; SmartAppControlDescription = ResourceString.GetString("SmartAppControl_Level0") ?? "Smart App Control is off."; }
+                        else if (results.smartAppControlState == 1) { SmartAppControlSelectedIndex = 2; SmartAppControlDescription = ResourceString.GetString("SmartAppControl_Level1") ?? "Smart App Control is on and enforcing protection."; }
+                        else { SmartAppControlSelectedIndex = 1; SmartAppControlDescription = ResourceString.GetString("SmartAppControl_Level2") ?? "Evaluating if Smart App Control can protect you without getting in the way."; }
+                    }
+                    _isSmartAppControlUpdating = false;
+
+                    _isPowerShellPolicyUpdating = true;
+                    bool isPsWarning = false;
+                    if (results.psPolicy == "Error")
+                    {
+                        IsPowerShellPolicyComboBoxEnabled = true; PowerShellPolicyDescription = "Access denied reading PowerShell Execution Policy.";
+                    }
+                    else
+                    {
+                        IsPowerShellPolicyComboBoxEnabled = true;
+                        switch (results.psPolicy)
+                        {
+                            case "Restricted": PowerShellPolicySelectedIndex = 0; PowerShellPolicyDescription = ResourceString.GetString("text_ps_policy_restricted") ?? "Only individual commands are allowed."; break;
+                            case "AllSigned": PowerShellPolicySelectedIndex = 1; PowerShellPolicyDescription = ResourceString.GetString("text_ps_policy_allsigned") ?? "Only scripts signed by a trusted publisher can run."; break;
+                            case "RemoteSigned": PowerShellPolicySelectedIndex = 2; PowerShellPolicyDescription = ResourceString.GetString("text_ps_policy_remotesigned") ?? "Local scripts allowed; downloaded scripts must be signed."; break;
+                            case "Unrestricted": PowerShellPolicySelectedIndex = 3; PowerShellPolicyDescription = $"⚠️ {ResourceString.GetString("text_ps_policy_unrestricted")}"; isPsWarning = true; break;
+                            case "Bypass": PowerShellPolicySelectedIndex = 4; PowerShellPolicyDescription = $"⚠️ {ResourceString.GetString("text_ps_policy_bypass")}"; isPsWarning = true; break;
+                            default: PowerShellPolicySelectedIndex = 0; PowerShellPolicyDescription = "Unknown policy. Defaulting to Restricted UI state."; break;
+                        }
+
+                        if (isPsWarning) { PowerShellPolicyDescriptionForeground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red); PowerShellPolicyDescriptionOpacity = 1.0; }
+                        else { PowerShellPolicyDescriptionForeground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightGray); PowerShellPolicyDescriptionOpacity = 0.8; }
+                    }
+                    _isPowerShellPolicyUpdating = false;
+
+                    AntivirusProductName = results.antivirusInfo.ProductName ?? ResourceString.GetString("None") ?? "None";
+                    if (results.antivirusInfo.SignatureUpdated.HasValue)
+                    {
+                        SignatureUpdateText = $"{ResourceString.GetString("SecurityPage_LastUpdated")}: {results.antivirusInfo.SignatureUpdated.Value:g}";
+                        SignatureUpdateTextVisibility = Visibility.Visible;
+                    }
+                    else { SignatureUpdateTextVisibility = Visibility.Collapsed; }
+
+                    _currentSecurityIssues.Clear();
+                    if (!results.antivirusInfo.IsEnabled) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_VirusThreatProtection") ?? "Virus & Threat Protection is disabled");
+                    if (!results.firewallProtection) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_FirewallNetworkProtection") ?? "Firewall is disabled");
+                    if (!results.realTimeProtection) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_RealTimeProtection") ?? "Real-Time Protection is disabled");
+                    if (!results.uac) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_UAC") ?? "UAC is set to a low security level");
+                    if (!results.windowsUpdate) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_WindowsUpdate") ?? "Windows Update is disabled");
+                    if (!results.tamperProtection) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_TamperProtection") ?? "Tamper Protection is disabled");
+                    if (!isSmartAppControlSecure) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_SmartAppControl") ?? "Smart App Control is not enforcing protection");
+                    if (!results.lsaProtection) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_LSAProtection") ?? "Local Security Authority (LSA) protection is off");
+                    if (results.rdpEnabled) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_RemoteDesktop") ?? "Remote Desktop is enabled");
+                    if (results.raEnabled) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance is enabled");
+                    if (results.devModeEnabled) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_DeveloperMode") ?? "Developer Mode is enabled");
+
+                    bool isPsPolicySecure = results.psPolicy != "Unrestricted" && results.psPolicy != "Bypass" && results.psPolicy != "Error";
+                    if (!isPsPolicySecure) _currentSecurityIssues.Add(ResourceString.GetString("SecurityPage_PSExecutionPolicy") ?? "PowerShell execution policy is insecure");
+
+                    int issuesCount = _currentSecurityIssues.Count;
+                    BtnViewIssuesVisibility = issuesCount > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+                    bool isCoreProtected = results.antivirusInfo.IsEnabled && results.firewallProtection && results.realTimeProtection;
+
+                    if (!isCoreProtected)
+                    {
+                        SecurityStatusImageUri = "ms-appx:///Assets/PngImages/UnSecure.png";
+                        SecurityStatusText = $"{issuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
+                    }
+                    else if (issuesCount > 0)
+                    {
+                        SecurityStatusImageUri = "ms-appx:///Assets/PngImages/Secure.png";
+                        SecurityStatusText = $"{issuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
+                    }
+                    else
+                    {
+                        SecurityStatusImageUri = "ms-appx:///Assets/PngImages/Secure.png";
+                        SecurityStatusText = ResourceString.GetString("text_security_good") ?? "System is Secure";
+                    }
+
+                    IsSecurityStatusLoadingRingActive = false;
+                    SecurityStatusLoadingRingVisibility = Visibility.Collapsed;
+                    SecurityLastRefreshedText = $"{ResourceString.GetString("SecurityPage_LastRefreshed")}: {DateTime.Now:T}";
+                });
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                _dispatcherQueue?.TryEnqueue(() =>
+                {
+                    SecurityStatusText = "Scan timed out or failed.";
+                    IsSecurityStatusLoadingRingActive = false;
+                    SecurityStatusLoadingRingVisibility = Visibility.Collapsed;
+                    SecurityStatusImageUri = "ms-appx:///Assets/PngImages/Warning.png";
+
+                    // Failsafe: Ensure UI controls are unlocked so the user isn't stuck
+                    IsRdpToggleEnabled = true;
+                    IsRaToggleEnabled = true;
+                    IsDevModeToggleEnabled = true;
+                    IsUacSliderEnabled = true;
+                    IsSmartAppControlComboBoxEnabled = true;
+                    IsPowerShellPolicyComboBoxEnabled = true;
+                });
+            }
+            finally
+            {
+                _isSecurityCheckInProgress = false;
+            }
+        }
+
+        private void UpdateSecurityCardState(ref string statusField, ref Visibility visField, bool isEnabled, string statusPropName, string visPropName)
+        {
+            statusField = isEnabled ? ResourceString.GetString("Enabled") : ResourceString.GetString("Disabled");
+            visField = isEnabled ? Visibility.Collapsed : Visibility.Visible;
+            OnPropertyChanged(statusPropName);
+            OnPropertyChanged(visPropName);
+        }
+
+        private void UpdateUacLevel(int newValue)
+        {
+            try
+            {
+                using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true);
+                if (key != null)
+                {
+                    if (newValue == 3) { key.SetValue("ConsentPromptBehaviorAdmin", 2, Microsoft.Win32.RegistryValueKind.DWord); key.SetValue("PromptOnSecureDesktop", 1, Microsoft.Win32.RegistryValueKind.DWord); UacLevelDescription = ResourceString.GetString("UAC_Level3") ?? "Always notify me"; }
+                    else if (newValue == 2) { key.SetValue("ConsentPromptBehaviorAdmin", 5, Microsoft.Win32.RegistryValueKind.DWord); key.SetValue("PromptOnSecureDesktop", 1, Microsoft.Win32.RegistryValueKind.DWord); UacLevelDescription = ResourceString.GetString("UAC_Level2") ?? "Notify me only when apps try to make changes (default)"; }
+                    else if (newValue == 1) { key.SetValue("ConsentPromptBehaviorAdmin", 5, Microsoft.Win32.RegistryValueKind.DWord); key.SetValue("PromptOnSecureDesktop", 0, Microsoft.Win32.RegistryValueKind.DWord); UacLevelDescription = ResourceString.GetString("UAC_Level1") ?? "Notify me only when apps try to make changes (do not dim desktop)"; }
+                    else if (newValue == 0) { key.SetValue("ConsentPromptBehaviorAdmin", 0, Microsoft.Win32.RegistryValueKind.DWord); key.SetValue("PromptOnSecureDesktop", 0, Microsoft.Win32.RegistryValueKind.DWord); UacLevelDescription = ResourceString.GetString("UAC_Level0") ?? "Never notify me (Not recommended)"; }
+                }
+            }
+            catch (Exception ex) { ErrorLogging.LogDebug(ex); _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default); }
+        }
+
+        private void UpdateSmartAppControl(int newValue)
+        {
+            try
+            {
+                using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\CI\Policy", true);
+                if (key != null)
+                {
+                    int regValue = newValue == 0 ? 0 : (newValue == 2 ? 1 : 2);
+                    if (newValue == 0) SmartAppControlDescription = ResourceString.GetString("SmartAppControl_Level0") ?? "Smart App Control is off.";
+                    else if (newValue == 1) SmartAppControlDescription = ResourceString.GetString("SmartAppControl_Level2") ?? "Evaluating if Smart App Control can protect you without getting in the way.";
+                    else if (newValue == 2) SmartAppControlDescription = ResourceString.GetString("SmartAppControl_Level1") ?? "Smart App Control is on and enforcing protection.";
+                    key.SetValue("VerifiedAndReputablePolicyState", regValue, Microsoft.Win32.RegistryValueKind.DWord);
+                }
+            }
+            catch (Exception ex) { ErrorLogging.LogDebug(ex); _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default); }
+        }
+
+        private async Task UpdatePowerShellPolicyAsync(int newValue)
+        {
+            try
+            {
+                using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell", true);
+                if (key != null)
+                {
+                    string policy = "Restricted"; string desc = ""; bool isWarning = false;
+                    switch (newValue)
+                    {
+                        case 0: policy = "Restricted"; desc = ResourceString.GetString("text_ps_policy_restricted") ?? "Only individual commands are allowed."; break;
+                        case 1: policy = "AllSigned"; desc = ResourceString.GetString("text_ps_policy_allsigned") ?? "Only scripts signed by a trusted publisher can run."; break;
+                        case 2: policy = "RemoteSigned"; desc = ResourceString.GetString("text_ps_policy_remotesigned") ?? "Local scripts allowed; downloaded scripts must be signed."; break;
+                        case 3: policy = "Unrestricted"; desc = $"⚠️ {ResourceString.GetString("text_ps_policy_unrestricted")}"; isWarning = true; break;
+                        case 4: policy = "Bypass"; desc = $"⚠️ {ResourceString.GetString("text_ps_policy_bypass")}"; isWarning = true; break;
+                    }
+                    key.SetValue("ExecutionPolicy", policy, Microsoft.Win32.RegistryValueKind.String);
+                    PowerShellPolicyDescription = desc;
+
+                    if (isWarning) { PowerShellPolicyDescriptionForeground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red); PowerShellPolicyDescriptionOpacity = 1.0; }
+                    else
+                    {
+                        PowerShellPolicyDescriptionForeground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightGray); PowerShellPolicyDescriptionOpacity = 0.8;
+                        SendSystemNotification(1, ResourceString.GetString("SecurityPage_PSExecutionPolicy") ?? "PowerShell Policy", ResourceString.GetString("text_saved_successfully") ?? "Settings saved securely.");
+                    }
+                    _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+                }
+            }
+            catch (Exception ex) { ErrorLogging.LogDebug(ex); _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default); }
+        }
+
+        private async Task ToggleRdpAsync(bool enable)
+        {
+            RemoteDesktopStatus = enable ? ResourceString.GetString("Enabled") ?? "Enabled" : ResourceString.GetString("Disabled") ?? "Disabled";
+            try
+            {
+                int fDenyVal = enable ? 0 : 1;
+                string command = $@"
+                $ts = Get-WmiObject -Class Win32_TerminalServiceSetting -Namespace root\cimv2\TerminalServices -ComputerName '.' -Authentication 6;
+                if ($ts) {{ $ts.SetAllowTSConnections({(enable ? 1 : 0)}, 1); }}
+                $tsPath = 'HKLM:\System\CurrentControlSet\Control\Terminal Server';
+                Set-ItemProperty -Path $tsPath -Name 'fDenyTSConnections' -Value {fDenyVal};
+                Set-ItemProperty -Path ""$tsPath\WinStations\RDP-Tcp"" -Name 'UserAuthentication' -Value {(enable ? 1 : 0)};
+                if ({enable.ToString().ToLower()}) {{ Enable-NetFirewallRule -DisplayGroup '@{{Microsoft.Windows.RemoteDesktop.RemoteDesktop.Resources.dll,-28752}}'; }} 
+                else {{ Disable-NetFirewallRule -DisplayGroup '@{{Microsoft.Windows.RemoteDesktop.RemoteDesktop.Resources.dll,-28752}}'; }}";
+                await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
+                SendSystemNotification(1, ResourceString.GetString("SecurityPage_RemoteDesktop") ?? "Remote Desktop", ResourceString.GetString("text_saved_successfully") ?? "Settings synchronized.");
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                _isRdpToggleUpdating = true; IsRdpEnabled = !enable; _isRdpToggleUpdating = false;
+            }
+            _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+        }
+
+        private async Task ToggleRaAsync(bool enable)
+        {
+            RemoteAssistanceStatus = enable ? ResourceString.GetString("Enabled") ?? "Enabled" : ResourceString.GetString("Disabled") ?? "Disabled";
+            try
+            {
+                int val = enable ? 1 : 0;
+                string command = $@"
+                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance' -Name 'fAllowToGetHelp' -Value {val};
+                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name 'fAllowToGetHelp' -Value {val};
+                if ({enable.ToString().ToLower()}) {{ Enable-NetFirewallRule -DisplayGroup '@{{FirewallAPI.dll,-28502}}' -ErrorAction SilentlyContinue; }} 
+                else {{ Disable-NetFirewallRule -DisplayGroup '@{{FirewallAPI.dll,-28502}}' -ErrorAction SilentlyContinue; }}";
+                await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
+                SendSystemNotification(1, ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance", ResourceString.GetString("text_saved_successfully") ?? "Settings synchronized.");
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                _isRaToggleUpdating = true; IsRaEnabled = !enable; _isRaToggleUpdating = false;
+            }
+            _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+        }
+
+        private async Task ToggleDevModeAsync(bool enable)
+        {
+            DeveloperModeStatus = enable ? ResourceString.GetString("Enabled") ?? "Enabled" : ResourceString.GetString("Disabled") ?? "Disabled";
+            try
+            {
+                await Task.Run(() =>
+                {
+                    int val = enable ? 1 : 0;
+                    using var key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock");
+                    if (key != null)
+                    {
+                        key.SetValue("AllowAllTrustedApps", val, Microsoft.Win32.RegistryValueKind.DWord);
+                        key.SetValue("AllowDevelopmentWithoutDevLicense", val, Microsoft.Win32.RegistryValueKind.DWord);
+                    }
+                });
+                SendSystemNotification(1, ResourceString.GetString("SecurityPage_DeveloperMode") ?? "Developer Mode", ResourceString.GetString("text_saved_successfully") ?? "Settings synchronized.");
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                _isDevModeToggleUpdating = true; IsDevModeEnabled = !enable; _isDevModeToggleUpdating = false;
+            }
+            _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
         }
         #endregion
 

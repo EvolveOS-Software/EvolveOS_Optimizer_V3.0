@@ -1247,7 +1247,7 @@
     <sys:String x:Key="systray_close_window">Quitter EvolveOS</sys:String>
     <sys:String x:Key="systray_click_show">Double-cliquez pour ouvrir EvolveOS Optimizer</sys:String>
     <sys:String x:Key="systray_security">Centre de sécurité</sys:String>
-    <sys:String x:Key="systray_maintenance">Command Center</sys:String>
+    <sys:String x:Key="systray_maintenance">Maintenance</sys:String>
     <sys:String x:Key="systray_dns">Changeur de DNS</sys:String>
     <!-- endregion System TrayIcon -->
 

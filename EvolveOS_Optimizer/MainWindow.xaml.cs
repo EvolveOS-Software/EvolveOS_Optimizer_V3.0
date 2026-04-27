@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Principal;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Pages;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -458,7 +459,7 @@ namespace EvolveOS_Optimizer
             Type pageType = tag switch
             {
                 "Home" => typeof(Pages.HomePage),
-                "Security" => typeof(Pages.SecurityPage),
+                "Diagnostics" => typeof(Pages.DiagnosticsPage),
                 "Confidentiality" => typeof(Pages.PrivacyPage),
                 "GroupPolicy" => typeof(Pages.GroupPolicyPage),
                 "Interface" => typeof(Pages.InterfacePage),
@@ -468,7 +469,6 @@ namespace EvolveOS_Optimizer
                 "Utilities" => typeof(Pages.UtilitiesPage),
                 "Scripts" => typeof(Pages.ScriptsPage),
                 "System" => typeof(Pages.SystemPage),
-                "Diagnostics" => typeof(Pages.DiagnosticsPage),
                 "Settings" => typeof(Pages.SettingsPage),
                 "UserAccounts" => typeof(Pages.UserAccountsPage),
                 _ => typeof(Pages.HomePage)
@@ -513,8 +513,20 @@ namespace EvolveOS_Optimizer
             }
         }
 
-        public void SwitchPage(string tag)
+        public void SwitchPage(string tag, string requestedPane = "")
         {
+            if (tag == "Diagnostics" && !string.IsNullOrEmpty(requestedPane))
+            {
+                if (DiagnosticsPage.ExternalPaneRequest != null)
+                {
+                    DiagnosticsPage.ExternalPaneRequest?.Invoke(requestedPane);
+                }
+                else
+                {
+                    DiagnosticsPage.RequestedPaneOnLoad = requestedPane;
+                }
+            }
+
             if (this.RootGrid.DataContext is MainWinViewModel vm)
             {
                 vm.CurrentViewTag = tag;
@@ -528,8 +540,10 @@ namespace EvolveOS_Optimizer
             {
                 BtnNavUtilities.IsChecked = true;
             }
-            else if (tag == "Diagnostics") { BtnNavDiagnostics.IsChecked = true; }
-            else if (tag == "Security") { BtnNavSecurity.IsChecked = true; }
+            else if (tag == "Diagnostics")
+            {
+                BtnNavDiagnostics.IsChecked = true;
+            }
         }
 
         private void SidebarContainer_PointerEntered(object sender, PointerRoutedEventArgs e)

@@ -4,6 +4,7 @@ using System.Security.Principal;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Pages;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Services;
@@ -227,9 +228,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             MaximizeCommand = new RelayCommand<object>(_ => ExecuteMaximize());
             MinimizeCommand = new RelayCommand<object>(_ => ExecuteMinimize());
             CloseCommand = new RelayCommand<object>(_ => ExecuteClose());
-            OpenSecurityCommand = new RelayCommand<object>(_ => OpenPageFromTray("Security"));
-            OpenMaintenanceCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics"));
-            OpenDnsCommand = new RelayCommand<object>(_ => OpenPageFromTray("Utilities")); // DNS is inside Utilities
+            OpenSecurityCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Security"));
+            OpenMaintenanceCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Maintenance"));
+            OpenDnsCommand = new RelayCommand<object>(_ => OpenPageFromTray("Utilities"));
             ToggleWindowVisibilityCommand = new RelayCommand<object>(_ => ExecuteToggleVisibility());
 
             LocalizationService.Instance.PropertyChanged += OnLocalizationPropertyChanged;
@@ -310,8 +311,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        private void OpenPageFromTray(string tag)
+        private void OpenPageFromTray(string tag, string requestedPane = "")
         {
+            if (tag == "Diagnostics" && !string.IsNullOrEmpty(requestedPane))
+            {
+                if (DiagnosticsPage.ExternalPaneRequest != null)
+                {
+                    DiagnosticsPage.ExternalPaneRequest.Invoke(requestedPane);
+                }
+                else
+                {
+                    DiagnosticsPage.RequestedPaneOnLoad = requestedPane;
+                }
+            }
+
             ExecuteMaximize();
             ExecuteNavigate(tag);
         }
