@@ -246,6 +246,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Constructor
         public DiagnosticsPageViewModel()
         {
+            _instance = this;
+
             _scannerEngine = new DiagnosticScannerEngine(this);
 
             LocalMachineSettingsEngine.LoadDismissedEventsList();
@@ -405,6 +407,55 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(MinorEventsTextVisibility));
                 }
             }
+        }
+
+        private Microsoft.UI.Xaml.Media.PointCollection _cpuTrayPoints = new();
+        public Microsoft.UI.Xaml.Media.PointCollection CpuTrayPoints
+        {
+            get => _cpuTrayPoints;
+            set => SetProperty(ref _cpuTrayPoints, value);
+        }
+
+        private Microsoft.UI.Xaml.Media.PointCollection _ramTrayPoints = new();
+        public Microsoft.UI.Xaml.Media.PointCollection RamTrayPoints
+        {
+            get => _ramTrayPoints;
+            set => SetProperty(ref _ramTrayPoints, value);
+        }
+
+        private Microsoft.UI.Xaml.Media.PointCollection _gpuTrayPoints = new();
+        public Microsoft.UI.Xaml.Media.PointCollection GpuTrayPoints
+        {
+            get => _gpuTrayPoints;
+            set => SetProperty(ref _gpuTrayPoints, value);
+        }
+
+        private Microsoft.UI.Xaml.Media.PointCollection _diskTrayPoints = new();
+        public Microsoft.UI.Xaml.Media.PointCollection DiskTrayPoints
+        {
+            get => _diskTrayPoints;
+            set => SetProperty(ref _diskTrayPoints, value);
+        }
+
+        private ObservableCollection<double> _ramTrayHistory = new ObservableCollection<double>();
+        public ObservableCollection<double> RamTrayHistory
+        {
+            get => _ramTrayHistory;
+            set => SetProperty(ref _ramTrayHistory, value);
+        }
+
+        private ObservableCollection<double> _diskTrayHistory = new ObservableCollection<double>();
+        public ObservableCollection<double> DiskTrayHistory
+        {
+            get => _diskTrayHistory;
+            set => SetProperty(ref _diskTrayHistory, value);
+        }
+
+        private ObservableCollection<double> _gpuTrayHistory = new ObservableCollection<double>();
+        public ObservableCollection<double> GpuTrayHistory
+        {
+            get => _gpuTrayHistory;
+            set => SetProperty(ref _gpuTrayHistory, value);
         }
         #endregion
 
@@ -694,6 +745,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             get => _currentIoLoadStr;
             set => SetProperty(ref _currentIoLoadStr, value);
         }
+        public string CurrentDiskLoadStr => CurrentIoLoadStr;
 
         private string _currentPagefileLoadStr = "0%";
         public string CurrentPagefileLoadStr
@@ -899,6 +951,47 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 OnPropertyChanged(nameof(AutoOptimizationMemoryUsage));
                 OnPropertyChanged(nameof(AutoOptimizationMemoryUsageDescription));
             }
+        }
+
+        public bool ShowHardwarePanelInTray
+        {
+            get => LocalMachineSettingsEngine.ShowHardwarePanelInTray;
+            set
+            {
+                if (LocalMachineSettingsEngine.ShowHardwarePanelInTray != value)
+                {
+                    LocalMachineSettingsEngine.ShowHardwarePanelInTray = value;
+                    OnPropertyChanged(nameof(ShowHardwarePanelInTray));
+
+                    _dispatcherQueue?.TryEnqueue(() => {
+                        OnPropertyChanged(nameof(ShowHardwarePanelInTray));
+                    });
+                }
+            }
+        }
+
+        public bool ShowCpuInTray
+        {
+            get => LocalMachineSettingsEngine.ShowCpuInTray;
+            set { LocalMachineSettingsEngine.ShowCpuInTray = value; OnPropertyChanged(nameof(ShowCpuInTray)); }
+        }
+
+        public bool ShowRamInTray
+        {
+            get => LocalMachineSettingsEngine.ShowRamInTray;
+            set { LocalMachineSettingsEngine.ShowRamInTray = value; OnPropertyChanged(nameof(ShowRamInTray)); }
+        }
+
+        public bool ShowDiskInTray
+        {
+            get => LocalMachineSettingsEngine.ShowDiskInTray;
+            set { LocalMachineSettingsEngine.ShowDiskInTray = value; OnPropertyChanged(nameof(ShowDiskInTray)); }
+        }
+
+        public bool ShowGpuInTray
+        {
+            get => LocalMachineSettingsEngine.ShowGpuInTray;
+            set { LocalMachineSettingsEngine.ShowGpuInTray = value; OnPropertyChanged(nameof(ShowGpuInTray)); }
         }
 
         public string AutoOptimizationMemoryIntervalDescription => ResourceHelper.GetPluralizedString("txt_auto_opt_interval", AutoOptimizationInterval);
@@ -2088,24 +2181,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
+                // 1. Data Collection (Keep this on the background thread)
                 float cpuUsage = _cpuCounter?.NextValue() ?? 0;
                 float gpuUsage = GetGpuUsage();
-
                 float availableMb = _ramCounter?.NextValue() ?? 0;
                 double usedMb = _totalMemoryMb - availableMb;
+
                 double ramUsage = _totalMemoryMb > 0 ? (usedMb / _totalMemoryMb) * 100 : 0;
                 if (ramUsage < 0) ramUsage = 0;
 
                 float diskUsage = _diskCounter?.NextValue() ?? 0;
-
                 if (diskUsage > 100) diskUsage = 100;
 
                 float pagefileUsage = _pagefileCounter?.NextValue() ?? 0;
-
                 var netUsage = GetNetworkUsage();
                 float downMbps = netUsage.downMbps;
                 float upMbps = netUsage.upMbps;
 
+                // Peak Network Logic
                 float currentMax = Math.Max(downMbps, upMbps);
                 if (currentMax > _peakNetworkSpeedMbps)
                 {
@@ -2119,6 +2212,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float downPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((downMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
                 float upPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((upMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
 
+                // Notifications
                 if (!IsOptimizationRunning)
                 {
                     if (ramUsage > 85 && (DateTime.Now - _lastRamNotification).TotalMinutes > 15)
@@ -2138,26 +2232,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                 }
 
-                CurrentCpuLoadStr = $"{(int)cpuUsage}%";
-                CurrentRamLoadStr = $"{(int)ramUsage}%";
-                CurrentIoLoadStr = $"{(int)diskUsage}%";
-                CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
-                CurrentGpuLoadStr = $"{(int)gpuUsage}%";
-
-                CurrentNetworkDownLoadStr = $"{downMbps:0.#} ▼";
-                CurrentNetworkUpLoadStr = $"{upMbps:0.#} ▲";
-                CurrentNetworkLoadStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲ Mbps";
-                CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
-
-                OnPropertyChanged(nameof(ActivePrimaryValueStr));
-                OnPropertyChanged(nameof(HeroStandardVisibility));
-
+                // 2. Buffer Management
                 _cpuHistoryBuffer.Add(100 - cpuUsage);
                 _ramHistoryBuffer.Add(100 - ramUsage);
                 _diskHistoryBuffer.Add(100 - diskUsage);
                 _pageHistoryBuffer.Add(100 - pagefileUsage);
                 _gpuHistoryBuffer.Add(100 - gpuUsage);
-
                 _networkDownHistoryBuffer.Add(100 - downPct);
                 _networkUpHistoryBuffer.Add(100 - upPct);
 
@@ -2172,9 +2252,78 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _networkUpHistoryBuffer.RemoveAt(0);
                 }
 
-                RebuildGraphFromHistory();
+                // 3. Snapshot data for the UI (prevents "Collection Modified" crashes)
+                var cpuSnapshot = _cpuHistoryBuffer.ToList();
+                var ramSnapshot = _ramHistoryBuffer.ToList();
+                var gpuSnapshot = _gpuHistoryBuffer.ToList();
+                var diskSnapshot = _diskHistoryBuffer.ToList();
+
+                // 4. UI Update (Everything touching properties goes here)
+                var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
+                dispatcher?.TryEnqueue(() =>
+                {
+                    CurrentCpuLoadStr = $"{(int)cpuUsage}%";
+                    CurrentRamLoadStr = $"{(int)ramUsage}%";
+                    CurrentIoLoadStr = $"{(int)diskUsage}%";
+                    CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
+                    CurrentGpuLoadStr = $"{(int)gpuUsage}%";
+
+                    CurrentNetworkDownLoadStr = $"{downMbps:0.#} ▼";
+                    CurrentNetworkUpLoadStr = $"{upMbps:0.#} ▲";
+                    CurrentNetworkLoadStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲ Mbps";
+                    CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
+
+                    OnPropertyChanged(nameof(ActivePrimaryValueStr));
+                    OnPropertyChanged(nameof(HeroStandardVisibility));
+
+                    // Tray Visibility Sync
+                    OnPropertyChanged(nameof(ShowHardwarePanelInTray));
+                    OnPropertyChanged(nameof(ShowCpuInTray));
+                    OnPropertyChanged(nameof(ShowRamInTray));
+                    OnPropertyChanged(nameof(ShowGpuInTray));
+                    OnPropertyChanged(nameof(ShowDiskInTray));
+
+                    // Sparklines (Using snapshots)
+                    int sparklinePoints = 20;
+                    double stepX = 3.0;
+                    double chartHeight = 15.0;
+
+                    CpuTrayPoints = GenerateTrayPoints(cpuSnapshot, sparklinePoints, stepX, chartHeight);
+                    RamTrayPoints = GenerateTrayPoints(ramSnapshot, sparklinePoints, stepX, chartHeight);
+                    GpuTrayPoints = GenerateTrayPoints(gpuSnapshot, sparklinePoints, stepX, chartHeight);
+                    DiskTrayPoints = GenerateTrayPoints(diskSnapshot, sparklinePoints, stepX, chartHeight);
+
+                    OnPropertyChanged(nameof(CpuTrayPoints));
+                    OnPropertyChanged(nameof(RamTrayPoints));
+                    OnPropertyChanged(nameof(GpuTrayPoints));
+                    OnPropertyChanged(nameof(DiskTrayPoints));
+
+                    RebuildGraphFromHistory();
+                });
             }
             catch { }
+        }
+
+        private Microsoft.UI.Xaml.Media.PointCollection GenerateTrayPoints(
+            System.Collections.Generic.IEnumerable<double> buffer,
+            int pointsToTake,
+            double stepX,
+            double height)
+        {
+            var newPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+            var data = buffer.Reverse().Take(pointsToTake).Reverse().ToList();
+
+            if (data.Count == 0) return newPoints;
+
+            double startX = 60 - ((data.Count - 1) * stepX);
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                double y = (data[i] / 100.0) * height;
+                newPoints.Add(new Windows.Foundation.Point(startX + (i * stepX), y));
+            }
+
+            return newPoints;
         }
 
         private void StopLiveTelemetry()

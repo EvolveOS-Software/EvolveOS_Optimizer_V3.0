@@ -2285,6 +2285,14 @@
     <sys:String x:Key="placeholder_select_process">Prozess zum Ausschließen auswählen...</sys:String>
     <sys:String x:Key="StatusTextBlockDefault">Bereit</sys:String>
     <sys:String x:Key="Close">Schließen</sys:String>
+
+    <sys:String x:Key="settings_systray_title">Systemtray Widget</sys:String>
+    <sys:String x:Key="settings_systray_description">Aktivieren Sie das Hardware Panel und wählen Sie aus, welche Metriken angezeigt werden, wenn Sie mit der rechten Maustaste auf das Systemtray-Symbol klicken.</sys:String>
+    <sys:String x:Key="settings_systray_master_toggle">Hardware-Panel anzeigen</sys:String>
+    <sys:String x:Key="settings_systray_cpu">CPU Auslastung</sys:String>
+    <sys:String x:Key="settings_systray_ram">RAM Auslastung</sys:String>
+    <sys:String x:Key="settings_systray_disk">Festplatte (E/A-Auslastung)</sys:String>
+    <sys:String x:Key="settings_systray_gpu">GPU Auslastung</sys:String>
     <!-- endregion Diagnostics Page -->
 
 </ResourceDictionary>

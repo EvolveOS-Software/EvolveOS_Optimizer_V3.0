@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -26,33 +29,45 @@ namespace EvolveOS_Optimizer
 {
     public sealed partial class MainWindow : Window, INotifyPropertyChanged
     {
+        #region Statics
         public static MainWindow? Instance { get; private set; }
+        private static Frame? _permanentFrameReference;
+        #endregion
 
-        public DiagnosticsPageViewModel DiagnosticsVM => DiagnosticsPageViewModel.Current;
-
+        #region Events
         public event PropertyChangedEventHandler? PropertyChanged;
+        #endregion
+
+        #region Private Fields
         private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue =
             Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-
-        private Pages.DiagnosticsPage? _cachedDiagnosticsPage;
-
-        private static Frame? _permanentFrameReference;
 
         private AppWindow? _appWindow;
         private IntPtr _hWnd;
 
-        string iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "EvolveOS_Optimizer.ico");
+        private Pages.DiagnosticsPage? _cachedDiagnosticsPage;
+        private MenuFlyoutItemBase? _hardwarePanelItem;
 
         private DispatcherTimer? _sessionTimer;
         private DateTime _sessionExpiryTime;
 
-        public string GetText(string key) => LocalizationService.Instance[key];
+        string iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "EvolveOS_Optimizer.ico");
+        #endregion
 
+        #region Properties & Methods
+        public DiagnosticsPageViewModel DiagnosticsVM => DiagnosticsPageViewModel.Current;
+
+        public string GetText(string key) => LocalizationService.Instance[key];
+        #endregion
+
+        #region Constructor
         public MainWindow()
         {
             Instance = this;
 
             this.InitializeComponent();
+
+            _hardwarePanelItem = HardwarePanelSeparator;
 
             IntPtr hwnd = WindowNative.GetWindowHandle(this);
             var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
@@ -120,6 +135,16 @@ namespace EvolveOS_Optimizer
 
             this.RootGrid.Loaded += MainWindow_Loaded;
 
+            if (TrayIcon.ContextFlyout is MenuFlyout flyout)
+            {
+                flyout.Opening += (s, e) =>
+                {
+                    var vm = DiagnosticsPageViewModel.Current;
+                    HardwarePanelSeparator.DataContext = null;
+                    HardwarePanelSeparator.DataContext = vm;
+                };
+            }
+
             DiagnosticsVM.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(DiagnosticsVM.IsBusy))
@@ -134,6 +159,7 @@ namespace EvolveOS_Optimizer
                 }
             };
         }
+        #endregion
 
         #region Window Configuration
         private void ConfigureWindow()
@@ -183,6 +209,14 @@ namespace EvolveOS_Optimizer
             if (args.WindowActivationState != WindowActivationState.Deactivated)
             {
                 ForceToForeground();
+            }
+        }
+
+        private void WidgetGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement widgetGrid)
+            {
+                widgetGrid.DataContext = DiagnosticsPageViewModel.Current;
             }
         }
 

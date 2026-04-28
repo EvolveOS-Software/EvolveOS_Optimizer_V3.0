@@ -2300,6 +2300,14 @@
     <sys:String x:Key="placeholder_select_process">Selecteer een proces om uit te sluiten...</sys:String>
     <sys:String x:Key="StatusTextBlockDefault">Gereed</sys:String>
     <sys:String x:Key="Close">Sluiten</sys:String>
+
+    <sys:String x:Key="settings_systray_title">Systeemvak widget</sys:String>
+    <sys:String x:Key="settings_systray_description">Schakel het hardwarepaneel in en selecteer welke statistieken verschijnen wanneer u met de rechtermuisknop op het pictogram in het systeemvak klikt.</sys:String>
+    <sys:String x:Key="settings_systray_master_toggle">Hardwarepaneel weergeven</sys:String>
+    <sys:String x:Key="settings_systray_cpu">CPU gebruik</sys:String>
+    <sys:String x:Key="settings_systray_ram">RAM gebruik</sys:String>
+    <sys:String x:Key="settings_systray_disk">Schijf (I/O-gebruik)</sys:String>
+    <sys:String x:Key="settings_systray_gpu">GPU gebruik</sys:String>
     <!-- endregion Diagnostics Page -->
     
 </ResourceDictionary>

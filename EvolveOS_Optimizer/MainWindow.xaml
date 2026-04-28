@@ -9,6 +9,7 @@
     xmlns:conv="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:vm="using:EvolveOS_Optimizer.Core.ViewModel"
+    xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
     xmlns:tb="using:H.NotifyIcon"
     mc:Ignorable="d" 
     d:Height="870" 
@@ -19,6 +20,7 @@
         <Grid.Resources>
             <conv:UserTypeToColorConverter x:Key="UserTypeToColorConverter"/>
             <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <conv:InverseBooleanToVisibilityConverter x:Key="InverseConverter"/>
 
             <Storyboard x:Name="ShowDimOverlay">
                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="WindowDimOverlay" Storyboard.TargetProperty="Visibility">
@@ -46,6 +48,97 @@
                     </DoubleAnimation.EasingFunction>
                 </DoubleAnimation>
             </Storyboard>
+
+            <Style x:Key="TrayWidgetSeparatorStyle" TargetType="MenuFlyoutSeparator">
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuFlyoutSeparator">
+                            <Grid Background="Transparent" Loaded="WidgetGrid_Loaded" Height="Auto">
+
+                                <StackPanel Orientation="Horizontal" Spacing="8" Margin="16,10,16,10"
+                                            Visibility="{Binding ShowHardwarePanelInTray, Converter={StaticResource InverseConverter}}">
+                                    <Image Source="ms-appx:///Assets/EvolveOS_Optimizer.ico" Width="16" Height="16"/>
+                                    <TextBlock Text="EvolveOS Optimizer" FontSize="14" FontWeight="Bold"
+                                               Foreground="{ThemeResource MyDynamicAccentBrush}" FontFamily="{StaticResource Jura}"/>
+                                </StackPanel>
+
+                                <Border Background="{ThemeResource Brush_Overlay_Dim}"
+                                        BorderBrush="{ThemeResource MyDynamicAccentBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="16"
+                                        Margin="8,8,8,4"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Visibility="{Binding ShowHardwarePanelInTray, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                    <StackPanel Spacing="10">
+                                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
+                                            <Image Source="ms-appx:///Assets/EvolveOS_Optimizer.ico" Width="16" Height="16"/>
+                                            <TextBlock Text="EvolveOS Optimizer" FontSize="14" FontWeight="Bold"
+                                                       Foreground="{ThemeResource MyDynamicAccentBrush}" FontFamily="{StaticResource Jura}"/>
+                                        </StackPanel>
+
+                                        <Grid Visibility="{Binding ShowCpuInTray, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="&#xE9D9;" Foreground="#85E064" FontSize="16" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="CPU" Grid.Column="1" Foreground="White" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <Polyline Grid.Column="2" Points="{Binding CpuTrayPoints}" Stroke="#85E064" StrokeThickness="1.5" VerticalAlignment="Center" Height="15" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                                            <TextBlock Text="{Binding CurrentCpuLoadStr}" Grid.Column="3" Foreground="#85E064" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Visibility="{Binding ShowGpuInTray, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="&#xE99A;" Foreground="#E65C5C" FontSize="16" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="GPU" Grid.Column="1" Foreground="White" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <Polyline Grid.Column="2" Points="{Binding GpuTrayPoints}" Stroke="#E65C5C" StrokeThickness="1.5" VerticalAlignment="Center" Height="15" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                                            <TextBlock Text="{Binding CurrentGpuLoadStr}" Grid.Column="3" Foreground="#E65C5C" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Visibility="{Binding ShowRamInTray, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="&#xE964;" Foreground="#5C9CE6" FontSize="16" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="RAM" Grid.Column="1" Foreground="White" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <Polyline Grid.Column="2" Points="{Binding RamTrayPoints}" Stroke="#5C9CE6" StrokeThickness="1.5" VerticalAlignment="Center" Height="15" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                                            <TextBlock Text="{Binding CurrentRamLoadStr}" Grid.Column="3" Foreground="#5C9CE6" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Visibility="{Binding ShowDiskInTray, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="&#xEDA2;" Foreground="#B973E6" FontSize="16" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="I/O" Grid.Column="1" Foreground="White" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                            <Polyline Grid.Column="2" Points="{Binding DiskTrayPoints}" Stroke="#B973E6" StrokeThickness="1.5" VerticalAlignment="Center" Height="15" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                                            <TextBlock Text="{Binding CurrentDiskLoadStr}" Grid.Column="3" Foreground="#B973E6" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </Grid.Resources>
 
         <Grid.DataContext>
@@ -58,10 +151,67 @@
         </Grid.RowDefinitions>
 
         <tb:TaskbarIcon x:Name="TrayIcon" 
-                        Style="{StaticResource EvolveOSTrayIconStyle}"
-                        DataContext="{Binding DataContext, ElementName=RootGrid}"
-                        DoubleClickCommand="{Binding ToggleWindowVisibilityCommand}"
-                        ContextMenuMode="SecondWindow" />
+                Style="{StaticResource EvolveOSTrayIconStyle}"
+                DataContext="{Binding DataContext, ElementName=RootGrid}"
+                DoubleClickCommand="{Binding ToggleWindowVisibilityCommand}"
+                ContextMenuMode="SecondWindow">
+
+            <tb:TaskbarIcon.ContextFlyout>
+                <MenuFlyout MenuFlyoutPresenterStyle="{StaticResource EvolveOSPresenterStyle}">
+
+                    <MenuFlyoutSeparator x:Name="HardwarePanelSeparator" Style="{StaticResource TrayWidgetSeparatorStyle}" />
+
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_security}" Command="{Binding OpenSecurityCommand}" FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xEA18;" FontSize="14"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_maintenance}" Command="{Binding OpenMaintenanceCommand}" FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE90F;" FontSize="14"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_dns}" Command="{Binding OpenDnsCommand}" FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE774;" FontSize="14"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutSeparator Opacity="0.5"/>
+
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_show_window}" Command="{Binding MaximizeCommand}" FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE922;" FontSize="14"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_hide_window}" Command="{Binding MinimizeCommand}" FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE921;" FontSize="14"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutSeparator Opacity="0.5"/>
+
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_run_startup}" Command="{Binding ToggleRunOnStartupCommand}" FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73E;" FontSize="14" Visibility="{Binding IsRunOnStartUp, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutSeparator Opacity="0.5"/>
+
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_close_window}" Command="{Binding CloseCommand}" Foreground="#FF5555" FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE711;" Foreground="#FF5555" FontSize="14"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                </MenuFlyout>
+            </tb:TaskbarIcon.ContextFlyout>
+        </tb:TaskbarIcon>
 
         <Grid x:Name="AppTitleBar" Height="45" Visibility="Visible" VerticalAlignment="Top">
 

@@ -2305,6 +2305,14 @@
     <sys:String x:Key="placeholder_select_process">Sélectionnez un processus à exclure...</sys:String>
     <sys:String x:Key="StatusTextBlockDefault">Prêt</sys:String>
     <sys:String x:Key="Close">Fermer</sys:String>
+
+    <sys:String x:Key="settings_systray_title">Widget de la zone de notification</sys:String>
+    <sys:String x:Key="settings_systray_description">Activez le panneau matériel et sélectionnez les mesures à afficher lors d'un clic droit sur l'icône de la zone de notification.</sys:String>
+    <sys:String x:Key="settings_systray_master_toggle">Afficher le panneau matériel</sys:String>
+    <sys:String x:Key="settings_systray_cpu">Utilisation du processeur</sys:String>
+    <sys:String x:Key="settings_systray_ram">Utilisation de la RAM</sys:String>
+    <sys:String x:Key="settings_systray_disk">Disque (Utilisation E/S)</sys:String>
+    <sys:String x:Key="settings_systray_gpu">Utilisation du GPU</sys:String>
     <!-- endregion Diagnostics Page -->
 
 </ResourceDictionary>

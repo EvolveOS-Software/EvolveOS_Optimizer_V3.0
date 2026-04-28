@@ -2318,6 +2318,14 @@
     <sys:String x:Key="placeholder_select_process">Select a process to exclude...</sys:String>
     <sys:String x:Key="StatusTextBlockDefault">Ready</sys:String>
     <sys:String x:Key="Close">Close</sys:String>
+
+    <sys:String x:Key="settings_systray_title">System Tray Widget</sys:String>
+    <sys:String x:Key="settings_systray_description">Enable the hardware panel and select which metrics appear when you right-click the system tray icon.</sys:String>
+    <sys:String x:Key="settings_systray_master_toggle">Show Hardware Panel</sys:String>
+    <sys:String x:Key="settings_systray_cpu">CPU Usage</sys:String>
+    <sys:String x:Key="settings_systray_ram">RAM Usage</sys:String>
+    <sys:String x:Key="settings_systray_disk">Disk (I/O Usage)</sys:String>
+    <sys:String x:Key="settings_systray_gpu">GPU Usage</sys:String>
     <!-- endregion Diagnostics Page -->
 
 </ResourceDictionary>
