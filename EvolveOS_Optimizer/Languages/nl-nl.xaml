@@ -751,6 +751,35 @@
     <sys:String x:Key="SystemAppsPage_ConfirmRemoveApps">U staat op het punt de volgende apps volledig van uw systeem te verwijderen:</sys:String>
     <sys:String x:Key="SystemAppsPage_ConfirmContinue">Weet u zeker dat u wilt doorgaan?</sys:String>
     <sys:String x:Key="SystemAppsPage_Continue">Doorgaan</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_SortName">Sorteren op naam</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortSize">Sorteren op grootte</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortDate">Sorteren op datum</sys:String>
+    <sys:String x:Key="SystemAppsPage_OpenFileLocation">Bestandslocatie openen</sys:String>
+    <sys:String x:Key="SystemAppsPage_Win32Label">win32</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderName">App naam</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderDate">Geïnstalleerd op</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderSize">Grootte</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderType">Type</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_DeepCleanTitle">Grondige Opschoning: Resten Gevonden</sys:String>
+    <sys:String x:Key="SystemAppsPage_DeepCleanMessage">We hebben {0} achtergebleven bestanden en registersleutels gevonden van {1}. Wilt u deze definitief verwijderen om ruimte vrij te maken?&#x0a;&#x0a;{2}</sys:String>
+    <sys:String x:Key="SystemAppsPage_CleanLeftoversBtn">Resten Opschonen</sys:String>
+    <sys:String x:Key="SystemAppsPage_SkipBtn">Overslaan</sys:String>
+    <sys:String x:Key="SystemAppsPage_AndMore">&#x0a;...en meer</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_HeaderStartup">Opstarten</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderActions">Acties</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportTitle">Export Geslaagd</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportMessage">Er zijn {0} apps geëxporteerd naar {1}</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopTitle">Geforceerd Stoppen</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageSuccess">Er zijn {0} achtergrondprocessen beëindigd voor {1}.</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageNone">Geen actieve processen gevonden voor {0}.</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadge">Opstarten</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportBtn">App-lijst Exporteren</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopBtn">App Geforceerd Stoppen</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadgeToolTip">Beheren in Opstart-apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_UnknownSize">Onbekende grootte</sys:String>
     <!-- endregion Installed Apps -->
 
     <!-- region System Page -->

@@ -13,7 +13,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public ObservableCollection<PackagesModel> DisplayState { get; set; }
 
-        public ObservableCollection<Tuple<string, string, bool>> SystemAppList { get; } = new();
+        public ObservableCollection<SystemAppItem> SystemAppList { get; } = new();
 
         public Visibility Win11FeatureOnly => HardwareData.OS.IsWin11 ? Visibility.Visible : Visibility.Collapsed;
 

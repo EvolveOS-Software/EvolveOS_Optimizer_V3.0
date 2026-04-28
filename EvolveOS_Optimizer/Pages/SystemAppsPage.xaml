@@ -8,12 +8,16 @@
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:model="using:EvolveOS_Optimizer.Core.Model"
     mc:Ignorable="d" NavigationCacheMode="Disabled">
+
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Page.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -74,6 +78,7 @@
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center">
+
                 <StackPanel x:Name="appsFilterText" Margin="0,6,0,6" Visibility="Collapsed" Orientation="Horizontal">
                     <FontIcon Glyph="&#xE71C;" FontSize="{StaticResource TextBoxIconFontSize}"/>
                     <TextBlock helpers:Loc.Key="SystemAppsPage_AppsFilter" Style="{StaticResource DetailBodyBaseMediumStyle}" Margin="6,0,0,0" VerticalAlignment="Center"/>
@@ -85,11 +90,55 @@
                     <ComboBoxItem Content="{helpers:ResourceString Key=SystemAppsPage_Win32Apps}" Tag="Win32"/>
                 </ComboBox>
 
-                <Button Content="{helpers:ResourceString Key=SystemAppsPage_UninstallButton}"  Margin="12,6,0,6" x:Name="uninstallButton" Visibility="Collapsed" Click="UninstallSelectedApp_Click" Style="{ThemeResource AccentButtonStyle}"/>
+                <ComboBox Width="140" x:Name="appsSort" Margin="8,6,0,6" VerticalAlignment="Center" Visibility="Collapsed" SelectedIndex="0" SelectionChanged="appsSort_SelectionChanged">
+                    <ComboBoxItem Content="{helpers:ResourceString Key=SystemAppsPage_SortName}" Tag="Name"/>
+                    <ComboBoxItem Content="{helpers:ResourceString Key=SystemAppsPage_SortSize}" Tag="Size"/>
+                    <ComboBoxItem Content="{helpers:ResourceString Key=SystemAppsPage_SortDate}" Tag="Date"/>
+                </ComboBox>
+
+                <Button x:Name="exportButton" 
+                        Margin="8,6,0,6" 
+                        Visibility="Collapsed" 
+                        Click="ExportAppsButton_Click" 
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE72D;" FontSize="14"/>
+                        <TextBlock helpers:Loc.Key="SystemAppsPage_ExportBtn" Text="Export"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Content="{helpers:ResourceString Key=SystemAppsPage_UninstallButton}"  
+                        Margin="12,6,0,6" 
+                        x:Name="uninstallButton" 
+                        Visibility="Collapsed" 
+                        Click="UninstallSelectedApp_Click"/>
             </controls:WrapPanel>
         </Grid>
 
-        <ScrollViewer Padding="4,14,24,0" Grid.Row="1" VerticalScrollBarVisibility="Auto">
+        <Grid x:Name="HeaderGrid" 
+              Grid.Row="1" 
+              Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" 
+              Padding="78,8,24,8" 
+              CornerRadius="4" 
+              Margin="4,12,24,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderName" Text="App Name" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderStartup" Text="Startup" Grid.Column="1" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderDate" Text="Installed On" Grid.Column="2" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderSize" Text="Size" Grid.Column="3" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderType" Text="Type" Grid.Column="4" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+            <TextBlock helpers:Loc.Key="SystemAppsPage_HeaderActions" Text="Actions" Grid.Column="5" TextAlignment="Center" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" Opacity="0.8" VerticalAlignment="Center"/>
+        </Grid>
+
+        <ScrollViewer Padding="4,0,24,0" Grid.Row="2" VerticalScrollBarVisibility="Auto">
             <Grid Margin="0,0,0,38">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -110,10 +159,10 @@
                     DragItemsStarting="AppTreeView_DragItemsStarting"
                     ItemInvoked="appTreeView_ItemInvoked"
                     VirtualizingStackPanel.VirtualizationMode="Recycling">
+
                     <TreeView.ItemContainerStyle>
                         <Style TargetType="TreeViewItem">
                             <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
-                            <Setter Property="Padding" Value="10"/>
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                             <Setter Property="FontWeight" Value="SemiBold"/>
                             <Setter Property="FontSize" Value="14"/>
@@ -122,20 +171,53 @@
                             <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
                         </Style>
                     </TreeView.ItemContainerStyle>
+
                     <TreeView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Background="Transparent">
+                        <DataTemplate x:DataType="model:SystemAppItem">
+                            <Grid Background="Transparent" Margin="0,0,18,0" Padding="0,8">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="80"/>
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0" Orientation="Horizontal" Padding="5,0,5,0">
-                                    <Grid Background="{ThemeResource CardBackgroundFillColorDefault}" BorderBrush="{ThemeResource CircleElevationBorderBrush}" BorderThickness="1" CornerRadius="4" Margin="-30,0,18,0" Width="48" Height="48">
-                                        <Image Source="{Binding Item2}" Width="38" Height="38" Visibility="{Binding Item2, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <Grid Background="{ThemeResource CardBackgroundFillColorDefault}" 
+                                          BorderBrush="{ThemeResource CircleElevationBorderBrush}" 
+                                          BorderThickness="1" CornerRadius="4" Margin="0,0,12,0" Width="42" Height="42">
+                                        <Image Source="{x:Bind IconPath}" Width="32" Height="32" Visibility="{Binding IconPath, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                     </Grid>
-                                    <TextBlock Text="{Binding Item1}" VerticalAlignment="Center" TextWrapping="WrapWholeWords" />
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Bind DisplayName}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" FontWeight="SemiBold" FontSize="13" />
+                                        <TextBlock Text="{x:Bind FormattedVersion}" Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.6" FontSize="11" />
+                                    </StackPanel>
                                 </StackPanel>
-                                <TextBlock VerticalAlignment="Center" Visibility="{Binding Item3}" Opacity="0.7" HorizontalAlignment="Right" Style="{StaticResource CaptionTextBlockStyle}" Text="win32" Grid.Column="1"/>
+
+                                <Button Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Background="Transparent" BorderThickness="0"
+                                        Click="StartupBadge_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=SystemAppsPage_StartupBadgeToolTip}"
+                                        Visibility="{x:Bind RunsAtStartup, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Border Background="#2232CD32" CornerRadius="4" Padding="6,2">
+                                        <TextBlock helpers:Loc.Key="SystemAppsPage_StartupBadge" Text="Startup" FontSize="10" Foreground="LimeGreen" FontWeight="SemiBold"/>
+                                    </Border>
+                                </Button>
+
+                                <TextBlock Grid.Column="2" Text="{x:Bind FormattedDate}" Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.7" VerticalAlignment="Center" TextAlignment="Center"/>
+                                <TextBlock Grid.Column="3" Text="{x:Bind FormattedSize, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" VerticalAlignment="Center" TextAlignment="Center"/>
+                                <TextBlock Grid.Column="4" helpers:Loc.Key="SystemAppsPage_Win32Label" Text="win32" Visibility="{x:Bind IsWin32, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.5" VerticalAlignment="Center" TextAlignment="Center"/>
+
+                                <StackPanel Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                    <Button ToolTipService.ToolTip="{helpers:ResourceString Key=SystemAppsPage_OpenFileLocation}" Click="OpenFileLocation_Click" Tag="{x:Bind InstallLocation}"
+                                            IsEnabled="{x:Bind IsWin32}" Padding="6,4" Background="Transparent" BorderThickness="0">
+                                        <FontIcon Glyph="&#xED25;" FontSize="14"/>
+                                    </Button>
+                                    <Button ToolTipService.ToolTip="{helpers:ResourceString Key=SystemAppsPage_ForceStopBtn}" Click="ForceStopApp_Click" Tag="{x:Bind DisplayName}"
+                                            Padding="6,4" Background="Transparent" BorderThickness="0">
+                                        <FontIcon Glyph="&#xE71A;" FontSize="14" Foreground="#FF5555"/>
+                                    </Button>
+                                </StackPanel>
                             </Grid>
                         </DataTemplate>
                     </TreeView.ItemTemplate>
@@ -143,7 +225,7 @@
             </Grid>
         </ScrollViewer>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>

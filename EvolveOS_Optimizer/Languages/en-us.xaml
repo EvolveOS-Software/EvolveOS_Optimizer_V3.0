@@ -760,6 +760,35 @@
     <sys:String x:Key="SystemAppsPage_ConfirmRemoveApps">You’re about to completely remove the following apps from your system:</sys:String>
     <sys:String x:Key="SystemAppsPage_ConfirmContinue">Are you sure you want to continue?</sys:String>
     <sys:String x:Key="SystemAppsPage_Continue">Continue</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_SortName">Sort by Name</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortSize">Sort by Size</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortDate">Sort by Date</sys:String>
+    <sys:String x:Key="SystemAppsPage_OpenFileLocation">Open File Location</sys:String>
+    <sys:String x:Key="SystemAppsPage_Win32Label">win32</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderName">App Name</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderDate">Installed On</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderSize">Size</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderType">Type</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_DeepCleanTitle">Deep Cleanup: Leftovers Found</sys:String>
+    <sys:String x:Key="SystemAppsPage_DeepCleanMessage">We found {0} orphaned files and registry keys left behind by {1}. Would you like to permanently delete them to free up space?&#x0a;&#x0a;{2}</sys:String>
+    <sys:String x:Key="SystemAppsPage_CleanLeftoversBtn">Clean Leftovers</sys:String>
+    <sys:String x:Key="SystemAppsPage_SkipBtn">Skip</sys:String>
+    <sys:String x:Key="SystemAppsPage_AndMore">&#x0a;...and more</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_HeaderStartup">Startup</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderActions">Actions</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportTitle">Export Successful</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportMessage">Exported {0} apps to {1}</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopTitle">Force Stop</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageSuccess">Terminated {0} background processes for {1}.</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageNone">No running processes found for {0}.</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadge">Startup</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportBtn">Export App List</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopBtn">Force Stop App</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadgeToolTip">Manage in Startup Apps</sys:String>
+    <sys:String x:Key="SystemAppsPage_UnknownSize">Unknown size</sys:String>
     <!-- endregion Installed Apps -->
 
     <!-- region System Page -->

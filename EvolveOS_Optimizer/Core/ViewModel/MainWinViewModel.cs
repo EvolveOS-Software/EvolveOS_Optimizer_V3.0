@@ -217,6 +217,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public ICommand ToggleRunOnStartupCommand { get; }
         public ICommand OpenSecurityCommand { get; }
         public ICommand OpenMaintenanceCommand { get; }
+        public ICommand OpenStartupAppsCommand { get; }
         public ICommand OpenDnsCommand { get; }
         #endregion
 
@@ -230,6 +231,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             CloseCommand = new RelayCommand<object>(_ => ExecuteClose());
             OpenSecurityCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Security"));
             OpenMaintenanceCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Maintenance"));
+            OpenStartupAppsCommand = new RelayCommand<object>(_ => OpenPageFromTray("SystemManager", "StartupManagerPage"));
             OpenDnsCommand = new RelayCommand<object>(_ => OpenPageFromTray("Utilities"));
             ToggleWindowVisibilityCommand = new RelayCommand<object>(_ => ExecuteToggleVisibility());
 

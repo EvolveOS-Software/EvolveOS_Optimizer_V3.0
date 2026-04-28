@@ -751,6 +751,35 @@
     <sys:String x:Key="SystemAppsPage_ConfirmRemoveApps">Vous êtes sur le point de supprimer complètement les applications suivantes de votre système :</sys:String>
     <sys:String x:Key="SystemAppsPage_ConfirmContinue">Êtes-vous sûr de vouloir continuer ?</sys:String>
     <sys:String x:Key="SystemAppsPage_Continue">Continuer</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_SortName">Trier par nom</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortSize">Trier par taille</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortDate">Trier par date</sys:String>
+    <sys:String x:Key="SystemAppsPage_OpenFileLocation">Ouvrir l'emplacement du fichier</sys:String>
+    <sys:String x:Key="SystemAppsPage_Win32Label">win32</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderName">Nom de l'application</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderDate">Installé le</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderSize">Taille</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderType">Type</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_DeepCleanTitle">Nettoyage en Profondeur : Restes Trouvés</sys:String>
+    <sys:String x:Key="SystemAppsPage_DeepCleanMessage">Nous avons trouvé {0} fichiers et clés de registre orphelins laissés par {1}. Voulez-vous les supprimer définitivement pour libérer de l'espace ?&#x0a;&#x0a;{2}</sys:String>
+    <sys:String x:Key="SystemAppsPage_CleanLeftoversBtn">Nettoyer les Restes</sys:String>
+    <sys:String x:Key="SystemAppsPage_SkipBtn">Ignorer</sys:String>
+    <sys:String x:Key="SystemAppsPage_AndMore">&#x0a;...et plus</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_HeaderStartup">Démarrage</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderActions">Actions</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportTitle">Exportation Réussie</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportMessage">{0} applications exportées vers {1}</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopTitle">Forcer l'Arrêt</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageSuccess">{0} processus en arrière-plan terminés pour {1}.</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageNone">Aucun processus en cours trouvé pour {0}.</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadge">Démarrage</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportBtn">Exporter la Liste</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopBtn">Forcer l'Arrêt</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadgeToolTip">Gérer dans les Applications de démarrage</sys:String>
+    <sys:String x:Key="SystemAppsPage_UnknownSize">Taille inconnue</sys:String>
     <!-- endregion Installed Apps -->
 
     <!-- region System Page -->

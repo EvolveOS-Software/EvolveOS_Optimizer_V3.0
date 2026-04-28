@@ -753,6 +753,35 @@
     <sys:String x:Key="SystemAppsPage_ConfirmRemoveApps">Sie sind dabei, die folgenden Apps vollständig von Ihrem System zu entfernen:</sys:String>
     <sys:String x:Key="SystemAppsPage_ConfirmContinue">Sind Sie sicher, dass Sie fortfahren möchten?</sys:String>
     <sys:String x:Key="SystemAppsPage_Continue">Fortfahren</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_SortName">Nach Name sortieren</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortSize">Nach Größe sortieren</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortDate">Nach Datum sortieren</sys:String>
+    <sys:String x:Key="SystemAppsPage_OpenFileLocation">Dateipfad öffnen</sys:String>
+    <sys:String x:Key="SystemAppsPage_Win32Label">win32</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderName">App Name</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderDate">Installiert am</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderSize">Größe</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderType">Typ</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_DeepCleanTitle">Tiefenreinigung: Überreste Gefunden</sys:String>
+    <sys:String x:Key="SystemAppsPage_DeepCleanMessage">Wir haben {0} verwaiste Dateien und Registrierungsschlüssel von {1} gefunden. Möchten Sie diese dauerhaft löschen, um Speicherplatz freizugeben?&#x0a;&#x0a;{2}</sys:String>
+    <sys:String x:Key="SystemAppsPage_CleanLeftoversBtn">Überreste Bereinigen</sys:String>
+    <sys:String x:Key="SystemAppsPage_SkipBtn">Überspringen</sys:String>
+    <sys:String x:Key="SystemAppsPage_AndMore">&#x0a;...und mehr</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_HeaderStartup">Autostart</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderActions">Aktionen</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportTitle">Export Erfolgreich</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportMessage">{0} Apps wurden nach {1} exportiert</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopTitle">Stoppen Erzwingen</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageSuccess">{0} Hintergrundprozesse für {1} beendet.</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageNone">Keine laufenden Prozesse für {0} gefunden.</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadge">Autostart</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportBtn">App-Liste Exportieren</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopBtn">App Stoppen Erzwingen</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadgeToolTip">In Autostart-Apps verwalten</sys:String>
+    <sys:String x:Key="SystemAppsPage_UnknownSize">Unbekannte Größe</sys:String>
     <!-- endregion Installed Apps -->
 
     <!-- region System Page -->
@@ -1153,10 +1182,6 @@
 
     <sys:String x:Key="process_manager_page_start_monitor">Überwachung fortsetzen</sys:String>
     <sys:String x:Key="process_manager_page_live_monitor">Live-Überwachung</sys:String>
-
-    <sys:String x:Key="service_manager_page_start_tooltip">Dienst starten</sys:String>
-    <sys:String x:Key="service_manager_page_stop_tooltip">Dienst stoppen</sys:String>
-    <sys:String x:Key="service_manager_page_restart_tooltip">Dienst neu starten</sys:String>
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->

@@ -1,9 +1,13 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Threading;
 using CommunityToolkit.WinUI;
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -16,16 +20,28 @@ namespace EvolveOS_Optimizer.Pages;
 
 public sealed partial class SystemAppsPage : Page, IPurgeable
 {
-    public ObservableCollection<Tuple<string, string, bool>> AppList { get; set; } = new();
+    #region Fields & Properties
+    public ObservableCollection<SystemAppItem> AppList { get; set; } = new();
 
     private CancellationTokenSource? cancellationTokenSource;
-    private List<Tuple<string, string, bool>> allApps = new();
+    private List<SystemAppItem> allApps = new();
     private string? _pendingScrollTarget;
 
     private bool _isUpdating = false;
 
-    internal PackagesViewModel? ViewModel { get; private set; }
+    private static readonly Dictionary<string, string[]> ModularAppMappings = new(StringComparer.OrdinalIgnoreCase)
+    {
+        { "iCUE", new[] { "Corsair" } },
+        { "Armoury", new[] { "ASUS", "ASUSTek" } },
+        { "Synapse", new[] { "Razer" } },
+        { "G HUB", new[] { "LGHUB" } },
+        { "GeForce Experience", new[] { "NVIDIA Corporation" } }
+    };
 
+    internal PackagesViewModel? ViewModel { get; private set; }
+    #endregion
+
+    #region Initialization & Lifecycle
     public SystemAppsPage()
     {
         InitializeComponent();
@@ -73,7 +89,9 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
     {
         Purge();
     }
+    #endregion
 
+    #region TreeView Interaction
     private void AppTreeView_DragItemsStarting(TreeView sender, TreeViewDragItemsStartingEventArgs args)
     {
         args.Cancel = true;
@@ -81,7 +99,7 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
 
     private void appTreeView_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
     {
-        if (args.InvokedItem is Tuple<string, string, bool> app)
+        if (args.InvokedItem is SystemAppItem app)
         {
             if (sender.SelectedItems.Contains(app))
             {
@@ -93,7 +111,9 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
             }
         }
     }
+    #endregion
 
+    #region Data Loading & Background Scanning
     private async void LoadInstalledApps(bool uninstallableOnly = true, bool win32Only = false, CancellationToken cancellationToken = default)
     {
         if (_isUpdating || (cancellationToken != default && cancellationToken.IsCancellationRequested)) return;
@@ -107,14 +127,16 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
             DispatcherQueue.TryEnqueue(() =>
             {
                 gettingAppsLoading.Visibility = Visibility.Visible;
+                exportButton.Visibility = Visibility.Collapsed;
                 appTreeView.Visibility = Visibility.Collapsed;
                 uninstallButton.IsEnabled = false;
                 uninstallingStatusText.Text = ResourceString.GetString("SystemAppsPage_UninstallTip");
                 uninstallingStatusBar.Opacity = 0;
                 appsFilter.IsEnabled = false;
+                appsSort.IsEnabled = false;
             });
 
-            List<Tuple<string, string, bool>> installedApps;
+            List<SystemAppItem> installedApps;
             if (win32Only)
             {
                 installedApps = await Task.Run(AppManager.GetWin32Apps, cancellationToken);
@@ -124,13 +146,15 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
                 installedApps = await Task.Run(() => AppManager.GetInstalledApps(uninstallableOnly), cancellationToken);
             }
 
+            await Task.Run(() => MarkStartupApps(installedApps), cancellationToken);
+
             DispatcherQueue.TryEnqueue(() =>
             {
                 if (cancellationToken.IsCancellationRequested) return;
 
                 AppList.Clear();
                 allApps = installedApps.AsParallel().Where(app =>
-                !app.Item1.Contains("evolveos_optimizer", StringComparison.CurrentCultureIgnoreCase)).ToList();
+                !app.DisplayName.Contains("evolveos_optimizer", StringComparison.CurrentCultureIgnoreCase)).ToList();
 
                 foreach (var app in allApps)
                 {
@@ -139,10 +163,16 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
 
                 installedAppsCount.Text = string.Format(ResourceString.GetString("SystemAppsPage_TotalApps"), AppList.Count);
                 installedAppsCount.Visibility = Visibility.Visible;
+
                 appsFilter.IsEnabled = true;
                 appsFilter.Visibility = Visibility.Visible;
                 appsFilterText.Visibility = Visibility.Visible;
+
+                appsSort.IsEnabled = true;
+                appsSort.Visibility = Visibility.Visible;
+
                 uninstallButton.Visibility = Visibility.Visible;
+                exportButton.Visibility = Visibility.Visible;
                 appTreeView.Visibility = Visibility.Visible;
                 appTreeView.IsEnabled = true;
                 uninstallButton.IsEnabled = true;
@@ -150,6 +180,8 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
                 AppSearchBox.Visibility = Visibility.Visible;
                 gettingAppsLoading.Visibility = Visibility.Collapsed;
                 TempStackButtonTextBar.Visibility = Visibility.Visible;
+
+                _ = Task.Run(() => UpdateMissingSizesAsync(cancellationToken), cancellationToken);
             });
         }
         catch (OperationCanceledException) { }
@@ -160,6 +192,160 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
         }
     }
 
+    private async Task UpdateMissingSizesAsync(CancellationToken token)
+    {
+        var targets = allApps.Where(a => a.SizeMB <= 0).ToList();
+
+        foreach (var app in targets)
+        {
+            if (token.IsCancellationRequested) return;
+
+            try
+            {
+                string discoveryPath = string.Empty;
+
+                if (!string.IsNullOrEmpty(app.InstallLocation) && Directory.Exists(app.InstallLocation))
+                {
+                    discoveryPath = app.InstallLocation;
+                }
+
+                if (string.IsNullOrEmpty(discoveryPath) && !string.IsNullOrEmpty(app.UninstallString))
+                {
+                    string rawPath = app.UninstallString.Replace("\"", "").Split(" /")[0].Split(" -")[0];
+                    if (File.Exists(rawPath)) discoveryPath = Path.GetDirectoryName(rawPath) ?? string.Empty;
+                    else if (Directory.Exists(rawPath)) discoveryPath = rawPath;
+                }
+
+                List<string> pathsToScan = new();
+                if (!string.IsNullOrEmpty(discoveryPath)) pathsToScan.Add(discoveryPath);
+
+                string name = app.DisplayName ?? "";
+
+                var matchedApp = ModularAppMappings.Keys.FirstOrDefault(k => name.Contains(k, StringComparison.OrdinalIgnoreCase));
+
+                if (matchedApp != null)
+                {
+                    foreach (var folder in ModularAppMappings[matchedApp])
+                    {
+                        pathsToScan.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), folder));
+                        pathsToScan.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), folder));
+                        pathsToScan.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), folder));
+                    }
+                }
+                else
+                {
+                    string firstWord = name.Split(' ')[0];
+
+                    if (firstWord.Length > 2 &&
+                        !firstWord.Equals("Microsoft", StringComparison.OrdinalIgnoreCase) &&
+                        !firstWord.Equals("Windows", StringComparison.OrdinalIgnoreCase) &&
+                        !firstWord.Equals("Intel", StringComparison.OrdinalIgnoreCase) &&
+                        !firstWord.Equals("AMD", StringComparison.OrdinalIgnoreCase))
+                    {
+                        pathsToScan.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), firstWord));
+                        pathsToScan.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), firstWord));
+                        pathsToScan.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), firstWord));
+                    }
+                }
+
+                if (pathsToScan.Count == 0) continue;
+
+                long totalSize = await Task.Run(() =>
+                {
+                    long currentSize = 0;
+                    var options = new EnumerationOptions
+                    {
+                        IgnoreInaccessible = true,
+                        RecurseSubdirectories = true,
+                        AttributesToSkip = FileAttributes.ReparsePoint
+                    };
+
+                    foreach (var path in pathsToScan.Distinct())
+                    {
+                        if (!Directory.Exists(path)) continue;
+                        try
+                        {
+                            var dirInfo = new DirectoryInfo(path);
+                            foreach (var file in dirInfo.EnumerateFiles("*", options))
+                            {
+                                if (token.IsCancellationRequested) return 0;
+                                currentSize += file.Length;
+                            }
+                        }
+                        catch { /* Skip specific folder errors */ }
+                    }
+                    return currentSize;
+                }, token);
+
+                double mbResult = totalSize / 1024.0 / 1024.0;
+                Debug.WriteLine($"[SizeScan] Finished {app.DisplayName}: {mbResult:N2} MB");
+
+                if (mbResult > 0)
+                {
+                    DispatcherQueue.TryEnqueue(() =>
+                    {
+                        app.SizeMB = mbResult;
+
+                        int index = AppList.IndexOf(app);
+                        if (index != -1)
+                        {
+                            AppList[index] = app;
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SizeScan] Critical Error for {app.DisplayName}: {ex.Message}");
+            }
+        }
+    }
+
+    private void MarkStartupApps(List<SystemAppItem> apps)
+    {
+        try
+        {
+            var startupNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var keys = new[] {
+                @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run",
+                @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Run"
+            };
+
+            foreach (var path in keys)
+            {
+                using var keyCurrentUser = Registry.CurrentUser.OpenSubKey(path);
+                if (keyCurrentUser != null)
+                {
+                    foreach (var valName in keyCurrentUser.GetValueNames())
+                    {
+                        var val = keyCurrentUser.GetValue(valName)?.ToString();
+                        if (!string.IsNullOrEmpty(val)) startupNames.Add(valName);
+                    }
+                }
+
+                using var keyLocalMachine = Registry.LocalMachine.OpenSubKey(path);
+                if (keyLocalMachine != null)
+                {
+                    foreach (var valName in keyLocalMachine.GetValueNames())
+                    {
+                        var val = keyLocalMachine.GetValue(valName)?.ToString();
+                        if (!string.IsNullOrEmpty(val)) startupNames.Add(valName);
+                    }
+                }
+            }
+
+            foreach (var app in apps)
+            {
+                app.RunsAtStartup = startupNames.Any(s =>
+                    app.DisplayName.Contains(s, StringComparison.OrdinalIgnoreCase) ||
+                    s.Contains(app.DisplayName, StringComparison.OrdinalIgnoreCase));
+            }
+        }
+        catch { }
+    }
+    #endregion
+
+    #region App Uninstallation & Cleanup
     private async void UninstallSelectedApp_Click(object sender, RoutedEventArgs e)
     {
         if (appTreeView.SelectedItems.Count == 0)
@@ -175,6 +361,7 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
 
         uninstallButton.IsEnabled = false;
         appsFilter.IsEnabled = false;
+        appsSort.IsEnabled = false;
         appTreeView.IsEnabled = false;
 
         var failedUninstalls = new List<string>();
@@ -192,10 +379,10 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
                 uninstallingStatusBar.Opacity = 1;
             });
 
-            foreach (var appInfo in appTreeView.SelectedItems.OfType<Tuple<string, string, bool>>())
+            foreach (var appInfo in appTreeView.SelectedItems.OfType<SystemAppItem>())
             {
-                var selectedAppName = appInfo.Item1;
-                var isWin32App = appInfo.Item3;
+                var selectedAppName = appInfo.DisplayName;
+                var isWin32App = appInfo.IsWin32;
 
                 await DispatcherQueue.EnqueueAsync(() =>
                 {
@@ -206,6 +393,11 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
                 {
                     await UninstallApps(selectedAppName, isWin32App);
                     successfulUninstalls.Add(selectedAppName);
+
+                    if (isWin32App)
+                    {
+                        await HandleLeftoversAsync(selectedAppName);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -254,8 +446,121 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
                 uninstallingStatusText.Text = ResourceString.GetString("SystemAppsPage_UninstallTip");
                 uninstallButton.IsEnabled = true;
                 appsFilter.IsEnabled = true;
+                appsSort.IsEnabled = true;
                 appTreeView.IsEnabled = true;
             });
+        }
+    }
+
+    private async Task HandleLeftoversAsync(string appName)
+    {
+        var leftovers = new List<string>();
+        var safeAppName = string.Join("_", appName.Split(Path.GetInvalidFileNameChars()));
+
+        var pathsToScan = new[] {
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)
+        };
+
+        foreach (var path in pathsToScan)
+        {
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    var dirs = Directory.GetDirectories(path);
+                    foreach (var dir in dirs)
+                    {
+                        var dirName = Path.GetFileName(dir);
+                        if (dirName.Equals(safeAppName, StringComparison.OrdinalIgnoreCase) ||
+                            dirName.Equals(appName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            leftovers.Add(dir);
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        var regKeys = new[] { @"SOFTWARE", @"SOFTWARE\WOW6432Node" };
+        var hives = new[] { Registry.CurrentUser, Registry.LocalMachine };
+        var foundRegKeys = new List<Tuple<RegistryKey, string>>();
+
+        foreach (var hive in hives)
+        {
+            foreach (var baseKey in regKeys)
+            {
+                try
+                {
+                    using var key = hive.OpenSubKey(baseKey, writable: true);
+                    if (key != null)
+                    {
+                        foreach (var subKey in key.GetSubKeyNames())
+                        {
+                            if (subKey.Equals(appName, StringComparison.OrdinalIgnoreCase) ||
+                                subKey.Equals(safeAppName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                leftovers.Add($@"Registry: {hive.Name}\{baseKey}\{subKey}");
+                                foundRegKeys.Add(new Tuple<RegistryKey, string>(key, subKey));
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
+        }
+
+        if (leftovers.Count > 0)
+        {
+            string andMoreText = ResourceString.GetString("SystemAppsPage_AndMore") ?? "\n...and more";
+            var leftoversList = string.Join("\n", leftovers.Take(8)) + (leftovers.Count > 8 ? andMoreText : "");
+
+            string formatMsg = ResourceString.GetString("SystemAppsPage_DeepCleanMessage") ?? "We found {0} orphaned files/registry keys left behind by {1}. Would you like to permanently delete them to free up space?\n\n{2}";
+
+            var contentTextBlock = new TextBlock
+            {
+                Text = string.Format(formatMsg, leftovers.Count, appName, leftoversList),
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = this.XamlRoot,
+                Title = ResourceString.GetString("SystemAppsPage_DeepCleanTitle") ?? "Deep Cleanup: Leftovers Found",
+                Content = contentTextBlock,
+                PrimaryButtonText = ResourceString.GetString("SystemAppsPage_CleanLeftoversBtn") ?? "Clean Leftovers",
+                CloseButtonText = ResourceString.GetString("SystemAppsPage_SkipBtn") ?? "Skip",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+            {
+                dialog.Style = (Style)style;
+            }
+
+            var result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                foreach (var item in leftovers.Where(l => !l.StartsWith("Registry:")))
+                {
+                    try
+                    {
+                        if (Directory.Exists(item)) Directory.Delete(item, true);
+                    }
+                    catch { }
+                }
+                foreach (var rk in foundRegKeys)
+                {
+                    try
+                    {
+                        rk.Item1.DeleteSubKeyTree(rk.Item2, false);
+                    }
+                    catch { }
+                }
+            }
         }
     }
 
@@ -394,7 +699,7 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
                     }
                 }
 
-                var windir = Environment.GetEnvironmentVariable("windir")!; // Added ! here
+                var windir = Environment.GetEnvironmentVariable("windir")!;
 
                 var processInfo = new ProcessStartInfo(Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
                         ? Path.Combine(windir, @"SysNative\cmd.exe")
@@ -429,7 +734,9 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
             }
         }
     }
+    #endregion
 
+    #region UI Control Events & Actions
     private void appsFilter_SelectionChanged(object sender, RoutedEventArgs e)
     {
         if (cancellationTokenSource != null)
@@ -455,6 +762,106 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
             case 2:
                 LoadInstalledApps(false, true, cancellationTokenSource.Token);
                 break;
+        }
+    }
+
+    private void appsSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (AppSearchBox != null && allApps != null)
+        {
+            SearchAndSortApps(AppSearchBox.Text.ToLower());
+        }
+    }
+
+    private void OpenFileLocation_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is string path && !string.IsNullOrEmpty(path))
+        {
+            if (Directory.Exists(path))
+            {
+                Process.Start("explorer.exe", $"\"{path}\"");
+            }
+            else
+            {
+                NotificationManager.Show("Location Not Found", "The installation directory does not exist or was moved.").WithSeverity(NotificationManager.NoticeSeverity.Error).WithDuration(3000).Perform();
+            }
+        }
+    }
+
+    private void ForceStopApp_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is string appName && !string.IsNullOrEmpty(appName))
+        {
+            int killedCount = 0;
+            try
+            {
+                var searchName = appName.Split(' ')[0];
+                var processes = Process.GetProcesses()
+                    .Where(p => p.ProcessName.Contains(searchName, StringComparison.OrdinalIgnoreCase));
+
+                foreach (var process in processes)
+                {
+                    try
+                    {
+                        process.Kill();
+                        killedCount++;
+                    }
+                    catch { }
+                }
+
+                if (killedCount > 0)
+                {
+                    string title = ResourceString.GetString("SystemAppsPage_ForceStopTitle") ?? "Force Stop";
+                    string msg = string.Format(ResourceString.GetString("SystemAppsPage_ForceStopMessageSuccess") ?? "Terminated {0} background processes for {1}.", killedCount, appName);
+                    NotificationManager.Show(title, msg).WithSeverity(NotificationManager.NoticeSeverity.Success).WithDuration(4000).Perform();
+                }
+                else
+                {
+                    string title = ResourceString.GetString("SystemAppsPage_ForceStopTitle") ?? "Force Stop";
+                    string msg = string.Format(ResourceString.GetString("SystemAppsPage_ForceStopMessageNone") ?? "No running processes found for {0}.", appName);
+                    NotificationManager.Show(title, msg).WithSeverity(NotificationManager.NoticeSeverity.Info).WithDuration(4000).Perform();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogWritingFile(ex);
+            }
+        }
+    }
+
+    private async void ExportAppsButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var fileName = $"InstalledApps_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+            var filePath = Path.Combine(desktopPath, fileName);
+
+            var sb = new StringBuilder();
+            sb.AppendLine("App Name,Version,Install Date,Size (MB),Type,Install Location");
+
+            foreach (var app in allApps.OrderBy(a => a.DisplayName))
+            {
+                var name = $"\"{app.DisplayName?.Replace("\"", "\"\"")}\"";
+                var version = $"\"{app.Version?.Replace("\"", "\"\"")}\"";
+                var date = app.InstallDate != DateTime.MinValue ? app.InstallDate.ToShortDateString() : "";
+                var size = app.SizeMB > 0 ? app.SizeMB.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) : "0";
+                var type = app.IsWin32 ? "Win32" : "UWP";
+                var location = $"\"{app.InstallLocation?.Replace("\"", "\"\"")}\"";
+
+                sb.AppendLine($"{name},{version},{date},{size},{type},{location}");
+            }
+
+            await File.WriteAllTextAsync(filePath, sb.ToString(), Encoding.UTF8);
+
+            string title = ResourceString.GetString("SystemAppsPage_ExportTitle") ?? "Export Successful";
+            string msg = string.Format(ResourceString.GetString("SystemAppsPage_ExportMessage") ?? "Exported {0} apps to {1}", allApps.Count, fileName);
+            NotificationManager.Show(title, msg).WithSeverity(NotificationManager.NoticeSeverity.Success).WithDuration(5000).Perform();
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogWritingFile(ex);
+            NotificationManager.Show("Export Error", ex.Message).WithSeverity(NotificationManager.NoticeSeverity.Error).WithDuration(5000).Perform();
         }
     }
 
@@ -499,27 +906,59 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
         }
     }
 
+    private void StartupBadge_Click(object sender, RoutedEventArgs e)
+    {
+        if (MainWindow.Instance != null)
+        {
+            MainWindow.Instance.SwitchPage("SystemManager", "StartupManagerPage");
+        }
+        else
+        {
+            Debug.WriteLine("❌ MainWindow.Instance is null!");
+        }
+    }
+    #endregion
+
+    #region Searching & Sorting
     private void SearchApps(string query)
     {
-        noAppFoundText.Visibility = Visibility.Collapsed;
+        SearchAndSortApps(query);
+    }
 
-        var filteredApps = allApps.AsParallel()
-                                  .Where(app => app.Item1.Contains(query, StringComparison.CurrentCultureIgnoreCase))
-                                  .OrderBy(app => app.Item1)
-                                  .ToList();
+    private void SearchAndSortApps(string query)
+    {
+        if (noAppFoundText != null) noAppFoundText.Visibility = Visibility.Collapsed;
+
+        var filteredApps = string.IsNullOrWhiteSpace(query)
+            ? allApps
+            : allApps.Where(app => app.DisplayName.Contains(query, StringComparison.CurrentCultureIgnoreCase));
+
+        var sortTag = (appsSort?.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "Name";
+
+        filteredApps = sortTag switch
+        {
+            "Size" => filteredApps.OrderByDescending(a => a.SizeMB),
+            "Date" => filteredApps.OrderByDescending(a => a.InstallDate),
+            _ => filteredApps.OrderBy(a => a.DisplayName)
+        };
+
+        var finalList = filteredApps.ToList();
 
         AppList.Clear();
-        foreach (var app in filteredApps)
+        foreach (var app in finalList)
         {
             AppList.Add(app);
         }
 
-        if (AppList.Count == 0)
+        if (AppList.Count == 0 && noAppFoundText != null)
         {
             noAppFoundText.Visibility = Visibility.Visible;
         }
 
-        installedAppsCount.Text = string.Format(ResourceString.GetString("SystemAppsPage_TotalApps"), AppList.Count);
+        if (installedAppsCount != null)
+        {
+            installedAppsCount.Text = string.Format(ResourceString.GetString("SystemAppsPage_TotalApps"), AppList.Count);
+        }
     }
 
     private void AppSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -534,14 +973,16 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
     {
         SearchApps(args.QueryText.ToLower());
     }
+    #endregion
 
+    #region Dialogs
     public async Task<ContentDialogResult> ShowUninstallConfirmationDialog(TreeView appTreeView)
     {
         var selectedItemsText = new StringBuilder();
 
-        foreach (var item in appTreeView.SelectedItems.OfType<Tuple<string, string, bool>>())
+        foreach (var item in appTreeView.SelectedItems.OfType<SystemAppItem>())
         {
-            selectedItemsText.AppendLine(item.Item1);
+            selectedItemsText.AppendLine(item.DisplayName);
         }
 
         var firstLine = ResourceString.GetString("SystemAppsPage_ConfirmRemoveApps");
@@ -599,6 +1040,7 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
 
         return await confirmationDialog.ShowAsync();
     }
+    #endregion
 
     #region Purge Page
     public void Purge()
@@ -629,8 +1071,6 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
 
         AppList?.Clear();
         allApps?.Clear();
-
-        this.Content = null;
 
         Debug.WriteLine("[SystemAppsPage] Purge Complete.");
     }

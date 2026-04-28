@@ -524,6 +524,18 @@ namespace EvolveOS_Optimizer
                 }
             }
 
+            if (tag == "SystemManager" && !string.IsNullOrEmpty(requestedPane))
+            {
+                if (SystemManagerPage.ExternalPaneRequest != null)
+                {
+                    SystemManagerPage.ExternalPaneRequest?.Invoke(requestedPane);
+                }
+                else
+                {
+                    SystemManagerPage.RequestedPaneOnLoad = requestedPane;
+                }
+            }
+
             if (this.RootGrid.DataContext is MainWinViewModel vm)
             {
                 vm.CurrentViewTag = tag;
@@ -540,6 +552,10 @@ namespace EvolveOS_Optimizer
             else if (tag == "Diagnostics")
             {
                 BtnNavDiagnostics.IsChecked = true;
+            }
+            else if (tag == "SystemManager")
+            {
+                BtnNavSystemManager.IsChecked = true;
             }
         }
 

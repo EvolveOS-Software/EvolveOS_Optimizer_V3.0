@@ -757,6 +757,35 @@
     <sys:String x:Key="SystemAppsPage_ConfirmRemoveApps">Stai per rimuovere completamente le seguenti app dal tuo sistema:</sys:String>
     <sys:String x:Key="SystemAppsPage_ConfirmContinue">Sei sicuro di voler continuare?</sys:String>
     <sys:String x:Key="SystemAppsPage_Continue">Continua</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_SortName">Ordina per nome</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortSize">Ordina per dimensione</sys:String>
+    <sys:String x:Key="SystemAppsPage_SortDate">Ordina per data</sys:String>
+    <sys:String x:Key="SystemAppsPage_OpenFileLocation">Apri percorso file</sys:String>
+    <sys:String x:Key="SystemAppsPage_Win32Label">win32</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderName">Nome app</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderDate">Installato il</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderSize">Dimensione</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderType">Tipo</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_DeepCleanTitle">Pulizia Profonda: Residui Trovati</sys:String>
+    <sys:String x:Key="SystemAppsPage_DeepCleanMessage">Abbiamo trovato {0} file e chiavi di registro orfani lasciati da {1}. Vuoi eliminarli definitivamente per liberare spazio?&#x0a;&#x0a;{2}</sys:String>
+    <sys:String x:Key="SystemAppsPage_CleanLeftoversBtn">Pulisci Residui</sys:String>
+    <sys:String x:Key="SystemAppsPage_SkipBtn">Ignora</sys:String>
+    <sys:String x:Key="SystemAppsPage_AndMore">&#x0a;...e altri</sys:String>
+
+    <sys:String x:Key="SystemAppsPage_HeaderStartup">Avvio</sys:String>
+    <sys:String x:Key="SystemAppsPage_HeaderActions">Azioni</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportTitle">Esportazione Riuscita</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportMessage">Esportate {0} app in {1}</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopTitle">Arresto Forzato</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageSuccess">Terminati {0} processi in background per {1}.</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopMessageNone">Nessun processo in esecuzione trovato per {0}.</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadge">Avvio</sys:String>
+    <sys:String x:Key="SystemAppsPage_ExportBtn">Esporta Elenco App</sys:String>
+    <sys:String x:Key="SystemAppsPage_ForceStopBtn">Arresto Forzato App</sys:String>
+    <sys:String x:Key="SystemAppsPage_StartupBadgeToolTip">Gestisci in App di Avvio</sys:String>
+    <sys:String x:Key="SystemAppsPage_UnknownSize">Dimensione sconosciuta</sys:String>
     <!-- endregion Installed Apps -->
 
     <!-- region System Page -->

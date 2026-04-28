@@ -1,8 +1,13 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
@@ -14,7 +19,7 @@ public static class AppManager
 {
     private static readonly string IconCacheDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Cache", "Icons");
 
-    public static async Task<List<Tuple<string, string, bool>>> GetInstalledApps(bool uninstallableOnly)
+    public static async Task<List<SystemAppItem>> GetInstalledApps(bool uninstallableOnly)
     {
         if (!Directory.Exists(IconCacheDirectory))
         {
@@ -31,7 +36,7 @@ public static class AppManager
         {
             try
             {
-                using var clonedIcon = (System.Drawing.Icon)System.Drawing.Icon.FromHandle(hIcon).Clone();
+                using var clonedIcon = (Icon)Icon.FromHandle(hIcon).Clone();
                 using var bmp = clonedIcon.ToBitmap();
                 bmp.Save(Path.Combine(IconCacheDirectory, "defaulticon.png"), ImageFormat.Png);
             }
@@ -53,20 +58,20 @@ public static class AppManager
         var installedApps = uwpAppsTask.Result.Concat(win32AppsTask.Result).ToList();
 
         installedApps = [.. installedApps
-            .DistinctBy(app => app.Item1)
-            .OrderBy(app => app.Item1)];
+            .DistinctBy(app => app.DisplayName)
+            .OrderBy(app => app.DisplayName)];
 
         ErrorLogging.LogDebug(new Exception("Returning Installed Apps [GetInstalledApps]"));
         return installedApps;
     }
 
-    private static async Task<List<Tuple<string, string, bool>>> GetUwpApps(bool uninstallableOnly)
+    private static async Task<List<SystemAppItem>> GetUwpApps(bool uninstallableOnly)
     {
-        var installedApps = new List<Tuple<string, string, bool>>();
+        var installedApps = new List<SystemAppItem>();
 
         var command = uninstallableOnly
-            ? """Get-AppxPackage -AllUsers | Where-Object { $_.NonRemovable -eq $false } | Select-Object Name,InstallLocation,PackageFullName | Format-List"""
-            : """Get-AppxPackage -AllUsers | Select-Object Name,InstallLocation,PackageFullName | Format-List""";
+            ? """Get-AppxPackage -AllUsers | Where-Object { $_.NonRemovable -eq $false } | Select-Object Name,InstallLocation,PackageFullName,Version | Format-List"""
+            : """Get-AppxPackage -AllUsers | Select-Object Name,InstallLocation,PackageFullName,Version | Format-List""";
 
         try
         {
@@ -86,6 +91,7 @@ public static class AppManager
             var output = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
             string? currentName = null;
             string? currentLocation = null;
+            string? currentVersion = null;
 
             foreach (var line in output.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries))
             {
@@ -94,15 +100,27 @@ public static class AppManager
                     if (!string.IsNullOrEmpty(currentName) && !string.IsNullOrEmpty(currentLocation))
                     {
                         var logoPath = await ExtractLogoPath(currentLocation, false, currentName).ConfigureAwait(false);
-                        installedApps.Add(new Tuple<string, string, bool>(currentName, logoPath, false));
+                        installedApps.Add(new SystemAppItem
+                        {
+                            DisplayName = currentName,
+                            IconPath = logoPath,
+                            IsWin32 = false,
+                            InstallLocation = currentLocation,
+                            Version = currentVersion ?? ""
+                        });
                     }
 
                     currentName = line.Split([':'], 2)[1].Trim();
                     currentLocation = null;
+                    currentVersion = null;
                 }
                 else if (line.StartsWith("InstallLocation", StringComparison.Ordinal))
                 {
                     currentLocation = line.Split([':'], 2)[1].Trim();
+                }
+                else if (line.StartsWith("Version", StringComparison.Ordinal))
+                {
+                    currentVersion = line.Split([':'], 2)[1].Trim();
                 }
                 else if (!string.IsNullOrWhiteSpace(currentLocation) && line.StartsWith(" ", StringComparison.Ordinal))
                 {
@@ -113,7 +131,14 @@ public static class AppManager
             if (!string.IsNullOrEmpty(currentName) && !string.IsNullOrEmpty(currentLocation))
             {
                 var logoPath = await ExtractLogoPath(currentLocation, false, currentName).ConfigureAwait(false);
-                installedApps.Add(new Tuple<string, string, bool>(currentName, logoPath, false));
+                installedApps.Add(new SystemAppItem
+                {
+                    DisplayName = currentName,
+                    IconPath = logoPath,
+                    IsWin32 = false,
+                    InstallLocation = currentLocation,
+                    Version = currentVersion ?? ""
+                });
             }
 
             await process.WaitForExitAsync().ConfigureAwait(false);
@@ -127,9 +152,9 @@ public static class AppManager
         return installedApps;
     }
 
-    public static async Task<List<Tuple<string, string, bool>>> GetWin32Apps()
+    public static async Task<List<SystemAppItem>> GetWin32Apps()
     {
-        var win32Apps = new List<Tuple<string, string, bool>>();
+        var win32Apps = new List<SystemAppItem>();
         var registryPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
 
         try
@@ -192,7 +217,32 @@ public static class AppManager
                 }
 
                 var logoPath = await ExtractLogoPath(installLocation, true, displayName);
-                win32Apps.Add(new Tuple<string, string, bool>(displayName, logoPath, true));
+
+                var appItem = new SystemAppItem
+                {
+                    DisplayName = displayName,
+                    IconPath = logoPath,
+                    IsWin32 = true,
+                    InstallLocation = installLocation ?? "",
+                    UninstallString = uninstallString ?? "",
+                    Version = subKey.GetValue("DisplayVersion")?.ToString() ?? ""
+                };
+
+                if (subKey.GetValue("EstimatedSize") is int sizeKb)
+                {
+                    appItem.SizeMB = sizeKb / 1024.0;
+                }
+
+                var dateStr = subKey.GetValue("InstallDate")?.ToString();
+                if (!string.IsNullOrEmpty(dateStr) && dateStr.Length == 8)
+                {
+                    if (DateTime.TryParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+                    {
+                        appItem.InstallDate = parsedDate;
+                    }
+                }
+
+                win32Apps.Add(appItem);
             }
         }
         catch (Exception ex)
@@ -202,8 +252,8 @@ public static class AppManager
         }
 
         return [.. win32Apps
-            .DistinctBy(app => app.Item1)
-            .OrderBy(app => app.Item1)];
+            .DistinctBy(app => app.DisplayName)
+            .OrderBy(app => app.DisplayName)];
     }
 
     private static async Task<string> ExtractLogoPath(string? installLocation, bool isWin32 = false, string? appName = null)
@@ -397,6 +447,21 @@ public static class AppManager
     {
         var match = Regex.Match(fileName, @"Scale-(\d+)");
         return match.Success ? int.Parse(match.Groups[1].Value) : 100;
+    }
+
+    public static long GetDirectorySize(string path)
+    {
+        if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) return 0;
+
+        try
+        {
+            return Directory.GetFiles(path, "*", SearchOption.AllDirectories)
+                            .Sum(t => new FileInfo(t).Length);
+        }
+        catch
+        {
+            return 0;
+        }
     }
 
     internal static async Task ExecuteBatchFileAsync()

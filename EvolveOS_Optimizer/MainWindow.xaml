@@ -195,7 +195,8 @@
                             <FontIcon Glyph="&#xF246;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}"
+                        <RadioButton x:Name="BtnNavSystemManager"
+                                     Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="SystemManager"
                                      IsTabStop="False"
@@ -203,7 +204,8 @@
                             <FontIcon Glyph="&#xE9D9;" FontSize="18"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}"
+                        <RadioButton x:Name="BtnNavSoftware"
+                                     Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Software"
                                      IsTabStop="False"

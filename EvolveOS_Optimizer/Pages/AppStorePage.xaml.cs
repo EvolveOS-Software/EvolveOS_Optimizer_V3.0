@@ -2144,13 +2144,13 @@ namespace EvolveOS_Optimizer.Pages
             {
                 _isUsingInventoryFallback = true;
 
-                List<Tuple<string, string, bool>> apps = await AppManager.GetInstalledApps(true);
+                List<SystemAppItem> apps = await AppManager.GetInstalledApps(true);
 
                 foreach (var app in apps)
                 {
-                    if (string.IsNullOrWhiteSpace(app.Item1)) continue;
+                    if (string.IsNullOrWhiteSpace(app.DisplayName)) continue;
 
-                    var name = app.Item1.Trim();
+                    var name = app.DisplayName.Trim();
                     var key = PackageHelper.NormalizeLookupKey(name);
 
                     if (string.IsNullOrWhiteSpace(key)) continue;
