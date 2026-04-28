@@ -71,7 +71,7 @@ namespace EvolveOS_Optimizer.Views
                 });
             }, () =>
             {
-                this.DispatcherQueue.TryEnqueue(() => Application.Current.Exit());
+                this.DispatcherQueue.TryEnqueue(() => App.ExitApp());
             });
 
             _timer.Start();
@@ -146,6 +146,6 @@ namespace EvolveOS_Optimizer.Views
             }
         }
 
-        private void BtnAccept_Click(object sender, RoutedEventArgs e) => Application.Current.Exit();
+        private void BtnAccept_Click(object sender, RoutedEventArgs e) => App.ExitApp();
     }
 }

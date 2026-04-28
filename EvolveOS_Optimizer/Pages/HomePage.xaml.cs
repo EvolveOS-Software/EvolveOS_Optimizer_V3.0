@@ -1802,7 +1802,7 @@ namespace EvolveOS_Optimizer.Pages
                 if (!string.IsNullOrEmpty(exePath))
                 {
                     Process.Start(new ProcessStartInfo { FileName = exePath, UseShellExecute = true, Verb = "runas" });
-                    Application.Current.Exit();
+                    SettingsEngine.SelfReboot();
                 }
             }
             catch { }

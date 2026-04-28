@@ -21,7 +21,7 @@
     <sys:String x:Key="msg_safemode_detected">Mode sans échec détecté ! Votre système est actuellement dans un état restreint. Il s'agit d'un état critique pour Windows 25H2. Souhaitez-vous tenter une récupération et redémarrer en mode normal ?</sys:String>
     <!-- endregion Safe Mode -->
 
-    <!-- region Loading Window -->
+    <!-- region Loading/Closing Window -->
     <sys:String x:Key="loading_message">Initialisation des données matérielles et des protocoles de sécurité</sys:String>
     <sys:String x:Key="status_waiting_system">En attente de l'initialisation du système...</sys:String>
     <sys:String x:Key="status_extracting_resources">Extraction des ressources...</sys:String>
@@ -46,7 +46,18 @@
     <sys:String x:Key="step8_load">Analyse de l'état du réseau Netsh...</sys:String>
     <sys:String x:Key="step9_load">Vérification de la configuration Bluetooth et Tick...</sys:String>
     <sys:String x:Key="step10_load">Tous les systèmes sont prêts !</sys:String>
-    <!-- endregion Loading Window -->
+
+    <sys:String x:Key="status_init_backup">Initialisation de la sauvegarde de la base de données...</sys:String>
+    <sys:String x:Key="status_closing_db">Fermeture du moteur de base de données...</sys:String>
+    <sys:String x:Key="status_securing_files">Sécurisation des fichiers...</sys:String>
+    <sys:String x:Key="status_writing_backup">Écriture de la sauvegarde sur le disque...</sys:String>
+    <sys:String x:Key="status_encrypting_backup">Chiffrement de la copie de sauvegarde...</sys:String>
+    <sys:String x:Key="status_finalizing_backup">Finalisation des paramètres de sauvegarde...</sys:String>
+    <sys:String x:Key="closing_message">Fermeture d'EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="status_rebooting">Redémarrage d'EvolveOS Optimizer...</sys:String>
+    <sys:String x:Key="status_prep_close">Préparation de la fermeture...</sys:String>
+    <sys:String x:Key="status_goodbye">Au revoir !</sys:String>
+    <!-- endregion Loading/Closing Window -->
 
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Cliquez pour copier</sys:String>

@@ -433,26 +433,19 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             catch { }
         }
 
-        internal static async void SelfReboot(string injectedCommand = "")
+        internal static void SelfReboot(string injectedCommand = "")
         {
             string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
             if (!string.IsNullOrEmpty(exePath))
             {
-
                 string extra = string.IsNullOrWhiteSpace(injectedCommand) ? "" : $"{injectedCommand} & ";
+                string rebootCommand = $"ping 127.0.0.1 -n 15 > nul & {extra}start \"\" \"{exePath}\""; // Fifteen pings (-n 15) is +/- 14 seconds to fully release its file locks, encrypt the database, stop the SQL service, and dispose of the Mutex.
 
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c ping 127.0.0.1 -n 3 > nul & {extra}start \"\" \"{exePath}\"",
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    CreateNoWindow = true
-                });
+                _ = CommandExecutor.RunCommand(rebootCommand, isPowerShell: false);
             }
 
-            Application.Current.Exit();
+            App.ExitApp(ResourceString.GetString("status_rebooting") ?? "Restarting EvolveOS Optimizer...");
         }
-
 
         public static void Reset()
         {

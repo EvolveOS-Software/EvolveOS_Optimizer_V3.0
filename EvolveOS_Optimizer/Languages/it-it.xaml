@@ -21,7 +21,7 @@
     <sys:String x:Key="msg_safemode_detected">Rilevata Modalità provvisoria! Il sistema è attualmente in uno stato limitato. Questo è uno stato critico per Windows 25H2. Vuoi tentare un ripristino e riavviare in Modalità normale?</sys:String>
     <!-- endregion Safe Mode -->
 
-    <!-- region Loading Window -->
+    <!-- region Loading/Closing Window -->
     <sys:String x:Key="loading_message">Inizializzazione dei dati hardware e dei protocolli di sicurezza</sys:String>
     <sys:String x:Key="status_waiting_system">In attesa dell'inizializzazione del sistema...</sys:String>
     <sys:String x:Key="status_extracting_resources">Estrazione delle risorse...</sys:String>
@@ -46,7 +46,18 @@
     <sys:String x:Key="step8_load">Analisi dello stato della rete Netsh...</sys:String>
     <sys:String x:Key="step9_load">Controllo della configurazione Bluetooth e Tick...</sys:String>
     <sys:String x:Key="step10_load">Tutti i sistemi pronti!</sys:String>
-    <!-- endregion Loading Window -->
+
+    <sys:String x:Key="status_init_backup">Inizializzazione backup del database...</sys:String>
+    <sys:String x:Key="status_closing_db">Chiusura del motore del database...</sys:String>
+    <sys:String x:Key="status_securing_files">Protezione dei file in corso...</sys:String>
+    <sys:String x:Key="status_writing_backup">Scrittura del backup sul disco...</sys:String>
+    <sys:String x:Key="status_encrypting_backup">Crittografia della copia di backup...</sys:String>
+    <sys:String x:Key="status_finalizing_backup">Completamento delle impostazioni di backup...</sys:String>
+    <sys:String x:Key="closing_message">Chiusura di EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="status_rebooting">Riavvio di EvolveOS Optimizer in corso...</sys:String>
+    <sys:String x:Key="status_prep_close">Preparazione alla chiusura...</sys:String>
+    <sys:String x:Key="status_goodbye">Arrivederci!</sys:String>
+    <!-- endregion Loading/Closing Window -->
 
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Fai clic per copiare</sys:String>

@@ -45,7 +45,16 @@
 
         <Grid Grid.Column="0">
             <Image x:Name="DisplayProfileAvatar" Source="{Binding DisplayProfileAvatar}" Stretch="UniformToFill"/>
-            <Rectangle IsHitTestVisible="False">
+
+            <ProgressRing x:Name="ShutdownProgressRing" 
+                          IsActive="False" 
+                          Visibility="Collapsed" 
+                          Width="60" Height="60" 
+                          Foreground="{ThemeResource MyDynamicAccentBrush}" 
+                          HorizontalAlignment="Center" 
+                          VerticalAlignment="Center"/>
+
+            <Rectangle x:Name="AvatarGradientOverlay" IsHitTestVisible="False">
                 <Rectangle.Fill>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                         <GradientStop Offset="0.8" Color="#001A1A1A"/>
@@ -78,7 +87,7 @@
 
             <StackPanel Grid.Row="0" VerticalAlignment="Bottom">
                 <TextBlock Foreground="{ThemeResource Brush_Inactive}" FontFamily="{StaticResource Jura-Bold}" TextWrapping="Wrap" FontSize="12">
-                    <Run Text="{helpers:ResourceString Key=loading_message}" />
+                    <Run x:Name="LoadingTextRun" Text="{helpers:ResourceString Key=loading_message}" />
                     <Run x:Name="DotRun" Text="..." />
                 </TextBlock>
             </StackPanel>

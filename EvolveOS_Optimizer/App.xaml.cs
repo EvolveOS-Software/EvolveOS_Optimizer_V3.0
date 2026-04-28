@@ -33,6 +33,7 @@ namespace EvolveOS_Optimizer
         public static bool IsStartedHidden { get; private set; }
 
         public static bool IsPrimaryInstance { get; private set; }
+        private static bool _isExiting = false;
 
         public static Microsoft.UI.Dispatching.DispatcherQueue? UIThreadDispatcher { get; private set; }
 
@@ -728,7 +729,7 @@ namespace EvolveOS_Optimizer
         #endregion
 
         #region Cleanup & Online Database Backup Logic
-        private static void HandleCleanup()
+        private static void HandleCleanup(Views.LoadingWindow? shutdownWindow = null)
         {
             if (_isCleanupRunning)
             {
@@ -762,7 +763,9 @@ namespace EvolveOS_Optimizer
             {
                 if (SettingsEngine.PerformDbBackup)
                 {
-                    ExecuteOnlineDatabaseBackup();
+                    shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
+                        shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_init_backup") ?? "Initializing database backup..."));
+                    ExecuteOnlineDatabaseBackup(shutdownWindow);
                 }
             }
             catch (Exception ex)
@@ -778,6 +781,9 @@ namespace EvolveOS_Optimizer
 
             try
             {
+                shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
+                    shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_closing_db") ?? "Closing database engine..."));
+
                 var stopInfo = new ProcessStartInfo("sqllocaldb", "stop MSSQLLocalDB")
                 {
                     CreateNoWindow = true,
@@ -788,6 +794,9 @@ namespace EvolveOS_Optimizer
                 Thread.Sleep(500);
             }
             catch { /* Log error */ }
+
+            shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
+                shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_securing_files") ?? "Securing files..."));
 
             string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? AppContext.BaseDirectory;
             string baseDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
@@ -863,7 +872,7 @@ namespace EvolveOS_Optimizer
         }
 
 
-        private static void ExecuteOnlineDatabaseBackup()
+        private static void ExecuteOnlineDatabaseBackup(Views.LoadingWindow? shutdownWindow = null)
         {
             try
             {
@@ -877,6 +886,9 @@ namespace EvolveOS_Optimizer
                 bool encrypt = SettingsEngine.EncryptDbBackupCopies;
 
                 string plainBakPath = Path.Combine(backupDir, $"EvolveOS_Backup_{stamp}.bak");
+
+                shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
+                    shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_writing_backup") ?? "Writing backup to disk..."));
 
                 using (var connection = new SqlConnection(SqlConnectionHelper.connectReturn()))
                 {
@@ -894,6 +906,8 @@ namespace EvolveOS_Optimizer
 
                 if (encrypt && File.Exists(plainBakPath))
                 {
+                    shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
+                        shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_encrypting_backup") ?? "Encrypting backup copy..."));
                     string encryptedBakPath = Path.Combine(backupDir, $"EvolveOS_Backup_{stamp}.dat");
                     DatabaseSecurityService.EncryptDatabase(plainBakPath, encryptedBakPath);
 
@@ -902,6 +916,9 @@ namespace EvolveOS_Optimizer
                         File.Delete(plainBakPath);
                     }
                 }
+
+                shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
+                    shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_finalizing_backup") ?? "Finalizing backup settings..."));
 
                 if (!SettingsEngine.KeepBackupEnabled)
                 {
@@ -943,18 +960,66 @@ namespace EvolveOS_Optimizer
             }
         }
 
-        public static void ExitApp()
+        public static void ExitApp(string? customMessage = null)
+        {
+            if (_isExiting) return;
+            _isExiting = true;
+
+            string finalMessage = !string.IsNullOrEmpty(customMessage)
+                ? customMessage
+                : (ResourceString.GetString("closing_message") ?? "Closing EvolveOS Optimizer");
+
+            if (UIThreadDispatcher != null && !UIThreadDispatcher.HasThreadAccess)
+            {
+                UIThreadDispatcher.TryEnqueue(async () => await ExecuteExitSequenceAsync(finalMessage));
+            }
+            else
+            {
+                _ = ExecuteExitSequenceAsync(finalMessage);
+            }
+        }
+
+        private static async Task ExecuteExitSequenceAsync(string displayTitle)
         {
             try
             {
                 Debug.WriteLine("[App] Shutting down...");
 
-                HandleCleanup();
+                if (MainWindow != null)
+                {
+                    IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
+                    Win32Helper.ShowWindow(hwnd, 0);
+                }
+
+                var shutdownWindow = new Views.LoadingWindow(false, isShutdownMode: true);
+
+                shutdownWindow.SetHeaderTitle(displayTitle);
+
+                shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_prep_close") ?? "Preparing to close...");
+
+                shutdownWindow.Activate();
+
+                if (shutdownWindow.Content is FrameworkElement rootElement)
+                {
+                    rootElement.Opacity = 1;
+                }
+
+                await Task.Delay(500);
+
+                await Task.Run(() =>
+                {
+                    HandleCleanup(shutdownWindow);
+                });
+
+                shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_goodbye") ?? "Goodbye!");
+
+                await Task.Delay(750);
 
                 Environment.Exit(0);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine($"ExitApp Exception: {ex.Message}");
                 Environment.Exit(1);
             }
         }

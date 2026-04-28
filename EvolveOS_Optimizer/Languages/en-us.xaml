@@ -21,7 +21,7 @@
     <sys:String x:Key="msg_safemode_detected">Safe Mode detected! Your system is currently in a restricted state. This is a critical state for Windows 25H2. Would you like to attempt a recovery and restart to Normal Mode?</sys:String>
     <!-- endregion Safe Mode -->
 
-    <!-- region Loading Window -->
+    <!-- region Loading/Closing Window -->
     <sys:String x:Key="loading_message">Initializing hardware data and security protocols</sys:String>
     <sys:String x:Key="status_waiting_system">Waiting for system to initialize...</sys:String>
     <sys:String x:Key="status_extracting_resources">Extracting resources...</sys:String>
@@ -46,7 +46,18 @@
     <sys:String x:Key="step8_load">Analyzing Netsh Network state...</sys:String>
     <sys:String x:Key="step9_load">Checking Bluetooth and Tick configuration...</sys:String>
     <sys:String x:Key="step10_load">All systems ready!</sys:String>
-    <!-- endregion Loading Window -->
+
+    <sys:String x:Key="status_init_backup">Initializing database backup...</sys:String>
+    <sys:String x:Key="status_closing_db">Closing database engine...</sys:String>
+    <sys:String x:Key="status_securing_files">Securing files...</sys:String>
+    <sys:String x:Key="status_writing_backup">Writing backup to disk...</sys:String>
+    <sys:String x:Key="status_encrypting_backup">Encrypting backup copy...</sys:String>
+    <sys:String x:Key="status_finalizing_backup">Finalizing backup settings...</sys:String>
+    <sys:String x:Key="closing_message">Closing EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="status_rebooting">Restarting EvolveOS Optimizer...</sys:String>
+    <sys:String x:Key="status_prep_close">Preparing to close...</sys:String>
+    <sys:String x:Key="status_goodbye">Goodbye!</sys:String>
+    <!-- endregion Loading/Closing Window -->
 
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Click to copy</sys:String>

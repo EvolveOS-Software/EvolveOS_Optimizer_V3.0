@@ -165,7 +165,10 @@ namespace EvolveOS_Optimizer.Views
             }
         }
 
-        private void BtnExit_Click(object sender, RoutedEventArgs e) => this.Close();
+        private void BtnExit_Click(object sender, RoutedEventArgs e)
+        {
+            App.ExitApp();
+        }
 
         #endregion
 

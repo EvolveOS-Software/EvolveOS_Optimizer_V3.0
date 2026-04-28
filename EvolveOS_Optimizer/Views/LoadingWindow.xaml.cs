@@ -44,15 +44,20 @@ namespace EvolveOS_Optimizer.Views
         private bool _isSystemBusy = false;
         private bool _isFreshBoot = false;
 
+        private readonly bool _isShutdownMode;
+
         public LocalizationService Localizer => LocalizationService.Instance;
         public string GetText(string key) => Localizer[key];
         #endregion
 
         #region Constructor & Initialization
-        public LoadingWindow(bool autoLoginSuccessful = false)
+        public LoadingWindow(bool autoLoginSuccessful = false, bool isShutdownMode = false)
         {
             this.InitializeComponent();
             _isAutoLoginSuccessful = autoLoginSuccessful;
+
+            _isShutdownMode = isShutdownMode;
+
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
             ApplyUserAccentColor();
@@ -62,8 +67,21 @@ namespace EvolveOS_Optimizer.Views
             UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
             ConfigureWindow();
 
-            CheckSystemUptime();
-            LoadUserDisplayData();
+            if (_isShutdownMode)
+            {
+                DisplayProfileAvatar.Visibility = Visibility.Collapsed;
+                AvatarGradientOverlay.Visibility = Visibility.Collapsed;
+
+                if (AutoLoginBadge != null) AutoLoginBadge.Visibility = Visibility.Collapsed;
+
+                ShutdownProgressRing.Visibility = Visibility.Visible;
+                ShutdownProgressRing.IsActive = true;
+            }
+            else
+            {
+                CheckSystemUptime();
+                LoadUserDisplayData();
+            }
 
             this.Activated += LoadingWindow_Activated;
             this.Closed += LoadingWindow_Closed;
@@ -248,7 +266,15 @@ namespace EvolveOS_Optimizer.Views
             fadeIn.Children.Add(anim);
             fadeIn.Begin();
 
-            await StartProcessingAsync();
+            if (!_isShutdownMode)
+            {
+                await StartProcessingAsync();
+            }
+        }
+
+        public void UpdateShutdownText(string text)
+        {
+            UpdateStatusDirect(text);
         }
         #endregion
 
@@ -386,7 +412,7 @@ namespace EvolveOS_Optimizer.Views
 
                         try
                         {
-                            var userDataAccess = new EvolveOS_Optimizer.Core.Model.UserDataAccess(SqlConnectionHelper.connectReturn());
+                            var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
 
                             var loginData = await userDataAccess.GetPasswordAndImageAsync(targetUser);
 
@@ -508,7 +534,7 @@ namespace EvolveOS_Optimizer.Views
                     _dispatcherQueue.TryEnqueue(() =>
                     {
                         NativeToastHelper.SendNativeToast("Dependency Missing", "Database engine is not installed and the installer archive could not be found.");
-                        Application.Current.Exit();
+                        App.ExitApp();
                     });
                     return false;
                 }
@@ -551,7 +577,7 @@ namespace EvolveOS_Optimizer.Views
                     _dispatcherQueue.TryEnqueue(() =>
                     {
                         NativeToastHelper.SendNativeToast("Installation Failed", "Could not install the required SQL engine. Please run the app as Administrator.");
-                        Application.Current.Exit();
+                        App.ExitApp();
                     });
                     return false;
                 }
@@ -564,7 +590,7 @@ namespace EvolveOS_Optimizer.Views
                 _dispatcherQueue.TryEnqueue(() =>
                 {
                     NativeToastHelper.SendNativeToast("Startup Error", $"Engine installation failed: {ex.Message}");
-                    Application.Current.Exit();
+                    App.ExitApp();
                 });
                 return false;
             }
@@ -663,7 +689,7 @@ namespace EvolveOS_Optimizer.Views
                     _dispatcherQueue.TryEnqueue(() =>
                     {
                         NativeToastHelper.SendNativeToast("Critical Error", "Database is busy or corrupted. Please wait a moment and try again.");
-                        Application.Current.Exit();
+                        App.ExitApp();
                     });
                     return false;
                 }
@@ -696,7 +722,7 @@ namespace EvolveOS_Optimizer.Views
                 _dispatcherQueue.TryEnqueue(() =>
                 {
                     NativeToastHelper.SendNativeToast("Startup Error", $"Database initialization failed: {ex.Message}");
-                    Application.Current.Exit();
+                    App.ExitApp();
                 });
                 return false;
             }
@@ -745,6 +771,14 @@ namespace EvolveOS_Optimizer.Views
                 TypewriterAnimation.Create(text, StatusLoading, TimeSpan.FromMilliseconds(20));
             });
         }
+
+        public void SetHeaderTitle(string title)
+        {
+            if (LoadingTextRun != null)
+            {
+                LoadingTextRun.Text = title;
+            }
+        }
         #endregion
 
         #region Transition Logic
@@ -764,7 +798,7 @@ namespace EvolveOS_Optimizer.Views
                     nextWindow = new UserLoginWindow(weatherService);
                 }
 
-                nextWindow.Closed += (s, e) => { Application.Current.Exit(); };
+                nextWindow.Closed += (s, e) => { App.ExitApp(); };
 
                 if (Application.Current is App)
                 {

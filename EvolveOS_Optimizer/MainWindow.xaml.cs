@@ -54,6 +54,10 @@ namespace EvolveOS_Optimizer
 
             this.InitializeComponent();
 
+            IntPtr hwnd = WindowNative.GetWindowHandle(this);
+            var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            var appWindow = AppWindow.GetFromWindowId(windowId);
+
             if (this.Content is FrameworkElement rootElement)
             {
                 string savedTheme = SettingsEngine.AppTheme;
@@ -299,10 +303,10 @@ namespace EvolveOS_Optimizer
 
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
+            args.Cancel = true;
+
             if (SettingsEngine.IsCloseToTrayEnabled)
             {
-                args.Cancel = true;
-
                 if (RootGrid.DataContext is MainWinViewModel vm)
                 {
                     vm.MinimizeCommand.Execute(null);

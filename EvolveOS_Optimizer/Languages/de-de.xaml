@@ -21,7 +21,7 @@
     <sys:String x:Key="msg_safemode_detected">Abgesicherter Modus erkannt! Ihr System befindet sich derzeit in einem eingeschränkten Zustand. Dies ist ein kritischer Zustand für Windows 25H2. Möchten Sie eine Wiederherstellung versuchen und in den normalen Modus neu starten?</sys:String>
     <!-- endregion Safe Mode -->
 
-    <!-- region Loading Window -->
+    <!-- region Loading/Closing Window -->
     <sys:String x:Key="loading_message">Initialisiere Hardwaredaten und Sicherheitsprotokolle</sys:String>
     <sys:String x:Key="status_waiting_system">Warten auf Systeminitialisierung...</sys:String>
     <sys:String x:Key="status_extracting_resources">Ressourcen werden extrahiert...</sys:String>
@@ -46,7 +46,18 @@
     <sys:String x:Key="step8_load">Netsh-Netzwerkstatus wird analysiert...</sys:String>
     <sys:String x:Key="step9_load">Bluetooth- und Tick-Konfiguration wird überprüft...</sys:String>
     <sys:String x:Key="step10_load">Alle Systeme bereit!</sys:String>
-    <!-- endregion Loading Window -->
+
+    <sys:String x:Key="status_init_backup">Datenbank Backup wird initialisiert...</sys:String>
+    <sys:String x:Key="status_closing_db">Datenbank Engine wird geschlossen...</sys:String>
+    <sys:String x:Key="status_securing_files">Dateien werden gesichert...</sys:String>
+    <sys:String x:Key="status_writing_backup">Backup wird auf Datenträger geschrieben...</sys:String>
+    <sys:String x:Key="status_encrypting_backup">Backup Kopie wird verschlüsselt...</sys:String>
+    <sys:String x:Key="status_finalizing_backup">Backup Einstellungen werden abgeschlossen...</sys:String>
+    <sys:String x:Key="closing_message">EvolveOS Optimizer wird geschlossen</sys:String>
+    <sys:String x:Key="status_rebooting">EvolveOS Optimizer wird neu gestartet...</sys:String>
+    <sys:String x:Key="status_prep_close">Schließen wird vorbereitet...</sys:String>
+    <sys:String x:Key="status_goodbye">Auf Wiedersehen!</sys:String>
+    <!-- endregion Loading/Closing Window -->
 
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Klicken zum Kopieren</sys:String>

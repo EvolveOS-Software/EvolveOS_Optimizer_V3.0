@@ -333,7 +333,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void ExecuteClose()
         {
-            Application.Current.Exit();
+            App.ExitApp();
         }
         #endregion
     }

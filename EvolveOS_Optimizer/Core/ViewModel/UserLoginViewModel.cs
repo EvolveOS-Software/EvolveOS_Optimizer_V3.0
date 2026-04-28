@@ -234,7 +234,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     var mainDash = new global::EvolveOS_Optimizer.MainWindow();
 
-                    mainDash.Closed += (s, e) => { Application.Current.Exit(); };
+                    mainDash.Closed += (s, e) => { App.ExitApp(); };
 
                     if (Application.Current is App)
                     {
@@ -404,7 +404,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Utility Methods
         private void CloseApplication()
         {
-            Application.Current.Exit();
+            App.ExitApp();
         }
         #endregion
     }

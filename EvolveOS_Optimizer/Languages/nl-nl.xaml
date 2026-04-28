@@ -21,7 +21,7 @@
     <sys:String x:Key="msg_safemode_detected">Veilige modus gedetecteerd! Uw systeem bevindt zich momenteel in een beperkte status. Dit is een kritieke status voor Windows 25H2. Wilt u proberen herstel uit te voeren en opnieuw opstarten in de normale modus?</sys:String>
     <!-- endregion Safe Mode -->
 
-    <!-- region Loading Window -->
+    <!-- region Loading/Closing Window -->
     <sys:String x:Key="loading_message">Hardwaregegevens en beveiligingsprotocollen initialiseren</sys:String>
     <sys:String x:Key="status_waiting_system">Wachten op systeeminitialisatie...</sys:String>
     <sys:String x:Key="status_extracting_resources">Bronnen uitpakken...</sys:String>
@@ -46,7 +46,18 @@
     <sys:String x:Key="step8_load">Netsh-netwerkstatus analyseren...</sys:String>
     <sys:String x:Key="step9_load">Bluetooth- en Tick-configuratie controleren...</sys:String>
     <sys:String x:Key="step10_load">Alle systemen gereed!</sys:String>
-    <!-- endregion Loading Window -->
+
+    <sys:String x:Key="status_init_backup">Database back-up initialiseren...</sys:String>
+    <sys:String x:Key="status_closing_db">Database engine sluiten...</sys:String>
+    <sys:String x:Key="status_securing_files">Bestanden beveiligen...</sys:String>
+    <sys:String x:Key="status_writing_backup">Back-up naar schijf schrijven...</sys:String>
+    <sys:String x:Key="status_encrypting_backup">Back-up kopie versleutelen...</sys:String>
+    <sys:String x:Key="status_finalizing_backup">Back-up instellingen voltooien...</sys:String>
+    <sys:String x:Key="closing_message">EvolveOS Optimizer afsluiten</sys:String>
+    <sys:String x:Key="status_rebooting">EvolveOS Optimizer opnieuw opstarten...</sys:String>
+    <sys:String x:Key="status_prep_close">Voorbereiden om af te sluiten...</sys:String>
+    <sys:String x:Key="status_goodbye">Tot ziens!</sys:String>
+    <!-- endregion Loading Closing Window -->
 
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Klik om te kopiëren</sys:String>
