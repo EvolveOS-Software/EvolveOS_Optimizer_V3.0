@@ -155,6 +155,11 @@
     <sys:String x:Key="Settings_Theme_SyncOsTitle">Sincronizza tema di Windows</sys:String>
     <sys:String x:Key="Settings_Theme_SyncOsSubtitle">Applica il tema selezionato all'intero sistema operativo Windows.</sys:String>
 
+    <sys:String x:Key="Settings_TintColor_Title">Colore tinta</sys:String>
+    <sys:String x:Key="Settings_ChangeTintColor_Button">Cambia colore tinta</sys:String>
+    <sys:String x:Key="Settings_TintOpacity_Title">Opacità tinta</sys:String>
+    <sys:String x:Key="Settings_LuminosityOpacity_Title">Opacità luminosità</sys:String>
+
     <sys:String x:Key="Settings_System_Title">Comportamento del Sistema</sys:String>
 
     <sys:String x:Key="Settings_Startup_Title">Esegui all'avvio</sys:String>

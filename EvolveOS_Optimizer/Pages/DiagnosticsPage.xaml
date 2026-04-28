@@ -104,8 +104,8 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="15">
-                    <FontIcon Glyph="&#xE73D;" FontSize="28" Foreground="{StaticResource Brush_DiagnosticBlue}" />
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                    <FontIcon Glyph="&#xF246;" FontSize="38" Foreground="{StaticResource Brush_DiagnosticBlue}" />
                     <StackPanel>
                         <TextBlock helpers:Loc.Key="diag_header_subtitle" Style="{StaticResource TechnicalLabelStyle}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.9"/>
                         <TextBlock helpers:Loc.Key="diag_header_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="20"/>
@@ -142,7 +142,7 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="1" Margin="0,0,0,0">
+        <Grid Grid.Row="1" Margin="0,0,5,0">
             <Border CornerRadius="1">
                 
                 <SplitView x:Name="SecuritySplitView"
@@ -159,7 +159,7 @@
                                     <Grid Margin="0,0,0,5">
                                         <TextBlock helpers:Loc.Key="SecurityPage_Status"
                                                    HorizontalAlignment="Center"
-                                                   FontFamily="{ThemeResource Jura-Bold}"
+                                                   FontFamily="{ThemeResource Jura}"
                                                    Style="{StaticResource TitleTextBlockStyle}"/>
                                         <Button Command="{x:Bind ViewModel.RefreshSecurityStatusCommand}"
                                                 HorizontalAlignment="Right"
@@ -177,7 +177,8 @@
                                                       IsActive="{x:Bind ViewModel.IsSecurityStatusLoadingRingActive, Mode=OneWay}"
                                                       Visibility="{x:Bind ViewModel.SecurityStatusLoadingRingVisibility, Mode=OneWay}"/>
                                         <Image Width="96" Height="96"
-                                               Source="{x:Bind ViewModel.SecurityStatusImageUri, Mode=OneWay}"/>
+                                               Source="{x:Bind ViewModel.SecurityStatusImageUri, Mode=OneWay}" 
+                                               Visibility="{x:Bind ViewModel.SecurityStatusImageVisibility, Mode=OneWay}" />
                                     </Grid>
 
                                     <StackPanel HorizontalAlignment="Center" Spacing="4" Margin="0,0,0,10">
@@ -544,7 +545,7 @@
                                 <Border BorderThickness="1,0,0,0" BorderBrush="#22FFFFFF" Background="Transparent">
                                     <ScrollViewer Padding="20">
                                         <StackPanel Spacing="12">
-                                            <TextBlock helpers:Loc.Key="diag_pane_header" FontFamily="{StaticResource Jura}" FontSize="16" FontWeight="Bold" Margin="0,-5,0,-5" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                            <TextBlock helpers:Loc.Key="diag_pane_header" FontFamily="{StaticResource Jura}" FontSize="16" HorizontalAlignment="Center" Margin="0,-5,0,-5" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
 
                                             <Border Style="{StaticResource MaintenanceCardStyle}" Padding="16,20" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
                                                 <StackPanel HorizontalAlignment="Center" Spacing="10">
@@ -1259,8 +1260,9 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
 
-                                                    <StackPanel Grid.Column="0" Spacing="5" VerticalAlignment="Center">
-                                                        <TextBlock helpers:Loc.Key="diag_event_miner_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="16"/>
+                                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center" Margin="0,0,0,10">
+                                                        <FontIcon Glyph="&#xF571;" FontSize="24" Foreground="{StaticResource Brush_DiagnosticBlue}" />
+                                                        <TextBlock helpers:Loc.Key="diag_event_miner_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="14"/>
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">

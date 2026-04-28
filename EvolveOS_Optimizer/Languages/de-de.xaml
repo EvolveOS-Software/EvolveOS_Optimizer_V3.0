@@ -155,6 +155,11 @@
     <sys:String x:Key="Settings_Theme_SyncOsTitle">Windows-Design synchronisieren</sys:String>
     <sys:String x:Key="Settings_Theme_SyncOsSubtitle">Wenden Sie das ausgewählte Design auf das gesamte Windows-Betriebssystem an.</sys:String>
 
+    <sys:String x:Key="Settings_TintColor_Title">Farbtönung</sys:String>
+    <sys:String x:Key="Settings_ChangeTintColor_Button">Farbtönung ändern</sys:String>
+    <sys:String x:Key="Settings_TintOpacity_Title">Tönungs-Deckkraft</sys:String>
+    <sys:String x:Key="Settings_LuminosityOpacity_Title">Helligkeits Deckkraft</sys:String>
+
     <sys:String x:Key="Settings_System_Title">Systemverhalten</sys:String>
 
     <sys:String x:Key="Settings_Startup_Title">Beim Systemstart ausführen</sys:String>

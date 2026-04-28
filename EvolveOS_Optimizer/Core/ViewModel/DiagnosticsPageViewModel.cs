@@ -102,6 +102,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private string _securityStatusImageUri = "ms-appx:///Assets/PngImages/Secure.png";
         public string SecurityStatusImageUri { get => _securityStatusImageUri; set => SetProperty(ref _securityStatusImageUri, value); }
 
+        private Visibility _securityStatusImageVisibility = Visibility.Visible;
+        public Visibility SecurityStatusImageVisibility { get => _securityStatusImageVisibility; set => SetProperty(ref _securityStatusImageVisibility, value); }
+
         private Visibility _securityStatusLoadingRingVisibility = Visibility.Visible;
         public Visibility SecurityStatusLoadingRingVisibility { get => _securityStatusLoadingRingVisibility; set => SetProperty(ref _securityStatusLoadingRingVisibility, value); }
 
@@ -1702,6 +1705,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _dispatcherQueue?.TryEnqueue(() =>
                 {
                     SecurityStatusText = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
+                    SecurityStatusImageVisibility = Visibility.Collapsed;
                     IsSecurityStatusLoadingRingActive = true;
                     SecurityStatusLoadingRingVisibility = Visibility.Visible;
                 });
@@ -1861,6 +1865,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         SecurityStatusText = ResourceString.GetString("text_security_good") ?? "System is Secure";
                     }
 
+                    SecurityStatusImageVisibility = Visibility.Visible;
                     IsSecurityStatusLoadingRingActive = false;
                     SecurityStatusLoadingRingVisibility = Visibility.Collapsed;
                     SecurityLastRefreshedText = $"{ResourceString.GetString("SecurityPage_LastRefreshed")}: {DateTime.Now:T}";
@@ -1875,9 +1880,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     SecurityStatusText = "Scan timed out or failed.";
                     IsSecurityStatusLoadingRingActive = false;
                     SecurityStatusLoadingRingVisibility = Visibility.Collapsed;
-                    SecurityStatusImageUri = "ms-appx:///Assets/PngImages/Warning.png";
 
-                    // Failsafe: Ensure UI controls are unlocked so the user isn't stuck
+                    SecurityStatusImageUri = "ms-appx:///Assets/PngImages/Warning.png";
+                    SecurityStatusImageVisibility = Visibility.Visible;
+
                     IsRdpToggleEnabled = true;
                     IsRaToggleEnabled = true;
                     IsDevModeToggleEnabled = true;
