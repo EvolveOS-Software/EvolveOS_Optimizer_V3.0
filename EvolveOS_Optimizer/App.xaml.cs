@@ -32,6 +32,8 @@ namespace EvolveOS_Optimizer
         public static Window? MainWindow { get; set; }
         public static bool IsStartedHidden { get; private set; }
 
+        public static bool IsPrimaryInstance { get; private set; }
+
         public static Microsoft.UI.Dispatching.DispatcherQueue? UIThreadDispatcher { get; private set; }
 
         private static Mutex? _mutex;
@@ -75,6 +77,8 @@ namespace EvolveOS_Optimizer
             EnsureShortcutWithAumid();
 
             _mutex = new Mutex(true, "EvolveOS_Optimizer_SingleInstance", out bool isNewInstance);
+
+            IsPrimaryInstance = isNewInstance;
 
             if (!isNewInstance)
             {
@@ -732,6 +736,11 @@ namespace EvolveOS_Optimizer
             }
 
             _isCleanupRunning = true;
+
+            if (!IsPrimaryInstance)
+            {
+                return;
+            }
 
             try
             {
