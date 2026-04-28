@@ -2200,7 +2200,7 @@
     <sys:String x:Key="txt_auto_opt_usage_limit">When usage exceeds {0}%</sys:String>
     <sys:String x:Key="txt_auto_opt_usage_warning">Automatic optimization can only run once every few minutes to prevent loops.</sys:String>
     <sys:String x:Key="msg_hotkey_in_use">The hotkey ({0}) is in use by the operating system</sys:String>
-    <sys:String x:Key="msg_mem_optimized">MEMORY OPTIMIZED:</sys:String>
+    <sys:String x:Key="msg_mem_optimized">Details:</sys:String>
     <sys:String x:Key="optimizations_step_working_set">working set</sys:String>
     <sys:String x:Key="optimizations_step_system_file_cache">system file cache</sys:String>
     <sys:String x:Key="optimizations_step_modified_page_list">modified page list</sys:String>

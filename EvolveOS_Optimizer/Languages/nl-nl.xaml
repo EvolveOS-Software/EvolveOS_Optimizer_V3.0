@@ -2182,7 +2182,7 @@
     <sys:String x:Key="txt_auto_opt_usage_limit">Wanneer het gebruik de {0}% overschrijdt</sys:String>
     <sys:String x:Key="txt_auto_opt_usage_warning">Automatische optimalisatie kan slechts om de paar minuten worden uitgevoerd om lussen te voorkomen.</sys:String>
     <sys:String x:Key="msg_hotkey_in_use">De sneltoets ({0}) is in gebruik door het besturingssysteem</sys:String>
-    <sys:String x:Key="msg_mem_optimized">GEHEUGEN GEOPTIMALISEERD:</sys:String>
+    <sys:String x:Key="msg_mem_optimized">Details:</sys:String>
     <sys:String x:Key="optimizations_step_working_set">werkset</sys:String>
     <sys:String x:Key="optimizations_step_system_file_cache">systeembestandscache</sys:String>
     <sys:String x:Key="optimizations_step_modified_page_list">gewijzigde paginalijst</sys:String>

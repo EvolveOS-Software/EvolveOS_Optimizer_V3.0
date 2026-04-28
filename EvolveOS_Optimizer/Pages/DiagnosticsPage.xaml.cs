@@ -803,7 +803,8 @@ namespace EvolveOS_Optimizer.Pages
 
                     await CalculateSystemHealthAsync();
 
-                    if (!LocalMachineSettingsEngine.ShowOptimizationNotifications)
+                    #region For Testing
+                    /*if (!LocalMachineSettingsEngine.ShowOptimizationNotifications)
                     {
                         var root = this.XamlRoot ?? MainWindow.Instance?.Content?.XamlRoot;
 
@@ -825,7 +826,8 @@ namespace EvolveOS_Optimizer.Pages
                     else
                     {
                         NotificationManager.Show(message).Perform();
-                    }
+                    }*/
+                    #endregion
                 }
                 catch (Exception ex)
                 {

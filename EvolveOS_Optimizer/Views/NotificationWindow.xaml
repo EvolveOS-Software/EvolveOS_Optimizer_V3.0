@@ -61,8 +61,7 @@
                            Text="Message body"
                            Style="{StaticResource BodyTextBlockStyle}" 
                            Opacity="0.8"
-                           TextWrapping="Wrap"
-                           MaxHeight="60"/>
+                           TextWrapping="Wrap"/>
             </StackPanel>
         </Grid>
 

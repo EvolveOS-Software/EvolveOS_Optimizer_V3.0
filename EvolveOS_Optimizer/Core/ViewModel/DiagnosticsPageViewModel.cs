@@ -2890,7 +2890,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _lastRamNotification = DateTime.Now;
                 _lastPagefileNotification = DateTime.Now;
 
-                _dispatcherQueue?.TryEnqueue(() => OnOptimizeCommandCompleted?.Invoke(reason, resultMessage));
+                _dispatcherQueue?.TryEnqueue(() =>
+                {
+                    OnOptimizeCommandCompleted?.Invoke(reason, resultMessage);
+
+                    if (ShowOptimizationNotifications)
+                    {
+                        string summaryTitle = ResourceString.GetString("toast_optimization_complete_title") ?? "Optimization Complete";
+                        string finalMsg = resultMessage ?? string.Empty;
+
+                        SendSystemNotification(4, summaryTitle, finalMsg);
+                    }
+                });
             }
         }
 
@@ -2914,6 +2925,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 1 => NotificationManager.NoticeSeverity.Info,
                 2 => NotificationManager.NoticeSeverity.Warning,
                 3 => NotificationManager.NoticeSeverity.Error,
+                4 => NotificationManager.NoticeSeverity.Success,
                 _ => NotificationManager.NoticeSeverity.Info
             };
 

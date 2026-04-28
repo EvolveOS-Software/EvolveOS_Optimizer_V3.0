@@ -154,7 +154,12 @@ namespace EvolveOS_Optimizer.Views
                 }
 
                 int width = 380;
-                int height = 130;
+
+                RootGrid.Measure(new Windows.Foundation.Size(width, double.PositiveInfinity));
+
+                int desiredHeight = (int)Math.Ceiling(RootGrid.DesiredSize.Height);
+                int height = Math.Max(130, desiredHeight);
+
                 appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
 
                 var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
