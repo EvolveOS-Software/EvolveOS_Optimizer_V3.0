@@ -45,6 +45,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 var wmiTask = new WmiDiagnosticHelper().ListBrokenHardwareAsync();
                 var eventTask = new EventLogMinerHelper().MineRecentErrorsAsync();
                 var perfTask = new PerformanceTelemetryHelper().AnalyzePerformanceBottlenecksAsync();
+                var anomalyTask = new SystemAnomalySolver().DetectAndResolveAllAnomaliesAsync(token);
 
                 var securityTask = Task.Run(async () =>
                 {
@@ -70,7 +71,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                     };
                 }, token);
 
-                await Task.WhenAll(wmiTask, eventTask, perfTask, securityTask);
+                await Task.WhenAll(wmiTask, eventTask, perfTask, securityTask, anomalyTask);
 
                 token.ThrowIfCancellationRequested();
 
@@ -78,6 +79,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 var systemEvents = eventTask.Result;
                 var performanceIssues = perfTask.Result;
                 var sec = securityTask.Result;
+                var resolvedSystemAnomalies = anomalyTask.Result;
 
                 systemEvents.AddRange(performanceIssues);
 
@@ -419,6 +421,31 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                     }
 
                     string neuralSource = ResourceString.GetString("diag_alert_source_neural") ?? "EvolveOS Neural Engine";
+
+                    if (resolvedSystemAnomalies != null && resolvedSystemAnomalies.Count > 0)
+                    {
+                        foreach (var resolutionMsg in resolvedSystemAnomalies)
+                        {
+                            var cpuAlert = _vm.CreateAlert(9004, neuralSource, string.Format(ResourceString.GetString("diag_alert_ai_resolved") ?? "AI RESOLVED: {0}", resolutionMsg));
+                            cpuAlert.Level = 2;
+                            cpuAlert.IsFixable = false;
+
+                            string fingerprint = $"9004|{neuralSource}|SECURE";
+                            if (!LocalMachineSettingsEngine.DismissedEventsList.Contains(fingerprint))
+                            {
+                                _vm.MinedSystemEvents.Insert(0, cpuAlert);
+                            }
+                        }
+
+                        string notifTitle = ResourceString.GetString("diag_notif_ai_title") ?? "EvolveOS AI Optimizer";
+
+                        string notifMsg = resolvedSystemAnomalies.Count == 1
+                            ? resolvedSystemAnomalies[0]
+                            : string.Format(ResourceString.GetString("diag_notif_ai_multiple") ?? "Automatically resolved {0} background anomalies to free up CPU.", resolvedSystemAnomalies.Count);
+
+                        _vm.SendSystemNotification(1, notifTitle, notifMsg);
+                    }
+
                     float currentRam = _vm._ramCounter?.NextValue() ?? 0;
                     double ramUsagePct = _vm._totalMemoryMb > 0 ? ((_vm._totalMemoryMb - currentRam) / _vm._totalMemoryMb) * 100 : 0;
 

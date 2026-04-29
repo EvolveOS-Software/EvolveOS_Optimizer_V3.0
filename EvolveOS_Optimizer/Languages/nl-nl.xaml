@@ -2095,6 +2095,10 @@
     <sys:String x:Key="diag_secureboot_shutdown_comment">EvolveOS Optimizer: Secure Boot sleutelregistratie</sys:String>
     <sys:String x:Key="diag_secureboot_reboot_msg">Secure Boot-update succesvol voorbereid. KRITIEK: U moet uw computer TWEE KEER opnieuw opstarten zodat de firmware van uw moederbord de nieuwe sleutels kan registreren. Wilt u uw computer nu opnieuw opstarten?</sys:String>
 
+    <sys:String x:Key="diag_alert_ai_resolved">AI OPGELOST: {0}</sys:String>
+    <sys:String x:Key="diag_notif_ai_title">EvolveOS AI Optimizer</sys:String>
+    <sys:String x:Key="diag_notif_ai_multiple">Automatisch {0} achtergrondanomalieën opgelost om CPU-capaciteit vrij te maken.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Nu herstarten</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

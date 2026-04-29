@@ -46,13 +46,26 @@
         <Grid Grid.Column="0">
             <Image x:Name="DisplayProfileAvatar" Source="{Binding DisplayProfileAvatar}" Stretch="UniformToFill"/>
 
-            <ProgressRing x:Name="ShutdownProgressRing" 
-                          IsActive="False" 
-                          Visibility="Collapsed" 
-                          Width="60" Height="60" 
-                          Foreground="{ThemeResource MyDynamicAccentBrush}" 
-                          HorizontalAlignment="Center" 
-                          VerticalAlignment="Center"/>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                <Image x:Name="ShutdownProgressRing"
+                       Source="ms-appx:///Resources/EvolveOSLogo.png"
+                       Stretch="UniformToFill"
+                       Visibility="Collapsed" />
+
+                <Rectangle x:Name="ShutdownGradientOverlay" IsHitTestVisible="False" Visibility="{Binding ElementName=ShutdownProgressRing, Path=Visibility}">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Offset="0.6" Color="#00003366"/>
+
+                            <GradientStop Offset="0.8" Color="#80003366"/>
+
+                            <GradientStop Offset="1.0" Color="#FF003366"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+
+            </Grid>
 
             <Rectangle x:Name="AvatarGradientOverlay" IsHitTestVisible="False">
                 <Rectangle.Fill>

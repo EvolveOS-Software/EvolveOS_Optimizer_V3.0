@@ -3096,7 +3096,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Notifications
-        private void SendSystemNotification(int tier, string title, string message)
+        public void SendSystemNotification(int tier, string title, string message)
         {
             var severity = tier switch
             {

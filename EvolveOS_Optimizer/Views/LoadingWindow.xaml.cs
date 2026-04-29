@@ -75,7 +75,6 @@ namespace EvolveOS_Optimizer.Views
                 if (AutoLoginBadge != null) AutoLoginBadge.Visibility = Visibility.Collapsed;
 
                 ShutdownProgressRing.Visibility = Visibility.Visible;
-                ShutdownProgressRing.IsActive = true;
             }
             else
             {

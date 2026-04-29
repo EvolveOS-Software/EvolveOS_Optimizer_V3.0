@@ -2100,6 +2100,10 @@
     <sys:String x:Key="diag_secureboot_shutdown_comment">EvolveOS Optimizer : Enregistrement de la clé Secure Boot</sys:String>
     <sys:String x:Key="diag_secureboot_reboot_msg">La mise à jour Secure Boot a été préparée avec succès. CRITIQUE : Vous devez redémarrer votre ordinateur DEUX FOIS pour que le firmware de votre carte mère enregistre les nouvelles clés. Voulez-vous redémarrer votre ordinateur maintenant ?</sys:String>
 
+    <sys:String x:Key="diag_alert_ai_resolved">RÉSOLU PAR L'IA : {0}</sys:String>
+    <sys:String x:Key="diag_notif_ai_title">EvolveOS AI Optimizer</sys:String>
+    <sys:String x:Key="diag_notif_ai_multiple">A automatiquement résolu {0} anomalies en arrière-plan pour libérer le CPU.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
     <sys:String x:Key="txt_later">Plus tard</sys:String>
 

@@ -2103,6 +2103,10 @@
     <sys:String x:Key="diag_secureboot_shutdown_comment">EvolveOS Optimizer: Secure Boot Schlüsselregistrierung</sys:String>
     <sys:String x:Key="diag_secureboot_reboot_msg">Das Secure Boot-Update wurde erfolgreich vorbereitet. KRITISCH: Sie müssen Ihren Computer ZWEIMAL neu starten, damit die Motherboard Firmware die neuen Schlüssel registrieren kann. Möchten Sie Ihren Computer jetzt neu starten?</sys:String>
 
+    <sys:String x:Key="diag_alert_ai_resolved">KI GELÖST: {0}</sys:String>
+    <sys:String x:Key="diag_notif_ai_title">EvolveOS AI Optimizer</sys:String>
+    <sys:String x:Key="diag_notif_ai_multiple">Automatisch {0} Hintergrundanomalien behoben, um CPU-Ressourcen freizugeben.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>
     <sys:String x:Key="txt_later">Später</sys:String>
     

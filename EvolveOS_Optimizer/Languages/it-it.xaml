@@ -2106,6 +2106,10 @@
     <sys:String x:Key="diag_secureboot_shutdown_comment">EvolveOS Optimizer: Registrazione chiave Secure Boot</sys:String>
     <sys:String x:Key="diag_secureboot_reboot_msg">Aggiornamento di Secure Boot preparato con successo. CRITICO: Devi riavviare il computer DUE VOLTE affinché il firmware della scheda madre registri le nuove chiavi. Vuoi riavviare il computer ora?</sys:String>
 
+    <sys:String x:Key="diag_alert_ai_resolved">RISOLTO DALL'IA: {0}</sys:String>
+    <sys:String x:Key="diag_notif_ai_title">EvolveOS AI Optimizer</sys:String>
+    <sys:String x:Key="diag_notif_ai_multiple">Risolte automaticamente {0} anomalie in background per liberare la CPU.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Riavvia ora</sys:String>
     <sys:String x:Key="txt_later">Più tardi</sys:String>
 
