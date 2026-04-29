@@ -1315,7 +1315,7 @@
     <sys:String x:Key="systray_close_window">Esci da EvolveOS</sys:String>
     <sys:String x:Key="systray_click_show">Fai doppio clic per aprire EvolveOS Optimizer</sys:String>
     <sys:String x:Key="systray_security">Centro di sicurezza</sys:String>
-    <sys:String x:Key="systray_maintenance">Manutenzione</sys:String>
+    <sys:String x:Key="systray_maintenance">Operazioni di sistema</sys:String>
     <sys:String x:Key="systray_dns">Cambia DNS</sys:String>
     <!-- endregion System TrayIcon -->
 
@@ -1978,8 +1978,9 @@
     <sys:String x:Key="diag_graph_10min">10 Minuti</sys:String>
     <sys:String x:Key="diag_graph_15min">15 Minuti</sys:String>
 
-    <sys:String x:Key="diag_toggle_maintenance">Strumenti di Manutenzione</sys:String>
-    <sys:String x:Key="diag_pane_header">MANUTENZIONE &amp; RIPARAZIONE</sys:String>
+    <sys:String x:Key="diag_toggle_security">Sicurezza</sys:String>
+    <sys:String x:Key="diag_toggle_maintenance">Strumenti</sys:String>
+    <sys:String x:Key="diag_pane_header">OPERAZIONI DI SISTEMA</sys:String>
     <sys:String x:Key="diag_health_status_label">STATO DI SALUTE ATTUALE</sys:String>
     <sys:String x:Key="diag_btn_refresh_data">Aggiorna Dati</sys:String>
     <sys:String x:Key="diag_expander_memory">Gestione Memoria</sys:String>
@@ -2001,7 +2002,7 @@
     <sys:String x:Key="diag_status_ready">Pronto</sys:String>
     <sys:String x:Key="diag_expander_utilities">Utilità di Sistema</sys:String>
     <sys:String x:Key="diag_btn_open">Apri</sys:String>
-    <sys:String x:Key="diag_expander_settings">Impostazioni di Manutenzione</sys:String>
+    <sys:String x:Key="diag_expander_settings">Impostazioni</sys:String>
     <sys:String x:Key="diag_ai_analysis_title">ANALISI NEURALE IA</sys:String>
     <sys:String x:Key="diag_btn_cpu">CPU</sys:String>
     <sys:String x:Key="diag_btn_gpu">GPU</sys:String>

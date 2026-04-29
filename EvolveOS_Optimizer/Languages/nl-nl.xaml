@@ -1304,7 +1304,7 @@
     <sys:String x:Key="systray_close_window">EvolveOS afsluiten</sys:String>
     <sys:String x:Key="systray_click_show">Dubbelklik om EvolveOS Optimizer te openen</sys:String>
     <sys:String x:Key="systray_security">Beveiligingscentrum</sys:String>
-    <sys:String x:Key="systray_maintenance">Onderhoud</sys:String>
+    <sys:String x:Key="systray_maintenance">Systeem bewerkingen</sys:String>
     <sys:String x:Key="systray_dns">DNS-wisselaar</sys:String>
     <!-- endregion System TrayIcon -->
 
@@ -1967,8 +1967,9 @@
     <sys:String x:Key="diag_graph_10min">10 Minuten</sys:String>
     <sys:String x:Key="diag_graph_15min">15 Minuten</sys:String>
 
-    <sys:String x:Key="diag_toggle_maintenance">Onderhoudshulpmiddelen</sys:String>
-    <sys:String x:Key="diag_pane_header">ONDERHOUD &amp; REPARATIE</sys:String>
+    <sys:String x:Key="diag_toggle_security">Beveiliging</sys:String>
+    <sys:String x:Key="diag_toggle_maintenance">Tools</sys:String>
+    <sys:String x:Key="diag_pane_header">SYSTEEM BEWERKINGEN</sys:String>
     <sys:String x:Key="diag_health_status_label">HUIDIGE GEZONDHEIDSSTATUS</sys:String>
     <sys:String x:Key="diag_btn_refresh_data">Gegevens Vernieuwen</sys:String>
     <sys:String x:Key="diag_expander_memory">Geheugenbeheer</sys:String>
@@ -1990,7 +1991,7 @@
     <sys:String x:Key="diag_status_ready">Gereed</sys:String>
     <sys:String x:Key="diag_expander_utilities">Systeemhulpprogramma's</sys:String>
     <sys:String x:Key="diag_btn_open">Openen</sys:String>
-    <sys:String x:Key="diag_expander_settings">Onderhoudsinstellingen</sys:String>
+    <sys:String x:Key="diag_expander_settings">Instellingen</sys:String>
     <sys:String x:Key="diag_ai_analysis_title">AI NEURALE ANALYSE</sys:String>
     <sys:String x:Key="diag_btn_cpu">CPU</sys:String>
     <sys:String x:Key="diag_btn_gpu">GPU</sys:String>

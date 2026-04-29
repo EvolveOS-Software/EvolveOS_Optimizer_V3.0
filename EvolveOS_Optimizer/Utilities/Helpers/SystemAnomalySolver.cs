@@ -15,7 +15,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
     {
         #region CPU Anomaly Engine
 
-        // Critical system processes (NEVER kill, throttle, or trim)
+        // Critical system processes (NEVER kill, throttle, or trim.)
         private readonly HashSet<string> _systemWhitelist = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "idle", "system", "registry", "smss", "csrss", "wininit", "services",

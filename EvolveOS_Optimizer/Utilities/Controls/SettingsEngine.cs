@@ -526,7 +526,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["DiagnosticsGraphTime"] = 60,
             ["LastCachePurgeTime"] = DateTime.MinValue.ToString("o"),
 
-            ["ShowHardwarePanelInTray"] = true,
+            ["ShowHardwarePanelInTray"] = false,
             ["ShowCpuInTray"] = true,
             ["ShowRamInTray"] = true,
             ["ShowDiskInTray"] = true,
