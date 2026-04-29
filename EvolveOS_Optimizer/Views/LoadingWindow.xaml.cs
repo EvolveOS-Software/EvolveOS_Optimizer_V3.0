@@ -334,6 +334,11 @@ namespace EvolveOS_Optimizer.Views
                     Report(10);
                     await Task.Delay(400, token);
 
+                    UpdateStatusDirect(ResourceString.GetString("status_hardware_gather") ?? "Interrogating hardware and telemetry...");
+
+                    var diagnosticsInstance = DiagnosticsPageViewModel.Current;
+                    Task diagnosticsScanTask = diagnosticsInstance.ExecuteFullScanAsync();
+
                     Report(20);
 
                     Parallel.Invoke(
@@ -443,7 +448,7 @@ namespace EvolveOS_Optimizer.Views
                     {
                         if (GlobalDiagnosticsVM == null)
                         {
-                            GlobalDiagnosticsVM = new DiagnosticsPageViewModel();
+                            GlobalDiagnosticsVM = DiagnosticsPageViewModel.Current;
                         }
 
                         FinalizeTransition();

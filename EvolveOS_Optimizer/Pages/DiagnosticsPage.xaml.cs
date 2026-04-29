@@ -14,6 +14,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Input;
+using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -110,10 +111,10 @@ namespace EvolveOS_Optimizer.Pages
 
             var vm = ViewModel;
 
-            if (vm != null && !vm.IsScanning)
+            /*if (vm != null && !vm.IsScanning)
             {
                 await vm.ExecuteFullScanAsync();
-            }
+            }*/
 
             vm?.ResumeUiUpdates();
 
@@ -770,6 +771,33 @@ namespace EvolveOS_Optimizer.Pages
         private void OnSliderPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (sender is Slider slider) slider.Focus(FocusState.Pointer);
+        }
+
+        #endregion
+
+        #region Neural AI Explanations (Event Card Interaction)
+
+        private void EventCard_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (ViewModel == null) return;
+
+            if (sender is FrameworkElement card && card.DataContext is SystemEventItem eventItem)
+            {
+                ViewModel.AiSummary = NeuralAnalysisEngine.GenerateEventAnalysis(eventItem.EventId, eventItem.SourceName);
+            }
+        }
+
+        private void HistoryCard_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (ViewModel == null) return;
+
+            if (sender is FrameworkElement card && card.DataContext is DismissedEventCard historyItem)
+            {
+                if (int.TryParse(historyItem.EventId, out int parsedEventId))
+                {
+                    ViewModel.AiSummary = NeuralAnalysisEngine.GenerateEventAnalysis(parsedEventId, historyItem.SourceName ?? "Unknown");
+                }
+            }
         }
 
         #endregion

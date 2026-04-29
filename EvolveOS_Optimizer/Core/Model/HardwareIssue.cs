@@ -17,6 +17,7 @@ namespace EvolveOS_Optimizer.Core.Model
         public string? IssueSummary { get; set; }
         public string? RecommendedFix { get; set; }
 
+        public string? AiAnalysis { get; set; }
         public bool IsFixable { get; set; } = false;
 
         public Visibility FixButtonVisibility =>

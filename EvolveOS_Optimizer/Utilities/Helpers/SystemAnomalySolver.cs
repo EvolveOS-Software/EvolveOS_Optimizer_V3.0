@@ -4,9 +4,12 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.ServiceProcess;
 using System.Threading;
 using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
+using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
@@ -240,6 +243,142 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         #endregion
 
+        #region Service Anomaly Engine
+
+        // Dictionary of critical services that should NEVER be disabled
+        // Key = Service Name, Value = Friendly Name for the UI
+        private readonly Dictionary<string, string> _criticalServices = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "BFE", "Base Filtering Engine" },
+            { "ProfSvc", "User Profile Service" },
+            { "EventLog", "Windows Event Log" },
+            { "wscsvc", "Windows Security Center" },
+            { "Winmgmt", "Windows Management Instrumentation" },
+            { "RpcSs", "Remote Procedure Call (RPC)" },
+            { "Audiosrv", "Windows Audio" }
+        };
+
+        public List<ServiceAnomaly> DetectAdvancedServiceAnomalies()
+        {
+            var anomalies = new List<ServiceAnomaly>();
+
+            foreach (var svc in _criticalServices)
+            {
+                string serviceName = svc.Key;
+                string friendlyName = svc.Value;
+
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{serviceName}");
+                    if (key == null) continue;
+
+                    int startValue = (int)(key.GetValue("Start", -1));
+
+                    // 1. BASE CHECK: Is it completely disabled?
+                    if (startValue == 4)
+                    {
+                        anomalies.Add(new ServiceAnomaly
+                        {
+                            ServiceName = serviceName,
+                            FriendlyName = friendlyName,
+                            AnomalyType = "Disabled",
+                            RecommendedEventId = 7000 + Math.Abs(serviceName.GetHashCode() % 99), // 7000 block
+                            AlertMessage = $"CRITICAL: {friendlyName} ({serviceName}) is disabled."
+                        });
+                        continue; // Skip other checks if it's dead
+                    }
+
+                    // 2. LIVE STATE (GHOSTED): Auto but Stopped?
+                    if (startValue == 2)
+                    {
+                        try
+                        {
+                            // Query the live Windows Service Control Manager
+                            using var controller = new ServiceController(serviceName);
+                            if (controller.Status == ServiceControllerStatus.Stopped)
+                            {
+                                anomalies.Add(new ServiceAnomaly
+                                {
+                                    ServiceName = serviceName,
+                                    FriendlyName = friendlyName,
+                                    AnomalyType = "Ghosted",
+                                    RecommendedEventId = 7100 + Math.Abs(serviceName.GetHashCode() % 99), // 7100 block
+                                    AlertMessage = $"SERVICE FAILURE: {friendlyName} is set to Automatic but has crashed or stopped."
+                                });
+                            }
+                        }
+                        catch { /* Service missing from SCM despite registry entry */ }
+                    }
+
+                    // 3. TAMPER DETECTION: ImagePath Hijacked?
+                    string imagePath = key.GetValue("ImagePath") as string ?? "";
+                    if (!IsPathTrusted(imagePath))
+                    {
+                        anomalies.Add(new ServiceAnomaly
+                        {
+                            ServiceName = serviceName,
+                            FriendlyName = friendlyName,
+                            AnomalyType = "Tampered",
+                            RecommendedEventId = 7200 + Math.Abs(serviceName.GetHashCode() % 99), // 7200 block
+                            AlertMessage = $"INTEGRITY COMPROMISED: {friendlyName} execution path is suspicious or hijacked."
+                        });
+                    }
+
+                    // 4. RECOVERY AUDIT: FailureActions Wiped?
+                    byte[]? failureActions = key.GetValue("FailureActions") as byte[];
+                    if (IsRecoveryWiped(failureActions))
+                    {
+                        anomalies.Add(new ServiceAnomaly
+                        {
+                            ServiceName = serviceName,
+                            FriendlyName = friendlyName,
+                            AnomalyType = "NoRecovery",
+                            RecommendedEventId = 7300 + Math.Abs(serviceName.GetHashCode() % 99), // 7300 block
+                            AlertMessage = $"RECOVERY DISABLED: The crash-recovery protocols for {friendlyName} have been wiped."
+                        });
+                    }
+
+                    // 5. DEPENDENCY CHAIN: Is the parent dead?
+                    string[]? dependencies = key.GetValue("DependOnService") as string[];
+                    if (dependencies != null)
+                    {
+                        foreach (var dep in dependencies)
+                        {
+
+                            string cleanDep = dep.TrimStart('+');
+
+                            using var depKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{cleanDep}");
+                            if (depKey != null)
+                            {
+                                int depStart = (int)(depKey.GetValue("Start", -1));
+                                if (depStart == 4)
+                                {
+                                    anomalies.Add(new ServiceAnomaly
+                                    {
+                                        ServiceName = serviceName,
+                                        FriendlyName = friendlyName,
+                                        AnomalyType = "Dependency",
+                                        RecommendedEventId = 7400 + Math.Abs(serviceName.GetHashCode() % 99), // 7400 block
+                                        AlertMessage = $"DEPENDENCY BROKEN: {friendlyName} requires '{cleanDep}', which is disabled."
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+                catch { /* Ignore access violations */ }
+            }
+
+            return anomalies;
+        }
+
+        public string GetServiceFriendlyName(string serviceKey)
+        {
+            return _criticalServices.TryGetValue(serviceKey, out string? friendlyName) ? friendlyName : serviceKey;
+        }
+
+        #endregion
+
         #region Network & OS Anomaly Engine
 
         private bool FlushDnsCache()
@@ -313,6 +452,36 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 }
             }
             catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+        }
+
+        #endregion
+
+        #region Advanced Heuristic Helpers
+
+        private bool IsPathTrusted(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return false;
+
+            string lowerPath = path.ToLowerInvariant();
+
+            bool isSystemRoot = lowerPath.Contains("system32") || lowerPath.Contains("syswow64");
+            bool isSvcHost = lowerPath.Contains("svchost.exe");
+            bool isSystemDriver = lowerPath.StartsWith(@"\systemroot\") || lowerPath.StartsWith(@"system32\drivers\");
+
+            return isSystemRoot || isSvcHost || isSystemDriver;
+        }
+
+        private bool IsRecoveryWiped(byte[]? failureActions)
+        {
+            if (failureActions == null) return false;
+
+            if (failureActions.Length >= 20)
+            {
+                int actionCount = BitConverter.ToInt32(failureActions, 16);
+                return actionCount == 0;
+            }
+
+            return false;
         }
 
         #endregion

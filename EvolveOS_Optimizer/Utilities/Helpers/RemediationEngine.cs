@@ -10,10 +10,30 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
     {
         #region Software Remediation
 
-        public static async Task<bool> RunFixAsync(int eventId)
+        public static async Task<bool> RunFixAsync(int eventId, string sourceName = "")
         {
             try
             {
+                if (eventId >= 7000 && eventId < 7100 && sourceName.StartsWith("ServiceMonitor|"))
+                {
+                    try
+                    {
+                        string serviceName = sourceName.Split('|')[1];
+
+                        string command = $@"
+                        Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\{serviceName}' -Name 'Start' -Value 2 -Force;
+                        Start-Service -Name '{serviceName}' -ErrorAction SilentlyContinue;";
+
+                        await CommandExecutor.RunCommandAsTrustedInstaller(command, isPowerShell: true);
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[RemediationEngine] Service Fix Failed: {ex.Message}");
+                        return false;
+                    }
+                }
+
                 return eventId switch
                 {
                     #region PERFORMANCE BOTTLENECK REMEDIATION

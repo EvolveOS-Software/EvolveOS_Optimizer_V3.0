@@ -12,6 +12,7 @@ namespace EvolveOS_Optimizer.Core.Model
         public string Message { get; set; } = string.Empty;
         public string? FullMessage { get; set; }
 
+        public string? AiAnalysis { get; set; }
         public string FormattedTime => TimeCreated.ToString("HH:mm:ss");
 
         public bool IsFixable { get; set; } = false;

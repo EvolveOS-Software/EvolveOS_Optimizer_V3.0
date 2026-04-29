@@ -405,6 +405,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(EventEmptyStateVisibility));
                     OnPropertyChanged(nameof(EventListVisibility));
                     OnPropertyChanged(nameof(MinorEventsTextVisibility));
+
+                    _dispatcherQueue?.TryEnqueue(() =>
+                    {
+                        UpdateGlobalAiSummary();
+                    });
                 }
             }
         }
@@ -1363,12 +1368,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
 
         [RelayCommand]
-        public void CopyEventMessage(string message)
+        public void CopyEventMessage(SystemEventItem ev)
         {
-            if (!string.IsNullOrEmpty(message))
+            if (ev == null) return;
+
+            string textToCopy = !string.IsNullOrWhiteSpace(ev.AiAnalysis) ? ev.AiAnalysis : ev.Message;
+
+            if (string.IsNullOrWhiteSpace(textToCopy)) textToCopy = ev.FullMessage ?? "No description available.";
+
+            if (!string.IsNullOrWhiteSpace(textToCopy))
             {
                 var dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
-                dataPackage.SetText(message);
+                dataPackage.SetText(textToCopy);
                 Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
 
                 SendSystemNotification(1,
@@ -1386,7 +1397,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             string eventFingerprint;
 
-            if (ev.EventId >= 9101)
+            if (ev.EventId >= 9101 ||
+                ev.SourceName.StartsWith("ServiceMonitor|", StringComparison.OrdinalIgnoreCase) ||
+                ev.EventId == 9003 ||
+                ev.EventId == 9004)
             {
                 eventFingerprint = $"{ev.EventId}|{ev.SourceName}|SECURE";
             }
@@ -1403,6 +1417,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             LocalMachineSettingsEngine.SaveDismissedEventsList();
 
             CalculateStabilityTrend(MinedSystemEvents);
+
+            _dispatcherQueue?.TryEnqueue(() =>
+            {
+                UpdateGlobalAiSummary();
+            });
         }
 
         [RelayCommand]
@@ -1411,6 +1430,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (HistoryPanelVisibility == Visibility.Visible)
             {
                 HistoryPanelVisibility = Visibility.Collapsed;
+                UpdateGlobalAiSummary();
             }
             else
             {
@@ -1420,6 +1440,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
 
                 HistoryCards.Clear();
+
+                var groupedEvents = new Dictionary<string, DismissedEventCard>();
+
                 foreach (var hash in LocalMachineSettingsEngine.DismissedEventsList)
                 {
                     var parts = hash.Split('|');
@@ -1458,14 +1481,48 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             continue;
                         }
 
-                        HistoryCards.Add(new DismissedEventCard
+                        string groupKey = $"{eventId}|{sourceName}";
+
+                        string msgTemplate = ResourceString.GetString("diag_history_card_msg") ?? "Dismissed system events reported by {0}.";
+                        string fullMsgTemplate = ResourceString.GetString("diag_history_card_full_msg") ?? "Historical records for {0} (ID: {1}). Expand to view all dismissed timestamps.";
+
+                        if (!groupedEvents.ContainsKey(groupKey))
+                        {
+                            groupedEvents[groupKey] = new DismissedEventCard
+                            {
+                                EventId = eventId,
+                                SourceName = sourceName,
+                                LatestDateString = dateDisplay,
+                                Message = string.Format(msgTemplate, sourceName),
+                                FullMessage = string.Format(fullMsgTemplate, sourceName, eventId)
+                            };
+                        }
+
+                        groupedEvents[groupKey].Occurrences.Add(new DismissedEventOccurrence
                         {
                             EventId = eventId,
                             SourceName = sourceName,
                             DateString = dateDisplay,
                             OriginalHash = hash
                         });
+
+                        if (long.TryParse(typeFlag, out _))
+                        {
+                            groupedEvents[groupKey].LatestDateString = dateDisplay;
+                        }
                     }
+                }
+
+                foreach (var group in groupedEvents.Values)
+                {
+                    var sortedOccurrences = group.Occurrences.OrderByDescending(o => o.DateString).ToList();
+                    group.Occurrences.Clear();
+                    foreach (var occ in sortedOccurrences)
+                    {
+                        group.Occurrences.Add(occ);
+                    }
+
+                    HistoryCards.Add(group);
                 }
 
                 HistoryEmptyStateVisibility = HistoryCards.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -1478,7 +1535,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (card == null) return;
 
-            LocalMachineSettingsEngine.DismissedEventsList.Remove(card.OriginalHash);
+            foreach (var occurrence in card.Occurrences)
+            {
+                LocalMachineSettingsEngine.DismissedEventsList.Remove(occurrence.OriginalHash);
+            }
+
             LocalMachineSettingsEngine.SaveDismissedEventsList();
             HistoryCards.Remove(card);
 
@@ -1691,6 +1752,55 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             OnPropertyChanged(nameof(Dot3Visibility));
             OnPropertyChanged(nameof(Dot4Visibility));
             OnPropertyChanged(nameof(Dot5Visibility));
+        }
+
+        public void UpdateGlobalAiSummary()
+        {
+            double.TryParse(StabilityScore?.Replace("%", ""), out double currentScore);
+            int currentCriticalCount = MinedSystemEvents?.Count(e => e.Level == 1 || e.Level == 2) ?? 0;
+
+            TimeSpan uptime = TimeSpan.FromMilliseconds(Environment.TickCount64);
+            double errorsPerHour = currentCriticalCount / Math.Max(1, uptime.TotalHours);
+
+            bool isUptimeReliable = uptime.TotalMinutes > 30;
+            bool isStabilityCritical = isUptimeReliable && errorsPerHour > 5.0;
+
+            bool isHardwareCritical = (DetectedHardwareIssues?.Count ?? 0) > 0;
+            bool hasSecurityRisks = MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9117) == true;
+            bool hasCriticalSecurity = MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9117 && e.Level == 1) == true;
+
+            if (isHardwareCritical || isStabilityCritical || hasCriticalSecurity)
+            {
+                if (hasCriticalSecurity && !isHardwareCritical && !isStabilityCritical)
+                {
+                    AiSummary = ResourceString.GetString("diag_ai_summary_vulnerable")
+                        ?? "AI Analysis: VULNERABLE. Critical security features are disabled. Your system is exposed to external threats.";
+                }
+                else
+                {
+                    string template = ResourceString.GetString("diag_ai_summary_critical")
+                        ?? "AI Analysis: CRITICAL. Detected {0} system errors ({1:0.#}/hour) and {2} hardware issues. Immediate action recommended.";
+
+                    AiSummary = string.Format(template, currentCriticalCount, errorsPerHour, DetectedHardwareIssues?.Count ?? 0);
+                }
+            }
+            else if (MinedSystemEvents?.Any(e => e.EventId == 42) == true)
+            {
+                AiSummary = ResourceString.GetString("diag_ai_summary_crash")
+                    ?? "AI Analysis: Event log corruption detected. Windows has auto-repaired the log file. This usually indicates a recent forced shutdown or power failure.";
+            }
+            else if (currentCriticalCount > 0 || hasSecurityRisks)
+            {
+                string template = ResourceString.GetString("diag_ai_summary_issues")
+                    ?? "AI Analysis: Detected {0} minor system events and {1} hardware issues. Stability remains within normal tolerances.";
+
+                AiSummary = string.Format(template, currentCriticalCount, DetectedHardwareIssues?.Count ?? 0);
+            }
+            else
+            {
+                AiSummary = ResourceString.GetString("diag_ai_summary_nominal")
+                    ?? "AI Analysis: System telemetry is completely nominal.";
+            }
         }
 
         internal SystemEventItem CreateAlert(int eventId, string source, string message)

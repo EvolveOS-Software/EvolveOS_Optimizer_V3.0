@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Threading;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -417,6 +418,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                         if (ev.Level == 1 || ev.Level == 2) criticalCount++;
 
+                        ev.AiAnalysis = NeuralAnalysisEngine.GenerateEventAnalysis(ev.EventId, ev.SourceName ?? "Unknown");
+
                         _vm.MinedSystemEvents.Add(ev);
                     }
 
@@ -454,13 +457,43 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         }
                     }
 
+                    var anomalySolver = new SystemAnomalySolver();
+                    var serviceAnomalies = anomalySolver.DetectAdvancedServiceAnomalies();
+
+                    if (serviceAnomalies.Count > 0)
+                    {
+                        foreach (var anomaly in serviceAnomalies)
+                        {
+                            var serviceAlert = _vm.CreateAlert(anomaly.RecommendedEventId, $"ServiceMonitor|{anomaly.ServiceName}", anomaly.AlertMessage);
+
+                            serviceAlert.Level = (anomaly.AnomalyType == "Disabled" || anomaly.AnomalyType == "Tampered") ? (byte)1 : (byte)2;
+                            serviceAlert.IsFixable = true;
+
+                            string fingerprint = $"{anomaly.RecommendedEventId}|{serviceAlert.SourceName}|SECURE";
+
+                            if (!LocalMachineSettingsEngine.DismissedEventsList.Contains(fingerprint))
+                            {
+                                _vm.MinedSystemEvents.Insert(0, serviceAlert);
+                                if (serviceAlert.Level == 1) criticalCount++;
+                            }
+                        }
+                    }
+
+                    if (_vm.DetectedHardwareIssues != null)
+                    {
+                        foreach (var hw in _vm.DetectedHardwareIssues)
+                        {
+                            hw.AiAnalysis = NeuralAnalysisEngine.GenerateHardwareAnalysis(hw.WmiErrorCode, hw.DeviceName ?? "Unknown Device");
+                        }
+                    }
+
                     float currentRam = _vm._ramCounter?.NextValue() ?? 0;
                     double ramUsagePct = _vm._totalMemoryMb > 0 ? ((_vm._totalMemoryMb - currentRam) / _vm._totalMemoryMb) * 100 : 0;
 
                     if (ramUsagePct > 80)
                     {
                         var memAlert = _vm.CreateAlert(9001, neuralSource, string.Format(ResourceString.GetString("diag_alert_ram_usage_msg") ?? "CRITICAL: Physical Memory utilization at {0}%. Purge recommended.", Math.Round(ramUsagePct)));
-                        _vm.MinedSystemEvents.Insert(0, memAlert);
+                        _vm.MinedSystemEvents?.Insert(0, memAlert);
                         criticalCount++;
                     }
 
@@ -468,12 +501,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                     if (pagefileUsage > 75)
                     {
                         var pfAlert = _vm.CreateAlert(9002, neuralSource, string.Format(ResourceString.GetString("diag_alert_pf_usage_msg") ?? "WARNING: Pagefile usage exceeds {0}%. Disk bottleneck imminent.", Math.Round(pagefileUsage)));
-                        _vm.MinedSystemEvents.Insert(0, pfAlert);
+                        _vm.MinedSystemEvents?.Insert(0, pfAlert);
                         criticalCount++;
                     }
 
                     DateTime lastPurge = LocalMachineSettingsEngine.LastCachePurgeTime;
-
                     bool hasDwmCrash = systemEvents.Any(e => e.EventId == 1000 &&
                                                              e.TimeCreated > lastPurge &&
                                                              e.FullMessage != null &&
@@ -488,13 +520,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         string fingerprint = $"9003|{neuralSource}|SECURE";
                         if (!LocalMachineSettingsEngine.DismissedEventsList.Contains(fingerprint))
                         {
-                            _vm.MinedSystemEvents.Insert(0, uiCrashAlert);
+                            _vm.MinedSystemEvents?.Insert(0, uiCrashAlert);
                             criticalCount++;
                         }
                     }
 
                     string securitySource = ResourceString.GetString("diag_alert_source_security") ?? "Security Engine";
-
                     Action<int, string, byte> AddSecurityAlert = (id, msg, level) =>
                     {
                         var alert = _vm.CreateAlert(id, securitySource, msg);
@@ -506,7 +537,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                         if (!LocalMachineSettingsEngine.DismissedEventsList.Contains(fingerprint))
                         {
-                            _vm.MinedSystemEvents.Insert(0, alert);
+                            _vm.MinedSystemEvents?.Insert(0, alert);
                             if (level <= 2) criticalCount++;
                         }
                     };
@@ -537,9 +568,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                     bool isUptimeReliable = uptime.TotalMinutes > 30;
                     bool isStabilityCritical = isUptimeReliable && errorsPerHour > 5.0;
-                    bool isHardwareCritical = hardwareIssues.Count > 0;
-                    bool hasSecurityRisks = _vm.MinedSystemEvents.Any(e => e.EventId >= 9101 && e.EventId <= 9117);
-                    bool hasCriticalSecurity = _vm.MinedSystemEvents.Any(e => e.EventId >= 9101 && e.EventId <= 9117 && e.Level == 1);
+
+                    bool isHardwareCritical = (hardwareIssues?.Count ?? 0) > 0;
+
+                    bool hasSecurityRisks = _vm.MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9117) == true;
+                    bool hasCriticalSecurity = _vm.MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9117 && e.Level == 1) == true;
 
                     if (isHardwareCritical || isStabilityCritical || hasCriticalSecurity)
                     {
@@ -553,10 +586,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                             string template = ResourceString.GetString("diag_ai_summary_critical")
                                 ?? "AI Analysis: CRITICAL. Detected {0} system errors ({1:0.#}/hour) and {2} hardware issues. Immediate action recommended.";
 
-                            _vm.AiSummary = string.Format(template, criticalCount, errorsPerHour, _vm.DetectedHardwareIssues.Count);
+                            _vm.AiSummary = string.Format(template, criticalCount, errorsPerHour, _vm.DetectedHardwareIssues?.Count ?? 0);
                         }
                     }
-                    else if (_vm.MinedSystemEvents.Any(e => e.EventId == 42))
+                    else if (_vm.MinedSystemEvents?.Any(e => e.EventId == 42) == true)
                     {
                         _vm.AiSummary = ResourceString.GetString("diag_ai_summary_crash")
                             ?? "AI Analysis: Event log corruption detected. Windows has auto-repaired the log file. This usually indicates a recent forced shutdown or power failure.";
@@ -566,21 +599,24 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         string template = ResourceString.GetString("diag_ai_summary_issues")
                             ?? "AI Analysis: Detected {0} minor system events and {1} hardware issues. Stability remains within normal tolerances.";
 
-                        _vm.AiSummary = string.Format(template, criticalCount, _vm.DetectedHardwareIssues.Count);
+                        _vm.AiSummary = string.Format(template, criticalCount, _vm.DetectedHardwareIssues?.Count ?? 0);
                     }
                     else
                     {
                         _vm.AiSummary = ResourceString.GetString("diag_ai_summary_nominal") ?? "AI Analysis: System telemetry is completely nominal.";
                     }
 
-                    _vm.CalculateStabilityTrend(_vm.MinedSystemEvents.ToList());
+                    _vm.CalculateStabilityTrend(_vm.MinedSystemEvents?.ToList() ?? new System.Collections.Generic.List<SystemEventItem>());
 
-                    _vm.ScanStatus = string.Format(ResourceString.GetString("diag_scan_complete") ?? "Scan complete. {0} issues | {1} events.", _vm.DetectedHardwareIssues.Count, _vm.MinedSystemEvents.Count);
+                    _vm.ScanStatus = string.Format(ResourceString.GetString("diag_scan_complete") ?? "Scan complete. {0} issues | {1} events.",
+                        _vm.DetectedHardwareIssues?.Count ?? 0,
+                        _vm.MinedSystemEvents?.Count ?? 0);
 
                     double.TryParse(_vm.StabilityScore?.Replace("%", ""), out double currentScore);
-                    int countForUI = _vm.MinedSystemEvents.Count(e => e.Level == 1 || e.Level == 2);
 
-                    bool hasCriticalAppCrash = _vm.MinedSystemEvents.Any(e => e.EventId == 9003);
+                    int countForUI = _vm.MinedSystemEvents?.Count(e => e.Level == 1 || e.Level == 2) ?? 0;
+
+                    bool hasCriticalAppCrash = _vm.MinedSystemEvents?.Any(e => e.EventId == 9003) == true;
 
                     if (isHardwareCritical || isStabilityCritical || hasCriticalAppCrash)
                     {
@@ -592,14 +628,14 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         }
                         else if (isHardwareCritical)
                         {
-                            _vm.ScannerText = string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", _vm.DetectedHardwareIssues.Count);
+                            _vm.ScannerText = string.Format(ResourceString.GetString("diag_status_critical_hw") ?? "CRITICAL. {0} HARDWARE FAULTS.", _vm.DetectedHardwareIssues?.Count ?? 0);
                         }
                         else
                         {
                             _vm.ScannerText = string.Format(ResourceString.GetString("diag_status_critical_sw") ?? "CRITICAL. HIGH SOFTWARE ERROR RATE ({0:0.#}/H).", errorsPerHour);
                         }
                     }
-                    else if (_vm.MinedSystemEvents.Any(e => e.EventId == 42))
+                    else if (_vm.MinedSystemEvents?.Any(e => e.EventId == 42) == true)
                     {
                         _vm.SystemHealthBrush = new SolidColorBrush(Colors.Gold);
                         _vm.ScannerText = ResourceString.GetString("diag_status_warning_crash")
