@@ -99,20 +99,20 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     finally { process.Dispose(); }
                 }
 
-                resolvedAnomalies.Add("Successfully trimmed dormant memory from active processes.");
+                //resolvedAnomalies.Add("Successfully trimmed dormant memory from active processes.");
 
                 ClearFileSystemCache(true, lowPriority: false);
-                resolvedAnomalies.Add("Flushed System File Cache and Standby Memory Lists.");
+                //resolvedAnomalies.Add("Flushed System File Cache and Standby Memory Lists.");
 
                 OptimizeCombinedPageList();
                 OptimizeModifiedPageList();
                 OptimizeModifiedFileCache();
                 OptimizeRegistryCache();
-                resolvedAnomalies.Add("Optimized OS Page Lists, Modified File Caches, and Registry Reconciliation.");
+                //resolvedAnomalies.Add("Optimized OS Page Lists, Modified File Caches, and Registry Reconciliation.");
 
                 if (FlushDnsCache())
                 {
-                    resolvedAnomalies.Add("Flushed DNS Resolver Cache and cleared ARP network tables.");
+                    //resolvedAnomalies.Add("Flushed DNS Resolver Cache and cleared ARP network tables.");
                 }
 
             }

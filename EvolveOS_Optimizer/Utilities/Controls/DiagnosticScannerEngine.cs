@@ -424,26 +424,34 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                     if (resolvedSystemAnomalies != null && resolvedSystemAnomalies.Count > 0)
                     {
-                        foreach (var resolutionMsg in resolvedSystemAnomalies)
+                        var activeResolutions = resolvedSystemAnomalies
+                            .Where(msg => msg.StartsWith("Terminated", StringComparison.OrdinalIgnoreCase) ||
+                                          msg.StartsWith("Throttled", StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+
+                        if (activeResolutions.Count > 0)
                         {
-                            var cpuAlert = _vm.CreateAlert(9004, neuralSource, string.Format(ResourceString.GetString("diag_alert_ai_resolved") ?? "AI RESOLVED: {0}", resolutionMsg));
-                            cpuAlert.Level = 2;
-                            cpuAlert.IsFixable = false;
-
-                            string fingerprint = $"9004|{neuralSource}|SECURE";
-                            if (!LocalMachineSettingsEngine.DismissedEventsList.Contains(fingerprint))
+                            foreach (var resolutionMsg in activeResolutions)
                             {
-                                _vm.MinedSystemEvents.Insert(0, cpuAlert);
+                                var cpuAlert = _vm.CreateAlert(9004, neuralSource, string.Format(ResourceString.GetString("diag_alert_ai_resolved") ?? "AI RESOLVED: {0}", resolutionMsg));
+                                cpuAlert.Level = 2;
+                                cpuAlert.IsFixable = false;
+
+                                string fingerprint = $"9004|{neuralSource}|SECURE";
+                                if (!LocalMachineSettingsEngine.DismissedEventsList.Contains(fingerprint))
+                                {
+                                    _vm.MinedSystemEvents.Insert(0, cpuAlert);
+                                }
                             }
+
+                            string notifTitle = ResourceString.GetString("diag_notif_ai_title") ?? "EvolveOS AI Optimizer";
+
+                            string notifMsg = activeResolutions.Count == 1
+                                ? activeResolutions[0]
+                                : string.Format(ResourceString.GetString("diag_notif_ai_multiple") ?? "Automatically resolved {0} background anomalies to free up CPU.", activeResolutions.Count);
+
+                            _vm.SendSystemNotification(1, notifTitle, notifMsg);
                         }
-
-                        string notifTitle = ResourceString.GetString("diag_notif_ai_title") ?? "EvolveOS AI Optimizer";
-
-                        string notifMsg = resolvedSystemAnomalies.Count == 1
-                            ? resolvedSystemAnomalies[0]
-                            : string.Format(ResourceString.GetString("diag_notif_ai_multiple") ?? "Automatically resolved {0} background anomalies to free up CPU.", resolvedSystemAnomalies.Count);
-
-                        _vm.SendSystemNotification(1, notifTitle, notifMsg);
                     }
 
                     float currentRam = _vm._ramCounter?.NextValue() ?? 0;
