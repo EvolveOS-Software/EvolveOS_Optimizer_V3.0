@@ -16,6 +16,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         private readonly ConcurrentDictionary<string, DateTime> _eventDebouncer = new();
         private readonly int _debounceSeconds = 5;
 
+        string? eventFingerprint;
+
         private readonly HashSet<int> _fixableEventIds = new()
         {
             1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -230,16 +232,25 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     return;
                 }
 
-                string eventFingerprint = eventId >= 9101
-                    ? $"{eventId}_{source}_SECURE"
-                    : $"{eventId}_{source}_{(record.TimeCreated?.Ticks ?? DateTime.Now.Ticks)}";
+                if (eventId >= 9101)
+                {
+                    eventFingerprint = $"{eventId}|{source}|SECURE";
+                }
+                else if (source.Contains("HttpEvent", StringComparison.OrdinalIgnoreCase) || eventId == 15300 || eventId == 15301)
+                {
+                    eventFingerprint = $"{eventId}|{source}|IGNORE_ALL";
+                }
+                else
+                {
+                    eventFingerprint = $"{eventId}|{source}|{(record.TimeCreated?.Ticks ?? DateTime.Now.Ticks)}";
+                }
 
                 if (LocalMachineSettingsEngine.DismissedEventsList.Contains(eventFingerprint))
                 {
                     return;
                 }
 
-                string eventHash = $"{eventId}_{source}";
+                string eventHash = $"{eventId}|{source}";
                 if (_eventDebouncer.TryGetValue(eventHash, out DateTime lastSeen))
                 {
                     if ((DateTime.Now - lastSeen).TotalSeconds < _debounceSeconds)

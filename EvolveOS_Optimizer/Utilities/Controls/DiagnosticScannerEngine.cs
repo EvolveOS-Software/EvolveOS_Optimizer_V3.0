@@ -390,7 +390,20 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                             continue;
                         }
 
-                        string eventFingerprint = $"{ev.EventId}_{ev.SourceName}_{ev.TimeCreated.Ticks}";
+                        string eventFingerprint;
+                        if (ev.EventId >= 9101)
+                        {
+                            eventFingerprint = $"{ev.EventId}|{ev.SourceName}|SECURE";
+                        }
+                        else if (!string.IsNullOrEmpty(ev.SourceName) && (ev.SourceName.Contains("HttpEvent", StringComparison.OrdinalIgnoreCase) || ev.EventId == 15300 || ev.EventId == 15301))
+                        {
+                            eventFingerprint = $"{ev.EventId}|{ev.SourceName}|IGNORE_ALL";
+                        }
+                        else
+                        {
+                            eventFingerprint = $"{ev.EventId}|{ev.SourceName}|{ev.TimeCreated.Ticks}";
+                        }
+
                         if (LocalMachineSettingsEngine.DismissedEventsList.Contains(eventFingerprint)) continue;
 
                         bool isNoisySource = !string.IsNullOrEmpty(ev.SourceName) &&
@@ -437,7 +450,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         var uiCrashAlert = _vm.CreateAlert(9003, neuralSource, ResourceString.GetString("diag_alert_dwm_crash")
                             ?? "CRITICAL: UI Rendering Engine crash detected in history. The .NET Native Cache requires a purge.");
 
-                        string fingerprint = $"9003_{neuralSource}_SECURE";
+                        string fingerprint = $"9003|{neuralSource}|SECURE";
                         if (!LocalMachineSettingsEngine.DismissedEventsList.Contains(fingerprint))
                         {
                             _vm.MinedSystemEvents.Insert(0, uiCrashAlert);
@@ -453,8 +466,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         alert.Level = level;
 
                         string fingerprint = alert.EventId >= 9101
-                            ? $"{alert.EventId}_{alert.SourceName}_SECURE"
-                            : $"{alert.EventId}_{alert.SourceName}_{alert.TimeCreated.Ticks}";
+                            ? $"{alert.EventId}|{alert.SourceName}|SECURE"
+                            : $"{alert.EventId}|{alert.SourceName}|{alert.TimeCreated.Ticks}";
 
                         if (!LocalMachineSettingsEngine.DismissedEventsList.Contains(fingerprint))
                         {

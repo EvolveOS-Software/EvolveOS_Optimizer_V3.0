@@ -1384,9 +1384,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             MinedSystemEvents.Remove(ev);
 
-            string eventFingerprint = ev.EventId >= 9101
-                ? $"{ev.EventId}_{ev.SourceName}_SECURE"
-                : $"{ev.EventId}_{ev.SourceName}_{ev.TimeCreated.Ticks}";
+            string eventFingerprint;
+
+            if (ev.EventId >= 9101)
+            {
+                eventFingerprint = $"{ev.EventId}|{ev.SourceName}|SECURE";
+            }
+            else if (ev.SourceName.Contains("HttpEvent", StringComparison.OrdinalIgnoreCase) || ev.EventId == 15300 || ev.EventId == 15301)
+            {
+                eventFingerprint = $"{ev.EventId}|{ev.SourceName}|IGNORE_ALL";
+            }
+            else
+            {
+                eventFingerprint = $"{ev.EventId}|{ev.SourceName}|{ev.TimeCreated.Ticks}";
+            }
 
             LocalMachineSettingsEngine.DismissedEventsList.Add(eventFingerprint);
             LocalMachineSettingsEngine.SaveDismissedEventsList();
@@ -1411,16 +1422,34 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 HistoryCards.Clear();
                 foreach (var hash in LocalMachineSettingsEngine.DismissedEventsList)
                 {
-                    var parts = hash.Split('_');
-                    if (parts.Length == 3)
+                    var parts = hash.Split('|');
+                    bool isOldFormat = false;
+
+                    if (parts.Length == 1)
+                    {
+                        parts = hash.Split('_');
+                        isOldFormat = true;
+                    }
+
+                    if (parts.Length >= 3)
                     {
                         string dateDisplay;
+                        string typeFlag = parts[parts.Length - 1];
+                        string eventId = parts[0];
 
-                        if (parts[2] == "SECURE")
+                        string sourceName = isOldFormat
+                            ? string.Join("_", parts.Skip(1).Take(parts.Length - 2))
+                            : parts[1];
+
+                        if (typeFlag == "SECURE")
                         {
                             dateDisplay = ResourceString.GetString("diag_history_system_state") ?? "Active Configuration";
                         }
-                        else if (long.TryParse(parts[2], out long ticks))
+                        else if (typeFlag == "IGNORE_ALL")
+                        {
+                            dateDisplay = ResourceString.GetString("diag_history_muted") ?? "All Occurrences Muted";
+                        }
+                        else if (long.TryParse(typeFlag, out long ticks))
                         {
                             dateDisplay = new DateTime(ticks).ToString("g");
                         }
@@ -1431,8 +1460,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                         HistoryCards.Add(new DismissedEventCard
                         {
-                            EventId = parts[0],
-                            SourceName = parts[1],
+                            EventId = eventId,
+                            SourceName = sourceName,
                             DateString = dateDisplay,
                             OriginalHash = hash
                         });
