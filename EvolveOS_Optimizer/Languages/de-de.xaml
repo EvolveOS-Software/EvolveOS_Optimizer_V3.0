@@ -2115,6 +2115,8 @@
     <sys:String x:Key="diag_history_card_msg">Ignorierte Systemereignisse, gemeldet von {0}.</sys:String>
     <sys:String x:Key="diag_history_card_full_msg">Historische Aufzeichnungen für {0} (ID: {1}). Erweitern, um alle ignorierten Zeitstempel anzuzeigen.</sys:String>
 
+    <sys:String x:Key="diag_tooltip_remove_occurrence">Diesen Eintrag dauerhaft entfernen</sys:String>
+
     <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>
     <sys:String x:Key="txt_later">Später</sys:String>
     

@@ -2107,6 +2107,8 @@
     <sys:String x:Key="diag_history_card_msg">Genegeerde systeemgebeurtenissen gerapporteerd door {0}.</sys:String>
     <sys:String x:Key="diag_history_card_full_msg">Historische records voor {0} (ID: {1}). Vouw uit om alle genegeerde tijdstempels te bekijken.</sys:String>
 
+    <sys:String x:Key="diag_tooltip_remove_occurrence">Deze vermelding permanent verwijderen</sys:String>
+
     <sys:String x:Key="txt_restart_now">Nu herstarten</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

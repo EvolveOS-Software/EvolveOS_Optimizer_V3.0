@@ -2,6 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace EvolveOS_Optimizer.Core.Model
 {
@@ -13,8 +15,9 @@ namespace EvolveOS_Optimizer.Core.Model
         public string OriginalHash { get; set; } = "";
     }
 
-    public class DismissedEventCard
+    public class DismissedEventCard : INotifyPropertyChanged
     {
+        public string OriginalHash { get; set; } = string.Empty;
         public string EventId { get; set; } = "";
         public string SourceName { get; set; } = "";
 
@@ -25,6 +28,25 @@ namespace EvolveOS_Optimizer.Core.Model
 
         public ObservableCollection<DismissedEventOccurrence> Occurrences { get; set; } = new ObservableCollection<DismissedEventOccurrence>();
 
-        public int OccurrenceCount => Occurrences.Count;
+        private string _occurrenceCount = string.Empty;
+        public string OccurrenceCount
+        {
+            get => _occurrenceCount;
+            set
+            {
+                if (_occurrenceCount != value)
+                {
+                    _occurrenceCount = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

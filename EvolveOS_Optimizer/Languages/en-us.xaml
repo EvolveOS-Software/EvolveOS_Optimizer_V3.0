@@ -2123,6 +2123,8 @@
     <sys:String x:Key="diag_event_latest">Latest: </sys:String>
     <sys:String x:Key="diag_history_card_msg">Dismissed system events reported by {0}.</sys:String>
     <sys:String x:Key="diag_history_card_full_msg">Historical records for {0} (ID: {1}). Expand to view all dismissed timestamps.</sys:String>
+    
+    <sys:String x:Key="diag_tooltip_remove_occurrence">Permanently remove this occurrence</sys:String>
 
     <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>

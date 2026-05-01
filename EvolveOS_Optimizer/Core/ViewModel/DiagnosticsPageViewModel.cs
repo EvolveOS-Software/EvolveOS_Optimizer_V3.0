@@ -1490,6 +1490,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         {
                             groupedEvents[groupKey] = new DismissedEventCard
                             {
+                                OriginalHash = groupKey,
                                 EventId = eventId,
                                 SourceName = sourceName,
                                 LatestDateString = dateDisplay,
@@ -1522,6 +1523,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         group.Occurrences.Add(occ);
                     }
 
+                    group.OccurrenceCount = group.Occurrences.Count.ToString();
+
                     HistoryCards.Add(group);
                 }
 
@@ -1549,15 +1552,32 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 ResourceString.GetString("diag_notify_restore_title") ?? "Event Restored",
                 string.Format(ResourceString.GetString("diag_notify_restore_msg") ?? "Event ID {0} will appear in your next scan.", card.EventId));
 
-            //Debug.WriteLine($"[RESTORE] Attempting to find Event {card.EventId} from {card.SourceName}...");
-
             await ExecuteFullScanAsync();
+        }
 
-            /*bool found = MinedSystemEvents.Any(e => e.EventId.ToString() == card.EventId);
-            if (!found)
+        [RelayCommand]
+        private void RemoveOccurrence(DismissedEventOccurrence occurrenceToRemove)
+        {
+            if (occurrenceToRemove == null) return;
+
+            var parentCard = HistoryCards.FirstOrDefault(c => c.Occurrences.Contains(occurrenceToRemove));
+
+            if (parentCard != null)
             {
-                Debug.WriteLine($"[RESTORE WARNING] Event {card.EventId} was not found in the fresh scan. It may have been purged by Windows or filtered by severity.");
-            }*/
+                parentCard.Occurrences.Remove(occurrenceToRemove);
+
+                parentCard.OccurrenceCount = parentCard.Occurrences.Count.ToString();
+
+                if (parentCard.Occurrences.Count == 0)
+                {
+                    HistoryCards.Remove(parentCard);
+
+                    HistoryEmptyStateVisibility = HistoryCards.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+                }
+
+                LocalMachineSettingsEngine.DismissedEventsList.Remove(occurrenceToRemove.OriginalHash);
+                LocalMachineSettingsEngine.SaveDismissedEventsList();
+            }
         }
         #endregion
 

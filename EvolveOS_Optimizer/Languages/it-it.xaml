@@ -2118,6 +2118,8 @@
     <sys:String x:Key="diag_history_card_msg">Eventi di sistema ignorati segnalati da {0}.</sys:String>
     <sys:String x:Key="diag_history_card_full_msg">Record storici per {0} (ID: {1}). Espandi per visualizzare tutti i timestamp ignorati.</sys:String>
 
+    <sys:String x:Key="diag_tooltip_remove_occurrence">Rimuovi definitivamente questa occorrenza</sys:String>
+
     <sys:String x:Key="txt_restart_now">Riavvia ora</sys:String>
     <sys:String x:Key="txt_later">Più tardi</sys:String>
 

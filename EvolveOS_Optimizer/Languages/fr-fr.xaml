@@ -2112,6 +2112,8 @@
     <sys:String x:Key="diag_history_card_msg">Événements système ignorés signalés par {0}.</sys:String>
     <sys:String x:Key="diag_history_card_full_msg">Enregistrements historiques pour {0} (ID : {1}). Développez pour afficher tous les horodatages ignorés.</sys:String>
 
+    <sys:String x:Key="diag_tooltip_remove_occurrence">Supprimer définitivement cette occurrence</sys:String>
+
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
     <sys:String x:Key="txt_later">Plus tard</sys:String>
 
