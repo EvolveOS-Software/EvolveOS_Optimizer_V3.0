@@ -1195,22 +1195,77 @@
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->
-    <sys:String x:Key="process_manager_page_total_processes">Totaal aantal processen</sys:String>
-    <sys:String x:Key="process_manager_page_total_memory">Totaal geheugengebruik</sys:String>
-    <sys:String x:Key="process_manager_page_total_threads">Totaal aantal threads</sys:String>
 
-    <sys:String x:Key="process_manager_page_name">Naam</sys:String>
-    <sys:String x:Key="process_manager_page_memory">Geheugen</sys:String>
-    <sys:String x:Key="process_manager_page_threads">Threads</sys:String>
-    <sys:String x:Key="process_manager_page_pid">PID</sys:String>
-    <sys:String x:Key="process_manager_page_actions">Acties</sys:String>
+    <!-- Process Manager: Summary Cards -->
+    <sys:String x:Key="process_manager_page_total_processes">Totaal Aantal Processen</sys:String>
+    <sys:String x:Key="process_manager_page_total_memory">Totaal Geheugen</sys:String>
+    <sys:String x:Key="process_manager_page_total_threads">Totaal Aantal Threads</sys:String>
 
+    <!-- Process Manager: Controls -->
     <sys:String x:Key="process_manager_page_start_monitor">Monitoring Hervatten</sys:String>
     <sys:String x:Key="process_manager_page_live_monitor">Live Monitoring</sys:String>
-    <sys:String x:Key="process_manager_page_end_task_tooltip">Proces beëindigen</sys:String>
-
-    <sys:String x:Key="process_manager_page_refresh">Vernieuwen</sys:String>
     <sys:String x:Key="process_manager_page_search_placeholder">Processen zoeken...</sys:String>
+
+    <!-- Process Manager: Table Headers -->
+    <sys:String x:Key="process_manager_page_name">Naam</sys:String>
+    <sys:String x:Key="process_manager_page_pid">PID</sys:String>
+    <sys:String x:Key="process_manager_page_memory">Geheugen</sys:String>
+    <sys:String x:Key="process_manager_page_threads">Threads</sys:String>
+    <sys:String x:Key="process_manager_page_priority">Prioriteit</sys:String>
+    <sys:String x:Key="process_manager_page_actions">Acties</sys:String>
+
+    <!-- Process Manager: Primary Actions -->
+    <sys:String x:Key="process_manager_page_end_task">Taak Beëindigen</sys:String>
+    <sys:String x:Key="process_manager_page_end_task_tooltip">Dit proces beëindigen</sys:String>
+
+    <!-- Process Manager: Memory Flyout -->
+    <sys:String x:Key="process_manager_page_memory_display_mode">Weergavemodus Geheugen</sys:String>
+    <sys:String x:Key="process_manager_page_memory_total">Totaal (Working Set)</sys:String>
+    <sys:String x:Key="process_manager_page_memory_private">Taakbeheer (Privé)</sys:String>
+
+    <!-- Process Manager: Advanced Context Menu (Optional Localization) -->
+    <sys:String x:Key="process_manager_page_suspend">Proces Onderbreken</sys:String>
+    <sys:String x:Key="process_manager_page_resume">Proces Hervatten</sys:String>
+    <sys:String x:Key="process_manager_page_set_priority">Prioriteit Instellen</sys:String>
+    <sys:String x:Key="process_manager_page_priority_high">Hoog</sys:String>
+    <sys:String x:Key="process_manager_page_priority_above_normal">Boven Normaal</sys:String>
+    <sys:String x:Key="process_manager_page_priority_normal">Normaal</sys:String>
+    <sys:String x:Key="process_manager_page_priority_low">Laag</sys:String>
+    <sys:String x:Key="process_manager_page_enable_eco">Efficiëntiemodus Inschakelen</sys:String>
+    <sys:String x:Key="process_manager_page_disable_eco">Efficiëntiemodus Uitschakelen</sys:String>
+
+    <!-- Process Manager: Categories -->
+    <sys:String x:Key="process_manager_page_group_apps">Apps</sys:String>
+    <sys:String x:Key="process_manager_page_group_background">Achtergrondprocessen</sys:String>
+    <sys:String x:Key="process_manager_page_group_windows">Windows-processen</sys:String>
+
+    <sys:String x:Key="process_manager_page_high_memory">Hoog brongebruik gedetecteerd (> 2GB RAM)</sys:String>
+
+    <!-- Process Manager: Notifications -->
+    <sys:String x:Key="process_manager_page_success_end_title">Proces Beëindigd</sys:String>
+    <sys:String x:Key="process_manager_page_success_end_msg">'{0}' is succesvol beëindigd.</sys:String>
+    <sys:String x:Key="process_manager_page_error_title">Fout</sys:String>
+    <sys:String x:Key="process_manager_page_error_end_msg">Kan proces niet beëindigen: {0}</sys:String>
+
+    <sys:String x:Key="process_manager_page_success_suspend_title">Proces Opgeschort</sys:String>
+    <sys:String x:Key="process_manager_page_success_suspend_msg">'{0}' is succesvol bevroren.</sys:String>
+    <sys:String x:Key="process_manager_page_success_resume_title">Proces Hervat</sys:String>
+    <sys:String x:Key="process_manager_page_success_resume_msg">'{0}' is succesvol hervat.</sys:String>
+
+    <sys:String x:Key="process_manager_page_success_priority_title">Prioriteit Gewijzigd</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_high_msg">'{0}' ingesteld op Hoge prioriteit.</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_abovenormal_msg">'{0}' ingesteld op Boven normale prioriteit.</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_normal_msg">'{0}' ingesteld op Normale prioriteit.</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_low_msg">'{0}' ingesteld op Lage prioriteit.</sys:String>
+
+    <sys:String x:Key="process_manager_page_success_eco_enabled_title">Efficiëntiemodus Ingeschakeld</sys:String>
+    <sys:String x:Key="process_manager_page_success_eco_enabled_msg">'{0}' staat nu in de EcoQoS-modus.</sys:String>
+    <sys:String x:Key="process_manager_page_success_eco_disabled_title">Efficiëntiemodus Uitgeschakeld</sys:String>
+    <sys:String x:Key="process_manager_page_success_eco_disabled_msg">'{0}' is hersteld naar standaardvermogen.</sys:String>
+
+    <sys:String x:Key="process_manager_page_error_access_denied_title">Toegang Geweigerd</sys:String>
+    <sys:String x:Key="process_manager_page_error_access_denied_msg">Kan proces niet wijzigen: {0}&#x0a;(Probeer uit te voeren als Administrator)</sys:String>
+
     <!-- endregion Process Manager Page -->
 
     <!-- Resource Helper -->

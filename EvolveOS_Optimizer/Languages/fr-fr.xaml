@@ -1200,22 +1200,77 @@
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->
-    <sys:String x:Key="process_manager_page_total_processes">Processus totaux</sys:String>
-    <sys:String x:Key="process_manager_page_total_memory">Mémoire totale</sys:String>
-    <sys:String x:Key="process_manager_page_total_threads">Threads totaux</sys:String>
 
+    <!-- Process Manager: Summary Cards -->
+    <sys:String x:Key="process_manager_page_total_processes">Nombre Total de Processus</sys:String>
+    <sys:String x:Key="process_manager_page_total_memory">Mémoire Totale</sys:String>
+    <sys:String x:Key="process_manager_page_total_threads">Nombre Total de Threads</sys:String>
+
+    <!-- Process Manager: Controls -->
+    <sys:String x:Key="process_manager_page_start_monitor">Reprendre la Surveillance</sys:String>
+    <sys:String x:Key="process_manager_page_live_monitor">Surveillance en Direct</sys:String>
+    <sys:String x:Key="process_manager_page_search_placeholder">Rechercher des processus...</sys:String>
+
+    <!-- Process Manager: Table Headers -->
     <sys:String x:Key="process_manager_page_name">Nom</sys:String>
+    <sys:String x:Key="process_manager_page_pid">PID</sys:String>
     <sys:String x:Key="process_manager_page_memory">Mémoire</sys:String>
     <sys:String x:Key="process_manager_page_threads">Threads</sys:String>
-    <sys:String x:Key="process_manager_page_pid">PID</sys:String>
+    <sys:String x:Key="process_manager_page_priority">Priorité</sys:String>
     <sys:String x:Key="process_manager_page_actions">Actions</sys:String>
 
-    <sys:String x:Key="process_manager_page_end_task">Fin de tâche</sys:String>
-    <sys:String x:Key="process_manager_page_end_task_tooltip">Arrêter le processus</sys:String>
+    <!-- Process Manager: Primary Actions -->
+    <sys:String x:Key="process_manager_page_end_task">Fin de Tâche</sys:String>
+    <sys:String x:Key="process_manager_page_end_task_tooltip">Terminer ce processus</sys:String>
 
-    <sys:String x:Key="process_manager_page_start_monitor">Reprendre la surveillance</sys:String>
-    <sys:String x:Key="process_manager_page_live_monitor">Surveillance en direct</sys:String>
-    <sys:String x:Key="process_manager_page_search_placeholder">Rechercher des processus...</sys:String>
+    <!-- Process Manager: Memory Flyout -->
+    <sys:String x:Key="process_manager_page_memory_display_mode">Mode d'Affichage de la Mémoire</sys:String>
+    <sys:String x:Key="process_manager_page_memory_total">Total (Jeu de travail)</sys:String>
+    <sys:String x:Key="process_manager_page_memory_private">Gestionnaire de Tâches (Privé)</sys:String>
+
+    <!-- Process Manager: Advanced Context Menu (Optional Localization) -->
+    <sys:String x:Key="process_manager_page_suspend">Suspendre le Processus</sys:String>
+    <sys:String x:Key="process_manager_page_resume">Reprendre le Processus</sys:String>
+    <sys:String x:Key="process_manager_page_set_priority">Définir la Priorité</sys:String>
+    <sys:String x:Key="process_manager_page_priority_high">Haute</sys:String>
+    <sys:String x:Key="process_manager_page_priority_above_normal">Supérieure à la Normale</sys:String>
+    <sys:String x:Key="process_manager_page_priority_normal">Normale</sys:String>
+    <sys:String x:Key="process_manager_page_priority_low">Basse</sys:String>
+    <sys:String x:Key="process_manager_page_enable_eco">Activer le Mode Efficacité</sys:String>
+    <sys:String x:Key="process_manager_page_disable_eco">Désactiver le Mode Efficacité</sys:String>
+
+    <!-- Process Manager: Categories -->
+    <sys:String x:Key="process_manager_page_group_apps">Applications</sys:String>
+    <sys:String x:Key="process_manager_page_group_background">Processus en arrière-plan</sys:String>
+    <sys:String x:Key="process_manager_page_group_windows">Processus Windows</sys:String>
+
+    <sys:String x:Key="process_manager_page_high_memory">Utilisation élevée des ressources détectée (> 2 Go de RAM)</sys:String>
+
+    <!-- Process Manager: Notifications -->
+    <sys:String x:Key="process_manager_page_success_end_title">Processus Terminé</sys:String>
+    <sys:String x:Key="process_manager_page_success_end_msg">'{0}' a été terminé avec succès.</sys:String>
+    <sys:String x:Key="process_manager_page_error_title">Erreur</sys:String>
+    <sys:String x:Key="process_manager_page_error_end_msg">Échec de l'arrêt du processus : {0}</sys:String>
+
+    <sys:String x:Key="process_manager_page_success_suspend_title">Processus Suspendu</sys:String>
+    <sys:String x:Key="process_manager_page_success_suspend_msg">'{0}' a été gelé avec succès.</sys:String>
+    <sys:String x:Key="process_manager_page_success_resume_title">Processus Repris</sys:String>
+    <sys:String x:Key="process_manager_page_success_resume_msg">'{0}' a été repris avec succès.</sys:String>
+
+    <sys:String x:Key="process_manager_page_success_priority_title">Priorité Modifiée</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_high_msg">'{0}' défini sur Priorité Haute.</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_abovenormal_msg">'{0}' défini sur Priorité Supérieure à la normale.</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_normal_msg">'{0}' défini sur Priorité Normale.</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_low_msg">'{0}' défini sur Priorité Basse.</sys:String>
+
+    <sys:String x:Key="process_manager_page_success_eco_enabled_title">Mode Efficacité Activé</sys:String>
+    <sys:String x:Key="process_manager_page_success_eco_enabled_msg">'{0}' est maintenant en mode EcoQoS.</sys:String>
+    <sys:String x:Key="process_manager_page_success_eco_disabled_title">Mode Efficacité Désactivé</sys:String>
+    <sys:String x:Key="process_manager_page_success_eco_disabled_msg">'{0}' a été restauré à l'alimentation standard.</sys:String>
+
+    <sys:String x:Key="process_manager_page_error_access_denied_title">Accès Refusé</sys:String>
+    <sys:String x:Key="process_manager_page_error_access_denied_msg">Échec de la modification du processus : {0}&#x0a;(Essayez d'exécuter en tant qu'administrateur)</sys:String>
+
     <!-- endregion Process Manager Page -->
 
     <!-- Resource Helper -->

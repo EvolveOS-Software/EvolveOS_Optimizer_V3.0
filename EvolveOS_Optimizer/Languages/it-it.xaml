@@ -1205,24 +1205,79 @@
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->
-    <sys:String x:Key="process_manager_page_total_processes">Processi totali</sys:String>
-    <sys:String x:Key="process_manager_page_total_memory">Memoria totale</sys:String>
-    <sys:String x:Key="process_manager_page_total_threads">Thread totali</sys:String>
 
+    <!-- Process Manager: Summary Cards -->
+    <sys:String x:Key="process_manager_page_total_processes">Processi Totali</sys:String>
+    <sys:String x:Key="process_manager_page_total_memory">Memoria Totale</sys:String>
+    <sys:String x:Key="process_manager_page_total_threads">Thread Totali</sys:String>
+
+    <!-- Process Manager: Controls -->
+    <sys:String x:Key="process_manager_page_start_monitor">Riprendi Monitoraggio</sys:String>
+    <sys:String x:Key="process_manager_page_live_monitor">Monitoraggio in Tempo Reale</sys:String>
+    <sys:String x:Key="process_manager_page_search_placeholder">Cerca processi...</sys:String>
+
+    <!-- Process Manager: Table Headers -->
     <sys:String x:Key="process_manager_page_name">Nome</sys:String>
+    <sys:String x:Key="process_manager_page_pid">PID</sys:String>
     <sys:String x:Key="process_manager_page_memory">Memoria</sys:String>
     <sys:String x:Key="process_manager_page_threads">Thread</sys:String>
-    <sys:String x:Key="process_manager_page_pid">PID</sys:String>
+    <sys:String x:Key="process_manager_page_priority">Priorità</sys:String>
     <sys:String x:Key="process_manager_page_actions">Azioni</sys:String>
 
+    <!-- Process Manager: Primary Actions -->
     <sys:String x:Key="process_manager_page_end_task">Termina Attività</sys:String>
-    <sys:String x:Key="process_manager_page_end_task_tooltip">Termina Attività</sys:String>
+    <sys:String x:Key="process_manager_page_end_task_tooltip">Termina questo processo</sys:String>
 
-    <sys:String x:Key="process_manager_page_start_monitor">Riprendi monitoraggio</sys:String>
-    <sys:String x:Key="process_manager_page_live_monitor">Monitoraggio live</sys:String>
-    <sys:String x:Key="process_manager_page_search_placeholder">Cerca processi...</sys:String>
+    <!-- Process Manager: Memory Flyout -->
+    <sys:String x:Key="process_manager_page_memory_display_mode">Modalità di Visualizzazione Memoria</sys:String>
+    <sys:String x:Key="process_manager_page_memory_total">Totale (Working Set)</sys:String>
+    <sys:String x:Key="process_manager_page_memory_private">Gestione Attività (Privato)</sys:String>
+
+    <!-- Process Manager: Advanced Context Menu (Optional Localization) -->
+    <sys:String x:Key="process_manager_page_suspend">Sospendi Processo</sys:String>
+    <sys:String x:Key="process_manager_page_resume">Riprendi Processo</sys:String>
+    <sys:String x:Key="process_manager_page_set_priority">Imposta Priorità</sys:String>
+    <sys:String x:Key="process_manager_page_priority_high">Alta</sys:String>
+    <sys:String x:Key="process_manager_page_priority_above_normal">Superiore al Normale</sys:String>
+    <sys:String x:Key="process_manager_page_priority_normal">Normale</sys:String>
+    <sys:String x:Key="process_manager_page_priority_low">Bassa</sys:String>
+    <sys:String x:Key="process_manager_page_enable_eco">Abilita Modalità Efficienza</sys:String>
+    <sys:String x:Key="process_manager_page_disable_eco">Disabilita Modalità Efficienza</sys:String>
+
+    <!-- Process Manager: Categories -->
+    <sys:String x:Key="process_manager_page_group_apps">App</sys:String>
+    <sys:String x:Key="process_manager_page_group_background">Processi in background</sys:String>
+    <sys:String x:Key="process_manager_page_group_windows">Processi di Windows</sys:String>
+
+    <sys:String x:Key="process_manager_page_high_memory">Rilevato un elevato utilizzo delle risorse (> 2GB RAM)</sys:String>
+
+    <!-- Process Manager: Notifications -->
+    <sys:String x:Key="process_manager_page_success_end_title">Processo Terminato</sys:String>
+    <sys:String x:Key="process_manager_page_success_end_msg">'{0}' è stato terminato con successo.</sys:String>
+    <sys:String x:Key="process_manager_page_error_title">Errore</sys:String>
+    <sys:String x:Key="process_manager_page_error_end_msg">Impossibile terminare il processo: {0}</sys:String>
+
+    <sys:String x:Key="process_manager_page_success_suspend_title">Processo Sospeso</sys:String>
+    <sys:String x:Key="process_manager_page_success_suspend_msg">'{0}' è stato bloccato con successo.</sys:String>
+    <sys:String x:Key="process_manager_page_success_resume_title">Processo Ripreso</sys:String>
+    <sys:String x:Key="process_manager_page_success_resume_msg">'{0}' è stato ripreso con successo.</sys:String>
+
+    <sys:String x:Key="process_manager_page_success_priority_title">Priorità Modificata</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_high_msg">'{0}' impostato su Priorità Alta.</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_abovenormal_msg">'{0}' impostato su Priorità Superiore al normale.</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_normal_msg">'{0}' impostato su Priorità Normale.</sys:String>
+    <sys:String x:Key="process_manager_page_success_priority_low_msg">'{0}' impostato su Priorità Bassa.</sys:String>
+
+    <sys:String x:Key="process_manager_page_success_eco_enabled_title">Modalità Efficienza Abilitata</sys:String>
+    <sys:String x:Key="process_manager_page_success_eco_enabled_msg">'{0}' è ora in modalità EcoQoS.</sys:String>
+    <sys:String x:Key="process_manager_page_success_eco_disabled_title">Modalità Efficienza Disabilitata</sys:String>
+    <sys:String x:Key="process_manager_page_success_eco_disabled_msg">'{0}' è stato ripristinato all'alimentazione standard.</sys:String>
+
+    <sys:String x:Key="process_manager_page_error_access_denied_title">Accesso Negato</sys:String>
+    <sys:String x:Key="process_manager_page_error_access_denied_msg">Impossibile modificare il processo: {0}&#x0a;(Prova a eseguire come Amministratore)</sys:String>
+
     <!-- endregion Process Manager Page -->
-
+    
     <!-- Resource Helper -->
     <sys:String x:Key="unit_B">B</sys:String>
     <sys:String x:Key="unit_KB">KB</sys:String>

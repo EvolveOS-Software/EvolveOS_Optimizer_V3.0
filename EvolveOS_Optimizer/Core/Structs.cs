@@ -159,6 +159,22 @@ namespace EvolveOS_Optimizer.Core
                     AvailExtendedVirtual = 0;
                 }
             }
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct PROCESS_MEMORY_COUNTERS_EX
+            {
+                public uint cb;
+                public uint PageFaultCount;
+                public UIntPtr PeakWorkingSetSize;
+                public UIntPtr WorkingSetSize;
+                public UIntPtr QuotaPeakPagedPoolUsage;
+                public UIntPtr QuotaPagedPoolUsage;
+                public UIntPtr QuotaPeakNonPagedPoolUsage;
+                public UIntPtr QuotaNonPagedPoolUsage;
+                public UIntPtr PagefileUsage;
+                public UIntPtr PeakPagefileUsage;
+                public UIntPtr PrivateUsage;
+            }
             #endregion
 
             #region Cache Information Structs

@@ -4,6 +4,7 @@ using System.Security;
 using System.Text;
 using EvolveOS_Optimizer.Core;
 using Microsoft.Win32.SafeHandles;
+using static EvolveOS_Optimizer.Core.Structs.Windows;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -343,6 +344,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         [System.Runtime.InteropServices.DllImport("User32.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
         public static extern uint GetDpiForWindow(IntPtr hwnd);
+
+        [DllImport("psapi.dll", SetLastError = true)]
+        public static extern bool GetProcessMemoryInfo(IntPtr hProcess, out PROCESS_MEMORY_COUNTERS_EX counters, uint size);
 
         #endregion
 
