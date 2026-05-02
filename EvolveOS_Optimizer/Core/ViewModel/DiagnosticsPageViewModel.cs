@@ -1614,22 +1614,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 IsQuickScanRunning = true;
 
-                await Task.Run(() =>
-                {
-                    var process = new Process
-                    {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            FileName = "powershell.exe",
-                            Arguments = "-NoProfile -ExecutionPolicy Bypass -Command \"Start-MpScan -ScanType QuickScan\"",
-                            UseShellExecute = true,
-                            CreateNoWindow = false,
-                            WindowStyle = ProcessWindowStyle.Hidden
-                        }
-                    };
-                    process.Start();
-                    process.WaitForExit();
-                }).ConfigureAwait(true);
+                string command = "Start-MpScan -ScanType QuickScan";
+                await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
 
                 SendSystemNotification(1, ResourceString.GetString("SecurityPage_QuickScanTitle") ?? "Quick Scan", ResourceString.GetString("SecurityPage_QuickScanCompleted") ?? "Scan completed.");
 
@@ -1652,24 +1638,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                await Task.Run(() =>
-                {
-                    var process = new Process
-                    {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            FileName = "powershell.exe",
-                            Arguments = "-NoProfile -ExecutionPolicy Bypass -Command \"Update-MpSignature\"",
-                            UseShellExecute = true,
-                            CreateNoWindow = false,
-                            WindowStyle = ProcessWindowStyle.Hidden
-                        }
-                    };
-                    process.Start();
-                    process.WaitForExit();
-                }).ConfigureAwait(true);
+                string command = "Update-MpSignature";
+                await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
 
-                SendSystemNotification(1, ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle") ?? "Security Intelligence", ResourceString.GetString("SecurityPage_DefinitionsUpdated") ?? "Definitions updated successfully.");
+                SendSystemNotification(1,
+                    ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle") ?? "Security Intelligence",
+                    ResourceString.GetString("SecurityPage_DefinitionsUpdated") ?? "Definitions updated successfully.");
 
                 await Task.Delay(2000);
                 await CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
@@ -1677,7 +1651,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             catch (Exception ex)
             {
                 ErrorLogging.LogDebug(ex);
-                SendSystemNotification(3, ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle") ?? "Security Intelligence", ResourceString.GetString("SecurityPage_DefinitionsUpdateFailed") ?? "Update failed.");
+                SendSystemNotification(3,
+                    ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle") ?? "Security Intelligence",
+                    ResourceString.GetString("SecurityPage_DefinitionsUpdateFailed") ?? "Update failed.");
             }
         }
 
