@@ -552,6 +552,40 @@
     <sys:String x:Key="GroupPolicyPage_RestartExplorerContent">Alcune modifiche ai criteri richiedono il riavvio di Esplora risorse (Windows Explorer) per avere effetto. Vuoi riavviare Esplora risorse ora?</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Rimuovi Tutte le Sovrascritture Criteri</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Rimuovi Criteri Selezionati</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RecommendedPresetsHeader">Preimpostazioni Consigliate</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyTitle">Privacy Assoluta</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyDesc">Disabilita Telemetria, Ricerca Web e Cortana tramite GPO.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacySuccess">Privacy Assoluta è stata applicata con successo.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetGamingTitle">Profilo Gamer</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingDesc">Disabilita gli aggiornamenti in background e Xbox GameDVR.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingSuccess">Profilo Gamer è stato applicato con successo.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetApplyingMsg">Applicazione di {0} e aggiornamento di Criteri di gruppo...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_UpdatingPoliciesMsg">Aggiornamento delle policy di Windows (gpupdate /force)...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_SearchPlaceholder">Cerca policy configurate...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ExportButton">Esporta in .reg</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedTitle">Esportazione Non Riuscita</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedMsg">Non ci sono policy configurate da salvare.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessTitle">Esportazione Riuscita</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessMsg">È stato eseguito il backup delle policy configurate.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorTitle">Errore di Esportazione</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorMsg">Impossibile creare il backup del registro.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RawRegHeader">Configurazione Grezza del Registro:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegPath">Percorso:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegValueName">Nome Valore:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegSystemValue">Valore di Sistema:</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ScanningPolicies">Scansione di oltre 3000 criteri del sistema operativo ADMX...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} override attivi su un totale di {1} criteri del sistema operativo.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanError">Errore durante la scansione dei criteri ADMX.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Rimuovi override del criterio</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->

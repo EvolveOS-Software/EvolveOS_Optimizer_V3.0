@@ -548,6 +548,40 @@
     <sys:String x:Key="GroupPolicyPage_RestartExplorerContent">Einige Richtlinienänderungen erfordern einen Neustart des Windows Explorers, um wirksam zu werden. Möchten Sie den Explorer jetzt neustarten?</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Alle Richtlinienüberschreibungen entfernen</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Ausgewählte Richtlinien entfernen</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RecommendedPresetsHeader">Empfohlene Voreinstellungen</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyTitle">Ultimative Privatsphäre</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyDesc">Deaktiviert Telemetrie, Websuche und Cortana über GPO.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacySuccess">Ultimative Privatsphäre wurde erfolgreich angewendet.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetGamingTitle">Gamer-Profil</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingDesc">Deaktiviert Hintergrund-Updates und Xbox GameDVR.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingSuccess">Gamer-Profil wurde erfolgreich angewendet.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetApplyingMsg">Wende {0} an und aktualisiere Gruppenrichtlinien...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_UpdatingPoliciesMsg">Aktualisiere Windows-Richtlinien (gpupdate /force)...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_SearchPlaceholder">Konfigurierte Richtlinien suchen...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ExportButton">Nach .reg exportieren</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedTitle">Export Fehlgeschlagen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedMsg">Es gibt keine konfigurierten Richtlinien zum Sichern.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessTitle">Export Erfolgreich</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessMsg">Ihre konfigurierten Richtlinien wurden gesichert.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorTitle">Export Fehler</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorMsg">Registrierungssicherung konnte nicht erstellt werden.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RawRegHeader">Rohe Registrierungskonfiguration:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegPath">Pfad:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegValueName">Wertname:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegSystemValue">Systemwert:</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ScanningPolicies">Scanne über 3000 ADMX-Betriebssystemrichtlinien...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} aktive Überschreibungen von insgesamt {1} OS-Richtlinien.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanError">Fehler beim Scannen der ADMX-Richtlinien.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Richtlinienüberschreibung entfernen</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->

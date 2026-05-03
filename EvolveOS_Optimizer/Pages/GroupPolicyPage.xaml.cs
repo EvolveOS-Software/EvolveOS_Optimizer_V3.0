@@ -1,4 +1,9 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
+using System.Text;
 using System.Threading;
+using Microsoft.Win32;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel.Items;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -13,11 +18,16 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
     private IReadOnlyList<GroupPolicyHelper.PolicyState>? _policyStates;
     private string? _pendingScrollTarget;
 
-    public List<PolicyStateViewModel> ConfiguredPolicies => _policyStates?
-        .Where(s => s.IsConfigured)
+    private string _searchQuery = "";
+
+    public List<PolicyStateViewModel> DisplayedPolicies => _policyStates?
+        .Where(s => string.IsNullOrWhiteSpace(_searchQuery) ||
+                    s.Policy.Name.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    s.Policy.Category.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase))
+        .OrderByDescending(s => s.IsConfigured)
+        .ThenBy(s => s.Policy.Category)
+        .ThenBy(s => s.Policy.Name)
         .Select(s => new PolicyStateViewModel(s))
-        .OrderBy(p => p.Policy.Category)
-        .ThenBy(p => p.Policy.Name)
         .ToList() ?? new List<PolicyStateViewModel>();
 
     public GroupPolicyPage()
@@ -26,11 +36,11 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
 
         ErrorLogging.LogDebug(new Exception(ResourceString.GetString("Initializing GroupPolicyPage")));
 
-        //NavigationCacheMode = NavigationCacheMode.Required;
         Loaded += GroupPolicyPage_Loaded;
         Unloaded += GroupPolicyPage_Unloaded;
     }
 
+    #region Page Lifecycle & Navigation
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
@@ -58,12 +68,14 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
     {
         Purge();
     }
+    #endregion
 
     private void ConfiguredPoliciesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         RemoveSelectedButton.IsEnabled = ConfiguredPoliciesListView.SelectedItems.Count > 0;
     }
 
+    #region Core Scanning Engine
     private async Task ScanPoliciesAsync()
     {
         if (_cancellationTokenSource != null)
@@ -77,18 +89,29 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
         }
 
         _cancellationTokenSource = new CancellationTokenSource();
-
         var token = _cancellationTokenSource.Token;
 
         try
         {
             ScanProgressRing.Visibility = Visibility.Visible;
             ScanProgressRing.IsActive = true;
-            SummaryText.Text = ResourceString.GetString("GroupPolicyPage_ScanningPolicies");
+            SummaryText.Text = ResourceString.GetString("GroupPolicyPage_ScanningPolicies") ?? "Scanning 3000+ ADMX OS Policies...";
             RefreshButton.IsEnabled = false;
             RemoveAllButton.IsEnabled = false;
 
-            _policyStates = await GroupPolicyHelper.DetectPolicyStatesAsync(token);
+            var admxMap = await AdmxEngine.LoadAllLocalPoliciesAsync(token);
+
+            var dynamicStates = new List<GroupPolicyHelper.PolicyState>();
+            await Task.Run(() =>
+            {
+                foreach (var pol in admxMap)
+                {
+                    if (token.IsCancellationRequested) break;
+                    dynamicStates.Add(DetectStateLocally(pol));
+                }
+            }, token);
+
+            _policyStates = dynamicStates;
 
             DispatcherQueue.TryEnqueue(() =>
             {
@@ -96,7 +119,7 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
 
                 UpdateSummary();
                 UpdateCategorySummary();
-                UpdateConfiguredPoliciesList();
+                UpdateDisplayedPoliciesList();
             });
         }
         catch (OperationCanceledException) { }
@@ -107,7 +130,7 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             DispatcherQueue.TryEnqueue(() =>
             {
                 if (this.XamlRoot != null && !token.IsCancellationRequested)
-                    SummaryText.Text = ResourceString.GetString("GroupPolicyPage_ScanError");
+                    SummaryText.Text = ResourceString.GetString("GroupPolicyPage_ScanError") ?? "Error scanning ADMX policies.";
             });
         }
         finally
@@ -124,33 +147,49 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
         }
     }
 
+    private GroupPolicyHelper.PolicyState DetectStateLocally(GroupPolicyHelper.PolicyEntry policy)
+    {
+        try
+        {
+            using var baseKey = RegistryKey.OpenBaseKey(policy.Hive, Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Default);
+            using var subKey = baseKey.OpenSubKey(policy.RegistryPath, writable: false);
+
+            if (subKey == null)
+                return new GroupPolicyHelper.PolicyState { Policy = policy, IsConfigured = false };
+
+            var val = subKey.GetValue(policy.ValueName);
+
+            return new GroupPolicyHelper.PolicyState
+            {
+                Policy = policy,
+                IsConfigured = val != null,
+                CurrentValue = val,
+                ActualValueKind = val != null ? subKey.GetValueKind(policy.ValueName) : null
+            };
+        }
+        catch
+        {
+            return new GroupPolicyHelper.PolicyState { Policy = policy, IsConfigured = false };
+        }
+    }
+    #endregion
+
+    #region UI Update Helpers
     private void UpdateSummary()
     {
-        if (_policyStates == null)
-            return;
+        if (_policyStates == null) return;
 
         var configuredCount = _policyStates.Count(s => s.IsConfigured);
         var totalCount = _policyStates.Count;
 
-        if (configuredCount == 0)
-        {
-            SummaryText.Text = ResourceString.GetString("GroupPolicyPage_NoPoliciesDetected");
-            RemoveAllButton.IsEnabled = false;
-        }
-        else
-        {
-            SummaryText.Text = string.Format(
-                ResourceString.GetString("GroupPolicyPage_ConfiguredPoliciesCount"),
-                configuredCount,
-                totalCount);
-            RemoveAllButton.IsEnabled = true;
-        }
+        string format = ResourceString.GetString("GroupPolicyPage_ConfiguredPoliciesCount") ?? "{0} active overrides out of {1} total OS policies.";
+        SummaryText.Text = string.Format(format, configuredCount, totalCount);
+        RemoveAllButton.IsEnabled = configuredCount > 0;
     }
 
     private void UpdateCategorySummary()
     {
-        if (_policyStates == null)
-            return;
+        if (_policyStates == null) return;
 
         var categoryGroups = _policyStates
             .GroupBy(s => s.Policy.Category)
@@ -168,12 +207,11 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
         CategorySummaryRepeater.ItemsSource = categoryGroups;
     }
 
-    private void UpdateConfiguredPoliciesList()
+    private void UpdateDisplayedPoliciesList()
     {
-        if (_policyStates == null)
-            return;
+        if (_policyStates == null) return;
 
-        var policies = ConfiguredPolicies;
+        var policies = DisplayedPolicies;
 
         if (policies.Count == 0)
         {
@@ -185,7 +223,6 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
         {
             ConfiguredPoliciesListView.Visibility = Visibility.Visible;
             NoPoliciesPanel.Visibility = Visibility.Collapsed;
-
             ConfiguredPoliciesListView.ItemsSource = policies;
         }
     }
@@ -194,37 +231,185 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
     {
         return category switch
         {
-            "Windows Update" => "\uE777",
-            "Privacy & Telemetry" => "\uE72E",
-            "Cortana & Search" => "\uE721",
-            "Windows Store" => "\uE719",
-            "OneDrive" => "\uE753",
-            "Security" => "\uE72E",
-            "Error Reporting" => "\uE783",
-            "System Restore" => "\uE777",
-            "Windows Insider" => "\uF1AD",
-            "Input & Privacy" => "\uE765",
-            "App Privacy" => "\uE71D",
-            "Windows Ink" => "\uE929",
-            "Biometrics" => "\uE928",
-            "Location" => "\uE81D",
-            "Find My Device" => "\uE707",
-            "Messaging" => "\uE715",
-            "Clipboard" => "\uE77F",
-            "Speech" => "\uE720",
-            "Activity History" => "\uE823",
-            "Gaming" => "\uE7FC",
-            "Widgets & Feeds" => "\uE71B",
-            "Copilot" => "\uE946",
-            "Windows Recall" => "\uE946",
-            "Microsoft Edge" => "\uE774",
-            "File History" => "\uE8F1",
+            "WindowsUpdate" => "\uE777",
+            "Privacy" => "\uE72E",
             "Search" => "\uE721",
-            "Start Menu" => "\uE80F",
+            "WindowsStore" => "\uE719",
+            "OneDrive" => "\uE753",
+            "WindowsDefenderSecurityCenter" => "\uE72E",
+            "WindowsDefender" => "\uE72E",
+            "ErrorReporting" => "\uE783",
+            "SystemRestore" => "\uE777",
+            "WindowsAnytimeUpgrade" => "\uF1AD",
+            "AppPrivacy" => "\uE71D",
+            "WindowsInkWorkspace" => "\uE929",
+            "Biometrics" => "\uE928",
+            "LocationProvider" => "\uE81D",
+            "FindMyDevice" => "\uE707",
+            "Messaging" => "\uE715",
+            "OSCV" => "\uE77F",
+            "Speech" => "\uE720",
+            "GameDVR" => "\uE7FC",
+            "NewsAndInterests" => "\uE71B",
+            "WindowsAI" => "\uE946",
+            "MicrosoftEdge" => "\uE774",
+            "FileHistory" => "\uE8F1",
+            "StartMenu" => "\uE80F",
+            "ControlPanelDisplay" => "\uE713",
+            "Desktop" => "\uE7F4",
+            "Taskbar" => "\uE80F",
             _ => "\uE713"
         };
     }
+    #endregion
 
+    #region Real-Time Search
+    private void PolicySearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+    {
+        if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+        {
+            _searchQuery = sender.Text;
+            UpdateDisplayedPoliciesList();
+        }
+    }
+    #endregion
+
+    #region Backup & Export to .reg
+    private async void ExportBackupButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_policyStates == null) return;
+        var configured = _policyStates.Where(s => s.IsConfigured).ToList();
+
+        if (configured.Count == 0)
+        {
+            App.ShowNotification(
+                ResourceString.GetString("GroupPolicyPage_ExportFailedTitle"),
+                ResourceString.GetString("GroupPolicyPage_ExportFailedMsg"),
+                InfoBarSeverity.Warning, 3000);
+            return;
+        }
+
+        try
+        {
+            var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+
+            savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+            savePicker.FileTypeChoices.Add("Registry File", new List<string>() { ".reg" });
+            savePicker.SuggestedFileName = "EvolveOS_Policy_Backup";
+
+            var file = await savePicker.PickSaveFileAsync();
+            if (file != null)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Windows Registry Editor Version 5.00");
+                sb.AppendLine();
+
+                var grouped = configured.GroupBy(s => s.Policy.Hive + "\\" + s.Policy.RegistryPath);
+
+                foreach (var group in grouped)
+                {
+                    string hiveName = group.Key.StartsWith("HKLM") ? "HKEY_LOCAL_MACHINE" : "HKEY_CURRENT_USER";
+                    string cleanPath = group.Key.Substring(group.Key.IndexOf('\\') + 1);
+
+                    sb.AppendLine($"[{hiveName}\\{cleanPath}]");
+
+                    var regHive = hiveName == "HKEY_LOCAL_MACHINE" ? Registry.LocalMachine : Registry.CurrentUser;
+                    using var key = regHive.OpenSubKey(cleanPath);
+
+                    foreach (var pol in group)
+                    {
+                        if (key != null)
+                        {
+                            object? val = key.GetValue(pol.Policy.ValueName);
+                            RegistryValueKind kind = key.GetValueKind(pol.Policy.ValueName);
+
+                            if (val != null)
+                            {
+                                if (kind == RegistryValueKind.DWord)
+                                    sb.AppendLine($"\"{pol.Policy.ValueName}\"=dword:{((int)val):x8}");
+                                else if (kind == RegistryValueKind.String)
+                                    sb.AppendLine($"\"{pol.Policy.ValueName}\"=\"{val}\"");
+                            }
+                        }
+                    }
+                    sb.AppendLine();
+                }
+
+                await Windows.Storage.FileIO.WriteTextAsync(file, sb.ToString());
+                App.ShowNotification(
+                    ResourceString.GetString("GroupPolicyPage_ExportSuccessTitle"),
+                    ResourceString.GetString("GroupPolicyPage_ExportSuccessMsg"),
+                    InfoBarSeverity.Success, 4000);
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+            App.ShowNotification(
+                ResourceString.GetString("GroupPolicyPage_ExportErrorTitle"),
+                ResourceString.GetString("GroupPolicyPage_ExportErrorMsg"),
+                InfoBarSeverity.Error, 4000);
+        }
+    }
+    #endregion
+
+    #region One-Click Optimizer Presets
+    private async void ApplyPrivacyPresetButton_Click(object sender, RoutedEventArgs e)
+    {
+        var script = @"
+        reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection"" /v AllowTelemetry /t REG_DWORD /d 0 /f
+        reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search"" /v AllowCortana /t REG_DWORD /d 0 /f
+        reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search"" /v DisableWebSearch /t REG_DWORD /d 1 /f
+        ";
+
+        string presetName = ResourceString.GetString("GroupPolicyPage_PresetPrivacyTitle") ?? "Ultimate Privacy";
+        string successMsg = ResourceString.GetString("GroupPolicyPage_PresetPrivacySuccess") ?? "Ultimate Privacy has been applied successfully.";
+
+        await ApplyPresetAsync(presetName, script, successMsg);
+    }
+
+    private async void ApplyGamingPresetButton_Click(object sender, RoutedEventArgs e)
+    {
+        var script = @"
+        reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR"" /v AllowGameDVR /t REG_DWORD /d 0 /f
+        reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU"" /v NoAutoUpdate /t REG_DWORD /d 1 /f
+        ";
+
+        string presetName = ResourceString.GetString("GroupPolicyPage_PresetGamingTitle") ?? "Gamers Profile";
+        string successMsg = ResourceString.GetString("GroupPolicyPage_PresetGamingSuccess") ?? "Gamers Profile has been applied successfully.";
+
+        await ApplyPresetAsync(presetName, script, successMsg);
+    }
+
+    private async Task ApplyPresetAsync(string presetName, string cmdScript, string successMessage)
+    {
+        try
+        {
+            ScanProgressRing.Visibility = Visibility.Visible;
+            ScanProgressRing.IsActive = true;
+
+            string format = ResourceString.GetString("GroupPolicyPage_PresetApplyingMsg") ?? "Applying {0} and updating Group Policy...";
+            SummaryText.Text = string.Format(format, presetName);
+
+            RefreshButton.IsEnabled = false;
+            RemoveAllButton.IsEnabled = false;
+
+            await CommandExecutor.RunCommandAsTrustedInstaller(cmdScript, isPowerShell: false);
+            await CommandExecutor.InvokeRunCommand("gpupdate /force", isPowerShell: false);
+
+            await ScanPoliciesAsync();
+            App.ShowNotification(presetName, successMessage, InfoBarSeverity.Success, 3000);
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug(ex);
+        }
+    }
+    #endregion
+
+    #region Removal & Refresh Logic
     private async void RefreshButton_Click(object sender, RoutedEventArgs e)
     {
         await ScanPoliciesAsync();
@@ -232,12 +417,10 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
 
     private async void RemoveAllButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_policyStates == null)
-            return;
+        if (_policyStates == null) return;
 
         var configuredPolicies = _policyStates.Where(s => s.IsConfigured).ToList();
-        if (configuredPolicies.Count == 0)
-            return;
+        if (configuredPolicies.Count == 0) return;
 
         var dialog = new ContentDialog
         {
@@ -245,35 +428,25 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
             BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentAAFillColorDefaultBrush"],
             Title = ResourceString.GetString("GroupPolicyPage_ConfirmRemoveAllTitle"),
-            Content = string.Format(
-                ResourceString.GetString("GroupPolicyPage_ConfirmRemoveAllContent"),
-                configuredPolicies.Count),
-            PrimaryButtonText = ResourceString.GetString("GroupPolicyPage_Remove"),
+            Content = string.Format(ResourceString.GetString("GroupPolicyPage_ConfirmRemoveAllContent") ?? "Remove {0} policies?", configuredPolicies.Count),
+            PrimaryButtonText = ResourceString.GetString("GroupPolicyPage_Remove") ?? "Remove",
             PrimaryButtonStyle = (Style)Application.Current.Resources["AccentButtonStyle"],
-            CloseButtonText = ResourceString.GetString("Cancel")
+            CloseButtonText = ResourceString.GetString("Cancel") ?? "Cancel"
         };
 
         var result = await dialog.ShowAsync();
-        if (result != ContentDialogResult.Primary)
-            return;
+        if (result != ContentDialogResult.Primary) return;
 
         await RemovePoliciesAsync(configuredPolicies.Select(s => s.Policy));
     }
 
     private async void CategoryRemoveButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is not Button button || button.Tag is not string category)
-            return;
+        if (sender is not Button button || button.Tag is not string category) return;
+        if (_policyStates == null) return;
 
-        if (_policyStates == null)
-            return;
-
-        var categoryPolicies = _policyStates
-            .Where(s => s.IsConfigured && s.Policy.Category == category)
-            .ToList();
-
-        if (categoryPolicies.Count == 0)
-            return;
+        var categoryPolicies = _policyStates.Where(s => s.IsConfigured && s.Policy.Category == category).ToList();
+        if (categoryPolicies.Count == 0) return;
 
         var dialog = new ContentDialog
         {
@@ -281,45 +454,33 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
             BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentAAFillColorDefaultBrush"],
             Title = ResourceString.GetString("GroupPolicyPage_ConfirmRemoveCategoryTitle"),
-            Content = string.Format(
-                ResourceString.GetString("GroupPolicyPage_ConfirmRemoveCategoryContent"),
-                categoryPolicies.Count,
-                category),
-            PrimaryButtonText = ResourceString.GetString("GroupPolicyPage_Remove"),
+            Content = string.Format(ResourceString.GetString("GroupPolicyPage_ConfirmRemoveCategoryContent") ?? "Remove {0} policies in {1}?", categoryPolicies.Count, category),
+            PrimaryButtonText = ResourceString.GetString("GroupPolicyPage_Remove") ?? "Remove",
             PrimaryButtonStyle = (Style)Application.Current.Resources["AccentButtonStyle"],
-            CloseButtonText = ResourceString.GetString("Cancel")
+            CloseButtonText = ResourceString.GetString("Cancel") ?? "Cancel"
         };
 
         var result = await dialog.ShowAsync();
-        if (result != ContentDialogResult.Primary)
-            return;
+        if (result != ContentDialogResult.Primary) return;
 
         await RemovePoliciesAsync(categoryPolicies.Select(s => s.Policy));
     }
 
     private async void PolicyRemoveButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is not Button button || button.Tag is not string policyId)
-            return;
-
-        if (_policyStates == null)
-            return;
+        if (sender is not Button button || button.Tag is not string policyId) return;
+        if (_policyStates == null) return;
 
         var policy = _policyStates.FirstOrDefault(s => s.Policy.Id == policyId);
-        if (policy == null)
-            return;
+        if (policy == null) return;
 
         await RemovePoliciesAsync([policy.Policy]);
     }
 
     private async void RemoveSelectedButton_Click(object sender, RoutedEventArgs e)
     {
-        var selectedItems = ConfiguredPoliciesListView.SelectedItems
-            .OfType<PolicyStateViewModel>()
-            .ToList();
-
-        if (selectedItems.Count == 0)
-            return;
+        var selectedItems = ConfiguredPoliciesListView.SelectedItems.OfType<PolicyStateViewModel>().ToList();
+        if (selectedItems.Count == 0) return;
 
         var dialog = new ContentDialog
         {
@@ -327,17 +488,14 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
             BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentAAFillColorDefaultBrush"],
             Title = ResourceString.GetString("GroupPolicyPage_ConfirmRemoveSelectedTitle"),
-            Content = string.Format(
-                ResourceString.GetString("GroupPolicyPage_ConfirmRemoveSelectedContent"),
-                selectedItems.Count),
-            PrimaryButtonText = ResourceString.GetString("GroupPolicyPage_Remove"),
+            Content = string.Format(ResourceString.GetString("GroupPolicyPage_ConfirmRemoveSelectedContent") ?? "Remove {0} selected policies?", selectedItems.Count),
+            PrimaryButtonText = ResourceString.GetString("GroupPolicyPage_Remove") ?? "Remove",
             PrimaryButtonStyle = (Style)Application.Current.Resources["AccentButtonStyle"],
-            CloseButtonText = ResourceString.GetString("Cancel")
+            CloseButtonText = ResourceString.GetString("Cancel") ?? "Cancel"
         };
 
         var result = await dialog.ShowAsync();
-        if (result != ContentDialogResult.Primary)
-            return;
+        if (result != ContentDialogResult.Primary) return;
 
         await RemovePoliciesAsync(selectedItems.Select(s => s.Policy));
     }
@@ -345,14 +503,13 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
     private async Task RemovePoliciesAsync(IEnumerable<GroupPolicyHelper.PolicyEntry> policies)
     {
         var policyList = policies.ToList();
-        if (policyList.Count == 0)
-            return;
+        if (policyList.Count == 0) return;
 
         try
         {
             ScanProgressRing.Visibility = Visibility.Visible;
             ScanProgressRing.IsActive = true;
-            SummaryText.Text = ResourceString.GetString("GroupPolicyPage_RemovingPolicies");
+            SummaryText.Text = ResourceString.GetString("GroupPolicyPage_RemovingPolicies") ?? "Removing policies...";
             RefreshButton.IsEnabled = false;
             RemoveAllButton.IsEnabled = false;
 
@@ -360,6 +517,9 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
 
             if (succeeded > 0)
             {
+                SummaryText.Text = ResourceString.GetString("GroupPolicyPage_UpdatingPoliciesMsg") ?? "Updating Windows Policies (gpupdate /force)...";
+                await CommandExecutor.InvokeRunCommand("gpupdate /force", isPowerShell: false);
+
                 var restartDialog = new ContentDialog
                 {
                     XamlRoot = XamlRoot,
@@ -367,9 +527,9 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
                     BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentAAFillColorDefaultBrush"],
                     Title = ResourceString.GetString("GroupPolicyPage_RestartExplorerTitle"),
                     Content = ResourceString.GetString("GroupPolicyPage_RestartExplorerContent"),
-                    PrimaryButtonText = ResourceString.GetString("GroupPolicyPage_RestartNow"),
+                    PrimaryButtonText = ResourceString.GetString("GroupPolicyPage_RestartNow") ?? "Restart Now",
                     PrimaryButtonStyle = (Style)Application.Current.Resources["AccentButtonStyle"],
-                    CloseButtonText = ResourceString.GetString("GroupPolicyPage_Later")
+                    CloseButtonText = ResourceString.GetString("GroupPolicyPage_Later") ?? "Later"
                 };
 
                 var restartResult = await restartDialog.ShowAsync();
@@ -392,6 +552,7 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             RefreshButton.IsEnabled = true;
         }
     }
+    #endregion
 
     #region Purge Page
     public void Purge()
@@ -411,11 +572,9 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             }
             catch (ObjectDisposedException) { }
             _cancellationTokenSource = null;
-            Debug.WriteLine("[GroupPolicyPage] Background tasks cancelled.");
         }
 
         _policyStates = null;
-
         CategorySummaryRepeater.ItemsSource = null;
         ConfiguredPoliciesListView.ItemsSource = null;
 
@@ -424,7 +583,6 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             disposableVM.Dispose();
         }
         this.DataContext = null;
-
         this.Content = null;
 
         Debug.WriteLine("[GroupPolicyPage] Purge Complete.");

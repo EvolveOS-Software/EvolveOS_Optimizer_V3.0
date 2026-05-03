@@ -548,6 +548,40 @@
     <sys:String x:Key="GroupPolicyPage_RestartExplorerContent">Certains changements nécessitent un redémarrage de l'Explorateur Windows pour être effectifs. Voulez-vous le redémarrer maintenant ?</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Supprimer tous les remplacements de stratégie</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Supprimer les stratégies sélectionnées</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RecommendedPresetsHeader">Préréglages Recommandés</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyTitle">Confidentialité Ultime</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyDesc">Désactive la télémétrie, la recherche Web et Cortana via GPO.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacySuccess">La Confidentialité Ultime a été appliquée avec succès.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetGamingTitle">Profil Gamer</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingDesc">Désactive les mises à jour en arrière-plan et Xbox GameDVR.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingSuccess">Le Profil Gamer a été appliqué avec succès.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetApplyingMsg">Application de {0} et mise à jour de la stratégie de groupe...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_UpdatingPoliciesMsg">Mise à jour des stratégies Windows (gpupdate /force)...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_SearchPlaceholder">Rechercher des stratégies configurées...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ExportButton">Exporter vers .reg</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedTitle">Échec de l'exportation</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedMsg">Il n'y a aucune stratégie configurée à sauvegarder.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessTitle">Exportation Réussie</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessMsg">Vos stratégies configurées ont été sauvegardées.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorTitle">Erreur d'exportation</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorMsg">Échec de la création de la sauvegarde du registre.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RawRegHeader">Configuration Brute du Registre :</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegPath">Chemin :</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegValueName">Nom de la valeur :</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegSystemValue">Valeur Système :</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ScanningPolicies">Analyse de plus de 3000 stratégies d'OS ADMX...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} remplacements actifs sur un total de {1} stratégies d'OS.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanError">Erreur lors de l'analyse des stratégies ADMX.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Supprimer le remplacement de stratégie</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->

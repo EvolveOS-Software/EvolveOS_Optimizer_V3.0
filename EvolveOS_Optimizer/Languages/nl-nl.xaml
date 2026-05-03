@@ -548,6 +548,40 @@
     <sys:String x:Key="GroupPolicyPage_RestartExplorerContent">Sommige beleidswijzigingen vereisen een herstart van Windows Explorer om effect te hebben. Wilt u Explorer nu herstarten?</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Alle Beleidsoverschrijvingen Verwijderen</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Geselecteerd Beleid Verwijderen</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RecommendedPresetsHeader">Aanbevolen Presets</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyTitle">Ultieme Privacy</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyDesc">Schakelt Telemetrie, Zoeken op het web en Cortana uit via GPO.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacySuccess">Ultieme Privacy is succesvol toegepast.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetGamingTitle">Gamer Profiel</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingDesc">Schakelt achtergrondupdates en Xbox GameDVR uit.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingSuccess">Gamer Profiel is succesvol toegepast.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetApplyingMsg">{0} toepassen en Groepsbeleid bijwerken...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_UpdatingPoliciesMsg">Windows-beleid bijwerken (gpupdate /force)...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_SearchPlaceholder">Zoek in geconfigureerd beleid...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ExportButton">Exporteren naar .reg</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedTitle">Export Mislukt</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedMsg">Er is geen geconfigureerd beleid om een back-up van te maken.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessTitle">Export Geslaagd</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessMsg">Er is een back-up gemaakt van uw geconfigureerde beleid.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorTitle">Export Fout</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorMsg">Kan registerback-up niet maken.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RawRegHeader">Ruwe Registerconfiguratie:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegPath">Pad:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegValueName">Waardenaam:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegSystemValue">Systeemwaarde:</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ScanningPolicies">Scannen van meer dan 3000 ADMX OS-beleidsregels...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} actieve overschrijvingen van in totaal {1} OS-beleidsregels.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanError">Fout bij het scannen van ADMX-beleid.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Beleidsoverschrijving verwijderen</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->

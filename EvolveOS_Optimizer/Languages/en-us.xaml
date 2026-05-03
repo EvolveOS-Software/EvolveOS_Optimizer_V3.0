@@ -555,6 +555,40 @@
     <sys:String x:Key="GroupPolicyPage_RestartExplorerContent">Some policy changes require restarting Windows Explorer to take effect. Would you like to restart Explorer now?</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveAllTitle">Remove All Policy Overrides</sys:String>
     <sys:String x:Key="GroupPolicyPage_ConfirmRemoveSelectedTitle">Remove Selected Policies</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RecommendedPresetsHeader">Recommended Presets</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyTitle">Ultimate Privacy</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacyDesc">Disables Telemetry, Web Search, and Cortana via GPO.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetPrivacySuccess">Ultimate Privacy has been applied successfully.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetGamingTitle">Gamers Profile</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingDesc">Disables Background Updates and Xbox GameDVR.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_PresetGamingSuccess">Gamers Profile has been applied successfully.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_PresetApplyingMsg">Applying {0} and updating Group Policy...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_UpdatingPoliciesMsg">Updating Windows Policies (gpupdate /force)...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_SearchPlaceholder">Search configured policies...</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ExportButton">Export to .reg</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedTitle">Export Failed</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportFailedMsg">There are no configured policies to backup.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessTitle">Export Successful</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportSuccessMsg">Your configured policies have been backed up.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorTitle">Export Error</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ExportErrorMsg">Failed to create registry backup.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RawRegHeader">Raw Registry Configuration:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegPath">Path:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegValueName">Value Name:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_RawRegSystemValue">System Value:</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_ScanningPolicies">Scanning 3000+ ADMX OS Policies...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} active overrides out of {1} total OS policies.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_ScanError">Error scanning ADMX policies.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Remove Policy Override</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->
