@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,6 +12,14 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
     {
         internal static int PID = 0;
 
+        private static string GetSafePowerShellArguments(string command)
+        {
+            byte[] bytes = Encoding.Unicode.GetBytes(command);
+            string base64Script = Convert.ToBase64String(bytes);
+
+            return $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -EncodedCommand {base64Script}";
+        }
+
         internal static async Task<string> GetCommandOutput(string command, bool isPowerShell = true)
         {
             return await Task.Run(async () =>
@@ -16,7 +27,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = isPowerShell ? PathLocator.Executable.PowerShell : PathLocator.Executable.CommandShell,
-                    Arguments = isPowerShell ? $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command}\"" : $"/c {command}",
+                    Arguments = isPowerShell ? GetSafePowerShellArguments(command) : $"/c {command}",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -65,7 +76,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 }
 
                 string formattedCommand = isPowerShell
-                    ? $"{PathLocator.Executable.PowerShell} -NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command.Replace("\"", "`\"")}\""
+                    ? $"{PathLocator.Executable.PowerShell} {GetSafePowerShellArguments(command)}"
                     : $"{PathLocator.Executable.CommandShell} /c {command}";
 
                 int childPid = TrustedInstaller.CreateProcessAsTrustedInstaller(PID, formattedCommand);
@@ -73,7 +84,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 if (childPid > 0)
                 {
                     var exitTask = WaitForProcessExitAsync(childPid);
-
                     var timeoutTask = Task.Delay(timeoutMs);
 
                     var completedTask = await Task.WhenAny(exitTask, timeoutTask);
@@ -133,7 +143,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 ProcessStartInfo startInfo = new ProcessStartInfo()
                 {
                     FileName = isPowerShell ? PathLocator.Executable.PowerShell : PathLocator.Executable.CommandShell,
-                    Arguments = isPowerShell ? $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command}\"" : $"/c {command}",
+                    Arguments = isPowerShell ? GetSafePowerShellArguments(command) : $"/c {command}",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     UseShellExecute = true,
                     Verb = "runas",
@@ -186,7 +196,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = isPowerShell ? PathLocator.Executable.PowerShell : PathLocator.Executable.CommandShell,
-                Arguments = isPowerShell ? $"-NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command \"{command}\"" : $"/c {command}",
+                Arguments = isPowerShell ? GetSafePowerShellArguments(command) : $"/c {command}",
                 WindowStyle = ProcessWindowStyle.Hidden,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -297,11 +307,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             };
 
             process.Start();
-
             var output = await process.StandardOutput.ReadToEndAsync();
-
             await process.WaitForExitAsync();
-
             return output;
         }
 
@@ -322,11 +329,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             };
 
             process.Start();
-
             var output = await process.StandardOutput.ReadToEndAsync();
-
             await process.WaitForExitAsync();
-
             return output;
         }
 
