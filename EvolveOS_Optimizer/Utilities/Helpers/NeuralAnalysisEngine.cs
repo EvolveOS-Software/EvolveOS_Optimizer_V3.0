@@ -639,21 +639,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 // 2000 - 3999: DWM, CBS, NPS, & SEARCH
 
-                2000 or 2001 => ResourceString.GetString("diag_analysis_2000") ??
+                2000 => ResourceString.GetString("diag_analysis_2000") ??
                     "Desktop Window Manager (DWM) composition warning. The system is experiencing a GDI Handle Leak or GPU context loss. \n\n" +
                     "RECOMMENDATION: Click 'Fix' to restart the shell and clear DWM memory.",
-                2002 => ResourceString.GetString("diag_analysis_2002") ??
-                    "Windows Defender Engine successfully updated its real-time protection signatures. \n\n" +
-                    "RECOMMENDATION: Routine security tracking.",
-                2003 => ResourceString.GetString("diag_analysis_2003") ??
-                    "DWM subsystem encountered a display buffer synchronization failure. Frame tearing may occur. \n\n" +
-                    "RECOMMENDATION: Reset your graphics driver (Win + Ctrl + Shift + B).",
-                2004 => ResourceString.GetString("diag_analysis_2004") ??
-                    "Resource Exhaustion Detector. Windows successfully diagnosed a low-memory condition and identified the primary application causing the leak. \n\n" +
-                    "RECOMMENDATION: Review the Event Viewer payload to find the specific leaking app.",
-                2005 => ResourceString.GetString("diag_analysis_2005") ??
-                    "DWM video memory allocation failed. The GPU has run out of VRAM to draw the desktop windows. \n\n" +
-                    "RECOMMENDATION: Close heavy graphics applications or restart the DWM process.",
+                2001 or 2002 or 2003 or 2004 or 2005 => ResourceString.GetString("diag_ai_dwm_exhaustion") ??
+                    "DWM video memory allocation failed. The GPU has run out of VRAM to draw the desktop windows.\n\n" +
+                    "RECOMMENDATION: Close heavy graphics applications or click 'Fix' to restart the DWM process.",
                 (>= 2006 and <= 2009) => ResourceString.GetString("diag_analysis_2006") ??
                     "Generic desktop composition and memory tuning telemetry. \n\n" +
                     "RECOMMENDATION: Routine UI overhead.",

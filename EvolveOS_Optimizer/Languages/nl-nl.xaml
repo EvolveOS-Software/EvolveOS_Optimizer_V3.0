@@ -497,6 +497,49 @@
 
     <sys:String x:Key="text_saved_successfully">Instellingen veilig opgeslagen.</sys:String>
     <sys:String x:Key="text_ps_policy_restricted">Alleen afzonderlijke opdrachten zijn toegestaan.</sys:String>
+
+    <sys:String x:Key="SecurityPage_NetworkAuditHeader">Netwerksocket-audit</sys:String>
+    <sys:String x:Key="SecurityPage_NetworkAuditDesc">Scan op actieve luisterpoorten en blootgestelde applicaties.</sys:String>
+    <sys:String x:Key="SecurityPage_BtnScanPorts">Poorten scannen</sys:String>
+    <sys:String x:Key="SecurityPage_BtnHarden">Systeem verharden</sys:String>
+    <sys:String x:Key="SecurityPage_ColProcess">Applicatie</sys:String>
+    <sys:String x:Key="SecurityPage_ColPID">PID</sys:String>
+    <sys:String x:Key="SecurityPage_ColProtocol">Protocol</sys:String>
+    <sys:String x:Key="SecurityPage_ColPort">Poort</sys:String>
+    <sys:String x:Key="SecurityPage_ColAddress">Lokaal adres</sys:String>
+    <sys:String x:Key="SecurityPage_ColStatus">Blootstelling</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningTitle">Systeem verhard</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningSuccess">Netwerkontdekkingsservices succesvol uitgeschakeld. Uw aanvalsoppervlak is verkleind.</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningErrorTitle">Verharding mislukt</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningErrorMsg">Er is een fout opgetreden bij het uitschakelen van netwerkontdekkingsservices.</sys:String>
+
+    <sys:String x:Key="RiskLevel_Low">Laag</sys:String>
+    <sys:String x:Key="RiskLevel_Medium">Gemiddeld</sys:String>
+    <sys:String x:Key="RiskLevel_High">Hoog</sys:String>
+    <sys:String x:Key="RiskLevel_Critical">Kritiek</sys:String>
+
+    <sys:String x:Key="RiskDesc_Internal">Interne service, niet blootgesteld aan het netwerk.</sys:String>
+    <sys:String x:Key="RiskDesc_LegacyRpcSmb">Verouderde RPC/SMB-service. Zeer kwetsbaar voor lateral movement-exploits.</sys:String>
+    <sys:String x:Key="RiskDesc_Rdp">Remote Desktop (RDP) blootgesteld. Kwetsbaar voor brute-force en credential stuffing.</sys:String>
+    <sys:String x:Key="RiskDesc_FtpTelnet">Onversleuteld verouderd protocol (FTP/Telnet). Inloggegevens in platte tekst verzonden.</sys:String>
+    <sys:String x:Key="RiskDesc_Http">Standaard HTTP-server. Zorg ervoor dat er geen gevoelige gegevens worden gehost.</sys:String>
+    <sys:String x:Key="RiskDesc_Unknown">Onbekend proces luistert op netwerk. Mogelijke ongeautoriseerde agent.</sys:String>
+    <sys:String x:Key="RiskDesc_Standard">Standaard applicatiesocket.</sys:String>
+    <sys:String x:Key="RiskDesc_Rpc">Kern Windows RPC Endpoint Mapper. Natively afgeschermd door Windows Firewall.</sys:String>
+    <sys:String x:Key="RiskDesc_LegacySmb">SMB-bestandsdeling. Zeer kwetsbaar voor lateral movement-exploits indien blootgesteld.</sys:String>
+
+    <sys:String x:Key="SecurityPage_HardenRebootTitle">Herstart aanbevolen</sys:String>
+    <sys:String x:Key="SecurityPage_HardenRebootMsg">Netwerkverharding succesvol toegepast. Sommige kernsysteemsockets (zoals poort 445) blijven in een "Ghost" (spook) luisterstaat totdat de computer opnieuw wordt opgestart. Wilt u nu opnieuw opstarten?</sys:String>
+    <sys:String x:Key="SecurityPage_HardenShutdownComment">EvolveOS Optimizer: Herstart wegens netwerkverharding</sys:String>
+
+    <sys:String x:Key="SecurityPage_HardeningSuccessReboot">Verharding succesvol. Start uw pc opnieuw op om achtergebleven systeemsockets te wissen.</sys:String>
+    <sys:String x:Key="SecurityPage_ProcessUnknown">Systeem/Onbekend</sys:String>
+    <sys:String x:Key="SecurityPage_PathUnknown">Onbekend</sys:String>
+    <sys:String x:Key="SecurityPage_AccessDenied">Toegang geweigerd</sys:String>
+    <sys:String x:Key="SecurityPage_AuditLogFormat">[{0:HH:mm}] WAARSCHUWING: {1} opende blootgestelde poort {2} ({3} risico)</sys:String>
+    <sys:String x:Key="SecurityPage_ScanSuccessMsg">{0} luisterende applicaties ontdekt.</sys:String>
+    <sys:String x:Key="SecurityPage_ScanErrorTitle">Poortscan mislukt</sys:String>
+    <sys:String x:Key="SecurityPage_ScanErrorMsg">Kan netwerksockets niet in kaart brengen.</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->
@@ -2217,6 +2260,14 @@
     <sys:String x:Key="diag_event_latest">Laatste: </sys:String>
     <sys:String x:Key="diag_history_card_msg">Genegeerde systeemgebeurtenissen gerapporteerd door {0}.</sys:String>
     <sys:String x:Key="diag_history_card_full_msg">Historische records voor {0} (ID: {1}). Vouw uit om alle genegeerde tijdstempels te bekijken.</sys:String>
+
+    <sys:String x:Key="SecurityPage_PortEventMsg">NETWERKKWETSBAARHEID: {0} is gevaarlijk blootgesteld op poort {1}.</sys:String>
+    <sys:String x:Key="diag_fix_network_attempt">Netwerkverhardingssequentie initiëren...</sys:String>
+
+    <sys:String x:Key="diag_fix_luafv_success">LUAFV-virtualisatie gerepareerd. Let op: Dit heeft UAC opnieuw ingeschakeld. Een herstart is vereist.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_exhaustion_success">AUTO-FIX TOEGEPAST: De Desktop Window Manager (DWM) is opnieuw gestart om vergrendeld VRAM vrij te geven. Schermflikkering tijdens dit proces is normaal.</sys:String>
+    <sys:String x:Key="diag_routine_telemetry_msg">Routinematige OS-overheadtelemetrie. Geen actie vereist.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_running">Display stack resetten... Scherm zal flikkeren.</sys:String>
 
     <sys:String x:Key="diag_tooltip_remove_occurrence">Deze vermelding permanent verwijderen</sys:String>
 

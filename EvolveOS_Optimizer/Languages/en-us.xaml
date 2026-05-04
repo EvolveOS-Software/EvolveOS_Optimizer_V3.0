@@ -504,6 +504,52 @@
 
     <sys:String x:Key="text_saved_successfully">Settings saved securely.</sys:String>
     <sys:String x:Key="text_ps_policy_restricted">Only individual commands are allowed.</sys:String>
+
+    <sys:String x:Key="SecurityPage_NetworkAuditHeader">Network Socket Audit</sys:String>
+    <sys:String x:Key="SecurityPage_NetworkAuditDesc">Scan for active listening ports and exposed applications.</sys:String>
+    <sys:String x:Key="SecurityPage_BtnScanPorts">Scan Ports</sys:String>
+    <sys:String x:Key="SecurityPage_BtnHarden">Harden System</sys:String>
+    <sys:String x:Key="SecurityPage_ColProcess">Application</sys:String>
+    <sys:String x:Key="SecurityPage_ColPID">PID</sys:String>
+    <sys:String x:Key="SecurityPage_ColProtocol">Protocol</sys:String>
+    <sys:String x:Key="SecurityPage_ColPort">Port</sys:String>
+    <sys:String x:Key="SecurityPage_ColAddress">Local Address</sys:String>
+    <sys:String x:Key="SecurityPage_ColStatus">Exposure</sys:String>
+
+    <sys:String x:Key="SecurityPage_HardeningTitle">System Hardened</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningSuccess">Network discovery services disabled successfully. Your attack surface has been reduced.</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningErrorTitle">Hardening Failed</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningErrorMsg">An error occurred while attempting to disable network discovery services.</sys:String>
+
+    <sys:String x:Key="RiskLevel_Low">Low</sys:String>
+    <sys:String x:Key="RiskLevel_Medium">Medium</sys:String>
+    <sys:String x:Key="RiskLevel_High">High</sys:String>
+    <sys:String x:Key="RiskLevel_Critical">Critical</sys:String>
+
+    <sys:String x:Key="RiskDesc_Internal">Internal service, not exposed to network.</sys:String>
+    <sys:String x:Key="RiskDesc_LegacyRpcSmb">Legacy RPC/SMB service. Highly vulnerable to lateral movement exploits.</sys:String>
+    <sys:String x:Key="RiskDesc_Rdp">Remote Desktop (RDP) exposed. Vulnerable to brute-force and credential stuffing.</sys:String>
+    <sys:String x:Key="RiskDesc_FtpTelnet">Unencrypted legacy protocol (FTP/Telnet). Credentials sent in plain text.</sys:String>
+    <sys:String x:Key="RiskDesc_Http">Standard HTTP server. Ensure no sensitive data is hosted.</sys:String>
+    <sys:String x:Key="RiskDesc_Unknown">Unknown process listening on network. Potential unauthorized agent.</sys:String>
+    <sys:String x:Key="RiskDesc_Standard">Standard application socket.</sys:String>
+    <sys:String x:Key="RiskDesc_Rpc">Core Windows RPC Endpoint Mapper. Shielded natively by Windows Firewall.</sys:String>
+    <sys:String x:Key="RiskDesc_LegacySmb">SMB File Sharing. Highly vulnerable to lateral movement exploits if exposed.</sys:String>
+
+    <sys:String x:Key="SecurityPage_HardenRebootTitle">Restart Recommended</sys:String>
+    <sys:String x:Key="SecurityPage_HardenRebootMsg">Network hardening applied successfully. Some core system sockets (like Port 445) will remain in a "Ghost" listening state until the computer is restarted. Would you like to restart now?</sys:String>
+    <sys:String x:Key="SecurityPage_HardenShutdownComment">EvolveOS Optimizer: Network Hardening Restart</sys:String>
+
+    <sys:String x:Key="SecurityPage_HardeningSuccessReboot">Hardening successful. Please restart your PC to clear lingering system sockets.</sys:String>
+
+    <sys:String x:Key="SecurityPage_ProcessUnknown">System/Unknown</sys:String>
+    <sys:String x:Key="SecurityPage_PathUnknown">Unknown</sys:String>
+    <sys:String x:Key="SecurityPage_AccessDenied">Access Denied</sys:String>
+
+    <sys:String x:Key="SecurityPage_AuditLogFormat">[{0:HH:mm}] ALERT: {1} opened exposed port {2} ({3} Risk)</sys:String>
+    <sys:String x:Key="SecurityPage_ScanSuccessMsg">Discovered {0} listening applications.</sys:String>
+    <sys:String x:Key="SecurityPage_ScanErrorTitle">Port Scan Failed</sys:String>
+    <sys:String x:Key="SecurityPage_ScanErrorMsg">Unable to map network sockets.</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->
@@ -2230,12 +2276,22 @@
     <sys:String x:Key="diag_alert_ai_resolved">AI RESOLVED: {0}</sys:String>
     <sys:String x:Key="diag_notif_ai_title">EvolveOS AI Optimizer</sys:String>
     <sys:String x:Key="diag_notif_ai_multiple">Automatically resolved {0} background anomalies to free up CPU.</sys:String>
+    <sys:String x:Key="diag_ai_dwm_exhaustion">DWM video memory allocation failed. The GPU has run out of VRAM to draw the desktop windows.\n\nRECOMMENDATION: Close heavy graphics applications or click 'Fix' to restart the DWM process.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_running">Resetting Display Stack... Screen will flicker.</sys:String>
 
     <sys:String x:Key="diag_event_latest">Latest: </sys:String>
     <sys:String x:Key="diag_history_card_msg">Dismissed system events reported by {0}.</sys:String>
     <sys:String x:Key="diag_history_card_full_msg">Historical records for {0} (ID: {1}). Expand to view all dismissed timestamps.</sys:String>
     
     <sys:String x:Key="diag_tooltip_remove_occurrence">Permanently remove this occurrence</sys:String>
+
+    <sys:String x:Key="SecurityPage_PortEventMsg">NETWORK VULNERABILITY: {0} is dangerously exposed on port {1}.</sys:String>
+    <sys:String x:Key="diag_fix_network_attempt">Initiating network hardening sequence...</sys:String>
+
+    <!-- Specific Event Fix Summaries -->
+    <sys:String x:Key="diag_fix_luafv_success">LUAFV virtualization repaired. Note: This re-enabled UAC. A reboot is required.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_exhaustion_success">AUTO-FIX DEPLOYED: The Desktop Window Manager (DWM) was restarted to release locked VRAM. Screen flickering during this process is normal.</sys:String>
+    <sys:String x:Key="diag_routine_telemetry_msg">Routine OS overhead telemetry. No action required.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
@@ -2310,7 +2366,6 @@
 
     <sys:String x:Key="wmi_code_52_summary">Windows cannot verify the digital signature for the drivers required for this device.</sys:String>
     <sys:String x:Key="wmi_code_52_fix">You may need to disable Driver Signature Enforcement or download a signed driver.</sys:String>
-
 
     <sys:String x:Key="title_system_health_status">Health Status</sys:String>
     <sys:String x:Key="text_system_optimizer_description">Boost system responsiveness by reclaiming mismanaged memory and purging redundant files. Efficiently targets memory leaks, flushes DNS caches, and eliminates temporary data to restore peak performance.</sys:String>

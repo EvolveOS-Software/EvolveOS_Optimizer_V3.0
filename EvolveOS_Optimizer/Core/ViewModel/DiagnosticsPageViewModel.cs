@@ -241,6 +241,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private bool _isQuickScanRunning;
         public bool IsQuickScanRunning { get => _isQuickScanRunning; set => SetProperty(ref _isQuickScanRunning, value); }
+
+        private ObservableCollection<OpenPortItem> _openPorts = new();
+        public ObservableCollection<OpenPortItem> OpenPorts { get => _openPorts; set => SetProperty(ref _openPorts, value); }
+
+        private bool _isPortScanRunning;
+        public bool IsPortScanRunning { get => _isPortScanRunning; set => SetProperty(ref _isPortScanRunning, value); }
+
+        private bool _isHardeningInProgress;
+        public bool IsHardeningInProgress { get => _isHardeningInProgress; set => SetProperty(ref _isHardeningInProgress, value); }
+
+        private readonly ObservableCollection<string> _networkAuditHistory = new();
+        public ObservableCollection<string> NetworkAuditHistory => _networkAuditHistory;
         #endregion
 
         #region Constructor
@@ -1203,6 +1215,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [RelayCommand]
         public async Task FixEventAsync(int eventId)
         {
+            if (eventId == 9118)
+            {
+                ScanStatus = ResourceString.GetString("diag_fix_network_attempt") ?? "Initiating network hardening sequence...";
+
+                await HardenNetworkPortsAsync();
+
+                var networkEvents = MinedSystemEvents.Where(e => e.EventId == 9118).ToList();
+                foreach (var ev in networkEvents)
+                {
+                    MinedSystemEvents.Remove(ev);
+                }
+
+                CalculateStabilityTrend(MinedSystemEvents);
+                UpdateGlobalAiSummary();
+                UpdateSystemStatus();
+                return;
+            }
+
             if (eventId >= 9101 && eventId <= 9117)
             {
                 try
@@ -1327,7 +1357,26 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
                 else if (eventId == 7026 || eventId == 7000)
                 {
-                    AiSummary = "LUAFV virtualization repaired. Note: This re-enabled UAC. A reboot is required.";
+                    AiSummary = ResourceString.GetString("diag_fix_luafv_success")
+                        ?? "LUAFV virtualization repaired. Note: This re-enabled UAC. A reboot is required.";
+                }
+                else if (eventId == 2004 || eventId == 2001 || eventId == 2002 || eventId == 2003 || eventId == 2005)
+                {
+                    ScanStatus = ResourceString.GetString("diag_fix_dwm_running") ?? "Resetting Display Stack...";
+
+                    bool dwmResult = await RemediationEngine.FixDwmExhaustionAsync();
+
+                    if (dwmResult)
+                    {
+                        AiSummary = ResourceString.GetString("diag_fix_dwm_exhaustion_success")
+                            ?? "AUTO-FIX DEPLOYED: The display stack was reset. If flickering persists, please check your GPU temperatures.";
+
+                        var eventToRemove = MinedSystemEvents.FirstOrDefault(e => e.EventId == eventId);
+                        if (eventToRemove != null) MinedSystemEvents.Remove(eventToRemove);
+
+                        CalculateStabilityTrend(MinedSystemEvents);
+                    }
+                    return;
                 }
                 else
                 {
@@ -1341,7 +1390,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             else
             {
-                ScanStatus = string.Format(ResourceString.GetString("diag_fix_event_fail") ?? "Remediation failed for Event {0}.", eventId);
+                if (eventId == 7040 || eventId == 4624 || eventId == 4634 || eventId == 4672)
+                {
+                    ScanStatus = ResourceString.GetString("diag_routine_telemetry_msg") ?? "Routine OS overhead telemetry. No action required.";
+
+                    var routineEvent = MinedSystemEvents.FirstOrDefault(e => e.EventId == eventId);
+                    if (routineEvent != null)
+                    {
+                        DismissEvent(routineEvent);
+                    }
+                }
+                else
+                {
+                    ScanStatus = string.Format(ResourceString.GetString("diag_fix_event_fail") ?? "Remediation failed for Event {0}.", eventId);
+                }
             }
         }
 
@@ -1583,6 +1645,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Security Action Commands (Security)
         public event Action<List<string>>? ShowSecurityIssuesRequested;
+        public event Action? CloseActiveDialogsRequested;
 
         [RelayCommand]
         public void ViewSecurityIssues()
@@ -1654,6 +1717,108 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 SendSystemNotification(3,
                     ResourceString.GetString("SecurityPage_UpdateDefinitionsTitle") ?? "Security Intelligence",
                     ResourceString.GetString("SecurityPage_DefinitionsUpdateFailed") ?? "Update failed.");
+            }
+        }
+
+        [RelayCommand]
+        public async Task HardenNetworkPortsAsync()
+        {
+            if (IsHardeningInProgress) return;
+
+            CloseActiveDialogsRequested?.Invoke();
+
+            await Task.Delay(300);
+
+            try
+            {
+                IsHardeningInProgress = true;
+
+                string command = @"
+                    $services = 'SSDPSRV', 'upnphost', 'FDResPub', 'DoSvc', 'LanmanServer'
+    
+                    # 1. Stop and Disable Services
+                    Stop-Service -Name $services -Force -ErrorAction SilentlyContinue
+                    Set-Service -Name $services -StartupType Disabled
+    
+                    # 2. Deep Registry Kill for Port 445 (SMB)
+                    # This prevents the Kernel (PID 4) from binding to the port even if the driver is loaded
+                    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters' -Name 'SMBDeviceEnabled' -Value 0 -Type DWord -Force
+    
+                    # 3. Disable SMBv1/v2/v3 components at the protocol level
+                    Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force -ErrorAction SilentlyContinue
+                    Set-SmbServerConfiguration -EnableSMB2Protocol $false -Force -ErrorAction SilentlyContinue
+
+                    # 4. Enforce Firewall Block (The 'Safety Net')
+                    if (!(Get-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -ErrorAction SilentlyContinue)) {
+                    New-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -Direction Inbound -Action Block -Protocol TCP -LocalPort 445 -ErrorAction SilentlyContinue
+                    }
+                ";
+
+                await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
+
+                await ScanNetworkPortsAsync();
+
+                var currentXamlRoot = App.MainWindow?.Content?.XamlRoot;
+
+                if (currentXamlRoot != null)
+                {
+                    ContentDialog rebootDialog = new ContentDialog
+                    {
+                        XamlRoot = currentXamlRoot,
+                        Title = ResourceString.GetString("SecurityPage_HardenRebootTitle") ?? "Restart Recommended",
+                        Content = ResourceString.GetString("SecurityPage_HardenRebootMsg") ?? "Network hardening applied successfully. Some core system sockets (like Port 445) will remain in a 'Ghost' listening state until the computer is restarted. Would you like to restart now?",
+                        PrimaryButtonText = ResourceString.GetString("txt_restart_now") ?? "Restart Now",
+                        CloseButtonText = ResourceString.GetString("txt_later") ?? "Later",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+
+                    if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                    {
+                        rebootDialog.Style = (Style)style;
+                    }
+
+                    try
+                    {
+                        ContentDialogResult result = await rebootDialog.ShowAsync();
+
+                        if (result == ContentDialogResult.Primary)
+                        {
+                            string shutdownComment = ResourceString.GetString("SecurityPage_HardenShutdownComment") ?? "EvolveOS Optimizer: Network Hardening Restart";
+
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = "shutdown.exe",
+                                Arguments = $"/r /t 5 /c \"{shutdownComment}\"",
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            });
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        SendSystemNotification(4,
+                            ResourceString.GetString("SecurityPage_HardeningTitle") ?? "System Hardened",
+                            ResourceString.GetString("SecurityPage_HardeningSuccessReboot") ?? "Hardening successful. Please restart your PC to clear lingering system sockets.");
+                    }
+                }
+                else
+                {
+                    SendSystemNotification(4,
+                        ResourceString.GetString("SecurityPage_HardeningTitle") ?? "System Hardened",
+                        ResourceString.GetString("SecurityPage_HardeningSuccessReboot") ?? "Hardening successful. Please restart your PC to clear lingering system sockets.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+
+                SendSystemNotification(3,
+                    ResourceString.GetString("SecurityPage_HardeningErrorTitle") ?? "Hardening Failed",
+                    ResourceString.GetString("SecurityPage_HardeningErrorMsg") ?? "Failed to adjust service states.");
+            }
+            finally
+            {
+                IsHardeningInProgress = false;
             }
         }
 
@@ -1898,6 +2063,189 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 newPointsAlt.Add(new Point(logicalWidth, 100));
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
+            }
+        }
+
+        [RelayCommand]
+        public async Task ScanNetworkPortsAsync()
+        {
+            if (IsPortScanRunning) return;
+
+            IsPortScanRunning = true;
+            OpenPorts.Clear();
+
+            string critStr = ResourceString.GetString("RiskLevel_Critical") ?? "Critical";
+            string highStr = ResourceString.GetString("RiskLevel_High") ?? "High";
+            string medStr = ResourceString.GetString("RiskLevel_Medium") ?? "Medium";
+            string lowRiskStr = ResourceString.GetString("RiskLevel_Low") ?? "Low";
+
+            string unknownProcessStr = ResourceString.GetString("SecurityPage_ProcessUnknown") ?? "System/Unknown";
+            string unknownPathStr = ResourceString.GetString("SecurityPage_PathUnknown") ?? "Unknown";
+            string accessDeniedStr = ResourceString.GetString("SecurityPage_AccessDenied") ?? "Access Denied";
+
+            try
+            {
+                var ports = await Task.Run(() =>
+                {
+                    var list = new List<OpenPortItem>();
+
+                    var processStartInfo = new ProcessStartInfo
+                    {
+                        FileName = "netstat.exe",
+                        Arguments = "-ano",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    using var process = Process.Start(processStartInfo);
+                    if (process == null) return list;
+
+                    using var reader = process.StandardOutput;
+                    string output = reader.ReadToEnd();
+                    var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    var processDict = Process.GetProcesses().ToDictionary(p => p.Id, p => p.ProcessName);
+
+                    foreach (var line in lines.Skip(4))
+                    {
+                        var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length < 4) continue;
+
+                        string protocol = parts[0];
+                        string localAddressFull = parts[1];
+
+                        string state = protocol == "TCP" && parts.Length >= 5 ? parts[3] : "LISTENING";
+                        string pidStr = protocol == "TCP" && parts.Length >= 5 ? parts[4] : parts[3];
+
+                        if (state != "LISTENING" && protocol != "UDP") continue;
+
+                        if (int.TryParse(pidStr, out int pid) && pid > 0)
+                        {
+                            int portIndex = localAddressFull.LastIndexOf(':');
+                            if (portIndex == -1) continue;
+
+                            string ip = localAddressFull.Substring(0, portIndex);
+                            string portStr = localAddressFull.Substring(portIndex + 1);
+
+                            if (!int.TryParse(portStr, out int port)) continue;
+
+                            bool isExposed = ip == "0.0.0.0" || ip == "[::]";
+                            string processName = processDict.TryGetValue(pid, out var pName) ? pName : unknownProcessStr;
+
+                            string processPath = unknownPathStr;
+                            bool isVerified = false;
+                            try
+                            {
+                                using var p = Process.GetProcessById(pid);
+                                processPath = p.MainModule?.FileName ?? accessDeniedStr;
+                                string winDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+                                isVerified = processPath.StartsWith(winDir, StringComparison.OrdinalIgnoreCase);
+                            }
+                            catch { /* Access Denied for core System processes is normal and expected */ }
+
+                            var risk = RemediationEngine.AssessPortRisk(port, processName, isExposed);
+
+                            if (!list.Any(p => p.Port == port && p.Protocol == protocol))
+                            {
+                                var newItem = new OpenPortItem
+                                {
+                                    Protocol = protocol,
+                                    LocalIP = ip,
+                                    Port = port,
+                                    ProcessId = pid,
+                                    ProcessName = processName,
+                                    ProcessPath = processPath,
+                                    IsExposed = isExposed,
+                                    IsVerified = isVerified,
+                                    RiskLevel = risk.level,
+                                    Description = risk.desc
+                                };
+
+                                if (risk.level == critStr)
+                                    newItem.RiskColor = Colors.Red;
+                                else if (risk.level == highStr)
+                                    newItem.RiskColor = Colors.OrangeRed;
+                                else if (risk.level == medStr)
+                                    newItem.RiskColor = Colors.Gold;
+                                else
+                                    newItem.RiskColor = Colors.LimeGreen;
+
+                                list.Add(newItem);
+                            }
+                        }
+                    }
+
+                    return list.OrderByDescending(p => p.RiskLevel == critStr)
+                               .ThenByDescending(p => p.RiskLevel == highStr)
+                               .ThenByDescending(p => p.IsExposed)
+                               .ThenBy(p => p.ProcessName)
+                               .ToList();
+                });
+
+                foreach (var port in ports)
+                {
+                    OpenPorts.Add(port);
+                }
+
+                string logFormat = ResourceString.GetString("SecurityPage_AuditLogFormat") ?? "[{0:HH:mm}] ALERT: {1} opened exposed port {2} ({3} Risk)";
+
+                var newExposures = ports.Where(p => p.IsExposed && p.RiskLevel != lowRiskStr).ToList();
+
+                _dispatcherQueue?.TryEnqueue(() =>
+                {
+                    bool addedNewEvent = false;
+
+                    foreach (var entry in newExposures)
+                    {
+                        string log = string.Format(logFormat, DateTime.Now, entry.ProcessName, entry.Port, entry.RiskLevel);
+
+                        if (!NetworkAuditHistory.Contains(log))
+                        {
+                            NetworkAuditHistory.Insert(0, log);
+                        }
+
+                        if (entry.RiskLevel == critStr || entry.RiskLevel == highStr)
+                        {
+                            bool alreadyFlagged = MinedSystemEvents.Any(e => e.EventId == 9118 && e.Message.Contains(entry.Port.ToString()));
+
+                            if (!alreadyFlagged)
+                            {
+                                string alertMsg = string.Format(ResourceString.GetString("SecurityPage_PortEventMsg") ?? "NETWORK VULNERABILITY: {0} is dangerously exposed on port {1}.", entry.ProcessName, entry.Port);
+
+                                var newAlert = CreateAlert(9118, "NetworkAuditor", alertMsg);
+                                newAlert.Level = (byte)(entry.RiskLevel == critStr ? 1 : 2);
+
+                                MinedSystemEvents.Insert(0, newAlert);
+                                addedNewEvent = true;
+                            }
+                        }
+                    }
+
+                    if (addedNewEvent)
+                    {
+                        CalculateStabilityTrend(MinedSystemEvents);
+                        UpdateSystemStatus();
+                        UpdateGlobalAiSummary();
+                    }
+                });
+
+                string successFormat = ResourceString.GetString("SecurityPage_ScanSuccessMsg") ?? "Discovered {0} listening applications.";
+                string headerTitle = ResourceString.GetString("SecurityPage_NetworkAuditHeader") ?? "Port Scan Complete";
+
+                SendSystemNotification(1, headerTitle, string.Format(successFormat, ports.Count));
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+
+                SendSystemNotification(3,
+                    ResourceString.GetString("SecurityPage_ScanErrorTitle") ?? "Port Scan Failed",
+                    ResourceString.GetString("SecurityPage_ScanErrorMsg") ?? "Unable to map network sockets.");
+            }
+            finally
+            {
+                IsPortScanRunning = false;
             }
         }
         #endregion

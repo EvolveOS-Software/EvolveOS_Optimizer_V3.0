@@ -497,6 +497,49 @@
 
     <sys:String x:Key="text_saved_successfully">Einstellungen sicher gespeichert.</sys:String>
     <sys:String x:Key="text_ps_policy_restricted">Es sind nur einzelne Befehle zulässig.</sys:String>
+
+    <sys:String x:Key="SecurityPage_NetworkAuditHeader">Netzwerk-Socket-Audit</sys:String>
+    <sys:String x:Key="SecurityPage_NetworkAuditDesc">Nach aktiv abhörenden Ports und exponierten Anwendungen scannen.</sys:String>
+    <sys:String x:Key="SecurityPage_BtnScanPorts">Ports scannen</sys:String>
+    <sys:String x:Key="SecurityPage_BtnHarden">System härten</sys:String>
+    <sys:String x:Key="SecurityPage_ColProcess">Anwendung</sys:String>
+    <sys:String x:Key="SecurityPage_ColPID">PID</sys:String>
+    <sys:String x:Key="SecurityPage_ColProtocol">Protokoll</sys:String>
+    <sys:String x:Key="SecurityPage_ColPort">Port</sys:String>
+    <sys:String x:Key="SecurityPage_ColAddress">Lokale Adresse</sys:String>
+    <sys:String x:Key="SecurityPage_ColStatus">Exposition</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningTitle">System gehärtet</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningSuccess">Netzwerk-Erkennungsdienste erfolgreich deaktiviert. Ihre Angriffsfläche wurde reduziert.</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningErrorTitle">Härtung fehlgeschlagen</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningErrorMsg">Beim Versuch, Netzwerk-Erkennungsdienste zu deaktivieren, ist ein Fehler aufgetreten.</sys:String>
+
+    <sys:String x:Key="RiskLevel_Low">Niedrig</sys:String>
+    <sys:String x:Key="RiskLevel_Medium">Mittel</sys:String>
+    <sys:String x:Key="RiskLevel_High">Hoch</sys:String>
+    <sys:String x:Key="RiskLevel_Critical">Kritisch</sys:String>
+
+    <sys:String x:Key="RiskDesc_Internal">Interner Dienst, nicht dem Netzwerk ausgesetzt.</sys:String>
+    <sys:String x:Key="RiskDesc_LegacyRpcSmb">Veralteter RPC/SMB-Dienst. Stark anfällig für Lateral-Movement-Exploits.</sys:String>
+    <sys:String x:Key="RiskDesc_Rdp">Remote Desktop (RDP) exponiert. Anfällig für Brute-Force- und Credential-Stuffing-Angriffe.</sys:String>
+    <sys:String x:Key="RiskDesc_FtpTelnet">Unverschlüsseltes, veraltetes Protokoll (FTP/Telnet). Anmeldeinformationen im Klartext gesendet.</sys:String>
+    <sys:String x:Key="RiskDesc_Http">Standard-HTTP-Server. Stellen Sie sicher, dass keine sensiblen Daten gehostet werden.</sys:String>
+    <sys:String x:Key="RiskDesc_Unknown">Unbekannter Prozess lauscht im Netzwerk. Potenzieller nicht autorisierter Agent.</sys:String>
+    <sys:String x:Key="RiskDesc_Standard">Standard-Anwendungs-Socket.</sys:String>
+    <sys:String x:Key="RiskDesc_Rpc">Kern-Windows-RPC-Endpunkt-Mapper. Nativ durch die Windows-Firewall abgeschirmt.</sys:String>
+    <sys:String x:Key="RiskDesc_LegacySmb">SMB-Dateifreigabe. Stark anfällig für Lateral-Movement-Exploits, falls exponiert.</sys:String>
+
+    <sys:String x:Key="SecurityPage_HardenRebootTitle">Neustart empfohlen</sys:String>
+    <sys:String x:Key="SecurityPage_HardenRebootMsg">Netzwerk-Härtung erfolgreich angewendet. Einige Kernsystem-Sockets (wie Port 445) verbleiben in einem "Geister"-Zustand (Ghost), bis der Computer neu gestartet wird. Möchten Sie jetzt neu starten?</sys:String>
+    <sys:String x:Key="SecurityPage_HardenShutdownComment">EvolveOS Optimizer: Neustart der Netzwerk-Härtung</sys:String>
+
+    <sys:String x:Key="SecurityPage_HardeningSuccessReboot">Härtung erfolgreich. Bitte starten Sie Ihren PC neu, um verbleibende System-Sockets zu bereinigen.</sys:String>
+    <sys:String x:Key="SecurityPage_ProcessUnknown">System/Unbekannt</sys:String>
+    <sys:String x:Key="SecurityPage_PathUnknown">Unbekannt</sys:String>
+    <sys:String x:Key="SecurityPage_AccessDenied">Zugriff verweigert</sys:String>
+    <sys:String x:Key="SecurityPage_AuditLogFormat">[{0:HH:mm}] ALARM: {1} hat den exponierten Port {2} geöffnet (Risiko {3})</sys:String>
+    <sys:String x:Key="SecurityPage_ScanSuccessMsg">{0} abhörende Anwendungen entdeckt.</sys:String>
+    <sys:String x:Key="SecurityPage_ScanErrorTitle">Port-Scan fehlgeschlagen</sys:String>
+    <sys:String x:Key="SecurityPage_ScanErrorMsg">Netzwerk-Sockets konnten nicht zugeordnet werden.</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->
@@ -2227,6 +2270,14 @@
     <sys:String x:Key="diag_history_card_full_msg">Historische Aufzeichnungen für {0} (ID: {1}). Erweitern, um alle ignorierten Zeitstempel anzuzeigen.</sys:String>
 
     <sys:String x:Key="diag_tooltip_remove_occurrence">Diesen Eintrag dauerhaft entfernen</sys:String>
+
+    <sys:String x:Key="SecurityPage_PortEventMsg">NETZWERKSCHWACHSTELLE: {0} ist auf Port {1} gefährlich exponiert.</sys:String>
+    <sys:String x:Key="diag_fix_network_attempt">Initiierung der Netzwerk-Härtungssequenz...</sys:String>
+
+    <sys:String x:Key="diag_fix_luafv_success">LUAFV-Virtualisierung repariert. Hinweis: Dadurch wurde die UAC wieder aktiviert. Ein Neustart ist erforderlich.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_exhaustion_success">AUTO-FIX BEREITGESTELLT: Der Desktop Window Manager (DWM) wurde neu gestartet, um gesperrtes VRAM freizugeben. Ein Bildschirmflackern während dieses Vorgangs ist normal.</sys:String>
+    <sys:String x:Key="diag_routine_telemetry_msg">Routinemäßige OS-Overhead-Telemetrie. Keine Aktion erforderlich.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_running">Anzeigestapel wird zurückgesetzt... Bildschirm wird flackern.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>
     <sys:String x:Key="txt_later">Später</sys:String>

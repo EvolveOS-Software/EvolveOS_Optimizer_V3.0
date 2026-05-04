@@ -11,7 +11,6 @@ using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Input;
 using EvolveOS_Optimizer.Core.Model;
@@ -60,6 +59,9 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
                 ViewModel.ShowSecurityIssuesRequested += ViewModel_ShowSecurityIssuesRequested;
+
+                ViewModel.CloseActiveDialogsRequested += ViewModel_CloseActiveDialogsRequested;
+
                 ViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
                 ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
                 ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
@@ -773,6 +775,22 @@ namespace EvolveOS_Optimizer.Pages
             if (sender is Slider slider) slider.Focus(FocusState.Pointer);
         }
 
+        private async void OpenPortScanner_Click(object sender, RoutedEventArgs e)
+        {
+            PortScannerDialog.XamlRoot = this.XamlRoot;
+
+            if (ViewModel != null && ViewModel.OpenPorts.Count == 0 && !ViewModel.IsPortScanRunning)
+            {
+                ViewModel.ScanNetworkPortsCommand.Execute(null);
+            }
+
+            await PortScannerDialog.ShowAsync();
+        }
+
+        private void ClosePortScanner_Click(object sender, RoutedEventArgs e)
+        {
+            PortScannerDialog.Hide();
+        }
         #endregion
 
         #region Neural AI Explanations (Event Card Interaction)
@@ -806,6 +824,11 @@ namespace EvolveOS_Optimizer.Pages
         private void OnAddProcessToExclusionListCommandCompleted()
         {
             Debug.WriteLine("Process added to exclusion list.");
+        }
+
+        private void ViewModel_CloseActiveDialogsRequested()
+        {
+            PortScannerDialog?.Hide();
         }
 
         private void OnOptimizeCommandCompleted(Enums.Memory.Optimization.Reason reason, string message)

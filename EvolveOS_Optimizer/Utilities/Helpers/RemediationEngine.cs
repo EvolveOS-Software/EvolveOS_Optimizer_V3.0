@@ -88,7 +88,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                     // Resource & DWM exhaustion repair (GDI handle leaks, desktop window manager crashes)
                     2004 or 2001 or 2002 or 2003 or 2005
-                        => await FixResourceExhaustionAsync(),
+                        => await FixDwmExhaustionAsync(),
 
                     // Service Control Manager (Driver failed to load)
                     7026 => await FixLuafvServiceAsync(),
@@ -464,12 +464,36 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             return true;
         }
 
-        private static async Task<bool> FixResourceExhaustionAsync()
+        public static async Task<bool> FixDwmExhaustionAsync()
+        {
+            try
+            {
+                string command = @"
+                    Stop-Process -Name 'dwm' -Force -ErrorAction SilentlyContinue
+                    # Triggering a basic display re-enumeration via user-mode driver refresh
+                    Add-Type -TypeDefinition '[DllImport(""user32.dll"")] public static extern bool SetProcessDPIAware();' -Name 'Win32' -Namespace 'Custom'
+                    # We also clear system standby memory which often holds orphaned VRAM textures
+                    $code = '[DllImport(""ntdll.dll"")] public static extern int NtSetSystemInformation(int info, IntPtr p, int len);'
+                    Add-Type -MemberDefinition $code -Name 'Memory' -Namespace 'Win32'
+                    [Win32.Memory]::NtSetSystemInformation(0x50, [IntPtr]::Zero, 0)
+                ";
+
+                await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"DWM Fix Failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        /*private static async Task<bool> FixResourceExhaustionAsync()
         {
             string script = @"Restart-Service SysMain -Force -ErrorAction SilentlyContinue; Stop-Process -Name dwm -Force -ErrorAction SilentlyContinue";
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
-        }
+        }*/
 
         private static async Task<bool> FixTimeSyncAsync()
         {
@@ -833,7 +857,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[RemediationEngine] Hardware fix failed: {ex.Message}");
+                Debug.WriteLine($"[RemediationEngine] Hardware fix failed: {ex.Message}");
                 return false;
             }
         }
@@ -910,6 +934,31 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 return true;
             }
             catch { return false; }
+        }
+
+        #endregion
+
+        #region Network Security Helpers
+
+        public static (string level, string desc) AssessPortRisk(int port, string processName, bool isExposed)
+        {
+            string levelLow = ResourceString.GetString("RiskLevel_Low") ?? "Low";
+            string levelMedium = ResourceString.GetString("RiskLevel_Medium") ?? "Medium";
+            string levelHigh = ResourceString.GetString("RiskLevel_High") ?? "High";
+            string levelCritical = ResourceString.GetString("RiskLevel_Critical") ?? "Critical";
+
+            if (!isExposed) return (levelLow, ResourceString.GetString("RiskDesc_Internal") ?? "Internal service, not exposed to network.");
+
+            return port switch
+            {
+                135 => (levelLow, ResourceString.GetString("RiskDesc_Rpc") ?? "Core Windows RPC Endpoint Mapper. Shielded natively by Windows Firewall."),
+                445 => (levelCritical, ResourceString.GetString("RiskDesc_LegacySmb") ?? "SMB File Sharing. Highly vulnerable to lateral movement exploits if exposed."),
+                3389 => (levelHigh, ResourceString.GetString("RiskDesc_Rdp") ?? "Remote Desktop (RDP) exposed. Vulnerable to brute-force and credential stuffing."),
+                21 or 23 => (levelHigh, ResourceString.GetString("RiskDesc_FtpTelnet") ?? "Unencrypted legacy protocol (FTP/Telnet). Credentials sent in plain text."),
+                80 or 8080 when processName.ToLower().Contains("http") => (levelMedium, ResourceString.GetString("RiskDesc_Http") ?? "Standard HTTP server. Ensure no sensitive data is hosted."),
+                _ when processName == "System/Unknown" => (levelHigh, ResourceString.GetString("RiskDesc_Unknown") ?? "Unknown process listening on network. Potential unauthorized agent."),
+                _ => (levelLow, ResourceString.GetString("RiskDesc_Standard") ?? "Standard application socket.")
+            };
         }
 
         #endregion

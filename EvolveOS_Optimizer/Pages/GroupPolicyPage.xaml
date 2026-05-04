@@ -52,12 +52,9 @@
                         <controls:SettingsCard.HeaderIcon>
                             <FontIcon Glyph="&#xE72E;" Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
                         </controls:SettingsCard.HeaderIcon>
-                        <controls:SettingsCard.Content>
-                            <FontIcon Glyph="&#xE76C;" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        </controls:SettingsCard.Content>
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard Grid.Column="1" 
+                    <controls:SettingsCard Grid.Column="1"
                                            Header="{helpers:ResourceString Key='GroupPolicyPage_PresetGamingTitle'}"
                                            Description="{helpers:ResourceString Key='GroupPolicyPage_PresetGamingDesc'}"
                                            IsClickEnabled="True"
@@ -65,9 +62,6 @@
                         <controls:SettingsCard.HeaderIcon>
                             <FontIcon Glyph="&#xE7FC;" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                         </controls:SettingsCard.HeaderIcon>
-                        <controls:SettingsCard.Content>
-                            <FontIcon Glyph="&#xE76C;" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        </controls:SettingsCard.Content>
                     </controls:SettingsCard>
                 </Grid>
 

@@ -497,6 +497,49 @@
 
     <sys:String x:Key="text_saved_successfully">Paramètres enregistrés en toute sécurité.</sys:String>
     <sys:String x:Key="text_ps_policy_restricted">Seules les commandes individuelles sont autorisées.</sys:String>
+
+    <sys:String x:Key="SecurityPage_NetworkAuditHeader">Audit des sockets réseau</sys:String>
+    <sys:String x:Key="SecurityPage_NetworkAuditDesc">Analyser les ports d'écoute actifs et les applications exposées.</sys:String>
+    <sys:String x:Key="SecurityPage_BtnScanPorts">Analyser les ports</sys:String>
+    <sys:String x:Key="SecurityPage_BtnHarden">Renforcer le système</sys:String>
+    <sys:String x:Key="SecurityPage_ColProcess">Application</sys:String>
+    <sys:String x:Key="SecurityPage_ColPID">PID</sys:String>
+    <sys:String x:Key="SecurityPage_ColProtocol">Protocole</sys:String>
+    <sys:String x:Key="SecurityPage_ColPort">Port</sys:String>
+    <sys:String x:Key="SecurityPage_ColAddress">Adresse locale</sys:String>
+    <sys:String x:Key="SecurityPage_ColStatus">Exposition</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningTitle">Système renforcé</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningSuccess">Services de découverte réseau désactivés avec succès. Votre surface d'attaque a été réduite.</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningErrorTitle">Échec du renforcement</sys:String>
+    <sys:String x:Key="SecurityPage_HardeningErrorMsg">Une erreur s'est produite lors de la tentative de désactivation des services de découverte réseau.</sys:String>
+
+    <sys:String x:Key="RiskLevel_Low">Faible</sys:String>
+    <sys:String x:Key="RiskLevel_Medium">Moyen</sys:String>
+    <sys:String x:Key="RiskLevel_High">Élevé</sys:String>
+    <sys:String x:Key="RiskLevel_Critical">Critique</sys:String>
+
+    <sys:String x:Key="RiskDesc_Internal">Service interne, non exposé au réseau.</sys:String>
+    <sys:String x:Key="RiskDesc_LegacyRpcSmb">Service RPC/SMB hérité. Fortement vulnérable aux exploits de mouvement latéral.</sys:String>
+    <sys:String x:Key="RiskDesc_Rdp">Bureau à distance (RDP) exposé. Vulnérable aux attaques par force brute et au bourrage d'identifiants.</sys:String>
+    <sys:String x:Key="RiskDesc_FtpTelnet">Protocole hérité non chiffré (FTP/Telnet). Identifiants envoyés en clair.</sys:String>
+    <sys:String x:Key="RiskDesc_Http">Serveur HTTP standard. Assurez-vous qu'aucune donnée sensible n'est hébergée.</sys:String>
+    <sys:String x:Key="RiskDesc_Unknown">Processus inconnu à l'écoute sur le réseau. Agent non autorisé potentiel.</sys:String>
+    <sys:String x:Key="RiskDesc_Standard">Socket d'application standard.</sys:String>
+    <sys:String x:Key="RiskDesc_Rpc">Mappeur de points de terminaison RPC Windows de base. Protégé nativement par le pare-feu Windows.</sys:String>
+    <sys:String x:Key="RiskDesc_LegacySmb">Partage de fichiers SMB. Fortement vulnérable aux exploits de mouvement latéral si exposé.</sys:String>
+
+    <sys:String x:Key="SecurityPage_HardenRebootTitle">Redémarrage recommandé</sys:String>
+    <sys:String x:Key="SecurityPage_HardenRebootMsg">Renforcement du réseau appliqué avec succès. Certains sockets système de base (comme le port 445) resteront dans un état d'écoute "fantôme" (Ghost) jusqu'au redémarrage de l'ordinateur. Voulez-vous redémarrer maintenant ?</sys:String>
+    <sys:String x:Key="SecurityPage_HardenShutdownComment">EvolveOS Optimizer : Redémarrage pour renforcement du réseau</sys:String>
+
+    <sys:String x:Key="SecurityPage_HardeningSuccessReboot">Renforcement réussi. Veuillez redémarrer votre PC pour effacer les sockets système persistants.</sys:String>
+    <sys:String x:Key="SecurityPage_ProcessUnknown">Système/Inconnu</sys:String>
+    <sys:String x:Key="SecurityPage_PathUnknown">Inconnu</sys:String>
+    <sys:String x:Key="SecurityPage_AccessDenied">Accès refusé</sys:String>
+    <sys:String x:Key="SecurityPage_AuditLogFormat">[{0:HH:mm}] ALERTE : {1} a ouvert le port exposé {2} (Risque {3})</sys:String>
+    <sys:String x:Key="SecurityPage_ScanSuccessMsg">{0} applications à l'écoute découvertes.</sys:String>
+    <sys:String x:Key="SecurityPage_ScanErrorTitle">Échec de l'analyse des ports</sys:String>
+    <sys:String x:Key="SecurityPage_ScanErrorMsg">Impossible de mapper les sockets réseau.</sys:String>
     <!-- endregion SecurityPage -->
 
     <!-- region GroupPolicy Page -->
@@ -2224,6 +2267,14 @@
     <sys:String x:Key="diag_history_card_full_msg">Enregistrements historiques pour {0} (ID : {1}). Développez pour afficher tous les horodatages ignorés.</sys:String>
 
     <sys:String x:Key="diag_tooltip_remove_occurrence">Supprimer définitivement cette occurrence</sys:String>
+
+    <sys:String x:Key="SecurityPage_PortEventMsg">VULNÉRABILITÉ RÉSEAU : {0} est dangereusement exposé sur le port {1}.</sys:String>
+    <sys:String x:Key="diag_fix_network_attempt">Lancement de la séquence de renforcement du réseau...</sys:String>
+
+    <sys:String x:Key="diag_fix_luafv_success">Virtualisation LUAFV réparée. Remarque : Cela a réactivé l'UAC. Un redémarrage est nécessaire.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_exhaustion_success">CORRECTION AUTO DÉPLOYÉE : Le gestionnaire de fenêtres du bureau (DWM) a été redémarré pour libérer la VRAM verrouillée. Un scintillement de l'écran pendant ce processus est normal.</sys:String>
+    <sys:String x:Key="diag_routine_telemetry_msg">Télémétrie de routine du système d'exploitation. Aucune action requise.</sys:String>
+    <sys:String x:Key="diag_fix_dwm_running">Réinitialisation de la pile d'affichage... L'écran va scintiller.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
     <sys:String x:Key="txt_later">Plus tard</sys:String>
