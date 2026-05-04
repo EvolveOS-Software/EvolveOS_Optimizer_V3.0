@@ -1296,6 +1296,23 @@
     <sys:String x:Key="service_manager_page_start_tooltip">Démarrer le service</sys:String>
     <sys:String x:Key="service_manager_page_stop_tooltip">Arrêter le service</sys:String>
     <sys:String x:Key="service_manager_page_restart_tooltip">Redémarrer le service</sys:String>
+
+    <sys:String x:Key="service_manager_page_hide_microsoft">Masquer les services Microsoft</sys:String>
+    <sys:String x:Key="service_manager_page_showing_results">Affichage de {0} sur {1} services</sys:String>
+
+    <sys:String x:Key="service_manager_action_started">démarré</sys:String>
+    <sys:String x:Key="service_manager_action_stopped">arrêté</sys:String>
+    <sys:String x:Key="service_manager_action_restarted">redémarré</sys:String>
+    <sys:String x:Key="service_manager_action_processed">traité</sys:String>
+
+    <sys:String x:Key="service_manager_notif_control_title">Contrôle des Services</sys:String>
+    <sys:String x:Key="service_manager_notif_control_success">Le service '{0}' a été {1} avec succès.</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error_title">Erreur de Contrôle des Services</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error">Échec du contrôle du service : {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_title">Type de Démarrage Modifié</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_success">Le type de démarrage du service '{0}' a été défini sur {1}.</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_error">Échec de la modification du type de démarrage : {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_error">Erreur</sys:String>
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->

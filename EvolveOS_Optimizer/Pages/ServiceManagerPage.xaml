@@ -77,6 +77,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <AutoSuggestBox x:Name="SearchBox"
@@ -86,8 +87,16 @@
                             HorizontalAlignment="Left"
                             TextChanged="SearchBox_TextChanged"/>
 
-            <ComboBox x:Name="FilterComboBox"
+            <CheckBox x:Name="HideMicrosoftCheckBox" 
                       Grid.Column="1"
+                      Content="{helpers:ResourceString Key=service_manager_page_hide_microsoft}" 
+                      Checked="HideMicrosoftCheckBox_Changed" 
+                      Unchecked="HideMicrosoftCheckBox_Changed"
+                      Margin="16,0,0,0" 
+                      VerticalAlignment="Center"/>
+
+            <ComboBox x:Name="FilterComboBox"
+                      Grid.Column="2"
                       Margin="8,0,0,0"
                       Width="140"
                       FontFamily="{ThemeResource Jura}"
@@ -101,7 +110,7 @@
             </ComboBox>
 
             <Button x:Name="LiveMonitoringButton" 
-                    Grid.Column="2" 
+                    Grid.Column="3" 
                     Margin="8,0,0,0" 
                     MinWidth="200"
                     HorizontalContentAlignment="Center"
@@ -209,10 +218,13 @@
                                     <FontIcon Glyph="{Binding StatusDisplay.Glyph}" 
                                               FontSize="14" 
                                               Foreground="{Binding StatusDisplay.Color}" 
-                                              Opacity="0.8"/>
+                                              Opacity="0.8"
+                                              VerticalAlignment="Top"
+                                              Margin="0,2,0,0"/>
                                     <StackPanel Spacing="2">
                                         <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" FontSize="13"/>
                                         <TextBlock Text="{Binding Name}" FontSize="11" Opacity="0.5" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding ExecutablePath}" FontFamily="Consolas" FontSize="10" Opacity="0.4" TextWrapping="Wrap" MaxWidth="350"/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -220,7 +232,8 @@
                                         Background="{ThemeResource SubtleFillColorSecondaryBrush}"
                                         CornerRadius="4"
                                         Padding="10,4"
-                                        HorizontalAlignment="Center">
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Status}" FontSize="12" Opacity="0.85" VerticalAlignment="Center"/>
                                 </Border>
 
@@ -232,6 +245,7 @@
                                           DropDownOpened="StartupType_DropDownOpened"
                                           DropDownClosed="StartupType_DropDownClosed"
                                           HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
                                           MinWidth="140"
                                           Padding="8,4">
                                     <ComboBoxItem Content="{helpers:ResourceString Key=service_manager_page_automatic}"/>
@@ -239,7 +253,7 @@
                                     <ComboBoxItem Content="{helpers:ResourceString Key=service_manager_page_disabled}"/>
                                 </ComboBox>
 
-                                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
                                     <Button Tag="{Binding Name}"
                                             Click="StartService_Click"
                                             ToolTipService.ToolTip="{helpers:ResourceString Key=service_manager_page_start_tooltip}"

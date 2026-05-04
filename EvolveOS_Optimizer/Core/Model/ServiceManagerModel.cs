@@ -11,6 +11,9 @@ internal class ServiceManagerModel : INotifyPropertyChanged
     private bool _canStop;
     private string _displayName = string.Empty;
 
+    public bool IsMicrosoftService { get; set; }
+    public string ExecutablePath { get; set; } = string.Empty;
+
     public string Name { get; set; } = string.Empty;
 
     public string DisplayName

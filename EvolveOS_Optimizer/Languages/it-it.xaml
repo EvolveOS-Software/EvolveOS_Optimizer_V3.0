@@ -1301,6 +1301,23 @@
     <sys:String x:Key="service_manager_page_start_tooltip">Avvia servizio</sys:String>
     <sys:String x:Key="service_manager_page_stop_tooltip">Arresta servizio</sys:String>
     <sys:String x:Key="service_manager_page_restart_tooltip">Riavvia servizio</sys:String>
+
+    <sys:String x:Key="service_manager_page_hide_microsoft">Nascondi servizi Microsoft</sys:String>
+    <sys:String x:Key="service_manager_page_showing_results">Visualizzazione di {0} su {1} servizi</sys:String>
+
+    <sys:String x:Key="service_manager_action_started">avviato</sys:String>
+    <sys:String x:Key="service_manager_action_stopped">interrotto</sys:String>
+    <sys:String x:Key="service_manager_action_restarted">riavviato</sys:String>
+    <sys:String x:Key="service_manager_action_processed">elaborato</sys:String>
+
+    <sys:String x:Key="service_manager_notif_control_title">Controllo Servizi</sys:String>
+    <sys:String x:Key="service_manager_notif_control_success">Servizio '{0}' {1} con successo.</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error_title">Errore di Controllo Servizi</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error">Impossibile controllare il servizio: {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_title">Tipo di Avvio Modificato</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_success">Il tipo di avvio del servizio '{0}' è stato impostato su {1}.</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_error">Impossibile modificare il tipo di avvio: {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_error">Errore</sys:String>
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->

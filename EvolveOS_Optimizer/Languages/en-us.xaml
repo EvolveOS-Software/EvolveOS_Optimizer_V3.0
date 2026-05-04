@@ -1307,6 +1307,23 @@
     <sys:String x:Key="service_manager_page_start_tooltip">Start Service</sys:String>
     <sys:String x:Key="service_manager_page_stop_tooltip">Stop Service</sys:String>
     <sys:String x:Key="service_manager_page_restart_tooltip">Restart Service</sys:String>
+
+    <sys:String x:Key="service_manager_page_hide_microsoft">Hide Microsoft Services</sys:String>
+    <sys:String x:Key="service_manager_page_showing_results">Showing {0} of {1} services</sys:String>
+
+    <sys:String x:Key="service_manager_action_started">started</sys:String>
+    <sys:String x:Key="service_manager_action_stopped">stopped</sys:String>
+    <sys:String x:Key="service_manager_action_restarted">restarted</sys:String>
+    <sys:String x:Key="service_manager_action_processed">processed</sys:String>
+
+    <sys:String x:Key="service_manager_notif_control_title">Service Control</sys:String>
+    <sys:String x:Key="service_manager_notif_control_success">Service '{0}' {1} successfully.</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error_title">Service Control Error</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error">Failed to control service: {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_title">Startup Type Changed</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_success">Service '{0}' startup type set to {1}.</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_error">Failed to change startup type: {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_error">Error</sys:String>
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->

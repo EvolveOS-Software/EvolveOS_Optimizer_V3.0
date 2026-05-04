@@ -1291,11 +1291,27 @@
     <sys:String x:Key="service_manager_page_service_name">Dienstname</sys:String>
     <sys:String x:Key="service_manager_page_status">Status</sys:String>
 
-    <sys:String x:Key="process_manager_page_start_monitor">Überwachung fortsetzen</sys:String>
-    <sys:String x:Key="process_manager_page_live_monitor">Live-Überwachung</sys:String>
+    <sys:String x:Key="service_manager_page_hide_microsoft">Microsoft-Dienste ausblenden</sys:String>
+    <sys:String x:Key="service_manager_page_showing_results">Zeige {0} von {1} Diensten</sys:String>
+
+    <sys:String x:Key="service_manager_action_started">gestartet</sys:String>
+    <sys:String x:Key="service_manager_action_stopped">gestoppt</sys:String>
+    <sys:String x:Key="service_manager_action_restarted">neu gestartet</sys:String>
+    <sys:String x:Key="service_manager_action_processed">verarbeitet</sys:String>
+
+    <sys:String x:Key="service_manager_notif_control_title">Dienststeuerung</sys:String>
+    <sys:String x:Key="service_manager_notif_control_success">Dienst '{0}' wurde erfolgreich {1}.</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error_title">Fehler bei der Dienststeuerung</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error">Fehler beim Steuern des Dienstes: {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_title">Starttyp Geändert</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_success">Der Starttyp des Dienstes '{0}' wurde auf {1} gesetzt.</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_error">Starttyp konnte nicht geändert werden: {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_error">Fehler</sys:String>
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->
+    <sys:String x:Key="process_manager_page_start_monitor">Überwachung fortsetzen</sys:String>
+    <sys:String x:Key="process_manager_page_live_monitor">Live-Überwachung</sys:String>
 
     <!-- Process Manager: Summary Cards -->
     <sys:String x:Key="process_manager_page_total_processes">Gesamtzahl der Prozesse</sys:String>

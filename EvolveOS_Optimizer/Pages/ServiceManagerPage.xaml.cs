@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Collections.ObjectModel;
 using System.ServiceProcess;
 using EvolveOS_Optimizer.Core.Model;
@@ -17,6 +20,7 @@ public sealed partial class ServiceManagerPage : Page
     private string _currentSort = "Name";
     private bool _sortAscending = true;
     private string _currentFilter = "All";
+    private bool _hideMicrosoftServices = false;
     private bool _isLoaded;
     private bool _isUpdatingStartupType;
     private HashSet<ComboBox> _userInteractedComboBoxes = [];
@@ -88,7 +92,7 @@ public sealed partial class ServiceManagerPage : Page
             return ServiceController.GetServices()
                 .Select(s =>
                 {
-                    var startType = GetServiceStartType(s.ServiceName);
+                    var details = GetServiceDetails(s.ServiceName);
                     var isRunning = s.Status == ServiceControllerStatus.Running;
                     var canStop = s.Status == ServiceControllerStatus.Running && s.CanStop;
 
@@ -97,8 +101,10 @@ public sealed partial class ServiceManagerPage : Page
                         Name = s.ServiceName,
                         DisplayName = s.DisplayName,
                         Status = s.Status.ToString(),
-                        StartType = startType,
-                        CanStart = !isRunning && startType != "Disabled",
+                        StartType = details.StartType,
+                        ExecutablePath = details.ImagePath,
+                        IsMicrosoftService = details.IsMicrosoft,
+                        CanStart = !isRunning && details.StartType != "Disabled",
                         CanStop = canStop
                     };
                 })
@@ -153,28 +159,27 @@ public sealed partial class ServiceManagerPage : Page
 
         var filtered = _allServices.Where(s =>
         {
-            var matchesFilter = _currentFilter switch
-            {
-                "Running" => s.Status == "Running",
-                "Stopped" => s.Status == "Stopped",
-                "Automatic" => s.StartType == "Automatic",
-                "Manual" => s.StartType == "Manual",
-                "Disabled" => s.StartType == "Disabled",
-                _ => true
-            };
+            var matchesFilter = true;
+            if (_currentFilter == ResourceString.GetString("service_manager_page_running")) matchesFilter = s.Status == "Running";
+            else if (_currentFilter == ResourceString.GetString("service_manager_page_stopped")) matchesFilter = s.Status == "Stopped";
+            else if (_currentFilter == ResourceString.GetString("service_manager_page_automatic")) matchesFilter = s.StartType == "Automatic";
+            else if (_currentFilter == ResourceString.GetString("service_manager_page_manual")) matchesFilter = s.StartType == "Manual";
+            else if (_currentFilter == ResourceString.GetString("service_manager_page_disabled")) matchesFilter = s.StartType == "Disabled";
 
             var matchesSearch = string.IsNullOrEmpty(query) ||
                 s.DisplayName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
                 s.Name.Contains(query, StringComparison.OrdinalIgnoreCase);
 
-            return matchesFilter && matchesSearch;
+            var matchesMicrosoft = !_hideMicrosoftServices || !s.IsMicrosoftService;
+
+            return matchesFilter && matchesSearch && matchesMicrosoft;
         }).ToList();
 
         var sorted = SortServices(filtered);
 
         MergeInto(_filteredServices, sorted);
 
-        ResultsText.Text = $"Showing {_filteredServices.Count} of {_allServices.Count} services";
+        ResultsText.Text = string.Format(ResourceString.GetString("service_manager_page_showing_results"), _filteredServices.Count, _allServices.Count);
     }
 
     private List<ServiceManagerModel> SortServices(List<ServiceManagerModel> source)
@@ -261,6 +266,15 @@ public sealed partial class ServiceManagerPage : Page
         }
     }
 
+    private void HideMicrosoftCheckBox_Changed(object sender, RoutedEventArgs e)
+    {
+        if (sender is CheckBox cb)
+        {
+            _hideMicrosoftServices = cb.IsChecked == true;
+            ApplyFilterAndSort();
+        }
+    }
+
     private void SortHeader_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button && button.Tag is string column)
@@ -311,13 +325,18 @@ public sealed partial class ServiceManagerPage : Page
         {
             if (!_userInteractedComboBoxes.Remove(comboBox)) return;
 
-            var startupType = selectedItem.Content?.ToString();
-            if (string.IsNullOrEmpty(startupType)) return;
+            var startupTypeLocalized = selectedItem.Content?.ToString();
+            if (string.IsNullOrEmpty(startupTypeLocalized)) return;
+
+            string internalStartType = "Unknown";
+            if (startupTypeLocalized == ResourceString.GetString("service_manager_page_automatic")) internalStartType = "Automatic";
+            else if (startupTypeLocalized == ResourceString.GetString("service_manager_page_manual")) internalStartType = "Manual";
+            else if (startupTypeLocalized == ResourceString.GetString("service_manager_page_disabled")) internalStartType = "Disabled";
 
             var service = _allServices.FirstOrDefault(s => s.Name == serviceName);
-            if (service == null || service.StartType == startupType) return;
+            if (service == null || service.StartType == internalStartType) return;
 
-            await ChangeStartupTypeAsync(serviceName, startupType);
+            await ChangeStartupTypeAsync(serviceName, internalStartType);
         }
     }
 
@@ -390,29 +409,36 @@ public sealed partial class ServiceManagerPage : Page
 
             var successText = action switch
             {
-                ServiceControlAction.Start => "started",
-                ServiceControlAction.Stop => "stopped",
-                ServiceControlAction.Restart => "restarted",
-                _ => "processed"
+                ServiceControlAction.Start => ResourceString.GetString("service_manager_action_started"),
+                ServiceControlAction.Stop => ResourceString.GetString("service_manager_action_stopped"),
+                ServiceControlAction.Restart => ResourceString.GetString("service_manager_action_restarted"),
+                _ => ResourceString.GetString("service_manager_action_processed")
             };
 
-            App.ShowNotification("Service Control", $"Service '{serviceName}' {successText} successfully.", InfoBarSeverity.Success, 3000);
+            App.ShowNotification(
+                ResourceString.GetString("service_manager_notif_control_title"),
+                string.Format(ResourceString.GetString("service_manager_notif_control_success"), serviceName, successText),
+                InfoBarSeverity.Success, 3000);
+
             await LoadServicesAsync();
         }
         catch (Exception ex)
         {
             await ErrorLogging.LogInfo($"Error controlling service {serviceName}: {ex.Message}");
-            App.ShowNotification("Service Control Error", $"Failed to control service: {ex.Message}", InfoBarSeverity.Error, 5000);
+            App.ShowNotification(
+                ResourceString.GetString("service_manager_notif_control_error_title"),
+                string.Format(ResourceString.GetString("service_manager_notif_control_error"), ex.Message),
+                InfoBarSeverity.Error, 5000);
         }
     }
 
-    private async Task ChangeStartupTypeAsync(string serviceName, string startupType)
+    private async Task ChangeStartupTypeAsync(string serviceName, string internalStartType)
     {
         try
         {
-            await ErrorLogging.LogInfo($"Changing startup type for service {serviceName} to {startupType}");
+            await ErrorLogging.LogInfo($"Changing startup type for service {serviceName} to {internalStartType}");
 
-            var startValue = startupType switch
+            var startValue = internalStartType switch
             {
                 "Automatic" => 2,
                 "Manual" => 3,
@@ -426,19 +452,27 @@ public sealed partial class ServiceManagerPage : Page
                 key?.SetValue("Start", startValue, RegistryValueKind.DWord);
             });
 
-            App.ShowNotification("Startup Type Changed", $"Service '{serviceName}' startup type set to {startupType}.", InfoBarSeverity.Success, 3000);
+            string localizedStartType = ResourceString.GetString($"service_manager_page_{internalStartType.ToLower()}");
+
+            App.ShowNotification(
+                ResourceString.GetString("service_manager_notif_startup_title"),
+                string.Format(ResourceString.GetString("service_manager_notif_startup_success"), serviceName, localizedStartType),
+                InfoBarSeverity.Success, 3000);
 
             var service = _allServices.FirstOrDefault(s => s.Name == serviceName);
             if (service != null)
             {
-                service.StartType = startupType;
-                service.CanStart = service.Status != "Running" && startupType != "Disabled";
+                service.StartType = internalStartType;
+                service.CanStart = service.Status != "Running" && internalStartType != "Disabled";
             }
         }
         catch (Exception ex)
         {
             await ErrorLogging.LogInfo($"Error changing startup type for {serviceName}: {ex.Message}");
-            App.ShowNotification("Error", $"Failed to change startup type: {ex.Message}", InfoBarSeverity.Error, 5000);
+            App.ShowNotification(
+                ResourceString.GetString("service_manager_notif_error"),
+                string.Format(ResourceString.GetString("service_manager_notif_startup_error"), ex.Message),
+                InfoBarSeverity.Error, 5000);
 
             _isUpdatingStartupType = true;
             await LoadServicesAsync();
@@ -448,26 +482,46 @@ public sealed partial class ServiceManagerPage : Page
     #endregion
 
     #region Helpers
-    private static string GetServiceStartType(string serviceName)
+    private static (string StartType, string ImagePath, bool IsMicrosoft) GetServiceDetails(string serviceName)
     {
+        string startType = "Unknown";
+        string imagePath = string.Empty;
+        bool isMicrosoft = false;
+
         try
         {
             using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{serviceName}");
-            if (key?.GetValue("Start") is int startType)
+            if (key != null)
             {
-                return startType switch
+                if (key.GetValue("Start") is int typeInt)
                 {
-                    0 => "Boot",
-                    1 => "System",
-                    2 => "Automatic",
-                    3 => "Manual",
-                    4 => "Disabled",
-                    _ => "Unknown"
-                };
+                    startType = typeInt switch
+                    {
+                        0 => "Boot",
+                        1 => "System",
+                        2 => "Automatic",
+                        3 => "Manual",
+                        4 => "Disabled",
+                        _ => "Unknown"
+                    };
+                }
+
+                var pathRaw = key.GetValue("ImagePath")?.ToString();
+                if (!string.IsNullOrEmpty(pathRaw))
+                {
+                    imagePath = pathRaw.Replace("\\SystemRoot\\", "C:\\Windows\\").Replace("system32", "System32", StringComparison.OrdinalIgnoreCase);
+
+                    if (imagePath.Contains("C:\\Windows", StringComparison.OrdinalIgnoreCase) ||
+                        imagePath.Contains("svchost.exe", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isMicrosoft = true;
+                    }
+                }
             }
         }
         catch { }
-        return "Unknown";
+
+        return (startType, imagePath, isMicrosoft);
     }
 
     public void Purge()

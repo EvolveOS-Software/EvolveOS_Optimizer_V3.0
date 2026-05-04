@@ -1291,6 +1291,23 @@
     <sys:String x:Key="service_manager_page_start_tooltip">Service Starten</sys:String>
     <sys:String x:Key="service_manager_page_stop_tooltip">Service Stoppen</sys:String>
     <sys:String x:Key="service_manager_page_restart_tooltip">Service Herstarten</sys:String>
+
+    <sys:String x:Key="service_manager_page_hide_microsoft">Microsoft services verbergen</sys:String>
+    <sys:String x:Key="service_manager_page_showing_results">Toont {0} van {1} services</sys:String>
+
+    <sys:String x:Key="service_manager_action_started">gestart</sys:String>
+    <sys:String x:Key="service_manager_action_stopped">gestopt</sys:String>
+    <sys:String x:Key="service_manager_action_restarted">herstart</sys:String>
+    <sys:String x:Key="service_manager_action_processed">verwerkt</sys:String>
+
+    <sys:String x:Key="service_manager_notif_control_title">Servicebeheer</sys:String>
+    <sys:String x:Key="service_manager_notif_control_success">Service '{0}' is succesvol {1}.</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error_title">Fout bij Servicebeheer</sys:String>
+    <sys:String x:Key="service_manager_notif_control_error">Kan service niet beheren: {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_title">Opstarttype Gewijzigd</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_success">Opstarttype van service '{0}' is ingesteld op {1}.</sys:String>
+    <sys:String x:Key="service_manager_notif_startup_error">Kan opstarttype niet wijzigen: {0}</sys:String>
+    <sys:String x:Key="service_manager_notif_error">Fout</sys:String>
     <!-- endregion Service Manager Page -->
 
     <!-- region Process Manager Page -->
