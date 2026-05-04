@@ -581,7 +581,29 @@
     <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} actieve overschrijvingen van in totaal {1} OS-beleidsregels.</sys:String>
     <sys:String x:Key="GroupPolicyPage_ScanError">Fout bij het scannen van ADMX-beleid.</sys:String>
 
+    <sys:String x:Key="GroupPolicyPage_CompareBaselineButton">Vergelijk met Baseline</sys:String>
+    <sys:String x:Key="GroupPolicyPage_AddCustomOverrideButton">Aangepaste Overschrijving Toevoegen</sys:String>
+
     <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Beleidsoverschrijving verwijderen</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_BaselineCompareTitle">Baseline Vergelijking</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineClean">Uw systeem komt overeen met de Vanilla Windows 11 baseline. Geen gewijzigd beleid gedetecteerd.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineAnomalies">{0} beleidsregels gedetecteerd die afwijken van de standaard Windows-baseline. Deze zijn gewijzigd door bedrijfsdomeinen, malware of tweaking-tools.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_CustomOverrideTitle">Aangepaste Beleidsoverschrijving Maken</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Inject">Beleid Injecteren</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectHive">Register Hive:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectPath">Sleutelpad:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectValueName">Waardenaam:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectType">Waardetype:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectData">Waarde Data:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectDataPlaceholder">Waarde Data (bijv. 0, 1 of tekst)</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_InjectingStatus">Aangepast beleid injecteren...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccessTitle">Succes</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccess">Aangepast beleid is succesvol geïnjecteerd en bijgehouden.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorTitle">Injectiefout</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorMissingFields">Alle beleidsvelden zijn vereist om een aangepaste overschrijving te injecteren.</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->

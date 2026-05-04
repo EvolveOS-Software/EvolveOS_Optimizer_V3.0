@@ -99,6 +99,14 @@
                                         <TextBlock helpers:Loc.Key="GroupPolicyPage_RefreshText"/>
                                     </StackPanel>
                                 </Button>
+
+                                <Button x:Name="CompareBaselineButton" Click="CompareBaselineButton_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE81C;" FontSize="14"/>
+                                        <TextBlock helpers:Loc.Key="GroupPolicyPage_CompareBaselineButton"/>
+                                    </StackPanel>
+                                </Button>
+
                                 <Button x:Name="RemoveAllButton"
                                         Click="RemoveAllButton_Click"
                                         IsEnabled="False"
@@ -158,9 +166,10 @@
                             <controls:SettingsCard.Header>
                                 <StackPanel>
 
-                                    <Grid Margin="0,0,0,12">
+                                    <Grid Margin="0,0,0,12" ColumnSpacing="8">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
@@ -169,10 +178,20 @@
                                                         QueryIcon="Find"
                                                         Width="300"
                                                         HorizontalAlignment="Left"
+                                                        Grid.Column="0"
                                                         TextChanged="PolicySearchBox_TextChanged"/>
 
-                                        <Button x:Name="ExportBackupButton"
+                                        <Button x:Name="AddCustomOverrideButton"
                                                 Grid.Column="1"
+                                                Click="AddCustomOverrideButton_Click">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon Glyph="&#xE710;" FontSize="14"/>
+                                                <TextBlock helpers:Loc.Key="GroupPolicyPage_AddCustomOverrideButton"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <Button x:Name="ExportBackupButton"
+                                                Grid.Column="2"
                                                 Click="ExportBackupButton_Click">
                                             <StackPanel Orientation="Horizontal" Spacing="8">
                                                 <FontIcon Glyph="&#xE74E;" FontSize="14"/>

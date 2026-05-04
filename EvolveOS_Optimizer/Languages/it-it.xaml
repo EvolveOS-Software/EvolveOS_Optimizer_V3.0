@@ -585,7 +585,29 @@
     <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} override attivi su un totale di {1} criteri del sistema operativo.</sys:String>
     <sys:String x:Key="GroupPolicyPage_ScanError">Errore durante la scansione dei criteri ADMX.</sys:String>
 
+    <sys:String x:Key="GroupPolicyPage_CompareBaselineButton">Confronta con la Baseline</sys:String>
+    <sys:String x:Key="GroupPolicyPage_AddCustomOverrideButton">Aggiungi Override Personalizzato</sys:String>
+
     <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Rimuovi override del criterio</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_BaselineCompareTitle">Confronto Baseline</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineClean">Il tuo sistema corrisponde alla baseline di Windows 11 Vanilla. Nessun criterio alterato rilevato.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineAnomalies">Rilevati {0} criteri che si discostano dalla baseline standard di Windows. Questi sono stati alterati da domini aziendali, malware o strumenti di tweaking.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_CustomOverrideTitle">Crea Override Criterio Personalizzato</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Inject">Inserisci Criterio</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectHive">Hive di Registro:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectPath">Percorso Chiave:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectValueName">Nome Valore:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectType">Tipo di Valore:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectData">Dati Valore:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectDataPlaceholder">Dati valore (es. 0, 1 o testo)</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_InjectingStatus">Inserimento criterio personalizzato in corso...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccessTitle">Successo</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccess">Criterio personalizzato inserito e tracciato con successo.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorTitle">Errore di Inserimento</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorMissingFields">Tutti i campi del criterio sono obbligatori per inserire un override personalizzato.</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->

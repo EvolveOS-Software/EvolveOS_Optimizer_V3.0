@@ -581,7 +581,29 @@
     <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} aktive Überschreibungen von insgesamt {1} OS-Richtlinien.</sys:String>
     <sys:String x:Key="GroupPolicyPage_ScanError">Fehler beim Scannen der ADMX-Richtlinien.</sys:String>
 
+    <sys:String x:Key="GroupPolicyPage_CompareBaselineButton">Mit Basislinie Vergleichen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_AddCustomOverrideButton">Benutzerdefinierte Überschreibung Hinzufügen</sys:String>
+
     <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Richtlinienüberschreibung entfernen</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_BaselineCompareTitle">Basislinien-Vergleich</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineClean">Ihr System entspricht der Vanilla Windows 11 Basislinie. Keine geänderten Richtlinien erkannt.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineAnomalies">{0} Richtlinien erkannt, die von der Standard-Windows-Basislinie abweichen. Diese wurden durch Unternehmensdomänen, Malware oder Tweaking-Tools geändert.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_CustomOverrideTitle">Benutzerdefinierte Richtlinienüberschreibung Erstellen</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Inject">Richtlinie Injizieren</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectHive">Registrierungsstruktur:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectPath">Schlüsselpfad:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectValueName">Wertname:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectType">Werttyp:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectData">Wertdaten:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectDataPlaceholder">Wertdaten (z. B. 0, 1 oder Text)</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_InjectingStatus">Benutzerdefinierte Richtlinie wird injiziert...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccessTitle">Erfolg</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccess">Benutzerdefinierte Richtlinie erfolgreich injiziert und protokolliert.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorTitle">Injektionsfehler</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorMissingFields">Alle Richtlinienfelder sind erforderlich, um eine benutzerdefinierte Überschreibung zu injizieren.</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->

@@ -588,7 +588,29 @@
     <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} active overrides out of {1} total OS policies.</sys:String>
     <sys:String x:Key="GroupPolicyPage_ScanError">Error scanning ADMX policies.</sys:String>
 
+    <sys:String x:Key="GroupPolicyPage_CompareBaselineButton">Compare to Baseline</sys:String>
+    <sys:String x:Key="GroupPolicyPage_AddCustomOverrideButton">Add Custom Override</sys:String>
+
     <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Remove Policy Override</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_BaselineCompareTitle">Baseline Comparison</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineClean">Your system matches the Vanilla Windows 11 baseline. No altered policies detected.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineAnomalies">Detected {0} policies that deviate from the standard Windows baseline. These have been altered by corporate domains, malware, or tweaking tools.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_CustomOverrideTitle">Create Custom Policy Override</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Inject">Inject Policy</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectHive">Registry Hive:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectPath">Key Path:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectValueName">Value Name:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectType">Value Type:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectData">Value Data:</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectDataPlaceholder">Value Data (e.g., 0, 1, or text)</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_InjectingStatus">Injecting custom policy...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccessTitle">Success</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccess">Custom policy successfully injected and tracked.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorTitle">Injection Error</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorMissingFields">All policy fields are required to inject a custom override.</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->

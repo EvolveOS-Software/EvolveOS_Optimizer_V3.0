@@ -581,7 +581,29 @@
     <sys:String x:Key="GroupPolicyPage_ConfiguredPoliciesCount">{0} remplacements actifs sur un total de {1} stratégies d'OS.</sys:String>
     <sys:String x:Key="GroupPolicyPage_ScanError">Erreur lors de l'analyse des stratégies ADMX.</sys:String>
 
+    <sys:String x:Key="GroupPolicyPage_CompareBaselineButton">Comparer à la Base</sys:String>
+    <sys:String x:Key="GroupPolicyPage_AddCustomOverrideButton">Ajouter un Remplacement Personnalisé</sys:String>
+
     <sys:String x:Key="GroupPolicyPage_RemovePolicyTooltip">Supprimer le remplacement de stratégie</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_BaselineCompareTitle">Comparaison de Base</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineClean">Votre système correspond à la configuration de base de Windows 11 Vanilla. Aucune stratégie modifiée détectée.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_BaselineAnomalies">{0} stratégies détectées s'écartant de la configuration de base standard de Windows. Celles-ci ont été modifiées par des domaines d'entreprise, des logiciels malveillants ou des outils de personnalisation.</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_CustomOverrideTitle">Créer un Remplacement de Stratégie Personnalisé</sys:String>
+    <sys:String x:Key="GroupPolicyPage_Inject">Injecter la Stratégie</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectHive">Ruche du Registre :</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectPath">Chemin de la Clé :</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectValueName">Nom de la Valeur :</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectType">Type de Valeur :</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectData">Données de Valeur :</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectDataPlaceholder">Données de valeur (ex. 0, 1 ou texte)</sys:String>
+
+    <sys:String x:Key="GroupPolicyPage_InjectingStatus">Injection de la stratégie personnalisée...</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccessTitle">Succès</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectSuccess">Stratégie personnalisée injectée et suivie avec succès.</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorTitle">Erreur d'Injection</sys:String>
+    <sys:String x:Key="GroupPolicyPage_InjectErrorMissingFields">Tous les champs de stratégie sont requis pour injecter un remplacement personnalisé.</sys:String>
     <!-- endregion GroupPolicy Page -->
 
     <!-- region Software Center Page (Tabbed) -->

@@ -409,6 +409,113 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
     }
     #endregion
 
+    #region State Diffing & Baseline Comparisons
+    private async void CompareBaselineButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_policyStates == null) return;
+
+        var anomalies = _policyStates.Where(s => s.IsConfigured).ToList();
+
+        string title = ResourceString.GetString("GroupPolicyPage_BaselineCompareTitle") ?? "Baseline Comparison";
+        string content;
+
+        if (anomalies.Count == 0)
+        {
+            content = ResourceString.GetString("GroupPolicyPage_BaselineClean") ??
+                "Your system matches the Vanilla Windows 11 baseline. No altered policies detected.";
+        }
+        else
+        {
+            string format = ResourceString.GetString("GroupPolicyPage_BaselineAnomalies") ??
+                "Detected {0} policies that deviate from the standard Windows baseline. These have been altered by corporate domains, malware, or tweaking tools.";
+            content = string.Format(format, anomalies.Count);
+        }
+
+        var dialog = new ContentDialog
+        {
+            XamlRoot = this.XamlRoot,
+            Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
+            BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentAAFillColorDefaultBrush"],
+            Title = title,
+            Content = content,
+            CloseButtonText = ResourceString.GetString("Close") ?? "Close"
+        };
+
+        await dialog.ShowAsync();
+    }
+    #endregion
+
+    #region Custom Policy Injection (Manual Overrides)
+    private async void AddCustomOverrideButton_Click(object sender, RoutedEventArgs e)
+    {
+        var hiveCombo = new ComboBox { ItemsSource = new[] { "HKEY_LOCAL_MACHINE", "HKEY_CURRENT_USER" }, SelectedIndex = 0, Width = 300, Margin = new Thickness(0, 0, 0, 8) };
+        var keyPathInput = new TextBox { PlaceholderText = @"SOFTWARE\Policies\...", Width = 300, Margin = new Thickness(0, 0, 0, 8) };
+        var valueNameInput = new TextBox { PlaceholderText = "Value Name", Width = 300, Margin = new Thickness(0, 0, 0, 8) };
+        var typeCombo = new ComboBox { ItemsSource = new[] { "REG_DWORD", "REG_SZ" }, SelectedIndex = 0, Width = 300, Margin = new Thickness(0, 0, 0, 8) };
+        var valueInput = new TextBox { PlaceholderText = "Value Data (e.g., 0, 1, or text)", Width = 300, Margin = new Thickness(0, 0, 0, 8) };
+
+        var formPanel = new StackPanel
+        {
+            Children =
+            {
+                new TextBlock { Text = "Registry Hive:", Margin = new Thickness(0, 0, 0, 4) }, hiveCombo,
+                new TextBlock { Text = "Key Path:", Margin = new Thickness(0, 0, 0, 4) }, keyPathInput,
+                new TextBlock { Text = "Value Name:", Margin = new Thickness(0, 0, 0, 4) }, valueNameInput,
+                new TextBlock { Text = "Value Type:", Margin = new Thickness(0, 0, 0, 4) }, typeCombo,
+                new TextBlock { Text = "Value Data:", Margin = new Thickness(0, 0, 0, 4) }, valueInput
+            }
+        };
+
+        var dialog = new ContentDialog
+        {
+            XamlRoot = this.XamlRoot,
+            Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
+            BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentAAFillColorDefaultBrush"],
+            Title = ResourceString.GetString("GroupPolicyPage_CustomOverrideTitle") ?? "Create Custom Policy Override",
+            Content = formPanel,
+            PrimaryButtonText = ResourceString.GetString("GroupPolicyPage_Inject") ?? "Inject Policy",
+            CloseButtonText = ResourceString.GetString("Cancel") ?? "Cancel"
+        };
+
+        var result = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary)
+        {
+            string hive = hiveCombo.SelectedIndex == 0 ? "HKLM" : "HKCU";
+            string keyPath = keyPathInput.Text.Trim();
+            string valueName = valueNameInput.Text.Trim();
+            string type = typeCombo.SelectedIndex == 0 ? "REG_DWORD" : "REG_SZ";
+            string value = valueInput.Text.Trim();
+
+            if (string.IsNullOrEmpty(keyPath) || string.IsNullOrEmpty(valueName) || string.IsNullOrEmpty(value))
+            {
+                App.ShowNotification("Injection Error", "All policy fields are required to inject a custom override.", InfoBarSeverity.Error, 3000);
+                return;
+            }
+
+            try
+            {
+                ScanProgressRing.Visibility = Visibility.Visible;
+                ScanProgressRing.IsActive = true;
+                SummaryText.Text = "Injecting custom policy...";
+                RefreshButton.IsEnabled = false;
+                RemoveAllButton.IsEnabled = false;
+
+                string script = $"reg add \"{hive}\\{keyPath}\" /v \"{valueName}\" /t {type} /d \"{value}\" /f";
+
+                await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: false);
+                await CommandExecutor.InvokeRunCommand("gpupdate /force", isPowerShell: false);
+
+                await ScanPoliciesAsync();
+                App.ShowNotification("Success", "Custom policy successfully injected and tracked.", InfoBarSeverity.Success, 3000);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+            }
+        }
+    }
+    #endregion
+
     #region Removal & Refresh Logic
     private async void RefreshButton_Click(object sender, RoutedEventArgs e)
     {
