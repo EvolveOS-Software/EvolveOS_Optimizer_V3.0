@@ -3,13 +3,14 @@
 
 using System.Collections.ObjectModel;
 using System.Threading;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class StartupManagerPage : Page
+    public sealed partial class StartupManagerPage : Page, IPurgeable
     {
         #region Fields & Constructor
 
@@ -43,6 +44,7 @@ namespace EvolveOS_Optimizer.Pages
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             _isUnloading = true;
+            Purge();
         }
 
         private async Task LoadDataAsync()
@@ -423,6 +425,41 @@ namespace EvolveOS_Optimizer.Pages
                     }
                 }
             }
+        }
+
+        #endregion
+
+        #region Purge Page
+
+        public void Purge()
+        {
+            Debug.WriteLine("[StartupManagerPage] Purge initiated...");
+
+            _isUnloading = true;
+            Unloaded -= Page_Unloaded;
+
+            if (_delayDebounceTokens != null)
+            {
+                foreach (var cts in _delayDebounceTokens.Values)
+                {
+                    try
+                    {
+                        cts.Cancel();
+                        cts.Dispose();
+                    }
+                    catch { }
+                }
+                _delayDebounceTokens.Clear();
+            }
+
+            _startupApps?.Clear();
+            _allApps?.Clear();
+
+            StartupAppsListView.ItemsSource = null;
+            this.DataContext = null;
+            this.Content = null;
+
+            Debug.WriteLine("[StartupManagerPage] Purge Complete.");
         }
 
         #endregion

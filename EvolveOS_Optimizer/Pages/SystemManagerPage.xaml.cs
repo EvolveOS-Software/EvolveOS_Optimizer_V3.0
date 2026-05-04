@@ -1,6 +1,8 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using EvolveOS_Optimizer.Core.Interfaces;
+
 namespace EvolveOS_Optimizer.Pages
 {
     public sealed partial class SystemManagerPage : Page
@@ -43,6 +45,13 @@ namespace EvolveOS_Optimizer.Pages
         private void SystemManagerPage_Unloaded(object sender, RoutedEventArgs e)
         {
             ExternalPaneRequest = null;
+
+            if (ContentFrame.Content is IPurgeable purgeablePage)
+            {
+                purgeablePage.Purge();
+            }
+
+            ContentFrame.Content = null;
         }
 
         private void SystemNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
