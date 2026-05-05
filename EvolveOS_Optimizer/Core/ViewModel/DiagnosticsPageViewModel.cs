@@ -24,7 +24,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Singleton Instance
         private static DiagnosticsPageViewModel? _instance;
 
-        public static DiagnosticsPageViewModel Current => _instance ??= new DiagnosticsPageViewModel();
+        private static readonly Lazy<DiagnosticsPageViewModel> _lazyInstance =
+            new Lazy<DiagnosticsPageViewModel>(() => new DiagnosticsPageViewModel());
+
+        public static DiagnosticsPageViewModel Current => _lazyInstance.Value;
         #endregion
 
         #region Fields (Diagnostics)
@@ -34,7 +37,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private readonly DiagnosticScannerEngine _scannerEngine;
 
-        private DispatcherTimer? _telemetryTimer;
+        private System.Threading.Timer? _telemetryTimer;
         internal PerformanceCounter? _cpuCounter;
         internal PerformanceCounter? _ramCounter;
         internal PerformanceCounter? _diskCounter;
@@ -2768,42 +2771,46 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 var gcStatus = GC.GetGCMemoryInfo();
                 _totalMemoryMb = gcStatus.TotalAvailableMemoryBytes / (1024.0 * 1024.0);
+            }
+            catch { _totalMemoryMb = 0; }
 
+            try
+            {
                 _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
                 _cpuCounter.NextValue();
+            }
+            catch { _cpuCounter = null; }
 
+            try
+            {
                 _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
                 _ramCounter.NextValue();
-
-                try
-                {
-                    _diskCounter = new PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total");
-                    _diskCounter.NextValue();
-                }
-                catch { _diskCounter = null; }
-
-                try
-                {
-                    _pagefileCounter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
-                    _pagefileCounter.NextValue();
-                }
-                catch { _pagefileCounter = null; }
-
-                _telemetryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-                _telemetryTimer.Tick += UpdateTelemetryGraph;
-                _telemetryTimer.Start();
             }
-            catch (Exception ex)
+            catch { _ramCounter = null; }
+
+            try
             {
-                Debug.WriteLine($"Failed to start performance counters: {ex.Message}");
+                _diskCounter = new PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total");
+                _diskCounter.NextValue();
             }
+            catch { _diskCounter = null; }
+
+            try
+            {
+                _pagefileCounter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
+                _pagefileCounter.NextValue();
+            }
+            catch { _pagefileCounter = null; }
+
+            // Start background timer ticking every 1000ms (1 second)
+            _telemetryTimer = new System.Threading.Timer(UpdateTelemetryGraph, null, 0, 1000);
         }
 
-        private void UpdateTelemetryGraph(object? sender, object e)
+        private void UpdateTelemetryGraph(object? state)
         {
             try
             {
-                // 1. Data Collection (Keep this on the background thread)
+                // 1. DATA COLLECTION (Executes on a Background ThreadPool Thread)
                 float cpuUsage = _cpuCounter?.NextValue() ?? 0;
                 float gpuUsage = GetGpuUsage();
                 float availableMb = _ramCounter?.NextValue() ?? 0;
@@ -2834,56 +2841,57 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float downPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((downMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
                 float upPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((upMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
 
-                // Notifications
-                if (!IsOptimizationRunning)
-                {
-                    if (ramUsage > 85 && (DateTime.Now - _lastRamNotification).TotalMinutes > 15)
-                    {
-                        _lastRamNotification = DateTime.Now;
-                        SendSystemNotification(2,
-                            ResourceString.GetString("diag_ram_exhaustion_title") ?? "Memory Warning",
-                            string.Format(ResourceString.GetString("diag_ram_exhaustion_msg") ?? "Usage at {0}%.", Math.Round(ramUsage)));
-                    }
-
-                    if (pagefileUsage > 80 && (DateTime.Now - _lastPagefileNotification).TotalMinutes > 15)
-                    {
-                        _lastPagefileNotification = DateTime.Now;
-                        SendSystemNotification(2,
-                            ResourceString.GetString("diag_pf_saturation_title") ?? "Pagefile Warning",
-                            string.Format(ResourceString.GetString("diag_pf_saturation_msg") ?? "Usage at {0}%.", Math.Round(pagefileUsage)));
-                    }
-                }
-
-                // 2. Buffer Management
-                _cpuHistoryBuffer.Add(100 - cpuUsage);
-                _ramHistoryBuffer.Add(100 - ramUsage);
-                _diskHistoryBuffer.Add(100 - diskUsage);
-                _pageHistoryBuffer.Add(100 - pagefileUsage);
-                _gpuHistoryBuffer.Add(100 - gpuUsage);
-                _networkDownHistoryBuffer.Add(100 - downPct);
-                _networkUpHistoryBuffer.Add(100 - upPct);
-
-                if (_cpuHistoryBuffer.Count > MaxHistoryCapacity)
-                {
-                    _cpuHistoryBuffer.RemoveAt(0);
-                    _ramHistoryBuffer.RemoveAt(0);
-                    _diskHistoryBuffer.RemoveAt(0);
-                    _pageHistoryBuffer.RemoveAt(0);
-                    _gpuHistoryBuffer.RemoveAt(0);
-                    _networkDownHistoryBuffer.RemoveAt(0);
-                    _networkUpHistoryBuffer.RemoveAt(0);
-                }
-
-                // 3. Snapshot data for the UI (prevents "Collection Modified" crashes)
-                var cpuSnapshot = _cpuHistoryBuffer.ToList();
-                var ramSnapshot = _ramHistoryBuffer.ToList();
-                var gpuSnapshot = _gpuHistoryBuffer.ToList();
-                var diskSnapshot = _diskHistoryBuffer.ToList();
-
-                // 4. UI Update (Everything touching properties goes here)
+                // 2. DISPATCH UI UPDATES & SHARED STATE MODIFICATIONS
                 var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                 dispatcher?.TryEnqueue(() =>
                 {
+                    // Notifications
+                    if (!IsOptimizationRunning)
+                    {
+                        if (ramUsage > 85 && (DateTime.Now - _lastRamNotification).TotalMinutes > 15)
+                        {
+                            _lastRamNotification = DateTime.Now;
+                            SendSystemNotification(2,
+                                ResourceString.GetString("diag_ram_exhaustion_title") ?? "Memory Warning",
+                                string.Format(ResourceString.GetString("diag_ram_exhaustion_msg") ?? "Usage at {0}%.", Math.Round(ramUsage)));
+                        }
+
+                        if (pagefileUsage > 80 && (DateTime.Now - _lastPagefileNotification).TotalMinutes > 15)
+                        {
+                            _lastPagefileNotification = DateTime.Now;
+                            SendSystemNotification(2,
+                                ResourceString.GetString("diag_pf_saturation_title") ?? "Pagefile Warning",
+                                string.Format(ResourceString.GetString("diag_pf_saturation_msg") ?? "Usage at {0}%.", Math.Round(pagefileUsage)));
+                        }
+                    }
+
+                    // Buffer Management must be on the UI thread to prevent read/write collision
+                    _cpuHistoryBuffer.Add(100 - cpuUsage);
+                    _ramHistoryBuffer.Add(100 - ramUsage);
+                    _diskHistoryBuffer.Add(100 - diskUsage);
+                    _pageHistoryBuffer.Add(100 - pagefileUsage);
+                    _gpuHistoryBuffer.Add(100 - gpuUsage);
+                    _networkDownHistoryBuffer.Add(100 - downPct);
+                    _networkUpHistoryBuffer.Add(100 - upPct);
+
+                    if (_cpuHistoryBuffer.Count > MaxHistoryCapacity)
+                    {
+                        _cpuHistoryBuffer.RemoveAt(0);
+                        _ramHistoryBuffer.RemoveAt(0);
+                        _diskHistoryBuffer.RemoveAt(0);
+                        _pageHistoryBuffer.RemoveAt(0);
+                        _gpuHistoryBuffer.RemoveAt(0);
+                        _networkDownHistoryBuffer.RemoveAt(0);
+                        _networkUpHistoryBuffer.RemoveAt(0);
+                    }
+
+                    // Snapshot data for Sparklines
+                    var cpuSnapshot = _cpuHistoryBuffer.ToList();
+                    var ramSnapshot = _ramHistoryBuffer.ToList();
+                    var gpuSnapshot = _gpuHistoryBuffer.ToList();
+                    var diskSnapshot = _diskHistoryBuffer.ToList();
+
+                    // Property Updates
                     CurrentCpuLoadStr = $"{(int)cpuUsage}%";
                     CurrentRamLoadStr = $"{(int)ramUsage}%";
                     CurrentIoLoadStr = $"{(int)diskUsage}%";
@@ -2905,7 +2913,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(ShowGpuInTray));
                     OnPropertyChanged(nameof(ShowDiskInTray));
 
-                    // Sparklines (Using snapshots)
+                    // Sparklines 
                     int sparklinePoints = 20;
                     double stepX = 3.0;
                     double chartHeight = 15.0;
@@ -2952,13 +2960,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
+                // 1. Properly dispose the System.Threading.Timer
                 if (_telemetryTimer != null)
                 {
-                    _telemetryTimer.Stop();
-                    _telemetryTimer.Tick -= UpdateTelemetryGraph;
+                    _telemetryTimer.Dispose();
                     _telemetryTimer = null;
                 }
 
+                // 2. Safely dispose of unmanaged performance counter handles
                 _cpuCounter?.Dispose(); _cpuCounter = null;
                 _ramCounter?.Dispose(); _ramCounter = null;
                 _diskCounter?.Dispose(); _diskCounter = null;
@@ -2975,36 +2984,45 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _networkUpCounters.Clear();
                 _networkDownCounters.Clear();
 
-                _cpuHistoryBuffer.Clear();
-                _ramHistoryBuffer.Clear();
-                _diskHistoryBuffer.Clear();
-                _pageHistoryBuffer.Clear();
-                _gpuHistoryBuffer.Clear();
-
-                _networkUpHistoryBuffer.Clear();
-                _networkDownHistoryBuffer.Clear();
-
-                try
+                var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
+                dispatcher?.TryEnqueue(() =>
                 {
-                    PerformanceGraphPoints.Clear();
-                    PerformanceGraphPoints.Add(new Point(400, 100));
-                    PerformanceAreaPoints.Clear();
+                    try
+                    {
+                        _cpuHistoryBuffer.Clear();
+                        _ramHistoryBuffer.Clear();
+                        _diskHistoryBuffer.Clear();
+                        _pageHistoryBuffer.Clear();
+                        _gpuHistoryBuffer.Clear();
 
-                    PerformanceGraphPointsAlt.Clear();
-                    PerformanceAreaPointsAlt.Clear();
+                        _networkUpHistoryBuffer.Clear();
+                        _networkDownHistoryBuffer.Clear();
 
-                    CurrentCpuLoadStr = "0%";
-                    CurrentRamLoadStr = "0%";
-                    CurrentIoLoadStr = "0%";
-                    CurrentPagefileLoadStr = "0%";
-                    CurrentGpuLoadStr = "0%";
+                        PerformanceGraphPoints.Clear();
+                        PerformanceGraphPoints.Add(new Point(400, 100));
+                        PerformanceAreaPoints.Clear();
 
-                    CurrentNetworkUpLoadStr = "0 Mbps";
-                    CurrentNetworkDownLoadStr = "0 Mbps";
-                    CurrentNetworkLoadStr = "0 / 0 Mbps";
-                    CurrentNetworkLoadSecondaryStr = "0 / 0";
-                }
-                catch { /* Ignore UI update errors during shutdown */ }
+                        PerformanceGraphPointsAlt.Clear();
+                        PerformanceAreaPointsAlt.Clear();
+
+                        CurrentCpuLoadStr = "0%";
+                        CurrentRamLoadStr = "0%";
+                        CurrentIoLoadStr = "0%";
+                        CurrentPagefileLoadStr = "0%";
+                        CurrentGpuLoadStr = "0%";
+
+                        CurrentNetworkUpLoadStr = "0 Mbps";
+                        CurrentNetworkDownLoadStr = "0 Mbps";
+                        CurrentNetworkLoadStr = "0 / 0 Mbps";
+                        CurrentNetworkLoadSecondaryStr = "0 / 0";
+
+                        CpuTrayPoints?.Clear();
+                        RamTrayPoints?.Clear();
+                        GpuTrayPoints?.Clear();
+                        DiskTrayPoints?.Clear();
+                    }
+                    catch { /* Ignore UI update errors during shutdown */ }
+                });
             }
             catch (Exception ex)
             {
@@ -3297,9 +3315,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             var cts = _cancellationTokenSource;
             if (cts == null) return;
 
-            while (!cts.Token.IsCancellationRequested)
+            try
             {
-                try
+                while (!cts.IsCancellationRequested)
                 {
                     _computerService.RefreshMemory();
                     var currentMemory = _computerService.Memory;
@@ -3312,10 +3330,27 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         }
                     });
 
-                    if (cts.Token.WaitHandle.WaitOne(5000)) break;
+                    try
+                    {
+                        Task.Delay(5000, cts.Token).Wait();
+                    }
+                    catch (AggregateException ae) when (ae.InnerException is TaskCanceledException)
+                    {
+                        break;
+                    }
                 }
-                catch (OperationCanceledException) { break; }
-                catch (Exception e) { ErrorLogging.LogDebug(e); }
+            }
+            catch (OperationCanceledException)
+            {
+                /* Clean exit */
+            }
+            catch (ObjectDisposedException)
+            {
+                /* Clean exit if the CancellationTokenSource was disposed from the Cleanup() method */
+            }
+            catch (Exception e)
+            {
+                ErrorLogging.LogDebug(e);
             }
         }
 
@@ -3468,24 +3503,29 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             long size = 0;
             try
             {
-                string[] files = Directory.GetFiles(path);
+                var files = Directory.EnumerateFiles(path);
                 foreach (string file in files)
                 {
-                    try { size += new FileInfo(file).Length; } catch { }
+                    try
+                    {
+                        size += new FileInfo(file).Length;
+                    }
+                    catch { /* Handle locked files */ }
                 }
 
                 if (currentDepth < maxDepth)
                 {
-                    string[] dirs = Directory.GetDirectories(path);
+                    var dirs = Directory.EnumerateDirectories(path);
                     foreach (string dir in dirs)
                     {
                         try
                         {
                             FileAttributes attributes = File.GetAttributes(dir);
                             if ((attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint) continue;
+
                             size += GetDirectorySize(dir, currentDepth + 1, maxDepth);
                         }
-                        catch { }
+                        catch { /* Handle access denied */ }
                     }
                 }
             }
@@ -3807,6 +3847,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _cancellationTokenSource.Cancel();
                     _cancellationTokenSource.Dispose();
                     _cancellationTokenSource = null;
+                }
+
+                if (_securityRefreshTimer != null)
+                {
+                    _securityRefreshTimer.Stop();
+                    _securityRefreshTimer = null;
                 }
 
                 App.HotkeySettingsChanged -= OnHotkeySettingsChanged;
