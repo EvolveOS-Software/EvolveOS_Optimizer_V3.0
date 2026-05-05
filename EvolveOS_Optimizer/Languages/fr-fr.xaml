@@ -2293,6 +2293,21 @@
     <sys:String x:Key="diag_routine_telemetry_msg">Télémétrie de routine du système d'exploitation. Aucune action requise.</sys:String>
     <sys:String x:Key="diag_fix_dwm_running">Réinitialisation de la pile d'affichage... L'écran va scintiller.</sys:String>
 
+    <sys:String x:Key="SecurityPage_AccessDenied">Accès refusé</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events">Des privilèges d'administrateur sont requis pour corriger les événements système.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware">Des privilèges d'administrateur sont requis pour réinitialiser le matériel.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network">Des privilèges d'administrateur sont requis pour sécuriser les ports réseau.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events_Dialog">Des privilèges d'administrateur sont requis pour corriger les événements système. Voulez-vous redémarrer EvolveOS Optimizer en tant qu'administrateur maintenant ?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events_Fallback">Des privilèges d'administrateur sont requis. Veuillez redémarrer l'application manuellement.</sys:String>
+    <sys:String x:Key="txt_restart_admin">Redémarrer en tant qu'administrateur</sys:String>
+    <sys:String x:Key="diag_elevating_app">Élévation des privilèges d'EvolveOS Optimizer...</sys:String>
+    <sys:String x:Key="diag_fix_event_cancelled">Correction annulée pour l'événement {0}. Droits d'administrateur requis.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware_Dialog">Des privilèges d'administrateur sont requis pour réinitialiser le matériel. Voulez-vous redémarrer EvolveOS Optimizer en tant qu'administrateur maintenant ?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware_Fallback">Des privilèges d'administrateur sont requis. Veuillez redémarrer l'application manuellement.</sys:String>
+    <sys:String x:Key="diag_fix_hw_cancelled">Correction annulée pour {0}. Droits d'administrateur requis.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network_Dialog">Des privilèges d'administrateur sont requis pour sécuriser les ports réseau. Voulez-vous redémarrer EvolveOS Optimizer en tant qu'administrateur maintenant ?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network_Fallback">Des privilèges d'administrateur sont requis. Veuillez redémarrer l'application manuellement.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
     <sys:String x:Key="txt_later">Plus tard</sys:String>
 

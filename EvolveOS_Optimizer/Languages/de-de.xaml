@@ -2295,6 +2295,21 @@
     <sys:String x:Key="diag_routine_telemetry_msg">Routinemäßige OS-Overhead-Telemetrie. Keine Aktion erforderlich.</sys:String>
     <sys:String x:Key="diag_fix_dwm_running">Anzeigestapel wird zurückgesetzt... Bildschirm wird flackern.</sys:String>
 
+    <sys:String x:Key="SecurityPage_AccessDenied">Zugriff verweigert</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events">Administratorrechte sind erforderlich, um Systemereignisse zu beheben.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware">Administratorrechte sind erforderlich, um Hardwaregeräte zurückzusetzen.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network">Administratorrechte sind erforderlich, um Netzwerkports abzusichern.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events_Dialog">Administratorrechte sind erforderlich, um Systemereignisse zu beheben. Möchten Sie EvolveOS Optimizer jetzt als Administrator neu starten?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events_Fallback">Administratorrechte sind erforderlich. Bitte starten Sie die App manuell neu.</sys:String>
+    <sys:String x:Key="txt_restart_admin">Als Administrator neu starten</sys:String>
+    <sys:String x:Key="diag_elevating_app">EvolveOS Optimizer erhält Administratorrechte...</sys:String>
+    <sys:String x:Key="diag_fix_event_cancelled">Behebung für Ereignis {0} abgebrochen. Administratorrechte erforderlich.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware_Dialog">Administratorrechte sind erforderlich, um Hardwaregeräte zurückzusetzen. Möchten Sie EvolveOS Optimizer jetzt als Administrator neu starten?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware_Fallback">Administratorrechte sind erforderlich. Bitte starten Sie die App manuell neu.</sys:String>
+    <sys:String x:Key="diag_fix_hw_cancelled">Behebung für {0} abgebrochen. Administratorrechte erforderlich.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network_Dialog">Administratorrechte sind erforderlich, um Netzwerkports abzusichern. Möchten Sie EvolveOS Optimizer jetzt als Administrator neu starten?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network_Fallback">Administratorrechte sind erforderlich. Bitte starten Sie die App manuell neu.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>
     <sys:String x:Key="txt_later">Später</sys:String>
     

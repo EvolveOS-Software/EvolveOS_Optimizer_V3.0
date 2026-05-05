@@ -2288,6 +2288,24 @@
 
     <sys:String x:Key="diag_tooltip_remove_occurrence">Deze vermelding permanent verwijderen</sys:String>
 
+    <sys:String x:Key="SecurityPage_AccessDenied">Toegang geweigerd</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events">Beheerdersrechten zijn vereist om systeemgebeurtenissen te herstellen.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware">Beheerdersrechten zijn vereist om hardwareapparaten te resetten.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network">Beheerdersrechten zijn vereist om netwerkpoorten te beveiligen.</sys:String>
+
+    <sys:String x:Key="SecurityPage_AdminReq_Events_Dialog">Beheerdersrechten zijn vereist om systeemgebeurtenissen te herstellen. Wilt u EvolveOS Optimizer nu als administrator herstarten?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events_Fallback">Beheerdersrechten zijn vereist. Herstart de app handmatig als administrator.</sys:String>
+    <sys:String x:Key="txt_restart_admin">Herstarten als administrator</sys:String>
+    <sys:String x:Key="diag_elevating_app">EvolveOS Optimizer krijgt beheerdersrechten...</sys:String>
+    <sys:String x:Key="diag_fix_event_cancelled">Herstel geannuleerd voor gebeurtenis {0}. Beheerdersrechten vereist.</sys:String>
+
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware_Dialog">Beheerdersrechten zijn vereist om hardware te resetten. Wilt u EvolveOS Optimizer nu als administrator herstarten?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware_Fallback">Beheerdersrechten zijn vereist. Herstart de app handmatig als administrator.</sys:String>
+    <sys:String x:Key="diag_fix_hw_cancelled">Herstel geannuleerd voor {0}. Beheerdersrechten vereist.</sys:String>
+
+    <sys:String x:Key="SecurityPage_AdminReq_Network_Dialog">Beheerdersrechten zijn vereist om netwerkpoorten te beveiligen. Wilt u EvolveOS Optimizer nu als administrator herstarten?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network_Fallback">Beheerdersrechten zijn vereist. Herstart de app handmatig als administrator.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Nu herstarten</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

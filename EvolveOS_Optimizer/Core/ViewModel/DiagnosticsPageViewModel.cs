@@ -1215,6 +1215,65 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [RelayCommand]
         public async Task FixEventAsync(int eventId)
         {
+            await FixEventInternalAsync(eventId, isAutomated: false);
+        }
+
+        public async Task FixEventInternalAsync(int eventId, bool isAutomated = false)
+        {
+            if (!SecurityHelpers.IsRunningAsAdmin())
+            {
+                if (isAutomated)
+                {
+                    SendSystemNotification(2,
+                        ResourceString.GetString("SecurityPage_ElevationRequiredTitle") ?? "Action Required",
+                        ResourceString.GetString("SecurityPage_ElevationRequiredMsg") ?? $"Event {eventId} was detected, but fixing it requires Administrator privileges.");
+                    return;
+                }
+                else
+                {
+                    var currentXamlRoot = App.MainWindow?.Content?.XamlRoot;
+
+                    if (currentXamlRoot != null)
+                    {
+                        ContentDialog elevateDialog = new ContentDialog
+                        {
+                            XamlRoot = currentXamlRoot,
+                            Title = ResourceString.GetString("SecurityPage_AccessDenied") ?? "Elevation Required",
+                            Content = ResourceString.GetString("SecurityPage_AdminReq_Events_Dialog") ?? "Administrator privileges are required to fix system events. Would you like to restart EvolveOS Optimizer as an Administrator now?",
+                            PrimaryButtonText = ResourceString.GetString("txt_restart_admin") ?? "Restart as Administrator",
+                            CloseButtonText = ResourceString.GetString("txt_cancel") ?? "Cancel",
+                            DefaultButton = ContentDialogButton.Primary
+                        };
+
+                        if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                        {
+                            elevateDialog.Style = (Style)style;
+                        }
+
+                        ContentDialogResult result = await elevateDialog.ShowAsync();
+
+                        if (result == ContentDialogResult.Primary)
+                        {
+                            ScanStatus = string.Format(ResourceString.GetString("diag_elevating_app") ?? "Elevating EvolveOS Optimizer...", eventId);
+                            SecurityHelpers.RestartAppAsAdmin();
+                        }
+                        else
+                        {
+                            ScanStatus = string.Format(ResourceString.GetString("diag_fix_event_cancelled") ?? "Remediation cancelled for Event {0}. Admin rights required.", eventId);
+                        }
+                    }
+                    else
+                    {
+                        SendSystemNotification(3,
+                            ResourceString.GetString("SecurityPage_AccessDenied") ?? "Elevation Required",
+                            ResourceString.GetString("SecurityPage_AdminReq_Events_Fallback") ?? "Administrator privileges are required. Please restart the app manually.");
+                        ScanStatus = string.Format(ResourceString.GetString("diag_fix_event_fail") ?? "Remediation failed for Event {0}. Admin privileges required.", eventId);
+                    }
+
+                    return;
+                }
+            }
+
             if (eventId == 9118)
             {
                 ScanStatus = ResourceString.GetString("diag_fix_network_attempt") ?? "Initiating network hardening sequence...";
@@ -1411,6 +1470,50 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public async Task FixHardwareAsync(HardwareIssue issue)
         {
             if (issue == null || string.IsNullOrEmpty(issue.DeviceId)) return;
+
+            if (!SecurityHelpers.IsRunningAsAdmin())
+            {
+                var currentXamlRoot = App.MainWindow?.Content?.XamlRoot;
+
+                if (currentXamlRoot != null)
+                {
+                    ContentDialog elevateDialog = new ContentDialog
+                    {
+                        XamlRoot = currentXamlRoot,
+                        Title = ResourceString.GetString("SecurityPage_AccessDenied") ?? "Elevation Required",
+                        Content = ResourceString.GetString("SecurityPage_AdminReq_Hardware_Dialog") ?? "Administrator privileges are required to reset hardware devices. Would you like to restart EvolveOS Optimizer as an Administrator now?",
+                        PrimaryButtonText = ResourceString.GetString("txt_restart_admin") ?? "Restart as Administrator",
+                        CloseButtonText = ResourceString.GetString("txt_cancel") ?? "Cancel",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+
+                    if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                    {
+                        elevateDialog.Style = (Style)style;
+                    }
+
+                    ContentDialogResult result = await elevateDialog.ShowAsync();
+
+                    if (result == ContentDialogResult.Primary)
+                    {
+                        ScanStatus = ResourceString.GetString("diag_elevating_app") ?? "Elevating EvolveOS Optimizer...";
+                        SecurityHelpers.RestartAppAsAdmin();
+                    }
+                    else
+                    {
+                        ScanStatus = string.Format(ResourceString.GetString("diag_fix_hw_cancelled") ?? "Remediation cancelled for {0}. Admin rights required.", issue.ComponentDisplayName);
+                    }
+                }
+                else
+                {
+                    SendSystemNotification(3,
+                        ResourceString.GetString("SecurityPage_AccessDenied") ?? "Elevation Required",
+                        ResourceString.GetString("SecurityPage_AdminReq_Hardware_Fallback") ?? "Administrator privileges are required. Please restart the app manually.");
+                    ScanStatus = string.Format(ResourceString.GetString("diag_fix_hw_fail") ?? "Failed to remediate {0}. Admin privileges required.", issue.ComponentDisplayName);
+                }
+
+                return;
+            }
 
             ScanStatus = string.Format(ResourceString.GetString("diag_fix_hw_init") ?? "Initiating hardware sequence for {0} to initialize driver stack...", issue.ComponentDisplayName);
 
@@ -1725,6 +1828,43 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (IsHardeningInProgress) return;
 
+            if (!SecurityHelpers.IsRunningAsAdmin())
+            {
+                var currentXamlRoot = App.MainWindow?.Content?.XamlRoot;
+
+                if (currentXamlRoot != null)
+                {
+                    ContentDialog elevateDialog = new ContentDialog
+                    {
+                        XamlRoot = currentXamlRoot,
+                        Title = ResourceString.GetString("SecurityPage_AccessDenied") ?? "Elevation Required",
+                        Content = ResourceString.GetString("SecurityPage_AdminReq_Network_Dialog") ?? "Administrator privileges are required to harden network ports. Would you like to restart EvolveOS Optimizer as an Administrator now?",
+                        PrimaryButtonText = ResourceString.GetString("txt_restart_admin") ?? "Restart as Administrator",
+                        CloseButtonText = ResourceString.GetString("txt_cancel") ?? "Cancel",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+
+                    if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                    {
+                        elevateDialog.Style = (Style)style;
+                    }
+
+                    ContentDialogResult result = await elevateDialog.ShowAsync();
+
+                    if (result == ContentDialogResult.Primary)
+                    {
+                        SecurityHelpers.RestartAppAsAdmin();
+                    }
+                }
+                else
+                {
+                    SendSystemNotification(3,
+                        ResourceString.GetString("SecurityPage_AccessDenied") ?? "Elevation Required",
+                        ResourceString.GetString("SecurityPage_AdminReq_Network_Fallback") ?? "Administrator privileges are required. Please restart the app manually.");
+                }
+                return;
+            }
+
             CloseActiveDialogsRequested?.Invoke();
 
             await Task.Delay(300);
@@ -1734,25 +1874,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 IsHardeningInProgress = true;
 
                 string command = @"
-                    $services = 'SSDPSRV', 'upnphost', 'FDResPub', 'DoSvc', 'LanmanServer'
-    
-                    # 1. Stop and Disable Services
-                    Stop-Service -Name $services -Force -ErrorAction SilentlyContinue
-                    Set-Service -Name $services -StartupType Disabled
-    
-                    # 2. Deep Registry Kill for Port 445 (SMB)
-                    # This prevents the Kernel (PID 4) from binding to the port even if the driver is loaded
-                    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters' -Name 'SMBDeviceEnabled' -Value 0 -Type DWord -Force
-    
-                    # 3. Disable SMBv1/v2/v3 components at the protocol level
-                    Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force -ErrorAction SilentlyContinue
-                    Set-SmbServerConfiguration -EnableSMB2Protocol $false -Force -ErrorAction SilentlyContinue
-
-                    # 4. Enforce Firewall Block (The 'Safety Net')
-                    if (!(Get-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -ErrorAction SilentlyContinue)) {
-                    New-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -Direction Inbound -Action Block -Protocol TCP -LocalPort 445 -ErrorAction SilentlyContinue
-                    }
-                ";
+            $services = 'SSDPSRV', 'upnphost', 'FDResPub', 'DoSvc', 'LanmanServer'
+            # 1. Stop and Disable Services
+            Stop-Service -Name $services -Force -ErrorAction SilentlyContinue
+            Set-Service -Name $services -StartupType Disabled
+            
+            # 2. Deep Registry Kill for Port 445 (SMB)
+            # This prevents the Kernel (PID 4) from binding to the port even if the driver is loaded
+            Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters' -Name 'SMBDeviceEnabled' -Value 0 -Type DWord -Force
+            
+            # 3. Disable SMBv1/v2/v3 components at the protocol level
+            Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force -ErrorAction SilentlyContinue
+            Set-SmbServerConfiguration -EnableSMB2Protocol $false -Force -ErrorAction SilentlyContinue
+            
+            # 4. Enforce Firewall Block (The 'Safety Net')
+            if (!(Get-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -ErrorAction SilentlyContinue)) {
+                New-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -Direction Inbound -Action Block -Protocol TCP -LocalPort 445 -ErrorAction SilentlyContinue
+            }
+        ";
 
                 await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
 
@@ -2892,7 +3031,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     if (physicallyEnrolled) return;
                 }
 
-                _dispatcherQueue.TryEnqueue(() =>
+                _dispatcherQueue.TryEnqueue(async () =>
                 {
                     MinedSystemEvents.Insert(0, newEvent);
                     if (MinedSystemEvents.Count > 150) MinedSystemEvents.RemoveAt(MinedSystemEvents.Count - 1);
@@ -2907,6 +3046,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         SendSystemNotification(3,
                             ResourceString.GetString("diag_critical_error_title") ?? "Critical System Error Detected",
                             string.Format(ResourceString.GetString("diag_critical_error_msg") ?? "Event ID {0} logged by {1}.", newEvent.EventId, newEvent.SourceName));
+                    }
+
+                    if (newEvent.IsFixable)
+                    {
+                        await FixEventInternalAsync(newEvent.EventId, isAutomated: true);
                     }
                 });
             });

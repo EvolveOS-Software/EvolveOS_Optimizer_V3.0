@@ -2305,10 +2305,27 @@
     <sys:String x:Key="SecurityPage_PortEventMsg">NETWORK VULNERABILITY: {0} is dangerously exposed on port {1}.</sys:String>
     <sys:String x:Key="diag_fix_network_attempt">Initiating network hardening sequence...</sys:String>
 
-    <!-- Specific Event Fix Summaries -->
     <sys:String x:Key="diag_fix_luafv_success">LUAFV virtualization repaired. Note: This re-enabled UAC. A reboot is required.</sys:String>
     <sys:String x:Key="diag_fix_dwm_exhaustion_success">AUTO-FIX DEPLOYED: The Desktop Window Manager (DWM) was restarted to release locked VRAM. Screen flickering during this process is normal.</sys:String>
     <sys:String x:Key="diag_routine_telemetry_msg">Routine OS overhead telemetry. No action required.</sys:String>
+
+    <sys:String x:Key="SecurityPage_AccessDenied">Access Denied</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events">Administrator privileges are required to remediate system events.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware">Administrator privileges are required to reset hardware devices.</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network">Administrator privileges are required to harden network ports.</sys:String>
+
+    <sys:String x:Key="SecurityPage_AdminReq_Events_Dialog">Administrator privileges are required to fix system events. Would you like to restart EvolveOS Optimizer as an Administrator now?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Events_Fallback">Administrator privileges are required. Please restart the app manually.</sys:String>
+    <sys:String x:Key="txt_restart_admin">Restart as Administrator</sys:String>
+    <sys:String x:Key="diag_elevating_app">Elevating EvolveOS Optimizer...</sys:String>
+    <sys:String x:Key="diag_fix_event_cancelled">Remediation cancelled for Event {0}. Admin rights required.</sys:String>
+
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware_Dialog">Administrator privileges are required to reset hardware devices. Would you like to restart EvolveOS Optimizer as an Administrator now?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Hardware_Fallback">Administrator privileges are required. Please restart the app manually.</sys:String>
+    <sys:String x:Key="diag_fix_hw_cancelled">Remediation cancelled for {0}. Admin rights required.</sys:String>
+
+    <sys:String x:Key="SecurityPage_AdminReq_Network_Dialog">Administrator privileges are required to harden network ports. Would you like to restart EvolveOS Optimizer as an Administrator now?</sys:String>
+    <sys:String x:Key="SecurityPage_AdminReq_Network_Fallback">Administrator privileges are required. Please restart the app manually.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
