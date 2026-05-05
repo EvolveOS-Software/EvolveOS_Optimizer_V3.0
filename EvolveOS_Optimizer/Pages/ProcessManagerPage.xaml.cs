@@ -423,10 +423,12 @@ public sealed partial class ProcessManagerPage : Page
                     using var process = Process.GetProcessById(processId);
                     action(process);
 
+                    string safeProcessName = process.ProcessName;
+
                     DispatcherQueue.TryEnqueue(() =>
                         App.ShowNotification(
                             successTitle,
-                            string.Format(successMessageTemplate, process.ProcessName),
+                            string.Format(successMessageTemplate, safeProcessName),
                             InfoBarSeverity.Success, 3000));
                 }
                 catch (Exception ex)
@@ -434,8 +436,8 @@ public sealed partial class ProcessManagerPage : Page
                     ErrorLogging.LogDebug(ex);
                     DispatcherQueue.TryEnqueue(() =>
                         App.ShowNotification(
-                            ResourceString.GetString("process_manager_page_error_access_denied_title"),
-                            string.Format(ResourceString.GetString("process_manager_page_error_access_denied_msg"), ex.Message),
+                            ResourceString.GetString("process_manager_page_error_access_denied_title") ?? "Access Denied",
+                            string.Format(ResourceString.GetString("process_manager_page_error_access_denied_msg") ?? "Error: {0}", ex.Message),
                             InfoBarSeverity.Error, 5000));
                 }
             });
