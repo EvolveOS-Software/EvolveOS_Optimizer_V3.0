@@ -2306,6 +2306,8 @@
     <sys:String x:Key="SecurityPage_AdminReq_Network_Dialog">Beheerdersrechten zijn vereist om netwerkpoorten te beveiligen. Wilt u EvolveOS Optimizer nu als administrator herstarten?</sys:String>
     <sys:String x:Key="SecurityPage_AdminReq_Network_Fallback">Beheerdersrechten zijn vereist. Herstart de app handmatig als administrator.</sys:String>
 
+    <sys:String x:Key="diag_hw_topology_change">Wijziging in hardwaretopologie gedetecteerd. Bus wordt uitgelezen...</sys:String>
+
     <sys:String x:Key="txt_restart_now">Nu herstarten</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

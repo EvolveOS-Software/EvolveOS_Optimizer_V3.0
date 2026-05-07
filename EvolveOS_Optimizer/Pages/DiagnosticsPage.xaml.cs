@@ -56,28 +56,33 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
-        #region View Model Property Changed (Animation Controller)
+        #region View Model Property Changed (UI Refresher)
         private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (ViewModel == null) return;
+            if (ViewModel == null || !_isCurrentPageActive) return;
 
-            if (e.PropertyName == nameof(ViewModel.EventEmptyStateVisibility))
+            if (e.PropertyName == nameof(ViewModel.IsScanning) ||
+                e.PropertyName == nameof(ViewModel.HardwareScannerVisibility))
             {
-                this.DispatcherQueue.TryEnqueue(async () =>
+                this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    if (ViewModel.EventEmptyStateVisibility == Visibility.Visible)
-                    {
-                        await Task.Delay(100);
+                    this.Bindings.Update();
 
-                        if (_isCurrentPageActive)
-                        {
-                            RadarSpinStoryboard?.Begin();
-                        }
-                    }
-                    else
+                    if (!ViewModel.IsScanning && ViewModel.DetectedHardwareIssues.Count > 0)
                     {
-                        RadarSpinStoryboard?.Stop();
+                        HeartbeatStoryboard?.Stop();
+
+                        HeartbeatScanner.Visibility = Visibility.Collapsed;
+                        HardwareIssuesListView.Visibility = Visibility.Visible;
                     }
+                    else if (ViewModel.IsScanning)
+                    {
+                        HeartbeatScanner.Visibility = Visibility.Visible;
+                        HardwareIssuesListView.Visibility = Visibility.Collapsed;
+                        HeartbeatStoryboard?.Begin();
+                    }
+
+                    this.UpdateLayout();
                 });
             }
         }
@@ -88,17 +93,10 @@ namespace EvolveOS_Optimizer.Pages
         {
             ExternalPaneRequest = SwitchToPane;
 
-            if (_isCurrentPageActive)
-            {
-                SystemSonarStoryboard?.Begin();
-                HeartbeatStoryboard?.Begin();
-                RadarSpinStoryboard?.Begin();
-            }
-
             if (!string.IsNullOrEmpty(RequestedPaneOnLoad))
             {
                 SwitchToPane(RequestedPaneOnLoad);
-                RequestedPaneOnLoad = ""; // Clear the mailbox
+                RequestedPaneOnLoad = "";
             }
 
             var vm = ViewModel;
@@ -184,6 +182,23 @@ namespace EvolveOS_Optimizer.Pages
             HeartbeatStoryboard?.Begin();
         }
 
+        private void HeartbeatScanner_Unloaded(object sender, RoutedEventArgs e)
+        {
+            HeartbeatStoryboard?.Stop();
+        }
+
+        private void SystemSonar_Loaded(object sender, RoutedEventArgs e)
+        {
+            SystemSonarStoryboard?.Begin();
+            RadarSpinStoryboard?.Begin();
+        }
+
+        private void SystemSonar_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SystemSonarStoryboard?.Stop();
+            RadarSpinStoryboard?.Stop();
+        }
+
         private async void FixHardwareButton_Click(object sender, RoutedEventArgs e)
         {
             var vm = ViewModel;
@@ -200,16 +215,6 @@ namespace EvolveOS_Optimizer.Pages
                 await ViewModel.ExecuteFullScanAsync();
                 await CalculateSystemHealthAsync();
             }
-        }
-
-        private void SystemSonar_Loaded(object sender, RoutedEventArgs e)
-        {
-            SystemSonarStoryboard?.Begin();
-        }
-
-        private void SystemSonar_Unloaded(object sender, RoutedEventArgs e)
-        {
-            SystemSonarStoryboard?.Stop();
         }
 
         private async void Expander_Expanding(Microsoft.UI.Xaml.Controls.Expander sender, Microsoft.UI.Xaml.Controls.ExpanderExpandingEventArgs args)
@@ -253,6 +258,10 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
                 ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
                 ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
+
+                if (ViewModel.HardwareScannerVisibility == Visibility.Visible) HeartbeatStoryboard?.Begin();
+                if (ViewModel.ScanningVisibility == Visibility.Visible) SystemSonarStoryboard?.Begin();
+                if (ViewModel.EventEmptyStateVisibility == Visibility.Visible) RadarSpinStoryboard?.Begin();
             }
 
             ViewModel?.ResumeUiUpdates();

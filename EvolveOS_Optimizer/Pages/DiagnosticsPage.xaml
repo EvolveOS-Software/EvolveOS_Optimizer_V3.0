@@ -1243,7 +1243,7 @@
                                                 <TextBlock helpers:Loc.Key="diag_hw_scan_title" Style="{StaticResource TechnicalValueHighlightedStyle}"/>
                                             </StackPanel>
 
-                                            <ListView x:Name="HardwareIssuesListView" Visibility="{x:Bind ViewModel.HardwareListVisibility, Mode=OneWay}" ItemsSource="{x:Bind ViewModel.DetectedHardwareIssues}" SelectionMode="None" Padding="0" Margin="0,0,5,0">
+                                            <ListView x:Name="HardwareIssuesListView" Grid.Row="1" Visibility="{x:Bind ViewModel.HardwareListVisibility, Mode=OneWay}" ItemsSource="{x:Bind ViewModel.DetectedHardwareIssues}" SelectionMode="None" Padding="0" Margin="0,0,5,0">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate x:DataType="m:HardwareIssue">
                                                         <Grid Style="{StaticResource DiagnosticListPanelStyle}">
@@ -1273,7 +1273,7 @@
                                                 </ListView.ItemTemplate>
                                             </ListView>
 
-                                            <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,10,0,0" Visibility="{x:Bind ViewModel.HardwareScannerVisibility, Mode=OneWay}" Loaded="HeartbeatScanner_Loaded" UseLayoutRounding="False">
+                                            <Grid x:Name="HeartbeatScanner" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,10,0,0" Visibility="{x:Bind ViewModel.HardwareScannerVisibility, Mode=OneWay}" Loaded="HeartbeatScanner_Loaded" Unloaded="HeartbeatScanner_Unloaded" UseLayoutRounding="False">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="*"/>
                                                     <RowDefinition Height="Auto"/>

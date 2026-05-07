@@ -3,6 +3,7 @@
 
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Management;
 using System.Net.NetworkInformation;
 using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -62,6 +63,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly PerformanceCounterCategory _gpuCategory = new PerformanceCounterCategory("GPU Engine");
         private int _hardwareRefreshTick = 10;
 
+        private System.Management.ManagementEventWatcher? _pnpWatcher;
+        private DateTime _lastPnpEventTime = DateTime.MinValue;
         private DateTime _lastRamNotification = DateTime.MinValue;
         private DateTime _lastPagefileNotification = DateTime.MinValue;
         private DateTime _lastEventNotification = DateTime.MinValue;
@@ -304,6 +307,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             MinedSystemEvents.CollectionChanged += (s, e) =>
             {
                 _dispatcherQueue.TryEnqueue(() => UpdateSystemStatus());
+            };
+
+            DetectedHardwareIssues.CollectionChanged += (s, e) =>
+            {
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    OnPropertyChanged(nameof(HardwareScannerVisibility));
+                    OnPropertyChanged(nameof(HardwareListVisibility));
+                    OnPropertyChanged(nameof(HardwareScannerText));
+
+                    UpdateSystemStatus();
+                });
             };
         }
         #endregion
@@ -2060,6 +2075,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void RefreshHUD()
         {
+            OnPropertyChanged(nameof(HardwareScannerVisibility));
+            OnPropertyChanged(nameof(HardwareListVisibility));
             OnPropertyChanged(nameof(EventEmptyStateVisibility));
             OnPropertyChanged(nameof(EventListVisibility));
             OnPropertyChanged(nameof(MinorEventsButtonVisibility));
@@ -3101,6 +3118,47 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             });
 
             _liveWatcher.Start();
+
+            try
+            {
+                var pnpQuery = new WqlEventQuery("SELECT * FROM Win32_DeviceChangeEvent");
+                _pnpWatcher = new ManagementEventWatcher(pnpQuery);
+                _pnpWatcher.EventArrived += (sender, e) =>
+                {
+                    if ((DateTime.Now - _lastPnpEventTime).TotalSeconds > 3)
+                    {
+                        _lastPnpEventTime = DateTime.Now;
+
+                        _dispatcherQueue?.TryEnqueue(async () =>
+                        {
+                            if (!IsScanning)
+                            {
+                                ScanStatus = ResourceString.GetString("diag_hw_topology_change") ?? "Hardware topology change detected. Interrogating bus...";
+
+                                try
+                                {
+                                    await ExecuteFullScanAsync();
+                                }
+                                finally
+                                {
+                                    _dispatcherQueue?.TryEnqueue(() =>
+                                    {
+                                        UpdateSystemStatus();
+
+                                        OnPropertyChanged(nameof(HardwareScannerVisibility));
+                                        OnPropertyChanged(nameof(HardwareListVisibility));
+                                    });
+                                }
+                            }
+                        });
+                    }
+                };
+                _pnpWatcher.Start();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[LiveMonitoring] Failed to bind to PnP bus: {ex.Message}");
+            }
         }
 
         private void StopLiveMonitoring()
@@ -3108,6 +3166,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             ScanStatus = ResourceString.GetString("diag_live_standby") ?? "Live Telemetry Interceptor: STANDBY";
             _liveWatcher?.Dispose();
             _liveWatcher = null;
+
+            if (_pnpWatcher != null)
+            {
+                _pnpWatcher.Stop();
+                _pnpWatcher.Dispose();
+                _pnpWatcher = null;
+            }
         }
 
         public void DisposeWatcher()
@@ -3852,6 +3917,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (EqualityComparer<T>.Default.Equals(field, value)) return;
             field = value;
             if (_isUiActive) OnPropertyChanged(propertyName);
+        }
+
+        public void ForcePropertyUpdate(string propertyName)
+        {
+            OnPropertyChanged(propertyName);
         }
 
         public void Cleanup()

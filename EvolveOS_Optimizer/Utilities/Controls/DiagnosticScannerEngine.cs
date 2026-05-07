@@ -30,14 +30,17 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             _scanCts = new CancellationTokenSource();
             var token = _scanCts.Token;
 
-            _vm.IsScanning = true;
-            _vm.ScanStatus = ResourceString.GetString("diag_scan_running") ?? "Running deep system and hardware analysis...";
-            _vm.AiSummary = ResourceString.GetString("diag_ai_analyzing") ?? "Neural engine analyzing telemetry data...";
-            _vm.ScannerText = ResourceString.GetString("diag_scan_interrogating_hw") ?? "INTERROGATING HARDWARE...";
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                _vm.IsScanning = true;
+                _vm.ScanStatus = ResourceString.GetString("diag_scan_running") ?? "Running deep system and hardware analysis...";
+                _vm.AiSummary = ResourceString.GetString("diag_ai_analyzing") ?? "Neural engine analyzing telemetry data...";
+                _vm.ScannerText = ResourceString.GetString("diag_scan_interrogating_hw") ?? "INTERROGATING HARDWARE...";
 
-            _vm.DetectedHardwareIssues.Clear();
-            _vm.MinedSystemEvents.Clear();
-            _vm.StabilityTrendData.Clear();
+                _vm.DetectedHardwareIssues.Clear();
+                _vm.MinedSystemEvents.Clear();
+                _vm.StabilityTrendData.Clear();
+            });
 
             await Task.Delay(600, token);
 
@@ -668,12 +671,22 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             }
             catch (Exception ex)
             {
-                _vm.ScanStatus = "Diagnostic scan failed. Check system logs.";
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    _vm.ScanStatus = "Diagnostic scan failed. Check system logs.";
+                });
                 Debug.WriteLine($"[Diagnostic Scan Error] {ex.Message}");
             }
             finally
             {
-                _vm.IsScanning = false;
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    _vm.IsScanning = false;
+
+                    _vm.ForcePropertyUpdate(nameof(_vm.HardwareScannerVisibility));
+                    _vm.ForcePropertyUpdate(nameof(_vm.HardwareListVisibility));
+                    _vm.ForcePropertyUpdate(nameof(_vm.HardwareScannerText));
+                });
             }
         }
     }

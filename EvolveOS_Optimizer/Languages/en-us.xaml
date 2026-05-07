@@ -2327,6 +2327,8 @@
     <sys:String x:Key="SecurityPage_AdminReq_Network_Dialog">Administrator privileges are required to harden network ports. Would you like to restart EvolveOS Optimizer as an Administrator now?</sys:String>
     <sys:String x:Key="SecurityPage_AdminReq_Network_Fallback">Administrator privileges are required. Please restart the app manually.</sys:String>
 
+    <sys:String x:Key="diag_hw_topology_change">Hardware topology change detected. Interrogating bus...</sys:String>
+
     <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

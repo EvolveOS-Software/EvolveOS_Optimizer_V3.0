@@ -2308,6 +2308,8 @@
     <sys:String x:Key="SecurityPage_AdminReq_Network_Dialog">Des privilèges d'administrateur sont requis pour sécuriser les ports réseau. Voulez-vous redémarrer EvolveOS Optimizer en tant qu'administrateur maintenant ?</sys:String>
     <sys:String x:Key="SecurityPage_AdminReq_Network_Fallback">Des privilèges d'administrateur sont requis. Veuillez redémarrer l'application manuellement.</sys:String>
 
+    <sys:String x:Key="diag_hw_topology_change">Modification de la topologie matérielle détectée. Interrogation du bus...</sys:String>
+
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
     <sys:String x:Key="txt_later">Plus tard</sys:String>
 
