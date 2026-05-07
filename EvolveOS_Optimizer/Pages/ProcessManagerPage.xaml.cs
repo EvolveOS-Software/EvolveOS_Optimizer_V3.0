@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using System.Management;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Drawing;
@@ -11,6 +10,7 @@ using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using static EvolveOS_Optimizer.Core.Structs.Windows;
+using System.Drawing.Imaging;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -134,39 +134,20 @@ public sealed partial class ProcessManagerPage : Page
 
     private static async Task<List<ProcessManagerModel>> GetProcessSnapshotAsync(CancellationToken token, bool usePrivateMemory)
     {
-        string strApps = ResourceString.GetString("process_manager_page_group_apps");
-        string strBackground = ResourceString.GetString("process_manager_page_group_background");
-        string strWindows = ResourceString.GetString("process_manager_page_group_windows");
+        string strApps = ResourceString.GetString("process_manager_page_group_apps") ?? "Apps";
+        string strBackground = ResourceString.GetString("process_manager_page_group_background") ?? "Background processes";
+        string strWindows = ResourceString.GetString("process_manager_page_group_windows") ?? "Windows processes";
 
         return await Task.Run(() =>
         {
-            Dictionary<int, double> privateMemoryDict = new();
-
-            if (usePrivateMemory)
-            {
-                try
-                {
-                    using var searcher = new ManagementObjectSearcher("SELECT IDProcess, WorkingSetPrivate FROM Win32_PerfRawData_PerfProc_Process");
-                    using var results = searcher.Get();
-
-                    foreach (var mo in results)
-                    {
-                        var pid = Convert.ToInt32(mo["IDProcess"]);
-                        var wsPrivate = Convert.ToDouble(mo["WorkingSetPrivate"]) / (1024.0 * 1024.0);
-                        privateMemoryDict[pid] = wsPrivate;
-                    }
-                }
-                catch { /* Ignored */ }
-            }
-
             return Process.GetProcesses()
                 .Select(p =>
                 {
                     if (token.IsCancellationRequested) return null;
                     try
                     {
-                        double memoryMb = usePrivateMemory && privateMemoryDict.TryGetValue(p.Id, out double privateMb)
-                            ? privateMb
+                        double memoryMb = usePrivateMemory
+                            ? p.PrivateMemorySize64 / (1024.0 * 1024.0)
                             : p.WorkingSet64 / (1024.0 * 1024.0);
 
                         string priorityStatus = "-";
@@ -177,7 +158,9 @@ public sealed partial class ProcessManagerPage : Page
                         {
                             priorityStatus = p.PriorityClass.ToString();
 
-                            if (p.MainWindowHandle != IntPtr.Zero && !string.IsNullOrEmpty(p.MainWindowTitle))
+                            bool isApp = p.MainWindowHandle != IntPtr.Zero && !string.IsNullOrEmpty(p.MainWindowTitle);
+
+                            if (isApp)
                             {
                                 category = strApps;
                             }
@@ -186,22 +169,25 @@ public sealed partial class ProcessManagerPage : Page
                                 category = strWindows;
                             }
 
-                            string path = p.MainModule?.FileName ?? "";
-                            if (!string.IsNullOrEmpty(path))
+                            if (isApp)
                             {
-                                if (_iconCache.TryGetValue(path, out var cachedBytes))
+                                string path = p.MainModule?.FileName ?? "";
+                                if (!string.IsNullOrEmpty(path))
                                 {
-                                    iconBytes = cachedBytes;
-                                }
-                                else
-                                {
-                                    var icon = Icon.ExtractAssociatedIcon(path);
-                                    if (icon != null)
+                                    if (_iconCache.TryGetValue(path, out var cachedBytes))
                                     {
-                                        using var ms = new MemoryStream();
-                                        icon.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                                        iconBytes = ms.ToArray();
-                                        _iconCache[path] = iconBytes;
+                                        iconBytes = cachedBytes;
+                                    }
+                                    else
+                                    {
+                                        var icon = Icon.ExtractAssociatedIcon(path);
+                                        if (icon != null)
+                                        {
+                                            using var ms = new MemoryStream();
+                                            icon.ToBitmap().Save(ms, ImageFormat.Png);
+                                            iconBytes = ms.ToArray();
+                                            _iconCache[path] = iconBytes;
+                                        }
                                     }
                                 }
                             }

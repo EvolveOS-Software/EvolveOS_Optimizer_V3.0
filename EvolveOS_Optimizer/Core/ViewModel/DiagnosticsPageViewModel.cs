@@ -3895,6 +3895,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             StopLiveTelemetry();
             StopLiveMonitoring();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            GC.Collect();
         }
 
         public void ResumeUiUpdates()
@@ -3963,6 +3968,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             catch (Exception ex) { Debug.WriteLine($"[Cleanup Error] {ex.Message}"); }
 
             DisposeWatcher();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
         #endregion
     }
