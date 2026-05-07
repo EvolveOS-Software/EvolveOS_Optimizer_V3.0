@@ -59,6 +59,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private Dictionary<string, PerformanceCounter> _gpuCounters = new Dictionary<string, PerformanceCounter>();
         private Dictionary<string, PerformanceCounter> _networkUpCounters = new Dictionary<string, PerformanceCounter>();
         private Dictionary<string, PerformanceCounter> _networkDownCounters = new Dictionary<string, PerformanceCounter>();
+        private readonly PerformanceCounterCategory _gpuCategory = new PerformanceCounterCategory("GPU Engine");
+        private int _hardwareRefreshTick = 10;
 
         private DateTime _lastRamNotification = DateTime.MinValue;
         private DateTime _lastPagefileNotification = DateTime.MinValue;
@@ -1150,11 +1152,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             get
             {
-                return new ObservableCollection<string>(Process.GetProcesses()
-                    .Where(p => p != null && !p.ProcessName.Equals(App.Name) && !LocalMachineSettingsEngine.ProcessExclusionList.Contains(p.ProcessName, StringComparer.OrdinalIgnoreCase))
-                    .Select(p => p.ProcessName.ToLower())
-                    .Distinct()
-                    .OrderBy(name => name));
+                var validProcesses = new List<string>();
+                var allProcesses = Process.GetProcesses();
+
+                foreach (var p in allProcesses)
+                {
+                    using (p)
+                    {
+                        if (p != null &&
+                            !p.ProcessName.Equals(App.Name, StringComparison.OrdinalIgnoreCase) &&
+                            !LocalMachineSettingsEngine.ProcessExclusionList.Contains(p.ProcessName, StringComparer.OrdinalIgnoreCase))
+                        {
+                            validProcesses.Add(p.ProcessName.ToLower());
+                        }
+                    }
+                }
+
+                return new ObservableCollection<string>(validProcesses.Distinct().OrderBy(name => name));
             }
         }
 
@@ -1877,24 +1891,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 IsHardeningInProgress = true;
 
                 string command = @"
-            $services = 'SSDPSRV', 'upnphost', 'FDResPub', 'DoSvc', 'LanmanServer'
-            # 1. Stop and Disable Services
-            Stop-Service -Name $services -Force -ErrorAction SilentlyContinue
-            Set-Service -Name $services -StartupType Disabled
+                $services = 'SSDPSRV', 'upnphost', 'FDResPub', 'DoSvc', 'LanmanServer'
+                # 1. Stop and Disable Services
+                Stop-Service -Name $services -Force -ErrorAction SilentlyContinue
+                Set-Service -Name $services -StartupType Disabled
             
-            # 2. Deep Registry Kill for Port 445 (SMB)
-            # This prevents the Kernel (PID 4) from binding to the port even if the driver is loaded
-            Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters' -Name 'SMBDeviceEnabled' -Value 0 -Type DWord -Force
+                # 2. Deep Registry Kill for Port 445 (SMB)
+                # This prevents the Kernel (PID 4) from binding to the port even if the driver is loaded
+                Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters' -Name 'SMBDeviceEnabled' -Value 0 -Type DWord -Force
             
-            # 3. Disable SMBv1/v2/v3 components at the protocol level
-            Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force -ErrorAction SilentlyContinue
-            Set-SmbServerConfiguration -EnableSMB2Protocol $false -Force -ErrorAction SilentlyContinue
+                # 3. Disable SMBv1/v2/v3 components at the protocol level
+                Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force -ErrorAction SilentlyContinue
+                Set-SmbServerConfiguration -EnableSMB2Protocol $false -Force -ErrorAction SilentlyContinue
             
-            # 4. Enforce Firewall Block (The 'Safety Net')
-            if (!(Get-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -ErrorAction SilentlyContinue)) {
-                New-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -Direction Inbound -Action Block -Protocol TCP -LocalPort 445 -ErrorAction SilentlyContinue
-            }
-        ";
+                # 4. Enforce Firewall Block (The 'Safety Net')
+                if (!(Get-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -ErrorAction SilentlyContinue)) {
+                    New-NetFirewallRule -DisplayName 'EvolveOS: Block Inbound SMB' -Direction Inbound -Action Block -Protocol TCP -LocalPort 445 -ErrorAction SilentlyContinue
+                }
+            ";
 
                 await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
 
@@ -2247,7 +2261,28 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     string output = reader.ReadToEnd();
                     var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    var processDict = Process.GetProcesses().ToDictionary(p => p.Id, p => p.ProcessName);
+                    var processDict = new Dictionary<int, (string Name, string Path)>();
+                    var allProcesses = Process.GetProcesses();
+
+                    foreach (var p in allProcesses)
+                    {
+                        using (p)
+                        {
+                            string path = accessDeniedStr;
+                            try
+                            {
+                                path = p.MainModule?.FileName ?? accessDeniedStr;
+                            }
+                            catch
+                            {
+                                /* Access Denied for System processes is expected */
+                            }
+
+                            processDict[p.Id] = (p.ProcessName, path);
+                        }
+                    }
+
+                    string winDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
 
                     foreach (var line in lines.Skip(4))
                     {
@@ -2273,18 +2308,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             if (!int.TryParse(portStr, out int port)) continue;
 
                             bool isExposed = ip == "0.0.0.0" || ip == "[::]";
-                            string processName = processDict.TryGetValue(pid, out var pName) ? pName : unknownProcessStr;
 
+                            string processName = unknownProcessStr;
                             string processPath = unknownPathStr;
                             bool isVerified = false;
-                            try
+
+                            if (processDict.TryGetValue(pid, out var procInfo))
                             {
-                                using var p = Process.GetProcessById(pid);
-                                processPath = p.MainModule?.FileName ?? accessDeniedStr;
-                                string winDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+                                processName = procInfo.Name;
+                                processPath = procInfo.Path;
                                 isVerified = processPath.StartsWith(winDir, StringComparison.OrdinalIgnoreCase);
                             }
-                            catch { /* Access Denied for core System processes is normal and expected */ }
 
                             var risk = RemediationEngine.AssessPortRisk(port, processName, isExposed);
 
@@ -2345,6 +2379,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         if (!NetworkAuditHistory.Contains(log))
                         {
                             NetworkAuditHistory.Insert(0, log);
+
+                            if (NetworkAuditHistory.Count > 200)
+                            {
+                                NetworkAuditHistory.RemoveAt(NetworkAuditHistory.Count - 1);
+                            }
                         }
 
                         if (entry.RiskLevel == critStr || entry.RiskLevel == highStr)
@@ -2802,7 +2841,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch { _pagefileCounter = null; }
 
-            // Start background timer ticking every 1000ms (1 second)
             _telemetryTimer = new System.Threading.Timer(UpdateTelemetryGraph, null, 0, 1000);
         }
 
@@ -2810,7 +2848,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                // 1. DATA COLLECTION (Executes on a Background ThreadPool Thread)
                 float cpuUsage = _cpuCounter?.NextValue() ?? 0;
                 float gpuUsage = GetGpuUsage();
                 float availableMb = _ramCounter?.NextValue() ?? 0;
@@ -2827,7 +2864,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float downMbps = netUsage.downMbps;
                 float upMbps = netUsage.upMbps;
 
-                // Peak Network Logic
                 float currentMax = Math.Max(downMbps, upMbps);
                 if (currentMax > _peakNetworkSpeedMbps)
                 {
@@ -2841,11 +2877,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float downPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((downMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
                 float upPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((upMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
 
-                // 2. DISPATCH UI UPDATES & SHARED STATE MODIFICATIONS
                 var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                 dispatcher?.TryEnqueue(() =>
                 {
-                    // Notifications
                     if (!IsOptimizationRunning)
                     {
                         if (ramUsage > 85 && (DateTime.Now - _lastRamNotification).TotalMinutes > 15)
@@ -2865,7 +2899,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         }
                     }
 
-                    // Buffer Management must be on the UI thread to prevent read/write collision
                     _cpuHistoryBuffer.Add(100 - cpuUsage);
                     _ramHistoryBuffer.Add(100 - ramUsage);
                     _diskHistoryBuffer.Add(100 - diskUsage);
@@ -2885,13 +2918,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         _networkUpHistoryBuffer.RemoveAt(0);
                     }
 
-                    // Snapshot data for Sparklines
                     var cpuSnapshot = _cpuHistoryBuffer.ToList();
                     var ramSnapshot = _ramHistoryBuffer.ToList();
                     var gpuSnapshot = _gpuHistoryBuffer.ToList();
                     var diskSnapshot = _diskHistoryBuffer.ToList();
 
-                    // Property Updates
                     CurrentCpuLoadStr = $"{(int)cpuUsage}%";
                     CurrentRamLoadStr = $"{(int)ramUsage}%";
                     CurrentIoLoadStr = $"{(int)diskUsage}%";
@@ -2906,14 +2937,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(ActivePrimaryValueStr));
                     OnPropertyChanged(nameof(HeroStandardVisibility));
 
-                    // Tray Visibility Sync
                     OnPropertyChanged(nameof(ShowHardwarePanelInTray));
                     OnPropertyChanged(nameof(ShowCpuInTray));
                     OnPropertyChanged(nameof(ShowRamInTray));
                     OnPropertyChanged(nameof(ShowGpuInTray));
                     OnPropertyChanged(nameof(ShowDiskInTray));
 
-                    // Sparklines 
                     int sparklinePoints = 20;
                     double stepX = 3.0;
                     double chartHeight = 15.0;
@@ -2960,14 +2989,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                // 1. Properly dispose the System.Threading.Timer
                 if (_telemetryTimer != null)
                 {
                     _telemetryTimer.Dispose();
                     _telemetryTimer = null;
                 }
 
-                // 2. Safely dispose of unmanaged performance counter handles
                 _cpuCounter?.Dispose(); _cpuCounter = null;
                 _ramCounter?.Dispose(); _ramCounter = null;
                 _diskCounter?.Dispose(); _diskCounter = null;
@@ -3201,26 +3228,29 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                var category = new System.Diagnostics.PerformanceCounterCategory("GPU Engine");
+                _hardwareRefreshTick++;
 
-                var currentInstances = category.GetInstanceNames()
-                    .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-
-                var toRemove = _gpuCounters.Keys.Except(currentInstances).ToList();
-                foreach (var key in toRemove)
+                if (_hardwareRefreshTick >= 10)
                 {
-                    _gpuCounters[key].Dispose();
-                    _gpuCounters.Remove(key);
-                }
+                    var currentInstances = _gpuCategory.GetInstanceNames()
+                        .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
+                        .ToList();
 
-                foreach (var instance in currentInstances)
-                {
-                    if (!_gpuCounters.ContainsKey(instance))
+                    var toRemove = _gpuCounters.Keys.Except(currentInstances).ToList();
+                    foreach (var key in toRemove)
                     {
-                        var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance);
-                        counter.NextValue();
-                        _gpuCounters.Add(instance, counter);
+                        _gpuCounters[key].Dispose();
+                        _gpuCounters.Remove(key);
+                    }
+
+                    foreach (var instance in currentInstances)
+                    {
+                        if (!_gpuCounters.ContainsKey(instance))
+                        {
+                            var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance);
+                            counter.NextValue();
+                            _gpuCounters.Add(instance, counter);
+                        }
                     }
                 }
 

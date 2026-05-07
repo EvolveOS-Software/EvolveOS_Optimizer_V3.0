@@ -1,6 +1,7 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System.Diagnostics;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Maintenance;
 
@@ -8,6 +9,22 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class RemediationEngine
     {
+        #region PowerShell Safety Wrapper
+        private static string WrapPowerShellScript(string script)
+        {
+            return $@"
+            try {{
+                $ErrorActionPreference = 'Stop'
+                {script}
+            }}
+            catch {{
+                Write-Error $_.Exception.Message
+                exit 1
+            }}";
+        }
+
+        #endregion
+
         #region Software Remediation
 
         public static async Task<bool> RunFixAsync(int eventId, string sourceName = "")
@@ -20,9 +37,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     {
                         string serviceName = sourceName.Split('|')[1];
 
-                        string command = $@"
+                        string command = WrapPowerShellScript($@"
                         Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\{serviceName}' -Name 'Start' -Value 2 -Force;
-                        Start-Service -Name '{serviceName}' -ErrorAction SilentlyContinue;";
+                        Start-Service -Name '{serviceName}' -ErrorAction SilentlyContinue;");
 
                         await CommandExecutor.RunCommandAsTrustedInstaller(command, isPowerShell: true);
                         return true;
@@ -358,58 +375,60 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private static async Task<bool> FixPowerFastStartupAsync()
         {
-            string script = "powercfg /h off; Start-Sleep -Seconds 2; powercfg /h on";
+            string script = WrapPowerShellScript("powercfg /h off; Start-Sleep -Seconds 2; powercfg /h on");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixCryptographicServicesAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 Stop-Service cryptsvc -Force -ErrorAction SilentlyContinue
                 Rename-Item -Path ""$env:windir\System32\catroot2"" -NewName ""catroot2.old"" -ErrorAction SilentlyContinue
                 Start-Service cryptsvc -ErrorAction SilentlyContinue
-            ";
+            ");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixEsentDatabaseAsync()
         {
-            string script = @"New-Item -Path ""$env:windir\system32\config\systemprofile\AppData\Local\TileDataLayer\Database"" -ItemType Directory -Force | Out-Null";
+            string script = WrapPowerShellScript(@"New-Item -Path ""$env:windir\system32\config\systemprofile\AppData\Local\TileDataLayer\Database"" -ItemType Directory -Force | Out-Null");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixWindowsDefenderAsync()
         {
-            await CommandExecutor.RunCommandAsTrustedInstaller("Update-MpSignature", isPowerShell: true);
+            string script = WrapPowerShellScript("Update-MpSignature");
+            await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixWindowsSearchAsync()
         {
-            await CommandExecutor.RunCommand("Restart-Service WSearch -Force -ErrorAction SilentlyContinue", isPowerShell: true);
+            string script = WrapPowerShellScript("Restart-Service WSearch -Force -ErrorAction SilentlyContinue");
+            await CommandExecutor.RunCommand(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixAppxDeploymentAsync()
         {
-            string script = @"Get-AppxPackage -AllUsers | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register ""$($_.InstallLocation)\AppXManifest.xml"" -ErrorAction SilentlyContinue}";
+            string script = WrapPowerShellScript(@"Get-AppxPackage -AllUsers | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register ""$($_.InstallLocation)\AppXManifest.xml"" -ErrorAction SilentlyContinue}");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixEventTracingAsync()
         {
-            string script = @"logman stop EventLog-System -ets -ErrorAction SilentlyContinue; logman start EventLog-System -ets -ErrorAction SilentlyContinue";
+            string script = WrapPowerShellScript(@"logman stop EventLog-System -ets -ErrorAction SilentlyContinue; logman start EventLog-System -ets -ErrorAction SilentlyContinue");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixLanmanServerAsync()
         {
-            string script = @"Restart-Service LanmanServer -Force -ErrorAction SilentlyContinue; Restart-Service LanmanWorkstation -Force -ErrorAction SilentlyContinue";
+            string script = WrapPowerShellScript(@"Restart-Service LanmanServer -Force -ErrorAction SilentlyContinue; Restart-Service LanmanWorkstation -Force -ErrorAction SilentlyContinue");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
@@ -422,14 +441,14 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private static async Task<bool> FixServiceTimeoutAsync()
         {
-            string script = @"Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control' -Name 'ServicesPipeTimeout' -Value 60000 -Type DWord -Force";
+            string script = WrapPowerShellScript(@"Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control' -Name 'ServicesPipeTimeout' -Value 60000 -Type DWord -Force");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixWifiAdapterAsync()
         {
-            string script = @"Restart-Service WlanSvc -Force -ErrorAction SilentlyContinue; ipconfig /renew | Out-Null";
+            string script = WrapPowerShellScript(@"Restart-Service WlanSvc -Force -ErrorAction SilentlyContinue; ipconfig /renew | Out-Null");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
@@ -442,18 +461,18 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private static async Task<bool> FixMsiInstallerAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 msiexec /unregister
                 msiexec /regserver
                 Restart-Service msiserver -Force -ErrorAction SilentlyContinue
-            ";
+            ");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixVssServiceAsync()
         {
-            string script = @"Restart-Service vss -Force -ErrorAction SilentlyContinue; Restart-Service swprv -Force -ErrorAction SilentlyContinue";
+            string script = WrapPowerShellScript(@"Restart-Service vss -Force -ErrorAction SilentlyContinue; Restart-Service swprv -Force -ErrorAction SilentlyContinue");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
@@ -468,7 +487,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             try
             {
-                string command = @"
+                string command = WrapPowerShellScript(@"
                     Stop-Process -Name 'dwm' -Force -ErrorAction SilentlyContinue
                     # Triggering a basic display re-enumeration via user-mode driver refresh
                     Add-Type -TypeDefinition '[DllImport(""user32.dll"")] public static extern bool SetProcessDPIAware();' -Name 'Win32' -Namespace 'Custom'
@@ -476,7 +495,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     $code = '[DllImport(""ntdll.dll"")] public static extern int NtSetSystemInformation(int info, IntPtr p, int len);'
                     Add-Type -MemberDefinition $code -Name 'Memory' -Namespace 'Win32'
                     [Win32.Memory]::NtSetSystemInformation(0x50, [IntPtr]::Zero, 0)
-                ";
+                ");
 
                 await CommandExecutor.InvokeRunCommand(command, isPowerShell: true);
                 return true;
@@ -488,34 +507,27 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
-        /*private static async Task<bool> FixResourceExhaustionAsync()
-        {
-            string script = @"Restart-Service SysMain -Force -ErrorAction SilentlyContinue; Stop-Process -Name dwm -Force -ErrorAction SilentlyContinue";
-            await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
-            return true;
-        }*/
-
         private static async Task<bool> FixTimeSyncAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 Stop-Service w32time -ErrorAction SilentlyContinue
                 w32tm /unregister | Out-Null
                 w32tm /register | Out-Null
                 Start-Service w32time -ErrorAction SilentlyContinue
                 w32tm /resync /nowait | Out-Null
-            ";
+            ");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixTcpIpStackAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 netsh winsock reset | Out-Null
                 netsh int ip reset | Out-Null
                 ipconfig /release | Out-Null
                 ipconfig /renew | Out-Null
-            ";
+            ");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
@@ -548,65 +560,65 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private static async Task<bool> FixWindowsUpdateAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 Stop-Service -Name wuauserv -Force -ErrorAction SilentlyContinue
                 Stop-Service -Name bits -Force -ErrorAction SilentlyContinue
                 Remove-Item -Path ""$env:windir\SoftwareDistribution\Download\*"" -Recurse -Force -ErrorAction SilentlyContinue
                 Start-Service -Name wuauserv -ErrorAction SilentlyContinue
                 Start-Service -Name bits -ErrorAction SilentlyContinue
-            ";
+            ");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixPrintSpoolerAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 Stop-Service -Name Spooler -Force -ErrorAction SilentlyContinue
                 Remove-Item -Path ""$env:windir\System32\spool\PRINTERS\*.*"" -Force -Recurse -ErrorAction SilentlyContinue
                 Start-Service -Name Spooler -ErrorAction SilentlyContinue
-            ";
+            ");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> RestartExplorerAsync()
         {
-            string script = "Stop-Process -Name explorer -Force; Start-Sleep -Milliseconds 500; Start-Process explorer";
+            string script = WrapPowerShellScript("Stop-Process -Name explorer -Force; Start-Sleep -Milliseconds 500; Start-Process explorer");
             await CommandExecutor.RunCommand(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixNetworkDnsAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 ipconfig /flushdns | Out-Null
                 ipconfig /registerdns | Out-Null
                 try { Restart-Service -Name Dnscache -Force -ErrorAction SilentlyContinue } catch {}
-            ";
+            ");
             await CommandExecutor.RunCommand(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixDCOMAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 $Paths = @('HKCR:\AppID\{9CA88EE3-ACB7-47c8-AFC4-AB702511C276}', 'HKCR:\CLSID\{D63B10C5-BB46-4990-A94F-E40B9D520160}')
                 foreach ($path in $Paths) {
                     if (Test-Path $path) {
                         Write-Output 'Repairing DCOM ACLs for path: $path'
                     }
-                }";
+                }");
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 
         private static async Task<bool> FixLuafvServiceAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\luafv' -Name 'Start' -Value 2 -Type DWord -Force
                 Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name 'EnableLUA' -Value 1 -Type DWord -Force
-            ";
+            ");
 
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
 
@@ -615,7 +627,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private static async Task<bool> FixSecureBootKeysAsync()
         {
-            string script = @"
+            string script = WrapPowerShellScript(@"
                 $bitlocker = Get-BitLockerVolume -MountPoint 'C:' -ErrorAction SilentlyContinue
                 if ($bitlocker -and $bitlocker.ProtectionStatus -eq 'On') {
                     Suspend-BitLocker -MountPoint 'C:' -RebootCount 2 -ErrorAction SilentlyContinue
@@ -639,7 +651,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 # This matches your manual 'reg add' /d 0x5944 logic exactly
                 Set-ItemProperty -Path $regPath -Name 'AvailableUpdates' -Value ([uint32]0x5944) -PropertyType DWord -Force
                 Start-ScheduledTask -TaskName $taskPath -ErrorAction SilentlyContinue
-            ";
+            ");
 
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
 
@@ -683,7 +695,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private static async Task<bool> ResetDisplayDriverAsync()
         {
-            string script = "Add-Type -TypeDefinition '[DllImport(\"user32.dll\")] public class User32 { [DllImport(\"user32.dll\")] public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase); }'; [User32]::InvalidateRect([IntPtr]::Zero, [IntPtr]::Zero, $true)";
+            string script = WrapPowerShellScript("Add-Type -TypeDefinition '[DllImport(\"user32.dll\")] public class User32 { [DllImport(\"user32.dll\")] public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase); }'; [User32]::InvalidateRect([IntPtr]::Zero, [IntPtr]::Zero, $true)");
             await CommandExecutor.RunCommand(script, isPowerShell: true);
             return true;
         }
@@ -726,7 +738,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     or 471 or 472 or 473 or 474 or 475 or 476 or 477 or 478 or 479 or 480 or 481 or 482 or 483 or 484 or 485
                     or 486 or 487 or 488 or 489 or 490 or 491 or 492 or 493 or 494 or 495 or 496 or 497 or 498 or 499 or 500
                     or 501 or 502
-                    // --- NEW 1000 CODES (Part 1: 836 to 1169) ---
+
                     or 836 or 837 or 838 or 839 or 840 or 841 or 842 or 843 or 844 or 845 or 846 or 847 or 848 or 849 or 850
                     or 851 or 852 or 853 or 854 or 855 or 856 or 857 or 858 or 859 or 860 or 861 or 862 or 863 or 864 or 865
                     or 866 or 867 or 868 or 869 or 870 or 871 or 872 or 873 or 874 or 875 or 876 or 877 or 878 or 879 or 880
@@ -774,7 +786,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     or 638 or 639 or 640 or 641 or 642 or 643 or 644 or 645 or 646 or 647 or 648 or 649 or 650 or 651 or 652
                     or 653 or 654 or 655 or 656 or 657 or 658 or 659 or 660 or 661 or 662 or 663 or 664 or 665 or 666 or 667
                     or 668 or 669
-
                     or 1170 or 1171 or 1172 or 1173 or 1174 or 1175 or 1176 or 1177 or 1178 or 1179 or 1180 or 1181 or 1182 or 1183 or 1184
                     or 1185 or 1186 or 1187 or 1188 or 1189 or 1190 or 1191 or 1192 or 1193 or 1194 or 1195 or 1196 or 1197 or 1198 or 1199
                     or 1200 or 1201 or 1202 or 1203 or 1204 or 1205 or 1206 or 1207 or 1208 or 1209 or 1210 or 1211 or 1212 or 1213 or 1214
@@ -822,7 +833,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     or 805 or 806 or 807 or 808 or 809 or 810 or 811 or 812 or 813 or 814 or 815 or 816 or 817 or 818 or 819
                     or 820 or 821 or 822 or 823 or 824 or 825 or 826 or 827 or 828 or 829 or 830 or 831 or 832 or 833 or 834
                     or 835
-
                     or 1503 or 1504 or 1505 or 1506 or 1507 or 1508 or 1509 or 1510 or 1511 or 1512 or 1513 or 1514 or 1515
                     or 1516 or 1517 or 1518 or 1519 or 1520 or 1521 or 1522 or 1523 or 1524 or 1525 or 1526 or 1527 or 1528
                     or 1529 or 1530 or 1531 or 1532 or 1533 or 1534 or 1535 or 1536 or 1537 or 1538 or 1539 or 1540 or 1541
@@ -866,7 +876,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             try
             {
-                string serviceScript = "if ((Get-Service 'SS3Svc' -ea 0).Status -eq 'Stopped') { Start-Service 'SS3Svc' -ea 0 }";
+                string serviceScript = WrapPowerShellScript("if ((Get-Service 'SS3Svc' -ea 0).Status -eq 'Stopped') { Start-Service 'SS3Svc' -ea 0 }");
                 await CommandExecutor.RunCommand(serviceScript, isPowerShell: true);
 
                 string pnpCommand = $"pnputil /enable-device \"{deviceId}\"";
