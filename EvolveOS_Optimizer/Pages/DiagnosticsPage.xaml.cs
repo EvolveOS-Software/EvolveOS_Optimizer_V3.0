@@ -53,19 +53,6 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Loaded += DiagnosticsPage_Loaded;
             this.Unloaded += DiagnosticsPage_Unloaded;
-
-            if (ViewModel != null)
-            {
-                ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-                ViewModel.ShowSecurityIssuesRequested += ViewModel_ShowSecurityIssuesRequested;
-
-                ViewModel.CloseActiveDialogsRequested += ViewModel_CloseActiveDialogsRequested;
-
-                ViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
-                ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
-                ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
-            }
         }
         #endregion
 
@@ -82,7 +69,10 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         await Task.Delay(100);
 
-                        RadarSpinStoryboard?.Begin();
+                        if (_isCurrentPageActive)
+                        {
+                            RadarSpinStoryboard?.Begin();
+                        }
                     }
                     else
                     {
@@ -255,6 +245,16 @@ namespace EvolveOS_Optimizer.Pages
                 _pendingScrollTarget = optionTag;
             }
 
+            if (ViewModel != null)
+            {
+                ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+                ViewModel.ShowSecurityIssuesRequested += ViewModel_ShowSecurityIssuesRequested;
+                ViewModel.CloseActiveDialogsRequested += ViewModel_CloseActiveDialogsRequested;
+                ViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
+                ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
+                ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
+            }
+
             ViewModel?.ResumeUiUpdates();
         }
 
@@ -270,6 +270,16 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Bindings.StopTracking();
 
+            if (ViewModel != null)
+            {
+                ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                ViewModel.ShowSecurityIssuesRequested -= ViewModel_ShowSecurityIssuesRequested;
+                ViewModel.CloseActiveDialogsRequested -= ViewModel_CloseActiveDialogsRequested;
+                ViewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
+                ViewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
+                ViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
+            }
+
             base.OnNavigatedFrom(e);
         }
         #endregion
@@ -277,25 +287,35 @@ namespace EvolveOS_Optimizer.Pages
         #region Command Line & System Tools Processing
         private async Task RunCommandsAsync(bool isRepair)
         {
-            if (ScanRepairPanel != null) ScanRepairPanel.Visibility = Visibility.Collapsed;
-            if (StopButton != null)
+            var pendingCommands = new List<(string Name, string Args, string Schedule)>();
+
+            if (DismCheckBox?.IsChecked == true)
+                pendingCommands.Add(("DISM", isRepair ? "/Online /Cleanup-Image /RestoreHealth" : "/Online /Cleanup-Image /ScanHealth", string.Empty));
+
+            if (SfcCheckBox?.IsChecked == true)
+                pendingCommands.Add(("SFC", isRepair ? "/scannow" : "/verifyonly", string.Empty));
+
+            if (ChkdskCheckBox?.IsChecked == true)
+                pendingCommands.Add(("CHKDSK", isRepair ? "/f" : "", "echo Y|chkdsk {DriveRoot} /f"));
+
+            if (pendingCommands.Count == 0) return;
+
+            DispatcherQueue?.TryEnqueue(() =>
             {
-                StopButton.Visibility = Visibility.Visible;
-                StopButton.IsEnabled = true;
-            }
-            if (RepairProgressBar != null) RepairProgressBar.Value = 0;
+                if (ScanRepairPanel != null) ScanRepairPanel.Visibility = Visibility.Collapsed;
+                if (StopButton != null)
+                {
+                    StopButton.Visibility = Visibility.Visible;
+                    StopButton.IsEnabled = true;
+                }
+                if (RepairProgressBar != null) RepairProgressBar.Value = 0;
+            });
+
             _currentProcessId = 0;
 
-            _cancellationTokenSource?.Dispose();
+            try { _cancellationTokenSource?.Cancel(); _cancellationTokenSource?.Dispose(); } catch { }
             _cancellationTokenSource = new CancellationTokenSource();
             var ct = _cancellationTokenSource.Token;
-
-            var commands = new[]
-            {
-                (DismCheckBox, "DISM", isRepair ? "/Online /Cleanup-Image /RestoreHealth" : "/Online /Cleanup-Image /ScanHealth", string.Empty),
-                (SfcCheckBox, "SFC", isRepair ? "/scannow" : "/verifyonly", string.Empty),
-                (ChkdskCheckBox, "CHKDSK", isRepair ? "/f" : "", "echo Y|chkdsk {DriveRoot} /f")
-            };
 
             var current = 0;
             var selectedNames = new List<string>();
@@ -306,65 +326,80 @@ namespace EvolveOS_Optimizer.Pages
 
             try
             {
-                foreach (var (checkBox, name, args, scheduleTemplate) in commands)
+                foreach (var (name, args, scheduleTemplate) in pendingCommands)
                 {
-                    if (ct.IsCancellationRequested)
+                    try
+                    {
+                        if (ct.IsCancellationRequested)
+                        {
+                            wasCancelled = true;
+                            break;
+                        }
+                    }
+                    catch (ObjectDisposedException)
                     {
                         wasCancelled = true;
                         break;
                     }
 
-                    if (checkBox?.IsChecked == true)
+                    current++;
+                    selectedNames.Add(name);
+
+                    string formatString = isRepair
+                        ? ResourceString.GetString("RepairInProgress") ?? "Repairing {2}..."
+                        : ResourceString.GetString("ScanInProgress") ?? "Scanning {2}...";
+
+                    DispatcherQueue?.TryEnqueue(() =>
                     {
-                        current++;
-                        selectedNames.Add(name);
-
-                        string formatString = isRepair
-                            ? ResourceString.GetString("RepairInProgress") ?? "Repairing {2}..."
-                            : ResourceString.GetString("ScanInProgress") ?? "Scanning {2}...";
-
                         if (RepairStatusText != null) RepairStatusText.Text = string.Format(formatString, current, selectedCount, name);
                         if (RepairProgressBar != null) RepairProgressBar.Value = 0;
+                    });
 
-                        if (name == "CHKDSK" && isRepair)
+                    if (name == "CHKDSK" && isRepair)
+                    {
+                        var driveRoot = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.Windows))?.TrimEnd('\\') ?? "C:";
+
+                        DispatcherQueue?.TryEnqueue(() =>
                         {
-                            var driveRoot = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.Windows))?.TrimEnd('\\') ?? "C:";
-
                             App.ShowNotification(ResourceString.GetString("Repair") ?? "Repair", ResourceString.GetString("ScheduledLater") ?? "Scheduled on restart", InfoBarSeverity.Success, 5000);
-
                             if (ChkdskCheckBox != null) ChkdskCheckBox.IsEnabled = false;
-                            _scanResults[name].Clear();
-                            _scanResults[name].AppendLine(ResourceString.GetString("ScheduledLater"));
+                        });
 
-                            if (!string.IsNullOrEmpty(scheduleTemplate))
-                            {
-                                var scheduleCmd = scheduleTemplate.Replace("{DriveRoot}", driveRoot);
-                                await CommandExecutor.StartInCmd(scheduleCmd);
-                            }
-                            continue;
+                        _scanResults[name].Clear();
+                        _scanResults[name].AppendLine(ResourceString.GetString("ScheduledLater"));
+
+                        if (!string.IsNullOrEmpty(scheduleTemplate))
+                        {
+                            var scheduleCmd = scheduleTemplate.Replace("{DriveRoot}", driveRoot);
+                            await CommandExecutor.StartInCmd(scheduleCmd);
                         }
+                        continue;
+                    }
+
+                    try
+                    {
+                        await RunCommandAsync(name, args, ct);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        wasCancelled = true;
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        await ErrorLogging.LogInfo($"Error running {name}: {ex.Message}");
+                        _scanResults[name].AppendLine($"Error: {ex.Message}");
+                        hasError = true;
 
                         try
                         {
-                            await RunCommandAsync(name, args, ct);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            wasCancelled = true;
-                            break;
-                        }
-                        catch (Exception ex)
-                        {
-                            await ErrorLogging.LogInfo($"Error running {name}: {ex.Message}");
-                            _scanResults[name].AppendLine($"Error: {ex.Message}");
-                            hasError = true;
-
                             if (ct.IsCancellationRequested)
                             {
                                 wasCancelled = true;
                                 break;
                             }
                         }
+                        catch (ObjectDisposedException) { wasCancelled = true; break; }
                     }
                 }
             }
@@ -373,23 +408,32 @@ namespace EvolveOS_Optimizer.Pages
                 _currentProcessId = 0;
                 ResetUIState();
 
-                if (wasCancelled)
+                DispatcherQueue?.TryEnqueue(async () =>
                 {
-                    App.ShowNotification(ResourceString.GetString("Repair") ?? "Repair", ResourceString.GetString("OperationStopped") ?? "Stopped", InfoBarSeverity.Error, 5000);
-                }
-                else if (hasError)
-                {
-                    App.ShowNotification(ResourceString.GetString("Repair") ?? "Repair", ResourceString.GetString("UnexpectedError") ?? "Error", InfoBarSeverity.Error, 5000);
-                    if (selectedNames.Count > 0) await ShowScanResultsDialogAsync(selectedNames);
-                }
-                else
-                {
-                    App.ShowNotification(ResourceString.GetString("Repair") ?? "Repair", ResourceString.GetString("OperationCompleted") ?? "Completed", InfoBarSeverity.Success, 5000);
-                    if (selectedNames.Count > 0) await ShowScanResultsDialogAsync(selectedNames);
-                }
+                    if (!_isCurrentPageActive) return;
 
-                _cancellationTokenSource?.Dispose();
-                _cancellationTokenSource = null;
+                    if (wasCancelled)
+                    {
+                        App.ShowNotification(ResourceString.GetString("Repair") ?? "Repair", ResourceString.GetString("OperationStopped") ?? "Stopped", InfoBarSeverity.Error, 5000);
+                    }
+                    else if (hasError)
+                    {
+                        App.ShowNotification(ResourceString.GetString("Repair") ?? "Repair", ResourceString.GetString("UnexpectedError") ?? "Error", InfoBarSeverity.Error, 5000);
+                        if (selectedNames.Count > 0) await ShowScanResultsDialogAsync(selectedNames);
+                    }
+                    else
+                    {
+                        App.ShowNotification(ResourceString.GetString("Repair") ?? "Repair", ResourceString.GetString("OperationCompleted") ?? "Completed", InfoBarSeverity.Success, 5000);
+                        if (selectedNames.Count > 0) await ShowScanResultsDialogAsync(selectedNames);
+                    }
+                });
+
+                try
+                {
+                    _cancellationTokenSource?.Dispose();
+                    _cancellationTokenSource = null;
+                }
+                catch { /* Ignore double-dispose */ }
             }
         }
 
@@ -486,6 +530,7 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
+                _runningProcess?.Dispose();
                 _runningProcess = null;
                 _currentProcessId = 0;
             }
@@ -839,7 +884,11 @@ namespace EvolveOS_Optimizer.Pages
             if (LocalMachineSettingsEngine.DisableAllOptimizationResults)
             {
                 _isShowingResult = false;
-                _ = CalculateSystemHealthAsync();
+
+                if (_isCurrentPageActive)
+                {
+                    _ = CalculateSystemHealthAsync();
+                }
                 return;
             }
 
@@ -847,9 +896,12 @@ namespace EvolveOS_Optimizer.Pages
             {
                 try
                 {
+                    if (!_isCurrentPageActive) return;
+
                     if (LocalMachineSettingsEngine.RestartExplorerAfterOptimization)
                     {
                         await Task.Delay(2000);
+                        if (!_isCurrentPageActive) return;
                     }
 
                     await CalculateSystemHealthAsync();
@@ -1022,10 +1074,12 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.RefreshCleanupSpaceCommand.Execute(null);
             }
 
-            while (ViewModel.IsScanning)
+            while (ViewModel.IsScanning && _isCurrentPageActive)
             {
                 await Task.Delay(250);
             }
+
+            if (!_isCurrentPageActive) return;
 
             double ramPercentage = ViewModel.Computer?.Memory?.Physical?.Used?.Percentage ?? 0;
             double totalRamGb = ViewModel.Computer?.Memory?.Physical?.Total?.Gigabytes ?? 16.0;
@@ -1092,17 +1146,24 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public async void Purge()
         {
-            Debug.WriteLine("[DiagnosticsPage] Purging background tasks...");
-
-            await StopCurrentOperationAsync();
-
-            if (_cancellationTokenSource != null)
+            try
             {
-                try { _cancellationTokenSource.Cancel(); _cancellationTokenSource.Dispose(); } catch { }
-                _cancellationTokenSource = null;
-            }
+                Debug.WriteLine("[DiagnosticsPage] Purging background tasks...");
 
-            Debug.WriteLine("[DiagnosticsPage] Tasks cleaned. Collections preserved for Cache safety.");
+                await StopCurrentOperationAsync();
+
+                if (_cancellationTokenSource != null)
+                {
+                    try { _cancellationTokenSource.Cancel(); _cancellationTokenSource.Dispose(); } catch { }
+                    _cancellationTokenSource = null;
+                }
+
+                Debug.WriteLine("[DiagnosticsPage] Tasks cleaned. Collections preserved for Cache safety.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DiagnosticsPage] Error during purge: {ex.Message}");
+            }
         }
         #endregion
     }

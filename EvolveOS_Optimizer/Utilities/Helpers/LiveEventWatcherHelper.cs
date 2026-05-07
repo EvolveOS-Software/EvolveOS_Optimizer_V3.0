@@ -16,8 +16,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         private readonly ConcurrentDictionary<string, DateTime> _eventDebouncer = new();
         private readonly int _debounceSeconds = 5;
 
-        string? eventFingerprint;
-
         private readonly HashSet<int> _fixableEventIds = new()
         {
             1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -199,12 +197,14 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             foreach (var logName in logsToWatch)
             {
+                EventLogWatcher? watcher = null;
                 try
                 {
                     var query = new EventLogQuery(logName, PathType.LogName, queryStr);
-                    var watcher = new EventLogWatcher(query);
+                    watcher = new EventLogWatcher(query);
 
                     watcher.EventRecordWritten += OnEventRecordWritten;
+
                     watcher.Enabled = true;
 
                     _watchers.Add(watcher);
@@ -212,6 +212,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[LiveWatcher] Could not bind to log channel '{logName}': {ex.Message}");
+
+                    if (watcher != null)
+                    {
+                        watcher.EventRecordWritten -= OnEventRecordWritten;
+                        watcher.Dispose();
+                    }
                 }
             }
         }
@@ -232,6 +238,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     return;
                 }
 
+                string eventFingerprint;
+
                 if (eventId >= 9101)
                 {
                     eventFingerprint = $"{eventId}|{source}|SECURE";
@@ -245,12 +253,26 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     eventFingerprint = $"{eventId}|{source}|{(record.TimeCreated?.Ticks ?? DateTime.Now.Ticks)}";
                 }
 
-                if (LocalMachineSettingsEngine.DismissedEventsList.Contains(eventFingerprint))
+                try
                 {
-                    return;
+                    var dismissedArray = LocalMachineSettingsEngine.DismissedEventsList.ToArray();
+                    if (dismissedArray.Contains(eventFingerprint))
+                    {
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    // If it still fails, let the event through rather than crashing the background thread
                 }
 
                 string eventHash = $"{eventId}|{source}";
+
+                if (_eventDebouncer.Count > 1000)
+                {
+                    _eventDebouncer.Clear();
+                }
+
                 if (_eventDebouncer.TryGetValue(eventHash, out DateTime lastSeen))
                 {
                     if ((DateTime.Now - lastSeen).TotalSeconds < _debounceSeconds)
@@ -260,9 +282,17 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 }
                 _eventDebouncer[eventHash] = DateTime.Now;
 
-                string rawDescription = record.FormatDescription() ??
-                                        ResourceString.GetString("live_watcher_pending") ??
-                                        "Live Interception: Detailed logs pending...";
+                string rawDescription;
+                try
+                {
+                    rawDescription = record.FormatDescription() ??
+                                     ResourceString.GetString("live_watcher_pending") ??
+                                     "Live Interception: Detailed logs pending...";
+                }
+                catch
+                {
+                    rawDescription = "Live Interception: The event description could not be parsed from the system publisher.";
+                }
 
                 var newItem = new SystemEventItem
                 {
@@ -293,9 +323,16 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             foreach (var watcher in _watchers)
             {
-                watcher.Enabled = false;
-                watcher.EventRecordWritten -= OnEventRecordWritten;
-                watcher.Dispose();
+                try
+                {
+                    watcher.Enabled = false;
+                    watcher.EventRecordWritten -= OnEventRecordWritten;
+                    watcher.Dispose();
+                }
+                catch
+                {
+                    // Suppress exceptions during disposal
+                }
             }
             _watchers.Clear();
             _eventDebouncer.Clear();

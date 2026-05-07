@@ -20,22 +20,25 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     using (var searcher = new ManagementObjectSearcher("SELECT FreePhysicalMemory, TotalVisibleMemorySize FROM Win32_OperatingSystem"))
                     using (var collection = searcher.Get())
                     {
-                        foreach (var os in collection)
+                        foreach (ManagementBaseObject os in collection)
                         {
-                            double freeRamKb = Convert.ToDouble(os["FreePhysicalMemory"]);
-                            double totalRamKb = Convert.ToDouble(os["TotalVisibleMemorySize"]);
-                            double freePercentage = (freeRamKb / totalRamKb) * 100;
-
-                            if (freePercentage < 15.0) // Less than 15% RAM available
+                            using (os)
                             {
-                                string source = ResourceString.GetString("diag_alert_source_ram") ?? "Memory Manager";
-                                string msgTemplate = ResourceString.GetString("diag_alert_msg_ram") ?? "CRITICAL: System RAM is low ({0:F1}% free).";
+                                double freeRamKb = Convert.ToDouble(os["FreePhysicalMemory"]);
+                                double totalRamKb = Convert.ToDouble(os["TotalVisibleMemorySize"]);
+                                double freePercentage = (freeRamKb / totalRamKb) * 100;
 
-                                performanceAlerts.Add(CreateAlert(
-                                    8001,
-                                    source,
-                                    string.Format(msgTemplate, freePercentage)
-                                ));
+                                if (freePercentage < 15.0) // Less than 15% RAM available
+                                {
+                                    string source = ResourceString.GetString("diag_alert_source_ram") ?? "Memory Manager";
+                                    string msgTemplate = ResourceString.GetString("diag_alert_msg_ram") ?? "CRITICAL: System RAM is low ({0:F1}% free).";
+
+                                    performanceAlerts.Add(CreateAlert(
+                                        8001,
+                                        source,
+                                        string.Format(msgTemplate, freePercentage)
+                                    ));
+                                }
                             }
                         }
                     }
@@ -44,20 +47,23 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     using (var searcher = new ManagementObjectSearcher("SELECT PercentProcessorTime FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name='_Total'"))
                     using (var collection = searcher.Get())
                     {
-                        foreach (var cpu in collection)
+                        foreach (ManagementBaseObject cpu in collection)
                         {
-                            int cpuLoad = Convert.ToInt32(cpu["PercentProcessorTime"]);
-
-                            if (cpuLoad > 90) // CPU over 90%
+                            using (cpu)
                             {
-                                string source = ResourceString.GetString("diag_alert_source_cpu") ?? "Processor Telemetry";
-                                string msgTemplate = ResourceString.GetString("diag_alert_msg_cpu") ?? "WARNING: CPU load is high ({0}%).";
+                                int cpuLoad = Convert.ToInt32(cpu["PercentProcessorTime"]);
 
-                                performanceAlerts.Add(CreateAlert(
-                                    8002,
-                                    source,
-                                    string.Format(msgTemplate, cpuLoad)
-                                ));
+                                if (cpuLoad > 90) // CPU over 90%
+                                {
+                                    string source = ResourceString.GetString("diag_alert_source_cpu") ?? "Processor Telemetry";
+                                    string msgTemplate = ResourceString.GetString("diag_alert_msg_cpu") ?? "WARNING: CPU load is high ({0}%).";
+
+                                    performanceAlerts.Add(CreateAlert(
+                                        8002,
+                                        source,
+                                        string.Format(msgTemplate, cpuLoad)
+                                    ));
+                                }
                             }
                         }
                     }
@@ -66,20 +72,23 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     using (var searcher = new ManagementObjectSearcher("SELECT PercentDiskTime FROM Win32_PerfFormattedData_PerfDisk_PhysicalDisk WHERE Name='_Total'"))
                     using (var collection = searcher.Get())
                     {
-                        foreach (var disk in collection)
+                        foreach (ManagementBaseObject disk in collection)
                         {
-                            int diskLoad = Convert.ToInt32(disk["PercentDiskTime"]);
-
-                            if (diskLoad > 95)
+                            using (disk)
                             {
-                                string source = ResourceString.GetString("diag_alert_source_disk") ?? "Storage Controller";
-                                string message = ResourceString.GetString("diag_alert_msg_disk") ?? "WARNING: Disk I/O is saturated.";
+                                int diskLoad = Convert.ToInt32(disk["PercentDiskTime"]);
 
-                                performanceAlerts.Add(CreateAlert(
-                                    8003,
-                                    source,
-                                    message
-                                ));
+                                if (diskLoad > 95)
+                                {
+                                    string source = ResourceString.GetString("diag_alert_source_disk") ?? "Storage Controller";
+                                    string message = ResourceString.GetString("diag_alert_msg_disk") ?? "WARNING: Disk I/O is saturated.";
+
+                                    performanceAlerts.Add(CreateAlert(
+                                        8003,
+                                        source,
+                                        message
+                                    ));
+                                }
                             }
                         }
                     }
@@ -100,7 +109,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 TimeCreated = DateTime.Now,
                 SourceName = source,
                 EventId = eventId,
-                Level = 1, // 1 = Critical/Warning UI
+                Level = 1,
                 Message = message,
                 IsFixable = true
             };
