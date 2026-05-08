@@ -692,6 +692,10 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
         this.DataContext = null;
         this.Content = null;
 
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
         Debug.WriteLine("[GroupPolicyPage] Purge Complete.");
     }
     #endregion

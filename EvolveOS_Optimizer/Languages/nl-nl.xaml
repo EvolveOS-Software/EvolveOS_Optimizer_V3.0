@@ -1478,6 +1478,7 @@
     <sys:String x:Key="systray_security">Beveiligingscentrum</sys:String>
     <sys:String x:Key="systray_maintenance">Systeem bewerkingen</sys:String>
     <sys:String x:Key="systray_dns">DNS-wisselaar</sys:String>
+    <sys:String x:Key="systray_low_priority">Efficiëntie modus</sys:String>
     <!-- endregion System TrayIcon -->
 
     <!-- region Run On StartUp -->

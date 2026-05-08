@@ -1496,6 +1496,8 @@
     <sys:String x:Key="systray_security">Security Center</sys:String>
     <sys:String x:Key="systray_maintenance">System Operations</sys:String>
     <sys:String x:Key="systray_dns">DNS Changer</sys:String>
+
+    <sys:String x:Key="systray_low_priority">Efficiency Mode</sys:String>
     <!-- endregion System TrayIcon -->
 
     <!-- region Run On StartUp -->

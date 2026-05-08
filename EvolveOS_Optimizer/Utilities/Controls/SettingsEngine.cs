@@ -537,6 +537,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         public static SortedSet<string> ProcessExclusionList { get; private set; } = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
         public static HashSet<string> DismissedEventsList { get; private set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+        public static event EventHandler<string> SettingChanged = delegate { };
+
         internal static bool KeepDevModeOnExit { get; set; } = false;
 
         #region Properties
@@ -573,6 +575,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             if (value == null) return;
 
             _cachedSettings[key] = value;
+
+            SettingChanged?.Invoke(null, key);
 
             try
             {

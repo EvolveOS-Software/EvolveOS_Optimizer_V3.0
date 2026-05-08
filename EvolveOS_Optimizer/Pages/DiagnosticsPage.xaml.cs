@@ -91,6 +91,9 @@ namespace EvolveOS_Optimizer.Pages
         #region Event Handlers
         private async void DiagnosticsPage_Loaded(object sender, RoutedEventArgs e)
         {
+            EfficiencyModeHelper.IsUIWakeLockActive = true;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
             ExternalPaneRequest = SwitchToPane;
 
             if (!string.IsNullOrEmpty(RequestedPaneOnLoad))
@@ -130,6 +133,13 @@ namespace EvolveOS_Optimizer.Pages
             }
 
             ExternalPaneRequest = null;
+
+            EfficiencyModeHelper.IsUIWakeLockActive = false;
+
+            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+            {
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+            }
         }
 
         private void SwitchToPane(string paneName)
@@ -1083,12 +1093,10 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.RefreshCleanupSpaceCommand.Execute(null);
             }
 
-            while (ViewModel.IsScanning && _isCurrentPageActive)
+            while (ViewModel.IsScanning)
             {
                 await Task.Delay(250);
             }
-
-            if (!_isCurrentPageActive) return;
 
             double ramPercentage = ViewModel.Computer?.Memory?.Physical?.Used?.Percentage ?? 0;
             double totalRamGb = ViewModel.Computer?.Memory?.Physical?.Total?.Gigabytes ?? 16.0;

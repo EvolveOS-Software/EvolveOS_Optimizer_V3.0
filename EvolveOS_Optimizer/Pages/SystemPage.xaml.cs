@@ -623,6 +623,10 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Content = null;
 
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
             Debug.WriteLine("[SystemPage] Purge Complete.");
         }
         #endregion

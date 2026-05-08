@@ -78,10 +78,10 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
             Process[] allProcesses = Process.GetProcesses();
 
             HashSet<string> skipSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-    {
-        "services", "csrss", "wininit", "Registry", "Secure System", "smss",
-        "MsMpEng", "System", "Idle", "NisSrv", "SecurityHealthService", "sppsvc"
-    };
+            {
+                "services", "csrss", "wininit", "Registry", "Secure System", "smss",
+                "MsMpEng", "System", "Idle", "NisSrv", "SecurityHealthService", "sppsvc"
+            };
 
             foreach (Process proc in allProcesses)
             {
@@ -564,6 +564,11 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
                 }
 
                 await Task.Delay(1000);
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
                 MemoryHelper.TrimWorkingSet();
             }
             catch (Exception ex)

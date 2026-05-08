@@ -487,8 +487,15 @@ public sealed partial class ProcessManagerPage : Page
         _groupedProcesses?.Clear();
         ProcessListView.ItemsSource = null;
 
+        _iconCache.Clear();
+
         this.DataContext = null;
         this.Content = null;
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
         Debug.WriteLine("[ProcessManagerPage] Purge Complete.");
     }
     #endregion

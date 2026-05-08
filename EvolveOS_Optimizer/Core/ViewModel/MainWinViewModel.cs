@@ -202,6 +202,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
+        public bool IsLowPriorityEnabled
+        {
+            get => DiagnosticsPageViewModel.Current.RunOnLowPriority;
+        }
+
         public string DisplayTweakVersion =>
             (Assembly.GetEntryAssembly() ?? throw new InvalidOperationException())
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "Unknown Version";
@@ -215,6 +220,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public ICommand CloseCommand { get; }
         public ICommand ToggleWindowVisibilityCommand { get; }
         public ICommand ToggleRunOnStartupCommand { get; }
+        public ICommand ToggleLowPriorityCommand { get; }
         public ICommand OpenSecurityCommand { get; }
         public ICommand OpenMaintenanceCommand { get; }
         public ICommand OpenStartupAppsCommand { get; }
@@ -240,6 +246,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             ToggleRunOnStartupCommand = new RelayCommand(_ =>
             {
                 IsRunOnStartUp = !IsRunOnStartUp;
+            });
+
+            LocalMachineSettingsEngine.SettingChanged += (sender, settingKey) =>
+            {
+                if (settingKey == "RunOnPriority")
+                {
+                    OnPropertyChanged(nameof(IsLowPriorityEnabled));
+                }
+            };
+
+            ToggleLowPriorityCommand = new RelayCommand(_ =>
+            {
+                bool isCurrentlyLow = LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low;
+                LocalMachineSettingsEngine.RunOnPriority = isCurrentlyLow ? Enums.Priority.Normal : Enums.Priority.Low;
+
+                App.SetPriority(LocalMachineSettingsEngine.RunOnPriority);
             });
 
             ExecuteNavigate("Home");

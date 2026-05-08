@@ -201,6 +201,13 @@
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
 
+                    <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_low_priority}" Command="{Binding ToggleLowPriorityCommand}" FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73E;" FontSize="14" Visibility="{Binding IsLowPriorityEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator Opacity="0.5"/>
+
                     <MenuFlyoutSeparator Opacity="0.5"/>
 
                     <MenuFlyoutItem Text="{helpers:ResourceString Key=systray_close_window}" Command="{Binding CloseCommand}" Foreground="#FF5555" FontFamily="{StaticResource Jura-Regular}">

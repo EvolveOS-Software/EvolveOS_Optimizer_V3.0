@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -113,6 +116,10 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Loaded -= ScriptsPage_Loaded;
             this.Unloaded -= ScriptsPage_Unloaded;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
             Debug.WriteLine("[ScriptsPage] Purge Complete.");
         }

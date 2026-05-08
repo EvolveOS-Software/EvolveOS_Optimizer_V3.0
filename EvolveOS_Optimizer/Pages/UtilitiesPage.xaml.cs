@@ -1,8 +1,12 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
+using EvolveOS_Optimizer.Core.Interfaces;
 using Microsoft.UI.Xaml.Navigation;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public partial class UtilitiesPage : Page
+    public partial class UtilitiesPage : Page, IPurgeable
     {
         private NavigationViewItem? _previousItem;
         private bool _isSyncingSelection = false;
@@ -90,8 +94,34 @@ namespace EvolveOS_Optimizer.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            ContentFrame.Content = null;
-            ContentFrame.Navigated -= ContentFrame_Navigated;
+            Purge();
         }
+
+        #region Purge Page
+        public void Purge()
+        {
+            Debug.WriteLine("[UtilitiesPage] Purge initiated...");
+
+            ContentFrame.Navigated -= ContentFrame_Navigated;
+
+            if (ContentFrame != null)
+            {
+                ContentFrame.Content = null;
+                ContentFrame.BackStack.Clear();
+                ContentFrame.ForwardStack.Clear();
+            }
+
+            UtilitiesNav.SelectedItem = null;
+            _previousItem = null;
+            this.Content = null;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            // -------------------------------
+
+            Debug.WriteLine("[UtilitiesPage] Purge Complete.");
+        }
+        #endregion
     }
 }

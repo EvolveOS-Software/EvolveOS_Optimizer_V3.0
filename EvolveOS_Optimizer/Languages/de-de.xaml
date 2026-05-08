@@ -1480,6 +1480,7 @@
     <sys:String x:Key="systray_security">Sicherheitscenter</sys:String>
     <sys:String x:Key="systray_maintenance">System vorgänge</sys:String>
     <sys:String x:Key="systray_dns">DNS-Wechsler</sys:String>
+    <sys:String x:Key="systray_low_priority">Effizienz modus</sys:String>
     <!-- endregion System TrayIcon -->
 
     <!-- region Run On StartUp -->

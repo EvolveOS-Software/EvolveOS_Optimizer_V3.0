@@ -530,11 +530,19 @@ public sealed partial class ServiceManagerPage : Page
         Loaded -= ServicesPage_Loaded;
         Unloaded -= ServicesPage_Unloaded;
         LiveMonitoringButton.Click -= LiveMonitoringButton_Click;
+
         _allServices?.Clear();
         _filteredServices?.Clear();
         ServicesListView.ItemsSource = null;
+
         this.DataContext = null;
         this.Content = null;
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        Debug.WriteLine("[ServicesManagerPage] Purge Complete.");
     }
     #endregion
 }

@@ -270,6 +270,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _scannerEngine = new DiagnosticScannerEngine(this);
 
+            LocalMachineSettingsEngine.SettingChanged += OnGlobalSettingChanged;
+
             LocalMachineSettingsEngine.LoadDismissedEventsList();
 
             PerformanceGraphPoints.Add(new Point(400, 100));
@@ -320,6 +322,29 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     UpdateSystemStatus();
                 });
             };
+        }
+
+        private void OnGlobalSettingChanged(object? sender, string settingKey)
+        {
+            if (settingKey == "RunOnPriority")
+            {
+                Action refreshUI = () =>
+                {
+                    OnPropertyChanged(nameof(RunOnLowPriority));
+
+                    _settingItems = null;
+                    OnPropertyChanged(nameof(SettingItems));
+                };
+
+                if (_dispatcherQueue != null)
+                {
+                    _dispatcherQueue.TryEnqueue(() => refreshUI());
+                }
+                else
+                {
+                    refreshUI();
+                }
+            }
         }
         #endregion
 
@@ -933,12 +958,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             get => LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low;
             set
             {
+                if (RunOnLowPriority == value) return;
+
                 try
                 {
                     IsBusy = true;
                     var priority = value ? Enums.Priority.Low : Enums.Priority.Normal;
+
                     App.SetPriority(priority);
+
                     LocalMachineSettingsEngine.RunOnPriority = priority;
+
                     OnPropertyChanged(nameof(RunOnLowPriority));
                 }
                 finally { IsBusy = false; }
@@ -1038,16 +1068,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Observable Collections & Memory Areas (Maintenance)
+        private ObservableCollection<ObservableItem<bool>>? _settingItems;
+
         public ObservableCollection<ObservableItem<bool>> SettingItems
         {
             get
             {
-                return new ObservableCollection<ObservableItem<bool>>(new List<ObservableItem<bool>>
+                if (_settingItems == null)
                 {
-                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_notification") ?? "Show Notifications", () => ShowOptimizationNotifications, v => ShowOptimizationNotifications = v, !DisableAllOptimizationResults, ResourceString.GetString("description_settings_items_show_notification")),
-                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_no_result") ?? "Disable Results", () => DisableAllOptimizationResults, v => { DisableAllOptimizationResults = v; OnPropertyChanged(nameof(SettingItems)); }, true, ResourceString.GetString("description_settings_items_show_no_result")),
-                    new ObservableItem<bool>(ResourceString.GetString("title_settings_items_low_priority") ?? "Low Priority", () => RunOnLowPriority, v => RunOnLowPriority = v, true, ResourceString.GetString("description_settings_items_low_priority"))
-                }.OrderBy(i => i.Name));
+                    _settingItems = new ObservableCollection<ObservableItem<bool>>(new List<ObservableItem<bool>>
+                    {
+                        new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_notification") ?? "Show Notifications", () => ShowOptimizationNotifications, v => ShowOptimizationNotifications = v, !DisableAllOptimizationResults, ResourceString.GetString("description_settings_items_show_notification")),
+                        new ObservableItem<bool>(ResourceString.GetString("title_settings_items_show_no_result") ?? "Disable Results", () => DisableAllOptimizationResults, v => DisableAllOptimizationResults = v, true, ResourceString.GetString("description_settings_items_show_no_result")),
+                        new ObservableItem<bool>(ResourceString.GetString("title_settings_items_low_priority") ?? "Low Priority", () => RunOnLowPriority, v => RunOnLowPriority = v, true, ResourceString.GetString("description_settings_items_low_priority"))
+                    }.OrderBy(i => i.Name));
+                }
+
+                return _settingItems;
             }
         }
 
@@ -3707,7 +3744,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     IsOptimizationRunning = true;
                 });
 
-                App.SetPriority(LocalMachineSettingsEngine.RunOnPriority);
+                App.SetPriority(Enums.Priority.Normal);
 
                 OnOptimizeProgressUpdate(++currentStep, ResourceString.GetString("txt_progress_preparing") ?? "Preparing...");
                 await Task.Delay(500);
@@ -3813,6 +3850,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         SendSystemNotification(4, summaryTitle, finalMsg);
                     }
                 });
+
+                App.SetPriority(LocalMachineSettingsEngine.RunOnPriority);
             }
         }
 
@@ -3898,13 +3937,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
-
             GC.Collect();
+
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
         }
 
         public void ResumeUiUpdates()
         {
             _isUiActive = true;
+
+            bool shouldBeInEfficiencyMode = LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(shouldBeInEfficiencyMode);
 
             if (LocalMachineSettingsEngine.EnableLiveDiagnostics)
             {
