@@ -26,12 +26,6 @@
             </ui:NavigationView.Resources>
 
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_DNSChanger}" Tag="DNSChangerPage">
-                    <ui:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE774;"/>
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
-
                 <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_WinIsoBuilder}" Tag="WinBuilderPage">
                     <ui:NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE81A;"/>

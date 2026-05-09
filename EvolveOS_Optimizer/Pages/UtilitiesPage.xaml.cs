@@ -35,10 +35,9 @@ namespace EvolveOS_Optimizer.Pages
                 string? tag = selectedItem.Tag?.ToString();
                 Type pageType = tag switch
                 {
-                    "DNSChangerPage" => typeof(DNSChangerPage),
                     "WinBuilderPage" => typeof(WinBuilderPage),
                     "AdvancedUtilsPage" => typeof(AdvancedUtilsPage),
-                    _ => typeof(DNSChangerPage)
+                    _ => typeof(WinBuilderPage)
                 };
 
                 if (ContentFrame.CurrentSourcePageType != pageType)
@@ -75,10 +74,9 @@ namespace EvolveOS_Optimizer.Pages
                 string? tag = item.Tag?.ToString();
                 Type expectedType = tag switch
                 {
-                    "DNSChangerPage" => typeof(DNSChangerPage),
                     "WinBuilderPage" => typeof(WinBuilderPage),
                     "AdvancedUtilsPage" => typeof(AdvancedUtilsPage),
-                    _ => typeof(DNSChangerPage)
+                    _ => typeof(WinBuilderPage)
                 };
 
                 if (e.SourcePageType == expectedType)
@@ -118,7 +116,6 @@ namespace EvolveOS_Optimizer.Pages
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
-            // -------------------------------
 
             Debug.WriteLine("[UtilitiesPage] Purge Complete.");
         }

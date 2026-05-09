@@ -126,7 +126,6 @@
     <sys:String x:Key="Nav_Settings">Settings</sys:String>
     <sys:String x:Key="Nav_Users">User Accounts</sys:String>
 
-    <sys:String x:Key="Tab_DNSChanger">DNS Changer</sys:String>
     <sys:String x:Key="Tab_WinIsoBuilder">Windows ISO Builder</sys:String>
     <sys:String x:Key="Tab_Advanced">Advanced</sys:String>
     <!-- endregion Main Window -->
@@ -1495,7 +1494,7 @@
 
     <sys:String x:Key="systray_security">Security Center</sys:String>
     <sys:String x:Key="systray_maintenance">System Operations</sys:String>
-    <sys:String x:Key="systray_dns">DNS Changer</sys:String>
+    <sys:String x:Key="systray_dns">Secure DNS</sys:String>
 
     <sys:String x:Key="systray_low_priority">Efficiency Mode</sys:String>
     <!-- endregion System TrayIcon -->

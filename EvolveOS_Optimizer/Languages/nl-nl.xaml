@@ -123,8 +123,7 @@
     <sys:String x:Key="Nav_Maintenance">Onderhoud</sys:String>
     <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Instellingen</sys:String>
-
-    <sys:String x:Key="Tab_DNSChanger">DNS-wisselaar</sys:String>
+    
     <sys:String x:Key="Tab_Advanced">Geavanceerd</sys:String>
     <!-- endregion Main Window -->
 
@@ -1477,7 +1476,7 @@
     <sys:String x:Key="systray_click_show">Dubbelklik om EvolveOS Optimizer te openen</sys:String>
     <sys:String x:Key="systray_security">Beveiligingscentrum</sys:String>
     <sys:String x:Key="systray_maintenance">Systeem bewerkingen</sys:String>
-    <sys:String x:Key="systray_dns">DNS-wisselaar</sys:String>
+    <sys:String x:Key="systray_dns">DNS Beveiliging</sys:String>
     <sys:String x:Key="systray_low_priority">Efficiëntie modus</sys:String>
     <!-- endregion System TrayIcon -->
 

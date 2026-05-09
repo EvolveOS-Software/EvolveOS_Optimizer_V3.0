@@ -8,12 +8,15 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.Settings;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using EvolveOS_Optimizer.Core.Model;
+using Microsoft.UI.Xaml.Navigation;
+using static EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -25,6 +28,8 @@ namespace EvolveOS_Optimizer.Pages
 
         public static string RequestedPaneOnLoad = "";
         public static Action<string>? ExternalPaneRequest;
+
+        private readonly Dictionary<IDNSCryptSetting, ComboBox> _controls;
 
         #region Fields (Maintenance)
         private bool _isShowingResult = false;
@@ -50,6 +55,27 @@ namespace EvolveOS_Optimizer.Pages
 
             this.InitializeComponent();
             this.DataContext = ViewModel;
+
+            _controls = new Dictionary<IDNSCryptSetting, ComboBox>
+            {
+                {new DNSCryptSetting_ipv4_servers(), ipv4_servers},
+                {new DNSCryptSetting_ipv6_servers(), ipv6_servers},
+                {new DNSCryptSetting_dnscrypt_servers(), dnscrypt_servers},
+                {new DNSCryptSetting_doh_servers(), doh_servers},
+                {new DNSCryptSetting_require_dnssec(), require_dnssec},
+                {new DNSCryptSetting_require_nolog(), require_nolog},
+                {new DNSCryptSetting_require_nofilter(), require_nofilter},
+                {new DNSCryptSetting_bootstrap_resolvers(), bootstrap_resolvers},
+                {new DNSCryptSetting_dnscrypt_ephemeral_keys(), dnscrypt_ephemeral_keys},
+                {new DNSCryptSetting_tls_disable_session_tickets(), tls_disable_session_tickets},
+                {new DNSCryptSetting_netprobe_timeout(), netprobe_timeout},
+                {new DNSCryptSetting_netprobe_address(), netprobe_address},
+                {new DNSCryptSetting_block_ipv6(), block_ipv6},
+                {new DNSCryptSetting_reject_ttl(), reject_ttl},
+            };
+
+            BtnDownloadInstall.RenderTransform = new TransformGroup();
+            ((TransformGroup)BtnDownloadInstall.RenderTransform).Children.Add(new TranslateTransform());
 
             this.Loaded += DiagnosticsPage_Loaded;
             this.Unloaded += DiagnosticsPage_Unloaded;
@@ -120,6 +146,10 @@ namespace EvolveOS_Optimizer.Pages
                 await ScrollToElementHelper.ScrollToElementAsync(this, _pendingScrollTarget);
                 _pendingScrollTarget = null;
             }
+
+            UpdateDnsCryptControls();
+            AnimateInstallButton();
+
         }
 
         private void DiagnosticsPage_Unloaded(object sender, RoutedEventArgs e)
@@ -143,6 +173,11 @@ namespace EvolveOS_Optimizer.Pages
             {
                 MaintenanceToggle.IsChecked = true;
                 MaintenanceToggle_Click(this, new RoutedEventArgs());
+            }
+            else if (paneName == "DnsCrypt" && this.FindName("DnsCryptToggle") is ToggleButton dnsToggle)
+            {
+                dnsToggle.IsChecked = true;
+                DnsCryptToggle_Click(this, new RoutedEventArgs());
             }
         }
 
@@ -983,6 +1018,36 @@ namespace EvolveOS_Optimizer.Pages
             });
         }
 
+        private void DnsCryptToggle_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel == null) return;
+
+            bool isOpen = DnsCryptToggle.IsChecked ?? false;
+
+            if (isOpen)
+            {
+                if (SecurityToggle.IsChecked == true)
+                {
+                    SecurityToggle.IsChecked = false;
+                    if (SecuritySplitView != null) SecuritySplitView.IsPaneOpen = false;
+                }
+
+                if (MaintenanceToggle.IsChecked == true)
+                {
+                    MaintenanceToggle.IsChecked = false;
+                    if (MainSplitView != null) MainSplitView.IsPaneOpen = false;
+                }
+
+                if (DnsCryptSplitView != null) DnsCryptSplitView.IsPaneOpen = true;
+
+                UpdateDnsCryptControls();
+            }
+            else
+            {
+                if (DnsCryptSplitView != null) DnsCryptSplitView.IsPaneOpen = false;
+            }
+        }
+
         private void MaintenanceToggle_Click(object sender, RoutedEventArgs e)
         {
             bool isOpen = MaintenanceToggle.IsChecked ?? false;
@@ -993,6 +1058,12 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     SecurityToggle.IsChecked = false;
                     if (SecuritySplitView != null) SecuritySplitView.IsPaneOpen = false;
+                }
+
+                if (DnsCryptToggle != null && DnsCryptToggle.IsChecked == true)
+                {
+                    DnsCryptToggle.IsChecked = false;
+                    if (DnsCryptSplitView != null) DnsCryptSplitView.IsPaneOpen = false;
                 }
 
                 if (MainSplitView != null) MainSplitView.IsPaneOpen = true;
@@ -1015,6 +1086,12 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     MaintenanceToggle.IsChecked = false;
                     if (MainSplitView != null) MainSplitView.IsPaneOpen = false;
+                }
+
+                if (DnsCryptToggle != null && DnsCryptToggle.IsChecked == true)
+                {
+                    DnsCryptToggle.IsChecked = false;
+                    if (DnsCryptSplitView != null) DnsCryptSplitView.IsPaneOpen = false;
                 }
 
                 if (SecuritySplitView != null) SecuritySplitView.IsPaneOpen = true;
@@ -1201,6 +1278,325 @@ namespace EvolveOS_Optimizer.Pages
             catch (Exception ex)
             {
                 Debug.WriteLine($"[DiagnosticsPage] Error during purge: {ex.Message}");
+            }
+        }
+        #endregion
+
+        #region DNSCrypt Logic
+
+        public void UpdateDnsCryptControls()
+        {
+            BtnDownloadInstall.IsEnabled = true;
+
+            BtnStartService.Content = "Start service";
+            BtnStartService.IsEnabled = true;
+
+            statusLabel.Text = "Nothing is running in the background";
+            ProgressRingRunServices.Visibility = Visibility.Collapsed;
+            TxtServicesRunning.Text = "";
+
+            IconServiceStopped.Visibility = Visibility.Visible;
+            ImgServiceRunning.Visibility = Visibility.Collapsed;
+
+            BtnOpenConfigFile.IsEnabled = true;
+            BtnDebug.IsEnabled = true;
+
+            foreach (var pair in _controls)
+            {
+                pair.Value.IsEnabled = true;
+            }
+
+            BtnBalanced.IsEnabled = true;
+            BtnPrivacy.IsEnabled = true;
+            BtnSaveConfig.IsEnabled = true;
+            BtnLoadConfig.IsEnabled = true;
+
+            if (!DNSCryptHelper.IsInstalled())
+            {
+                BtnStartService.IsEnabled = false;
+                BtnOpenConfigFile.IsEnabled = false;
+                BtnDebug.IsEnabled = false;
+
+                foreach (var pair in _controls)
+                {
+                    pair.Value.IsEnabled = false;
+                }
+
+                BtnBalanced.IsEnabled = false;
+                BtnPrivacy.IsEnabled = false;
+                BtnSaveConfig.IsEnabled = false;
+                BtnLoadConfig.IsEnabled = false;
+
+                string install = ResourceString.GetString("btn_download_install");
+                ToolTipService.SetToolTip(BtnDownloadInstall, install);
+                IconDownloadInstall.Glyph = "\uE896";
+                IconDownloadInstall.ClearValue(FontIcon.ForegroundProperty);
+                AnimateInstallButton();
+            }
+            else
+            {
+                string uninstall = ResourceString.GetString("btn_uninstall_script");
+                ToolTipService.SetToolTip(BtnDownloadInstall, uninstall);
+                IconDownloadInstall.Glyph = "\uE74D";
+                IconDownloadInstall.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+
+                ((Microsoft.UI.Xaml.Media.TranslateTransform)((Microsoft.UI.Xaml.Media.TransformGroup)BtnDownloadInstall.RenderTransform).Children[0]).Y = 0;
+
+                if (DNSCryptHelper.IsRunning())
+                {
+                    statusLabel.Text = "DNSCrypt Service is running.";
+                    ProgressRingRunServices.Visibility = Visibility.Visible;
+                    TxtServicesRunning.Text = ResourceString.GetString("text_services_running");
+
+                    IconServiceStopped.Visibility = Visibility.Collapsed;
+                    ImgServiceRunning.Visibility = Visibility.Visible;
+
+                    BtnDownloadInstall.IsEnabled = false;
+                    BtnStartService.Content = "Stop service";
+                    BtnOpenConfigFile.IsEnabled = false;
+                    BtnDebug.IsEnabled = false;
+
+                    foreach (var pair in _controls)
+                    {
+                        pair.Value.IsEnabled = false;
+                    }
+
+                    BtnBalanced.IsEnabled = false;
+                    BtnPrivacy.IsEnabled = false;
+                    BtnSaveConfig.IsEnabled = false;
+                    BtnLoadConfig.IsEnabled = false;
+                }
+
+                var config = DNSCryptHelper.LoadConfig();
+
+                foreach (var pair in _controls)
+                {
+                    var currentSetting = pair.Key.GetCurrentSetting(config);
+                    var settings = pair.Key.GetSettings(config);
+
+                    pair.Value.Items.Clear();
+
+                    var selectedItem = (object?)null;
+
+                    foreach (var item in settings)
+                    {
+                        pair.Value.Items.Add(item);
+
+                        if ((string)item.Value == currentSetting)
+                        {
+                            selectedItem = item;
+                        }
+                    }
+
+                    if (selectedItem != null)
+                    {
+                        pair.Value.SelectedItem = selectedItem;
+                    }
+                    else
+                    {
+                        pair.Value.SelectedIndex = 0;
+                    }
+                }
+            }
+        }
+
+        private void AnimateInstallButton()
+        {
+            if (!DNSCryptHelper.IsInstalled())
+            {
+                // FactoryAnimation.ButtonBounce(BtnDownloadInstall, 20, animationDurationSeconds: 0.25);
+            }
+        }
+
+        private async void BtnDownloadInstall_Click(object sender, RoutedEventArgs e)
+        {
+            bool isInstalled = DNSCryptHelper.IsInstalled();
+
+            BtnDownloadInstall.IsEnabled = false;
+
+            try
+            {
+                if (!isInstalled)
+                {
+                    bool isConnected = await Task.Run(() => NetworkHelper.IsConnectedAsync());
+                    if (!isConnected)
+                    {
+                        return;
+                    }
+                }
+
+                if (isInstalled)
+                {
+                    DNSCryptHelper.Uninstall(progressBar, statusLabel);
+                    ClearComboBoxes();
+                }
+                else
+                {
+                    await DNSCryptHelper.Install(progressBar, statusLabel);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DNSCrypt] Operation failed: {ex.Message}");
+            }
+            finally
+            {
+                UpdateDnsCryptControls();
+                AnimateInstallButton();
+                BtnDownloadInstall.IsEnabled = true;
+            }
+        }
+
+        private async void BtnOpenConfigFile_Click(object sender, RoutedEventArgs e)
+        {
+            BtnOpenConfigFile.IsEnabled = false;
+            await DNSCryptHelper.OpenConfig();
+            BtnOpenConfigFile.IsEnabled = true;
+        }
+
+        private async void BtnStartService_Click(object sender, RoutedEventArgs e)
+        {
+            BtnStartService.IsEnabled = false;
+
+            try
+            {
+                if (DNSCryptHelper.IsRunning())
+                {
+                    await DNSCryptHelper.StopService(progressBar, statusLabel);
+                    ProgressRingRunServices.Visibility = Visibility.Collapsed;
+                    TxtServicesRunning.Text = "";
+
+                    IconServiceStopped.Visibility = Visibility.Visible;
+                    ImgServiceRunning.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    UpdateDnsCryptControls();
+
+                    BtnSaveConfig_Click(BtnSaveConfig, null!);
+
+                    await DNSCryptHelper.StartService(progressBar, statusLabel);
+                    ProgressRingRunServices.Visibility = Visibility.Visible;
+                    TxtServicesRunning.Text = ResourceString.GetString("text_services_running");
+
+                    IconServiceStopped.Visibility = Visibility.Collapsed;
+                    ImgServiceRunning.Visibility = Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DNSCrypt Service] Error: {ex.Message}");
+                statusLabel.Text = "Service action failed.";
+            }
+            finally
+            {
+                UpdateDnsCryptControls();
+                BtnStartService.IsEnabled = true;
+            }
+        }
+
+        private async void BtnDebug_Click(object sender, RoutedEventArgs e)
+        {
+            BtnDebug.IsEnabled = false;
+
+            try
+            {
+                bool isConnected = await Task.Run(() => NetworkHelper.IsConnectedAsync());
+
+                if (!isConnected)
+                {
+                    statusLabel.Text = "Connection failed.";
+                    return;
+                }
+
+                await DNSCryptHelper.DebugProcess(progressBar, statusLabel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DNSCrypt Debug] Error: {ex.Message}");
+            }
+            finally
+            {
+                BtnDebug.IsEnabled = true;
+            }
+        }
+
+        private void BtnBalanced_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var pair in _controls)
+            {
+                if (pair.Value.SelectedItem == null) continue;
+
+                var setting = (Structs.ComboBoxItem)pair.Value.SelectedItem;
+                var targetSetting = pair.Key.GetSetting();
+
+                if ((string)setting.Value != targetSetting)
+                {
+                    foreach (var item in pair.Value.Items)
+                    {
+                        var currentItem = (Structs.ComboBoxItem)item;
+
+                        if ((string)currentItem.Value == targetSetting)
+                        {
+                            pair.Value.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void BtnPrivacy_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var pair in _controls)
+            {
+                if (pair.Value.SelectedItem == null) continue;
+
+                var setting = (Structs.ComboBoxItem)pair.Value.SelectedItem;
+                var targetSetting = pair.Key.GetSetting(DNSSettingPreference.Privacy);
+
+                if ((string)setting.Value != targetSetting)
+                {
+                    foreach (var item in pair.Value.Items)
+                    {
+                        var currentItem = (Structs.ComboBoxItem)item;
+
+                        if ((string)currentItem.Value == targetSetting)
+                        {
+                            pair.Value.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void BtnSaveConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var config = DNSCryptHelper.LoadConfig();
+
+            foreach (var pair in _controls)
+            {
+                if (pair.Value.SelectedItem != null)
+                {
+                    var setting = (Structs.ComboBoxItem)pair.Value.SelectedItem;
+                    config = pair.Key.SetSetting(config, (string)setting.Value);
+                }
+            }
+
+            DNSCryptHelper.SaveConfig(config);
+        }
+
+        private void BtnLoadConfig_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateDnsCryptControls();
+        }
+
+        private void ClearComboBoxes()
+        {
+            foreach (var control in _controls.Values)
+            {
+                control.SelectedItem = null;
             }
         }
         #endregion

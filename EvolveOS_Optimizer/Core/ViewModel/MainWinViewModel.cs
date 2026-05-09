@@ -247,7 +247,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             OpenSecurityCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Security"));
             OpenMaintenanceCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "Maintenance"));
             OpenStartupAppsCommand = new RelayCommand<object>(_ => OpenPageFromTray("SystemManager", "StartupManagerPage"));
-            OpenDnsCommand = new RelayCommand<object>(_ => OpenPageFromTray("Utilities"));
+            OpenDnsCommand = new RelayCommand<object>(_ => OpenPageFromTray("Diagnostics", "DnsCrypt"));
             ToggleWindowVisibilityCommand = new RelayCommand<object>(_ => ExecuteToggleVisibility());
 
             LocalizationService.Instance.PropertyChanged += OnLocalizationPropertyChanged;

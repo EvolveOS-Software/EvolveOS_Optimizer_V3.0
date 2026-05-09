@@ -124,7 +124,6 @@
     <sys:String x:Key="Nav_Scripts">Skripte</sys:String>
     <sys:String x:Key="Nav_Settings">Einstellungen</sys:String>
 
-    <sys:String x:Key="Tab_DNSChanger">DNS-Wechsler</sys:String>
     <sys:String x:Key="Tab_Advanced">Erweitert</sys:String>
     <!-- endregion Main Window -->
 
@@ -1479,7 +1478,7 @@
     <sys:String x:Key="systray_click_show">Doppelklicken, um den EvolveOS Optimizer zu öffnen</sys:String>
     <sys:String x:Key="systray_security">Sicherheitscenter</sys:String>
     <sys:String x:Key="systray_maintenance">System vorgänge</sys:String>
-    <sys:String x:Key="systray_dns">DNS-Wechsler</sys:String>
+    <sys:String x:Key="systray_dns">Sicheres DNS</sys:String>
     <sys:String x:Key="systray_low_priority">Effizienz modus</sys:String>
     <!-- endregion System TrayIcon -->
 
