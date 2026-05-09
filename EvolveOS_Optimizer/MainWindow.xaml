@@ -16,7 +16,7 @@
     d:Width="1575"
     Title="EvolveOS Optimizer">
 
-    <Grid x:Name="RootGrid" x:FieldModifier="public" Background="Transparent">
+    <Grid x:Name="RootGrid" x:FieldModifier="public">
         <Grid.Resources>
             <conv:UserTypeToColorConverter x:Key="UserTypeToColorConverter"/>
             <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

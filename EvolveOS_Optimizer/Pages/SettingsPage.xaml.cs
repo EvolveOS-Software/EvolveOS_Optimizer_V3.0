@@ -138,6 +138,11 @@ namespace EvolveOS_Optimizer.Pages
                 PanelTransform.Y = 0;
             }
 
+            if (MainWindow.Instance?.RootGrid != null)
+            {
+                BackdropSelector_SelectionChanged(BackdropSelector, null!);
+            }
+
             if (SliderSessionHours != null)
             {
                 SliderSessionHours.Value = SettingsEngine.AutoLoginSessionHours;
@@ -261,6 +266,27 @@ namespace EvolveOS_Optimizer.Pages
             if (App.MainWindow is Window mainWindow)
             {
                 UIHelper.ApplyBackdrop(mainWindow, selected);
+
+                if (MainWindow.Instance?.RootGrid != null)
+                {
+                    var currentTheme = SettingsEngine.AppTheme;
+                    if (currentTheme == "Default")
+                    {
+                        currentTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? "Dark" : "Light";
+                    }
+
+                    MainWindow.Instance.RootGrid.RequestedTheme = currentTheme == "Dark" ? ElementTheme.Dark : ElementTheme.Light;
+
+                    if (selected == "None")
+                    {
+                        string hexColor = currentTheme == "Dark" ? "#1C1C1C" : "#F3F3F3";
+                        MainWindow.Instance.RootGrid.Background = UIHelper.GetBrushFromHex(hexColor);
+                    }
+                    else
+                    {
+                        MainWindow.Instance.RootGrid.Background = new SolidColorBrush(Colors.Transparent);
+                    }
+                }
             }
         }
         #endregion
@@ -311,6 +337,10 @@ namespace EvolveOS_Optimizer.Pages
                 string selectedTheme = item.Tag?.ToString() ?? "Default";
                 SettingsEngine.AppTheme = selectedTheme;
                 SettingsEngine.UpdateTheme(selectedTheme);
+
+                BackdropSelector_SelectionChanged(BackdropSelector, null!);
+
+                this.UpdateLayout();
             }
         }
 
@@ -453,6 +483,8 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     UIHelper.ApplyBackdrop(mainWindow, SettingsEngine.Backdrop);
                 }
+
+                BackdropSelector_SelectionChanged(BackdropSelector, null!);
             }
         }
 

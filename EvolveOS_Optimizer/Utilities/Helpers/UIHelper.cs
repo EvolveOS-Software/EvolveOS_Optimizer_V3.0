@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.ComponentModel;
 using System.Numerics;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -148,10 +151,20 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             return (double)dpi / 96.0;
         }
 
+        public static Brush GetBrushFromHex(string hex)
+        {
+            hex = hex.Replace("#", "");
+            byte a = 255;
+            byte r = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+            byte g = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+            byte b = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+            return new SolidColorBrush(ColorHelper.FromArgb(a, r, g, b));
+        }
+
         public static Color ToColor(string hex)
         {
             hex = hex.Replace("#", string.Empty);
-            if (hex.Length < 6) return Microsoft.UI.Colors.Black;
+            if (hex.Length < 6) return Colors.Black;
             byte a = 255;
             int pos = 0;
             if (hex.Length == 8)
