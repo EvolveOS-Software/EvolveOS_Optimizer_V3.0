@@ -2331,6 +2331,8 @@
 
     <sys:String x:Key="diag_hw_topology_change">Hardware topology change detected. Interrogating bus...</sys:String>
 
+    <sys:String x:Key="diag_alert_dns_latency">NETWORK PERFORMANCE: Current DNS latency is sub-optimal ({0}). Click Fix to run the DNS Optimizer.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

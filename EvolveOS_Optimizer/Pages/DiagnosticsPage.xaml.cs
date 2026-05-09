@@ -258,6 +258,7 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
                 ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
                 ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
+                ViewModel.OpenDnsToolkitRequested += ViewModel_OpenDnsToolkitRequested;
 
                 if (ViewModel.HardwareScannerVisibility == Visibility.Visible) HeartbeatStoryboard?.Begin();
                 if (ViewModel.ScanningVisibility == Visibility.Visible) SystemSonarStoryboard?.Begin();
@@ -287,6 +288,7 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
                 ViewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
                 ViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
+                ViewModel.OpenDnsToolkitRequested -= ViewModel_OpenDnsToolkitRequested;
             }
 
             base.OnNavigatedFrom(e);
@@ -844,6 +846,27 @@ namespace EvolveOS_Optimizer.Pages
         private void ClosePortScanner_Click(object sender, RoutedEventArgs e)
         {
             PortScannerDialog.Hide();
+        }
+
+        private async void DnsToolkitButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                DnsToolkitDialog.XamlRoot = this.XamlRoot;
+
+                _ = ViewModel.UpdateSystemDnsDisplayAsync();
+                await DnsToolkitDialog.ShowAsync();
+            }
+        }
+
+        private void CloseDnsToolkit_Click(object sender, RoutedEventArgs e)
+        {
+            DnsToolkitDialog.Hide();
+        }
+
+        private async void ViewModel_OpenDnsToolkitRequested()
+        {
+            DnsToolkitButton_Click(this, new RoutedEventArgs());
         }
         #endregion
 

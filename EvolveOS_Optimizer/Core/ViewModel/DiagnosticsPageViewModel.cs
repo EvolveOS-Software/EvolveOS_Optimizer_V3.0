@@ -265,6 +265,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public ObservableCollection<string> NetworkAuditHistory => _networkAuditHistory;
         #endregion
 
+        #region Fields (Network Toolkit)
+        private bool _isPingBenchmarking;
+        public bool IsPingBenchmarking { get => _isPingBenchmarking; set => SetProperty(ref _isPingBenchmarking, value); }
+
+        private string _currentDnsIpv4 = "Retreiving...";
+        public string CurrentDnsIpv4 { get => _currentDnsIpv4; set => SetProperty(ref _currentDnsIpv4, value); }
+
+        private string _currentDnsIpv6 = "Retreiving...";
+        public string CurrentDnsIpv6 { get => _currentDnsIpv6; set => SetProperty(ref _currentDnsIpv6, value); }
+
+        public ObservableCollection<DnsBenchmarkingItem> DnsBenchmarkResults { get; } = new();
+        #endregion
+
         #region Constructor
         public DiagnosticsPageViewModel()
         {
@@ -1295,6 +1308,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public Action<Enums.Memory.Optimization.Reason, string>? OnOptimizeCommandCompleted;
         public event Action? OnAddProcessToExclusionListCommandCompleted;
         public event Action? OnRemoveProcessFromExclusionListCommandCompleted;
+        public event Action? OpenDnsToolkitRequested;
 
         [RelayCommand]
         public async Task FixEventAsync(int eventId)
@@ -1372,6 +1386,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 CalculateStabilityTrend(MinedSystemEvents);
                 UpdateGlobalAiSummary();
+                UpdateSystemStatus();
+                return;
+            }
+
+            if (eventId == 9119)
+            {
+                ScanStatus = "Launching Network Optimizer...";
+                OpenDnsToolkitRequested?.Invoke();
+
+                var dnsEvent = MinedSystemEvents.FirstOrDefault(e => e.EventId == 9119);
+                if (dnsEvent != null) MinedSystemEvents.Remove(dnsEvent);
+
+                CalculateStabilityTrend(MinedSystemEvents);
                 UpdateSystemStatus();
                 return;
             }
@@ -2866,6 +2893,85 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _isDevModeToggleUpdating = true; IsDevModeEnabled = !enable; _isDevModeToggleUpdating = false;
             }
             _ = CheckSecurityStatusAsync(_cancellationTokenSource?.Token ?? default);
+        }
+        #endregion
+
+        #region Network Toolkit Logic
+        [RelayCommand]
+        public async Task UpdateSystemDnsDisplayAsync()
+        {
+            await Task.Run(() => {
+                DnsManager dnsManager = new DnsManager();
+                string v4 = dnsManager.GetCurrentIpv4Primary();
+                string v6 = dnsManager.GetCurrentIpv6Primary();
+
+                _dispatcherQueue.TryEnqueue(() => {
+                    CurrentDnsIpv4 = string.IsNullOrEmpty(v4) || v4 == "0.0.0.0" ? "Automatic (ISP)" : v4;
+                    CurrentDnsIpv6 = string.IsNullOrEmpty(v6) || v6 == "::" ? "Automatic (ISP)" : v6;
+                });
+            });
+        }
+
+        [RelayCommand]
+        public async Task RunDnsBenchmarkAsync()
+        {
+            if (IsPingBenchmarking) return;
+            IsPingBenchmarking = true;
+            DnsBenchmarkResults.Clear();
+
+            var presets = DnsPreset.DefaultPresets.Where(p => !string.IsNullOrEmpty(p.Ipv4Primary) && p.Ipv4Primary != "0.0.0.0" && p.Name != "Custom").ToList();
+
+            var tasks = presets.Select(async preset =>
+            {
+                long latency = await PerformPing(preset.Ipv4Primary!);
+
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    DnsBenchmarkResults.Add(new DnsBenchmarkingItem
+                    {
+                        Name = preset.Name ?? "Unknown",
+                        IP = preset.Ipv4Primary!,
+                        Latency = latency,
+                        LatencyColor = latency < 50 ? Colors.LimeGreen : (latency < 100 ? Colors.Orange : Colors.Red),
+                        PresetReference = preset
+                    });
+                });
+            });
+
+            await Task.WhenAll(tasks);
+            IsPingBenchmarking = false;
+        }
+
+        private async Task<long> PerformPing(string ip)
+        {
+            try
+            {
+                using var ping = new Ping();
+                var reply = await ping.SendPingAsync(ip, 2000);
+                return reply.Status == IPStatus.Success ? reply.RoundtripTime : -1;
+            }
+            catch { return -1; }
+        }
+
+        [RelayCommand]
+        public async Task ApplyDnsPresetAsync(DnsPreset preset)
+        {
+            if (preset == null) return;
+            await Task.Run(() => {
+                DnsManager dm = new DnsManager();
+
+                dm.SetIpv4Dns(preset.Ipv4Primary!, preset.Ipv4Secondary ?? "");
+
+                if (!string.IsNullOrEmpty(preset.Ipv6Primary) && preset.Ipv6Primary != "::")
+                {
+                    dm.SetIpv6Dns(preset.Ipv6Primary, preset.Ipv6Secondary ?? "");
+                }
+
+                NetHelper.FlushDns();
+            });
+
+            await UpdateSystemDnsDisplayAsync();
+            SendSystemNotification(4, "Network Optimizer", $"Successfully applied {preset.Name} DNS.");
         }
         #endregion
 

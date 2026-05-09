@@ -2311,6 +2311,8 @@
 
     <sys:String x:Key="diag_hw_topology_change">Modification de la topologie matérielle détectée. Interrogation du bus...</sys:String>
 
+    <sys:String x:Key="diag_alert_dns_latency">PERFORMANCES RÉSEAU : La latence DNS actuelle est sous-optimale ({0}). Cliquez sur Réparer pour exécuter l'Optimiseur DNS.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
     <sys:String x:Key="txt_later">Plus tard</sys:String>
 

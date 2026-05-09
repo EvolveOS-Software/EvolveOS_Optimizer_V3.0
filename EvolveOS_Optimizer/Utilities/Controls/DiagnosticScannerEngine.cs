@@ -1,11 +1,13 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System.Net.NetworkInformation;
 using System.Threading;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Managers;
 
 namespace EvolveOS_Optimizer.Utilities.Controls
 {
@@ -51,6 +53,25 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 var perfTask = new PerformanceTelemetryHelper().AnalyzePerformanceBottlenecksAsync();
                 var anomalyTask = new SystemAnomalySolver().DetectAndResolveAllAnomaliesAsync(token);
 
+                var dnsTask = Task.Run(async () =>
+                {
+                    try
+                    {
+                        var dnsManager = new DnsManager();
+                        string currentDns = dnsManager.GetCurrentIpv4Primary();
+
+                        if (!string.IsNullOrEmpty(currentDns) && currentDns != "0.0.0.0")
+                        {
+                            using var ping = new Ping();
+                            var reply = await ping.SendPingAsync(currentDns, 2000);
+                            long latency = reply.Status == IPStatus.Success ? reply.RoundtripTime : -1;
+                            return (Latency: latency, Ip: currentDns);
+                        }
+                    }
+                    catch { }
+                    return (Latency: -1L, Ip: string.Empty);
+                }, token);
+
                 var securityTask = Task.Run(async () =>
                 {
                     return new
@@ -84,8 +105,21 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 var performanceIssues = perfTask.Result;
                 var sec = securityTask.Result;
                 var resolvedSystemAnomalies = anomalyTask.Result;
+                var dnsResult = dnsTask.Result;
 
                 systemEvents.AddRange(performanceIssues);
+
+                if (!string.IsNullOrEmpty(dnsResult.Ip) && (dnsResult.Latency > 100 || dnsResult.Latency == -1))
+                {
+                    string latencyText = dnsResult.Latency == -1 ? "Timeout" : $"{dnsResult.Latency}ms";
+                    string alertMsg = string.Format(ResourceString.GetString("diag_alert_dns_latency") ?? "NETWORK PERFORMANCE: Current DNS latency is sub-optimal ({0}). Click Fix to run the DNS Optimizer.", latencyText);
+
+                    var alert = _vm.CreateAlert(9119, "NetworkAuditor", alertMsg);
+                    alert.Level = 2;
+                    alert.IsFixable = true;
+
+                    systemEvents.Insert(0, alert);
+                }
 
                 bool physicallyEnrolled = false;
                 try

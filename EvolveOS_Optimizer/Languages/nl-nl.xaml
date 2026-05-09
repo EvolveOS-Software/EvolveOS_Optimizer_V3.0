@@ -2309,6 +2309,8 @@
 
     <sys:String x:Key="diag_hw_topology_change">Wijziging in hardwaretopologie gedetecteerd. Bus wordt uitgelezen...</sys:String>
 
+    <sys:String x:Key="diag_alert_dns_latency">NETWERK PRESTATIES: Huidige DNS latentie is suboptimaal ({0}). Klik op Herstellen om de DNS Optimizer uit te voeren.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Nu herstarten</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 
