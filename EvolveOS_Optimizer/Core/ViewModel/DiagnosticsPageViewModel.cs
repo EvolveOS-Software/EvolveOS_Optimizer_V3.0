@@ -15,6 +15,7 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
+using EvolveOS_Optimizer.Utilities.Services;
 using Windows.Foundation;
 using Windows.System;
 
@@ -32,6 +33,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Fields (Diagnostics)
+        private readonly MemoryGuardian? _memoryGuardian;
         private LiveEventWatcherHelper? _liveWatcher;
         private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         private CancellationTokenSource? _scanCts;
@@ -269,6 +271,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _instance = this;
 
             _scannerEngine = new DiagnosticScannerEngine(this);
+
+            // Notification logic for testing purpose
+            _memoryGuardian = new MemoryGuardian(/*(beforeBytes, afterBytes) =>
+            {
+                ulong freedMb = beforeBytes > afterBytes ? (beforeBytes - afterBytes) / 1024 / 1024 : 0;
+
+                if (freedMb > 0)
+                {
+                    SendSystemNotification(1,
+                        ResourceString.GetString("MemoryGuardian_Title") ?? "Memory Guardian",
+                        string.Format(ResourceString.GetString("MemoryGuardian_Msg") ?? "Deep memory cleanup complete. Recovered {0} MB of background RAM.", freedMb));
+                }
+            }*/);
 
             LocalMachineSettingsEngine.SettingChanged += OnGlobalSettingChanged;
 
@@ -3928,6 +3943,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             finally { _isReiniziliating = false; }
         }
 
+        public void SetMemoryThreshold(int megabytes)
+        {
+            _memoryGuardian?.SetThreshold(megabytes);
+        }
+
         public void PauseUiUpdates()
         {
             _isUiActive = false;
@@ -3939,7 +3959,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+            bool shouldBeInEfficiencyMode = LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(shouldBeInEfficiencyMode);
         }
 
         public void ResumeUiUpdates()

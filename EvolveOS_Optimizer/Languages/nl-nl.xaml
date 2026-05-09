@@ -3155,5 +3155,9 @@
     <sys:String x:Key="diag_scm_analysis_7408">Algemene afhankelijkheidswaarschuwing voor '{0}'. De service ondervond een kleine vertraging bij het wachten op de initialisatie van een bovenliggend subsysteem. &#x0A;&#x0A;AANBEVELING: Routine OS opstart-telemetrie. Geen actie vereist.</sys:String>
     <sys:String x:Key="diag_scm_analysis_fallback">Er is een onbekende telemetrie-anomalie (Code {0}) gedetecteerd met betrekking tot '{1}'. De Remediation Engine staat stand-by om de servicestatus te stabiliseren en ervoor te zorgen dat achtergrondfunctionaliteiten online blijven. &#x0A;&#x0A;AANBEVELING: Bewaak de systeemstabiliteit.</sys:String>
     <!-- endregion AI Neural Analysis Engine -->
-    
+
+    <!-- region Memory Guardian -->
+    <sys:String x:Key="MemoryGuardian_Title">Memory Guardian</sys:String>
+    <sys:String x:Key="MemoryGuardian_Msg">Grondige geheugenopruiming voltooid. {0} MB aan achtergrond-RAM hersteld.</sys:String>
+    <!-- endregion Memory Guardian -->
 </ResourceDictionary>

@@ -3177,4 +3177,9 @@
     <sys:String x:Key="diag_scm_analysis_7408">Generic dependency warning for '{0}'. The service experienced a minor delay waiting for a parent subsystem to initialize. &#x0A;&#x0A;RECOMMENDATION: Routine OS boot telemetry. No action required.</sys:String>
     <sys:String x:Key="diag_scm_analysis_fallback">An unknown telemetry anomaly (Code {0}) was detected regarding '{1}'. The Remediation Engine is standing by to stabilize the service state and ensure background capabilities remain online. &#x0A;&#x0A;RECOMMENDATION: Monitor system stability.</sys:String>
     <!-- endregion AI Neural Analysis Engine -->
+
+    <!-- region Memory Guardian -->
+    <sys:String x:Key="MemoryGuardian_Title">Memory Guardian</sys:String>
+    <sys:String x:Key="MemoryGuardian_Msg">Deep memory cleanup complete. Recovered {0} MB of background RAM.</sys:String>
+    <!-- endregion Memory Guardian -->
 </ResourceDictionary>

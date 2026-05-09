@@ -3156,4 +3156,8 @@
     <sys:String x:Key="diag_scm_analysis_fallback">È stata rilevata un'anomalia di telemetria sconosciuta (Codice {0}) riguardante '{1}'. Il Remediation Engine è in attesa per stabilizzare lo stato del servizio e garantire che le funzionalità in background rimangano online. &#x0A;&#x0A;RACCOMANDAZIONE: Monitora la stabilità del sistema.</sys:String>
     <!-- endregion AI Neural Analysis Engine -->
 
+    <!-- region Memory Guardian -->
+    <sys:String x:Key="MemoryGuardian_Title">Guardiano della memoria</sys:String>
+    <sys:String x:Key="MemoryGuardian_Msg">Pulizia profonda della memoria completata. Recuperati {0} MB di RAM in background.</sys:String>
+    <!-- endregion Memory Guardian -->
 </ResourceDictionary>

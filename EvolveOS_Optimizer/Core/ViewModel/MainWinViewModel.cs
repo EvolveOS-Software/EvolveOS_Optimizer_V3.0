@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.ComponentModel;
 using System.Reflection;
 using System.Security.Principal;
@@ -317,6 +320,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             window.Activate();
             _isWindowVisible = true;
 
+            EfficiencyModeHelper.IsUIWakeLockActive = false;
+
+            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+            {
+                DiagnosticsPageViewModel.Current.SetMemoryThreshold(150);
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+            }
+            else
+            {
+                DiagnosticsPageViewModel.Current.SetMemoryThreshold(200);
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+            }
+
             if (CurrentViewTag == "Home" ||
                 CurrentViewTag == "Diagnostics" ||
                 CurrentViewTag == "SystemManagerPage" ||
@@ -353,7 +369,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             appWindow.Hide();
             _isWindowVisible = false;
 
-            UpdatePowerState(CurrentViewTag);
+            EfficiencyModeHelper.IsUIWakeLockActive = false;
+
+            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+            {
+                DiagnosticsPageViewModel.Current.SetMemoryThreshold(150);
+            }
+            else
+            {
+                DiagnosticsPageViewModel.Current.SetMemoryThreshold(200);
+            }
 
             AppHidden?.Invoke();
             DiagnosticsPageViewModel.Current.PauseUiUpdates();

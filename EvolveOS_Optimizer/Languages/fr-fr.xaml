@@ -3158,4 +3158,8 @@
     <sys:String x:Key="diag_scm_analysis_fallback">Une anomalie de télémétrie inconnue (Code {0}) a été détectée concernant '{1}'. Le moteur de remédiation est prêt à stabiliser l'état du service et à s'assurer que les capacités d'arrière-plan restent en ligne. &#x0A;&#x0A;RECOMMANDATION : Surveillez la stabilité du système.</sys:String>
     <!-- endregion AI Neural Analysis Engine -->
 
+    <!-- region Memory Guardian -->
+    <sys:String x:Key="MemoryGuardian_Title">Gardien de la mémoire</sys:String>
+    <sys:String x:Key="MemoryGuardian_Msg">Nettoyage en profondeur de la mémoire terminé. {0} Mo de RAM en arrière-plan libérés.</sys:String>
+    <!-- endregion Memory Guardian -->
 </ResourceDictionary>
