@@ -487,7 +487,7 @@ public sealed partial class ProcessManagerPage : Page
         _groupedProcesses?.Clear();
         ProcessListView.ItemsSource = null;
 
-        _iconCache.Clear();
+        //_iconCache.Clear();
 
         this.DataContext = null;
         this.Content = null;

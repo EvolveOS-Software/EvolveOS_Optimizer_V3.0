@@ -369,6 +369,8 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
 
         try
         {
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
             var totalApps = appTreeView.SelectedItems.Count;
             var completedApps = 0;
 
@@ -444,10 +446,16 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
             DispatcherQueue.TryEnqueue(() =>
             {
                 uninstallingStatusText.Text = ResourceString.GetString("SystemAppsPage_UninstallTip");
+                uninstallingStatusBar.Opacity = 0;
                 uninstallButton.IsEnabled = true;
                 appsFilter.IsEnabled = true;
                 appsSort.IsEnabled = true;
                 appTreeView.IsEnabled = true;
+
+                if (MainWindow.Instance?.RootGrid?.DataContext is MainWinViewModel mainVm)
+                {
+                    mainVm.UpdatePowerState(mainVm.CurrentViewTag);
+                }
             });
         }
     }

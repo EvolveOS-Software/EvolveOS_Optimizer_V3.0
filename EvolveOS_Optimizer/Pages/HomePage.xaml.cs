@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using EvolveOS_Optimizer.Assets.UserControl;
+using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -72,6 +73,9 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void HomePage_Loaded(object sender, RoutedEventArgs e)
         {
+            MainWinViewModel.AppHidden += PauseLiveMonitoring;
+            MainWinViewModel.AppRestored += ResumeLiveMonitoring;
+
             ApplyElevationUI();
             LoadWeather();
             LoadDashboardLayout();
@@ -117,6 +121,9 @@ namespace EvolveOS_Optimizer.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
+            MainWinViewModel.AppHidden -= PauseLiveMonitoring;
+            MainWinViewModel.AppRestored -= ResumeLiveMonitoring;
+
             if (_monitoringTimer != null)
             {
                 _monitoringTimer.Stop();
@@ -139,6 +146,23 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Loaded -= HomePage_Loaded;
             this.Unloaded -= Page_Unloaded;
+        }
+
+        private void PauseLiveMonitoring()
+        {
+            _monitoringTimer?.Stop();
+            _wallpaperTimer?.Stop();
+            System.Diagnostics.Debug.WriteLine("[HomePage] Live monitoring PAUSED for System Tray.");
+        }
+
+        private void ResumeLiveMonitoring()
+        {
+            if (_monitoringTimer != null && !_monitoringTimer.IsEnabled)
+            {
+                _monitoringTimer.Start();
+                _wallpaperTimer?.Start();
+                System.Diagnostics.Debug.WriteLine("[HomePage] Live monitoring RESUMED.");
+            }
         }
         #endregion
 
@@ -1904,6 +1928,9 @@ namespace EvolveOS_Optimizer.Pages
         public void Purge()
         {
             Debug.WriteLine("[HomePage] Deep Purge Initiated...");
+
+            MainWinViewModel.AppHidden -= PauseLiveMonitoring;
+            MainWinViewModel.AppRestored -= ResumeLiveMonitoring;
 
             if (_monitoringTimer != null)
             {

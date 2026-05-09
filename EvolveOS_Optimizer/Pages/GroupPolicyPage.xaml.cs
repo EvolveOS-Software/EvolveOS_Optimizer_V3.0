@@ -3,12 +3,13 @@
 
 using System.Text;
 using System.Threading;
-using Microsoft.Win32;
+using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel.Items;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -93,6 +94,9 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
 
         try
         {
+            EfficiencyModeHelper.IsUIWakeLockActive = true;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
             ScanProgressRing.Visibility = Visibility.Visible;
             ScanProgressRing.IsActive = true;
             SummaryText.Text = ResourceString.GetString("GroupPolicyPage_ScanningPolicies") ?? "Scanning 3000+ ADMX OS Policies...";
@@ -142,6 +146,12 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
                     ScanProgressRing.Visibility = Visibility.Collapsed;
                     ScanProgressRing.IsActive = false;
                     RefreshButton.IsEnabled = true;
+                }
+
+                EfficiencyModeHelper.IsUIWakeLockActive = false;
+                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                {
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
                 }
             });
         }
@@ -614,6 +624,9 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
 
         try
         {
+            EfficiencyModeHelper.IsUIWakeLockActive = true;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
             ScanProgressRing.Visibility = Visibility.Visible;
             ScanProgressRing.IsActive = true;
             SummaryText.Text = ResourceString.GetString("GroupPolicyPage_RemovingPolicies") ?? "Removing policies...";
@@ -657,6 +670,12 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             ScanProgressRing.Visibility = Visibility.Collapsed;
             ScanProgressRing.IsActive = false;
             RefreshButton.IsEnabled = true;
+
+            EfficiencyModeHelper.IsUIWakeLockActive = false;
+            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+            {
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+            }
         }
     }
     #endregion

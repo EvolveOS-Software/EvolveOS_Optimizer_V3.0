@@ -7,6 +7,7 @@ using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Pages;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Windowing;
 using Windows.System;
@@ -40,6 +41,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public IEnumerable<VirtualKey> AvailableKeys { get; } = Enumerable.Range((int)VirtualKey.A, 26)
             .Select(k => (VirtualKey)k)
             .Concat(Enumerable.Range((int)VirtualKey.F1, 12).Select(k => (VirtualKey)k));
+        #endregion
+
+        #region Events
+        public static event Action? AppHidden;
+        public static event Action? AppRestored;
         #endregion
 
         #region Properties
@@ -282,6 +288,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (string.IsNullOrEmpty(tag)) return;
 
             CurrentViewTag = tag;
+
+            UpdatePowerState(tag);
         }
 
         protected override void Dispose(bool disposing)
@@ -308,6 +316,29 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             appWindow.Show();
             window.Activate();
             _isWindowVisible = true;
+
+            if (CurrentViewTag == "Home" ||
+                CurrentViewTag == "Diagnostics" ||
+                CurrentViewTag == "SystemManagerPage" ||
+                CurrentViewTag == "SoftwareCenterPage")
+            {
+                EfficiencyModeHelper.IsUIWakeLockActive = true;
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+                Debug.WriteLine($"[Restore] Restoring to Performance Zone: {CurrentViewTag}. Wake Lock RAISED.");
+            }
+            else
+            {
+                EfficiencyModeHelper.IsUIWakeLockActive = false;
+
+                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                {
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+                }
+                Debug.WriteLine($"[Restore] Restoring to Efficiency Zone: {CurrentViewTag}. Wake Lock DROPPED.");
+            }
+
+            AppRestored?.Invoke();
+            DiagnosticsPageViewModel.Current.ResumeUiUpdates();
         }
 
         private void ExecuteMinimize()
@@ -321,6 +352,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             appWindow.Hide();
             _isWindowVisible = false;
+
+            UpdatePowerState(CurrentViewTag);
+
+            AppHidden?.Invoke();
+            DiagnosticsPageViewModel.Current.PauseUiUpdates();
         }
 
         private void ExecuteToggleVisibility()
@@ -340,17 +376,53 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (tag == "Diagnostics" && !string.IsNullOrEmpty(requestedPane))
             {
                 if (DiagnosticsPage.ExternalPaneRequest != null)
-                {
                     DiagnosticsPage.ExternalPaneRequest.Invoke(requestedPane);
-                }
                 else
-                {
                     DiagnosticsPage.RequestedPaneOnLoad = requestedPane;
-                }
             }
+
+            if (tag == "SystemManagerPage" && !string.IsNullOrEmpty(requestedPane))
+            {
+                if (SystemManagerPage.ExternalPaneRequest != null)
+                    SystemManagerPage.ExternalPaneRequest.Invoke(requestedPane);
+                else
+                    SystemManagerPage.RequestedPaneOnLoad = requestedPane;
+            }
+
+            if (tag == "SoftwareCenterPage" && !string.IsNullOrEmpty(requestedPane))
+            {
+                if (SoftwareCenterPage.ExternalPaneRequest != null)
+                    SoftwareCenterPage.ExternalPaneRequest.Invoke(requestedPane);
+                else
+                    SoftwareCenterPage.RequestedPaneOnLoad = requestedPane;
+            }
+
+            CurrentViewTag = tag;
 
             ExecuteMaximize();
             ExecuteNavigate(tag);
+        }
+
+        public void UpdatePowerState(string tag)
+        {
+            if (tag == "Home" ||
+                tag == "Diagnostics" ||
+                tag == "SystemManagerPage" ||
+                tag == "SoftwareCenterPage")
+            {
+                EfficiencyModeHelper.IsUIWakeLockActive = true;
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+                Debug.WriteLine($"[Power] HIGH PERFORMANCE: {tag}");
+            }
+            else
+            {
+                EfficiencyModeHelper.IsUIWakeLockActive = false;
+                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                {
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+                }
+                Debug.WriteLine($"[Power] EFFICIENCY MODE: {tag}");
+            }
         }
 
         private void ExecuteClose()

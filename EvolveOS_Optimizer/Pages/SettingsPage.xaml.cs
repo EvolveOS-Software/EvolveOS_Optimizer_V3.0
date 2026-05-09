@@ -10,6 +10,7 @@ using System.Management;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text.Json;
+using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Animation;
@@ -887,6 +888,9 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (pickResult != null && !string.IsNullOrEmpty(pickResult.Path))
                 {
+                    EfficiencyModeHelper.IsUIWakeLockActive = true;
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
                     bool success = SqlConnectionHelper.RestoreDatabase(pickResult.Path);
 
                     if (success)
@@ -920,6 +924,14 @@ namespace EvolveOS_Optimizer.Pages
             catch (Exception ex)
             {
                 Debug.WriteLine($"[SettingsPage] File picker error: {ex.Message}");
+            }
+            finally
+            {
+                EfficiencyModeHelper.IsUIWakeLockActive = false;
+                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                {
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+                }
             }
         }
         #endregion

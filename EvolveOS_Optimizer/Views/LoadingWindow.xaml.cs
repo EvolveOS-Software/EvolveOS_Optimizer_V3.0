@@ -5,7 +5,9 @@
 
 using System.IO;
 using System.Threading;
+using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Animation;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -14,7 +16,6 @@ using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks;
-using EvolveOS_Optimizer.Core.ViewModel;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -54,10 +55,12 @@ namespace EvolveOS_Optimizer.Views
         public LoadingWindow(bool autoLoginSuccessful = false, bool isShutdownMode = false)
         {
             this.InitializeComponent();
+
+            EfficiencyModeHelper.IsUIWakeLockActive = true;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
             _isAutoLoginSuccessful = autoLoginSuccessful;
-
             _isShutdownMode = isShutdownMode;
-
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
             ApplyUserAccentColor();
@@ -119,8 +122,14 @@ namespace EvolveOS_Optimizer.Views
             _cts.Cancel();
             _cts.Dispose();
 
-            if (RootGrid != null) RootGrid.DataContext = null;
+            EfficiencyModeHelper.IsUIWakeLockActive = false;
 
+            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+            {
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+            }
+
+            if (RootGrid != null) RootGrid.DataContext = null;
             if (_systemDiagnostics is IDisposable d1) d1.Dispose();
             if (_uninstallingPakages is IDisposable d2) d2.Dispose();
 

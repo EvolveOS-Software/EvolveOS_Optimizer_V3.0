@@ -5,6 +5,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Security;
 using System.Security.Cryptography;
+using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.UI.Xaml.Navigation;
@@ -129,6 +131,9 @@ namespace EvolveOS_Optimizer.Pages
                 var destinationFile = await savePicker.PickSaveFileAsync();
                 if (destinationFile == null) return;
 
+                EfficiencyModeHelper.IsUIWakeLockActive = true;
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
@@ -153,6 +158,12 @@ namespace EvolveOS_Optimizer.Pages
             {
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
+
+                EfficiencyModeHelper.IsUIWakeLockActive = false;
+                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                {
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+                }
             }
         }
 
@@ -187,6 +198,9 @@ namespace EvolveOS_Optimizer.Pages
                         UIHelper.SetOverlay(false);
                         return;
                     }
+
+                    EfficiencyModeHelper.IsUIWakeLockActive = true;
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
 
                     LoadingOverlay.Visibility = Visibility.Visible;
                     await ProcessFolderDecryptionAsync(fileToDecrypt.Path, destFolder.Path);
@@ -242,6 +256,12 @@ namespace EvolveOS_Optimizer.Pages
             {
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
+
+                EfficiencyModeHelper.IsUIWakeLockActive = false;
+                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                {
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+                }
             }
         }
 
@@ -268,6 +288,9 @@ namespace EvolveOS_Optimizer.Pages
                 var destinationFile = await savePicker.PickSaveFileAsync();
                 if (destinationFile == null) return;
 
+                EfficiencyModeHelper.IsUIWakeLockActive = true;
+                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
                 UIHelper.SetOverlay(true);
                 LoadingOverlay.Visibility = Visibility.Visible;
 
@@ -292,6 +315,12 @@ namespace EvolveOS_Optimizer.Pages
             {
                 LoadingOverlay.Visibility = Visibility.Collapsed;
                 UIHelper.SetOverlay(false);
+
+                EfficiencyModeHelper.IsUIWakeLockActive = false;
+                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                {
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+                }
             }
         }
 

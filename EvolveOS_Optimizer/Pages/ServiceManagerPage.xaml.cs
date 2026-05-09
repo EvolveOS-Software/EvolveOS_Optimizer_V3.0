@@ -16,6 +16,7 @@ public sealed partial class ServiceManagerPage : Page
     #region Fields
     private List<ServiceManagerModel> _allServices = [];
     private readonly ObservableCollection<ServiceManagerModel> _filteredServices = [];
+    private static readonly Dictionary<string, (string StartType, string ImagePath, bool IsMicrosoft)> _registryCache = new();
 
     private string _currentSort = "Name";
     private bool _sortAscending = true;
@@ -92,7 +93,12 @@ public sealed partial class ServiceManagerPage : Page
             return ServiceController.GetServices()
                 .Select(s =>
                 {
-                    var details = GetServiceDetails(s.ServiceName);
+                    if (!_registryCache.TryGetValue(s.ServiceName, out var details))
+                    {
+                        details = GetServiceDetails(s.ServiceName);
+                        _registryCache[s.ServiceName] = details;
+                    }
+
                     var isRunning = s.Status == ServiceControllerStatus.Running;
                     var canStop = s.Status == ServiceControllerStatus.Running && s.CanStop;
 
@@ -451,6 +457,8 @@ public sealed partial class ServiceManagerPage : Page
                 using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{serviceName}", true);
                 key?.SetValue("Start", startValue, RegistryValueKind.DWord);
             });
+
+            _registryCache.Remove(serviceName);
 
             string localizedStartType = ResourceString.GetString($"service_manager_page_{internalStartType.ToLower()}");
 

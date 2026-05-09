@@ -91,9 +91,6 @@ namespace EvolveOS_Optimizer.Pages
         #region Event Handlers
         private async void DiagnosticsPage_Loaded(object sender, RoutedEventArgs e)
         {
-            EfficiencyModeHelper.IsUIWakeLockActive = true;
-            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-
             ExternalPaneRequest = SwitchToPane;
 
             if (!string.IsNullOrEmpty(RequestedPaneOnLoad))
@@ -133,13 +130,6 @@ namespace EvolveOS_Optimizer.Pages
             }
 
             ExternalPaneRequest = null;
-
-            EfficiencyModeHelper.IsUIWakeLockActive = false;
-
-            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
-            {
-                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
-            }
         }
 
         private void SwitchToPane(string paneName)

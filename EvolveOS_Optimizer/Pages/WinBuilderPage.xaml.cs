@@ -4,6 +4,8 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
+using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
 using Microsoft.UI.Xaml.Navigation;
@@ -163,6 +165,9 @@ namespace EvolveOS_Optimizer.Pages
             _isBuildInProgress = true;
             _buildCts = new CancellationTokenSource();
 
+            EfficiencyModeHelper.IsUIWakeLockActive = true;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
             var progressReporter = new Progress<string>(status =>
             {
                 TxtStatus.Text = status;
@@ -198,6 +203,12 @@ namespace EvolveOS_Optimizer.Pages
 
                 _buildCts?.Dispose();
                 _buildCts = null;
+
+                EfficiencyModeHelper.IsUIWakeLockActive = false;
+                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                {
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+                }
             }
         }
 

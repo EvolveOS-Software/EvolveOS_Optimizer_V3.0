@@ -9,6 +9,11 @@ namespace EvolveOS_Optimizer.Pages;
 
 public sealed partial class SoftwareCenterPage : Page
 {
+    #region Static Members (For Tray/External Navigation)
+    public static Action<string>? ExternalPaneRequest;
+    public static string RequestedPaneOnLoad { get; set; } = "";
+    #endregion
+
     private PackagesViewModel? _sharedViewModel = new PackagesViewModel();
     private NavigationViewItem? _previousItem;
     private bool _isSyncingSelection = false;
@@ -18,14 +23,40 @@ public sealed partial class SoftwareCenterPage : Page
         this.InitializeComponent();
 
         this.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Disabled;
+        this.Loaded += SoftwareCenterPage_Loaded;
+    }
 
-        var firstItem = SoftwareNav.MenuItems[0] as NavigationViewItem;
-        SoftwareNav.SelectedItem = firstItem;
-        _previousItem = firstItem;
+    private void SoftwareCenterPage_Loaded(object sender, RoutedEventArgs e)
+    {
+        ExternalPaneRequest = (requestedPane) =>
+        {
+            var targetItem = SoftwareNav.MenuItems
+                .OfType<NavigationViewItem>()
+                .FirstOrDefault(item => item.Tag?.ToString() == requestedPane);
+
+            if (targetItem != null)
+            {
+                SoftwareNav.SelectedItem = targetItem;
+            }
+        };
+
+        if (!string.IsNullOrEmpty(RequestedPaneOnLoad))
+        {
+            ExternalPaneRequest?.Invoke(RequestedPaneOnLoad);
+            RequestedPaneOnLoad = "";
+        }
+        else if (SoftwareNav.MenuItems.Count > 0 && SoftwareNav.SelectedItem == null)
+        {
+            var firstItem = SoftwareNav.MenuItems[0] as NavigationViewItem;
+            SoftwareNav.SelectedItem = firstItem;
+            _previousItem = firstItem;
+        }
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
+        ExternalPaneRequest = null;
+
         if (ContentFrame.Content is IPurgeable purgeablePage)
         {
             purgeablePage.Purge();
@@ -48,7 +79,7 @@ public sealed partial class SoftwareCenterPage : Page
         _sharedViewModel = null;
         this.DataContext = null;
 
-        Debug.WriteLine("[SoftwareCenterPage] Shared ViewModel, Frame, and Child Caches completely PURGED from memory.");
+        Debug.WriteLine("[SoftwareCenterPage] Shared ViewModel and Frame Caches PURGED.");
     }
 
     private async void SoftwareNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -70,8 +101,7 @@ public sealed partial class SoftwareCenterPage : Page
                     PrimaryButtonText = ResourceString.GetString("btn_proceed") ?? "Proceed",
                     CloseButtonText = ResourceString.GetString("btn_cancel") ?? "Cancel",
                     DefaultButton = ContentDialogButton.Close,
-                    XamlRoot = this.XamlRoot,
-                    // Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"]
+                    XamlRoot = this.XamlRoot
                 };
 
                 var result = await dialog.ShowAsync();
@@ -79,14 +109,11 @@ public sealed partial class SoftwareCenterPage : Page
                 if (result == ContentDialogResult.Primary)
                 {
                     await busyPage.CancelWorkAsync();
-
                     _isSyncingSelection = true;
                     sender.SelectedItem = selectedItem;
                     _isSyncingSelection = false;
-
                     PerformNavigation(selectedItem);
                 }
-
                 return;
             }
 
@@ -97,6 +124,14 @@ public sealed partial class SoftwareCenterPage : Page
     private void PerformNavigation(NavigationViewItem selectedItem)
     {
         string? tag = selectedItem.Tag?.ToString();
+        if (string.IsNullOrEmpty(tag)) return;
+
+        if (MainWindow.Instance?.RootGrid?.DataContext is MainWinViewModel mainVm)
+        {
+            EfficiencyModeHelper.IsUIWakeLockActive = true;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+        }
+
         Type pageType = tag switch
         {
             "PackagesPage" => typeof(PackagesPage),

@@ -2,6 +2,8 @@
 // Licensed under the MIT License.
 
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -59,17 +61,23 @@ namespace EvolveOS_Optimizer.Pages
             if (args.SelectedItem is NavigationViewItem selectedItem)
             {
                 string? selectedTag = selectedItem.Tag?.ToString();
+                if (string.IsNullOrEmpty(selectedTag)) return;
+
+                if (MainWindow.Instance?.RootGrid?.DataContext is MainWinViewModel mainVm)
+                {
+                    EfficiencyModeHelper.IsUIWakeLockActive = true;
+                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+                    Debug.WriteLine($"[SystemManager] Tab switched to {selectedTag}. High Performance maintained.");
+                }
 
                 switch (selectedTag)
                 {
                     case "ProcessManagerPage":
                         ContentFrame.Navigate(typeof(ProcessManagerPage));
                         break;
-
                     case "ServiceManagerPage":
                         ContentFrame.Navigate(typeof(ServiceManagerPage));
                         break;
-
                     case "StartupManagerPage":
                         ContentFrame.Navigate(typeof(StartupManagerPage));
                         break;
