@@ -2,15 +2,17 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Drawing;
-using System.IO;
+using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using static EvolveOS_Optimizer.Core.Structs.Windows;
-using System.Drawing.Imaging;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -33,6 +35,7 @@ public sealed partial class ProcessManagerPage : Page
     private string _currentSort = "Memory";
     private bool _sortAscending;
     private bool _isUpdating;
+
     private bool _showPrivateMemory = true;
 
     private DispatcherTimer? _refreshTimer;
@@ -58,8 +61,16 @@ public sealed partial class ProcessManagerPage : Page
     private async void ProcessesPage_Loaded(object sender, RoutedEventArgs e)
     {
         _cts = new CancellationTokenSource();
+
+        if (this.FindName("MemoryModeToggle") is ToggleSwitch ts) ts.IsOn = _showPrivateMemory;
+
         await LoadProcessesAsync();
         StartAutoRefresh();
+
+        if (DiagnosticsPageViewModel.Current != null)
+        {
+            DiagnosticsPageViewModel.Current.OnOptimizeCommandCompleted += OnGlobalOptimizationCompleted;
+        }
     }
 
     private void ProcessesPage_Unloaded(object sender, RoutedEventArgs e)
@@ -72,7 +83,7 @@ public sealed partial class ProcessManagerPage : Page
     private void StartAutoRefresh()
     {
         if (_refreshTimer != null) return;
-        _refreshTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+        _refreshTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         _refreshTimer.Tick += async (_, _) => await RefreshProcessesAsync();
         _refreshTimer.Start();
     }
@@ -146,9 +157,35 @@ public sealed partial class ProcessManagerPage : Page
                     if (token.IsCancellationRequested) return null;
                     try
                     {
-                        double memoryMb = usePrivateMemory
-                            ? p.PrivateMemorySize64 / (1024.0 * 1024.0)
-                            : p.WorkingSet64 / (1024.0 * 1024.0);
+                        double memoryMb = 0;
+
+                        if (usePrivateMemory)
+                        {
+                            try
+                            {
+                                VM_COUNTERS_EX2 info = new VM_COUNTERS_EX2();
+                                int size = Marshal.SizeOf(typeof(VM_COUNTERS_EX2));
+
+                                if (NtQueryInformationProcess(p.Handle, 3, out info, size, IntPtr.Zero) == 0)
+                                {
+                                    memoryMb = (double)info.PrivateWorkingSetSize / (1024.0 * 1024.0);
+                                }
+                                else
+                                {
+                                    memoryMb = p.WorkingSet64 / (1024.0 * 1024.0);
+                                }
+                            }
+                            catch
+                            {
+                                memoryMb = p.WorkingSet64 / (1024.0 * 1024.0);
+                            }
+                        }
+                        else
+                        {
+                            memoryMb = p.WorkingSet64 / (1024.0 * 1024.0);
+                        }
+
+                        if (memoryMb < 0.1) memoryMb = 0.1;
 
                         string priorityStatus = "-";
                         string category = strBackground;
@@ -157,17 +194,9 @@ public sealed partial class ProcessManagerPage : Page
                         try
                         {
                             priorityStatus = p.PriorityClass.ToString();
-
                             bool isApp = p.MainWindowHandle != IntPtr.Zero && !string.IsNullOrEmpty(p.MainWindowTitle);
-
-                            if (isApp)
-                            {
-                                category = strApps;
-                            }
-                            else if (p.SessionId == 0)
-                            {
-                                category = strWindows;
-                            }
+                            if (isApp) category = strApps;
+                            else if (p.SessionId == 0) category = strWindows;
 
                             if (isApp)
                             {
@@ -192,7 +221,7 @@ public sealed partial class ProcessManagerPage : Page
                                 }
                             }
                         }
-                        catch { /* Access Denied for System Processes */ }
+                        catch { /* Access Denied */ }
 
                         return new ProcessManagerModel
                         {
@@ -207,7 +236,7 @@ public sealed partial class ProcessManagerPage : Page
                     }
                     catch
                     {
-                        return new ProcessManagerModel { Name = p.ProcessName, Id = p.Id, Priority = "-", Category = strWindows };
+                        return new ProcessManagerModel { Name = p.ProcessName, Id = p.Id, MemoryMB = 0.1, Priority = "-", Category = strWindows };
                     }
                 })
                 .Where(p => p != null)
@@ -345,6 +374,17 @@ public sealed partial class ProcessManagerPage : Page
             if (!_isUpdating) await RefreshProcessesAsync();
         }
     }
+
+    private void OnGlobalOptimizationCompleted(Enums.Memory.Optimization.Reason reason, string message)
+    {
+        Task.Delay(200).ContinueWith(async _ =>
+        {
+            DispatcherQueue?.TryEnqueue(async () =>
+            {
+                await RefreshProcessesAsync();
+            });
+        });
+    }
     #endregion
 
     #region Process Management Actions
@@ -386,6 +426,33 @@ public sealed partial class ProcessManagerPage : Page
 
     [DllImport("ntdll.dll")] private static extern int NtSuspendProcess(IntPtr processHandle);
     [DllImport("ntdll.dll")] private static extern int NtResumeProcess(IntPtr processHandle);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct VM_COUNTERS_EX2
+    {
+        public UIntPtr PeakVirtualSize;
+        public UIntPtr VirtualSize;
+        public uint PageFaultCount;
+        public UIntPtr PeakWorkingSetSize;
+        public UIntPtr WorkingSetSize;
+        public UIntPtr QuotaPeakPagedPoolUsage;
+        public UIntPtr QuotaPagedPoolUsage;
+        public UIntPtr QuotaPeakNonPagedPoolUsage;
+        public UIntPtr QuotaNonPagedPoolUsage;
+        public UIntPtr PagefileUsage;
+        public UIntPtr PeakPagefileUsage;
+        public UIntPtr PrivateUsage;
+        public UIntPtr PrivateWorkingSetSize;
+        public UIntPtr SharedCommitCharge;
+    }
+
+    [DllImport("ntdll.dll")]
+    private static extern int NtQueryInformationProcess(
+        IntPtr processHandle,
+        int processInformationClass,
+        out VM_COUNTERS_EX2 processInformation,
+        int processInformationSize,
+        IntPtr returnLength);
 
     [StructLayout(LayoutKind.Sequential)]
     private struct PROCESS_POWER_THROTTLING_STATE
@@ -468,7 +535,11 @@ public sealed partial class ProcessManagerPage : Page
     {
         Debug.WriteLine("[ProcessManagerPage] Purge initiated...");
         StopAutoRefresh();
-        LiveMonitoringButton.Click -= LiveMonitoringButton_Click;
+
+        if (DiagnosticsPageViewModel.Current != null)
+        {
+            DiagnosticsPageViewModel.Current.OnOptimizeCommandCompleted -= OnGlobalOptimizationCompleted;
+        }
 
         if (_cts != null)
         {
@@ -486,8 +557,6 @@ public sealed partial class ProcessManagerPage : Page
         _windowsGroup?.Clear();
         _groupedProcesses?.Clear();
         ProcessListView.ItemsSource = null;
-
-        //_iconCache.Clear();
 
         this.DataContext = null;
         this.Content = null;

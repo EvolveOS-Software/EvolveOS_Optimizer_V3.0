@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:EvolveOS_Optimizer.Core.Model"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     mc:Ignorable="d">
 
@@ -160,7 +161,7 @@
                                 <ToggleSwitch x:Name="MemoryModeToggle"
                                               OffContent="{helpers:ResourceString Key=process_manager_page_memory_total}"
                                               OnContent="{helpers:ResourceString Key=process_manager_page_memory_private}"
-                                              IsOn="True"
+                                              IsOn="False"
                                               Toggled="MemoryModeToggle_Toggled"
                                               FontSize="12"/>
                             </StackPanel>
@@ -227,10 +228,10 @@
                 </ListView.GroupStyle>
 
                 <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="0,2" ToolTipService.ToolTip="{Binding HeatmapTooltip}">
+                    <DataTemplate x:DataType="models:ProcessManagerModel">
+                        <Grid Margin="0,2" ToolTipService.ToolTip="{Binding HeatmapTooltip, Mode=OneWay}">
                             <Border Background="Red" 
-                                    Opacity="{Binding HeatmapOpacity}" 
+                                    Opacity="{Binding HeatmapOpacity, Mode=OneWay}" 
                                     CornerRadius="4"/>
 
                             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -308,12 +309,12 @@
                                                Opacity="0.8"/>
 
                                     <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="2">
-                                        <TextBlock Text="{Binding MemoryDisplay}" HorizontalAlignment="Center" FontSize="12"/>
-                                        <ProgressBar Value="{Binding MemoryPercent}" Maximum="100" Width="60" Height="3"/>
+                                        <TextBlock Text="{x:Bind MemoryDisplay, Mode=OneWay}" HorizontalAlignment="Center" FontSize="12"/>
+                                        <ProgressBar Value="{x:Bind MemoryPercent, Mode=OneWay}" Maximum="100" Width="60" Height="3"/>
                                     </StackPanel>
 
                                     <TextBlock Grid.Column="3"
-                                               Text="{Binding ThreadCount}"
+                                               Text="{x:Bind ThreadCount, Mode=OneWay}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontFamily="{ThemeResource Jura}"
@@ -321,7 +322,7 @@
                                                Opacity="0.8"/>
 
                                     <TextBlock Grid.Column="4"
-                                               Text="{Binding Priority}"
+                                               Text="{x:Bind Priority, Mode=OneWay}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontFamily="{ThemeResource Jura}"

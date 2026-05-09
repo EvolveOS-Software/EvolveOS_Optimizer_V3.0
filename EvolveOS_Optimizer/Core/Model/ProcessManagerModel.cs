@@ -1,27 +1,43 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Core.Model
 {
-    public class ProcessManagerModel
+    public partial class ProcessManagerModel : ObservableObject
     {
-        public string Priority { get; set; } = "Normal";
-        public string Category { get; set; } = "Background Processes";
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public int Id
+        public string Category { get; set; } = "Background Processes";
+        public byte[]? IconBytes { get; set; }
+        public ImageSource? ProcessIcon { get; set; }
+
+        public Visibility FallbackIconVisibility => ProcessIcon == null ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ImageIconVisibility => ProcessIcon != null ? Visibility.Visible : Visibility.Collapsed;
+
+        private string _priority = "Normal";
+        public string Priority
         {
-            get; set;
+            get => _priority;
+            set => SetProperty(ref _priority, value);
         }
+
+        private double _memoryMB;
         public double MemoryMB
         {
-            get; set;
+            get => _memoryMB;
+            set => SetProperty(ref _memoryMB, value);
         }
+
+        private int _threadCount;
         public int ThreadCount
         {
-            get; set;
+            get => _threadCount;
+            set => SetProperty(ref _threadCount, value);
         }
+
         public string MemoryDisplay => $"{MemoryMB:F1} MB";
         public double MemoryPercent => Math.Min(MemoryMB / 500.0 * 100, 100);
         public double HeatmapOpacity => (MemoryMB >= 2048) ? 0.15 : 0.0;
@@ -32,14 +48,15 @@ namespace EvolveOS_Optimizer.Core.Model
 
         public void UpdateFrom(ProcessManagerModel other)
         {
-            Name = other.Name;
-            MemoryMB = other.MemoryMB;
-            ThreadCount = other.ThreadCount;
-        }
+            this.Priority = other.Priority;
+            this.MemoryMB = other.MemoryMB;
+            this.ThreadCount = other.ThreadCount;
+            this.Name = other.Name;
 
-        public byte[]? IconBytes { get; set; }
-        public ImageSource? ProcessIcon { get; set; }
-        public Visibility FallbackIconVisibility => ProcessIcon == null ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility ImageIconVisibility => ProcessIcon != null ? Visibility.Visible : Visibility.Collapsed;
+            OnPropertyChanged(nameof(MemoryDisplay));
+            OnPropertyChanged(nameof(MemoryPercent));
+            OnPropertyChanged(nameof(HeatmapOpacity));
+            OnPropertyChanged(nameof(HeatmapTooltip));
+        }
     }
 }
