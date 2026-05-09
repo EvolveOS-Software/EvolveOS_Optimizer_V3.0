@@ -2946,6 +2946,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float downPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((downMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
                 float upPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((upMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
 
+                // Guardian to check the threshold
+                _memoryGuardian?.MonitorAndCleanup();
+
                 var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                 dispatcher?.TryEnqueue(() =>
                 {

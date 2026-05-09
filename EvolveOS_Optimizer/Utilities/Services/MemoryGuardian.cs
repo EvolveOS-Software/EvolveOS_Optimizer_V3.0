@@ -28,7 +28,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             if (queue == null) return;
 
             _checkTimer = queue.CreateTimer();
-            _checkTimer.Interval = TimeSpan.FromSeconds(30);
+            _checkTimer.Interval = TimeSpan.FromSeconds(5);
             _checkTimer.Tick += (s, e) => MonitorAndCleanup();
             _checkTimer.Start();
         }
@@ -56,7 +56,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             }
         }
 
-        private void MonitorAndCleanup()
+        public void MonitorAndCleanup()
         {
             using var currentProcess = Process.GetCurrentProcess();
 
