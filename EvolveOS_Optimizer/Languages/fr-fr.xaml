@@ -2311,6 +2311,18 @@
 
     <sys:String x:Key="diag_hw_topology_change">Modification de la topologie matérielle détectée. Interrogation du bus...</sys:String>
 
+    <sys:String x:Key="diag_dns_toolkit_title">Optimiseur Réseau &amp; DNS</sys:String>
+    <sys:String x:Key="diag_dns_current_ipv4">DNS IPV4 ACTUEL</sys:String>
+    <sys:String x:Key="diag_dns_find_best_server">TROUVER LE MEILLEUR SERVEUR</sys:String>
+    <sys:String x:Key="diag_dns_manual_setup">Configuration manuelle</sys:String>
+    <sys:String x:Key="diag_dns_latency">LATENCE</sys:String>
+    <sys:String x:Key="diag_dns_apply">APPLIQUER</sys:String>
+
+    <sys:String x:Key="diag_notif_dns_title">Optimiseur Réseau</sys:String>
+    <sys:String x:Key="diag_notif_dns_preset_success">Le DNS {0} a été appliqué avec succès.</sys:String>
+    <sys:String x:Key="diag_notif_dns_manual_success">La configuration DNS a été appliquée avec succès.</sys:String>
+    <sys:String x:Key="diag_notif_dns_manual_fail">Échec de l'application de la configuration DNS.</sys:String>
+
     <sys:String x:Key="diag_alert_dns_latency">PERFORMANCES RÉSEAU : La latence DNS actuelle est sous-optimale ({0}). Cliquez sur Réparer pour exécuter l'Optimiseur DNS.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>

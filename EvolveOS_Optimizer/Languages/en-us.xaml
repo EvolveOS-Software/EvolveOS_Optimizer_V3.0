@@ -2331,8 +2331,20 @@
 
     <sys:String x:Key="diag_hw_topology_change">Hardware topology change detected. Interrogating bus...</sys:String>
 
-    <sys:String x:Key="diag_alert_dns_latency">NETWORK PERFORMANCE: Current DNS latency is sub-optimal ({0}). Click Fix to run the DNS Optimizer.</sys:String>
+    <sys:String x:Key="diag_dns_toolkit_title">Network &amp; DNS Optimizer</sys:String>
+    <sys:String x:Key="diag_dns_current_ipv4">CURRENT IPV4 DNS</sys:String>
+    <sys:String x:Key="diag_dns_find_best_server">FIND BEST SERVER</sys:String>
+    <sys:String x:Key="diag_dns_manual_setup">Manual Setup</sys:String>
+    <sys:String x:Key="diag_dns_latency">LATENCY</sys:String>
+    <sys:String x:Key="diag_dns_apply">APPLY</sys:String>
 
+    <sys:String x:Key="diag_notif_dns_title">Network Optimizer</sys:String>
+    <sys:String x:Key="diag_notif_dns_preset_success">Successfully applied {0} DNS.</sys:String>
+    <sys:String x:Key="diag_notif_dns_manual_success">Successfully applied DNS configuration.</sys:String>
+    <sys:String x:Key="diag_notif_dns_manual_fail">Failed to apply DNS configuration.</sys:String>
+
+    <sys:String x:Key="diag_alert_dns_latency">NETWORK PERFORMANCE: Current DNS latency is sub-optimal ({0}). Click Fix to run the DNS Optimizer.</sys:String>
+    
     <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

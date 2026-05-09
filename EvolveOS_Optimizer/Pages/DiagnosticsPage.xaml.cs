@@ -868,6 +868,14 @@ namespace EvolveOS_Optimizer.Pages
         {
             DnsToolkitButton_Click(this, new RoutedEventArgs());
         }
+
+        private void ApplyBenchmarkPreset_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Microsoft.UI.Xaml.Controls.Button btn && btn.DataContext is DnsPreset preset)
+            {
+                ViewModel?.ApplyDnsPresetCommand.Execute(preset);
+            }
+        }
         #endregion
 
         #region Neural AI Explanations (Event Card Interaction)

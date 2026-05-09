@@ -2313,6 +2313,18 @@
 
     <sys:String x:Key="diag_hw_topology_change">Änderung der Hardware-Topologie erkannt. Bus wird abgefragt...</sys:String>
 
+    <sys:String x:Key="diag_dns_toolkit_title">Netzwerk- &amp; DNS-Optimierer</sys:String>
+    <sys:String x:Key="diag_dns_current_ipv4">AKTUELLES IPV4-DNS</sys:String>
+    <sys:String x:Key="diag_dns_find_best_server">BESTEN SERVER FINDEN</sys:String>
+    <sys:String x:Key="diag_dns_manual_setup">Manuelle Einrichtung</sys:String>
+    <sys:String x:Key="diag_dns_latency">LATENZ</sys:String>
+    <sys:String x:Key="diag_dns_apply">ANWENDEN</sys:String>
+
+    <sys:String x:Key="diag_notif_dns_title">Netzwerk-Optimierer</sys:String>
+    <sys:String x:Key="diag_notif_dns_preset_success">{0} DNS erfolgreich angewendet.</sys:String>
+    <sys:String x:Key="diag_notif_dns_manual_success">DNS Konfiguration erfolgreich angewendet.</sys:String>
+    <sys:String x:Key="diag_notif_dns_manual_fail">Fehler beim Anwenden der DNS-Konfiguration.</sys:String>
+
     <sys:String x:Key="diag_alert_dns_latency">NETZWERK LEISTUNG: Die aktuelle DNS Latenz ist suboptimal ({0}). Klicken Sie auf Beheben, um den DNS-Optimierer auszuführen.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>

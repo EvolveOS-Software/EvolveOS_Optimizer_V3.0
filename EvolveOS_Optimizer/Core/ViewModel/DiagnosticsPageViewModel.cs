@@ -276,6 +276,55 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public string CurrentDnsIpv6 { get => _currentDnsIpv6; set => SetProperty(ref _currentDnsIpv6, value); }
 
         public ObservableCollection<DnsBenchmarkingItem> DnsBenchmarkResults { get; } = new();
+
+        private bool _isManualDnsViewOpen;
+        public bool IsManualDnsViewOpen { get => _isManualDnsViewOpen; set => SetProperty(ref _isManualDnsViewOpen, value); }
+
+        public IReadOnlyList<DnsPreset> DnsPresetsList => DnsPreset.DefaultPresets;
+
+        private DnsPreset? _selectedDnsPreset;
+        public DnsPreset? SelectedDnsPreset
+        {
+            get => _selectedDnsPreset;
+            set
+            {
+                if (SetProperty(ref _selectedDnsPreset, value) && value != null)
+                {
+                    IsCustomDnsSelected = value.Name == "Custom";
+                    CustomIpv4Primary = value.Ipv4Primary ?? "";
+                    CustomIpv4Secondary = value.Ipv4Secondary ?? "";
+                    CustomIpv6Primary = value.Ipv6Primary ?? "";
+                    CustomIpv6Secondary = value.Ipv6Secondary ?? "";
+                }
+            }
+        }
+
+        private bool _isCustomDnsSelected;
+        public bool IsCustomDnsSelected
+        {
+            get => _isCustomDnsSelected;
+            set
+            {
+                if (SetProperty(ref _isCustomDnsSelected, value))
+                {
+                    OnPropertyChanged(nameof(IsNotCustomDnsSelected));
+                }
+            }
+        }
+
+        public bool IsNotCustomDnsSelected => !IsCustomDnsSelected;
+
+        private string _customIpv4Primary = "";
+        public string CustomIpv4Primary { get => _customIpv4Primary; set => SetProperty(ref _customIpv4Primary, value); }
+
+        private string _customIpv4Secondary = "";
+        public string CustomIpv4Secondary { get => _customIpv4Secondary; set => SetProperty(ref _customIpv4Secondary, value); }
+
+        private string _customIpv6Primary = "";
+        public string CustomIpv6Primary { get => _customIpv6Primary; set => SetProperty(ref _customIpv6Primary, value); }
+
+        private string _customIpv6Secondary = "";
+        public string CustomIpv6Secondary { get => _customIpv6Secondary; set => SetProperty(ref _customIpv6Secondary, value); }
         #endregion
 
         #region Constructor
@@ -2904,10 +2953,34 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 DnsManager dnsManager = new DnsManager();
                 string v4 = dnsManager.GetCurrentIpv4Primary();
                 string v6 = dnsManager.GetCurrentIpv6Primary();
+                string v4sec = dnsManager.GetCurrentIpv4Secondary();
 
                 _dispatcherQueue.TryEnqueue(() => {
                     CurrentDnsIpv4 = string.IsNullOrEmpty(v4) || v4 == "0.0.0.0" ? "Automatic (ISP)" : v4;
                     CurrentDnsIpv6 = string.IsNullOrEmpty(v6) || v6 == "::" ? "Automatic (ISP)" : v6;
+
+                    var matchingPreset = DnsPreset.DefaultPresets.FirstOrDefault(p =>
+                        p.Ipv4Primary != "0.0.0.0" && p.Name != "Custom" &&
+                        string.Equals(p.Ipv4Primary, v4, StringComparison.OrdinalIgnoreCase));
+
+                    if (matchingPreset != null)
+                    {
+                        SelectedDnsPreset = matchingPreset;
+                    }
+                    else if (string.IsNullOrEmpty(v4) || v4 == "0.0.0.0")
+                    {
+                        SelectedDnsPreset = DnsPreset.DefaultPresets[0]; // Automatic
+                    }
+                    else
+                    {
+                        var customPreset = DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "Custom");
+                        if (customPreset != null)
+                        {
+                            SelectedDnsPreset = customPreset;
+                            CustomIpv4Primary = v4;
+                            CustomIpv4Secondary = v4sec;
+                        }
+                    }
                 });
             });
         }
@@ -2959,19 +3032,71 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (preset == null) return;
             await Task.Run(() => {
                 DnsManager dm = new DnsManager();
-
                 dm.SetIpv4Dns(preset.Ipv4Primary!, preset.Ipv4Secondary ?? "");
-
                 if (!string.IsNullOrEmpty(preset.Ipv6Primary) && preset.Ipv6Primary != "::")
                 {
                     dm.SetIpv6Dns(preset.Ipv6Primary, preset.Ipv6Secondary ?? "");
                 }
-
                 NetHelper.FlushDns();
             });
-
             await UpdateSystemDnsDisplayAsync();
-            SendSystemNotification(4, "Network Optimizer", $"Successfully applied {preset.Name} DNS.");
+
+            _dispatcherQueue.TryEnqueue(() => IsManualDnsViewOpen = false);
+
+            string notifTitle = ResourceString.GetString("diag_notif_dns_title") ?? "Network Optimizer";
+            string notifMsg = string.Format(ResourceString.GetString("diag_notif_dns_preset_success") ?? "Successfully applied {0} DNS.", preset.Name);
+
+            SendSystemNotification(4, notifTitle, notifMsg);
+        }
+
+        [RelayCommand]
+        public async Task ApplyManualDnsAsync()
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    DnsManager dnsManager = new DnsManager();
+                    bool successV4 = false;
+                    bool successV6 = false;
+
+                    if (!string.IsNullOrWhiteSpace(CustomIpv4Primary))
+                    {
+                        successV4 = dnsManager.SetIpv4Dns(CustomIpv4Primary, CustomIpv4Secondary);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(CustomIpv6Primary) && CustomIpv6Primary != "::")
+                    {
+                        successV6 = dnsManager.SetIpv6Dns(CustomIpv6Primary, CustomIpv6Secondary);
+                    }
+                    else
+                    {
+                        successV6 = true;
+                    }
+
+                    if (successV4 || successV6)
+                    {
+                        NetHelper.FlushDns();
+                    }
+                });
+
+                await UpdateSystemDnsDisplayAsync();
+                IsManualDnsViewOpen = false;
+
+                string notifTitle = ResourceString.GetString("diag_notif_dns_title") ?? "Network Optimizer";
+                string notifSuccess = ResourceString.GetString("diag_notif_dns_manual_success") ?? "Successfully applied DNS configuration.";
+
+                SendSystemNotification(4, notifTitle, notifSuccess);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+
+                string notifTitle = ResourceString.GetString("diag_notif_dns_title") ?? "Network Optimizer";
+                string notifFail = ResourceString.GetString("diag_notif_dns_manual_fail") ?? "Failed to apply DNS configuration.";
+
+                SendSystemNotification(3, notifTitle, notifFail);
+            }
         }
         #endregion
 
