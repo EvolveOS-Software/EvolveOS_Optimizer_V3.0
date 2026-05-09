@@ -315,23 +315,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             var appWindow = AppWindow.GetFromWindowId(windowId);
 
             appWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
-
             appWindow.Show();
             window.Activate();
             _isWindowVisible = true;
 
-            EfficiencyModeHelper.IsUIWakeLockActive = false;
+            DiagnosticsPageViewModel.Current.StopBackgroundGuardian();
 
-            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
-            {
-                DiagnosticsPageViewModel.Current.SetMemoryThreshold(150);
-                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
-            }
-            else
-            {
-                DiagnosticsPageViewModel.Current.SetMemoryThreshold(200);
-                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-            }
+            DiagnosticsPageViewModel.Current.SetMemoryThreshold(200);
 
             if (CurrentViewTag == "Home" ||
                 CurrentViewTag == "Diagnostics" ||
@@ -340,20 +330,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
-                Debug.WriteLine($"[Restore] Restoring to Performance Zone: {CurrentViewTag}. Wake Lock RAISED.");
+                Debug.WriteLine($"[Restore] Performance Zone: {CurrentViewTag}. Wake Lock RAISED.");
             }
             else
             {
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
-
                 if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
                 {
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
                 }
-                Debug.WriteLine($"[Restore] Restoring to Efficiency Zone: {CurrentViewTag}. Wake Lock DROPPED.");
+                Debug.WriteLine($"[Restore] Efficiency Zone: {CurrentViewTag}. Wake Lock DROPPED.");
             }
 
             AppRestored?.Invoke();
+
             DiagnosticsPageViewModel.Current.ResumeUiUpdates();
         }
 
@@ -369,6 +359,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             appWindow.Hide();
             _isWindowVisible = false;
 
+            DiagnosticsPageViewModel.Current.StartBackgroundGuardian();
+
             EfficiencyModeHelper.IsUIWakeLockActive = false;
 
             if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
@@ -381,6 +373,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
 
             AppHidden?.Invoke();
+
             DiagnosticsPageViewModel.Current.PauseUiUpdates();
         }
 

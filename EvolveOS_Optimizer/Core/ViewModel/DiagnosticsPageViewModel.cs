@@ -3951,6 +3951,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _memoryGuardian?.SetThreshold(megabytes);
         }
 
+        public void StartBackgroundGuardian() => _memoryGuardian?.StartBackgroundSentry();
+        public void StopBackgroundGuardian() => _memoryGuardian?.StopBackgroundSentry();
+
         public void PauseUiUpdates()
         {
             _isUiActive = false;

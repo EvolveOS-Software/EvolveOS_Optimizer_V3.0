@@ -25,12 +25,32 @@ namespace EvolveOS_Optimizer.Utilities.Services
             _currentThresholdBytes = 200 * 1024 * 1024;
 
             var queue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-            if (queue == null) return;
+            if (queue != null)
+            {
+                _checkTimer = queue.CreateTimer();
+                _checkTimer.Interval = TimeSpan.FromSeconds(5);
+                _checkTimer.Tick += (s, e) => MonitorAndCleanup();
+            }
+        }
+        #endregion
 
-            _checkTimer = queue.CreateTimer();
-            _checkTimer.Interval = TimeSpan.FromSeconds(5);
-            _checkTimer.Tick += (s, e) => MonitorAndCleanup();
-            _checkTimer.Start();
+        #region Heartbeat Control
+        public void StartBackgroundSentry()
+        {
+            if (_checkTimer != null && !_checkTimer.IsRunning)
+            {
+                _checkTimer.Start();
+                Debug.WriteLine("[MemoryGuardian] Background Sentry STARTED (5s interval)");
+            }
+        }
+
+        public void StopBackgroundSentry()
+        {
+            if (_checkTimer != null && _checkTimer.IsRunning)
+            {
+                _checkTimer.Stop();
+                Debug.WriteLine("[MemoryGuardian] Background Sentry STOPPED (UI taking over)");
+            }
         }
         #endregion
 
