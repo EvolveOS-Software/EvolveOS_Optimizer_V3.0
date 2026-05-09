@@ -29,6 +29,8 @@ namespace EvolveOS_Optimizer.Pages
         public static string RequestedPaneOnLoad = "";
         public static Action<string>? ExternalPaneRequest;
 
+        public static Action? RequestDnsUIUpdate;
+
         private readonly Dictionary<IDNSCryptSetting, ComboBox> _controls;
 
         #region Fields (Maintenance)
@@ -118,6 +120,7 @@ namespace EvolveOS_Optimizer.Pages
         private async void DiagnosticsPage_Loaded(object sender, RoutedEventArgs e)
         {
             ExternalPaneRequest = SwitchToPane;
+            RequestDnsUIUpdate = UpdateDnsCryptControls;
 
             if (!string.IsNullOrEmpty(RequestedPaneOnLoad))
             {
@@ -1284,120 +1287,107 @@ namespace EvolveOS_Optimizer.Pages
 
         #region DNSCrypt Logic
 
-        public void UpdateDnsCryptControls()
+        public async void UpdateDnsCryptControls()
         {
-            BtnDownloadInstall.IsEnabled = true;
+            bool isInstalled = await Task.Run(() => DNSCryptHelper.IsInstalled());
+            bool isRunning = await Task.Run(() => DNSCryptHelper.IsRunning());
+            string config = isInstalled ? await Task.Run(() => DNSCryptHelper.LoadConfig()) : string.Empty;
 
-            BtnStartService.Content = "Start service";
-            BtnStartService.IsEnabled = true;
-
-            statusLabel.Text = "Nothing is running in the background";
-            ProgressRingRunServices.Visibility = Visibility.Collapsed;
-            TxtServicesRunning.Text = "";
-
-            IconServiceStopped.Visibility = Visibility.Visible;
-            ImgServiceRunning.Visibility = Visibility.Collapsed;
-
-            BtnOpenConfigFile.IsEnabled = true;
-            BtnDebug.IsEnabled = true;
-
-            foreach (var pair in _controls)
+            DispatcherQueue?.TryEnqueue(() =>
             {
-                pair.Value.IsEnabled = true;
-            }
+                BtnDownloadInstall.IsEnabled = true;
+                BtnStartService.Content = "Start service";
+                BtnStartService.IsEnabled = true;
+                statusLabel.Text = "Nothing is running in the background";
+                ProgressRingRunServices.Visibility = Visibility.Collapsed;
+                TxtServicesRunning.Text = "";
+                IconServiceStopped.Visibility = Visibility.Visible;
+                ImgServiceRunning.Visibility = Visibility.Collapsed;
+                BtnOpenConfigFile.IsEnabled = true;
+                BtnDebug.IsEnabled = true;
 
-            BtnBalanced.IsEnabled = true;
-            BtnPrivacy.IsEnabled = true;
-            BtnSaveConfig.IsEnabled = true;
-            BtnLoadConfig.IsEnabled = true;
+                foreach (var pair in _controls) pair.Value.IsEnabled = true;
 
-            if (!DNSCryptHelper.IsInstalled())
-            {
-                BtnStartService.IsEnabled = false;
-                BtnOpenConfigFile.IsEnabled = false;
-                BtnDebug.IsEnabled = false;
+                BtnBalanced.IsEnabled = true;
+                BtnPrivacy.IsEnabled = true;
+                BtnSaveConfig.IsEnabled = true;
+                BtnLoadConfig.IsEnabled = true;
 
-                foreach (var pair in _controls)
+                if (!isInstalled)
                 {
-                    pair.Value.IsEnabled = false;
-                }
-
-                BtnBalanced.IsEnabled = false;
-                BtnPrivacy.IsEnabled = false;
-                BtnSaveConfig.IsEnabled = false;
-                BtnLoadConfig.IsEnabled = false;
-
-                string install = ResourceString.GetString("btn_download_install");
-                ToolTipService.SetToolTip(BtnDownloadInstall, install);
-                IconDownloadInstall.Glyph = "\uE896";
-                IconDownloadInstall.ClearValue(FontIcon.ForegroundProperty);
-                AnimateInstallButton();
-            }
-            else
-            {
-                string uninstall = ResourceString.GetString("btn_uninstall_script");
-                ToolTipService.SetToolTip(BtnDownloadInstall, uninstall);
-                IconDownloadInstall.Glyph = "\uE74D";
-                IconDownloadInstall.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
-
-                ((Microsoft.UI.Xaml.Media.TranslateTransform)((Microsoft.UI.Xaml.Media.TransformGroup)BtnDownloadInstall.RenderTransform).Children[0]).Y = 0;
-
-                if (DNSCryptHelper.IsRunning())
-                {
-                    statusLabel.Text = "DNSCrypt Service is running.";
-                    ProgressRingRunServices.Visibility = Visibility.Visible;
-                    TxtServicesRunning.Text = ResourceString.GetString("text_services_running");
-
-                    IconServiceStopped.Visibility = Visibility.Collapsed;
-                    ImgServiceRunning.Visibility = Visibility.Visible;
-
-                    BtnDownloadInstall.IsEnabled = false;
-                    BtnStartService.Content = "Stop service";
+                    BtnStartService.IsEnabled = false;
                     BtnOpenConfigFile.IsEnabled = false;
                     BtnDebug.IsEnabled = false;
 
-                    foreach (var pair in _controls)
-                    {
-                        pair.Value.IsEnabled = false;
-                    }
+                    foreach (var pair in _controls) pair.Value.IsEnabled = false;
 
                     BtnBalanced.IsEnabled = false;
                     BtnPrivacy.IsEnabled = false;
                     BtnSaveConfig.IsEnabled = false;
                     BtnLoadConfig.IsEnabled = false;
+
+                    string install = ResourceString.GetString("btn_download_install") ?? "Install";
+                    ToolTipService.SetToolTip(BtnDownloadInstall, install);
+                    IconDownloadInstall.Glyph = "\uE896";
+                    IconDownloadInstall.ClearValue(FontIcon.ForegroundProperty);
+                    AnimateInstallButton();
                 }
-
-                var config = DNSCryptHelper.LoadConfig();
-
-                foreach (var pair in _controls)
+                else
                 {
-                    var currentSetting = pair.Key.GetCurrentSetting(config);
-                    var settings = pair.Key.GetSettings(config);
+                    string uninstall = ResourceString.GetString("btn_uninstall_script") ?? "Uninstall";
+                    ToolTipService.SetToolTip(BtnDownloadInstall, uninstall);
+                    IconDownloadInstall.Glyph = "\uE74D";
+                    IconDownloadInstall.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
 
-                    pair.Value.Items.Clear();
+                    ((Microsoft.UI.Xaml.Media.TranslateTransform)((Microsoft.UI.Xaml.Media.TransformGroup)BtnDownloadInstall.RenderTransform).Children[0]).Y = 0;
 
-                    var selectedItem = (object?)null;
-
-                    foreach (var item in settings)
+                    if (isRunning)
                     {
-                        pair.Value.Items.Add(item);
+                        statusLabel.Text = "DNSCrypt Service is running.";
+                        ProgressRingRunServices.Visibility = Visibility.Visible;
+                        TxtServicesRunning.Text = ResourceString.GetString("text_services_running") ?? "Running";
 
-                        if ((string)item.Value == currentSetting)
+                        IconServiceStopped.Visibility = Visibility.Collapsed;
+                        ImgServiceRunning.Visibility = Visibility.Visible;
+
+                        BtnDownloadInstall.IsEnabled = false;
+                        BtnStartService.Content = "Stop service";
+                        BtnOpenConfigFile.IsEnabled = false;
+                        BtnDebug.IsEnabled = false;
+
+                        foreach (var pair in _controls) pair.Value.IsEnabled = false;
+
+                        BtnBalanced.IsEnabled = false;
+                        BtnPrivacy.IsEnabled = false;
+                        BtnSaveConfig.IsEnabled = false;
+                        BtnLoadConfig.IsEnabled = false;
+                    }
+
+                    if (!string.IsNullOrEmpty(config))
+                    {
+                        foreach (var pair in _controls)
                         {
-                            selectedItem = item;
+                            var currentSetting = pair.Key.GetCurrentSetting(config);
+                            var settings = pair.Key.GetSettings(config);
+
+                            pair.Value.Items.Clear();
+                            var selectedItem = (object?)null;
+
+                            foreach (var item in settings)
+                            {
+                                pair.Value.Items.Add(item);
+                                if ((string)item.Value == currentSetting) selectedItem = item;
+                            }
+
+                            if (selectedItem != null) pair.Value.SelectedItem = selectedItem;
+                            else pair.Value.SelectedIndex = 0;
                         }
                     }
-
-                    if (selectedItem != null)
-                    {
-                        pair.Value.SelectedItem = selectedItem;
-                    }
-                    else
-                    {
-                        pair.Value.SelectedIndex = 0;
-                    }
                 }
-            }
+
+                // Force WinUI 3 to instantly redraw the open SplitView
+                this.UpdateLayout();
+            });
         }
 
         private void AnimateInstallButton()

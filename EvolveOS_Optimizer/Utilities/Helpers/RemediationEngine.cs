@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System.Diagnostics;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Maintenance;
 
@@ -98,6 +97,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                     // "High-Level" repair. Secure Boot CA/Keys
                     1801 => await FixSecureBootKeysAsync(),
+
+                    // DNS Encryption (DoH) Enforcement
+                    9120 => await EnforceDnsOverHttpsAsync(),
 
                     // Windows Time & NTP synchronization (Client sync timeouts, stratum discovery failures)
                     131 or 36 or 144 or 17 or 29 or 34 or 35 or 37 or 38 or 47 or 49
@@ -697,6 +699,26 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             string script = WrapPowerShellScript("Add-Type -TypeDefinition '[DllImport(\"user32.dll\")] public class User32 { [DllImport(\"user32.dll\")] public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase); }'; [User32]::InvalidateRect([IntPtr]::Zero, [IntPtr]::Zero, $true)");
             await CommandExecutor.RunCommand(script, isPowerShell: true);
+            return true;
+        }
+
+        private static async Task<bool> EnforceDnsOverHttpsAsync()
+        {
+            string script = WrapPowerShellScript(@"
+                $Path = 'HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters'
+                if (-not (Test-Path $Path)) { New-Item -Path $Path -Force | Out-Null }
+                
+                # Set Global DoH to 'Required'
+                Set-ItemProperty -Path $Path -Name 'EnableAutoDoh' -Value 2 -Type DWord -Force
+                
+                # Flush existing cache to force new encrypted sessions
+                ipconfig /flushdns | Out-Null
+                
+                # Signal the network stack to re-evaluate interface settings
+                netsh int ip reset | Out-Null 
+            ");
+
+            await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
         }
 

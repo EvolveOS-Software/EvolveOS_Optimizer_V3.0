@@ -2325,6 +2325,13 @@
     <sys:String x:Key="diag_notif_dns_manual_fail">Fehler beim Anwenden der DNS-Konfiguration.</sys:String>
 
     <sys:String x:Key="diag_alert_dns_latency">NETZWERK LEISTUNG: Die aktuelle DNS Latenz ist suboptimal ({0}). Klicken Sie auf Beheben, um den DNS-Optimierer auszuführen.</sys:String>
+    <sys:String x:Key="diag_dns_latency_msg">NETZWERK ENGPASS: Aktueller DNS Resolver ({0}) reagiert langsam ({1} ms).</sys:String>
+    <sys:String x:Key="diag_dns_unencrypted_msg">SICHERHEITS WARNUNG: System DNS Abfragen sind derzeit unverschlüsselt.</sys:String>
+    <sys:String x:Key="diag_launch_network_optimizer">Netzwerk-Optimierer wird gestartet...</sys:String>
+    <sys:String x:Key="diag_fix_dns_attempt">DNS Verschlüsselungsdienst wird gestartet...</sys:String>
+    <sys:String x:Key="diag_fix_dns_success">DNS Verschlüsselungsdienst erfolgreich aktiviert.</sys:String>
+    <sys:String x:Key="diag_notif_dns_encrypted">System DNS Abfragen sind jetzt verschlüsselt.</sys:String>
+    <sys:String x:Key="diag_fix_dns_fail">Fehler beim Starten des DNS Verschlüsselungsdienstes.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>
     <sys:String x:Key="txt_later">Später</sys:String>
@@ -2853,6 +2860,8 @@
     <sys:String x:Key="diag_analysis_9003">Remotedesktopdienste (TermService): Verschlüsselungs-Downgrade oder Zeitüberschreitung des Protokolls. &#x0A;&#x0A;EMPFEHLUNG: Stellen Sie sicher, dass NLA (Network Level Authentication) korrekt konfiguriert ist.</sys:String>
     <sys:String x:Key="diag_analysis_9010">Anomalie bei der Verbindung der Remotedesktopdienste. Das System erfuhr eine Erschöpfung des Lizenzierungs-Schwellenwerts oder eine abrupte Trennung des Sockets. &#x0A;&#x0A;EMPFEHLUNG: Klicken Sie auf 'Reparieren', um den RDP-Listener-Stack zurückzusetzen und die selbstsignierten Zertifikate neu zu generieren.</sys:String>
     <sys:String x:Key="diag_analysis_9100">Allgemeine Verfolgungsprotokolle im Hintergrund für Remotedesktop, DWM und Terminaldienste. &#x0A;&#x0A;EMPFEHLUNG: Routinemäßiger OS-Overhead.</sys:String>
+    <sys:String x:Key="diag_analysis_9119">⚠️ HOHE DNS-AUFLÖSUNGSLATENZ ERKANNT.&#x0A;Ihr aktueller Domain Name System (DNS)-Anbieter reagiert zu langsam. Jede Website, die Sie besuchen, erfordert eine DNS-Abfrage, bevor sie geladen werden kann. Ein langsames DNS verlangsamt also Ihr gesamtes Surferlebnis, unabhängig von Ihrer allgemeinen Internetgeschwindigkeit.&#x0A;&#x0A;EMPFEHLUNG: Klicken Sie auf 'Fix', um den Netzwerk-Optimierer zu öffnen und schnellere DNS-Alternativen (wie Cloudflare oder Google) zu testen.</sys:String>
+    <sys:String x:Key="diag_analysis_9120">⚠️ UNVERSCHLÜSSELTES DNS ERKANNT.&#x0A;Ihr System überträgt DNS-Abfragen im Klartext. Dies ermöglicht es Internetanbietern und lokalen Netzwerkangreifern, Ihren Web-Traffic zu überwachen, abzufangen und möglicherweise zu kapern.&#x0A;&#x0A;EMPFEHLUNG: Klicken Sie auf 'Fix', um eine strikte DNS-over-HTTPS (DoH)-Verschlüsselung systemweit zu erzwingen.</sys:String>
     <sys:String x:Key="diag_analysis_10000">Die Energieverwaltung des WLAN- / Netzwerkadapters hat den Übergang in den Energiesparmodus blockiert. &#x0A;&#x0A;EMPFEHLUNG: Deaktivieren Sie 'Gerät kann den Computer aus dem Ruhezustand aktivieren' bei Ihren Netzwerkadaptern.</sys:String>
     <sys:String x:Key="diag_analysis_10002">WLAN AutoConfig: Eine drahtlose Verbindung wurde getrennt oder die Aushandlung einer 802.11-Zuordnung schlug fehl. &#x0A;&#x0A;EMPFEHLUNG: Ignorieren Sie das WLAN-Netzwerk (Entfernen) und verbinden Sie sich neu.</sys:String>
     <sys:String x:Key="diag_analysis_10004">WLAN AutoConfig: Abweichendes drahtloses Profil oder beschädigte XML-Konfiguration in der Liste der gespeicherten Netzwerke. &#x0A;&#x0A;EMPFEHLUNG: Klicken Sie auf 'Reparieren', um beschädigte WLAN-Profile zu löschen.</sys:String>

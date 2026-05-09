@@ -24,7 +24,25 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                        "RECOMMENDATION: Open Windows Security immediately and restore the recommended defaults.";
             }
 
-            // 3. SOFTWARE, KERNEL & SYSTEM BUCKETS
+            // 3. AI Logic for DNS Latency (Event 9119)
+            if (eventId == 9119)
+            {
+                return ResourceString.GetString("diag_analysis_9119") ??
+                       "⚠️ HIGH DNS RESOLUTION LATENCY DETECTED.\n" +
+                       "Your current Domain Name System (DNS) provider is responding too slowly. Every website you visit requires a DNS lookup before it can load, meaning a slow DNS bottlenecks your entire browsing experience, regardless of your overall internet speed. \n\n" +
+                       "RECOMMENDATION: Click 'Fix' to open the Network Optimizer and benchmark faster DNS alternatives (like Cloudflare or Google).";
+            }
+
+            // 4. AI Logic for Unencrypted DNS
+            if (eventId == 9120)
+            {
+                return ResourceString.GetString("diag_analysis_9120") ??
+                       "⚠️ UNENCRYPTED DNS DETECTED.\n" +
+                       "Your system is transmitting DNS queries in plaintext. This allows ISPs and local network attackers to monitor, intercept, and potentially hijack your web traffic. \n\n" +
+                       "RECOMMENDATION: Click 'Fix' to enforce strict DNS-over-HTTPS (DoH) encryption system-wide.";
+            }
+
+            // 5. SOFTWARE, KERNEL & SYSTEM BUCKETS
             return eventId switch
             {
                 // 1 - 99: CORE KERNEL, STORAGE CONTROLLERS, & WUA

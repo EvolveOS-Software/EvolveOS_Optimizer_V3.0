@@ -2343,7 +2343,14 @@
     <sys:String x:Key="diag_notif_dns_manual_fail">Failed to apply DNS configuration.</sys:String>
 
     <sys:String x:Key="diag_alert_dns_latency">NETWORK PERFORMANCE: Current DNS latency is sub-optimal ({0}). Click Fix to run the DNS Optimizer.</sys:String>
-    
+    <sys:String x:Key="diag_dns_latency_msg">NETWORK BOTTLENECK: Current DNS resolver ({0}) is responding slowly ({1}ms).</sys:String>
+    <sys:String x:Key="diag_dns_unencrypted_msg">SECURITY WARNING: System DNS queries are currently unencrypted.</sys:String>
+    <sys:String x:Key="diag_launch_network_optimizer">Launching Network Optimizer...</sys:String>
+    <sys:String x:Key="diag_fix_dns_attempt">Starting DNS Encryption Service...</sys:String>
+    <sys:String x:Key="diag_fix_dns_success">DNS Encryption Service successfully activated.</sys:String>
+    <sys:String x:Key="diag_notif_dns_encrypted">System DNS queries are now encrypted.</sys:String>
+    <sys:String x:Key="diag_fix_dns_fail">Failed to start DNS Encryption Service.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 
@@ -2893,6 +2900,8 @@
     <sys:String x:Key="diag_analysis_9003">Remote Desktop Services (TermService) encryption downgrade or protocol timeout. &#x0A;&#x0A;RECOMMENDATION: Ensure NLA (Network Level Authentication) is configured correctly.</sys:String>
     <sys:String x:Key="diag_analysis_9010">Remote Desktop Services connection anomaly. The system experienced licensing threshold exhaustion or an abrupt socket disconnect. &#x0A;&#x0A;RECOMMENDATION: Click 'Fix' to reset the RDP listener stack and regenerate the self-signed certificates.</sys:String>
     <sys:String x:Key="diag_analysis_9100">Generic Remote Desktop, DWM, and Terminal Services background tracking logs. &#x0A;&#x0A;RECOMMENDATION: Routine OS overhead.</sys:String>
+    <sys:String x:Key="diag_analysis_9119">⚠️ HIGH DNS RESOLUTION LATENCY DETECTED.&#x0A;Your current Domain Name System (DNS) provider is responding too slowly. Every website you visit requires a DNS lookup before it can load, meaning a slow DNS bottlenecks your entire browsing experience, regardless of your overall internet speed.&#x0A;&#x0A;RECOMMENDATION: Click 'Fix' to open the Network Optimizer and benchmark faster DNS alternatives (like Cloudflare or Google).</sys:String>
+    <sys:String x:Key="diag_analysis_9120">⚠️ UNENCRYPTED DNS DETECTED.&#x0A;Your system is transmitting DNS queries in plaintext. This allows ISPs and local network attackers to monitor, intercept, and potentially hijack your web traffic.&#x0A;&#x0A;RECOMMENDATION: Click 'Fix' to enforce strict DNS-over-HTTPS (DoH) encryption system-wide.</sys:String>
     <sys:String x:Key="diag_analysis_10000">WLAN / Network adapter power management blocked a sleep transition. &#x0A;&#x0A;RECOMMENDATION: Disable 'Allow this device to wake the computer' on your network adapters.</sys:String>
     <sys:String x:Key="diag_analysis_10002">WLAN AutoConfig: A wireless connection was disconnected or failed to negotiate an 802.11 association. &#x0A;&#x0A;RECOMMENDATION: Forget the Wi-Fi network and reconnect.</sys:String>
     <sys:String x:Key="diag_analysis_10004">WLAN AutoConfig: Wireless profile mismatch or corrupted XML configuration in the saved networks list. &#x0A;&#x0A;RECOMMENDATION: Click 'Fix' to flush corrupted Wi-Fi profiles.</sys:String>

@@ -2329,6 +2329,13 @@
     <sys:String x:Key="diag_notif_dns_manual_fail">Impossibile applicare la configurazione DNS.</sys:String>
 
     <sys:String x:Key="diag_alert_dns_latency">PRESTAZIONI DI RETE: La latenza DNS attuale è non ottimale ({0}). Fai clic su Correggi per eseguire l'Ottimizzatore DNS.</sys:String>
+    <sys:String x:Key="diag_dns_latency_msg">COLLO DI BOTTIGLIA DELLA RETE: Il risolutore DNS corrente ({0}) risponde lentamente ({1} ms).</sys:String>
+    <sys:String x:Key="diag_dns_unencrypted_msg">AVVISO DI SICUREZZA: Le query DNS di sistema sono attualmente non crittografate.</sys:String>
+    <sys:String x:Key="diag_launch_network_optimizer">Avvio dell'ottimizzatore di rete...</sys:String>
+    <sys:String x:Key="diag_fix_dns_attempt">Avvio del servizio di crittografia DNS...</sys:String>
+    <sys:String x:Key="diag_fix_dns_success">Servizio di crittografia DNS attivato con successo.</sys:String>
+    <sys:String x:Key="diag_notif_dns_encrypted">Le query DNS di sistema sono ora crittografate.</sys:String>
+    <sys:String x:Key="diag_fix_dns_fail">Impossibile avviare il servizio di crittografia DNS.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Riavvia ora</sys:String>
     <sys:String x:Key="txt_later">Più tardi</sys:String>
@@ -2871,6 +2878,8 @@
     <sys:String x:Key="diag_analysis_9003">Servizi Desktop remoto (TermService) downgrade della crittografia o timeout del protocollo. &#x0A;&#x0A;RACCOMANDAZIONE: Assicurati che NLA (Autenticazione a livello di rete) sia configurata correttamente.</sys:String>
     <sys:String x:Key="diag_analysis_9010">Anomalia di connessione dei Servizi Desktop remoto. Il sistema ha rilevato un esaurimento della soglia delle licenze o un'interruzione brusca dei socket. &#x0A;&#x0A;RACCOMANDAZIONE: Fai clic su 'Correggi' per ripristinare lo stack del listener RDP e rigenerare i certificati autofirmati.</sys:String>
     <sys:String x:Key="diag_analysis_9100">Log di tracciamento in background per Servizi Terminal, DWM o Desktop remoto generici. &#x0A;&#x0A;RACCOMANDAZIONE: Overhead del sistema operativo di routine.</sys:String>
+    <sys:String x:Key="diag_analysis_9119">⚠️ RILEVATA ELEVATA LATENZA DI RISOLUZIONE DNS.&#x0A;Il tuo attuale provider Domain Name System (DNS) risponde troppo lentamente. Ogni sito web che visiti richiede una ricerca DNS prima di poter essere caricato, il che significa che un DNS lento fa da collo di bottiglia all'intera esperienza di navigazione, indipendentemente dalla velocità complessiva della tua connessione Internet.&#x0A;&#x0A;RACCOMANDAZIONE: Fai clic su 'Fix' per aprire lo strumento di ottimizzazione della rete e testare alternative DNS più veloci (come Cloudflare o Google).</sys:String>
+    <sys:String x:Key="diag_analysis_9120">⚠️ RILEVATO DNS NON CRITTOGRAFATO.&#x0A;Il sistema sta trasmettendo le query DNS in chiaro. Ciò consente ai provider di servizi Internet e agli aggressori della rete locale di monitorare, intercettare e potenzialmente dirottare il traffico web.&#x0A;&#x0A;RACCOMANDAZIONE: Fai clic su 'Fix' per applicare la crittografia rigorosa DNS-over-HTTPS (DoH) a livello di sistema.</sys:String>
     <sys:String x:Key="diag_analysis_10000">Gestione del risparmio energia per la scheda di rete / WLAN ha impedito il passaggio a una modalità di sospensione. &#x0A;&#x0A;RACCOMANDAZIONE: Disabilita 'Consenti a questo dispositivo di riattivare il computer' sulla tua scheda di rete.</sys:String>
     <sys:String x:Key="diag_analysis_10002">WLAN AutoConfig: Una connessione wireless è stata disconnessa o non è riuscita a negoziare un'associazione 802.11. &#x0A;&#x0A;RACCOMANDAZIONE: Dimentica la rete Wi-Fi e riconnettiti.</sys:String>
     <sys:String x:Key="diag_analysis_10004">WLAN AutoConfig: Incoerenza nel profilo wireless o configurazione XML danneggiata nella lista delle reti salvate. &#x0A;&#x0A;RACCOMANDAZIONE: Fai clic su 'Correggi' per cancellare i profili Wi-Fi danneggiati.</sys:String>

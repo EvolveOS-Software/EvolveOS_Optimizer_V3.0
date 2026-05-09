@@ -55,21 +55,46 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                 var dnsTask = Task.Run(async () =>
                 {
+                    bool encryptionFailed = false;
+                    long latency = -1;
+                    string ip = string.Empty;
+
                     try
                     {
                         var dnsManager = new DnsManager();
-                        string currentDns = dnsManager.GetCurrentIpv4Primary();
+                        ip = dnsManager.GetCurrentIpv4Primary();
 
-                        if (!string.IsNullOrEmpty(currentDns) && currentDns != "0.0.0.0")
+                        if (!string.IsNullOrEmpty(ip) && ip != "0.0.0.0")
                         {
                             using var ping = new Ping();
-                            var reply = await ping.SendPingAsync(currentDns, 2000);
-                            long latency = reply.Status == IPStatus.Success ? reply.RoundtripTime : -1;
-                            return (Latency: latency, Ip: currentDns);
+                            var reply = await ping.SendPingAsync(ip, 2000);
+                            latency = reply.Status == IPStatus.Success ? reply.RoundtripTime : -1;
+                        }
+
+                        bool isDnsCryptInstalled = DNSCryptHelper.IsInstalled();
+                        bool isDnsCryptRunning = DNSCryptHelper.IsRunning();
+
+                        if (isDnsCryptInstalled || ip == "127.0.0.1" || ip == "::1")
+                        {
+                            encryptionFailed = !isDnsCryptRunning;
+                        }
+                        else
+                        {
+                            using var key1 = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Dnscache\Parameters");
+                            using var key2 = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows NT\DNSClient");
+
+                            var val1 = key1?.GetValue("EnableAutoDoh");
+                            var val2 = key2?.GetValue("AllowDnsOverHttps");
+
+                            bool nativeSecure = (val1 != null && Convert.ToInt32(val1) >= 2) ||
+                                               (val2 != null && Convert.ToInt32(val2) >= 1);
+
+                            encryptionFailed = !nativeSecure;
                         }
                     }
-                    catch { }
-                    return (Latency: -1L, Ip: string.Empty);
+                    catch { encryptionFailed = true; }
+
+                    return (Latency: latency, Ip: ip, EncryptionFailed: encryptionFailed);
                 }, token);
 
                 var securityTask = Task.Run(async () =>
@@ -96,7 +121,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                     };
                 }, token);
 
-                await Task.WhenAll(wmiTask, eventTask, perfTask, securityTask, anomalyTask);
+                await Task.WhenAll(wmiTask, eventTask, perfTask, securityTask, anomalyTask, dnsTask);
 
                 token.ThrowIfCancellationRequested();
 
@@ -109,16 +134,29 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                 systemEvents.AddRange(performanceIssues);
 
-                if (!string.IsNullOrEmpty(dnsResult.Ip) && (dnsResult.Latency > 100 || dnsResult.Latency == -1))
+                if (!string.IsNullOrEmpty(dnsResult.Ip) && (dnsResult.Latency > 80 || dnsResult.Latency == -1))
                 {
-                    string latencyText = dnsResult.Latency == -1 ? "Timeout" : $"{dnsResult.Latency}ms";
-                    string alertMsg = string.Format(ResourceString.GetString("diag_alert_dns_latency") ?? "NETWORK PERFORMANCE: Current DNS latency is sub-optimal ({0}). Click Fix to run the DNS Optimizer.", latencyText);
+                    if (!LocalMachineSettingsEngine.DismissedEventsList.Contains("9119|NetworkAuditor|SECURE"))
+                    {
+                        string latencyText = dnsResult.Latency == -1 ? "Timeout" : $"{dnsResult.Latency}ms";
+                        string alertMsg = string.Format(ResourceString.GetString("diag_dns_latency_msg") ?? "NETWORK BOTTLENECK: Current DNS resolver ({0}) is responding slowly ({1}).", dnsResult.Ip, latencyText);
+                        var alert = _vm.CreateAlert(9119, "NetworkAuditor", alertMsg);
+                        alert.Level = 2;
+                        alert.IsFixable = true;
+                        systemEvents.Insert(0, alert);
+                    }
+                }
 
-                    var alert = _vm.CreateAlert(9119, "NetworkAuditor", alertMsg);
-                    alert.Level = 2;
-                    alert.IsFixable = true;
-
-                    systemEvents.Insert(0, alert);
+                if (dnsResult.EncryptionFailed)
+                {
+                    if (!LocalMachineSettingsEngine.DismissedEventsList.Contains("9120|NetworkAuditor|SECURE"))
+                    {
+                        string alertMsg = ResourceString.GetString("diag_dns_unencrypted_msg") ?? "SECURITY WARNING: System DNS queries are currently unencrypted.";
+                        var alert = _vm.CreateAlert(9120, "NetworkAuditor", alertMsg);
+                        alert.Level = 1;
+                        alert.IsFixable = true;
+                        systemEvents.Insert(0, alert);
+                    }
                 }
 
                 bool physicallyEnrolled = false;
@@ -408,7 +446,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                         // --- FULL SECURITY SUITE IDs ---
                         9101, 9102, 9103, 9104, 9105, 9106, 9107, 9108, 9109,
-                        9110, 9111, 9112, 9113, 9114, 9115, 9116, 9117
+                        9110, 9111, 9112, 9113, 9114, 9115, 9116, 9117,
+
+                        // Network Auditor IDs
+                        9118, 9119, 9120
                     };
 
                     string[] ignoredSources = {
@@ -608,8 +649,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                     bool isHardwareCritical = (hardwareIssues?.Count ?? 0) > 0;
 
-                    bool hasSecurityRisks = _vm.MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9117) == true;
-                    bool hasCriticalSecurity = _vm.MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9117 && e.Level == 1) == true;
+                    bool hasSecurityRisks = _vm.MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9120) == true;
+                    bool hasCriticalSecurity = _vm.MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9120 && e.Level == 1) == true;
 
                     if (isHardwareCritical || isStabilityCritical || hasCriticalSecurity)
                     {

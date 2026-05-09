@@ -2321,6 +2321,13 @@
     <sys:String x:Key="diag_notif_dns_manual_fail">Kan DNS configuratie niet toepassen.</sys:String>
 
     <sys:String x:Key="diag_alert_dns_latency">NETWERK PRESTATIES: Huidige DNS latentie is suboptimaal ({0}). Klik op Herstellen om de DNS Optimizer uit te voeren.</sys:String>
+    <sys:String x:Key="diag_dns_latency_msg">NETWERK KNELPUNT: Huidige DNS resolver ({0}) reageert traag ({1}ms).</sys:String>
+    <sys:String x:Key="diag_dns_unencrypted_msg">BEVEILIGINGS WAARSCHUWING: Systeem DNS query's zijn momenteel onversleuteld.</sys:String>
+    <sys:String x:Key="diag_launch_network_optimizer">Netwerk Optimizer starten...</sys:String>
+    <sys:String x:Key="diag_fix_dns_attempt">DNS versleutelingsservice starten...</sys:String>
+    <sys:String x:Key="diag_fix_dns_success">DNS versleutelingsservice met succes geactiveerd.</sys:String>
+    <sys:String x:Key="diag_notif_dns_encrypted">Systeem DNS query's zijn nu versleuteld.</sys:String>
+    <sys:String x:Key="diag_fix_dns_fail">Starten van DNS versleutelingsservice mislukt.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Nu herstarten</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
@@ -2871,6 +2878,8 @@
     <sys:String x:Key="diag_analysis_9003">Encryptie downgrade of protocol time-out in Remote Desktop Services (TermService). &#x0A;&#x0A;AANBEVELING: Zorg dat NLA (Network Level Authentication) juist is geconfigureerd.</sys:String>
     <sys:String x:Key="diag_analysis_9010">Anomalie verbinding Remote Desktop Services. Het systeem kampte met een overschrijding van de licentie-drempelwaarde of een plotselinge verbreking van de socket. &#x0A;&#x0A;AANBEVELING: Klik op 'Fix' om de RDP-listener stack te resetten en de zelfondertekende (self-signed) certificaten te vernieuwen.</sys:String>
     <sys:String x:Key="diag_analysis_9100">Algemene achtergrondtracking logboeken voor Remote Desktop, DWM, en Terminal Services. &#x0A;&#x0A;AANBEVELING: Routine OS-overhead.</sys:String>
+    <sys:String x:Key="diag_analysis_9119">⚠️ HOGE DNS-RESOLUTIE LATENTIE GEDETECTEERD.&#x0A;Uw huidige Domain Name System (DNS) provider reageert te langzaam. Elke website die u bezoekt, vereist een DNS lookup voordat deze kan laden, wat betekent dat een trage DNS uw hele browse-ervaring vertraagt, ongeacht uw algehele internetsnelheid.&#x0A;&#x0A;AANBEVELING: Klik op 'Fix' om de Network Optimizer te openen en snellere DNS-alternatieven (zoals Cloudflare of Google) te benchmarken.</sys:String>
+    <sys:String x:Key="diag_analysis_9120">⚠️ ONVERSLEUTELDE DNS GEDETECTEERD.&#x0A;Uw systeem verzendt DNS query's in platte tekst. Hierdoor kunnen internetproviders en aanvallers op het lokale netwerk uw webverkeer monitoren, onderscheppen en mogelijk kapen.&#x0A;&#x0A;AANBEVELING: Klik op 'Fix' om strikte DNS-over-HTTPS (DoH)-versleuteling systeembreed af te dwingen.</sys:String>
     <sys:String x:Key="diag_analysis_10000">WLAN / Netwerkadapter power management blokkeerde een overgang naar de slaapstand. &#x0A;&#x0A;AANBEVELING: Schakel "Dit apparaat mag de computer uit de slaapstand halen" (Allow this device to wake the computer) uit in de eigenschappen van uw netwerkadapters.</sys:String>
     <sys:String x:Key="diag_analysis_10002">WLAN AutoConfig: Een draadloze verbinding is verbroken of is er niet in geslaagd een 802.11 associatie op te zetten. &#x0A;&#x0A;AANBEVELING: Vergeet het Wi-Fi-netwerk en maak opnieuw verbinding.</sys:String>
     <sys:String x:Key="diag_analysis_10004">WLAN AutoConfig: Mismatch in draadloos profiel of corrupte XML-configuratie in de lijst met opgeslagen netwerken. &#x0A;&#x0A;AANBEVELING: Klik op 'Fix' om gecorrumpeerde Wi-Fi profielen te flushen (wissen).</sys:String>

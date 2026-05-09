@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Pages;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Extensions;
@@ -382,6 +383,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             MonitorAsync();
 
             RefreshAllDrivesInfo();
+
+            _ = UpdateSystemDnsDisplayAsync();
 
             MinedSystemEvents.CollectionChanged += (s, e) =>
             {
@@ -1441,7 +1444,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (eventId == 9119)
             {
-                ScanStatus = "Launching Network Optimizer...";
+                ScanStatus = ResourceString.GetString("diag_launch_network_optimizer") ?? "Launching Network Optimizer...";
                 OpenDnsToolkitRequested?.Invoke();
 
                 var dnsEvent = MinedSystemEvents.FirstOrDefault(e => e.EventId == 9119);
@@ -1449,6 +1452,48 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 CalculateStabilityTrend(MinedSystemEvents);
                 UpdateSystemStatus();
+                return;
+            }
+
+            if (eventId == 9120)
+            {
+                ScanStatus = ResourceString.GetString("diag_fix_dns_attempt") ?? "Starting DNS Encryption Service...";
+
+                try
+                {
+                    if (DNSCryptHelper.IsInstalled())
+                    {
+                        await DNSCryptHelper.StartService();
+                    }
+                    else
+                    {
+                        await DNSCryptHelper.Install();
+                    }
+
+                    if (DNSCryptHelper.IsRunning())
+                    {
+                        var dnsEvent = MinedSystemEvents.FirstOrDefault(e => e.EventId == 9120);
+                        if (dnsEvent != null) MinedSystemEvents.Remove(dnsEvent);
+
+                        CalculateStabilityTrend(MinedSystemEvents);
+                        UpdateGlobalAiSummary();
+                        UpdateSystemStatus();
+
+                        DiagnosticsPage.RequestDnsUIUpdate?.Invoke();
+
+                        ScanStatus = ResourceString.GetString("diag_fix_dns_success") ?? "DNS Encryption Service successfully activated.";
+                        SendSystemNotification(4, "Network Auditor", ResourceString.GetString("diag_notif_dns_encrypted") ?? "System DNS queries are now encrypted.");
+                    }
+                    else
+                    {
+                        ScanStatus = ResourceString.GetString("diag_fix_dns_fail") ?? "Failed to start DNS Encryption Service.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorLogging.LogDebug(ex);
+                    ScanStatus = "Error starting DNS Encryption.";
+                }
                 return;
             }
 
@@ -2194,6 +2239,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 ShowMinorEvents = false;
             }
+            else if (currentCriticalCount > 0 || MinedSystemEvents.Any(e => e.Level == 1))
+            {
+                ShowMinorEvents = true;
+            }
 
             OnPropertyChanged(nameof(SystemHealthBrush));
             OnPropertyChanged(nameof(ScannerText));
@@ -2228,8 +2277,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             bool isStabilityCritical = isUptimeReliable && errorsPerHour > 5.0;
 
             bool isHardwareCritical = (DetectedHardwareIssues?.Count ?? 0) > 0;
-            bool hasSecurityRisks = MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9117) == true;
-            bool hasCriticalSecurity = MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9117 && e.Level == 1) == true;
+
+            bool hasSecurityRisks = MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9120) == true;
+            bool hasCriticalSecurity = MinedSystemEvents?.Any(e => e.EventId >= 9101 && e.EventId <= 9120 && e.Level == 1) == true;
 
             if (isHardwareCritical || isStabilityCritical || hasCriticalSecurity)
             {
@@ -2579,7 +2629,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Security Core Engine & Control Handlers (Security)
         public void InitializeSecurityScan()
         {
-            // Only run this the very first time the pane is opened!
             if (_hasSecurityInitialized) return;
             _hasSecurityInitialized = true;
 
@@ -2589,6 +2638,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
                 {
                     await CheckSecurityStatusAsync(_cancellationTokenSource.Token);
+
+                    await UpdateSystemDnsDisplayAsync();
                 }
             };
             _securityRefreshTimer.Start();
@@ -2949,15 +3000,102 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [RelayCommand]
         public async Task UpdateSystemDnsDisplayAsync()
         {
-            await Task.Run(() => {
+            // A method to test
+            //LocalMachineSettingsEngine.DismissedEventsList.Remove("9120|NetworkAuditor|SECURE");
+
+            await Task.Run(async () => {
                 DnsManager dnsManager = new DnsManager();
                 string v4 = dnsManager.GetCurrentIpv4Primary();
                 string v6 = dnsManager.GetCurrentIpv6Primary();
                 string v4sec = dnsManager.GetCurrentIpv4Secondary();
 
+                long currentLatency = -1;
+                if (!string.IsNullOrEmpty(v4) && v4 != "0.0.0.0")
+                {
+                    currentLatency = await PerformPing(v4);
+                }
+
+                bool isDnsEncrypted = false;
+                try
+                {
+                    bool isDnsCryptInstalled = DNSCryptHelper.IsInstalled();
+                    bool isDnsCryptRunning = DNSCryptHelper.IsRunning();
+
+                    if (isDnsCryptInstalled || v4 == "127.0.0.1" || v4 == "::1")
+                    {
+                        isDnsEncrypted = isDnsCryptRunning;
+                    }
+                    else
+                    {
+                        using var key1 = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Dnscache\Parameters");
+                        using var key2 = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows NT\DNSClient");
+
+                        var val1 = key1?.GetValue("EnableAutoDoh");
+                        var val2 = key2?.GetValue("AllowDnsOverHttps");
+
+                        isDnsEncrypted = (val1 != null && Convert.ToInt32(val1) >= 2) ||
+                                         (val2 != null && Convert.ToInt32(val2) >= 1);
+                    }
+                }
+                catch { isDnsEncrypted = false; }
+
                 _dispatcherQueue.TryEnqueue(() => {
                     CurrentDnsIpv4 = string.IsNullOrEmpty(v4) || v4 == "0.0.0.0" ? "Automatic (ISP)" : v4;
                     CurrentDnsIpv6 = string.IsNullOrEmpty(v6) || v6 == "::" ? "Automatic (ISP)" : v6;
+
+                    bool listsChanged = false;
+
+                    bool isDnsLatencyDismissed = LocalMachineSettingsEngine.DismissedEventsList.Contains("9119|NetworkAuditor|SECURE");
+                    bool isDohDismissed = LocalMachineSettingsEngine.DismissedEventsList.Contains("9120|NetworkAuditor|SECURE");
+
+                    if (currentLatency > 80 && !isDnsLatencyDismissed)
+                    {
+                        if (!MinedSystemEvents.Any(e => e.EventId == 9119))
+                        {
+                            string alertMsg = string.Format(ResourceString.GetString("diag_dns_latency_msg") ?? "NETWORK BOTTLENECK: Current DNS resolver ({0}) is responding slowly ({1}ms).", CurrentDnsIpv4, currentLatency);
+                            var newAlert = CreateAlert(9119, "NetworkAuditor", alertMsg);
+                            newAlert.Level = 2; // Warning
+                            MinedSystemEvents.Insert(0, newAlert);
+                            listsChanged = true;
+                        }
+                    }
+                    else if (currentLatency > 0 && currentLatency <= 80)
+                    {
+                        var existingAlert = MinedSystemEvents.FirstOrDefault(e => e.EventId == 9119);
+                        if (existingAlert != null)
+                        {
+                            MinedSystemEvents.Remove(existingAlert);
+                            listsChanged = true;
+                        }
+                    }
+
+                    if (!isDnsEncrypted && !isDohDismissed)
+                    {
+                        if (!MinedSystemEvents.Any(e => e.EventId == 9120))
+                        {
+                            string alertMsg = ResourceString.GetString("diag_dns_unencrypted_msg") ?? "SECURITY WARNING: System DNS queries are currently unencrypted.";
+                            var newAlert = CreateAlert(9120, "NetworkAuditor", alertMsg);
+                            newAlert.Level = 1; // Critical
+                            MinedSystemEvents.Insert(0, newAlert);
+                            listsChanged = true;
+                        }
+                    }
+                    else
+                    {
+                        var existingAlert = MinedSystemEvents.FirstOrDefault(e => e.EventId == 9120);
+                        if (existingAlert != null)
+                        {
+                            MinedSystemEvents.Remove(existingAlert);
+                            listsChanged = true;
+                        }
+                    }
+
+                    if (listsChanged)
+                    {
+                        CalculateStabilityTrend(MinedSystemEvents);
+                        UpdateSystemStatus();
+                        UpdateGlobalAiSummary();
+                    }
 
                     var matchingPreset = DnsPreset.DefaultPresets.FirstOrDefault(p =>
                         p.Ipv4Primary != "0.0.0.0" && p.Name != "Custom" &&
@@ -3483,7 +3621,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     double penalty;
 
-                    if (ev.EventId >= 9101 && ev.EventId <= 9117)
+                    if (ev.EventId >= 9101 && ev.EventId <= 9120)
                     {
                         penalty = ev.Level switch
                         {
@@ -3806,11 +3944,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     var mem = _computerService.Memory;
 
-                    _dispatcherQueue?.TryEnqueue(() =>
+                    _dispatcherQueue?.TryEnqueue(async () =>
                     {
                         if (Computer != null && _isUiActive)
                         {
                             Computer.Memory = mem;
+
+                            await UpdateSystemDnsDisplayAsync();
                         }
                     });
 

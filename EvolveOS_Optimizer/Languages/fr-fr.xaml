@@ -2323,6 +2323,13 @@
     <sys:String x:Key="diag_notif_dns_manual_fail">Échec de l'application de la configuration DNS.</sys:String>
 
     <sys:String x:Key="diag_alert_dns_latency">PERFORMANCES RÉSEAU : La latence DNS actuelle est sous-optimale ({0}). Cliquez sur Réparer pour exécuter l'Optimiseur DNS.</sys:String>
+    <sys:String x:Key="diag_dns_latency_msg">GOULOT D'ÉTRANGLEMENT RÉSEAU : Le résolveur DNS actuel ({0}) répond lentement ({1} ms).</sys:String>
+    <sys:String x:Key="diag_dns_unencrypted_msg">AVERTISSEMENT DE SÉCURITÉ : Les requêtes DNS du système ne sont actuellement pas chiffrées.</sys:String>
+    <sys:String x:Key="diag_launch_network_optimizer">Lancement de l'optimiseur de réseau...</sys:String>
+    <sys:String x:Key="diag_fix_dns_attempt">Démarrage du service de chiffrement DNS...</sys:String>
+    <sys:String x:Key="diag_fix_dns_success">Service de chiffrement DNS activé avec succès.</sys:String>
+    <sys:String x:Key="diag_notif_dns_encrypted">Les requêtes DNS du système sont désormais chiffrées.</sys:String>
+    <sys:String x:Key="diag_fix_dns_fail">Échec du démarrage du service de chiffrement DNS.</sys:String>
 
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
     <sys:String x:Key="txt_later">Plus tard</sys:String>
@@ -2873,6 +2880,8 @@
     <sys:String x:Key="diag_analysis_9003">Rétrogradation du chiffrement ou délai d'attente du protocole des services Bureau à distance (TermService). &#x0A;&#x0A;RECOMMANDATION : Assurez-vous que l'authentification NLA (Network Level Authentication) est correctement configurée.</sys:String>
     <sys:String x:Key="diag_analysis_9010">Anomalie de connexion aux services Bureau à distance. Le système a subi un épuisement du seuil de licence ou une déconnexion brutale du socket. &#x0A;&#x0A;RECOMMANDATION : Cliquez sur 'Réparer' pour réinitialiser la pile d'écoute RDP et régénérer les certificats auto-signés.</sys:String>
     <sys:String x:Key="diag_analysis_9100">Journaux génériques de suivi en arrière-plan du Bureau à distance, du DWM et des services de terminal. &#x0A;&#x0A;RECOMMANDATION : Surcharge du système d'exploitation de routine.</sys:String>
+    <sys:String x:Key="diag_analysis_9119">⚠️ LATENCE DE RÉSOLUTION DNS ÉLEVÉE DÉTECTÉE.&#x0A;Votre fournisseur de système de noms de domaine (DNS) actuel répond trop lentement. Chaque site Web que vous visitez nécessite une recherche DNS avant de pouvoir se charger, ce qui signifie qu'un DNS lent ralentit toute votre expérience de navigation, quelle que soit votre vitesse Internet globale.&#x0A;&#x0A;RECOMMANDATION : Cliquez sur 'Fix' pour ouvrir l'optimiseur de réseau et tester des alternatives DNS plus rapides (comme Cloudflare ou Google).</sys:String>
+    <sys:String x:Key="diag_analysis_9120">⚠️ DNS NON CHIFFRÉ DÉTECTÉ.&#x0A;Votre système transmet les requêtes DNS en texte clair. Cela permet aux fournisseurs d'accès Internet et aux attaquants du réseau local de surveiller, d'intercepter et potentiellement de détourner votre trafic Web.&#x0A;&#x0A;RECOMMANDATION : Cliquez sur 'Fix' pour appliquer un chiffrement strict DNS-over-HTTPS (DoH) à l'échelle du système.</sys:String>
     <sys:String x:Key="diag_analysis_10000">La gestion de l'alimentation de l'adaptateur WLAN / Réseau a bloqué une transition de veille. &#x0A;&#x0A;RECOMMANDATION : Désactivez 'Autoriser ce périphérique à sortir l'ordinateur du mode veille' sur vos cartes réseau.</sys:String>
     <sys:String x:Key="diag_analysis_10002">WLAN AutoConfig : Une connexion sans fil a été déconnectée ou n'a pas réussi à négocier une association 802.11. &#x0A;&#x0A;RECOMMANDATION : Oubliez le réseau Wi-Fi et reconnectez-vous.</sys:String>
     <sys:String x:Key="diag_analysis_10004">WLAN AutoConfig : Incompatibilité de profil sans fil ou configuration XML corrompue dans la liste des réseaux enregistrés. &#x0A;&#x0A;RECOMMANDATION : Cliquez sur 'Réparer' pour vider les profils Wi-Fi corrompus.</sys:String>
