@@ -1,3 +1,8 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
+using System.IO;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Win32;
 
@@ -5,6 +10,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     internal sealed class RegistryHelp : TakingOwnership
     {
+        #region Standard Registry Operations
         private static string GeneralRegistry(RegistryKey registrykey)
         {
             // registrykey.Name can technically be null, so we handle it with ??
@@ -112,7 +118,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 catch (Exception ex) { ErrorLogging.LogDebug(ex); }
             }).GetAwaiter().GetResult();
         }
+        #endregion
 
+        #region Value/Key Validation
         internal static bool KeyExists(RegistryKey registryKey, string subKey, bool invert = false)
         {
             using RegistryKey? opened = registryKey.OpenSubKey(subKey);
@@ -175,7 +183,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
             catch { return new T(); }
         }
+        #endregion
 
+        #region App Enumeration & Snapshots
         public static HashSet<string> GetInstalledAppsSnapshot()
         {
             var installedApps = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -273,10 +283,69 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Registry Snapshot Error: {ex.Message}");
+                Debug.WriteLine($"Registry Snapshot Error: {ex.Message}");
             }
 
             return installedApps;
         }
+        #endregion
+
+        #region Winapp2 Cleaning Helpers
+        internal static void DeleteRegistryItem(RegistryItemModel item)
+        {
+            var (hive, subKey) = SplitHiveSubKey(item.KeyPath);
+            using var root = OpenHive(hive);
+            if (root is null) return;
+
+            if (item.ValueName is not null)
+            {
+                using var key = root.OpenSubKey(subKey, writable: true);
+                key?.DeleteValue(item.ValueName, throwOnMissingValue: false);
+            }
+            else
+            {
+                var parentSubKey = Path.GetDirectoryName(subKey)?.Replace('/', '\\') ?? "";
+                var keyName = Path.GetFileName(subKey);
+                using var parent = root.OpenSubKey(parentSubKey, writable: true);
+                parent?.DeleteSubKeyTree(keyName, throwOnMissingSubKey: false);
+            }
+        }
+
+        internal static IEnumerable<RegistryItemModel> FindRegistryItems(RegKeyEntry regKey)
+        {
+            var (hive, subKey) = SplitHiveSubKey(regKey.KeyPath);
+            using var root = OpenHive(hive);
+            if (root is null) yield break;
+
+            using var key = root.OpenSubKey(subKey, writable: false);
+            if (key is null) yield break;
+
+            if (regKey.ValueName is not null)
+            {
+                if (key.GetValue(regKey.ValueName) is not null)
+                    yield return new RegistryItemModel { KeyPath = regKey.KeyPath, ValueName = regKey.ValueName };
+            }
+            else
+            {
+                yield return new RegistryItemModel { KeyPath = regKey.KeyPath };
+            }
+        }
+
+        internal static (string hive, string subKey) SplitHiveSubKey(string path)
+        {
+            var idx = path.IndexOf('\\');
+            return idx < 0 ? (path.ToUpperInvariant(), "") : (path[..idx].ToUpperInvariant(), path[(idx + 1)..]);
+        }
+
+        internal static RegistryKey? OpenHive(string hive) => hive switch
+        {
+            "HKCU" or "HKEY_CURRENT_USER" => Registry.CurrentUser,
+            "HKLM" or "HKEY_LOCAL_MACHINE" => Registry.LocalMachine,
+            "HKU" or "HKEY_USERS" => Registry.Users,
+            "HKCC" or "HKEY_CURRENT_CONFIG" => Registry.CurrentConfig,
+            "HKCR" or "HKEY_CLASSES_ROOT" => Registry.ClassesRoot,
+            _ => null
+        };
+        #endregion
     }
 }

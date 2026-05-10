@@ -101,5 +101,19 @@ namespace EvolveOS_Optimizer.Core
             FolderUser,
             FolderCommon
         }
+
+        public enum ExcludeType
+        {
+            File,
+            Path,
+            Reg
+        }
+
+        public enum FileKeyFlag
+        {
+            None,
+            Recurse,
+            RemoveSelf
+        }
     }
 }

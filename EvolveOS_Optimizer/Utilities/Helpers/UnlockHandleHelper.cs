@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.IO;
 using System.Runtime.InteropServices;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -6,6 +9,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     internal static class UnlockHandleHelper
     {
+        #region Constants & Structs
         private const int ERROR_SUCCESS = 0;
         private const int ERROR_MORE_DATA = 234;
 
@@ -41,7 +45,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             [MarshalAs(UnmanagedType.Bool)]
             public bool bRestartable;
         }
+        #endregion
 
+        #region P/Invoke
         [DllImport("rstrtmgr.dll", CharSet = CharSet.Unicode)]
         private static extern int RmStartSession(out uint pSessionHandle, int dwSessionFlags, string strSessionKey);
 
@@ -53,7 +59,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         [DllImport("rstrtmgr.dll")]
         private static extern int RmEndSession(uint pSessionHandle);
+        #endregion
 
+        #region Public Methods
         internal static void UnlockDirectory(string directoryPath, string? processNameFilter = null)
         {
             if (string.IsNullOrWhiteSpace(directoryPath))
@@ -61,7 +69,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 return;
             }
 
-            if (!Directory.Exists(directoryPath))
+            if (!Directory.Exists(directoryPath) && !File.Exists(directoryPath))
             {
                 return;
             }
@@ -107,6 +115,62 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
+        internal static List<string> GetLockingProcessNames(string path)
+        {
+            List<string> names = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(path)) return names;
+
+            string sessionKey = Guid.NewGuid().ToString();
+
+            if (RmStartSession(out uint sessionHandle, 0, sessionKey) != ERROR_SUCCESS)
+                return names;
+
+            try
+            {
+                string[] resources = { Path.GetFullPath(path) };
+
+                if (RmRegisterResources(sessionHandle, (uint)resources.Length, resources, 0, IntPtr.Zero, 0, null) != ERROR_SUCCESS)
+                    return names;
+
+                uint count = 0;
+                int res = RmGetList(sessionHandle, out uint needed, ref count, null, out uint rebootReasons);
+
+                if (res == ERROR_MORE_DATA)
+                {
+                    RM_PROCESS_INFO[] infos = new RM_PROCESS_INFO[needed];
+                    count = needed;
+
+                    if (RmGetList(sessionHandle, out needed, ref count, infos, out rebootReasons) == ERROR_SUCCESS)
+                    {
+                        foreach (var info in infos)
+                        {
+                            if (!string.IsNullOrWhiteSpace(info.strAppName))
+                            {
+                                names.Add(info.strAppName);
+                            }
+                            else if (!string.IsNullOrWhiteSpace(info.strServiceShortName))
+                            {
+                                names.Add(info.strServiceShortName);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+            }
+            finally
+            {
+                RmEndSession(sessionHandle);
+            }
+
+            return names;
+        }
+        #endregion
+
+        #region Private Helpers
         private static HashSet<int> GetUnlockProcessIds(string directoryPath)
         {
             HashSet<int> result = new HashSet<int>();
@@ -174,5 +238,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             return result;
         }
+        #endregion
     }
 }

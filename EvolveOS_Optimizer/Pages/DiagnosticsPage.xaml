@@ -1254,7 +1254,17 @@
                                                         </Grid.ColumnDefinitions>
                                                         <StackPanel Grid.Column="0" Spacing="5" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <TextBlock helpers:Loc.Key="diag_live_miner" Style="{StaticResource TechnicalLabelStyle}" FontSize="10" HorizontalAlignment="Center"/>
-                                                            <ToggleSwitch IsOn="{x:Bind ViewModel.IsLiveMonitoringEnabled, Mode=TwoWay}" OffContent="STANDBY" OnContent="ACTIVE" HorizontalAlignment="Center" MinWidth="0"/>
+                                                            <ToggleSwitch IsOn="{x:Bind ViewModel.IsLiveMonitoringEnabled, Mode=TwoWay}" OffContent="STANDBY" OnContent="ACTIVE" HorizontalAlignment="Center" MinWidth="0">
+                                                                <ToggleSwitch.Resources>
+                                                                    <StaticResource x:Key="ToggleSwitchFillOn" ResourceKey="MyDynamicAccentBrush" />
+                                                                    <StaticResource x:Key="ToggleSwitchFillOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+                                                                    <StaticResource x:Key="ToggleSwitchFillOnPressed" ResourceKey="MyDynamicAccentBrush" />
+
+                                                                    <StaticResource x:Key="ToggleSwitchStrokeOn" ResourceKey="MyDynamicAccentBrush" />
+                                                                    <StaticResource x:Key="ToggleSwitchStrokeOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+                                                                    <StaticResource x:Key="ToggleSwitchStrokeOnPressed" ResourceKey="MyDynamicAccentBrush" />
+                                                                </ToggleSwitch.Resources>
+                                                            </ToggleSwitch>
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="1" Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <FontIcon Glyph="&#xEB42;" FontSize="18" Foreground="{ThemeResource MyDynamicAccentBrush}"/>

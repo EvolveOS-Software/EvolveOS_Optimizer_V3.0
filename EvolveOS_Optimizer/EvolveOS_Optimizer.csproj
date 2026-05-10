@@ -120,4 +120,10 @@
         <Content Include="Resources\EvolveOS_OptimizerDb_log.ldf.gz" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="Assets\Winapp2.ini">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

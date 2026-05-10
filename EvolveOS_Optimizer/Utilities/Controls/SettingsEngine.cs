@@ -101,7 +101,15 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["DatabaseBackupPath"] = string.Empty,
             ["PerformDbBackup"] = false,
             ["EncryptDbBackupCopies"] = true,
-            ["KeepBackupEnabled"] = false
+            ["KeepBackupEnabled"] = false,
+
+            ["IsPostCleanEnabled"] = false,
+            ["PostCleanCommands"] = "cleanmgr.exe /autoclean\nstart \"\" ms-settings:storagesense",
+            ["CustomWinapp2Path"] = string.Empty,
+            ["SelectedCleanerEntries"] = string.Empty,
+            ["IsScheduledCleanEnabled"] = false,
+            ["ScheduledCleanDayIndex"] = 0,
+            ["ScheduledCleanTimeStr"] = "12:00:00",
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -176,6 +184,39 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool PerformDbBackup { get => (bool)_cachedSettings["PerformDbBackup"]; set => ChangingParameters("PerformDbBackup", value); }
         internal static bool EncryptDbBackupCopies { get => (bool)_cachedSettings["EncryptDbBackupCopies"]; set => ChangingParameters("EncryptDbBackupCopies", value); }
         internal static bool KeepBackupEnabled { get => (bool)_cachedSettings["KeepBackupEnabled"]; set => ChangingParameters("KeepBackupEnabled", value); }
+        internal static bool IsPostCleanEnabled { get => (bool)_cachedSettings["IsPostCleanEnabled"]; set => ChangingParameters("IsPostCleanEnabled", value); }
+        internal static string PostCleanCommands { get => (string)_cachedSettings["PostCleanCommands"]; set => ChangingParameters("PostCleanCommands", value); }
+        internal static string? CustomWinapp2Path { get => string.IsNullOrEmpty((string)_cachedSettings["CustomWinapp2Path"]) ? null : (string)_cachedSettings["CustomWinapp2Path"]; set => ChangingParameters("CustomWinapp2Path", value ?? string.Empty); }
+        internal static bool IsScheduledCleanEnabled { get => (bool)_cachedSettings["IsScheduledCleanEnabled"]; set => ChangingParameters("IsScheduledCleanEnabled", value); }
+        internal static int ScheduledCleanDayIndex { get => (int)_cachedSettings["ScheduledCleanDayIndex"]; set => ChangingParameters("ScheduledCleanDayIndex", value); }
+
+        internal static TimeSpan ScheduledCleanTime
+        {
+            get => TimeSpan.TryParse((string)_cachedSettings["ScheduledCleanTimeStr"], out TimeSpan result) ? result : new TimeSpan(12, 0, 0);
+            set => ChangingParameters("ScheduledCleanTimeStr", value.ToString(@"hh\:mm\:ss"));
+        }
+
+        internal static HashSet<string> SelectedCleanerEntries
+        {
+            get
+            {
+                if (_cachedSettings.TryGetValue("SelectedCleanerEntries", out object? val) &&
+                    val is string pathsRaw &&
+                    !string.IsNullOrWhiteSpace(pathsRaw))
+                {
+                    return pathsRaw.Split(';', StringSplitOptions.RemoveEmptyEntries).ToHashSet(StringComparer.OrdinalIgnoreCase);
+                }
+                return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            }
+            set
+            {
+                string serialized = (value != null && value.Count > 0)
+                    ? string.Join(";", value.Where(p => !string.IsNullOrEmpty(p)).Distinct())
+                    : string.Empty;
+
+                ChangingParameters("SelectedCleanerEntries", serialized);
+            }
+        }
 
         private static void ChangingParameters(string key, object value)
         {

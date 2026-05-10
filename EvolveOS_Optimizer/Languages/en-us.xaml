@@ -116,6 +116,7 @@
     <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
     <sys:String x:Key="Nav_Software_Center">Software Center</sys:String>
+    <sys:String x:Key="Nav_System_Cleaner">System Cleaner</sys:String>
     <sys:String x:Key="Nav_System_Manager">System Manager</sys:String>
     <sys:String x:Key="Nav_GroupPolicy">Policies</sys:String>
     <sys:String x:Key="Nav_Services">Service Tweaks</sys:String>
@@ -3204,4 +3205,149 @@
     <sys:String x:Key="MemoryGuardian_Title">Memory Guardian</sys:String>
     <sys:String x:Key="MemoryGuardian_Msg">Deep memory cleanup complete. Recovered {0} MB of background RAM.</sys:String>
     <!-- endregion Memory Guardian -->
+
+    <!-- region Disk Cleanup -->
+    <sys:String x:Key="cleanup_status_label">Current Status</sys:String>
+    <sys:String x:Key="cleanup_space_label">Space to Recover</sys:String>
+    <sys:String x:Key="cleanup_search_placeholder">Search apps and entries...</sys:String>
+    <sys:String x:Key="cleanup_toggle_pane_tooltip">Toggle App List</sys:String>
+    <sys:String x:Key="cleanup_btn_analyze">Analyze</sys:String>
+    <sys:String x:Key="cleanup_btn_run">Perform Cleanup</sys:String>
+    <sys:String x:Key="cleanup_empty_state_text">Winapp2.ini loads automatically at startup.</sys:String>
+
+    <sys:String x:Key="cleanup_badge_default">Default</sys:String>
+    <sys:String x:Key="cleanup_badge_all">All</sys:String>
+    <sys:String x:Key="cleanup_badge_none">None</sys:String>
+    <sys:String x:Key="cleanup_badge_custom">Custom</sys:String>
+
+    <sys:String x:Key="cleanup_category_actions_tooltip">Category actions</sys:String>
+    <sys:String x:Key="cleanup_menu_select_all">Select all</sys:String>
+    <sys:String x:Key="cleanup_menu_select_none">Select none</sys:String>
+    <sys:String x:Key="cleanup_menu_select_defaults">Select defaults</sys:String>
+    <sys:String x:Key="cleanup_menu_analyze_cat">Analyze category</sys:String>
+    <sys:String x:Key="cleanup_menu_clean_cat">Clean category</sys:String>
+
+    <sys:String x:Key="cleanup_entry_actions_tooltip">Entry actions</sys:String>
+    <sys:String x:Key="cleanup_menu_analyze_entry">Analyze</sys:String>
+    <sys:String x:Key="cleanup_menu_clean_entry">Clean</sys:String>
+
+    <sys:String x:Key="cleanup_results_header">Analysis Results</sys:String>
+    <sys:String x:Key="cleanup_btn_back_tooltip">Back to results</sys:String>
+    <sys:String x:Key="cleanup_btn_delete_now_tooltip">Delete these files now</sys:String>
+
+    <sys:String x:Key="diag_cleaning_warning_title">Cleaning warning</sys:String>
+    <sys:String x:Key="diag_cleaning_warning_continue">Continue</sys:String>
+    <sys:String x:Key="diag_cleaning_warning_cancel">Cancel</sys:String>
+    <sys:String x:Key="diag_cleaning_warning_body">The selected Winapp2 entries include the following warnings:</sys:String>
+
+    <sys:String x:Key="cleanup_status_loading">Loading Winapp2.ini...</sys:String>
+    <sys:String x:Key="cleanup_status_parsing">Parsing databases...</sys:String>
+    <sys:String x:Key="cleanup_status_analysis_ready">Analysis ready - {0} apps found in {1} entries.</sys:String>
+    <sys:String x:Key="cleanup_status_search_found">Showing {0} matching entries.</sys:String>
+    <sys:String x:Key="cleanup_status_search_empty">No matching entries.</sys:String>
+    <sys:String x:Key="cleanup_status_nothing_selected">Nothing selected.</sys:String>
+    <sys:String x:Key="cleanup_status_scanning">Scanning...</sys:String>
+    <sys:String x:Key="cleanup_status_scan_complete">Scan complete - {0} files, {1} registry items ({2})</sys:String>
+    <sys:String x:Key="cleanup_status_cleaning">Cleaning...</sys:String>
+    <sys:String x:Key="cleanup_status_done">Done</sys:String>
+    <sys:String x:Key="cleanup_status_finished_skipped">Finished — {0} freed · {1} skipped (files in use)</sys:String>
+    <sys:String x:Key="cleanup_status_finished_removed">Finished — {0} items removed · {1} freed.</sys:String>
+
+    <sys:String x:Key="cleanup_status_entry_scanned">{0}: {1} files, {2} registry items</sys:String>
+    <sys:String x:Key="cleanup_status_entry_scanning">Scanning {0}...</sys:String>
+    <sys:String x:Key="cleanup_status_entry_nothing">{0}: nothing to clean.</sys:String>
+    <sys:String x:Key="cleanup_status_entry_cleaned">{0}: {1} items removed · {2} freed.</sys:String>
+    <sys:String x:Key="cleanup_status_cat_scanning">Scanning {0}...</sys:String>
+    <sys:String x:Key="cleanup_status_cat_scanned">{0} scanned - {1} entries.</sys:String>
+    <sys:String x:Key="cleanup_status_cat_cleaning">Cleaning {0}...</sys:String>
+    <sys:String x:Key="cleanup_status_cat_cleaned">{0}: {1} items removed · {2} freed.</sys:String>
+
+    <sys:String x:Key="cleanup_detail_files">Files</sys:String>
+    <sys:String x:Key="cleanup_detail_registry">Registry</sys:String>
+    <sys:String x:Key="cleanup_summary_files">{0} files</sys:String>
+    <sys:String x:Key="cleanup_summary_registry">{0} registry</sys:String>
+    <sys:String x:Key="cleanup_summary_full">{0} file(s), {1} registry item(s)  {2}</sys:String>
+    <sys:String x:Key="cleanup_summary_complete">Cleaning complete.</sys:String>
+
+    <sys:String x:Key="cleanup_ctx_open_location">Open File Location</sys:String>
+    <sys:String x:Key="cleanup_ctx_inspect_conflict">Inspect Conflict</sys:String>
+    <sys:String x:Key="cleanup_heatmap_title">Storage Distribution</sys:String>
+
+    <sys:String x:Key="cleanup_conflict_title">Conflict Inspector</sys:String>
+    <sys:String x:Key="cleanup_conflict_message_header">The following processes are locking this file:</sys:String>
+    <sys:String x:Key="cleanup_conflict_message_none">No active locks found. This file should be cleanable.</sys:String>
+    <sys:String x:Key="cleanup_btn_close">Close</sys:String>
+
+    <sys:String x:Key="cleanup_header_files">Files to Delete</sys:String>
+    <sys:String x:Key="cleanup_header_registry">Registry Items</sys:String>
+
+    <sys:String x:Key="cleanup_tab_current">Current Scan</sys:String>
+    <sys:String x:Key="cleanup_tab_history">History</sys:String>
+    <sys:String x:Key="cleanup_history_total_label">Total Space Recovered</sys:String>
+    <sys:String x:Key="cleanup_history_30days">Past 30 Days</sys:String>
+
+    <sys:String x:Key="cleanup_btn_settings_tooltip">Database Settings</sys:String>
+    <sys:String x:Key="cleanup_settings_title">Database Configuration</sys:String>
+    <sys:String x:Key="cleanup_settings_update_btn">Update</sys:String>
+    <sys:String x:Key="cleanup_settings_custom_path">Custom Database Path</sys:String>
+    <sys:String x:Key="cleanup_settings_path_placeholder">Path to custom Winapp2.ini file</sys:String>
+    <sys:String x:Key="cleanup_settings_browse_tooltip">Browse for file...</sys:String>
+    <sys:String x:Key="cleanup_settings_apply_btn">Apply</sys:String>
+    <sys:String x:Key="cleanup_settings_remove_tooltip">Remove custom path</sys:String>
+
+    <sys:String x:Key="cleanup_status_db_missing">Database missing. Click the settings icon to download Winapp2.ini.</sys:String>
+    <sys:String x:Key="cleanup_status_parsing">Parsing database...</sys:String>
+    <sys:String x:Key="cleanup_status_analysis_ready">Ready: {0} installed / {1} total entries</sys:String>
+    <sys:String x:Key="cleanup_settings_db_missing">Database missing</sys:String>
+
+    <sys:String x:Key="cleanup_settings_schedule_title">Scheduled Clean</sys:String>
+    <sys:String x:Key="cleanup_settings_schedule_desc">Automatically run a silent cleaning session using your currently selected components in the background.</sys:String>
+    <sys:String x:Key="cleanup_schedule_every_day">Every Day</sys:String>
+    <sys:String x:Key="cleanup_schedule_monday">Monday</sys:String>
+    <sys:String x:Key="cleanup_schedule_tuesday">Tuesday</sys:String>
+    <sys:String x:Key="cleanup_schedule_wednesday">Wednesday</sys:String>
+    <sys:String x:Key="cleanup_schedule_thursday">Thursday</sys:String>
+    <sys:String x:Key="cleanup_schedule_friday">Friday</sys:String>
+    <sys:String x:Key="cleanup_schedule_saturday">Saturday</sys:String>
+    <sys:String x:Key="cleanup_schedule_sunday">Sunday</sys:String>
+    <sys:String x:Key="cleanup_schedule_toast_title">Scheduled Clean Complete</sys:String>
+    <sys:String x:Key="cleanup_schedule_toast_desc">EvolveOS Optimizer has finished running in the background and freed up {0} of space.</sys:String>
+
+    <sys:String x:Key="cleanup_settings_postclean_title">Post-clean tasks</sys:String>
+    <sys:String x:Key="cleanup_settings_postclean_desc">One CMD command per line runs silently after every manual or scheduled clean pass.</sys:String>
+    <sys:String x:Key="cleanup_settings_postclean_placeholder">cleanmgr.exe /autoclean&#x0a;start "" ms-settings:storagesense</sys:String>
+
+    <sys:String x:Key="cleanup_page_actions_tooltip">Page actions</sys:String>
+    <sys:String x:Key="cleanup_menu_expand_all">Expand all</sys:String>
+    <sys:String x:Key="cleanup_menu_collapse_all">Collapse all</sys:String>
+    <sys:String x:Key="cleanup_menu_sort_asc">Sort by size (Ascending)</sys:String>
+    <sys:String x:Key="cleanup_menu_sort_desc">Sort by size (Descending)</sys:String>
+    <sys:String x:Key="cleanup_menu_refresh">Refresh database</sys:String>
+
+    <sys:String x:Key="cleanup_confirm_title">Ready to clean?</sys:String>
+    <sys:String x:Key="cleanup_confirm_content">This will permanently delete the selected files. Are you sure you want to continue?</sys:String>
+    <sys:String x:Key="cleanup_confirm_primary">Clean</sys:String>
+    <sys:String x:Key="cleanup_confirm_cancel">Cancel</sys:String>
+
+    <!-- Winapp32 Warnings -->
+    <sys:String x:Key="warning_ms_mouse_keyboard_settings">This will also delete all app-specific settings.</sys:String>
+    <sys:String x:Key="warning_paramount_rss">This will cause you to redownload the Paramount Dynamic RSS file.</sys:String>
+    <sys:String x:Key="warning_steam_first_launch">This entry should only be enabled after you have launched each of your installed Steam games at least once. Deleting these files before then may cause Steam to think the game's installation is broken. After the first launch, these files become useless.</sys:String>
+    <sys:String x:Key="warning_ubisoft_first_launch">Make sure to launch all of your installed UPlay games at least once before running this, or they may not launch properly.</sys:String>
+    <sys:String x:Key="warning_windows_activity_history">You need to run this in Windows Safe Mode. Or stop services "Connected Devices Platform Service" and "Connected Devices Platform User Service_xxxxx" prior to cleaning and restart after cleaning.</sys:String>
+    <sys:String x:Key="warning_windows_recent_documents">Clears the recent documents list for all user accounts on this machine, not just the current user.</sys:String>
+    <sys:String x:Key="warning_windows_recall_snapshots">Deletes all Recall screenshots and semantic index data. Recall will start fresh after cleaning.</sys:String>
+    <sys:String x:Key="warning_windows_recent_access">Deletes Jump Lists and recently used file history.</sys:String>
+    <sys:String x:Key="warning_windows_folder_views">Resets all Explorer folder view preferences (icon/details/column layouts), window sizes, positions, and File Open/Save dialog history. All custom folder layouts will be lost permanently.</sys:String>
+    <sys:String x:Key="warning_windows_shell_fileexts">Deletes Explorer\FileExts which stores your custom file type associations (e.g. which app opens .jpg or .png). After cleaning, Windows will no longer remember your chosen default apps for file types until you reassign them manually.</sys:String>
+    <sys:String x:Key="warning_windows_start_menu">Resets the Start Menu program cache. The Start Menu may take a moment to rebuild on next login.</sys:String>
+    <sys:String x:Key="warning_windows_taskbar">Clears Jump Lists (recently used files shown per app on the taskbar). Pinned items are safe, but all recent file history will be removed.</sys:String>
+
+    <sys:String x:Key="warning_browser_passwords">Permanently deletes all saved usernames and passwords from this browser. You will be logged out of all sites.</sys:String>
+    <sys:String x:Key="warning_browser_extensions">Deletes local data stored by your browser extensions. Some extensions may lose their settings or require you to log in again.</sys:String>
+    <sys:String x:Key="warning_windows_prefetch">Deletes prefetch data. Applications may take slightly longer to launch the first time after cleaning as Windows rebuilds this cache.</sys:String>
+    <sys:String x:Key="warning_windows_event_logs">Clears Windows diagnostic logs. You will lose historical event data which is sometimes needed to troubleshoot system crashes.</sys:String>
+    <sys:String x:Key="warning_windows_update_cache">Deletes downloaded Windows Update files. If you have pending updates waiting to install, Windows will need to re-download them.</sys:String>
+
+    <!-- endregion Disk Cleanup -->
 </ResourceDictionary>

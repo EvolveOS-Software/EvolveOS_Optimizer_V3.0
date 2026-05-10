@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Collections.Concurrent;
 using System.IO;
 
@@ -5,6 +8,115 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 {
     internal class PathLocator
     {
+        #region Path Resolution & Variables
+        private static readonly Dictionary<string, string> _vars = BuildVarMap();
+
+        private static Dictionary<string, string> BuildVarMap()
+        {
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            void Add(string name, string value)
+            {
+                if (!string.IsNullOrEmpty(value))
+                    map[$"%{name}%"] = value.TrimEnd('\\', '/');
+            }
+
+            Add("AppData", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            Add("LocalAppData", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+            Add("LocalLowAppData", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "..", "LocalLow"));
+            Add("ProgramFiles", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
+            Add("ProgramFiles(x86)", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86));
+            Add("ProgramFilesX86", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86));
+            Add("ProgramData", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+            Add("CommonAppData", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
+            Add("UserProfile", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+            Add("Documents", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            Add("Desktop", Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory));
+            Add("Music", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
+            Add("Pictures", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures));
+            Add("Videos", Environment.GetFolderPath(Environment.SpecialFolder.MyVideos));
+            Add("SystemRoot", Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+            Add("WinDir", Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+            Add("System", Environment.GetFolderPath(Environment.SpecialFolder.System));
+            Add("SystemX86", Environment.GetFolderPath(Environment.SpecialFolder.SystemX86));
+            Add("Temp", Path.GetTempPath().TrimEnd('\\', '/'));
+            Add("Tmp", Path.GetTempPath().TrimEnd('\\', '/'));
+            Add("SystemDrive", Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.Windows))?.TrimEnd('\\') ?? "C:");
+
+            return map;
+        }
+
+        internal static string ExpandVariables(string path)
+        {
+            foreach (var kvp in _vars)
+                path = path.Replace(kvp.Key, kvp.Value, StringComparison.OrdinalIgnoreCase);
+
+            path = Environment.ExpandEnvironmentVariables(path);
+
+            if (path.Length == 2 && char.IsLetter(path[0]) && path[1] == ':')
+                path += Path.DirectorySeparatorChar;
+
+            return path;
+        }
+
+        internal static List<string> ResolvePaths(string rawPath)
+        {
+            var results = new List<string>();
+
+            ResolveRecursive(ExpandVariables(rawPath), results);
+
+            if (rawPath.Contains("%ProgramFiles%", StringComparison.OrdinalIgnoreCase))
+            {
+                var x86Path = rawPath.Replace("%ProgramFiles%", "%ProgramFiles(x86)%", StringComparison.OrdinalIgnoreCase);
+                var expanded = ExpandVariables(x86Path);
+                if (!results.Contains(expanded))
+                    ResolveRecursive(expanded, results);
+            }
+
+            return results;
+        }
+
+        private static void ResolveRecursive(string path, List<string> results)
+        {
+            var parts = path.Split(new[] { '\\', '/' }, StringSplitOptions.None);
+
+            int wcIdx = Array.FindIndex(parts, p => p.Contains('*') || p.Contains('?'));
+
+            if (wcIdx < 0)
+            {
+                results.Add(path);
+                return;
+            }
+
+            var basePath = wcIdx == 0
+                ? Path.GetPathRoot(path) ?? ""
+                : string.Join('\\', parts[..wcIdx]);
+
+            if (!Directory.Exists(basePath)) return;
+
+            var wildcard = parts[wcIdx];
+            var remaining = parts[(wcIdx + 1)..];
+
+            try
+            {
+                var matches = remaining.Length == 0
+                    ? Directory.GetFileSystemEntries(basePath, wildcard)
+                    : Directory.GetDirectories(basePath, wildcard);
+
+                foreach (var match in matches)
+                {
+                    if (remaining.Length == 0)
+                        results.Add(match);
+                    else
+                        ResolveRecursive(Path.Combine(match, string.Join('\\', remaining)), results);
+                }
+            }
+            catch (UnauthorizedAccessException) { }
+            catch (IOException) { }
+        }
+        #endregion
+
+        #region Folders
         internal static class Folders
         {
             internal static readonly string Workspace = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) ?? "", "EvolveOS_Optimizer");
@@ -27,7 +139,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             internal static readonly string Edge = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft", "Edge");
         }
+        #endregion
 
+        #region Executable
         internal static class Executable
         {
             private static readonly ConcurrentDictionary<string, string> exeCache = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -184,15 +298,15 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                                     ErrorLogging.LogDebug(ex);
                                 }
                             }
-
-                            if (found)
-                            {
-                                break;
-                            }
                         }
                         catch (Exception ex)
                         {
                             ErrorLogging.LogDebug(ex);
+                        }
+
+                        if (found)
+                        {
+                            break;
                         }
                     }
 
@@ -319,7 +433,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             internal static readonly string DisablingWD = Path.Combine(Folders.DefenderBackup, "DisablingWD.exe");
         }
+        #endregion
 
+        #region Files
         internal static class Files
         {
             internal static string Config = string.Empty;
@@ -343,8 +459,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             internal static readonly string BackupJsonWD = Path.Combine(Folders.DefenderBackup, "BackupData.json");
 
             internal static readonly string BackupAclWD = Path.Combine(Folders.DefenderBackup, "AclBackup.acl");
-        }
 
+            internal static readonly string Winapp2Ini = Path.Combine(BaseDir, "Assets", "Winapp2.ini");
+        }
+        #endregion
+
+        #region Links
         internal static class Links
         {
             internal const string GitHub = "https://github.com/EvolveOS-Software";
@@ -364,11 +484,14 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 "https://get.geojs.io/v1/ip/geo.json"
             });
         }
+        #endregion
 
+        #region Registry
         internal static class Registry
         {
             internal const string SubKey = @"Software\EvolveOS_Optimizer";
             internal static readonly string BaseKey = @$"HKEY_CURRENT_USER\{SubKey}";
         }
+        #endregion
     }
 }

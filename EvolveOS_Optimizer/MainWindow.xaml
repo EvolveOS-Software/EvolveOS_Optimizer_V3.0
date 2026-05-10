@@ -361,6 +361,15 @@
                             <FontIcon Glyph="&#xE9D9;" FontSize="18"/>
                         </RadioButton>
 
+                        <RadioButton x:Name="BtnNavSystemCleaner"
+                                     Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="SystemCleaner"
+                                     IsTabStop="False"
+                                     Tag="{x:Bind GetText('Nav_System_Cleaner'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xEA99;" FontSize="18"/>
+                        </RadioButton>
+
                         <RadioButton x:Name="BtnNavSoftware"
                                      Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"

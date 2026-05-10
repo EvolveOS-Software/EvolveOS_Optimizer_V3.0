@@ -3182,4 +3182,151 @@
     <sys:String x:Key="MemoryGuardian_Title">Memory Guardian</sys:String>
     <sys:String x:Key="MemoryGuardian_Msg">Grondige geheugenopruiming voltooid. {0} MB aan achtergrond-RAM hersteld.</sys:String>
     <!-- endregion Memory Guardian -->
+
+    <!-- region Disk Cleanup -->
+    <sys:String x:Key="Nav_System_Cleaner">Systeem reiniger</sys:String>
+
+    <sys:String x:Key="cleanup_status_label">Huidige status</sys:String>
+    <sys:String x:Key="cleanup_space_label">Terug te winnen ruimte</sys:String>
+    <sys:String x:Key="cleanup_search_placeholder">Zoek apps en items...</sys:String>
+    <sys:String x:Key="cleanup_toggle_pane_tooltip">App-lijst in-/uitklappen</sys:String>
+    <sys:String x:Key="cleanup_btn_analyze">Analyseren</sys:String>
+    <sys:String x:Key="cleanup_btn_run">Reiniging uitvoeren</sys:String>
+    <sys:String x:Key="cleanup_empty_state_text">Winapp2.ini wordt automatisch geladen bij het opstarten.</sys:String>
+
+    <sys:String x:Key="cleanup_badge_default">Standaard</sys:String>
+    <sys:String x:Key="cleanup_badge_all">Alles</sys:String>
+    <sys:String x:Key="cleanup_badge_none">Geen</sys:String>
+    <sys:String x:Key="cleanup_badge_custom">Aangepast</sys:String>
+
+    <sys:String x:Key="cleanup_category_actions_tooltip">Categorie-acties</sys:String>
+    <sys:String x:Key="cleanup_menu_select_all">Alles selecteren</sys:String>
+    <sys:String x:Key="cleanup_menu_select_none">Niets selecteren</sys:String>
+    <sys:String x:Key="cleanup_menu_select_defaults">Standaardinstellingen selecteren</sys:String>
+    <sys:String x:Key="cleanup_menu_analyze_cat">Categorie analyseren</sys:String>
+    <sys:String x:Key="cleanup_menu_clean_cat">Categorie opschonen</sys:String>
+
+    <sys:String x:Key="cleanup_entry_actions_tooltip">Item-acties</sys:String>
+    <sys:String x:Key="cleanup_menu_analyze_entry">Analyseren</sys:String>
+    <sys:String x:Key="cleanup_menu_clean_entry">Opschonen</sys:String>
+
+    <sys:String x:Key="cleanup_results_header">Analyseresultaten</sys:String>
+    <sys:String x:Key="cleanup_btn_back_tooltip">Terug naar resultaten</sys:String>
+    <sys:String x:Key="cleanup_btn_delete_now_tooltip">Deze bestanden nu verwijderen</sys:String>
+
+    <sys:String x:Key="diag_cleaning_warning_title">Opschoonwaarschuwing</sys:String>
+    <sys:String x:Key="diag_cleaning_warning_continue">Doorgaan</sys:String>
+    <sys:String x:Key="diag_cleaning_warning_cancel">Annuleren</sys:String>
+    <sys:String x:Key="diag_cleaning_warning_body">De geselecteerde Winapp2-items bevatten de volgende waarschuwingen:</sys:String>
+
+    <sys:String x:Key="cleanup_status_loading">Winapp2.ini laden...</sys:String>
+    <sys:String x:Key="cleanup_status_parsing">Databases parseren...</sys:String>
+    <sys:String x:Key="cleanup_status_analysis_ready">Analyse gereed - {0} apps gevonden in {1} items.</sys:String>
+    <sys:String x:Key="cleanup_status_search_found">{0} overeenkomende items weergeven.</sys:String>
+    <sys:String x:Key="cleanup_status_search_empty">Geen overeenkomende items.</sys:String>
+    <sys:String x:Key="cleanup_status_nothing_selected">Niets geselecteerd.</sys:String>
+    <sys:String x:Key="cleanup_status_scanning">Scannen...</sys:String>
+    <sys:String x:Key="cleanup_status_scan_complete">Scan voltooid - {0} bestanden, {1} register-items ({2})</sys:String>
+    <sys:String x:Key="cleanup_status_cleaning">Opschonen...</sys:String>
+    <sys:String x:Key="cleanup_status_done">Klaar</sys:String>
+    <sys:String x:Key="cleanup_status_finished_skipped">Voltooid — {0} vrijgemaakt · {1} overgeslagen (bestanden in gebruik)</sys:String>
+    <sys:String x:Key="cleanup_status_finished_removed">Voltooid — {0} items verwijderd · {1} vrijgemaakt.</sys:String>
+
+    <sys:String x:Key="cleanup_status_entry_scanned">{0}: {1} bestanden, {2} register-items</sys:String>
+    <sys:String x:Key="cleanup_status_entry_scanning">{0} scannen...</sys:String>
+    <sys:String x:Key="cleanup_status_entry_nothing">{0}: niets om op te schonen.</sys:String>
+    <sys:String x:Key="cleanup_status_entry_cleaned">{0}: {1} items verwijderd · {2} vrijgemaakt.</sys:String>
+    <sys:String x:Key="cleanup_status_cat_scanning">{0} scannen...</sys:String>
+    <sys:String x:Key="cleanup_status_cat_scanned">{0} gescand - {1} items.</sys:String>
+    <sys:String x:Key="cleanup_status_cat_cleaning">{0} opschonen...</sys:String>
+    <sys:String x:Key="cleanup_status_cat_cleaned">{0}: {1} items verwijderd · {2} vrijgemaakt.</sys:String>
+
+    <sys:String x:Key="cleanup_detail_files">Bestanden</sys:String>
+    <sys:String x:Key="cleanup_detail_registry">Register</sys:String>
+    <sys:String x:Key="cleanup_summary_files">{0} bestanden</sys:String>
+    <sys:String x:Key="cleanup_summary_registry">{0} register</sys:String>
+    <sys:String x:Key="cleanup_summary_full">{0} bestand(en), {1} register-item(s)  {2}</sys:String>
+    <sys:String x:Key="cleanup_summary_complete">Opschonen voltooid.</sys:String>
+
+    <sys:String x:Key="cleanup_ctx_open_location">Bestandslocatie openen</sys:String>
+    <sys:String x:Key="cleanup_ctx_inspect_conflict">Conflict inspecteren</sys:String>
+    <sys:String x:Key="cleanup_heatmap_title">Opslagverdeling</sys:String>
+
+    <sys:String x:Key="cleanup_conflict_title">Conflict inspecteur</sys:String>
+    <sys:String x:Key="cleanup_conflict_message_header">De volgende processen blokkeren dit bestand:</sys:String>
+    <sys:String x:Key="cleanup_conflict_message_none">Geen actieve blokkades gevonden. Dit bestand zou verwijderbaar moeten zijn.</sys:String>
+    <sys:String x:Key="cleanup_btn_close">Sluiten</sys:String>
+
+    <sys:String x:Key="cleanup_header_files">Te verwijderen bestanden</sys:String>
+    <sys:String x:Key="cleanup_header_registry">Registeritems</sys:String>
+
+    <sys:String x:Key="cleanup_tab_current">Huidige scan</sys:String>
+    <sys:String x:Key="cleanup_tab_history">Geschiedenis</sys:String>
+    <sys:String x:Key="cleanup_history_total_label">Totale vrijgemaakte ruimte</sys:String>
+    <sys:String x:Key="cleanup_history_30days">Afgelopen 30 dagen</sys:String>
+
+    <sys:String x:Key="cleanup_btn_settings_tooltip">Database instellingen</sys:String>
+    <sys:String x:Key="cleanup_settings_title">Databaseconfiguratie</sys:String>
+    <sys:String x:Key="cleanup_settings_update_btn">Bijwerken</sys:String>
+    <sys:String x:Key="cleanup_settings_custom_path">Aangepast databasepad</sys:String>
+    <sys:String x:Key="cleanup_settings_path_placeholder">Pad naar aangepast Winapp2.ini-bestand</sys:String>
+    <sys:String x:Key="cleanup_settings_browse_tooltip">Bladeren naar bestand...</sys:String>
+    <sys:String x:Key="cleanup_settings_apply_btn">Toepassen</sys:String>
+    <sys:String x:Key="cleanup_settings_remove_tooltip">Aangepast pad verwijderen</sys:String>
+
+    <sys:String x:Key="cleanup_status_db_missing">Database ontbreekt. Klik op het instellingenpictogram om Winapp2.ini te downloaden.</sys:String>
+    <sys:String x:Key="cleanup_status_parsing">Database parseren...</sys:String>
+    <sys:String x:Key="cleanup_status_analysis_ready">Gereed: {0} geïnstalleerd / {1} totale items</sys:String>
+    <sys:String x:Key="cleanup_settings_db_missing">Database ontbreekt</sys:String>
+
+    <sys:String x:Key="cleanup_settings_schedule_title">Geplande opschoning</sys:String>
+    <sys:String x:Key="cleanup_settings_schedule_desc">Voer op de achtergrond automatisch een stille opschoonsessie uit met de geselecteerde onderdelen.</sys:String>
+    <sys:String x:Key="cleanup_schedule_every_day">Elke dag</sys:String>
+    <sys:String x:Key="cleanup_schedule_monday">Maandag</sys:String>
+    <sys:String x:Key="cleanup_schedule_tuesday">Dinsdag</sys:String>
+    <sys:String x:Key="cleanup_schedule_wednesday">Woensdag</sys:String>
+    <sys:String x:Key="cleanup_schedule_thursday">Donderdag</sys:String>
+    <sys:String x:Key="cleanup_schedule_friday">Vrijdag</sys:String>
+    <sys:String x:Key="cleanup_schedule_saturday">Zaterdag</sys:String>
+    <sys:String x:Key="cleanup_schedule_sunday">Zondag</sys:String>
+    <sys:String x:Key="cleanup_schedule_toast_title">Geplande opschoning voltooid</sys:String>
+    <sys:String x:Key="cleanup_schedule_toast_desc">EvolveOS Optimizer is klaar op de achtergrond en heeft {0} aan ruimte vrijgemaakt.</sys:String>
+
+    <sys:String x:Key="cleanup_settings_postclean_title">Taken na het reinigen</sys:String>
+    <sys:String x:Key="cleanup_settings_postclean_desc">Eén CMD-opdracht per regel wordt stil uitgevoerd na elke handmatige of geplande reiniging.</sys:String>
+    <sys:String x:Key="cleanup_settings_postclean_placeholder">cleanmgr.exe /autoclean&#x0a;start "" ms-settings:storagesense</sys:String>
+
+    <sys:String x:Key="cleanup_page_actions_tooltip">Pagina acties</sys:String>
+    <sys:String x:Key="cleanup_menu_expand_all">Alles uitvouwen</sys:String>
+    <sys:String x:Key="cleanup_menu_collapse_all">Alles samenvouwen</sys:String>
+    <sys:String x:Key="cleanup_menu_sort_asc">Sorteren op grootte (Oplopend)</sys:String>
+    <sys:String x:Key="cleanup_menu_sort_desc">Sorteren op grootte (Aflopend)</sys:String>
+    <sys:String x:Key="cleanup_menu_refresh">Database vernieuwen</sys:String>
+
+    <sys:String x:Key="cleanup_confirm_title">Klaar om te reinigen?</sys:String>
+    <sys:String x:Key="cleanup_confirm_content">Hiermee worden de geselecteerde bestanden permanent verwijderd. Weet je zeker dat je wilt doorgaan?</sys:String>
+    <sys:String x:Key="cleanup_confirm_primary">Reinigen</sys:String>
+    <sys:String x:Key="cleanup_confirm_cancel">Annuleren</sys:String>
+
+    <!-- Winapp32 Warnings -->
+    <sys:String x:Key="warning_ms_mouse_keyboard_settings">Hierdoor worden ook alle app specifieke instellingen verwijderd.</sys:String>
+    <sys:String x:Key="warning_paramount_rss">Hierdoor moet u het Paramount Dynamic RSS-bestand opnieuw downloaden.</sys:String>
+    <sys:String x:Key="warning_steam_first_launch">Deze vermelding mag pas worden ingeschakeld nadat u al uw geïnstalleerde Steam-games ten minste één keer hebt gestart. Als u deze bestanden eerder verwijdert, kan Steam denken dat de installatie van de game beschadigd is. Na de eerste keer opstarten worden deze bestanden overbodig.</sys:String>
+    <sys:String x:Key="warning_ubisoft_first_launch">Zorg ervoor dat u al uw geïnstalleerde UPlay-games minstens één keer start voordat u dit uitvoert, anders starten ze mogelijk niet goed op.</sys:String>
+    <sys:String x:Key="warning_windows_activity_history">U moet dit uitvoeren in de Veilige modus van Windows. Of stop de services "Connected Devices Platform Service" en "Connected Devices Platform User Service_xxxxx" voordat u opschoont en start ze daarna weer.</sys:String>
+    <sys:String x:Key="warning_windows_recent_documents">Wist de lijst met recente documenten voor alle gebruikersaccounts op deze machine, niet alleen voor de huidige gebruiker.</sys:String>
+    <sys:String x:Key="warning_windows_recall_snapshots">Verwijdert alle Recall-screenshots en semantische indexgegevens. Recall begint na het opschonen met een schone lei.</sys:String>
+    <sys:String x:Key="warning_windows_recent_access">Verwijdert Jump Lists en de geschiedenis van recent gebruikte bestanden.</sys:String>
+    <sys:String x:Key="warning_windows_folder_views">Stelt alle voorkeuren voor Verkenner mapweergaven (pictogrammen/details/kolomindelingen), venstergroottes, posities en de geschiedenis van Bestand openen/opslaan vensters opnieuw in. Alle aangepaste mapindelingen gaan permanent verloren.</sys:String>
+    <sys:String x:Key="warning_windows_shell_fileexts">Verwijdert Explorer\FileExts, waarin uw aangepaste bestandstype-associaties zijn opgeslagen (bijv. welke app .jpg of .png opent). Na het opschonen onthoudt Windows uw gekozen standaard-apps voor bestandstypen niet meer totdat u ze handmatig opnieuw toewijst.</sys:String>
+    <sys:String x:Key="warning_windows_start_menu">Stelt de programmacache van het Startmenu opnieuw in. Het opbouwen van het Startmenu kan bij de volgende aanmelding even duren.</sys:String>
+    <sys:String x:Key="warning_windows_taskbar">Wist Jump Lists (recent gebruikte bestanden per app op de taakbalk). Vastgemaakte items zijn veilig, maar alle geschiedenis van recente bestanden wordt verwijderd.</sys:String>
+
+    <sys:String x:Key="warning_browser_passwords">Verwijdert permanent alle opgeslagen gebruikersnamen en wachtwoorden uit deze browser. U wordt op alle sites uitgelogd.</sys:String>
+    <sys:String x:Key="warning_browser_extensions">Verwijdert lokale gegevens die zijn opgeslagen door uw browserextensies. Sommige extensies kunnen hun instellingen verliezen of vereisen dat u opnieuw inlogt.</sys:String>
+    <sys:String x:Key="warning_windows_prefetch">Verwijdert prefetch gegevens. Applicaties kunnen er de eerste keer na het opschonen iets langer over doen om op te starten, omdat Windows deze cache opnieuw opbouwt.</sys:String>
+    <sys:String x:Key="warning_windows_event_logs">Wist de diagnostische logboeken van Windows. U verliest historische gebeurtenisgegevens die soms nodig zijn om systeemcrashes op te lossen.</sys:String>
+    <sys:String x:Key="warning_windows_update_cache">Verwijdert gedownloade Windows Update-bestanden. Als er updates in de wachtrij staan om te worden geïnstalleerd, moet Windows deze opnieuw downloaden.</sys:String>
+
+    <!-- endregion Disk Cleanup -->
 </ResourceDictionary>
