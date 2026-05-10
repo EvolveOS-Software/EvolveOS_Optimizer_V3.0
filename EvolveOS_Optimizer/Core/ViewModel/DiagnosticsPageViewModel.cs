@@ -3398,7 +3398,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(GpuTrayPoints));
                     OnPropertyChanged(nameof(DiskTrayPoints));
 
-                    RebuildGraphFromHistory();
+                    if (_isUiActive)
+                    {
+                        RebuildGraphFromHistory();
+                    }
                 });
             }
             catch { }
@@ -4329,8 +4332,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             _isUiActive = false;
 
-            StopLiveTelemetry();
-            StopLiveMonitoring();
+            //StopLiveTelemetry();
+            //StopLiveMonitoring();
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
