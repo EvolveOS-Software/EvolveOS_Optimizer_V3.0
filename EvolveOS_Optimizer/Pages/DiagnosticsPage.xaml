@@ -22,6 +22,16 @@
 
         <SolidColorBrush x:Key="PanelBackgroundBrush" Color="Transparent" />
 
+        <SolidColorBrush x:Key="ToggleButtonBackgroundChecked" Color="{ThemeResource MyDynamicAccentColor}"/>
+        <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPointerOver" Color="{ThemeResource MyDynamicAccentColor}" Opacity="0.9"/>
+        <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPressed" Color="{ThemeResource MyDynamicAccentColor}" Opacity="0.8"/>
+        <SolidColorBrush x:Key="ToggleButtonForegroundChecked" Color="White"/>
+        <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPointerOver" Color="White"/>
+        <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPressed" Color="White"/>
+        <SolidColorBrush x:Key="ToggleButtonBorderBrushChecked" Color="Transparent"/>
+        <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPointerOver" Color="Transparent"/>
+        <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPressed" Color="Transparent"/>
+
         <LinearGradientBrush x:Key="Brush_GraphGradientFill" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#8000D6E8" Offset="0.0" />
             <GradientStop Color="#4000D6E8" Offset="0.25" />
@@ -61,7 +71,7 @@
         </Style>
 
         <Style x:Key="TechnicalValueHighlightedStyle" TargetType="TextBlock" BasedOn="{StaticResource TechnicalValueStyle}">
-            <Setter Property="Foreground" Value="{StaticResource Brush_DiagnosticBlue}"/>
+            <Setter Property="Foreground" Value="{ThemeResource MyDynamicAccentBrush}"/>
         </Style>
 
         <Style x:Key="DiagnosticPanelStyle" TargetType="Border">
@@ -126,7 +136,7 @@
         <Border Grid.Row="0"
                 Background="Transparent"
                 BorderThickness="0,0,0,2"
-                BorderBrush="{StaticResource Brush_DiagnosticBlue}"
+                BorderBrush="{ThemeResource MyDynamicAccentBrush}"
                 CornerRadius="0"
                 Margin="0,0,0,10">
             <Grid Padding="5,0,24,15">
@@ -137,7 +147,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                    <FontIcon Glyph="&#xF246;" FontSize="38" Foreground="{StaticResource Brush_DiagnosticBlue}" />
+                    <FontIcon Glyph="&#xF246;" FontSize="38" Foreground="{ThemeResource MyDynamicAccentBrush}" />
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock helpers:Loc.Key="diag_header_subtitle"
                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -169,7 +179,7 @@
                         <ProgressRing x:Name="ScanningProgressRing"
                                       IsActive="{x:Bind ViewModel.IsScanning, Mode=OneWay}"
                                       IsIndeterminate="True"
-                                      Foreground="{StaticResource Brush_DiagnosticBlue}"
+                                      Foreground="{ThemeResource MyDynamicAccentBrush}"
                                       Height="25" Width="25"
                                       Visibility="{x:Bind ViewModel.ScanningVisibility, Mode=OneWay}"
                                       VerticalAlignment="Center"/>
@@ -653,7 +663,7 @@
                                 <Border BorderThickness="1,0,0,0" BorderBrush="#22FFFFFF" Background="Transparent">
                                     <ScrollViewer Padding="20">
                                         <StackPanel Spacing="12">
-                                            <TextBlock helpers:Loc.Key="diag_pane_header" FontFamily="{StaticResource Jura}" FontSize="16" HorizontalAlignment="Center" Margin="0,-5,0,-5" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                            <TextBlock helpers:Loc.Key="diag_pane_header" FontFamily="{StaticResource Jura}" FontSize="16" HorizontalAlignment="Center" Margin="0,-5,0,-5" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
                                             <Border Style="{StaticResource MaintenanceCardStyle}" Padding="16,20" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
                                                 <StackPanel HorizontalAlignment="Center" Spacing="10">
@@ -669,7 +679,7 @@
                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <TextBlock helpers:Loc.Key="diag_expander_memory" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
@@ -687,7 +697,7 @@
                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <FontIcon Glyph="&#xECE4;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <FontIcon Glyph="&#xECE4;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <TextBlock helpers:Loc.Key="diag_expander_exclusions" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
@@ -730,7 +740,7 @@
                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <FontIcon Glyph="&#xE762;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <FontIcon Glyph="&#xE762;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <TextBlock helpers:Loc.Key="diag_expander_auto_opt" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
@@ -753,7 +763,7 @@
                                                       Visibility="{x:Bind ViewModel.Computer.OperatingSystem.HasHotkeyManager, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <FontIcon Glyph="&#xE765;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <FontIcon Glyph="&#xE765;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <TextBlock helpers:Loc.Key="diag_expander_hotkey" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
@@ -794,7 +804,7 @@
                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <TextBlock helpers:Loc.Key="diag_expander_cleanup" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
@@ -813,7 +823,7 @@
                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <FontIcon Glyph="&#xE90F;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <FontIcon Glyph="&#xE90F;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <TextBlock helpers:Loc.Key="diag_expander_repair" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
@@ -832,9 +842,9 @@
                                                     <StackPanel Margin="0,15,0,0">
                                                         <Grid>
                                                             <TextBlock x:Name="RepairStatusText" helpers:Loc.Key="diag_status_ready" FontSize="11" Opacity="0.6" FontFamily="{StaticResource Jura}"/>
-                                                            <TextBlock x:Name="RepairPercentageText" HorizontalAlignment="Right" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                            <TextBlock x:Name="RepairPercentageText" HorizontalAlignment="Right" FontSize="11" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         </Grid>
-                                                        <ProgressBar x:Name="RepairProgressBar" Height="4" Margin="0,5,0,0" Background="#11FFFFFF" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <ProgressBar x:Name="RepairProgressBar" Height="4" Margin="0,5,0,0" Background="#11FFFFFF" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Expander>
@@ -842,7 +852,7 @@
                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <FontIcon Glyph="&#xE9D9;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <FontIcon Glyph="&#xE9D9;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <TextBlock helpers:Loc.Key="diag_expander_utilities" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
@@ -854,7 +864,7 @@
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <FontIcon Glyph="&#xF5FC;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                                        <FontIcon Glyph="&#xF5FC;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                                         <TextBlock helpers:Loc.Key="txt_battery_health" Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
                                                         <Button Content="{helpers:ResourceString Key=btn_generate}" Grid.Column="2" Click="BatteryHealthButton_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
                                                     </Grid>
@@ -865,7 +875,7 @@
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                                        <FontIcon Glyph="&#xE964;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                             <TextBlock helpers:Loc.Key="txt_memory_diagnostic" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
                                                             <TextBlock x:Name="MemStatusText" FontFamily="{StaticResource Jura}" FontSize="11" Opacity="0.7" Foreground="{ThemeResource Brush_Highlighted}" Margin="0,2,0,0" Visibility="Collapsed"/>
@@ -879,7 +889,7 @@
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <FontIcon Glyph="&#xEB05;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                                        <FontIcon Glyph="&#xEB05;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                                         <TextBlock helpers:Loc.Key="txt_disk_optimizations" Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
                                                         <Button Content="{helpers:ResourceString Key=btn_optimize}" Grid.Column="2" Click="DiskOptimizationsButton_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
                                                     </Grid>
@@ -890,7 +900,7 @@
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <FontIcon Glyph="&#xE82D;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                                        <FontIcon Glyph="&#xE82D;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                                         <TextBlock helpers:Loc.Key="txt_event_viewer" Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource Jura-SemiBold}" FontSize="13" Foreground="{ThemeResource Brush_Highlighted}"/>
                                                         <Button Content="{helpers:ResourceString Key=diag_btn_open}" Grid.Column="2" Click="EventViewerSettingsCard_Click" VerticalAlignment="Center" FontSize="11" Padding="8,4" MinWidth="80" Height="32"/>
                                                     </Grid>
@@ -901,7 +911,7 @@
                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                         <TextBlock helpers:Loc.Key="diag_expander_settings" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                     </StackPanel>
                                                 </Expander.Header>
@@ -919,7 +929,7 @@
 
                                                     <Border Background="#0AFFFFFF" BorderThickness="1" BorderBrush="#1AFFFFFF" CornerRadius="4" Padding="12" Margin="0,10,0,0">
                                                         <StackPanel Spacing="10">
-                                                            <TextBlock helpers:Loc.Key="settings_systray_title" FontFamily="{StaticResource Jura}" FontWeight="SemiBold" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                            <TextBlock helpers:Loc.Key="settings_systray_title" FontFamily="{StaticResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                             <TextBlock helpers:Loc.Key="settings_systray_description" FontSize="11" Opacity="0.7" TextWrapping="Wrap"/>
 
                                                             <CheckBox Content="{helpers:ResourceString Key=settings_systray_master_toggle}"
@@ -1000,9 +1010,8 @@
 
                                                     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Spacing="14" Margin="0,0,0,20">
 
-                                                        <TextBlock Text="Service Status" FontSize="20" FontFamily="{ThemeResource Jura}" HorizontalAlignment="Center" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                        <TextBlock Text="Service Status" FontSize="20" FontFamily="{ThemeResource Jura}" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
-                                                        <!-- Status & Control Section -->
                                                         <StackPanel Spacing="14" HorizontalAlignment="Stretch">
                                                             <StackPanel HorizontalAlignment="Center" Spacing="12">
                                                                 <Grid Width="150" Height="150" Margin="0,8">
@@ -1064,19 +1073,17 @@
                                                             </Grid>
                                                         </StackPanel>
 
-                                                        <!-- Expanders Section -->
                                                         <StackPanel Spacing="10" Margin="0,20,0,0">
                                                             <TextBlock Text="{helpers:ResourceString Key=txt_dns_settings}"
                                                                        FontFamily="{ThemeResource Jura}"
                                                                        FontSize="16"
                                                                        Style="{StaticResource TitleTextBlockStyle}"
-                                                                       Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                                       Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
-                                                            <!-- Core DNS Expander -->
                                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                                 <Expander.Header>
                                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                        <FontIcon Glyph="&#xE774;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                                        <FontIcon Glyph="&#xE774;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                         <TextBlock Text="{helpers:ResourceString Key=header_core_dns}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                                     </StackPanel>
                                                                 </Expander.Header>
@@ -1100,11 +1107,10 @@
                                                                 </StackPanel>
                                                             </Expander>
 
-                                                            <!-- Security & Privacy Expander -->
                                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                                 <Expander.Header>
                                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                        <FontIcon Glyph="&#xE7EF;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                                        <FontIcon Glyph="&#xE7EF;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                         <TextBlock Text="{helpers:ResourceString Key=header_security_privacy}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                                     </StackPanel>
                                                                 </Expander.Header>
@@ -1132,11 +1138,10 @@
                                                                 </StackPanel>
                                                             </Expander>
 
-                                                            <!-- Advanced System Expander -->
                                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                                 <Expander.Header>
                                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                        <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                                        <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                         <TextBlock Text="{helpers:ResourceString Key=header_advanced_system}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
                                                                     </StackPanel>
                                                                 </Expander.Header>
@@ -1252,7 +1257,7 @@
                                                             <ToggleSwitch IsOn="{x:Bind ViewModel.IsLiveMonitoringEnabled, Mode=TwoWay}" OffContent="STANDBY" OnContent="ACTIVE" HorizontalAlignment="Center" MinWidth="0"/>
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="1" Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <FontIcon Glyph="&#xEB42;" FontSize="18" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                            <FontIcon Glyph="&#xEB42;" FontSize="18" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                             <TextBlock Text="{x:Bind ViewModel.ActiveHardwareCount, Mode=OneWay}" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="28" HorizontalAlignment="Center"/>
                                                             <TextBlock helpers:Loc.Key="diag_active_hardware" Style="{StaticResource TechnicalLabelStyle}" FontSize="10"/>
                                                         </StackPanel>
@@ -1275,7 +1280,7 @@
                                                         <toolkit:WrapPanel Grid.Column="0" Orientation="Horizontal" HorizontalSpacing="8" VerticalSpacing="8" VerticalAlignment="Center">
 
                                                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                <FontIcon Glyph="&#xE9D9;" FontSize="24" Foreground="{StaticResource Brush_DiagnosticBlue}" Margin="0,0,5,0" VerticalAlignment="Center" />
+                                                                <FontIcon Glyph="&#xE9D9;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,0,5,0" VerticalAlignment="Center" />
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_cpu}" IsChecked="{x:Bind ViewModel.IsCpuSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_gpu}" IsChecked="{x:Bind ViewModel.IsGpuSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_ram}" IsChecked="{x:Bind ViewModel.IsRamSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
@@ -1286,10 +1291,10 @@
                                                                 <Button x:Name="DnsToolkitButton"
                                                                         Click="DnsToolkitButton_Click"
                                                                         Visibility="{x:Bind ViewModel.IsNetworkSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                                        Padding="8,4" CornerRadius="4" Background="#1100D6E8" BorderBrush="{StaticResource Brush_DiagnosticBlue}" BorderThickness="1">
+                                                                        Padding="8,4" CornerRadius="4" Background="#1100D6E8" BorderBrush="{ThemeResource MyDynamicAccentBrush}" BorderThickness="1">
                                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                        <FontIcon Glyph="&#xE950;" FontSize="12" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
-                                                                        <TextBlock Text="DNS OPTIMIZER" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                                        <FontIcon Glyph="&#xE950;" FontSize="12" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        <TextBlock Text="DNS OPTIMIZER" FontSize="11" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                     </StackPanel>
                                                                 </Button>
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_disk}" IsChecked="{x:Bind ViewModel.IsDiskSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
@@ -1336,7 +1341,7 @@
                                                                     <Canvas Width="400" Height="100">
 
                                                                         <Polygon Points="{x:Bind ViewModel.PerformanceAreaPoints, Mode=OneWay}" Fill="{StaticResource Brush_GraphGradientFill}" />
-                                                                        <Polyline Points="{x:Bind ViewModel.PerformanceGraphPoints, Mode=OneWay}" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" />
+                                                                        <Polyline Points="{x:Bind ViewModel.PerformanceGraphPoints, Mode=OneWay}" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="2" />
 
                                                                         <Polygon Points="{x:Bind ViewModel.PerformanceAreaPointsAlt, Mode=OneWay}" Fill="#33FF3366" Visibility="{x:Bind ViewModel.IsNetworkSelected, Mode=OneWay}" />
                                                                         <Polyline Points="{x:Bind ViewModel.PerformanceGraphPointsAlt, Mode=OneWay}" Stroke="#FFFF3366" StrokeThickness="2" Visibility="{x:Bind ViewModel.IsNetworkSelected, Mode=OneWay}" />
@@ -1344,7 +1349,7 @@
                                                                     </Canvas>
                                                                 </Viewbox>
                                                                 <Viewbox HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,35" Canvas.ZIndex="10" Stretch="Uniform" StretchDirection="DownOnly">
-                                                                    <Border Padding="10,8" Background="{ThemeResource Brush_Overlay_Dim}" BorderBrush="{StaticResource Brush_DiagnosticBlue}" BorderThickness="1" CornerRadius="4" UseLayoutRounding="True">
+                                                                    <Border Padding="10,8" Background="{ThemeResource Brush_Overlay_Dim}" BorderBrush="{ThemeResource MyDynamicAccentBrush}" BorderThickness="1" CornerRadius="4" UseLayoutRounding="True">
                                                                         <Grid ColumnSpacing="15">
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="Auto"/>
@@ -1366,7 +1371,7 @@
                                                                                 </StackPanel>
 
                                                                                 <TextBlock Text="{x:Bind ViewModel.ActivePrimaryLabel, Mode=OneWay}"
-                                                                                   Foreground="{StaticResource Brush_DiagnosticBlue}" FontSize="10"
+                                                                                   Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="10"
                                                                                    FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                                                                             </StackPanel>
 
@@ -1422,7 +1427,7 @@
                                                                 <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" HorizontalAlignment="Center" Style="{StaticResource AxisLabelStyle}"/>
                                                                 <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" HorizontalAlignment="Center" Style="{StaticResource AxisLabelStyle}"/>
                                                                 <TextBlock Grid.Column="2" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" HorizontalAlignment="Center" Style="{StaticResource AxisLabelStyle}"/>
-                                                                <TextBlock Grid.Column="3" helpers:Loc.Key="diag_graph_now" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}" Foreground="{StaticResource Brush_DiagnosticBlue}" Opacity="1" FontWeight="Bold"/>
+                                                                <TextBlock Grid.Column="3" helpers:Loc.Key="diag_graph_now" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}" Foreground="{ThemeResource MyDynamicAccentBrush}" Opacity="1" FontWeight="Bold"/>
                                                             </Grid>
                                                         </Grid>
 
@@ -1451,12 +1456,12 @@
                                                                                               Minimum="0" Maximum="100"
                                                                                               Value="{x:Bind UsedPercentage, Mode=OneTime}"
                                                                                               Width="100" Height="100"
-                                                                                              Foreground="{StaticResource Brush_DiagnosticBlue}"
+                                                                                              Foreground="{ThemeResource MyDynamicAccentBrush}"
                                                                                               Background="#15FFFFFF"/>
 
                                                                                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                                                                             <TextBlock Text="{x:Bind UsedPercentageStr, Mode=OneTime}" FontSize="22" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                                                                            <TextBlock Text="USED" FontSize="9" Foreground="{StaticResource Brush_DiagnosticBlue}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                                                                                            <TextBlock Text="USED" FontSize="9" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                         </StackPanel>
                                                                                     </Grid>
 
@@ -1468,7 +1473,7 @@
                                                                                         <Border Width="1" Background="#33FFFFFF" Margin="0,2"/>
                                                                                         <StackPanel>
                                                                                             <TextBlock Text="FREE" FontSize="9" Foreground="Gray" HorizontalAlignment="Center"/>
-                                                                                            <TextBlock Text="{x:Bind FreeSpaceStr, Mode=OneTime}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Brush_DiagnosticBlue}" HorizontalAlignment="Center"/>
+                                                                                            <TextBlock Text="{x:Bind FreeSpaceStr, Mode=OneTime}" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" HorizontalAlignment="Center"/>
                                                                                         </StackPanel>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
@@ -1491,7 +1496,7 @@
                                                         <RowDefinition Height="*"/>
                                                     </Grid.RowDefinitions>
                                                     <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,10">
-                                                        <FontIcon Glyph="&#xEB42;" FontSize="24" Foreground="{StaticResource Brush_DiagnosticBlue}" />
+                                                        <FontIcon Glyph="&#xEB42;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}" />
                                                         <TextBlock helpers:Loc.Key="diag_hw_scan_title" Style="{StaticResource TechnicalValueHighlightedStyle}"/>
                                                     </StackPanel>
 
@@ -1518,7 +1523,7 @@
                                                                             <TextBlock Text="{x:Bind ErrorCodeHex}" Style="{StaticResource TechnicalValueStyle}" FontSize="11" Opacity="0.8" HorizontalAlignment="Right"/>
                                                                             <TextBlock Text="{x:Bind ErrorCodeDescription}" Style="{StaticResource TechnicalLabelStyle}" FontSize="10" HorizontalAlignment="Right"/>
                                                                         </StackPanel>
-                                                                        <Button Content="{helpers:ResourceString Key=diag_btn_enable}" FontSize="10" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}" Background="#1100D6E8" BorderBrush="{StaticResource Brush_DiagnosticBlue}" BorderThickness="1" CornerRadius="4" Height="28" Margin="10,0,0,0" Visibility="{x:Bind FixButtonVisibility}" Command="{Binding ElementName=HardwareIssuesListView, Path=DataContext.FixHardwareCommand}" CommandParameter="{x:Bind}"/>
+                                                                        <Button Content="{helpers:ResourceString Key=diag_btn_enable}" FontSize="10" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Background="#1100D6E8" BorderBrush="{ThemeResource MyDynamicAccentBrush}" BorderThickness="1" CornerRadius="4" Height="28" Margin="10,0,0,0" Visibility="{x:Bind FixButtonVisibility}" Command="{Binding ElementName=HardwareIssuesListView, Path=DataContext.FixHardwareCommand}" CommandParameter="{x:Bind}"/>
                                                                     </StackPanel>
                                                                 </Grid>
                                                             </DataTemplate>
@@ -1530,34 +1535,45 @@
                                                             <RowDefinition Height="*"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
+
                                                         <Grid.Resources>
                                                             <LinearGradientBrush x:Key="SweepBrush" StartPoint="0,0" EndPoint="1,0">
                                                                 <LinearGradientBrush.RelativeTransform>
                                                                     <TranslateTransform x:Name="SweepTransform" X="-1.0"/>
                                                                 </LinearGradientBrush.RelativeTransform>
                                                                 <GradientStop Color="Transparent" Offset="0.0"/>
-                                                                <GradientStop Color="#4400D6E8" Offset="0.80"/>
-                                                                <GradientStop Color="#FF00D6E8" Offset="0.97"/>
-                                                                <GradientStop Color="#FFFFFF" Offset="0.985"/>
-                                                                <GradientStop Color="#FFFFFF" Offset="0.999"/>
+                                                                <GradientStop Color="Transparent" Offset="0.50"/>
+                                                                <GradientStop Color="{ThemeResource MyDynamicAccentColor}" Offset="0.95"/>
+                                                                <GradientStop Color="{ThemeResource MyDynamicAccentColor}" Offset="0.985"/>
+                                                                <GradientStop Color="White" Offset="0.995"/>
                                                                 <GradientStop Color="Transparent" Offset="1.0"/>
                                                             </LinearGradientBrush>
+
                                                             <Storyboard x:Name="HeartbeatStoryboard" RepeatBehavior="Forever">
                                                                 <DoubleAnimation Storyboard.TargetName="SweepTransform" Storyboard.TargetProperty="X" From="-1.0" To="1.0" Duration="0:0:3.0" EnableDependentAnimation="True" />
                                                             </Storyboard>
                                                         </Grid.Resources>
+
                                                         <Viewbox Grid.Row="0" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,0,15">
                                                             <Grid Width="1000" Height="300">
-                                                                <Path Data="M 0,25 L 1000,25 M 0,50 L 1000,50 M 0,75 L 1000,75 M 0,100 L 1000,100 M 0,125 L 1000,125 M 0,150 L 1000,150 M 0,175 L 1000,175 M 0,200 L 1000,200 M 0,225 L 1000,225 M 0,250 L 1000,250 M 0,275 L 1000,275 M 25,0 L 25,300 M 50,0 L 50,300 M 75,0 L 75,300 M 100,0 L 100,300 M 125,0 L 125,300 M 150,0 L 150,300 M 175,0 L 175,300 M 200,0 L 200,300 M 225,0 L 225,300 M 250,0 L 250,300 M 275,0 L 275,300 M 300,0 L 300,300 M 325,0 L 325,300 M 350,0 L 350,300 M 375,0 L 375,300 M 400,0 L 400,300 M 425,0 L 425,300 M 450,0 L 450,300 M 475,0 L 475,300 M 500,0 L 500,300 M 525,0 L 525,300 M 550,0 L 550,300 M 575,0 L 575,300 M 600,0 L 600,300 M 625,0 L 625,300 M 650,0 L 650,300 M 675,0 L 675,300 M 700,0 L 700,300 M 725,0 L 725,300 M 750,0 L 750,300 M 775,0 L 775,300 M 800,0 L 800,300 M 825,0 L 825,300 M 850,0 L 850,300 M 875,0 L 875,300 M 900,0 L 900,300 M 925,0 L 925,300 M 950,0 L 950,300 M 975,0 L 975,300" Stroke="#1AFFFFFF" StrokeThickness="1" />
-                                                                <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Opacity="0.15" StrokeLineJoin="Round" />
+                                                                <Path Data="M 0,25 L 1000,25 M 0,50 L 1000,50 M 0,75 L 1000,75 M 0,100 L 1000,100 M 0,125 L 1000,125 M 0,150 L 1000,150 M 0,175 L 1000,175 M 0,200 L 1000,200 M 0,225 L 1000,225 M 0,250 L 1000,250 M 0,275 L 1000,275 M 25,0 L 25,300 M 50,0 L 50,300 M 75,0 L 75,300 M 100,0 L 100,300 M 125,0 L 125,300 M 150,0 L 150,300 M 175,0 L 175,300 M 200,0 L 200,300 M 225,0 L 225,300 M 250,0 L 250,300 M 275,0 L 275,300 M 300,0 L 300,300 M 325,0 L 325,300 M 350,0 L 350,300 M 375,0 L 375,300 M 400,0 L 400,300 M 425,0 L 425,300 M 450,0 L 450,300 M 475,0 L 475,300 M 500,0 L 500,300 M 525,0 L 525,300 M 550,0 L 550,300 M 575,0 L 575,300 M 600,0 L 600,300 M 625,0 L 625,300 M 650,0 L 650,300 M 675,0 L 675,300 M 700,0 L 700,300 M 725,0 L 725,300 M 750,0 L 750,300 M 775,0 L 775,300 M 800,0 L 800,300 M 825,0 L 825,300 M 850,0 L 850,300 M 875,0 L 875,300 M 900,0 L 900,300 M 925,0 L 925,300 M 950,0 L 950,300 M 975,0 L 975,300"
+                                                                      Stroke="{ThemeResource DividerStrokeColorDefaultBrush}" StrokeThickness="1" Opacity="0.4" />
+
+                                                                <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150"
+                                                                      Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="2" Opacity="0.15" StrokeLineJoin="Round" />
+
                                                                 <Canvas>
-                                                                    <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" Stroke="{StaticResource SweepBrush}" StrokeThickness="18" Opacity="0.25" StrokeLineJoin="Round" />
-                                                                    <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" Stroke="{StaticResource SweepBrush}" StrokeThickness="8" Opacity="0.60" StrokeLineJoin="Round" />
-                                                                    <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150" Stroke="{StaticResource SweepBrush}" StrokeThickness="2" StrokeLineJoin="Round" />
+                                                                    <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150"
+                                                                          Stroke="{StaticResource SweepBrush}" StrokeThickness="18" Opacity="0.25" StrokeLineJoin="Round" />
+                                                                    <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150"
+                                                                          Stroke="{StaticResource SweepBrush}" StrokeThickness="8" Opacity="0.60" StrokeLineJoin="Round" />
+                                                                    <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150"
+                                                                          Stroke="{StaticResource SweepBrush}" StrokeThickness="2" StrokeLineJoin="Round" />
                                                                 </Canvas>
                                                             </Grid>
                                                         </Viewbox>
-                                                        <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.HardwareScannerText, Mode=OneWay}" Foreground="{StaticResource Brush_DiagnosticBlue}" FontSize="10" FontWeight="SemiBold" CharacterSpacing="150" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10" Opacity="0.8"/>
+
+                                                        <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.HardwareScannerText, Mode=OneWay}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="10" FontWeight="SemiBold" CharacterSpacing="150" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10" Opacity="0.8"/>
                                                     </Grid>
                                                 </Grid>
                                             </Border>
@@ -1576,7 +1592,7 @@
                                                         </Grid.RowDefinitions>
 
                                                         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
-                                                            <FontIcon Glyph="&#xE994;" FontSize="18" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                                            <FontIcon Glyph="&#xE994;" FontSize="18" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                             <TextBlock helpers:Loc.Key="diag_ai_analysis_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="14"/>
                                                         </StackPanel>
 
@@ -1587,18 +1603,19 @@
                                                 </Border>
 
                                                 <Border Grid.Row="1" Style="{StaticResource DiagnosticPanelStyle}" Margin="0">
-                                                    <Grid VerticalAlignment="Bottom">
+                                                    <Grid>
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="Auto"/>
                                                             <RowDefinition Height="*"/>
                                                         </Grid.RowDefinitions>
-                                                        <StackPanel>
+
+                                                        <StackPanel Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,15">
                                                             <TextBlock helpers:Loc.Key="diag_stability_trend" Style="{StaticResource TechnicalLabelStyle}" />
                                                             <TextBlock Text="{x:Bind ViewModel.StabilityScore, Mode=OneWay}" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="24"/>
                                                         </StackPanel>
 
                                                         <ItemsControl Grid.Row="1" ItemsSource="{x:Bind ViewModel.StabilityTrendData}"
-                                                              HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="100">
+                                                                      HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="100">
                                                             <ItemsControl.ItemsPanel>
                                                                 <ItemsPanelTemplate>
                                                                     <ItemsStackPanel Orientation="Horizontal" />
@@ -1630,7 +1647,7 @@
                                                         </Grid.ColumnDefinitions>
 
                                                         <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center" Margin="0,0,0,10">
-                                                            <FontIcon Glyph="&#xF571;" FontSize="24" Foreground="{StaticResource Brush_DiagnosticBlue}" />
+                                                            <FontIcon Glyph="&#xF571;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}" />
                                                             <TextBlock helpers:Loc.Key="diag_event_miner_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="14"/>
                                                         </StackPanel>
 
@@ -1712,8 +1729,8 @@
 
                                                                         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="10,0,0,0">
                                                                             <Button Content="{helpers:ResourceString Key=diag_btn_fix}"
-                                                                                    FontSize="10" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}"
-                                                                                    Background="{ThemeResource ControlFillColorDefaultBrush}" BorderBrush="{StaticResource Brush_DiagnosticBlue}"
+                                                                                    FontSize="10" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                                                    Background="{ThemeResource ControlFillColorDefaultBrush}" BorderBrush="{ThemeResource MyDynamicAccentBrush}"
                                                                                     BorderThickness="1" CornerRadius="4" Height="28"
                                                                                     Visibility="{x:Bind FixButtonVisibility}"
                                                                                     Command="{Binding ElementName=EventLogsListView, Path=DataContext.FixEventCommand}"
@@ -1786,21 +1803,21 @@
                                                                     </LinearGradientBrush>
                                                                 </Grid.Resources>
 
-                                                                <Ellipse Fill="{StaticResource Brush_DiagnosticBlue}" Width="90" Height="90" Opacity="0.05"/>
-                                                                <Ellipse Fill="{StaticResource Brush_DiagnosticBlue}" Width="60" Height="60" Opacity="0.15"/>
-                                                                <Ellipse x:Name="CenterGlowPulse" Fill="{StaticResource Brush_DiagnosticBlue}" Width="40" Height="40" Opacity="0.5"/>
+                                                                <Ellipse Fill="{ThemeResource MyDynamicAccentBrush}" Width="90" Height="90" Opacity="0.05"/>
+                                                                <Ellipse Fill="{ThemeResource MyDynamicAccentBrush}" Width="60" Height="60" Opacity="0.15"/>
+                                                                <Ellipse x:Name="CenterGlowPulse" Fill="{ThemeResource MyDynamicAccentBrush}" Width="40" Height="40" Opacity="0.5"/>
                                                                 <TextBlock Text="AI" FontSize="42" FontWeight="Bold" FontFamily="{StaticResource Jura}" Foreground="{ThemeResource TextFillColorPrimaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-4,0,0"/>
 
-                                                                <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="1" Width="110" Height="110" Opacity="0.4"/>
-                                                                <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="1" Width="140" Height="140" Opacity="0.2" StrokeDashArray="2,4"/>
-                                                                <Path Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="1" Opacity="0.2" Data="M 115,5 L 115,225 M 5,115 L 225,115 M 35,35 L 195,195 M 35,195 L 195,35"/>
+                                                                <Ellipse Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1" Width="110" Height="110" Opacity="0.4"/>
+                                                                <Ellipse Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1" Width="140" Height="140" Opacity="0.2" StrokeDashArray="2,4"/>
+                                                                <Path Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1" Opacity="0.2" Data="M 115,5 L 115,225 M 5,115 L 225,115 M 35,35 L 195,195 M 35,195 L 195,35"/>
 
-                                                                <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="8" Width="180" Height="180" StrokeDashArray="6, 8" RenderTransformOrigin="0.5,0.5" Opacity="0.7">
+                                                                <Ellipse Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="8" Width="180" Height="180" StrokeDashArray="6, 8" RenderTransformOrigin="0.5,0.5" Opacity="0.7">
                                                                     <Ellipse.RenderTransform>
                                                                         <RotateTransform x:Name="OuterRing1Rotate" Angle="0"/>
                                                                     </Ellipse.RenderTransform>
                                                                 </Ellipse>
-                                                                <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="3" Width="200" Height="200" StrokeDashArray="20, 10, 5, 10" RenderTransformOrigin="0.5,0.5" Opacity="0.9">
+                                                                <Ellipse Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="3" Width="200" Height="200" StrokeDashArray="20, 10, 5, 10" RenderTransformOrigin="0.5,0.5" Opacity="0.9">
                                                                     <Ellipse.RenderTransform>
                                                                         <RotateTransform x:Name="OuterRing2Rotate" Angle="0"/>
                                                                     </Ellipse.RenderTransform>
@@ -1818,35 +1835,35 @@
                                                                 </Path>
 
                                                                 <Canvas>
-                                                                    <Ellipse x:Name="Dot1Ripple" Visibility="{x:Bind ViewModel.Dot1Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="158.5" Canvas.Top="59.5" RenderTransformOrigin="0.5,0.5">
+                                                                    <Ellipse x:Name="Dot1Ripple" Visibility="{x:Bind ViewModel.Dot1Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="158.5" Canvas.Top="59.5" RenderTransformOrigin="0.5,0.5">
                                                                         <Ellipse.RenderTransform>
                                                                             <ScaleTransform x:Name="Dot1RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
                                                                     </Ellipse>
                                                                     <Ellipse x:Name="Dot1" Visibility="{x:Bind ViewModel.Dot1Visibility, Mode=OneWay}" Fill="{ThemeResource TextFillColorPrimaryBrush}" Width="8" Height="8" Canvas.Left="160.5" Canvas.Top="61.5" />
 
-                                                                    <Ellipse x:Name="Dot2Ripple" Visibility="{x:Bind ViewModel.Dot2Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="169.6" Canvas.Top="144" RenderTransformOrigin="0.5,0.5">
+                                                                    <Ellipse x:Name="Dot2Ripple" Visibility="{x:Bind ViewModel.Dot2Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="169.6" Canvas.Top="144" RenderTransformOrigin="0.5,0.5">
                                                                         <Ellipse.RenderTransform>
                                                                             <ScaleTransform x:Name="Dot2RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
                                                                     </Ellipse>
                                                                     <Ellipse x:Name="Dot2" Visibility="{x:Bind ViewModel.Dot2Visibility, Mode=OneWay}" Fill="{ThemeResource TextFillColorPrimaryBrush}" Width="8" Height="8" Canvas.Left="171.6" Canvas.Top="146" />
 
-                                                                    <Ellipse x:Name="Dot3Ripple" Visibility="{x:Bind ViewModel.Dot3Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="85" Canvas.Top="174.7" RenderTransformOrigin="0.5,0.5">
+                                                                    <Ellipse x:Name="Dot3Ripple" Visibility="{x:Bind ViewModel.Dot3Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="85" Canvas.Top="174.7" RenderTransformOrigin="0.5,0.5">
                                                                         <Ellipse.RenderTransform>
                                                                             <ScaleTransform x:Name="Dot3RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
                                                                     </Ellipse>
                                                                     <Ellipse x:Name="Dot3" Visibility="{x:Bind ViewModel.Dot3Visibility, Mode=OneWay}" Fill="{ThemeResource TextFillColorPrimaryBrush}" Width="8" Height="8" Canvas.Left="87" Canvas.Top="176.7" />
 
-                                                                    <Ellipse x:Name="Dot4Ripple" Visibility="{x:Bind ViewModel.Dot4Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="40" Canvas.Top="96.8" RenderTransformOrigin="0.5,0.5">
+                                                                    <Ellipse x:Name="Dot4Ripple" Visibility="{x:Bind ViewModel.Dot4Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="40" Canvas.Top="96.8" RenderTransformOrigin="0.5,0.5">
                                                                         <Ellipse.RenderTransform>
                                                                             <ScaleTransform x:Name="Dot4RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
                                                                     </Ellipse>
                                                                     <Ellipse x:Name="Dot4" Visibility="{x:Bind ViewModel.Dot4Visibility, Mode=OneWay}" Fill="{ThemeResource TextFillColorPrimaryBrush}" Width="8" Height="8" Canvas.Left="42" Canvas.Top="98.8" />
 
-                                                                    <Ellipse x:Name="Dot5Ripple" Visibility="{x:Bind ViewModel.Dot5Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="74" Canvas.Top="48.3" RenderTransformOrigin="0.5,0.5">
+                                                                    <Ellipse x:Name="Dot5Ripple" Visibility="{x:Bind ViewModel.Dot5Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="74" Canvas.Top="48.3" RenderTransformOrigin="0.5,0.5">
                                                                         <Ellipse.RenderTransform>
                                                                             <ScaleTransform x:Name="Dot5RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
@@ -2164,7 +2181,7 @@
 
                         <StackPanel Grid.Column="0" VerticalAlignment="Center">
                             <TextBlock helpers:Loc.Key="diag_dns_current_ipv4" FontSize="10" Opacity="0.6" FontWeight="Bold"/>
-                            <TextBlock Text="{x:Bind ViewModel.CurrentDnsIpv4, Mode=OneWay}" FontSize="14" FontFamily="Consolas" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                            <TextBlock Text="{x:Bind ViewModel.CurrentDnsIpv4, Mode=OneWay}" FontSize="14" FontFamily="Consolas" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                         </StackPanel>
 
                         <Button Grid.Column="1" Margin="0,0,10,0" Command="{x:Bind ViewModel.RunDnsBenchmarkCommand}" Style="{StaticResource AccentButtonStyle}"
@@ -2196,7 +2213,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <FontIcon Glyph="&#xE950;" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,15,0" FontSize="16" Foreground="{StaticResource Brush_DiagnosticBlue}"/>
+                                <FontIcon Glyph="&#xE950;" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,15,0" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                     <TextBlock Text="{x:Bind Name}" FontWeight="Bold" FontSize="14"/>

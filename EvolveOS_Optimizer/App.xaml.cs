@@ -521,6 +521,15 @@ namespace EvolveOS_Optimizer
 
                 Color color = ColorHelper.FromArgb(a, r, g, b);
 
+                if (this.Resources.ContainsKey("MyDynamicAccentColor"))
+                {
+                    this.Resources["MyDynamicAccentColor"] = color;
+                }
+                else
+                {
+                    this.Resources.Add("MyDynamicAccentColor", color);
+                }
+
                 if (this.Resources.ContainsKey("MyDynamicAccentBrush"))
                 {
                     if (this.Resources["MyDynamicAccentBrush"] is SolidColorBrush brush)

@@ -19,7 +19,9 @@
                 <ResourceDictionary Source="ms-appx:///Styles/Display/TextBlock.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <SolidColorBrush x:Key="MyDynamicAccentBrush" Color="{ThemeResource SystemAccentColor}"/>
+            <Color x:Key="MyDynamicAccentColor">#FF0078D4</Color>
+
+            <SolidColorBrush x:Key="MyDynamicAccentBrush" Color="{StaticResource MyDynamicAccentColor}"/>
 
         </ResourceDictionary>
     </Application.Resources>
