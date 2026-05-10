@@ -33,31 +33,30 @@
         <Style x:Key="AxisLabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="FontFamily" Value="Consolas"/>
-            <Setter Property="Foreground" Value="LightGray"/>
-            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorTertiaryBrush}"/>
+            <Setter Property="Opacity" Value="0.8"/>
         </Style>
 
         <Style x:Key="DiagnosticListPanelStyle" TargetType="Grid">
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Background" Value="{ThemeResource ControlFillColorDefaultBrush}"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="10"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
         </Style>
 
         <Style x:Key="TechnicalLabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="LightGray"/>
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Opacity" Value="0.8"/>
         </Style>
 
         <Style x:Key="TechnicalValueStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
@@ -66,10 +65,10 @@
         </Style>
 
         <Style x:Key="DiagnosticPanelStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource PanelBackgroundBrush}"/>
+            <Setter Property="Background" Value="{ThemeResource LayerFillColorDefaultBrush}"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#44FFFFFF"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
             <Setter Property="Padding" Value="15"/>
             <Setter Property="Transitions">
                 <Setter.Value>
@@ -124,42 +123,47 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Style="{StaticResource DiagnosticPanelStyle}" BorderThickness="0,0,0,2" BorderBrush="{StaticResource Brush_DiagnosticBlue}" CornerRadius="0" Margin="0,0,0,10">
-            <Grid Padding="5,0,10,0">
+        <Border Grid.Row="0"
+                Background="Transparent"
+                BorderThickness="0,0,0,2"
+                BorderBrush="{StaticResource Brush_DiagnosticBlue}"
+                CornerRadius="0"
+                Margin="0,0,0,10">
+            <Grid Padding="5,0,24,15">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
-                    <FontIcon Glyph="&#xF246;" FontSize="38" Foreground="{StaticResource Brush_DiagnosticBlue}" />
-                    <StackPanel>
-                        <TextBlock helpers:Loc.Key="diag_header_subtitle" Style="{StaticResource TechnicalLabelStyle}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.9"/>
-                        <TextBlock helpers:Loc.Key="diag_header_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="20"/>
-                    </StackPanel>
-                </StackPanel>
-
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
                     <FontIcon Glyph="&#xF246;" FontSize="38" Foreground="{StaticResource Brush_DiagnosticBlue}" />
-                    <StackPanel>
-                        <TextBlock helpers:Loc.Key="diag_header_subtitle" Style="{StaticResource TechnicalLabelStyle}" FontFamily="{ThemeResource Jura}" FontSize="11" Opacity="0.9"/>
-                        <TextBlock helpers:Loc.Key="diag_header_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="20"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock helpers:Loc.Key="diag_header_subtitle"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                   FontFamily="{ThemeResource Jura}"
+                                   FontSize="11"
+                                   Opacity="0.9"/>
+                        <TextBlock helpers:Loc.Key="diag_header_title"
+                                   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                   FontFamily="{ThemeResource Jura}"
+                                   FontSize="20"
+                                   FontWeight="Bold"/>
                     </StackPanel>
                 </StackPanel>
 
                 <Border Grid.Column="1"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        BorderBrush="#33FFFFFF"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1"
-                        Background="#1AFFFFFF"
+                        Background="{ThemeResource ControlFillColorDefaultBrush}"
                         Padding="16,8"
                         CornerRadius="4">
-
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="{x:Bind ViewModel.ScanStatus, Mode=OneWay}"
                                    FontFamily="{ThemeResource Jura}"
+                                   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                                    VerticalAlignment="Center"/>
 
                         <ProgressRing x:Name="ScanningProgressRing"
@@ -173,10 +177,12 @@
                 </Border>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="20" VerticalAlignment="Center" HorizontalAlignment="Right">
-
-                    <Button Content="{helpers:ResourceString Key=diag_btn_start_scan}" Click="StartFullScan_Click" Width="150" FontFamily="{ThemeResource Jura}" IsEnabled="{x:Bind ViewModel.IsNotScanning, Mode=OneWay}"/>
-
-                    <AppBarSeparator/>
+                    <Button Content="{helpers:ResourceString Key=diag_btn_start_scan}"
+                            Click="StartFullScan_Click"
+                            Width="150"
+                            FontFamily="{ThemeResource Jura}"
+                            IsEnabled="{x:Bind ViewModel.IsNotScanning, Mode=OneWay}"/>
+                    <AppBarSeparator Foreground="{ThemeResource DividerStrokeColorDefaultBrush}"/>
 
                     <ToggleButton x:Name="SecurityToggle" Click="SecurityToggle_Click" Padding="12,6" CornerRadius="4">
                         <ToolTipService.ToolTip>
@@ -1225,7 +1231,7 @@
                                                                 <ScaleTransform x:Name="SonarRing2Scale" ScaleX="0.55" ScaleY="0.55" />
                                                             </Ellipse.RenderTransform>
                                                         </Ellipse>
-                                                        <Border Width="45" Height="45" CornerRadius="22" Background="#1AFFFFFF" BorderBrush="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" BorderThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Border Width="45" Height="45" CornerRadius="22" Background="{ThemeResource ControlAltFillColorQuarternaryBrush}" BorderBrush="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" BorderThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <FontIcon Glyph="&#xE9A1;" FontSize="24" Foreground="{x:Bind ViewModel.SystemHealthBrush, Mode=OneWay}" />
                                                         </Border>
                                                     </Grid>
@@ -1627,30 +1633,31 @@
                                                             <FontIcon Glyph="&#xF571;" FontSize="24" Foreground="{StaticResource Brush_DiagnosticBlue}" />
                                                             <TextBlock helpers:Loc.Key="diag_event_miner_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="14"/>
                                                         </StackPanel>
+
                                                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
 
                                                             <ToggleButton Background="Transparent"
-                                                                  BorderThickness="1"
-                                                                  BorderBrush="#30FFFFFF"
-                                                                  CornerRadius="4"
-                                                                  Padding="8,4"
-                                                                  IsChecked="{x:Bind ViewModel.ShowMinorEvents, Mode=TwoWay}"
-                                                                  Visibility="{x:Bind ViewModel.MinorEventsButtonVisibility, Mode=OneWay}">
+                                                                          BorderThickness="1"
+                                                                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                                          CornerRadius="4"
+                                                                          Padding="8,4"
+                                                                          IsChecked="{x:Bind ViewModel.ShowMinorEvents, Mode=TwoWay}"
+                                                                          Visibility="{x:Bind ViewModel.MinorEventsButtonVisibility, Mode=OneWay}">
                                                                 <StackPanel Orientation="Horizontal" Spacing="6">
-                                                                    <FontIcon Glyph="&#xE8F1;" FontSize="12" Foreground="LightGray"/>
-                                                                    <TextBlock Text="View Minor Events" FontSize="12" Foreground="LightGray"/>
+                                                                    <FontIcon Glyph="&#xE8F1;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                                    <TextBlock Text="View Minor Events" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                 </StackPanel>
                                                             </ToggleButton>
 
                                                             <Button Background="Transparent"
-                                                            BorderThickness="1"
-                                                            BorderBrush="#30FFFFFF"
-                                                            CornerRadius="4"
-                                                            Padding="8,4"
-                                                            Command="{x:Bind ViewModel.ToggleHistoryPanelCommand}">
+                                                                    BorderThickness="1"
+                                                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                                    CornerRadius="4"
+                                                                    Padding="8,4"
+                                                                    Command="{x:Bind ViewModel.ToggleHistoryPanelCommand}">
                                                                 <StackPanel Orientation="Horizontal" Spacing="6">
-                                                                    <FontIcon Glyph="&#xE81C;" FontSize="12" Foreground="LightGray"/>
-                                                                    <TextBlock helpers:Loc.Key="diag_btn_history" FontSize="12" Foreground="LightGray"/>
+                                                                    <FontIcon Glyph="&#xE81C;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                                    <TextBlock helpers:Loc.Key="diag_btn_history" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                 </StackPanel>
                                                             </Button>
 
@@ -1660,25 +1667,28 @@
                                                     <Grid Grid.Row="1" Visibility="{x:Bind ViewModel.ActiveListVisibility, Mode=OneWay}">
 
                                                         <TextBlock helpers:Loc.Key="diag_minor_events_nominal"
-                                                           Visibility="{x:Bind ViewModel.MinorEventsTextVisibility, Mode=OneWay}"
-                                                           Style="{StaticResource TechnicalLabelStyle}"
-                                                           FontFamily="{ThemeResource Jura}"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Bottom"
-                                                           MaxWidth="360"
-                                                           TextWrapping="Wrap"
-                                                           Margin="0,0,0,-12"/>
+                                                                   Visibility="{x:Bind ViewModel.MinorEventsTextVisibility, Mode=OneWay}"
+                                                                   Style="{StaticResource TechnicalLabelStyle}"
+                                                                   FontFamily="{ThemeResource Jura}"
+                                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Bottom"
+                                                                   MaxWidth="360"
+                                                                   TextWrapping="Wrap"
+                                                                   Margin="0,0,0,-12"/>
 
                                                         <ListView x:Name="EventLogsListView"
-                                                          Visibility="{x:Bind ViewModel.EventListVisibility, Mode=OneWay}"
-                                                          ItemsSource="{x:Bind ViewModel.MinedSystemEvents}"
-                                                          SelectionMode="None"
-                                                          ShowsScrollingPlaceholders="False"
-                                                          Padding="0"
-                                                          Margin="0,0,-10,0">
+                                                                  Visibility="{x:Bind ViewModel.EventListVisibility, Mode=OneWay}"
+                                                                  ItemsSource="{x:Bind ViewModel.MinedSystemEvents}"
+                                                                  SelectionMode="None"
+                                                                  ShowsScrollingPlaceholders="False"
+                                                                  Padding="0"
+                                                                  Margin="0,0,-10,0">
                                                             <ListView.ItemTemplate>
                                                                 <DataTemplate x:DataType="m:SystemEventItem">
-                                                                    <Grid Margin="0,0,15,8" Padding="10" CornerRadius="4" Background="#0AFFFFFF" BorderThickness="1,0,0,0" BorderBrush="{x:Bind StatusBrush}" Tapped="EventCard_Tapped">
+                                                                    <Grid Margin="0,0,15,8" Padding="10" CornerRadius="4"
+                                                                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                                                          BorderThickness="1,0,0,0" BorderBrush="{x:Bind StatusBrush}" Tapped="EventCard_Tapped">
                                                                         <Grid.ColumnDefinitions>
                                                                             <ColumnDefinition Width="Auto"/>
                                                                             <ColumnDefinition Width="*"/>
@@ -1688,38 +1698,38 @@
                                                                         <FontIcon Grid.Column="0" Glyph="{x:Bind StatusGlyph}" Foreground="{x:Bind StatusBrush}" FontSize="18" VerticalAlignment="Top" Margin="0,2,12,0"/>
 
                                                                         <StackPanel Grid.Column="1" Spacing="4">
-                                                                            <StackPanel Orientation="Horizontal" Spacing="8" Opacity="0.7">
-                                                                                <TextBlock Text="{x:Bind FormattedTime}" FontFamily="Consolas" FontSize="11" Foreground="White" />
-                                                                                <TextBlock Text="|" Foreground="Gray" FontSize="11"/>
-                                                                                <TextBlock Text="{x:Bind SourceName}" FontSize="11" Foreground="LightGray" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
-                                                                                <TextBlock Text="|" Foreground="Gray" FontSize="11"/>
-                                                                                <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="Gray" FontSize="11"/>
-                                                                                <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="11" Foreground="LightGray"/>
+                                                                            <StackPanel Orientation="Horizontal" Spacing="8" Opacity="0.8">
+                                                                                <TextBlock Text="{x:Bind FormattedTime}" FontFamily="Consolas" FontSize="11" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                                                                                <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="11"/>
+                                                                                <TextBlock Text="{x:Bind SourceName}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
+                                                                                <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="11"/>
+                                                                                <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="11"/>
+                                                                                <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                             </StackPanel>
 
-                                                                            <TextBlock Text="{x:Bind Message}" ToolTipService.ToolTip="{x:Bind FullMessage}" Foreground="White" FontSize="12" TextWrapping="Wrap" MaxLines="3" TextTrimming="CharacterEllipsis"/>
+                                                                            <TextBlock Text="{x:Bind Message}" ToolTipService.ToolTip="{x:Bind FullMessage}" Foreground="{ThemeResource TextFillColorPrimaryBrush}" FontSize="12" TextWrapping="Wrap" MaxLines="3" TextTrimming="CharacterEllipsis"/>
                                                                         </StackPanel>
 
                                                                         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="10,0,0,0">
                                                                             <Button Content="{helpers:ResourceString Key=diag_btn_fix}"
-                                                                            FontSize="10" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}"
-                                                                            Background="#1100D6E8" BorderBrush="{StaticResource Brush_DiagnosticBlue}"
-                                                                            BorderThickness="1" CornerRadius="4" Height="28"
-                                                                            Visibility="{x:Bind FixButtonVisibility}"
-                                                                            Command="{Binding ElementName=EventLogsListView, Path=DataContext.FixEventCommand}"
-                                                                            CommandParameter="{x:Bind EventId}"/>
+                                                                                    FontSize="10" FontWeight="Bold" Foreground="{StaticResource Brush_DiagnosticBlue}"
+                                                                                    Background="{ThemeResource ControlFillColorDefaultBrush}" BorderBrush="{StaticResource Brush_DiagnosticBlue}"
+                                                                                    BorderThickness="1" CornerRadius="4" Height="28"
+                                                                                    Visibility="{x:Bind FixButtonVisibility}"
+                                                                                    Command="{Binding ElementName=EventLogsListView, Path=DataContext.FixEventCommand}"
+                                                                                    CommandParameter="{x:Bind EventId}"/>
 
                                                                             <Button Background="Transparent" BorderThickness="0" Padding="6" Height="28" Width="28"
-                                                                            ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_dismiss_msg}"
-                                                                            Command="{Binding ElementName=EventLogsListView, Path=DataContext.DismissEventCommand}"
-                                                                            CommandParameter="{x:Bind}">
-                                                                                <FontIcon Glyph="&#xE711;" FontSize="11" Foreground="Gray"/>
+                                                                                    ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_dismiss_msg}"
+                                                                                    Command="{Binding ElementName=EventLogsListView, Path=DataContext.DismissEventCommand}"
+                                                                                    CommandParameter="{x:Bind}">
+                                                                                <FontIcon Glyph="&#xE711;" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
                                                                             </Button>
 
                                                                             <Button Background="Transparent" BorderThickness="0" Padding="6" Height="28" Width="28"
-                                                                            Command="{Binding ElementName=EventLogsListView, Path=DataContext.CopyEventMessageCommand}"
-                                                                            CommandParameter="{x:Bind}">
-                                                                                <FontIcon Glyph="&#xE8C8;" FontSize="13" Foreground="LightGray"/>
+                                                                                    Command="{Binding ElementName=EventLogsListView, Path=DataContext.CopyEventMessageCommand}"
+                                                                                    CommandParameter="{x:Bind}">
+                                                                                <FontIcon Glyph="&#xE8C8;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                             </Button>
                                                                         </StackPanel>
                                                                     </Grid>
@@ -1728,12 +1738,12 @@
                                                         </ListView>
 
                                                         <Viewbox x:Name="RadarContainer"
-                                                         Stretch="Uniform"
-                                                         MaxWidth="400"
-                                                         MaxHeight="400"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Center"
-                                                         Visibility="{x:Bind ViewModel.EventEmptyStateVisibility, Mode=OneWay}">
+                                                                 Stretch="Uniform"
+                                                                 MaxWidth="400"
+                                                                 MaxHeight="400"
+                                                                 HorizontalAlignment="Center"
+                                                                 VerticalAlignment="Center"
+                                                                 Visibility="{x:Bind ViewModel.EventEmptyStateVisibility, Mode=OneWay}">
 
                                                             <Grid Width="230" Height="230">
                                                                 <Grid.Resources>
@@ -1779,7 +1789,7 @@
                                                                 <Ellipse Fill="{StaticResource Brush_DiagnosticBlue}" Width="90" Height="90" Opacity="0.05"/>
                                                                 <Ellipse Fill="{StaticResource Brush_DiagnosticBlue}" Width="60" Height="60" Opacity="0.15"/>
                                                                 <Ellipse x:Name="CenterGlowPulse" Fill="{StaticResource Brush_DiagnosticBlue}" Width="40" Height="40" Opacity="0.5"/>
-                                                                <TextBlock Text="AI" FontSize="42" FontWeight="Bold" FontFamily="{StaticResource Jura}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-4,0,0"/>
+                                                                <TextBlock Text="AI" FontSize="42" FontWeight="Bold" FontFamily="{StaticResource Jura}" Foreground="{ThemeResource TextFillColorPrimaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-4,0,0"/>
 
                                                                 <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="1" Width="110" Height="110" Opacity="0.4"/>
                                                                 <Ellipse Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="1" Width="140" Height="140" Opacity="0.2" StrokeDashArray="2,4"/>
@@ -1795,7 +1805,7 @@
                                                                         <RotateTransform x:Name="OuterRing2Rotate" Angle="0"/>
                                                                     </Ellipse.RenderTransform>
                                                                 </Ellipse>
-                                                                <Ellipse Stroke="White" StrokeThickness="1.5" Width="220" Height="220" StrokeDashArray="1, 30" RenderTransformOrigin="0.5,0.5" Opacity="0.6">
+                                                                <Ellipse Stroke="{ThemeResource TextFillColorTertiaryBrush}" StrokeThickness="1.5" Width="220" Height="220" StrokeDashArray="1, 30" RenderTransformOrigin="0.5,0.5" Opacity="0.6">
                                                                     <Ellipse.RenderTransform>
                                                                         <RotateTransform x:Name="OuterRing3Rotate" Angle="0"/>
                                                                     </Ellipse.RenderTransform>
@@ -1813,35 +1823,35 @@
                                                                             <ScaleTransform x:Name="Dot1RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
                                                                     </Ellipse>
-                                                                    <Ellipse x:Name="Dot1" Visibility="{x:Bind ViewModel.Dot1Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="160.5" Canvas.Top="61.5" />
+                                                                    <Ellipse x:Name="Dot1" Visibility="{x:Bind ViewModel.Dot1Visibility, Mode=OneWay}" Fill="{ThemeResource TextFillColorPrimaryBrush}" Width="8" Height="8" Canvas.Left="160.5" Canvas.Top="61.5" />
 
                                                                     <Ellipse x:Name="Dot2Ripple" Visibility="{x:Bind ViewModel.Dot2Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="169.6" Canvas.Top="144" RenderTransformOrigin="0.5,0.5">
                                                                         <Ellipse.RenderTransform>
                                                                             <ScaleTransform x:Name="Dot2RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
                                                                     </Ellipse>
-                                                                    <Ellipse x:Name="Dot2" Visibility="{x:Bind ViewModel.Dot2Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="171.6" Canvas.Top="146" />
+                                                                    <Ellipse x:Name="Dot2" Visibility="{x:Bind ViewModel.Dot2Visibility, Mode=OneWay}" Fill="{ThemeResource TextFillColorPrimaryBrush}" Width="8" Height="8" Canvas.Left="171.6" Canvas.Top="146" />
 
                                                                     <Ellipse x:Name="Dot3Ripple" Visibility="{x:Bind ViewModel.Dot3Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="85" Canvas.Top="174.7" RenderTransformOrigin="0.5,0.5">
                                                                         <Ellipse.RenderTransform>
                                                                             <ScaleTransform x:Name="Dot3RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
                                                                     </Ellipse>
-                                                                    <Ellipse x:Name="Dot3" Visibility="{x:Bind ViewModel.Dot3Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="87" Canvas.Top="176.7" />
+                                                                    <Ellipse x:Name="Dot3" Visibility="{x:Bind ViewModel.Dot3Visibility, Mode=OneWay}" Fill="{ThemeResource TextFillColorPrimaryBrush}" Width="8" Height="8" Canvas.Left="87" Canvas.Top="176.7" />
 
                                                                     <Ellipse x:Name="Dot4Ripple" Visibility="{x:Bind ViewModel.Dot4Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="40" Canvas.Top="96.8" RenderTransformOrigin="0.5,0.5">
                                                                         <Ellipse.RenderTransform>
                                                                             <ScaleTransform x:Name="Dot4RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
                                                                     </Ellipse>
-                                                                    <Ellipse x:Name="Dot4" Visibility="{x:Bind ViewModel.Dot4Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="42" Canvas.Top="98.8" />
+                                                                    <Ellipse x:Name="Dot4" Visibility="{x:Bind ViewModel.Dot4Visibility, Mode=OneWay}" Fill="{ThemeResource TextFillColorPrimaryBrush}" Width="8" Height="8" Canvas.Left="42" Canvas.Top="98.8" />
 
                                                                     <Ellipse x:Name="Dot5Ripple" Visibility="{x:Bind ViewModel.Dot5Visibility, Mode=OneWay}" Fill="Transparent" Stroke="{StaticResource Brush_DiagnosticBlue}" StrokeThickness="2" Width="12" Height="12" Canvas.Left="74" Canvas.Top="48.3" RenderTransformOrigin="0.5,0.5">
                                                                         <Ellipse.RenderTransform>
                                                                             <ScaleTransform x:Name="Dot5RippleScale" ScaleX="1" ScaleY="1"/>
                                                                         </Ellipse.RenderTransform>
                                                                     </Ellipse>
-                                                                    <Ellipse x:Name="Dot5" Visibility="{x:Bind ViewModel.Dot5Visibility, Mode=OneWay}" Fill="White" Width="8" Height="8" Canvas.Left="76" Canvas.Top="50.3" />
+                                                                    <Ellipse x:Name="Dot5" Visibility="{x:Bind ViewModel.Dot5Visibility, Mode=OneWay}" Fill="{ThemeResource TextFillColorPrimaryBrush}" Width="8" Height="8" Canvas.Left="76" Canvas.Top="50.3" />
                                                                 </Canvas>
                                                             </Grid>
                                                         </Viewbox>
@@ -1849,22 +1859,24 @@
 
                                                     <Grid Grid.Row="1" Visibility="{x:Bind ViewModel.HistoryPanelVisibility, Mode=OneWay}">
                                                         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,0,0"
-                                                            Visibility="{x:Bind ViewModel.HistoryEmptyStateVisibility, Mode=OneWay}">
-                                                            <FontIcon Glyph="&#xE81C;" FontSize="24" Foreground="#40FFFFFF" Margin="0,0,0,10"/>
-                                                            <TextBlock helpers:Loc.Key="diag_history_empty" Style="{StaticResource TechnicalLabelStyle}" HorizontalAlignment="Center"/>
+                                                                    Visibility="{x:Bind ViewModel.HistoryEmptyStateVisibility, Mode=OneWay}">
+                                                            <FontIcon Glyph="&#xE81C;" FontSize="24" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Opacity="0.5" Margin="0,0,0,10"/>
+                                                            <TextBlock helpers:Loc.Key="diag_history_empty" Style="{StaticResource TechnicalLabelStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
                                                         </StackPanel>
 
                                                         <ListView x:Name="HistoryListView"
-                                                          Visibility="{x:Bind ViewModel.HistoryPanelVisibility, Mode=OneWay}"
-                                                          ItemsSource="{x:Bind ViewModel.HistoryCards}"
-                                                          SelectionMode="None"
-                                                          ShowsScrollingPlaceholders="False"
-                                                          Padding="0"
-                                                          Margin="0,0,-10,0">
+                                                                  Visibility="{x:Bind ViewModel.HistoryPanelVisibility, Mode=OneWay}"
+                                                                  ItemsSource="{x:Bind ViewModel.HistoryCards}"
+                                                                  SelectionMode="None"
+                                                                  ShowsScrollingPlaceholders="False"
+                                                                  Padding="0"
+                                                                  Margin="0,0,-10,0">
                                                             <ListView.ItemTemplate>
                                                                 <DataTemplate x:DataType="m:DismissedEventCard">
 
-                                                                    <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="0,0,15,8" Background="#0AFFFFFF" BorderThickness="1,0,0,0" BorderBrush="Gray">
+                                                                    <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="0,0,15,8"
+                                                                              Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                                                              BorderThickness="1,0,0,0" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
 
                                                                         <Expander.Header>
                                                                             <Grid Padding="4,8" Background="Transparent" Tapped="HistoryCard_Tapped">
@@ -1875,42 +1887,42 @@
                                                                                     <ColumnDefinition Width="Auto"/>
                                                                                 </Grid.ColumnDefinitions>
 
-                                                                                <FontIcon Grid.Column="0" Glyph="&#xE81C;" Foreground="Gray" FontSize="18" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                                                                <FontIcon Grid.Column="0" Glyph="&#xE81C;" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="18" VerticalAlignment="Center" Margin="0,0,12,0"/>
 
                                                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                                        <TextBlock Text="{x:Bind SourceName}" FontSize="12" Foreground="LightGray" FontWeight="SemiBold"/>
-                                                                                        <TextBlock Text="|" Foreground="Gray" FontSize="12"/>
-                                                                                        <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="Gray" FontSize="12"/>
-                                                                                        <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="12" Foreground="White" Margin="-2.5,0.5,0,0"/>
+                                                                                        <TextBlock Text="{x:Bind SourceName}" FontSize="12" Foreground="{ThemeResource TextFillColorPrimaryBrush}" FontWeight="SemiBold"/>
+                                                                                        <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
+                                                                                        <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="-2.5,0.5,0,0"/>
                                                                                     </StackPanel>
 
                                                                                     <TextBlock Text="{x:Bind Message}"
-                                                                                       ToolTipService.ToolTip="{x:Bind FullMessage}"
-                                                                                       Foreground="White"
-                                                                                       FontSize="12"
-                                                                                       TextWrapping="Wrap"
-                                                                                       MaxLines="3"
-                                                                                       TextTrimming="CharacterEllipsis"
-                                                                                       Margin="0,4,0,0"/>
+                                                                                               ToolTipService.ToolTip="{x:Bind FullMessage}"
+                                                                                               Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                                                                               FontSize="12"
+                                                                                               TextWrapping="Wrap"
+                                                                                               MaxLines="3"
+                                                                                               TextTrimming="CharacterEllipsis"
+                                                                                               Margin="0,4,0,0"/>
 
-                                                                                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2,0,0" Opacity="0.7">
-                                                                                        <TextBlock helpers:Loc.Key="diag_event_latest" FontSize="11" Foreground="Gray"/>
-                                                                                        <TextBlock Text="{x:Bind LatestDateString}" FontSize="11" FontFamily="Consolas" Foreground="White" Margin="0,1.5,0,0"/>
+                                                                                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2,0,0" Opacity="0.8">
+                                                                                        <TextBlock helpers:Loc.Key="diag_event_latest" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                                                                                        <TextBlock Text="{x:Bind LatestDateString}" FontSize="11" FontFamily="Consolas" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,1.5,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
-                                                                                <Border Grid.Column="2" Background="#20FFFFFF" CornerRadius="4" Padding="6,2" VerticalAlignment="Center" Margin="0,0,12,0">
-                                                                                    <TextBlock Text="{x:Bind OccurrenceCount, Mode=OneWay}" FontSize="11" Foreground="LightGray"/>
+                                                                                <Border Grid.Column="2" Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="4" Padding="6,2" VerticalAlignment="Center" Margin="0,0,12,0">
+                                                                                    <TextBlock Text="{x:Bind OccurrenceCount, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                                 </Border>
 
                                                                                 <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,-10,0">
-                                                                                    <Button Background="Transparent" BorderThickness="1" BorderBrush="#40FFFFFF" CornerRadius="4" Padding="8,4" Height="28"
-                                                                                    Command="{Binding ElementName=HistoryListView, Path=DataContext.RestoreEventCommand}"
-                                                                                    CommandParameter="{x:Bind}">
+                                                                                    <Button Background="Transparent" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" CornerRadius="4" Padding="8,4" Height="28"
+                                                                                            Command="{Binding ElementName=HistoryListView, Path=DataContext.RestoreEventCommand}"
+                                                                                            CommandParameter="{x:Bind}">
                                                                                         <StackPanel Orientation="Horizontal" Spacing="6">
-                                                                                            <FontIcon Glyph="&#xE7A7;" FontSize="12" Foreground="LightGray"/>
-                                                                                            <TextBlock Text="{helpers:ResourceString Key=diag_btn_restore}" FontSize="11" Foreground="LightGray"/>
+                                                                                            <FontIcon Glyph="&#xE7A7;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                                                            <TextBlock Text="{helpers:ResourceString Key=diag_btn_restore}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                                                         </StackPanel>
                                                                                     </Button>
                                                                                 </StackPanel>
@@ -1921,7 +1933,7 @@
                                                                             <ListView x:Name="InnerOccurrencesListView" ItemsSource="{x:Bind Occurrences}" SelectionMode="None" Margin="-12,0,-12,0" Padding="0">
                                                                                 <ListView.ItemTemplate>
                                                                                     <DataTemplate x:DataType="m:DismissedEventOccurrence">
-                                                                                        <Grid Margin="0,0,0,5" Padding="8,4" Background="#05FFFFFF" CornerRadius="4">
+                                                                                        <Grid Margin="0,0,0,5" Padding="8,4" Background="{ThemeResource ControlAltFillColorQuarternaryBrush}" CornerRadius="4">
                                                                                             <Grid.ColumnDefinitions>
                                                                                                 <ColumnDefinition Width="Auto"/>
                                                                                                 <ColumnDefinition Width="*"/>
@@ -1929,37 +1941,37 @@
                                                                                             </Grid.ColumnDefinitions>
 
                                                                                             <FontIcon Grid.Column="0"
-                                                                                              Glyph="&#xE823;"
-                                                                                              FontSize="10"
-                                                                                              Foreground="Gray"
-                                                                                              VerticalAlignment="Top"
-                                                                                              Margin="0,4,12,0"/>
+                                                                                                      Glyph="&#xE823;"
+                                                                                                      FontSize="10"
+                                                                                                      Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                                                                      VerticalAlignment="Top"
+                                                                                                      Margin="0,4,12,0"/>
 
                                                                                             <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
                                                                                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                                                    <TextBlock Text="{x:Bind SourceName}" FontSize="12" Foreground="LightGray" FontWeight="SemiBold"/>
-                                                                                                    <TextBlock Text="|" Foreground="Gray" FontSize="12"/>
-                                                                                                    <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="Gray" FontSize="12"/>
-                                                                                                    <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="12" Foreground="White" Margin="-2.5,0.5,0,0"/>
+                                                                                                    <TextBlock Text="{x:Bind SourceName}" FontSize="12" Foreground="{ThemeResource TextFillColorPrimaryBrush}" FontWeight="SemiBold"/>
+                                                                                                    <TextBlock Text="|" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
+                                                                                                    <TextBlock helpers:Loc.Key="diag_event_id_prefix" Foreground="{ThemeResource TextFillColorTertiaryBrush}" FontSize="12"/>
+                                                                                                    <TextBlock Text="{x:Bind EventId}" FontFamily="Consolas" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="-2.5,0.5,0,0"/>
                                                                                                 </StackPanel>
 
                                                                                                 <TextBlock Text="{x:Bind DateString}"
-                                                                                                   FontFamily="Consolas"
-                                                                                                   FontSize="11"
-                                                                                                   Foreground="Gray"
-                                                                                                   Margin="0,2,0,0"/>
+                                                                                                           FontFamily="Consolas"
+                                                                                                           FontSize="11"
+                                                                                                           Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                                                                           Margin="0,2,0,0"/>
                                                                                             </StackPanel>
 
                                                                                             <Button Grid.Column="2"
-                                                                                            Background="Transparent"
-                                                                                            BorderThickness="0"
-                                                                                            Padding="6"
-                                                                                            Height="28"
-                                                                                            Width="28"
-                                                                                            VerticalAlignment="Center"
-                                                                                            ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_remove_occurrence}"
-                                                                                            Command="{Binding ElementName=HistoryListView, Path=DataContext.RemoveOccurrenceCommand}"
-                                                                                            CommandParameter="{x:Bind}">
+                                                                                                    Background="Transparent"
+                                                                                                    BorderThickness="0"
+                                                                                                    Padding="6"
+                                                                                                    Height="28"
+                                                                                                    Width="28"
+                                                                                                    VerticalAlignment="Center"
+                                                                                                    ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_remove_occurrence}"
+                                                                                                    Command="{Binding ElementName=HistoryListView, Path=DataContext.RemoveOccurrenceCommand}"
+                                                                                                    CommandParameter="{x:Bind}">
                                                                                                 <FontIcon Glyph="&#xE74D;" FontSize="12" Foreground="#88FF6666"/>
                                                                                             </Button>
                                                                                         </Grid>
@@ -1967,7 +1979,6 @@
                                                                                 </ListView.ItemTemplate>
                                                                             </ListView>
                                                                         </Expander.Content>
-
                                                                     </Expander>
                                                                 </DataTemplate>
                                                             </ListView.ItemTemplate>
@@ -1976,12 +1987,8 @@
                                                 </Grid>
                                             </Border>
                                         </Grid>
-                                        <!-- END OF EXISTING MAIN GRID -->
-
                                     </SplitView.Content>
                                 </SplitView>
-                                <!-- END OF DNS CRYPT WRAPPER -->
-
                             </SplitView.Content>
                         </SplitView>
                     </SplitView.Content>
