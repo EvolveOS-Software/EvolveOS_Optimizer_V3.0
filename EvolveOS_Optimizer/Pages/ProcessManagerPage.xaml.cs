@@ -166,9 +166,18 @@ public sealed partial class ProcessManagerPage : Page
                                 VM_COUNTERS_EX2 info = new VM_COUNTERS_EX2();
                                 int size = Marshal.SizeOf(typeof(VM_COUNTERS_EX2));
 
-                                if (NtQueryInformationProcess(p.Handle, 3, out info, size, IntPtr.Zero) == 0)
+                                IntPtr hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, p.Id);
+                                if (hProcess != IntPtr.Zero)
                                 {
-                                    memoryMb = (double)info.PrivateWorkingSetSize / (1024.0 * 1024.0);
+                                    if (NtQueryInformationProcess(hProcess, 3, out info, size, IntPtr.Zero) == 0)
+                                    {
+                                        memoryMb = (double)info.PrivateWorkingSetSize / (1024.0 * 1024.0);
+                                    }
+                                    else
+                                    {
+                                        memoryMb = p.WorkingSet64 / (1024.0 * 1024.0);
+                                    }
+                                    CloseHandle(hProcess);
                                 }
                                 else
                                 {
@@ -190,10 +199,35 @@ public sealed partial class ProcessManagerPage : Page
                         string priorityStatus = "-";
                         string category = strBackground;
                         byte[]? iconBytes = null;
+                        bool isEcoMode = false;
+
+                        try
+                        {
+                            IntPtr hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, p.Id);
+                            if (hProcess != IntPtr.Zero)
+                            {
+                                var state = new PROCESS_POWER_THROTTLING_STATE { Version = 1 };
+                                if (GetProcessInformation(hProcess, 11, ref state, (uint)Marshal.SizeOf(state)))
+                                {
+                                    isEcoMode = (state.ControlMask & 1u) == 1u && (state.StateMask & 1u) == 1u;
+                                }
+                                CloseHandle(hProcess);
+                            }
+                        }
+                        catch { /* Ignore API failures */ }
 
                         try
                         {
                             priorityStatus = p.PriorityClass.ToString();
+                            if (p.PriorityClass == ProcessPriorityClass.Idle)
+                            {
+                                isEcoMode = true; // Fallback Native Windows behavior
+                            }
+                        }
+                        catch { /* Access Denied on sandboxed Chrome/System processes */ }
+
+                        try
+                        {
                             bool isApp = p.MainWindowHandle != IntPtr.Zero && !string.IsNullOrEmpty(p.MainWindowTitle);
                             if (isApp) category = strApps;
                             else if (p.SessionId == 0) category = strWindows;
@@ -221,7 +255,7 @@ public sealed partial class ProcessManagerPage : Page
                                 }
                             }
                         }
-                        catch { /* Access Denied */ }
+                        catch { /* Access Denied on MainModule */ }
 
                         return new ProcessManagerModel
                         {
@@ -231,12 +265,13 @@ public sealed partial class ProcessManagerPage : Page
                             ThreadCount = p.Threads.Count,
                             Priority = priorityStatus,
                             Category = category,
-                            IconBytes = iconBytes
+                            IconBytes = iconBytes,
+                            IsEfficiencyMode = isEcoMode
                         };
                     }
                     catch
                     {
-                        return new ProcessManagerModel { Name = p.ProcessName, Id = p.Id, MemoryMB = 0.1, Priority = "-", Category = strWindows };
+                        return new ProcessManagerModel { Name = p.ProcessName, Id = p.Id, MemoryMB = 0.1, Priority = "-", Category = strWindows, IsEfficiencyMode = false };
                     }
                 })
                 .Where(p => p != null)
@@ -424,6 +459,16 @@ public sealed partial class ProcessManagerPage : Page
 
     #region Advanced Process Actions (Deep Control & Tweaks)
 
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr OpenProcess(uint processAccess, bool bInheritHandle, int processId);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool CloseHandle(IntPtr hObject);
+
+    private const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool GetProcessInformation(IntPtr hProcess, int processInformationClass, ref PROCESS_POWER_THROTTLING_STATE processInformation, uint processInformationSize);
     [DllImport("ntdll.dll")] private static extern int NtSuspendProcess(IntPtr processHandle);
     [DllImport("ntdll.dll")] private static extern int NtResumeProcess(IntPtr processHandle);
 

@@ -13,7 +13,9 @@ namespace EvolveOS_Optimizer.Core.Model
         public string Category { get; set; } = "Background Processes";
         public byte[]? IconBytes { get; set; }
         public ImageSource? ProcessIcon { get; set; }
+        public bool IsEfficiencyMode { get; set; }
 
+        public Visibility EfficiencyIconVisibility => IsEfficiencyMode ? Visibility.Visible : Visibility.Collapsed;
         public Visibility FallbackIconVisibility => ProcessIcon == null ? Visibility.Visible : Visibility.Collapsed;
         public Visibility ImageIconVisibility => ProcessIcon != null ? Visibility.Visible : Visibility.Collapsed;
 

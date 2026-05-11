@@ -1396,6 +1396,7 @@
     <sys:String x:Key="process_manager_page_error_access_denied_title">Accesso Negato</sys:String>
     <sys:String x:Key="process_manager_page_error_access_denied_msg">Impossibile modificare il processo: {0}&#x0a;(Prova a eseguire come Amministratore)</sys:String>
 
+    <sys:String x:Key="process_manager_page_eco_tooltip">Questo processo è in esecuzione in modalità efficienza.</sys:String>
     <!-- endregion Process Manager Page -->
     
     <!-- Resource Helper -->

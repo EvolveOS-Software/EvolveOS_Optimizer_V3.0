@@ -1387,6 +1387,7 @@
     <sys:String x:Key="process_manager_page_error_access_denied_title">Zugriff Verweigert</sys:String>
     <sys:String x:Key="process_manager_page_error_access_denied_msg">Fehler beim Ändern des Prozesses: {0}&#x0a;(Versuchen Sie, als Administrator auszuführen)</sys:String>
 
+    <sys:String x:Key="process_manager_page_eco_tooltip">Dieser Prozess wird im Effizienz modus ausgeführt.</sys:String>
     <!-- endregion Process Manager Page -->
 
     <!-- Resource Helper -->
