@@ -2239,7 +2239,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 ShowMinorEvents = false;
             }
-            else if (currentCriticalCount > 0 || MinedSystemEvents.Any(e => e.Level == 1))
+            else if (MinedSystemEvents.Any(e => e.Level == 1))
             {
                 ShowMinorEvents = true;
             }
