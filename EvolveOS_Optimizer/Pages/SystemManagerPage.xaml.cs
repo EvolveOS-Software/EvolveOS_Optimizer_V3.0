@@ -21,6 +21,8 @@ namespace EvolveOS_Optimizer.Pages
 
         private void SystemManagerPage_Loaded(object sender, RoutedEventArgs e)
         {
+            MainWinViewModel.AppRestored += OnAppRestored;
+
             ExternalPaneRequest = (requestedPane) =>
             {
                 var targetItem = SystemNav.MenuItems
@@ -46,6 +48,8 @@ namespace EvolveOS_Optimizer.Pages
 
         private void SystemManagerPage_Unloaded(object sender, RoutedEventArgs e)
         {
+            MainWinViewModel.AppRestored -= OnAppRestored;
+
             ExternalPaneRequest = null;
 
             if (ContentFrame.Content is IPurgeable purgeablePage)
@@ -54,6 +58,13 @@ namespace EvolveOS_Optimizer.Pages
             }
 
             ContentFrame.Content = null;
+        }
+
+        private void OnAppRestored()
+        {
+            EfficiencyModeHelper.IsUIWakeLockActive = true;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+            Debug.WriteLine("[SystemManager] App Restored: High Performance re-asserted by SystemManager host.");
         }
 
         private void SystemNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
