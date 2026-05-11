@@ -327,6 +327,11 @@
 
     <sys:String x:Key="Generic_Continue">Doorgaan</sys:String>
     <sys:String x:Key="Generic_Cancel">Annuleren</sys:String>
+
+    <sys:String x:Key="Settings_Donation_Title">Steun de open-source ontwikkeling van EvolveOS Optimizer.</sys:String>
+    <sys:String x:Key="Settings_Donation_Message">Er zijn talloze uren gestoken in het bouwen van EvolveOS Optimizer om je pc optimaal te laten presteren, en ik dek persoonlijk de doorlopende kosten voor functies zoals de live Weer-API. Als deze tool je heeft geholpen, overweeg dan een kleine donatie voor de verdere ontwikkeling ervan! ♥</sys:String>
+    <sys:String x:Key="Settings_Donation_SupportBtn">Steun het project</sys:String>
+    <sys:String x:Key="Settings_Donation_DismissBtn">Misschien later</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

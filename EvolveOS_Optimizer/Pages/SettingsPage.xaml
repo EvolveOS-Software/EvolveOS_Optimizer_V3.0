@@ -17,6 +17,30 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,20,0,0" Padding="4,0,28,40">
         <StackPanel Spacing="24" Margin="4,0,0,40">
 
+            <InfoBar x:Name="DonationBanner"
+                     IsOpen="True"
+                     IsClosable="True"
+                     Severity="Warning"
+                     FontFamily="{ThemeResource Jura}"
+                     Title="{x:Bind GetText('Settings_Donation_Title'), Mode=OneWay}"
+                     Message="{x:Bind GetText('Settings_Donation_Message'), Mode=OneWay}">
+                <InfoBar.Content>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+
+                        <Button Style="{StaticResource AccentButtonStyle}"
+                                Click="Link_Donate">
+                            <StackPanel Orientation="Horizontal" Padding="-3" Spacing="8">
+                                <Image Source="ms-appx:///Assets/PngImages/PayPal_Logo.svg" Width="25" Height="25" VerticalAlignment="Center" />
+                                <TextBlock Text="{x:Bind GetText('Settings_Donation_SupportBtn'), Mode=OneWay}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Content="{x:Bind GetText('Settings_Donation_DismissBtn'), Mode=OneWay}" FontFamily="{ThemeResource Jura}"
+                                Click="DonationBanner_Dismiss" />
+                    </StackPanel>
+                </InfoBar.Content>
+            </InfoBar>
+
             <TextBlock Text="{x:Bind GetText('Settings_Title'), Mode=OneWay, FallbackValue='Settings'}"
                        Style="{StaticResource TitleTextBlockStyle}" FontSize="28" FontWeight="Bold" Margin="0,0,0,12"/>
 

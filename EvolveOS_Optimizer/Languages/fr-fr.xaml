@@ -327,6 +327,11 @@
 
     <sys:String x:Key="Generic_Continue">Continuer</sys:String>
     <sys:String x:Key="Generic_Cancel">Annuler</sys:String>
+
+    <sys:String x:Key="Settings_Donation_Title">Soutenez le développement open-source d'EvolveOS Optimizer.</sys:String>
+    <sys:String x:Key="Settings_Donation_Message">D'innombrables heures ont été consacrées à la création d'EvolveOS Optimizer pour optimiser les performances de votre PC, et je finance personnellement les coûts continus de fonctionnalités telles que l'API météo en direct. Si cet outil vous a aidé, n'hésitez pas à faire un petit don pour soutenir son développement ! ♥</sys:String>
+    <sys:String x:Key="Settings_Donation_SupportBtn">Soutenir le projet</sys:String>
+    <sys:String x:Key="Settings_Donation_DismissBtn">Peut-être plus tard</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

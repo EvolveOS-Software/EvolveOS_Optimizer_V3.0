@@ -25,6 +25,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.Windows.Storage.Pickers;
 using Windows.Storage;
 using WinRT.Interop;
+using static EvolveOS_Optimizer.Utilities.Controls.PathLocator;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -550,6 +551,9 @@ namespace EvolveOS_Optimizer.Pages
 
             NativeToastHelper.SendNativeToast("Developer Tools", $"Successfully merged missing strings for {currentLang}.");
         }
+
+        private void DonationBanner_Dismiss(object sender, RoutedEventArgs e) => DonationBanner.IsOpen = false;
+        private async void Link_Donate(object sender, RoutedEventArgs e) => await Links.OpenAsync(Links.Donate);
         #endregion
 
         #region Developer Tools

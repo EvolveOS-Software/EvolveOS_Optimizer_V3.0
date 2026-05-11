@@ -475,6 +475,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             internal const string GitHubApi = "https://api.github.com/repos/EvolveOS-Software/EvolveOS_Optimizer_v3.0/releases/latest";
 
+            public const string Donate = "https://www.paypal.com/donate/?hosted_button_id=UL8EXYHGKM3D2";
+
             internal static readonly IReadOnlyList<string> IpServices = Array.AsReadOnly(new[]
             {
                 "https://ipapi.co/json/",
@@ -483,6 +485,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 "https://reallyfreegeoip.org/json/",
                 "https://get.geojs.io/v1/ip/geo.json"
             });
+
+            public static async Task OpenAsync(string url)
+            {
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(url));
+            }
         }
         #endregion
 
