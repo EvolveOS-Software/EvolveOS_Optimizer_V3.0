@@ -330,6 +330,8 @@ namespace EvolveOS_Optimizer.Pages
             if (sender is MenuFlyout flyout && flyout.Target is Button btn)
             {
                 _buttonsWithOpenFlyouts.Remove(btn);
+
+                btn.Opacity = 0;
             }
         }
 

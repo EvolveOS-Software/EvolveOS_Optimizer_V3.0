@@ -14,10 +14,10 @@
         <conv:KeyDisplayConverter x:Key="KeyDisplayConverter"/>
     </Page.Resources>
 
-    <Grid Padding="30">
-        <StackPanel Spacing="20">
+    <Grid Padding="5,0,24,0">
+        <StackPanel Spacing="10">
 
-            <TextBlock helpers:Loc.Key="AdvancedUtils_PageTitle" FontSize="28" FontWeight="SemiBold" FontFamily="{StaticResource Jura-SemiBold}"/>
+            <TextBlock helpers:Loc.Key="AdvancedUtils_PageTitle" FontSize="26" FontFamily="{StaticResource Jura-SemiBold}"/>
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"

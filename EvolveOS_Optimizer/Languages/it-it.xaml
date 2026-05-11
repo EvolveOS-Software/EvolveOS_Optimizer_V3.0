@@ -124,7 +124,8 @@
     <sys:String x:Key="Nav_Scripts">Script</sys:String>
     <sys:String x:Key="Nav_Settings">Impostazioni</sys:String>
 
-    <sys:String x:Key="Tab_Advanced">Avanzate</sys:String>
+    <sys:String x:Key="Tab_WinIsoBuilder">Windows ISO Builder</sys:String>
+    <sys:String x:Key="Tab_Advanced">Privacy &amp; Sicurezza</sys:String>
     <!-- endregion Main Window -->
 
     <!-- region Settings -->
@@ -1878,7 +1879,7 @@
     <!-- endregion EvolveOS Iso Builder -->
 
     <!--#region Advanced Utils Page -->
-    <sys:String x:Key="AdvancedUtils_PageTitle">Utilità Avanzate</sys:String>
+    <sys:String x:Key="AdvancedUtils_PageTitle">Privacy &amp; Sicurezza</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Title">Gestore Password</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Archivia, modifica e organizza in modo sicuro tutte le tue password in un unico posto. Crittografa e genera password complesse.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Apri Gestore</sys:String>

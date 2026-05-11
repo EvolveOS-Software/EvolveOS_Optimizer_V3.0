@@ -123,8 +123,9 @@
     <sys:String x:Key="Nav_Maintenance">Onderhoud</sys:String>
     <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Instellingen</sys:String>
-    
-    <sys:String x:Key="Tab_Advanced">Geavanceerd</sys:String>
+
+    <sys:String x:Key="Tab_WinIsoBuilder">Windows ISO Builder</sys:String>
+    <sys:String x:Key="Tab_Advanced">Privacy &amp; Beveiliging</sys:String>
     <!-- endregion Main Window -->
 
     <!-- region Settings -->
@@ -1867,7 +1868,7 @@
     <!-- endregion EvolveOS Iso Builder -->
 
     <!--#region Advanced Utils Page -->
-    <sys:String x:Key="AdvancedUtils_PageTitle">Geavanceerde Hulpprogramma's</sys:String>
+    <sys:String x:Key="AdvancedUtils_PageTitle">Privacy &amp; Beveiliging</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Title">Wachtwoordbeheerder</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Desc">Sla al uw wachtwoorden veilig op, bewerk ze en organiseer ze op één plek. Versleutel en genereer sterke wachtwoorden.</sys:String>
     <sys:String x:Key="AdvancedUtils_PwdManager_Btn">Open Beheerder</sys:String>

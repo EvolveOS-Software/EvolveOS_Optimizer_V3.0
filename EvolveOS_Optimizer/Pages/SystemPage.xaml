@@ -16,6 +16,13 @@
     </Page.DataContext>
 
     <Page.Resources>
+        <StaticResource x:Key="ToggleSwitchFillOn" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchFillOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchFillOnPressed" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchStrokeOn" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchStrokeOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchStrokeOnPressed" ResourceKey="MyDynamicAccentBrush" />
+
         <Style x:Key="SettingsSectionHeaderTextBlockStyle" BasedOn="{StaticResource BodyStrongTextBlockStyle}" TargetType="TextBlock">
             <Setter Property="Margin" Value="5,0,0,5" />
             <Setter Property="FontSize" Value="16"/>

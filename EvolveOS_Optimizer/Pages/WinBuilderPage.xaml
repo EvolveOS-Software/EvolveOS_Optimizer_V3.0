@@ -9,13 +9,12 @@
     mc:Ignorable="d"
     Background="Transparent">
 
-    <ScrollViewer Padding="24" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="16" HorizontalAlignment="Stretch">
+    <ScrollViewer Padding="5,0,24,0" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="10" HorizontalAlignment="Stretch">
 
             <StackPanel Spacing="8" Margin="0,0,0,16">
-                <TextBlock Text="{helpers:ResourceString Key=winbuilder_title}" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBlock Text="{helpers:ResourceString Key=winbuilder_subtitle}" 
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBlock Text="{helpers:ResourceString Key=winbuilder_title}" FontFamily="{StaticResource Jura-SemiBold}" FontSize="26" />
+                <TextBlock Text="{helpers:ResourceString Key=winbuilder_subtitle}" FontFamily="{StaticResource Jura-SemiBold}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </StackPanel>
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 

@@ -14,6 +14,15 @@
         <vm:ServicesViewModel />
     </Page.DataContext>
 
+    <Page.Resources>
+        <StaticResource x:Key="ToggleSwitchFillOn" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchFillOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchFillOnPressed" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchStrokeOn" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchStrokeOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+        <StaticResource x:Key="ToggleSwitchStrokeOnPressed" ResourceKey="MyDynamicAccentBrush" />
+    </Page.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

@@ -35,9 +35,9 @@ namespace EvolveOS_Optimizer.Pages
                 string? tag = selectedItem.Tag?.ToString();
                 Type pageType = tag switch
                 {
-                    "WinBuilderPage" => typeof(WinBuilderPage),
                     "AdvancedUtilsPage" => typeof(AdvancedUtilsPage),
-                    _ => typeof(WinBuilderPage)
+                    "WinBuilderPage" => typeof(WinBuilderPage),
+                    _ => typeof(AdvancedUtilsPage)
                 };
 
                 if (ContentFrame.CurrentSourcePageType != pageType)
@@ -74,9 +74,9 @@ namespace EvolveOS_Optimizer.Pages
                 string? tag = item.Tag?.ToString();
                 Type expectedType = tag switch
                 {
-                    "WinBuilderPage" => typeof(WinBuilderPage),
                     "AdvancedUtilsPage" => typeof(AdvancedUtilsPage),
-                    _ => typeof(WinBuilderPage)
+                    "WinBuilderPage" => typeof(WinBuilderPage),
+                    _ => typeof(AdvancedUtilsPage)
                 };
 
                 if (e.SourcePageType == expectedType)

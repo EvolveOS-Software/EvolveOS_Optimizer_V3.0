@@ -1507,7 +1507,7 @@
                                                     </Grid.RowDefinitions>
                                                     <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,10">
                                                         <FontIcon Glyph="&#xEB42;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}" />
-                                                        <TextBlock helpers:Loc.Key="diag_hw_scan_title" Style="{StaticResource TechnicalValueHighlightedStyle}"/>
+                                                        <TextBlock helpers:Loc.Key="diag_hw_scan_title" Style="{StaticResource TechnicalLabelStyle}"/>
                                                     </StackPanel>
 
                                                     <ListView x:Name="HardwareIssuesListView" Grid.Row="1" Visibility="{x:Bind ViewModel.HardwareListVisibility, Mode=OneWay}" ItemsSource="{x:Bind ViewModel.DetectedHardwareIssues}" SelectionMode="None" Padding="0" Margin="0,0,5,0">
@@ -1603,7 +1603,7 @@
 
                                                         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
                                                             <FontIcon Glyph="&#xE994;" FontSize="18" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                            <TextBlock helpers:Loc.Key="diag_ai_analysis_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="14"/>
+                                                            <TextBlock helpers:Loc.Key="diag_ai_analysis_title" Style="{StaticResource TechnicalLabelStyle}" FontSize="14"/>
                                                         </StackPanel>
 
                                                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" MaxHeight="80">
@@ -1658,7 +1658,7 @@
 
                                                         <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center" Margin="0,0,0,10">
                                                             <FontIcon Glyph="&#xF571;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}" />
-                                                            <TextBlock helpers:Loc.Key="diag_event_miner_title" Style="{StaticResource TechnicalValueHighlightedStyle}" FontSize="14"/>
+                                                            <TextBlock helpers:Loc.Key="diag_event_miner_title" Style="{StaticResource TechnicalLabelStyle}" FontSize="14"/>
                                                         </StackPanel>
 
                                                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
