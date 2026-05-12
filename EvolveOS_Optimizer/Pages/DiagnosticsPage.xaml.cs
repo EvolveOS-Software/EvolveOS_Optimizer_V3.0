@@ -128,6 +128,29 @@ namespace EvolveOS_Optimizer.Pages
                 RequestedPaneOnLoad = "";
             }
 
+            if (ViewModel != null)
+            {
+                ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                ViewModel.ShowSecurityIssuesRequested -= ViewModel_ShowSecurityIssuesRequested;
+                ViewModel.CloseActiveDialogsRequested -= ViewModel_CloseActiveDialogsRequested;
+                ViewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
+                ViewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
+                ViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
+                ViewModel.OpenDnsToolkitRequested -= ViewModel_OpenDnsToolkitRequested;
+
+                ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+                ViewModel.ShowSecurityIssuesRequested += ViewModel_ShowSecurityIssuesRequested;
+                ViewModel.CloseActiveDialogsRequested += ViewModel_CloseActiveDialogsRequested;
+                ViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
+                ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
+                ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
+                ViewModel.OpenDnsToolkitRequested += ViewModel_OpenDnsToolkitRequested;
+
+                if (ViewModel.HardwareScannerVisibility == Visibility.Visible) HeartbeatStoryboard?.Begin();
+                if (ViewModel.ScanningVisibility == Visibility.Visible) SystemSonarStoryboard?.Begin();
+                if (ViewModel.EventEmptyStateVisibility == Visibility.Visible) RadarSpinStoryboard?.Begin();
+            }
+
             var vm = ViewModel;
 
             /*if (vm != null && !vm.IsScanning)
@@ -160,6 +183,14 @@ namespace EvolveOS_Optimizer.Pages
             if (ViewModel != null)
             {
                 RadarSpinStoryboard?.Stop();
+
+                ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                ViewModel.ShowSecurityIssuesRequested -= ViewModel_ShowSecurityIssuesRequested;
+                ViewModel.CloseActiveDialogsRequested -= ViewModel_CloseActiveDialogsRequested;
+                ViewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
+                ViewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
+                ViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
+                ViewModel.OpenDnsToolkitRequested -= ViewModel_OpenDnsToolkitRequested;
             }
 
             ExternalPaneRequest = null;
@@ -184,35 +215,45 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private async void ViewModel_ShowSecurityIssuesRequested(List<string> issues)
+        private void ViewModel_ShowSecurityIssuesRequested(List<string> issues)
         {
-            var stackPanel = new StackPanel { Spacing = 8, Margin = new Thickness(0, 10, 0, 0) };
-
-            foreach (var issue in issues)
+            DispatcherQueue?.TryEnqueue(async () =>
             {
-                stackPanel.Children.Add(new TextBlock
+                try
                 {
-                    Text = $"• {issue}",
-                    TextWrapping = TextWrapping.Wrap,
-                    FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/Jura-Regular.ttf#Jura")
-                });
-            }
+                    var stackPanel = new StackPanel { Spacing = 8, Margin = new Thickness(0, 10, 0, 0) };
 
-            var dialog = new ContentDialog
-            {
-                Title = ResourceString.GetString("SecurityPage_WarningsTitle") ?? "Security Warnings Found",
-                Content = new ScrollViewer { Content = stackPanel, MaxHeight = 300, Padding = new Thickness(0, 0, 16, 0) },
-                CloseButtonText = ResourceString.GetString("Dialog_Close") ?? "Close",
-                DefaultButton = ContentDialogButton.Close,
-                XamlRoot = this.XamlRoot
-            };
+                    foreach (var issue in issues)
+                    {
+                        stackPanel.Children.Add(new TextBlock
+                        {
+                            Text = $"• {issue}",
+                            TextWrapping = TextWrapping.Wrap,
+                            FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/Jura-Regular.ttf#Jura")
+                        });
+                    }
 
-            if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
-            {
-                dialog.Style = (Style)style;
-            }
+                    var dialog = new ContentDialog
+                    {
+                        Title = ResourceString.GetString("SecurityPage_WarningsTitle") ?? "Security Warnings Found",
+                        Content = new ScrollViewer { Content = stackPanel, MaxHeight = 300, Padding = new Thickness(0, 0, 16, 0) },
+                        CloseButtonText = ResourceString.GetString("Dialog_Close") ?? "Close",
+                        DefaultButton = ContentDialogButton.Close,
+                        XamlRoot = this.XamlRoot
+                    };
 
-            await dialog.ShowAsync();
+                    if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                    {
+                        dialog.Style = (Style)style;
+                    }
+
+                    await dialog.ShowAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[DiagnosticsPage] Security Dialog Error: {ex.Message}");
+                }
+            });
         }
 
         private void HeartbeatScanner_Loaded(object sender, RoutedEventArgs e)
@@ -288,21 +329,6 @@ namespace EvolveOS_Optimizer.Pages
                 _pendingScrollTarget = optionTag;
             }
 
-            if (ViewModel != null)
-            {
-                ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-                ViewModel.ShowSecurityIssuesRequested += ViewModel_ShowSecurityIssuesRequested;
-                ViewModel.CloseActiveDialogsRequested += ViewModel_CloseActiveDialogsRequested;
-                ViewModel.OnAddProcessToExclusionListCommandCompleted += OnAddProcessToExclusionListCommandCompleted;
-                ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
-                ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
-                ViewModel.OpenDnsToolkitRequested += ViewModel_OpenDnsToolkitRequested;
-
-                if (ViewModel.HardwareScannerVisibility == Visibility.Visible) HeartbeatStoryboard?.Begin();
-                if (ViewModel.ScanningVisibility == Visibility.Visible) SystemSonarStoryboard?.Begin();
-                if (ViewModel.EventEmptyStateVisibility == Visibility.Visible) RadarSpinStoryboard?.Begin();
-            }
-
             ViewModel?.ResumeUiUpdates();
         }
 
@@ -317,17 +343,6 @@ namespace EvolveOS_Optimizer.Pages
             RadarSpinStoryboard?.Stop();
 
             this.Bindings.StopTracking();
-
-            if (ViewModel != null)
-            {
-                ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
-                ViewModel.ShowSecurityIssuesRequested -= ViewModel_ShowSecurityIssuesRequested;
-                ViewModel.CloseActiveDialogsRequested -= ViewModel_CloseActiveDialogsRequested;
-                ViewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
-                ViewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
-                ViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
-                ViewModel.OpenDnsToolkitRequested -= ViewModel_OpenDnsToolkitRequested;
-            }
 
             base.OnNavigatedFrom(e);
         }
