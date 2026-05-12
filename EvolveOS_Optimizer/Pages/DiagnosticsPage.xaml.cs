@@ -24,6 +24,7 @@ namespace EvolveOS_Optimizer.Pages
     {
         public DiagnosticsPageViewModel? ViewModel { get; } = DiagnosticsPageViewModel.Current;
 
+        private int _navGeneration = 0;
         private bool _isCurrentPageActive = false;
 
         public static string RequestedPaneOnLoad = "";
@@ -119,6 +120,10 @@ namespace EvolveOS_Optimizer.Pages
         #region Event Handlers
         private async void DiagnosticsPage_Loaded(object sender, RoutedEventArgs e)
         {
+            _isCurrentPageActive = true;
+
+            int currentGen = ++_navGeneration;
+
             ExternalPaneRequest = SwitchToPane;
             RequestDnsUIUpdate = UpdateDnsCryptControls;
 
@@ -158,7 +163,13 @@ namespace EvolveOS_Optimizer.Pages
                 await vm.ExecuteFullScanAsync();
             }*/
 
-            vm?.ResumeUiUpdates();
+            _ = Task.Run(() =>
+            {
+                // CRITICAL FIX: Only execute if this task belongs to the LATEST navigation click
+                if (currentGen != _navGeneration || !_isCurrentPageActive) return;
+
+                ViewModel?.ResumeUiUpdates();
+            });
 
             if (vm?.SelectedProcess == null && vm?.Processes.Count > 0)
             {

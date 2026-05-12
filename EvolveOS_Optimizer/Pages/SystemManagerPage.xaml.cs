@@ -12,6 +12,8 @@ namespace EvolveOS_Optimizer.Pages
         public static Action<string>? ExternalPaneRequest;
         public static string RequestedPaneOnLoad { get; set; } = "";
 
+        private DateTime _lastNavTime = DateTime.MinValue;
+
         public SystemManagerPage()
         {
             this.InitializeComponent();
@@ -69,10 +71,15 @@ namespace EvolveOS_Optimizer.Pages
 
         private void SystemNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
+            if ((DateTime.Now - _lastNavTime).TotalMilliseconds < 300) return;
+            _lastNavTime = DateTime.Now;
+
             if (args.SelectedItem is NavigationViewItem selectedItem)
             {
                 string? selectedTag = selectedItem.Tag?.ToString();
                 if (string.IsNullOrEmpty(selectedTag)) return;
+
+                if (ContentFrame.Content?.GetType().Name == selectedTag) return;
 
                 if (MainWindow.Instance?.RootGrid?.DataContext is MainWinViewModel mainVm)
                 {
@@ -80,6 +87,14 @@ namespace EvolveOS_Optimizer.Pages
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
                     Debug.WriteLine($"[SystemManager] Tab switched to {selectedTag}. High Performance maintained.");
                 }
+
+                if (ContentFrame.Content is IPurgeable oldGhostTab)
+                {
+                    oldGhostTab.Purge();
+                    Debug.WriteLine($"[SystemManager] Purged ghost tab: {oldGhostTab.GetType().Name}");
+                }
+
+                ContentFrame.Content = null;
 
                 switch (selectedTag)
                 {

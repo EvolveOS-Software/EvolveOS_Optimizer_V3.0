@@ -113,9 +113,13 @@ namespace EvolveOS_Optimizer.Pages
             _previousItem = null;
             this.Content = null;
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            Task.Run(() =>
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
+            });
 
             Debug.WriteLine("[UtilitiesPage] Purge Complete.");
         }

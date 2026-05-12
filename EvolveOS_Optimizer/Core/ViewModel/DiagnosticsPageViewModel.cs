@@ -3315,9 +3315,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float downPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((downMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
                 float upPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((upMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
 
-                // Guardian to check the threshold
-                _memoryGuardian?.MonitorAndCleanup();
-
                 var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                 dispatcher?.TryEnqueue(() =>
                 {
@@ -4356,9 +4353,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 StartLiveMonitoring();
             }
 
-            RebuildGraphFromHistory();
+            var dispatcher = MainWindow.Instance?.DispatcherQueue;
 
-            OnPropertyChanged(string.Empty);
+            if (dispatcher != null)
+            {
+                dispatcher.TryEnqueue(() =>
+                {
+                    RebuildGraphFromHistory();
+                    OnPropertyChanged(string.Empty);
+                });
+            }
+            else
+            {
+                RebuildGraphFromHistory();
+                OnPropertyChanged(string.Empty);
+            }
         }
 
         private void SetPropertySafe<T>(ref T field, T value, string propertyName)

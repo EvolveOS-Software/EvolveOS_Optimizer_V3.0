@@ -546,9 +546,13 @@ public sealed partial class ServiceManagerPage : Page
         this.DataContext = null;
         this.Content = null;
 
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        GC.Collect();
+        Task.Run(() =>
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
+        });
 
         Debug.WriteLine("[ServicesManagerPage] Purge Complete.");
     }

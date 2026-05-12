@@ -117,9 +117,13 @@ namespace EvolveOS_Optimizer.Pages
             this.Loaded -= ScriptsPage_Loaded;
             this.Unloaded -= ScriptsPage_Unloaded;
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            Task.Run(() =>
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
+            });
 
             Debug.WriteLine("[ScriptsPage] Purge Complete.");
         }

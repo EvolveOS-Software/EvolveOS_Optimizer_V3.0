@@ -1,6 +1,8 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace EvolveOS_Optimizer.Utilities.Services
@@ -10,7 +12,15 @@ namespace EvolveOS_Optimizer.Utilities.Services
         #region Fields & Properties
         private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer? _checkTimer;
         private readonly Action<ulong, ulong>? _onCleanupPerformed;
+
         private ulong _currentThresholdBytes;
+        private ulong _emergencyThresholdBytes; // Active UI threshold
+
+        private bool _isBackgroundMode = false; // Tracks if the app is minimized
+        private int _highMemorySeconds = 0;
+
+        private const int RequiredSustainedSeconds = 15; // Must stay high for 15s to trigger GC
+        private const int TimerIntervalSeconds = 5;
         #endregion
 
         #region Native Interop
@@ -22,14 +32,18 @@ namespace EvolveOS_Optimizer.Utilities.Services
         public MemoryGuardian(Action<ulong, ulong>? onCleanupPerformed = null)
         {
             _onCleanupPerformed = onCleanupPerformed;
-            _currentThresholdBytes = 200 * 1024 * 1024;
+
+            _currentThresholdBytes = 300 * 1024 * 1024; // 300MB Deep Clean (Background)
+            _emergencyThresholdBytes = 600 * 1024 * 1024; // 600MB Gentle Clean (Active UI)
 
             var queue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             if (queue != null)
             {
                 _checkTimer = queue.CreateTimer();
-                _checkTimer.Interval = TimeSpan.FromSeconds(5);
-                _checkTimer.Tick += (s, e) => MonitorAndCleanup();
+                _checkTimer.Interval = TimeSpan.FromSeconds(TimerIntervalSeconds);
+
+                _checkTimer.Tick += (s, e) => CheckMemoryState();
+                _checkTimer.Start();
             }
         }
         #endregion
@@ -37,20 +51,15 @@ namespace EvolveOS_Optimizer.Utilities.Services
         #region Heartbeat Control
         public void StartBackgroundSentry()
         {
-            if (_checkTimer != null && !_checkTimer.IsRunning)
-            {
-                _checkTimer.Start();
-                Debug.WriteLine("[MemoryGuardian] Background Sentry STARTED (5s interval)");
-            }
+            _isBackgroundMode = true;
+            Debug.WriteLine("[MemoryGuardian] Switched to Background Mode (300MB Deep Clean limits active).");
         }
 
         public void StopBackgroundSentry()
         {
-            if (_checkTimer != null && _checkTimer.IsRunning)
-            {
-                _checkTimer.Stop();
-                Debug.WriteLine("[MemoryGuardian] Background Sentry STOPPED (UI taking over)");
-            }
+            _isBackgroundMode = false;
+            _highMemorySeconds = 0;
+            Debug.WriteLine("[MemoryGuardian] Switched to Active UI Mode (600MB Emergency limits active).");
         }
         #endregion
 
@@ -58,7 +67,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
         public void SetThreshold(int megabytes)
         {
             _currentThresholdBytes = (ulong)megabytes * 1024 * 1024;
-            Debug.WriteLine($"[MemoryGuardian] Threshold adjusted to {megabytes}MB");
+            Debug.WriteLine($"[MemoryGuardian] Background Threshold adjusted to {megabytes}MB");
         }
         #endregion
 
@@ -76,29 +85,86 @@ namespace EvolveOS_Optimizer.Utilities.Services
             }
         }
 
-        public void MonitorAndCleanup()
+        private void CheckMemoryState()
         {
             using var currentProcess = Process.GetCurrentProcess();
-
             ulong privateUsage = GetAccurateMemoryUsage(currentProcess);
 
-            if (privateUsage > _currentThresholdBytes)
+            if (_isBackgroundMode)
             {
-                ulong physicalBefore = (ulong)currentProcess.WorkingSet64;
+                if (privateUsage > _currentThresholdBytes)
+                {
+                    _highMemorySeconds += TimerIntervalSeconds;
+                    Debug.WriteLine($"[MemoryGuardian] Background Warning: RAM at {privateUsage / 1024 / 1024}MB for {_highMemorySeconds}s.");
 
-                Debug.WriteLine($"[MemoryGuardian] Task Manager Threshold exceeded: {privateUsage / 1024 / 1024}MB. Initiating Deep Cleanup...");
+                    if (_highMemorySeconds >= RequiredSustainedSeconds)
+                    {
+                        PerformDeepCleanup(currentProcess, privateUsage);
+                        _highMemorySeconds = 0;
+                    }
+                }
+                else if (_highMemorySeconds > 0)
+                {
+                    Debug.WriteLine("[MemoryGuardian] RAM dropped naturally. Canceling cleanup countdown.");
+                    _highMemorySeconds = 0;
+                }
+            }
+            else
+            {
+                if (privateUsage > _emergencyThresholdBytes)
+                {
+                    Debug.WriteLine($"[MemoryGuardian] EMERGENCY: Active RAM exceeded 700MB ({privateUsage / 1024 / 1024}MB). Initiating Gentle Trim...");
+                    PerformGentleCleanup(currentProcess, privateUsage);
+                }
+            }
+        }
 
-                GC.Collect(2, GCCollectionMode.Forced, true, true);
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
+        private void PerformDeepCleanup(Process currentProcess, ulong privateUsage)
+        {
+            ulong physicalBefore = (ulong)currentProcess.WorkingSet64;
 
-                EmptyWorkingSet(currentProcess.Handle);
+            Debug.WriteLine($"[MemoryGuardian] Sustained background memory confirmed. Initiating Deep Cleanup...");
 
-                currentProcess.Refresh();
-                ulong physicalAfter = (ulong)currentProcess.WorkingSet64;
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
-                Debug.WriteLine($"[MemoryGuardian] Cleanup complete. Physical RAM dropped to: {physicalAfter / 1024 / 1024}MB");
+            EmptyWorkingSet(currentProcess.Handle); // The Nuclear Option
 
+            currentProcess.Refresh();
+            ulong physicalAfter = (ulong)currentProcess.WorkingSet64;
+
+            Debug.WriteLine($"[MemoryGuardian] Deep Cleanup complete. Physical RAM dropped to: {physicalAfter / 1024 / 1024}MB");
+
+            DispatchUpdate(physicalBefore, physicalAfter);
+        }
+
+        private void PerformGentleCleanup(Process currentProcess, ulong privateUsage)
+        {
+            ulong physicalBefore = (ulong)currentProcess.WorkingSet64;
+
+            GC.Collect(2, GCCollectionMode.Optimized, false, false);
+
+            currentProcess.Refresh();
+            ulong physicalAfter = (ulong)currentProcess.WorkingSet64;
+
+            Debug.WriteLine($"[MemoryGuardian] Gentle Trim complete. Physical RAM dropped to: {physicalAfter / 1024 / 1024}MB");
+
+            DispatchUpdate(physicalBefore, physicalAfter);
+        }
+
+        private void DispatchUpdate(ulong physicalBefore, ulong physicalAfter)
+        {
+            var dispatcher = MainWindow.Instance?.DispatcherQueue;
+            if (dispatcher != null)
+            {
+                dispatcher.TryEnqueue(() =>
+                {
+                    _onCleanupPerformed?.Invoke(physicalBefore, physicalAfter);
+                });
+            }
+            else
+            {
                 _onCleanupPerformed?.Invoke(physicalBefore, physicalAfter);
             }
         }

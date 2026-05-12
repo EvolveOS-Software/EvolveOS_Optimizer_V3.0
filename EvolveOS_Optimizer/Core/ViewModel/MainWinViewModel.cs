@@ -28,6 +28,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private bool _isNeedUpdate;
         private bool _isOverlayVisible;
 
+        private DateTime _lastNavTime = DateTime.MinValue;
+
         private bool _isWindowVisible = !App.IsStartedHidden;
 
         public string AssignedUserType => UserSession.UserType ?? "Guest";
@@ -290,6 +292,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (string.IsNullOrEmpty(tag)) return;
 
+            if ((DateTime.Now - _lastNavTime).TotalMilliseconds < 300) return;
+            _lastNavTime = DateTime.Now;
+
             CurrentViewTag = tag;
 
             UpdatePowerState(tag);
@@ -325,8 +330,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (CurrentViewTag == "Home" ||
                 CurrentViewTag == "Diagnostics" ||
-                CurrentViewTag == "SystemManagerPage" ||
-                CurrentViewTag == "SoftwareCenterPage")
+                CurrentViewTag == "SystemManager" ||
+                CurrentViewTag == "Software")
             {
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
@@ -399,7 +404,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     DiagnosticsPage.RequestedPaneOnLoad = requestedPane;
             }
 
-            if (tag == "SystemManagerPage" && !string.IsNullOrEmpty(requestedPane))
+            if (tag == "SystemManager" && !string.IsNullOrEmpty(requestedPane))
             {
                 if (SystemManagerPage.ExternalPaneRequest != null)
                     SystemManagerPage.ExternalPaneRequest.Invoke(requestedPane);
@@ -407,7 +412,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     SystemManagerPage.RequestedPaneOnLoad = requestedPane;
             }
 
-            if (tag == "SoftwareCenterPage" && !string.IsNullOrEmpty(requestedPane))
+            if (tag == "Software" && !string.IsNullOrEmpty(requestedPane))
             {
                 if (SoftwareCenterPage.ExternalPaneRequest != null)
                     SoftwareCenterPage.ExternalPaneRequest.Invoke(requestedPane);
@@ -425,8 +430,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (tag == "Home" ||
                 tag == "Diagnostics" ||
-                tag == "SystemManagerPage" ||
-                tag == "SoftwareCenterPage")
+                tag == "SystemManager" ||
+                tag == "Software")
             {
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);

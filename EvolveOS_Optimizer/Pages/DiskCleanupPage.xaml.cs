@@ -361,9 +361,13 @@ namespace EvolveOS_Optimizer.Pages
             this.Loaded -= DiskCleanupPage_Loaded;
             this.Unloaded -= DiskCleanupPage_Unloaded;
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            Task.Run(() =>
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
+            });
 
             Debug.WriteLine("[DiskCleanupPage] Purge Complete.");
         }

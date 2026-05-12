@@ -711,9 +711,13 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
         this.DataContext = null;
         this.Content = null;
 
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        GC.Collect();
+        /*Task.Run(() =>
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
+        });*/
 
         Debug.WriteLine("[GroupPolicyPage] Purge Complete.");
     }

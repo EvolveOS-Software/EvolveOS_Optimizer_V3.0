@@ -137,6 +137,14 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Content = null;
 
+            Task.Run(() =>
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                Debug.WriteLine($"[{this.GetType().Name}] Background memory purge complete.");
+            });
+
             Debug.WriteLine("[PrivacyPage] Purge Complete.");
         }
         #endregion

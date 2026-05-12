@@ -8,6 +8,8 @@ namespace EvolveOS_Optimizer.Pages
 {
     public partial class TweaksPage : Page, IPurgeable
     {
+        private DateTime _lastNavTime = DateTime.MinValue;
+
         private NavigationViewItem? _previousItem;
         private bool _isSyncingSelection = false;
 
@@ -30,6 +32,9 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (_isSyncingSelection) return;
 
+            if ((DateTime.Now - _lastNavTime).TotalMilliseconds < 300) return;
+            _lastNavTime = DateTime.Now;
+
             if (args.SelectedItemContainer is NavigationViewItem selectedItem)
             {
                 string? tag = selectedItem.Tag?.ToString();
@@ -44,6 +49,14 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (ContentFrame.CurrentSourcePageType != pageType)
                 {
+                    if (ContentFrame.Content is IPurgeable oldGhostTab)
+                    {
+                        oldGhostTab.Purge();
+                        Debug.WriteLine($"[TweaksPage] Purged ghost tab: {oldGhostTab.GetType().Name}");
+                    }
+
+                    ContentFrame.Content = null;
+
                     ContentFrame.Navigate(pageType);
 
                     if (ContentFrame.CurrentSourcePageType != pageType)
@@ -105,6 +118,13 @@ namespace EvolveOS_Optimizer.Pages
             Debug.WriteLine("[TweaksPage] Purge initiated...");
 
             ContentFrame.Navigated -= ContentFrame_Navigated;
+            this.Unloaded -= Page_Unloaded;
+
+            if (ContentFrame?.Content is IPurgeable activeChildPage)
+            {
+                activeChildPage.Purge();
+                Debug.WriteLine($"[TweaksPage] Cascaded Purge to child: {activeChildPage.GetType().Name}");
+            }
 
             if (ContentFrame != null)
             {
@@ -117,9 +137,13 @@ namespace EvolveOS_Optimizer.Pages
             _previousItem = null;
             this.Content = null;
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            Task.Run(() =>
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
+            });
 
             Debug.WriteLine("[TweaksPage] Purge Complete.");
         }
