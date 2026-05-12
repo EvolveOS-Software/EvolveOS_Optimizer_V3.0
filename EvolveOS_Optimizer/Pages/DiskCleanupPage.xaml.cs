@@ -1,6 +1,7 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System.Threading;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
@@ -18,12 +19,21 @@ namespace EvolveOS_Optimizer.Pages
 
         private HashSet<Button> _buttonsWithOpenFlyouts = new HashSet<Button>();
 
-        private bool _loaded;
+        private CancellationTokenSource? _cts;
 
         #region Page Lifecycle
         public DiskCleanupPage()
         {
             InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
 
             this.Loaded += DiskCleanupPage_Loaded;
             this.Unloaded += DiskCleanupPage_Unloaded;
@@ -34,11 +44,25 @@ namespace EvolveOS_Optimizer.Pages
             EfficiencyModeHelper.IsUIWakeLockActive = true;
             EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
 
-            if (_loaded) return;
-            _loaded = true;
+            if (_cts == null || _cts.IsCancellationRequested)
+            {
+                _cts?.Dispose();
+                _cts = new CancellationTokenSource();
+            }
 
-            var paths = new List<string> { PathLocator.Files.Winapp2Ini };
-            await ViewModel.LoadWinapp2Async(paths);
+            if (ViewModel.Categories == null || ViewModel.Categories.Count == 0)
+            {
+                var paths = new List<string> { PathLocator.Files.Winapp2Ini };
+
+                try
+                {
+                    await ViewModel.LoadWinapp2Async(paths);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[DiskCleanup] Load aborted or failed: {ex.Message}");
+                }
+            }
         }
 
         private void DiskCleanupPage_Unloaded(object sender, RoutedEventArgs e)
@@ -228,7 +252,7 @@ namespace EvolveOS_Optimizer.Pages
                     DefaultButton = ContentDialogButton.Close
                 };
 
-                dialog.FontFamily = (FontFamily)Application.Current.Resources["Jura"];
+                dialog.FontFamily = (Microsoft.UI.Xaml.Media.FontFamily)Application.Current.Resources["Jura"];
 
                 await dialog.ShowAsync();
             }
@@ -330,46 +354,24 @@ namespace EvolveOS_Optimizer.Pages
             if (sender is MenuFlyout flyout && flyout.Target is Button btn)
             {
                 _buttonsWithOpenFlyouts.Remove(btn);
-
                 btn.Opacity = 0;
             }
         }
 
         #endregion
 
-        #region Purge Page (Memory Management)
+        #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[DiskCleanupPage] Purge initiated...");
+            Debug.WriteLine("[DiskCleanupPage] Caching Purge requested. Pausing page...");
 
-            if (_viewModel != null)
+            if (_cts != null)
             {
-                _viewModel.Categories?.Clear();
-                _viewModel.ResultLines?.Clear();
-                _viewModel.DetailLines?.Clear();
-                _viewModel.HistoryChart?.Clear();
-                _viewModel.CategoryInsights?.Clear();
-
-                _viewModel = null;
+                try { _cts.Cancel(); _cts.Dispose(); } catch { }
+                _cts = null;
             }
 
-            _buttonsWithOpenFlyouts.Clear();
-
-            this.DataContext = null;
-            this.Content = null;
-
-            this.Loaded -= DiskCleanupPage_Loaded;
-            this.Unloaded -= DiskCleanupPage_Unloaded;
-
-            Task.Run(() =>
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
-            });
-
-            Debug.WriteLine("[DiskCleanupPage] Purge Complete.");
+            Debug.WriteLine("[DiskCleanupPage] Background tasks halted. UI and data preserved in cache.");
         }
         #endregion
     }

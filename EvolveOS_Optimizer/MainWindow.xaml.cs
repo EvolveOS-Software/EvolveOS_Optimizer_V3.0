@@ -45,7 +45,6 @@ namespace EvolveOS_Optimizer
         private AppWindow? _appWindow;
         private IntPtr _hWnd;
 
-        private Pages.DiagnosticsPage? _cachedDiagnosticsPage;
         private MenuFlyoutItemBase? _hardwarePanelItem;
 
         private DispatcherTimer? _sessionTimer;
@@ -510,42 +509,15 @@ namespace EvolveOS_Optimizer
                 _ => typeof(Pages.HomePage)
             };
 
-            if (ContentFrame.Content?.GetType() == pageType) return;
+            if (ContentFrame.CurrentSourcePageType == pageType) return;
 
             try
             {
-                var oldPage = ContentFrame.Content as Page;
-                Page? newPage = null;
-
-                if (pageType == typeof(Pages.DiagnosticsPage))
-                {
-                    if (_cachedDiagnosticsPage == null)
-                    {
-                        _cachedDiagnosticsPage = new Pages.DiagnosticsPage();
-                    }
-                    newPage = _cachedDiagnosticsPage;
-                }
-                else
-                {
-                    newPage = Activator.CreateInstance(pageType) as Page;
-                }
-
-                ContentFrame.Content = newPage;
-
-                this.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
-                {
-                    if (oldPage != null && !(oldPage is Pages.DiagnosticsPage))
-                    {
-                        NavigationHelper.PurgePage(oldPage);
-                        oldPage = null;
-                    }
-                });
-
-                _ = NavigationHelper.TriggerDeepCleanupAsync(this.DispatcherQueue);
+                ContentFrame.Navigate(pageType);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Critical] Swap Failed: {ex.Message}");
+                Debug.WriteLine($"[Critical] Frame Navigation Failed: {ex.Message}");
             }
         }
 

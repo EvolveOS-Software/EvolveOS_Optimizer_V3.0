@@ -20,6 +20,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 {
     public partial class MainWinViewModel : ViewModelBase
     {
+        #region Native API (P/Invoke)
+        [System.Runtime.InteropServices.DllImport("psapi.dll")]
+        private static extern int EmptyWorkingSet(IntPtr hwProc);
+        #endregion
+
         #region Fields
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
         private string _currentViewTag = "Home";
@@ -326,7 +331,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             DiagnosticsPageViewModel.Current.StopBackgroundGuardian();
 
-            DiagnosticsPageViewModel.Current.SetMemoryThreshold(200);
+            DiagnosticsPageViewModel.Current.SetMemoryThreshold(450);
 
             if (CurrentViewTag == "Home" ||
                 CurrentViewTag == "Diagnostics" ||
@@ -367,19 +372,26 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             DiagnosticsPageViewModel.Current.StartBackgroundGuardian();
 
             EfficiencyModeHelper.IsUIWakeLockActive = false;
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
 
             if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
             {
-                DiagnosticsPageViewModel.Current.SetMemoryThreshold(150);
+                DiagnosticsPageViewModel.Current.SetMemoryThreshold(350);
             }
             else
             {
-                DiagnosticsPageViewModel.Current.SetMemoryThreshold(200);
+                DiagnosticsPageViewModel.Current.SetMemoryThreshold(450);
             }
 
             AppHidden?.Invoke();
 
             DiagnosticsPageViewModel.Current.PauseUiUpdates();
+
+            Task.Run(() =>
+            {
+                DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                Debug.WriteLine("[TrayMinimize] App minimized. Guardian flushed RAM.");
+            });
         }
 
         private void ExecuteToggleVisibility()

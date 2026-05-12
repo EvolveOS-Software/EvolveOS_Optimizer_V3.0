@@ -129,7 +129,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            EmptyWorkingSet(currentProcess.Handle); // The Nuclear Option
+            EmptyWorkingSet(currentProcess.Handle);
 
             currentProcess.Refresh();
             ulong physicalAfter = (ulong)currentProcess.WorkingSet64;
@@ -151,6 +151,13 @@ namespace EvolveOS_Optimizer.Utilities.Services
             Debug.WriteLine($"[MemoryGuardian] Gentle Trim complete. Physical RAM dropped to: {physicalAfter / 1024 / 1024}MB");
 
             DispatchUpdate(physicalBefore, physicalAfter);
+        }
+
+        public void ForceImmediateCleanup()
+        {
+            Debug.WriteLine("[MemoryGuardian] Manual forced cleanup requested (Tray Minimize).");
+            using var currentProcess = Process.GetCurrentProcess();
+            PerformDeepCleanup(currentProcess, GetAccurateMemoryUsage(currentProcess));
         }
 
         private void DispatchUpdate(ulong physicalBefore, ulong physicalAfter)

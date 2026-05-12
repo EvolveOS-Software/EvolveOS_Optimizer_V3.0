@@ -103,6 +103,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EncryptDbBackupCopies"] = true,
             ["KeepBackupEnabled"] = false,
 
+            ["IsHighPerformanceModeEnabled"] = true,
             ["IsPostCleanEnabled"] = false,
             ["PostCleanCommands"] = "cleanmgr.exe /autoclean\nstart \"\" ms-settings:storagesense",
             ["CustomWinapp2Path"] = string.Empty,
@@ -184,6 +185,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool PerformDbBackup { get => (bool)_cachedSettings["PerformDbBackup"]; set => ChangingParameters("PerformDbBackup", value); }
         internal static bool EncryptDbBackupCopies { get => (bool)_cachedSettings["EncryptDbBackupCopies"]; set => ChangingParameters("EncryptDbBackupCopies", value); }
         internal static bool KeepBackupEnabled { get => (bool)_cachedSettings["KeepBackupEnabled"]; set => ChangingParameters("KeepBackupEnabled", value); }
+        internal static bool IsHighPerformanceModeEnabled { get => (bool)_cachedSettings["IsHighPerformanceModeEnabled"]; set => ChangingParameters("IsHighPerformanceModeEnabled", value); }
         internal static bool IsPostCleanEnabled { get => (bool)_cachedSettings["IsPostCleanEnabled"]; set => ChangingParameters("IsPostCleanEnabled", value); }
         internal static string PostCleanCommands { get => (string)_cachedSettings["PostCleanCommands"]; set => ChangingParameters("PostCleanCommands", value); }
         internal static string? CustomWinapp2Path { get => string.IsNullOrEmpty((string)_cachedSettings["CustomWinapp2Path"]) ? null : (string)_cachedSettings["CustomWinapp2Path"]; set => ChangingParameters("CustomWinapp2Path", value ?? string.Empty); }

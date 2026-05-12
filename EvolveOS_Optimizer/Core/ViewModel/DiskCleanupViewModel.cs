@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Model;
@@ -199,7 +200,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private async Task RefreshAsync() => await LoadWinapp2Async(_lastPaths);
         private bool CanRefresh() => !IsBusy && _lastPaths.Count > 0;
 
-        public async Task LoadWinapp2Async(IList<string> filePaths)
+        public async Task LoadWinapp2Async(IList<string> filePaths, CancellationToken token = default)
         {
             IsPostCleanEnabled = SettingsEngine.IsPostCleanEnabled;
             PostCleanCommands = SettingsEngine.PostCleanCommands;
@@ -217,6 +218,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 : filePaths.Where(File.Exists).ToList();
 
             IsBusy = true;
+
+            if (token.IsCancellationRequested) return;
+
             RefreshFileInfo();
 
             if (targetPaths.Count == 0 || IsWinapp2NotAvailable)
@@ -233,6 +237,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             var allEntries = new List<CleanerEntry>();
             foreach (var path in targetPaths)
             {
+                if (token.IsCancellationRequested) return;
+
                 try
                 {
                     allEntries.AddRange(await _parser.ParseFileAsync(path));
@@ -243,14 +249,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             }
 
+            if (token.IsCancellationRequested) return;
+
             allEntries = allEntries.DistinctBy(e => e.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
-            var installedEntries = await Task.Run(() => allEntries.Where(_detection.IsInstalled).ToList());
+            var installedEntries = await Task.Run(() =>
+                allEntries.Where(_detection.IsInstalled).ToList(), token);
+
+            if (token.IsCancellationRequested) return;
 
             _loadedEntries = installedEntries;
             RebuildVisibleCategories();
 
             await InitializeHistoryAsync();
+
+            if (token.IsCancellationRequested) return;
+
             RefreshFileInfo();
 
             StatusText = string.Format(ResourceString.GetString("cleanup_status_analysis_ready"), installedEntries.Count, allEntries.Count);
@@ -849,6 +863,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             else selected.Remove(entry.Name);
 
             SettingsEngine.SelectedCleanerEntries = selected;
+        }
+        #endregion
+
+        #region Cleanup & Memory Management
+        public void DisposeCollections()
+        {
+            Categories?.Clear();
+            ResultLines?.Clear();
+            DetailLines?.Clear();
+            CategoryInsights?.Clear();
+            HistoryChart?.Clear();
+            _lastScan?.Clear();
+            _loadedEntries?.Clear();
+
+            Debug.WriteLine("[DiskCleanupVM] Large collections zeroed for Search & Destroy Purge.");
         }
         #endregion
     }

@@ -3,6 +3,7 @@
 
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Pages;
@@ -22,8 +23,17 @@ public sealed partial class SoftwareCenterPage : Page
     {
         this.InitializeComponent();
 
-        this.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Disabled;
+        if (SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+        else
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
+        }
+
         this.Loaded += SoftwareCenterPage_Loaded;
+        this.Unloaded += Page_Unloaded;
     }
 
     private void SoftwareCenterPage_Loaded(object sender, RoutedEventArgs e)
@@ -55,31 +65,7 @@ public sealed partial class SoftwareCenterPage : Page
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
-        ExternalPaneRequest = null;
-
-        if (ContentFrame.Content is IPurgeable purgeablePage)
-        {
-            purgeablePage.Purge();
-        }
-
-        int originalCacheSize = ContentFrame.CacheSize;
-        ContentFrame.CacheSize = 0;
-
-        ContentFrame.Content = null;
-        ContentFrame.BackStack.Clear();
-        ContentFrame.ForwardStack.Clear();
-
-        ContentFrame.CacheSize = originalCacheSize;
-
-        if (_sharedViewModel is IDisposable disposable)
-        {
-            disposable.Dispose();
-        }
-
-        _sharedViewModel = null;
-        this.DataContext = null;
-
-        Debug.WriteLine("[SoftwareCenterPage] Shared ViewModel and Frame Caches PURGED.");
+        Purge();
     }
 
     private async void SoftwareNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -134,10 +120,10 @@ public sealed partial class SoftwareCenterPage : Page
 
         Type pageType = tag switch
         {
-            "PackagesPage" => typeof(PackagesPage),
             "SystemAppsPage" => typeof(SystemAppsPage),
             "AppStorePage" => typeof(AppStorePage),
-            _ => typeof(PackagesPage)
+            "PackagesPage" => typeof(PackagesPage),
+            _ => typeof(SystemAppsPage)
         };
 
         if (ContentFrame.CurrentSourcePageType != pageType)
@@ -146,4 +132,19 @@ public sealed partial class SoftwareCenterPage : Page
             _previousItem = selectedItem;
         }
     }
+
+    #region Purge Page
+    public void Purge()
+    {
+        Debug.WriteLine("[SoftwareCenterPage] Caching Purge requested. Broadcasting sleep signal...");
+        ExternalPaneRequest = null;
+
+        if (ContentFrame.Content is IPurgeable purgeablePage)
+        {
+            purgeablePage.Purge();
+        }
+
+        Debug.WriteLine("[SoftwareCenterPage] Sleep signal sent. Host frame and Shared VM preserved in cache.");
+    }
+    #endregion
 }

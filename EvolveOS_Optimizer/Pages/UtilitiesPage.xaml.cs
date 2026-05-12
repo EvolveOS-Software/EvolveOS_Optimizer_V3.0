@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using EvolveOS_Optimizer.Core.Interfaces;
-using Microsoft.UI.Xaml.Navigation;
+using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -14,13 +14,26 @@ namespace EvolveOS_Optimizer.Pages
         public UtilitiesPage()
         {
             InitializeComponent();
+
+            // BLUEPRINT: Adjustable Cache Mode
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             ContentFrame.Navigated += ContentFrame_Navigated;
+            this.Unloaded += Page_Unloaded;
         }
 
         private void UtilitiesNav_Loaded(object sender, RoutedEventArgs e)
         {
-            if (UtilitiesNav.MenuItems.Count > 0 && UtilitiesNav.MenuItems[0] is NavigationViewItem firstItem)
+            if (UtilitiesNav.MenuItems.Count > 0 && UtilitiesNav.SelectedItem == null)
             {
+                var firstItem = UtilitiesNav.MenuItems[0] as NavigationViewItem;
                 UtilitiesNav.SelectedItem = firstItem;
                 _previousItem = firstItem;
             }
@@ -49,11 +62,7 @@ namespace EvolveOS_Optimizer.Pages
                         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
                         {
                             _isSyncingSelection = true;
-
-                            UtilitiesNav.SelectedItem = null;
-                            UtilitiesNav.UpdateLayout();
                             UtilitiesNav.SelectedItem = _previousItem;
-
                             _isSyncingSelection = false;
                         });
                     }
@@ -98,30 +107,14 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[UtilitiesPage] Purge initiated...");
+            Debug.WriteLine("[UtilitiesPage] Caching Purge requested. Broadcasting sleep signal...");
 
-            ContentFrame.Navigated -= ContentFrame_Navigated;
-
-            if (ContentFrame != null)
+            if (ContentFrame.Content is IPurgeable purgeablePage)
             {
-                ContentFrame.Content = null;
-                ContentFrame.BackStack.Clear();
-                ContentFrame.ForwardStack.Clear();
+                purgeablePage.Purge();
             }
 
-            UtilitiesNav.SelectedItem = null;
-            _previousItem = null;
-            this.Content = null;
-
-            Task.Run(() =>
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
-            });
-
-            Debug.WriteLine("[UtilitiesPage] Purge Complete.");
+            Debug.WriteLine("[UtilitiesPage] Host frame and nested child preserved in cache.");
         }
         #endregion
     }

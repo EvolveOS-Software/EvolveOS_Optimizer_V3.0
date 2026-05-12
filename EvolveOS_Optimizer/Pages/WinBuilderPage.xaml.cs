@@ -5,16 +5,16 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
-using Microsoft.UI.Xaml.Navigation;
 using Windows.Storage.Pickers;
 using Windows.System;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class WinBuilderPage : Page
+    public sealed partial class WinBuilderPage : Page, IPurgeable
     {
         public ObservableCollection<RegistryTweak> AvailableTweaks { get; set; } = new();
         public ObservableCollection<RemovableApp> AvailableApps { get; set; } = new();
@@ -28,11 +28,30 @@ namespace EvolveOS_Optimizer.Pages
         public WinBuilderPage()
         {
             this.InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             LoadCatalog();
+
+            this.Unloaded += WinBuilderPage_Unloaded;
+        }
+
+        private void WinBuilderPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Purge();
         }
 
         private void LoadCatalog()
         {
+            if (AvailableTweaks.Count > 0) return;
+
             var tweaks = EvolveOSCatalog.GetAvailableTweaks();
             foreach (var tweak in tweaks)
             {
@@ -74,7 +93,6 @@ namespace EvolveOS_Optimizer.Pages
         private async void BrowseSource_Click(object sender, RoutedEventArgs e)
         {
             var picker = new FileOpenPicker();
-
             var window = App.MainWindow;
             var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
             WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd);
@@ -93,7 +111,6 @@ namespace EvolveOS_Optimizer.Pages
         private async void BrowseDestination_Click(object sender, RoutedEventArgs e)
         {
             var picker = new FileSavePicker();
-
             var window = App.MainWindow;
             var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
             WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd);
@@ -147,9 +164,7 @@ namespace EvolveOS_Optimizer.Pages
                 BypassWin11Requirements = ToggleBypassReqs.IsOn,
                 BypassMicrosoftAccount = ToggleBypassMSA.IsOn,
                 EnableNet35 = ToggleNet35.IsOn,
-
                 RemoveWindowsRecovery = ToggleRemoveWinRE.IsOn,
-
                 RemoveMicrosoftEdge = ChkRemoveEdge.IsChecked ?? false,
                 RemoveOneDrive = ChkRemoveOneDrive.IsChecked ?? false,
 
@@ -170,7 +185,7 @@ namespace EvolveOS_Optimizer.Pages
 
             var progressReporter = new Progress<string>(status =>
             {
-                TxtStatus.Text = status;
+                if (TxtStatus != null) TxtStatus.Text = status;
             });
 
             var builderService = new IsoBuilderService();
@@ -243,8 +258,18 @@ namespace EvolveOS_Optimizer.Pages
                 _buildCts?.Cancel();
                 _isBuildInProgress = false;
 
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
                 Frame.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
             }
         }
+
+        #region Purge Page
+        public void Purge()
+        {
+            Debug.WriteLine("[WinBuilderPage] Caching Purge requested. Pausing UI...");
+
+            Debug.WriteLine("[WinBuilderPage] UI preserved in RAM cache.");
+        }
+        #endregion
     }
 }

@@ -23,6 +23,8 @@ namespace EvolveOS_Optimizer.Pages
         {
             this.InitializeComponent();
 
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+
             this.DataContext = new SystemViewModel();
 
             //this.Loaded += (s, e) => DebugAvailableCards();
@@ -606,32 +608,9 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[SystemPage] Purge initiated...");
+            Debug.WriteLine("[SystemPage] Caching Purge requested. Pausing page...");
 
-            Loaded -= SystemPage_Loaded;
-            Unloaded -= SystemPage_Unloaded;
-
-            if (this.DataContext is IDisposable disposableVM)
-            {
-                disposableVM.Dispose();
-                Debug.WriteLine("[SystemPage] ViewModel Disposed.");
-            }
-
-            this.DataContext = null;
-
-            _sysTweaks = null;
-
-            this.Content = null;
-
-            Task.Run(() =>
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
-            });
-
-            Debug.WriteLine("[SystemPage] Purge Complete.");
+            Debug.WriteLine("[SystemPage] UI and ViewModel preserved in cache.");
         }
         #endregion
     }

@@ -490,6 +490,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
+        public void PauseUpdates()
+        {
+            _statsTimer?.Stop();
+            _weatherTimer?.Stop();
+            Debug.WriteLine("[HomePageVM] Background timers PAUSED.");
+        }
+
+        public void ResumeUpdates()
+        {
+            _statsTimer?.Start();
+            _weatherTimer?.Start();
+            Debug.WriteLine("[HomePageVM] Background timers RESUMED.");
+        }
+
         #endregion
 
         #region Disposal

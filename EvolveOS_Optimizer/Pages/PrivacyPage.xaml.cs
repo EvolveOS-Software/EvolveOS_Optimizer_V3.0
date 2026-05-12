@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Numerics;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -8,6 +11,7 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -18,6 +22,15 @@ namespace EvolveOS_Optimizer.Pages
         public PrivacyPage()
         {
             this.InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
 
             if (!WindowsLicense.IsWindowsActivated)
             {
@@ -122,30 +135,9 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[PrivacyPage] Purge initiated...");
+            Debug.WriteLine("[PrivacyPage] Caching Purge requested. Pausing page...");
 
-            this.Unloaded -= PrivacyPage_Unloaded;
-
-            if (this.DataContext is IDisposable disposableVM)
-            {
-                disposableVM.Dispose();
-                Debug.WriteLine("[PrivacyPage] ViewModel Disposed.");
-            }
-            this.DataContext = null;
-
-            _confTweaks = null;
-
-            this.Content = null;
-
-            Task.Run(() =>
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                Debug.WriteLine($"[{this.GetType().Name}] Background memory purge complete.");
-            });
-
-            Debug.WriteLine("[PrivacyPage] Purge Complete.");
+            Debug.WriteLine("[PrivacyPage] UI and ViewModel preserved in cache.");
         }
         #endregion
     }

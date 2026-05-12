@@ -15,7 +15,6 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Navigation;
 using static EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages
@@ -26,6 +25,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private int _navGeneration = 0;
         private bool _isCurrentPageActive = false;
+        private bool _isInitialized = false;
 
         public static string RequestedPaneOnLoad = "";
         public static Action<string>? ExternalPaneRequest;
@@ -57,6 +57,16 @@ namespace EvolveOS_Optimizer.Pages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             this.InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             this.DataContext = ViewModel;
 
             _controls = new Dictionary<IDNSCryptSetting, ComboBox>
@@ -121,7 +131,6 @@ namespace EvolveOS_Optimizer.Pages
         private async void DiagnosticsPage_Loaded(object sender, RoutedEventArgs e)
         {
             _isCurrentPageActive = true;
-
             int currentGen = ++_navGeneration;
 
             ExternalPaneRequest = SwitchToPane;
@@ -158,35 +167,33 @@ namespace EvolveOS_Optimizer.Pages
 
             var vm = ViewModel;
 
-            /*if (vm != null && !vm.IsScanning)
+            this.DispatcherQueue.TryEnqueue(() =>
             {
-                await vm.ExecuteFullScanAsync();
-            }*/
-
-            _ = Task.Run(() =>
-            {
-                // CRITICAL FIX: Only execute if this task belongs to the LATEST navigation click
                 if (currentGen != _navGeneration || !_isCurrentPageActive) return;
 
                 ViewModel?.ResumeUiUpdates();
             });
 
-            if (vm?.SelectedProcess == null && vm?.Processes.Count > 0)
+            if (!_isInitialized)
             {
-                vm.SelectedProcess = vm.Processes[0];
-            }
+                if (vm?.SelectedProcess == null && vm?.Processes.Count > 0)
+                {
+                    vm.SelectedProcess = vm.Processes[0];
+                }
 
-            await CalculateSystemHealthAsync();
+                await CalculateSystemHealthAsync();
+                UpdateDnsCryptControls();
+                AnimateInstallButton();
+
+                _isInitialized = true;
+                Debug.WriteLine("[DiagnosticsPage] Initial heavy data loaded.");
+            }
 
             if (!string.IsNullOrEmpty(_pendingScrollTarget))
             {
                 await ScrollToElementHelper.ScrollToElementAsync(this, _pendingScrollTarget);
                 _pendingScrollTarget = null;
             }
-
-            UpdateDnsCryptControls();
-            AnimateInstallButton();
-
         }
 
         private void DiagnosticsPage_Unloaded(object sender, RoutedEventArgs e)
@@ -339,8 +346,6 @@ namespace EvolveOS_Optimizer.Pages
             {
                 _pendingScrollTarget = optionTag;
             }
-
-            ViewModel?.ResumeUiUpdates();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -1287,12 +1292,14 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
-        #region Purge Page
-        public async void Purge()
+        #region Purge Page (old good)
+        /*public async void Purge()
         {
+            if (!_isCurrentPageActive) return;
+
             try
             {
-                Debug.WriteLine("[DiagnosticsPage] Purging background tasks...");
+                Debug.WriteLine("[DiagnosticsPage] Safe Sleep Purge Initiated...");
 
                 await StopCurrentOperationAsync();
 
@@ -1302,7 +1309,43 @@ namespace EvolveOS_Optimizer.Pages
                     _cancellationTokenSource = null;
                 }
 
+                DiagnosticsPage_Unloaded(this, new RoutedEventArgs());
+                OnNavigatedFrom(null!);
+
+                _ = Task.Run(() => GC.Collect(2, GCCollectionMode.Optimized, false, false));
+
                 Debug.WriteLine("[DiagnosticsPage] Tasks cleaned. Collections preserved for Cache safety.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DiagnosticsPage] Error during purge: {ex.Message}");
+            }
+        }*/
+        #endregion
+
+        #region Purge Page
+        public async void Purge()
+        {
+            _isCurrentPageActive = false;
+            _navGeneration++;
+
+            try
+            {
+                Debug.WriteLine("[DiagnosticsPage] Safe Sleep Purge Initiated...");
+
+                await StopCurrentOperationAsync();
+
+                if (_cancellationTokenSource != null)
+                {
+                    try { _cancellationTokenSource.Cancel(); _cancellationTokenSource.Dispose(); } catch { }
+                    _cancellationTokenSource = null;
+                }
+
+                DiagnosticsPage_Unloaded(this, new RoutedEventArgs());
+
+                _ = Task.Run(() => GC.Collect(2, GCCollectionMode.Optimized, false, false));
+
+                Debug.WriteLine("[DiagnosticsPage] Tasks cleaned. UI state preserved in RAM cache.");
             }
             catch (Exception ex)
             {

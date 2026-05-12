@@ -3,6 +3,8 @@
 
 using System.Collections.ObjectModel;
 using System.ServiceProcess;
+using System.Threading;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -11,7 +13,7 @@ using static EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class ServiceManagerPage : Page
+public sealed partial class ServiceManagerPage : Page, IPurgeable
 {
     #region Fields
     private List<ServiceManagerModel> _allServices = [];
@@ -28,12 +30,24 @@ public sealed partial class ServiceManagerPage : Page
 
     private DispatcherTimer? _refreshTimer;
     private bool _isUpdating;
+
+    private CancellationTokenSource? _cts;
     #endregion
 
     #region Constructor & Lifecycle
     public ServiceManagerPage()
     {
         InitializeComponent();
+
+        if (SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+        else
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
+        }
+
         ServicesListView.ItemsSource = _filteredServices;
 
         Loaded += ServicesPage_Loaded;
@@ -43,7 +57,22 @@ public sealed partial class ServiceManagerPage : Page
     private async void ServicesPage_Loaded(object sender, RoutedEventArgs e)
     {
         _isLoaded = true;
-        await LoadServicesAsync();
+
+        if (_cts != null)
+        {
+            try { _cts.Cancel(); _cts.Dispose(); } catch { }
+        }
+        _cts = new CancellationTokenSource();
+
+        if (_allServices.Count == 0)
+        {
+            await LoadServicesAsync();
+        }
+        else
+        {
+            await RefreshServicesAsync();
+        }
+
         StartAutoRefresh();
     }
 
@@ -71,52 +100,61 @@ public sealed partial class ServiceManagerPage : Page
 
     private async Task RefreshServicesAsync()
     {
-        if (_isUpdating) return;
+        if (_isUpdating || _cts == null || _cts.IsCancellationRequested) return;
 
         _isUpdating = true;
         try
         {
-            await FetchServicesDataAsync();
+            await FetchServicesDataAsync(_cts.Token);
+
+            if (_cts.IsCancellationRequested) return;
+
             UpdateSummary();
             ApplyFilterAndSort();
         }
+        catch (TaskCanceledException) { Debug.WriteLine("[ServiceManager] Refresh aborted (Navigation)."); }
+        catch (OperationCanceledException) { Debug.WriteLine("[ServiceManager] Refresh aborted (Navigation)."); }
         finally
         {
             _isUpdating = false;
         }
     }
 
-    private async Task FetchServicesDataAsync()
+    private async Task FetchServicesDataAsync(CancellationToken token = default)
     {
         _allServices = await Task.Run(() =>
         {
-            return ServiceController.GetServices()
-                .Select(s =>
+            var servicesList = new List<ServiceManagerModel>();
+            var allSystemServices = ServiceController.GetServices();
+
+            foreach (var s in allSystemServices)
+            {
+                if (token.IsCancellationRequested) break;
+
+                if (!_registryCache.TryGetValue(s.ServiceName, out var details))
                 {
-                    if (!_registryCache.TryGetValue(s.ServiceName, out var details))
-                    {
-                        details = GetServiceDetails(s.ServiceName);
-                        _registryCache[s.ServiceName] = details;
-                    }
+                    details = GetServiceDetails(s.ServiceName);
+                    _registryCache[s.ServiceName] = details;
+                }
 
-                    var isRunning = s.Status == ServiceControllerStatus.Running;
-                    var canStop = s.Status == ServiceControllerStatus.Running && s.CanStop;
+                var isRunning = s.Status == ServiceControllerStatus.Running;
+                var canStop = s.Status == ServiceControllerStatus.Running && s.CanStop;
 
-                    return new ServiceManagerModel
-                    {
-                        Name = s.ServiceName,
-                        DisplayName = s.DisplayName,
-                        Status = s.Status.ToString(),
-                        StartType = details.StartType,
-                        ExecutablePath = details.ImagePath,
-                        IsMicrosoftService = details.IsMicrosoft,
-                        CanStart = !isRunning && details.StartType != "Disabled",
-                        CanStop = canStop
-                    };
-                })
-                .OrderBy(s => s.DisplayName)
-                .ToList();
-        });
+                servicesList.Add(new ServiceManagerModel
+                {
+                    Name = s.ServiceName,
+                    DisplayName = s.DisplayName,
+                    Status = s.Status.ToString(),
+                    StartType = details.StartType,
+                    ExecutablePath = details.ImagePath,
+                    IsMicrosoftService = details.IsMicrosoft,
+                    CanStart = !isRunning && details.StartType != "Disabled",
+                    CanStop = canStop
+                });
+            }
+
+            return servicesList.OrderBy(s => s.DisplayName).ToList();
+        }, token);
     }
     #endregion
 
@@ -185,7 +223,7 @@ public sealed partial class ServiceManagerPage : Page
 
         MergeInto(_filteredServices, sorted);
 
-        ResultsText.Text = string.Format(ResourceString.GetString("service_manager_page_showing_results"), _filteredServices.Count, _allServices.Count);
+        ResultsText.Text = string.Format(ResourceString.GetString("service_manager_page_showing_results") ?? "Showing {0} of {1} services", _filteredServices.Count, _allServices.Count);
     }
 
     private List<ServiceManagerModel> SortServices(List<ServiceManagerModel> source)
@@ -240,7 +278,7 @@ public sealed partial class ServiceManagerPage : Page
         {
             StopAutoRefresh();
             LiveMonitoringIcon.Glyph = "\uE768";
-            LiveMonitoringIcon.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.Gray);
+            LiveMonitoringIcon.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray);
             LiveMonitoringText.Text = ResourceString.GetString("process_manager_page_start_monitor");
         }
         else
@@ -248,7 +286,7 @@ public sealed partial class ServiceManagerPage : Page
             await RefreshServicesAsync();
             StartAutoRefresh();
             LiveMonitoringIcon.Glyph = "\uE769";
-            LiveMonitoringIcon.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.LimeGreen);
+            LiveMonitoringIcon.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LimeGreen);
             LiveMonitoringText.Text = ResourceString.GetString("process_manager_page_live_monitor");
         }
     }
@@ -460,7 +498,7 @@ public sealed partial class ServiceManagerPage : Page
 
             _registryCache.Remove(serviceName);
 
-            string localizedStartType = ResourceString.GetString($"service_manager_page_{internalStartType.ToLower()}");
+            string localizedStartType = ResourceString.GetString($"service_manager_page_{internalStartType.ToLower()}") ?? internalStartType;
 
             App.ShowNotification(
                 ResourceString.GetString("service_manager_notif_startup_title"),
@@ -531,30 +569,22 @@ public sealed partial class ServiceManagerPage : Page
 
         return (startType, imagePath, isMicrosoft);
     }
+    #endregion
 
+    #region Purge Page
     public void Purge()
     {
+        Debug.WriteLine("[ServiceManagerPage] Caching Purge requested. Pausing page...");
+
         StopAutoRefresh();
-        Loaded -= ServicesPage_Loaded;
-        Unloaded -= ServicesPage_Unloaded;
-        LiveMonitoringButton.Click -= LiveMonitoringButton_Click;
 
-        _allServices?.Clear();
-        _filteredServices?.Clear();
-        ServicesListView.ItemsSource = null;
-
-        this.DataContext = null;
-        this.Content = null;
-
-        Task.Run(() =>
+        if (_cts != null)
         {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
-        });
+            try { _cts.Cancel(); _cts.Dispose(); } catch { }
+            _cts = null;
+        }
 
-        Debug.WriteLine("[ServicesManagerPage] Purge Complete.");
+        Debug.WriteLine("[ServiceManagerPage] Engines halted. UI and Service snapshot preserved in cache.");
     }
     #endregion
 }

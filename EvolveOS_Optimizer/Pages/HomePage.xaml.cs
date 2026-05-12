@@ -49,6 +49,9 @@ namespace EvolveOS_Optimizer.Pages
         private DateTime _lastUpdateTime = DateTime.Now;
         private bool _isFirstTick = true;
 
+        private bool _isCurrentPageActive = false;
+        private bool _isInitialized = false;
+
         private List<double> _cpuHistory = new List<double>();
         private List<double> _ramHistory = new List<double>();
         private List<double> _netDownHistory = new List<double>();
@@ -62,6 +65,16 @@ namespace EvolveOS_Optimizer.Pages
         public HomePage()
         {
             this.InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             LogoGrid.Translation = new System.Numerics.Vector3(0, 0, 32);
 
             this.DataContext = ViewModel;
@@ -73,16 +86,51 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void HomePage_Loaded(object sender, RoutedEventArgs e)
         {
+            if (_isCurrentPageActive) return;
+            _isCurrentPageActive = true;
+
             MainWinViewModel.AppHidden += PauseLiveMonitoring;
             MainWinViewModel.AppRestored += ResumeLiveMonitoring;
 
-            ApplyElevationUI();
-            LoadWeather();
-            LoadDashboardLayout();
-            DashboardDragCursor();
-            UpdateDnsCardUI();
-            await CalculateSystemHealthAsync();
-            await CalculateSecurityHealthAsync();
+            if (!_isInitialized)
+            {
+                ApplyElevationUI();
+                LoadWeather();
+                LoadDashboardLayout();
+                DashboardDragCursor();
+                UpdateDnsCardUI();
+
+                await CalculateSystemHealthAsync();
+                await CalculateSecurityHealthAsync();
+
+                if (HardwareData.Memory.Total == 0)
+                {
+                    try
+                    {
+                        using var searcher = new System.Management.ManagementObjectSearcher("SELECT TotalPhysicalMemory FROM Win32_ComputerSystem");
+                        foreach (var obj in searcher.Get())
+                        {
+                            double totalBytes = Convert.ToDouble(obj["TotalPhysicalMemory"]);
+                            HardwareData.Memory.Total = totalBytes / 1024 / 1024;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[HardwareData] Failed to get total RAM: {ex.Message}");
+                        HardwareData.Memory.Total = 16384;
+                    }
+                }
+
+                StartShimmer(IpShimmerBrush, "Stop2");
+                StartShimmer(LocalIpShimmerBrush, "LocalStop2");
+
+                if (this.DataContext is HomePageViewModel vm)
+                {
+                    UpdateIpPrivacy(vm.StateButtonVision);
+                }
+
+                _isInitialized = true;
+            }
 
             var stats = GetCurrentNetworkBytes();
             _lastDownloadBytes = stats.Down;
@@ -91,68 +139,32 @@ namespace EvolveOS_Optimizer.Pages
 
             StartMonitoring();
             StartWallpaperMonitor();
-
-            if (HardwareData.Memory.Total == 0)
-            {
-                try
-                {
-                    using var searcher = new System.Management.ManagementObjectSearcher("SELECT TotalPhysicalMemory FROM Win32_ComputerSystem");
-                    foreach (var obj in searcher.Get())
-                    {
-                        double totalBytes = Convert.ToDouble(obj["TotalPhysicalMemory"]);
-                        HardwareData.Memory.Total = totalBytes / 1024 / 1024;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[HardwareData] Failed to get total RAM: {ex.Message}");
-                    HardwareData.Memory.Total = 16384;
-                }
-            }
-
-            StartShimmer(IpShimmerBrush, "Stop2");
-            StartShimmer(LocalIpShimmerBrush, "LocalStop2");
-
-            if (this.DataContext is HomePageViewModel vm)
-            {
-                UpdateIpPrivacy(vm.StateButtonVision);
-            }
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
+            if (!_isCurrentPageActive) return;
+            _isCurrentPageActive = false;
+
             MainWinViewModel.AppHidden -= PauseLiveMonitoring;
             MainWinViewModel.AppRestored -= ResumeLiveMonitoring;
 
-            if (_monitoringTimer != null)
-            {
-                _monitoringTimer.Stop();
-                _monitoringTimer = null;
-            }
+            PauseLiveMonitoring();
 
-            if (_wallpaperTimer != null)
-            {
-                _wallpaperTimer.Stop();
-                _wallpaperTimer.Tick -= CheckWallpaperTimer_Tick;
-                _wallpaperTimer = null;
-            }
-
-            if (this.DataContext is IDisposable disposableVM)
-            {
-                disposableVM.Dispose();
-            }
-
-            this.DataContext = null;
-
-            this.Loaded -= HomePage_Loaded;
-            this.Unloaded -= Page_Unloaded;
+            Debug.WriteLine("[HomePage] Page cached and background engines paused.");
         }
 
         private void PauseLiveMonitoring()
         {
             _monitoringTimer?.Stop();
             _wallpaperTimer?.Stop();
-            System.Diagnostics.Debug.WriteLine("[HomePage] Live monitoring PAUSED for System Tray.");
+
+            if (this.DataContext is HomePageViewModel vm)
+            {
+                vm.PauseUpdates();
+            }
+
+            Debug.WriteLine("[HomePage] Live monitoring PAUSED for System Tray/Cache.");
         }
 
         private void ResumeLiveMonitoring()
@@ -161,7 +173,13 @@ namespace EvolveOS_Optimizer.Pages
             {
                 _monitoringTimer.Start();
                 _wallpaperTimer?.Start();
-                System.Diagnostics.Debug.WriteLine("[HomePage] Live monitoring RESUMED.");
+
+                if (this.DataContext is HomePageViewModel vm)
+                {
+                    vm.ResumeUpdates();
+                }
+
+                Debug.WriteLine("[HomePage] Live monitoring RESUMED.");
             }
         }
         #endregion
@@ -169,10 +187,19 @@ namespace EvolveOS_Optimizer.Pages
         #region Real-time Monitoring (Hardware & Network)
         private void StartMonitoring()
         {
-            _monitoringTimer = new DispatcherTimer();
-            _monitoringTimer.Interval = TimeSpan.FromSeconds(2);
-            _monitoringTimer.Tick += OnMonitoringTick;
+            if (_monitoringTimer == null)
+            {
+                _monitoringTimer = new DispatcherTimer();
+                _monitoringTimer.Interval = TimeSpan.FromSeconds(2);
+                _monitoringTimer.Tick += OnMonitoringTick;
+            }
+
             _monitoringTimer.Start();
+
+            if (this.DataContext is HomePageViewModel vm)
+            {
+                vm.ResumeUpdates();
+            }
         }
 
         private async void OnMonitoringTick(object? sender, object e)
@@ -739,8 +766,12 @@ namespace EvolveOS_Optimizer.Pages
         #region Direct Wallpaper Injection Logic
         private void StartWallpaperMonitor()
         {
-            _wallpaperTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-            _wallpaperTimer.Tick += CheckWallpaperTimer_Tick;
+            if (_wallpaperTimer == null)
+            {
+                _wallpaperTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+                _wallpaperTimer.Tick += CheckWallpaperTimer_Tick;
+            }
+
             _wallpaperTimer.Start();
 
             CheckWallpaperTimer_Tick(null, null);
@@ -1927,53 +1958,18 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[HomePage] Deep Purge Initiated...");
+            if (!_isCurrentPageActive) return;
 
-            MainWinViewModel.AppHidden -= PauseLiveMonitoring;
-            MainWinViewModel.AppRestored -= ResumeLiveMonitoring;
+            Debug.WriteLine("[HomePage] Safe Purge (Sleep) Initiated...");
 
-            if (_monitoringTimer != null)
+            Page_Unloaded(this, new RoutedEventArgs());
+
+            Task.Run(() =>
             {
-                _monitoringTimer.Stop();
-                _monitoringTimer.Tick -= OnMonitoringTick;
-                _monitoringTimer = null;
-            }
+                GC.Collect(2, GCCollectionMode.Optimized, false, false);
+            });
 
-            if (_wallpaperTimer != null)
-            {
-                _wallpaperTimer.Stop();
-                _wallpaperTimer.Tick -= CheckWallpaperTimer_Tick;
-                _wallpaperTimer = null;
-            }
-
-            if (DashboardGridView != null)
-            {
-                DashboardGridView.DragItemsStarting -= DashboardGridView_DragItemsStarting;
-                DashboardGridView.DragItemsCompleted -= DashboardGridView_DragItemsCompleted;
-
-                DashboardGridView.Items.Clear();
-            }
-
-            HardwareData.ClearResources();
-
-            if (this.DataContext is IDisposable vm)
-            {
-                vm.Dispose();
-                Debug.WriteLine("[HomePage] ViewModel disposed and unhooked.");
-            }
-
-            IpShimmerBrush = null;
-            LocalIpShimmerBrush = null;
-            this.Content = null;
-            this.DataContext = null;
-
-            if (ForecastList != null) ForecastList.ItemsSource = null;
-            if (DiskDrivesList != null) DiskDrivesList.ItemsSource = null;
-
-            this.Loaded -= HomePage_Loaded;
-            this.Unloaded -= Page_Unloaded;
-
-            Debug.WriteLine("[HomePage] Purge complete. 0 remaining references.");
+            Debug.WriteLine("[HomePage] Safe Purge complete. Visuals cached in RAM.");
         }
         #endregion
     }

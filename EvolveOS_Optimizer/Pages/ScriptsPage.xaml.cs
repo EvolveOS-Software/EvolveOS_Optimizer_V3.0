@@ -3,6 +3,7 @@
 
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 
@@ -18,6 +19,16 @@ namespace EvolveOS_Optimizer.Pages
         public ScriptsPage()
         {
             this.InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             this.DataContext = ViewModel;
 
             UIHelper.RegisterPageTransition(RootGrid, this);
@@ -25,18 +36,20 @@ namespace EvolveOS_Optimizer.Pages
             ViewModel.OnScriptsUpdated += UpdateEmptyState;
 
             this.Unloaded += ScriptsPage_Unloaded;
-
             this.Loaded += ScriptsPage_Loaded;
         }
 
-        private void ScriptsPage_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void ScriptsPage_Loaded(object sender, RoutedEventArgs e)
         {
             InitializeTimer();
+
+            _timer?.Start();
+
             UpdateEmptyState();
             EmptyStateAnimation.Begin();
         }
 
-        private void ScriptsPage_Unloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void ScriptsPage_Unloaded(object sender, RoutedEventArgs e)
         {
             Purge();
         }
@@ -79,7 +92,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (ViewModel.IsMultiSelectMode) return;
 
-            if (sender is Microsoft.UI.Xaml.FrameworkElement element && element.DataContext is Core.Model.ScriptsModel script)
+            if (sender is FrameworkElement element && element.DataContext is Core.Model.ScriptsModel script)
             {
                 if (ViewModel.RunSingleScriptCommand.CanExecute(script))
                 {
@@ -91,41 +104,16 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[ScriptsPage] Purge initiated...");
+            Debug.WriteLine("[ScriptsPage] Caching Purge requested. Halting engines...");
 
             if (_timer != null)
             {
                 _timer.Stop();
-                _timer = null;
-                Debug.WriteLine("[ScriptsPage] TimerControlManager stopped.");
+                Debug.WriteLine("[ScriptsPage] TimerControlManager paused.");
             }
 
-            if (_viewModel != null)
-            {
-                _viewModel.OnScriptsUpdated -= UpdateEmptyState;
 
-                if (_viewModel is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
-                _viewModel = null;
-            }
-
-            this.DataContext = null;
-            this.Content = null;
-
-            this.Loaded -= ScriptsPage_Loaded;
-            this.Unloaded -= ScriptsPage_Unloaded;
-
-            Task.Run(() =>
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
-            });
-
-            Debug.WriteLine("[ScriptsPage] Purge Complete.");
+            Debug.WriteLine("[ScriptsPage] Engines halted. UI and Script collection preserved in RAM.");
         }
         #endregion
     }

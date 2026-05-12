@@ -26,20 +26,47 @@ namespace EvolveOS_Optimizer.Pages
         private bool _isUnloading = false;
         private bool _isUpdatingUI = false;
 
+        private CancellationTokenSource? _cts;
         #endregion
 
         public StartupManagerPage()
         {
             this.InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
+            this.Loaded += Page_Loaded;
             this.Unloaded += Page_Unloaded;
 
             StartupAppsListView.ItemsSource = _startupApps;
-            _ = LoadDataAsync();
         }
 
         #endregion
 
         #region Lifecycle & Data Loading
+
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            _isUnloading = false;
+
+            if (_cts != null)
+            {
+                try { _cts.Cancel(); _cts.Dispose(); } catch { }
+            }
+            _cts = new CancellationTokenSource();
+
+            if (_allApps.Count == 0)
+            {
+                await LoadDataAsync();
+            }
+        }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -51,14 +78,19 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
+                var token = _cts?.Token ?? default;
+
                 LoadingRing.Visibility = Visibility.Visible;
                 StartupAppsListView.Visibility = Visibility.Collapsed;
 
                 _allApps = await StartupManagerHelper.GetStartupAppsAsync();
 
-                if (_isUnloading) return;
+                if (_isUnloading || token.IsCancellationRequested) return;
 
                 var delayedApps = await StartupManagerHelper.GetDelayedAppsStateAsync();
+
+                if (token.IsCancellationRequested) return;
+
                 foreach (var app in _allApps)
                 {
                     if (delayedApps.TryGetValue(app.Name, out int savedSeconds))
@@ -70,6 +102,8 @@ namespace EvolveOS_Optimizer.Pages
                 ApplyFiltersAndSearch();
 
                 string activeProfile = await StartupManagerHelper.DetermineActiveProfileAsync(_allApps);
+
+                if (token.IsCancellationRequested) return;
 
                 if (activeProfile != "Modified" && activeProfile != "Custom")
                 {
@@ -90,6 +124,10 @@ namespace EvolveOS_Optimizer.Pages
             {
                 ErrorLogging.LogDebug(ex);
             }
+            finally
+            {
+                if (LoadingRing != null) LoadingRing.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void UpdateSummary()
@@ -97,7 +135,7 @@ namespace EvolveOS_Optimizer.Pages
             TotalAppsText.Text = _allApps.Count.ToString();
             EnabledAppsText.Text = _allApps.Count(a => a.IsEnabled).ToString();
             DisabledAppsText.Text = _allApps.Count(a => !a.IsEnabled).ToString();
-            ResultsText.Text = string.Format(ResourceString.GetString("startup_manager_page_results_text"), _startupApps.Count, _allApps.Count);
+            ResultsText.Text = string.Format(ResourceString.GetString("startup_manager_page_results_text") ?? "Showing {0} of {1} apps", _startupApps.Count, _allApps.Count);
         }
 
         #endregion
@@ -235,10 +273,10 @@ namespace EvolveOS_Optimizer.Pages
 
                 ContentDialog dialog = new ContentDialog
                 {
-                    Title = ResourceString.GetString("startup_manager_page_delete_title"),
-                    Content = string.Format(ResourceString.GetString("startup_manager_page_delete_content"), app.DisplayName),
-                    PrimaryButtonText = ResourceString.GetString("startup_manager_page_delete_confirm"),
-                    CloseButtonText = ResourceString.GetString("startup_manager_page_delete_cancel"),
+                    Title = ResourceString.GetString("startup_manager_page_delete_title") ?? "Delete Startup Entry",
+                    Content = string.Format(ResourceString.GetString("startup_manager_page_delete_content") ?? "Are you sure you want to permanently delete {0} from startup?", app.DisplayName),
+                    PrimaryButtonText = ResourceString.GetString("startup_manager_page_delete_confirm") ?? "Delete",
+                    CloseButtonText = ResourceString.GetString("startup_manager_page_delete_cancel") ?? "Cancel",
                     DefaultButton = ContentDialogButton.Close,
                     XamlRoot = this.XamlRoot
                 };
@@ -265,11 +303,13 @@ namespace EvolveOS_Optimizer.Pages
 
         private void SetActiveProfileIndicator(string profileKey)
         {
+            if (DotProfileGaming == null || DotProfileWork == null) return;
+
             DotProfileGaming.Visibility = Visibility.Collapsed;
-            DotProfileGaming.Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.LimeGreen);
+            DotProfileGaming.Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LimeGreen);
 
             DotProfileWork.Visibility = Visibility.Collapsed;
-            DotProfileWork.Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.LimeGreen);
+            DotProfileWork.Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LimeGreen);
 
             if (profileKey == "Gaming" || profileKey == "Work")
             {
@@ -289,14 +329,14 @@ namespace EvolveOS_Optimizer.Pages
                 if (_lastActiveProfile == "Gaming")
                 {
                     DotProfileGaming.Visibility = Visibility.Visible;
-                    DotProfileGaming.Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.Orange);
-                    ToolTipService.SetToolTip(BtnProfileGaming, ResourceString.GetString("startup_manager_page_profile_gaming_modified"));
+                    DotProfileGaming.Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Orange);
+                    ToolTipService.SetToolTip(BtnProfileGaming, ResourceString.GetString("startup_manager_page_profile_gaming_modified") ?? "Gaming Profile (Modified)");
                 }
                 else if (_lastActiveProfile == "Work")
                 {
                     DotProfileWork.Visibility = Visibility.Visible;
-                    DotProfileWork.Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.Orange);
-                    ToolTipService.SetToolTip(BtnProfileWork, ResourceString.GetString("startup_manager_page_profile_work_modified"));
+                    DotProfileWork.Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Orange);
+                    ToolTipService.SetToolTip(BtnProfileWork, ResourceString.GetString("startup_manager_page_profile_work_modified") ?? "Work Profile (Modified)");
                 }
             }
         }
@@ -335,9 +375,9 @@ namespace EvolveOS_Optimizer.Pages
 
             ContentDialog dialog = new ContentDialog
             {
-                Title = ResourceString.GetString("startup_manager_page_profile_saved_title"),
-                Content = string.Format(ResourceString.GetString("startup_manager_page_profile_saved_content_dynamic"), localizedName),
-                CloseButtonText = ResourceString.GetString("startup_manager_page_profile_saved_ok"),
+                Title = ResourceString.GetString("startup_manager_page_profile_saved_title") ?? "Profile Saved",
+                Content = string.Format(ResourceString.GetString("startup_manager_page_profile_saved_content_dynamic") ?? "Your current startup configuration has been saved to the {0} profile.", localizedName),
+                CloseButtonText = ResourceString.GetString("startup_manager_page_profile_saved_ok") ?? "OK",
                 DefaultButton = ContentDialogButton.Close,
                 XamlRoot = this.XamlRoot
             };
@@ -433,33 +473,26 @@ namespace EvolveOS_Optimizer.Pages
 
         public void Purge()
         {
-            Debug.WriteLine("[StartupManagerPage] Purge initiated...");
+            Debug.WriteLine("[StartupManagerPage] Caching Purge requested. Pausing page...");
 
             _isUnloading = true;
-            Unloaded -= Page_Unloaded;
+
+            if (_cts != null)
+            {
+                try { _cts.Cancel(); _cts.Dispose(); } catch { }
+                _cts = null;
+            }
 
             if (_delayDebounceTokens != null)
             {
                 foreach (var cts in _delayDebounceTokens.Values)
                 {
-                    try
-                    {
-                        cts.Cancel();
-                        cts.Dispose();
-                    }
-                    catch { }
+                    try { cts.Cancel(); cts.Dispose(); } catch { }
                 }
                 _delayDebounceTokens.Clear();
             }
 
-            _startupApps?.Clear();
-            _allApps?.Clear();
-
-            StartupAppsListView.ItemsSource = null;
-            this.DataContext = null;
-            this.Content = null;
-
-            Debug.WriteLine("[StartupManagerPage] Purge Complete.");
+            Debug.WriteLine("[StartupManagerPage] Engines halted. UI and data preserved in cache.");
         }
 
         #endregion

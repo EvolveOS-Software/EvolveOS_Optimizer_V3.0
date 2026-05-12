@@ -12,7 +12,6 @@
     xmlns:num="using:System.Numerics" 
     xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
     xmlns:ui="using:CommunityToolkit.WinUI.Controls"
-    NavigationCacheMode="Disabled"
     mc:Ignorable="d" Background="Transparent">
 
     <Page.Resources>

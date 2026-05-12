@@ -9,7 +9,7 @@
     xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:model="using:EvolveOS_Optimizer.Core.Model"
-    mc:Ignorable="d" NavigationCacheMode="Disabled">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

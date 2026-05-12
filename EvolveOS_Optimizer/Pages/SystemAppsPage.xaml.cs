@@ -13,7 +13,6 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages;
@@ -46,8 +45,17 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
     {
         InitializeComponent();
 
-        this.NavigationCacheMode = NavigationCacheMode.Required;
+        if (SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+        else
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
+        }
+
         Loaded += SystemAppsPage_Loaded;
+        Unloaded += SystemAppsPage_Unloaded;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -1053,34 +1061,15 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
     #region Purge Page
     public void Purge()
     {
-        Debug.WriteLine("[SystemAppsPage] Deep Purge Initiated...");
+        Debug.WriteLine("[SystemAppsPage] Caching Purge requested. Pausing page...");
 
         if (cancellationTokenSource != null)
         {
-            try
-            {
-                cancellationTokenSource.Cancel();
-                cancellationTokenSource.Dispose();
-            }
-            catch { }
+            try { cancellationTokenSource.Cancel(); cancellationTokenSource.Dispose(); } catch { }
             cancellationTokenSource = null;
         }
 
-        Loaded -= SystemAppsPage_Loaded;
-        Unloaded -= SystemAppsPage_Unloaded;
-
-        if (this.DataContext is IDisposable disposableVM)
-        {
-            disposableVM.Dispose();
-            Debug.WriteLine("[SystemAppsPage] ViewModel Disposed.");
-        }
-        this.DataContext = null;
-        this.ViewModel = null;
-
-        AppList?.Clear();
-        allApps?.Clear();
-
-        Debug.WriteLine("[SystemAppsPage] Purge Complete.");
+        Debug.WriteLine("[SystemAppsPage] Background tasks halted. UI and data preserved in cache.");
     }
     #endregion
 }

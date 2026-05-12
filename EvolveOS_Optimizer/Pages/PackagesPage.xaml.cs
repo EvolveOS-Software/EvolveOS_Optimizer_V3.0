@@ -51,6 +51,15 @@ namespace EvolveOS_Optimizer.Pages
         {
             InitializeComponent();
 
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             this.Loaded += PackagesPage_Loaded;
             this.Unloaded += PackagesPage_Unloaded;
         }
@@ -69,42 +78,45 @@ namespace EvolveOS_Optimizer.Pages
 
             SyncVisualStates();
 
-            _timer = new TimerControlManager(TimeSpan.FromSeconds(5), TimerControlManager.TimerMode.CountUp, async time =>
+            if (_timer == null)
             {
-                if (!this.IsLoaded || token.IsCancellationRequested || _isUpdating)
+                _timer = new TimerControlManager(TimeSpan.FromSeconds(5), TimerControlManager.TimerMode.CountUp, async time =>
                 {
-                    return;
-                }
-
-                _isUpdating = true;
-
-                try
-                {
-                    await Task.Run(() =>
+                    if (!this.IsLoaded || token.IsCancellationRequested || _isUpdating)
                     {
-                        if (token.IsCancellationRequested) return;
+                        return;
+                    }
 
-                        _uninstalling.GetInstalledPackages();
+                    _isUpdating = true;
 
-                        this.DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
+                    try
+                    {
+                        await Task.Run(() =>
                         {
-                            if (!this.IsLoaded || token.IsCancellationRequested) return;
+                            if (token.IsCancellationRequested) return;
 
-                            UninstallingPackages.OnPackagesChanged();
-                            SyncVisualStates();
-                        });
-                    }, token);
-                }
-                catch (OperationCanceledException) { }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[PackagesPage] Timer Loop Error: {ex.Message}");
-                }
-                finally
-                {
-                    _isUpdating = false;
-                }
-            });
+                            _uninstalling.GetInstalledPackages();
+
+                            this.DispatcherQueue?.TryEnqueue(DispatcherQueuePriority.Low, () =>
+                            {
+                                if (!this.IsLoaded || token.IsCancellationRequested) return;
+
+                                UninstallingPackages.OnPackagesChanged();
+                                SyncVisualStates();
+                            });
+                        }, token);
+                    }
+                    catch (OperationCanceledException) { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[PackagesPage] Timer Loop Error: {ex.Message}");
+                    }
+                    finally
+                    {
+                        _isUpdating = false;
+                    }
+                });
+            }
 
             _timer.Start();
         }
@@ -421,11 +433,14 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (!appName.StartsWith("[Missing Resource:"))
                 {
-                    DescBlock.Text = $"{appName} • {appDesc}";
+                    if (DescBlock != null)
+                    {
+                        DescBlock.Text = $"{appName} • {appDesc}";
+                    }
                     return;
                 }
             }
-            DescBlock.Text = string.Empty;
+            if (DescBlock != null) DescBlock.Text = string.Empty;
         }
 
         private async Task HandlePackageRemoval(string packageName)
@@ -621,55 +636,19 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[PackagesPage] Purge Initiated...");
+            Debug.WriteLine("[PackagesPage] Caching Purge requested. Putting engines to sleep...");
 
-            if (_timer != null)
-            {
-                _timer.Stop();
-                _timer = null;
-                Debug.WriteLine("[PackagesPage] Refresh Timer stopped.");
-            }
-
-            if (_staggerTimer != null)
-            {
-                _staggerTimer.Stop();
-                _staggerTimer = null;
-                Debug.WriteLine("[PackagesPage] Stagger Timer stopped.");
-            }
+            _timer?.Stop();
+            _staggerTimer?.Stop();
 
             if (_pageCts != null)
             {
-                try
-                {
-                    _pageCts.Cancel();
-                    _pageCts.Dispose();
-                }
-                catch (ObjectDisposedException) { }
+                try { _pageCts.Cancel(); _pageCts.Dispose(); } catch { }
                 _pageCts = null;
-                Debug.WriteLine("[PackagesPage] CancellationToken cancelled.");
             }
 
-            _entranceQueue?.Clear();
-            _currentCardStates?.Clear();
 
-            if (HcPanel != null)
-            {
-                HcPanel.AnimationFinished = null;
-                HcPanel.Children.Clear();
-            }
-
-            if (this.DataContext is IDisposable disposableVM)
-            {
-                disposableVM.Dispose();
-            }
-            this.DataContext = null;
-
-            this.Content = null;
-
-            this.Loaded -= PackagesPage_Loaded;
-            this.Unloaded -= PackagesPage_Unloaded;
-
-            Debug.WriteLine("[PackagesPage] Purge Complete.");
+            Debug.WriteLine("[PackagesPage] Engines sleeping. UI and VM securely cached.");
         }
         #endregion
     }

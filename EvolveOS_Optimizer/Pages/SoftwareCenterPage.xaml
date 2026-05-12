@@ -8,7 +8,7 @@
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d" Unloaded="Page_Unloaded"
-    Background="Transparent" NavigationCacheMode="Disabled">
+    Background="Transparent">
 
     <Grid>
         <ui:NavigationView x:Name="SoftwareNav"
@@ -25,11 +25,6 @@
             </ui:NavigationView.Resources>
 
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_Recommended}" Tag="PackagesPage">
-                    <ui:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE735;"/>
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_Installed}" Tag="SystemAppsPage">
                     <ui:NavigationViewItem.Icon>
@@ -42,6 +37,13 @@
                         <FontIcon Glyph="&#xE896;"/>
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="{helpers:ResourceString Key=Tab_Recommended}" Tag="PackagesPage">
+                    <ui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE735;"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
             </ui:NavigationView.MenuItems>
 
             <Frame x:Name="ContentFrame" Background="Transparent" Margin="0,10,0,0"/>

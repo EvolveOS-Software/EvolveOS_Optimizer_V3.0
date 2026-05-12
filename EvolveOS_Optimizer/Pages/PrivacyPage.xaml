@@ -8,7 +8,7 @@
     xmlns:pa="using:EvolveOS_Optimizer.Assets.Panels"
     xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
-    mc:Ignorable="d" NavigationCacheMode="Disabled">
+    mc:Ignorable="d">
 
     <Page.DataContext>
         <vm:PrivacyViewModel />

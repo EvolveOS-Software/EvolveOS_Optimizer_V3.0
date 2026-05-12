@@ -78,6 +78,15 @@ namespace EvolveOS_Optimizer.Pages
         {
             InitializeComponent();
 
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             _localizationHandler = (s, e) =>
             {
                 if (e.PropertyName == "Item[]")
@@ -880,6 +889,54 @@ namespace EvolveOS_Optimizer.Pages
                     LocalMachineSettingsEngine.EnableStartupMonitor = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        public bool IsHighPerformanceModeEnabled
+        {
+            get => SettingsEngine.IsHighPerformanceModeEnabled;
+            set
+            {
+                if (SettingsEngine.IsHighPerformanceModeEnabled != value)
+                {
+                    SettingsEngine.IsHighPerformanceModeEnabled = value;
+                    OnPropertyChanged();
+
+                    // We use a fire-and-forget task here because setters cannot be async
+                    _ = PromptForRestartAsync();
+                }
+            }
+        }
+
+        private async Task PromptForRestartAsync()
+        {
+            if (this.XamlRoot == null) return;
+
+            ContentDialog restartDialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("Settings_Performance_Restart_Title") ?? "Restart Required",
+                Content = ResourceString.GetString("Settings_Performance_Restart_Content") ?? "High Performance Mode settings have changed. Would you like to restart now?",
+                PrimaryButtonText = ResourceString.GetString("Settings_Performance_Restart_Confirm") ?? "Restart Now",
+                CloseButtonText = ResourceString.GetString("Settings_Performance_Restart_Cancel") ?? "Later",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await restartDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                SettingsEngine.SelfReboot();
+            }
+            else
+            {
+                NotificationManager.Show(
+                    ResourceString.GetString("Settings_Performance_Notify_Title") ?? "Performance Change",
+                    ResourceString.GetString("Settings_Performance_Notify_Msg") ?? "Cache settings updated. Restart EvolveOS for maximum effect."
+                )
+                .WithSeverity(Microsoft.UI.Xaml.Controls.InfoBarSeverity.Informational)
+                .WithDuration(5000)
+                .Perform();
             }
         }
         #endregion
@@ -1689,37 +1746,21 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[SettingsPage] Purge initiated...");
+            Debug.WriteLine("[SettingsPage] Caching Purge requested. Pausing timers...");
 
             if (_sessionTimer != null)
             {
                 _sessionTimer.Stop();
-                _sessionTimer = null;
             }
 
             if (_themeSchedulerTimer != null)
             {
                 _themeSchedulerTimer.Stop();
-                _themeSchedulerTimer = null;
             }
-
-            if (_localizationHandler != null)
-            {
-                LocalizationService.Instance.PropertyChanged -= _localizationHandler;
-                _localizationHandler = null;
-            }
-
-            this.Loaded -= SettingsPage_Loaded;
-            this.Unloaded -= SettingsPage_Unloaded;
-
-            PropertyChanged = null;
-
-            this.DataContext = null;
-            this.Content = null;
 
             _isInitialized = false;
 
-            Debug.WriteLine("[SettingsPage] Purge complete.");
+            Debug.WriteLine("[SettingsPage] UI and preferences preserved in cache.");
         }
         #endregion
     }

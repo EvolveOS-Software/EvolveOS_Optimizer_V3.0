@@ -3,20 +3,32 @@
 
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class SystemManagerPage : Page
+    public sealed partial class SystemManagerPage : Page, IPurgeable
     {
         public static Action<string>? ExternalPaneRequest;
         public static string RequestedPaneOnLoad { get; set; } = "";
 
         private DateTime _lastNavTime = DateTime.MinValue;
+        private NavigationViewItem? _previousItem;
 
         public SystemManagerPage()
         {
             this.InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             this.Loaded += SystemManagerPage_Loaded;
             this.Unloaded += SystemManagerPage_Unloaded;
         }
@@ -45,21 +57,14 @@ namespace EvolveOS_Optimizer.Pages
             else if (SystemNav.MenuItems.Count > 0 && SystemNav.SelectedItem == null)
             {
                 SystemNav.SelectedItem = SystemNav.MenuItems[0];
+                _previousItem = SystemNav.MenuItems[0] as NavigationViewItem;
             }
         }
 
         private void SystemManagerPage_Unloaded(object sender, RoutedEventArgs e)
         {
             MainWinViewModel.AppRestored -= OnAppRestored;
-
-            ExternalPaneRequest = null;
-
-            if (ContentFrame.Content is IPurgeable purgeablePage)
-            {
-                purgeablePage.Purge();
-            }
-
-            ContentFrame.Content = null;
+            Purge();
         }
 
         private void OnAppRestored()
@@ -88,14 +93,6 @@ namespace EvolveOS_Optimizer.Pages
                     Debug.WriteLine($"[SystemManager] Tab switched to {selectedTag}. High Performance maintained.");
                 }
 
-                if (ContentFrame.Content is IPurgeable oldGhostTab)
-                {
-                    oldGhostTab.Purge();
-                    Debug.WriteLine($"[SystemManager] Purged ghost tab: {oldGhostTab.GetType().Name}");
-                }
-
-                ContentFrame.Content = null;
-
                 switch (selectedTag)
                 {
                     case "ProcessManagerPage":
@@ -108,7 +105,25 @@ namespace EvolveOS_Optimizer.Pages
                         ContentFrame.Navigate(typeof(StartupManagerPage));
                         break;
                 }
+
+                _previousItem = selectedItem;
             }
         }
+
+        #region Purge Page (Blueprint: Pause, Don't Destroy)
+        public void Purge()
+        {
+            Debug.WriteLine("[SystemManagerPage] Caching Purge requested. Broadcasting sleep signal...");
+
+            ExternalPaneRequest = null;
+
+            if (ContentFrame.Content is IPurgeable purgeablePage)
+            {
+                purgeablePage.Purge();
+            }
+
+            Debug.WriteLine("[SystemManagerPage] Sleep signal sent. Host frame preserved in cache.");
+        }
+        #endregion
     }
 }

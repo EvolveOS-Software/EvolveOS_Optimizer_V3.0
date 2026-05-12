@@ -77,18 +77,37 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             IsRefreshing = true;
 
-            var pkgManager = new UninstallingPackages();
-            await Task.Run(() => pkgManager.GetInstalledPackages());
-
-            var installedApps = await AppManager.GetInstalledApps(uninstallableOnly: true);
-
-            SystemAppList.Clear();
-            foreach (var app in installedApps)
+            var installedApps = await Task.Run(() =>
             {
-                SystemAppList.Add(app);
-            }
+                var pkgManager = new UninstallingPackages();
+                pkgManager.GetInstalledPackages();
 
-            IsRefreshing = false;
+                return AppManager.GetInstalledApps(uninstallableOnly: true);
+            });
+
+            var dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+            if (dispatcherQueue != null)
+            {
+                dispatcherQueue.TryEnqueue(() =>
+                {
+                    SystemAppList.Clear();
+                    foreach (var app in installedApps)
+                    {
+                        SystemAppList.Add(app);
+                    }
+                    IsRefreshing = false;
+                });
+            }
+            else
+            {
+                SystemAppList.Clear();
+                foreach (var app in installedApps)
+                {
+                    SystemAppList.Add(app);
+                }
+                IsRefreshing = false;
+            }
         }
 
         private void BuildCollection()

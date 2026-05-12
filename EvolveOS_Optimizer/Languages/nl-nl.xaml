@@ -333,6 +333,17 @@
     <sys:String x:Key="Settings_Donation_Message">Er zijn talloze uren gestoken in het bouwen van EvolveOS Optimizer om je pc optimaal te laten presteren, en ik dek persoonlijk de doorlopende kosten voor functies zoals de live Weer-API. Als deze tool je heeft geholpen, overweeg dan een kleine donatie voor de verdere ontwikkeling ervan! ♥</sys:String>
     <sys:String x:Key="Settings_Donation_SupportBtn">Steun het project</sys:String>
     <sys:String x:Key="Settings_Donation_DismissBtn">Misschien later</sys:String>
+
+    <sys:String x:Key="Settings_HighPerformance_Title">Hoge Prestatiemodus</sys:String>
+    <sys:String x:Key="Settings_HighPerformance_Subtitle">Houdt pagina's in het geheugen voor direct schakelen. Het uitschakelen hiervan bespaart RAM maar verlengt de laadtijden.</sys:String>
+
+    <sys:String x:Key="Settings_Performance_Notify_Title">Prestatiewijziging</sys:String>
+    <sys:String x:Key="Settings_Performance_Notify_Msg">Cache instellingen bijgewerkt. Start EvolveOS Optimizer opnieuw op voor maximaal effect.</sys:String>
+
+    <sys:String x:Key="Settings_Performance_Restart_Title">Herstart Vereist</sys:String>
+    <sys:String x:Key="Settings_Performance_Restart_Content">De instellingen voor de Hoge Prestatiemodus zijn gewijzigd. Wilt u EvolveOS Optimizer nu herstarten om deze wijzigingen toe te passen?</sys:String>
+    <sys:String x:Key="Settings_Performance_Restart_Confirm">Nu herstarten</sys:String>
+    <sys:String x:Key="Settings_Performance_Restart_Cancel">Later</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

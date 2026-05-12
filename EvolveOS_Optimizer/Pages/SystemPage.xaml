@@ -9,7 +9,7 @@
     xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
-    mc:Ignorable="d" NavigationCacheMode="Disabled">
+    mc:Ignorable="d">
 
     <Page.DataContext>
         <vm:SystemViewModel />

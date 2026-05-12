@@ -2,22 +2,42 @@
 // Licensed under the MIT License.
 
 using System.Security;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Animation;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class AdvancedUtilsPage : Page
+    public sealed partial class AdvancedUtilsPage : Page, IPurgeable
     {
         public AdvancedUtilsViewModel ViewModel { get; }
 
         public AdvancedUtilsPage()
         {
             this.InitializeComponent();
+
+            // BLUEPRINT: Adjustable Cache Mode
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             ViewModel = new AdvancedUtilsViewModel();
             this.DataContext = ViewModel;
+
+            this.Unloaded += AdvancedUtilsPage_Unloaded;
+        }
+
+        private void AdvancedUtilsPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Purge();
         }
 
         private async void BtnOpenPasswordManager_Click(object sender, RoutedEventArgs e)
@@ -203,5 +223,14 @@ namespace EvolveOS_Optimizer.Pages
 
             await dialog.ShowAsync();
         }
+
+        #region Purge Page
+        public void Purge()
+        {
+            Debug.WriteLine("[AdvancedUtilsPage] Caching Purge requested. Pausing UI...");
+
+            Debug.WriteLine("[AdvancedUtilsPage] Page preserved in cache.");
+        }
+        #endregion
     }
 }

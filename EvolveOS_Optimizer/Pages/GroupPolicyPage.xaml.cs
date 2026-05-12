@@ -8,7 +8,6 @@ using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel.Items;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages;
@@ -35,6 +34,15 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
     {
         InitializeComponent();
 
+        if (SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+        else
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
+        }
+
         ErrorLogging.LogDebug(new Exception(ResourceString.GetString("Initializing GroupPolicyPage")));
 
         Loaded += GroupPolicyPage_Loaded;
@@ -54,9 +62,19 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
 
     private async void GroupPolicyPage_Loaded(object sender, RoutedEventArgs e)
     {
+        ConfiguredPoliciesListView.SelectionChanged -= ConfiguredPoliciesListView_SelectionChanged;
         ConfiguredPoliciesListView.SelectionChanged += ConfiguredPoliciesListView_SelectionChanged;
 
-        await ScanPoliciesAsync();
+        if (_policyStates == null)
+        {
+            await ScanPoliciesAsync();
+        }
+        else
+        {
+            UpdateSummary();
+            UpdateCategorySummary();
+            UpdateDisplayedPoliciesList();
+        }
 
         if (!string.IsNullOrEmpty(_pendingScrollTarget))
         {
@@ -683,11 +701,7 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
     #region Purge Page
     public void Purge()
     {
-        Debug.WriteLine("[GroupPolicyPage] Purge initiated...");
-
-        Loaded -= GroupPolicyPage_Loaded;
-        Unloaded -= GroupPolicyPage_Unloaded;
-        ConfiguredPoliciesListView.SelectionChanged -= ConfiguredPoliciesListView_SelectionChanged;
+        Debug.WriteLine("[GroupPolicyPage] Caching Purge requested. Halting engines...");
 
         if (_cancellationTokenSource != null)
         {
@@ -700,26 +714,7 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             _cancellationTokenSource = null;
         }
 
-        _policyStates = null;
-        CategorySummaryRepeater.ItemsSource = null;
-        ConfiguredPoliciesListView.ItemsSource = null;
-
-        if (this.DataContext is IDisposable disposableVM)
-        {
-            disposableVM.Dispose();
-        }
-        this.DataContext = null;
-        this.Content = null;
-
-        /*Task.Run(() =>
-        {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
-        });*/
-
-        Debug.WriteLine("[GroupPolicyPage] Purge Complete.");
+        Debug.WriteLine("[GroupPolicyPage] Engines halted. UI preserved in cache.");
     }
     #endregion
 }

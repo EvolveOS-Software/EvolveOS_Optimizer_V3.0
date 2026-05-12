@@ -8,6 +8,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -22,15 +23,15 @@ public class ProcessGroup : ObservableCollection<ProcessManagerModel>
     public ProcessGroup(string name) { Name = name; }
 }
 
-public sealed partial class ProcessManagerPage : Page
+public sealed partial class ProcessManagerPage : Page, IPurgeable
 {
     #region Fields
     private List<ProcessManagerModel> _allProcesses = [];
 
     private readonly ObservableCollection<ProcessGroup> _groupedProcesses = [];
-    private ProcessGroup _appsGroup = new(ResourceString.GetString("process_manager_page_group_apps"));
-    private ProcessGroup _backgroundGroup = new(ResourceString.GetString("process_manager_page_group_background"));
-    private ProcessGroup _windowsGroup = new(ResourceString.GetString("process_manager_page_group_windows"));
+    private ProcessGroup _appsGroup = new(ResourceString.GetString("process_manager_page_group_apps") ?? "Apps");
+    private ProcessGroup _backgroundGroup = new(ResourceString.GetString("process_manager_page_group_background") ?? "Background");
+    private ProcessGroup _windowsGroup = new(ResourceString.GetString("process_manager_page_group_windows") ?? "Windows");
 
     private string _currentSort = "Memory";
     private bool _sortAscending;
@@ -49,6 +50,15 @@ public sealed partial class ProcessManagerPage : Page
     {
         InitializeComponent();
 
+        if (SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+        else
+        {
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
+        }
+
         _groupedProcesses.Add(_appsGroup);
         _groupedProcesses.Add(_backgroundGroup);
         _groupedProcesses.Add(_windowsGroup);
@@ -60,17 +70,30 @@ public sealed partial class ProcessManagerPage : Page
 
     private async void ProcessesPage_Loaded(object sender, RoutedEventArgs e)
     {
+        if (_cts != null)
+        {
+            try { _cts.Cancel(); _cts.Dispose(); } catch { }
+        }
         _cts = new CancellationTokenSource();
 
         if (this.FindName("MemoryModeToggle") is ToggleSwitch ts) ts.IsOn = _showPrivateMemory;
 
-        await LoadProcessesAsync();
-        StartAutoRefresh();
-
         if (DiagnosticsPageViewModel.Current != null)
         {
+            DiagnosticsPageViewModel.Current.OnOptimizeCommandCompleted -= OnGlobalOptimizationCompleted;
             DiagnosticsPageViewModel.Current.OnOptimizeCommandCompleted += OnGlobalOptimizationCompleted;
         }
+
+        if (_allProcesses.Count == 0)
+        {
+            await LoadProcessesAsync();
+        }
+        else
+        {
+            await RefreshProcessesAsync();
+        }
+
+        StartAutoRefresh();
     }
 
     private void ProcessesPage_Unloaded(object sender, RoutedEventArgs e)
@@ -101,11 +124,16 @@ public sealed partial class ProcessManagerPage : Page
         _isUpdating = true;
         try
         {
-            _allProcesses = await GetProcessSnapshotAsync(_cts.Token, _showPrivateMemory);
+            var snapshot = await GetProcessSnapshotAsync(_cts.Token, _showPrivateMemory);
+
+            if (_cts == null || _cts.IsCancellationRequested) return;
+
+            _allProcesses = snapshot;
             UpdateSummary();
             ApplyFilterAndSort();
         }
-        catch (OperationCanceledException) { /* Ignored */ }
+        catch (TaskCanceledException) { Debug.WriteLine("[ProcessManager] Refresh aborted (Navigation)."); }
+        catch (OperationCanceledException) { Debug.WriteLine("[ProcessManager] Refresh aborted (Navigation)."); }
         catch (Exception ex)
         {
             Debug.WriteLine($"[ProcessManager] Refresh Error: {ex.Message}");
@@ -128,6 +156,9 @@ public sealed partial class ProcessManagerPage : Page
         {
             var token = _cts?.Token ?? default;
             _allProcesses = await GetProcessSnapshotAsync(token, _showPrivateMemory);
+
+            if (token.IsCancellationRequested || _cts == null) return;
+
             UpdateSummary();
             ApplyFilterAndSort();
         }
@@ -137,9 +168,15 @@ public sealed partial class ProcessManagerPage : Page
         }
         finally
         {
-            LoadingRing.IsActive = false;
-            LoadingRing.Visibility = Visibility.Collapsed;
-            ProcessListView.Visibility = Visibility.Visible;
+            if (LoadingRing != null)
+            {
+                LoadingRing.IsActive = false;
+                LoadingRing.Visibility = Visibility.Collapsed;
+            }
+            if (ProcessListView != null)
+            {
+                ProcessListView.Visibility = Visibility.Visible;
+            }
         }
     }
 
@@ -300,9 +337,9 @@ public sealed partial class ProcessManagerPage : Page
 
         var sorted = SortProcesses(filtered);
 
-        string strApps = ResourceString.GetString("process_manager_page_group_apps");
-        string strBackground = ResourceString.GetString("process_manager_page_group_background");
-        string strWindows = ResourceString.GetString("process_manager_page_group_windows");
+        string strApps = ResourceString.GetString("process_manager_page_group_apps") ?? "Apps";
+        string strBackground = ResourceString.GetString("process_manager_page_group_background") ?? "Background processes";
+        string strWindows = ResourceString.GetString("process_manager_page_group_windows") ?? "Windows processes";
 
         SyncGroup(_appsGroup, sorted.Where(p => p.Category == strApps).ToList());
         SyncGroup(_backgroundGroup, sorted.Where(p => p.Category == strBackground).ToList());
@@ -359,9 +396,9 @@ public sealed partial class ProcessManagerPage : Page
     #endregion
 
     #region UI Event Handlers
-    private void SearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+    private void SearchBox_TextChanged(Microsoft.UI.Xaml.Controls.AutoSuggestBox sender, Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs args)
     {
-        if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) ApplyFilterAndSort();
+        if (args.Reason == Microsoft.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason.UserInput) ApplyFilterAndSort();
     }
 
     private void SortHeader_Click(object sender, RoutedEventArgs e)
@@ -550,35 +587,36 @@ public sealed partial class ProcessManagerPage : Page
     }
 
     private void SuspendTask_Click(object sender, RoutedEventArgs e) =>
-        ExecuteProcessAction(sender, p => NtSuspendProcess(p.Handle), ResourceString.GetString("process_manager_page_success_suspend_title"), ResourceString.GetString("process_manager_page_success_suspend_msg"));
+        ExecuteProcessAction(sender, p => NtSuspendProcess(p.Handle), ResourceString.GetString("process_manager_page_success_suspend_title") ?? "Suspended", ResourceString.GetString("process_manager_page_success_suspend_msg") ?? "Suspended");
 
     private void ResumeTask_Click(object sender, RoutedEventArgs e) =>
-        ExecuteProcessAction(sender, p => NtResumeProcess(p.Handle), ResourceString.GetString("process_manager_page_success_resume_title"), ResourceString.GetString("process_manager_page_success_resume_msg"));
+        ExecuteProcessAction(sender, p => NtResumeProcess(p.Handle), ResourceString.GetString("process_manager_page_success_resume_title") ?? "Resumed", ResourceString.GetString("process_manager_page_success_resume_msg") ?? "Resumed");
 
     private void SetPriorityHigh_Click(object sender, RoutedEventArgs e) =>
-        ExecuteProcessAction(sender, p => p.PriorityClass = ProcessPriorityClass.High, ResourceString.GetString("process_manager_page_success_priority_title"), ResourceString.GetString("process_manager_page_success_priority_high_msg"));
+        ExecuteProcessAction(sender, p => p.PriorityClass = ProcessPriorityClass.High, ResourceString.GetString("process_manager_page_success_priority_title") ?? "Priority Set", ResourceString.GetString("process_manager_page_success_priority_high_msg") ?? "Priority Set");
 
     private void SetPriorityAboveNormal_Click(object sender, RoutedEventArgs e) =>
-        ExecuteProcessAction(sender, p => p.PriorityClass = ProcessPriorityClass.AboveNormal, ResourceString.GetString("process_manager_page_success_priority_title"), ResourceString.GetString("process_manager_page_success_priority_abovenormal_msg"));
+        ExecuteProcessAction(sender, p => p.PriorityClass = ProcessPriorityClass.AboveNormal, ResourceString.GetString("process_manager_page_success_priority_title") ?? "Priority Set", ResourceString.GetString("process_manager_page_success_priority_abovenormal_msg") ?? "Priority Set");
 
     private void SetPriorityNormal_Click(object sender, RoutedEventArgs e) =>
-        ExecuteProcessAction(sender, p => p.PriorityClass = ProcessPriorityClass.Normal, ResourceString.GetString("process_manager_page_success_priority_title"), ResourceString.GetString("process_manager_page_success_priority_normal_msg"));
+        ExecuteProcessAction(sender, p => p.PriorityClass = ProcessPriorityClass.Normal, ResourceString.GetString("process_manager_page_success_priority_title") ?? "Priority Set", ResourceString.GetString("process_manager_page_success_priority_normal_msg") ?? "Priority Set");
 
     private void SetPriorityLow_Click(object sender, RoutedEventArgs e) =>
-        ExecuteProcessAction(sender, p => p.PriorityClass = ProcessPriorityClass.Idle, ResourceString.GetString("process_manager_page_success_priority_title"), ResourceString.GetString("process_manager_page_success_priority_low_msg"));
+        ExecuteProcessAction(sender, p => p.PriorityClass = ProcessPriorityClass.Idle, ResourceString.GetString("process_manager_page_success_priority_title") ?? "Priority Set", ResourceString.GetString("process_manager_page_success_priority_low_msg") ?? "Priority Set");
 
     private void EnableEfficiencyMode_Click(object sender, RoutedEventArgs e) =>
-        ExecuteProcessAction(sender, p => SetEfficiencyMode(p.Handle, true), ResourceString.GetString("process_manager_page_success_eco_enabled_title"), ResourceString.GetString("process_manager_page_success_eco_enabled_msg"));
+        ExecuteProcessAction(sender, p => SetEfficiencyMode(p.Handle, true), ResourceString.GetString("process_manager_page_success_eco_enabled_title") ?? "Eco Enabled", ResourceString.GetString("process_manager_page_success_eco_enabled_msg") ?? "Eco Enabled");
 
     private void DisableEfficiencyMode_Click(object sender, RoutedEventArgs e) =>
-        ExecuteProcessAction(sender, p => SetEfficiencyMode(p.Handle, false), ResourceString.GetString("process_manager_page_success_eco_disabled_title"), ResourceString.GetString("process_manager_page_success_eco_disabled_msg"));
+        ExecuteProcessAction(sender, p => SetEfficiencyMode(p.Handle, false), ResourceString.GetString("process_manager_page_success_eco_disabled_title") ?? "Eco Disabled", ResourceString.GetString("process_manager_page_success_eco_disabled_msg") ?? "Eco Disabled");
 
     #endregion
 
-    #region Purge Page
+    #region Purge Page (Blueprint: Pause, Don't Destroy)
     public void Purge()
     {
-        Debug.WriteLine("[ProcessManagerPage] Purge initiated...");
+        Debug.WriteLine("[ProcessManagerPage] Caching Purge requested. Pausing page...");
+
         StopAutoRefresh();
 
         if (DiagnosticsPageViewModel.Current != null)
@@ -588,33 +626,11 @@ public sealed partial class ProcessManagerPage : Page
 
         if (_cts != null)
         {
-            _cts.Cancel();
-            _cts.Dispose();
+            try { _cts.Cancel(); _cts.Dispose(); } catch { }
             _cts = null;
         }
 
-        Loaded -= ProcessesPage_Loaded;
-        Unloaded -= ProcessesPage_Unloaded;
-
-        _allProcesses?.Clear();
-        _appsGroup?.Clear();
-        _backgroundGroup?.Clear();
-        _windowsGroup?.Clear();
-        _groupedProcesses?.Clear();
-        ProcessListView.ItemsSource = null;
-
-        this.DataContext = null;
-        this.Content = null;
-
-        Task.Run(() =>
-        {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
-        });
-
-        Debug.WriteLine("[ProcessManagerPage] Purge Complete.");
+        Debug.WriteLine("[ProcessManagerPage] Engines halted. UI and Process snapshot preserved in cache.");
     }
     #endregion
 }

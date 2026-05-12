@@ -16,7 +16,7 @@ using Microsoft.UI.Dispatching;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class AppStorePage : Page, IBusyPage
+    public sealed partial class AppStorePage : Page, IBusyPage, IPurgeable
     {
         #region Data Models & Records
         private sealed record InstalledPackageEntry(string Id, string Name, string Version, string NormalizedId, string NormalizedName, string Source);
@@ -73,9 +73,16 @@ namespace EvolveOS_Optimizer.Pages
         {
             InitializeComponent();
 
-            this.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
-            Loaded += AppStorePage_Loaded;
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
 
+            Loaded += AppStorePage_Loaded;
             Unloaded += AppStorePage_Unloaded;
         }
 
@@ -91,21 +98,14 @@ namespace EvolveOS_Optimizer.Pages
 
             await ErrorLogging.LogInfo("AppStorePage Loaded and starting package load.");
 
+            // This naturally supports caching: it only scans if the list is empty!
             if (_allPackages.Count == 0)
                 await LoadPackagesAsync();
         }
 
         private void AppStorePage_Unloaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                _cts.Cancel();
-
-                _wingetCatalog = null;
-                _localCatalog = null;
-                _packageManager = null;
-            }
-            catch { }
+            Purge();
         }
         #endregion
 
@@ -196,7 +196,11 @@ namespace EvolveOS_Optimizer.Pages
                 PackageList.Clear();
 
                 var installedMap = await GetInstalledPackagesMapAsync(_cts.Token);
+                if (_cts.Token.IsCancellationRequested) return;
+
                 var catalog = await EnsureWingetCatalogAsync();
+                if (_cts.Token.IsCancellationRequested) return;
+
                 List<DiscoveredPackageEntry> discovered;
 
                 if (catalog is null)
@@ -321,9 +325,13 @@ namespace EvolveOS_Optimizer.Pages
                 int count = 0;
                 foreach (var p in _allPackages)
                 {
+                    if (_cts.Token.IsCancellationRequested) return;
+
                     PackageList.Add(p);
-                    if (++count % 50 == 0) await Task.Delay(1);
+                    if (++count % 50 == 0) await Task.Delay(1, _cts.Token);
                 }
+
+                if (_cts.Token.IsCancellationRequested) return;
 
                 SearchProgressRing.IsActive = false;
                 LoadingState.Visibility = Visibility.Collapsed;
@@ -1129,12 +1137,11 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void ApplySearch(string query)
         {
-            if (StatusText == null || PackageList == null || SearchTopProgressBar == null)
-            {
-                return;
-            }
+            if (StatusText == null || PackageList == null || SearchTopProgressBar == null) return;
 
             var currentVersion = Interlocked.Increment(ref _searchVersion);
+
+            var token = _cts.Token;
 
             StatusText.Visibility = Visibility.Collapsed;
             SearchTopProgressBar.Visibility = Visibility.Collapsed;
@@ -1158,9 +1165,11 @@ namespace EvolveOS_Optimizer.Pages
 
                 foreach (var p in sortedAll)
                 {
-                    if (currentVersion != _searchVersion) return;
+                    if (currentVersion != _searchVersion || token.IsCancellationRequested) return;
+
                     PackageList.Add(p);
-                    if (++count % 50 == 0) await Task.Delay(1);
+
+                    if (++count % 50 == 0) await Task.Delay(1, token);
                 }
                 return;
             }
@@ -1171,35 +1180,31 @@ namespace EvolveOS_Optimizer.Pages
 
             foreach (var p in sortedLocal)
             {
-                if (currentVersion != _searchVersion) return;
+                if (currentVersion != _searchVersion || token.IsCancellationRequested) return;
+
                 PackageList.Add(p);
-                if (++localCount % 50 == 0) await Task.Delay(1);
+                if (++localCount % 50 == 0) await Task.Delay(1, token);
             }
 
             if (query.Length >= 3)
             {
-                await Task.Delay(400);
-                if (currentVersion != _searchVersion) return;
-
-                if (!await NetworkHelper.IsConnectedAsync())
+                try
                 {
-                    SearchTopProgressBar.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    SearchTopProgressBar.Visibility = Visibility.Visible;
+                    await Task.Delay(400, token);
+                    if (currentVersion != _searchVersion || token.IsCancellationRequested) return;
 
-                    try
+                    if (await NetworkHelper.IsConnectedAsync())
                     {
-                        var webResults = await SearchPackagesFromWingetCliAsync(query);
+                        SearchTopProgressBar.Visibility = Visibility.Visible;
 
-                        if (currentVersion != _searchVersion) return;
+                        var webResults = await SearchPackagesFromWingetCliAsync(query, token);
+
+                        if (currentVersion != _searchVersion || token.IsCancellationRequested) return;
 
                         var newWebPackages = new List<WingetPackage>();
-
                         foreach (var webItem in webResults)
                         {
-                            if (currentVersion != _searchVersion) return;
+                            if (currentVersion != _searchVersion || token.IsCancellationRequested) return;
 
                             bool alreadyInList = _allPackages.Any(p => (p.Id ?? string.Empty).Equals(webItem.Id ?? string.Empty, StringComparison.OrdinalIgnoreCase));
 
@@ -1224,27 +1229,28 @@ namespace EvolveOS_Optimizer.Pages
                         var sortedWebPackages = SortPackages(newWebPackages).ToList();
                         foreach (var p in sortedWebPackages)
                         {
-                            if (currentVersion != _searchVersion) return;
+                            if (currentVersion != _searchVersion || token.IsCancellationRequested) return;
                             PackageList.Add(p);
                         }
                     }
-                    catch (Exception ex)
+                }
+                catch (OperationCanceledException) { return; }
+                catch (Exception ex)
+                {
+                    await ErrorLogging.LogInfo($"Online search failed: {ex.Message}");
+                }
+                finally
+                {
+                    if (currentVersion == _searchVersion && !token.IsCancellationRequested && SearchTopProgressBar != null)
                     {
-                        await ErrorLogging.LogInfo($"Online search failed: {ex.Message}");
-                    }
-                    finally
-                    {
-                        if (currentVersion == _searchVersion)
-                        {
-                            SearchTopProgressBar.Visibility = Visibility.Collapsed;
-                        }
+                        SearchTopProgressBar.Visibility = Visibility.Collapsed;
                     }
                 }
             }
 
-            if (currentVersion == _searchVersion)
+            if (currentVersion == _searchVersion && !token.IsCancellationRequested)
             {
-                await ErrorLogging.LogInfo($"ApplySearch Final: '{query}' → {PackageList.Count} total results found.");
+                await ErrorLogging.LogInfo($"ApplySearch Final: '{query}' → {PackageList.Count} results.");
 
                 if (PackageList.Count == 0)
                 {
@@ -1973,9 +1979,6 @@ namespace EvolveOS_Optimizer.Pages
                     id.Equals("Id", StringComparison.OrdinalIgnoreCase))
                     continue;
 
-                // Commented out to ensure to get all updates. Uncomment for only traditional WinGet packages.
-                // if (!PackageHelper.IsLikelyWingetPackageId(id)) continue;
-
                 if (string.IsNullOrWhiteSpace(available)) continue;
 
                 string source = string.Empty;
@@ -2217,6 +2220,24 @@ namespace EvolveOS_Optimizer.Pages
         private static void TryTerminateProcess(Process p)
         {
             try { if (!p.HasExited) p.Kill(entireProcessTree: true); } catch { }
+        }
+        #endregion
+
+        #region Purge Page
+        public void Purge()
+        {
+            Debug.WriteLine("[AppStorePage] Caching Purge requested. Pausing page...");
+
+            try
+            {
+                if (!_cts.IsCancellationRequested)
+                {
+                    _cts.Cancel();
+                }
+            }
+            catch { }
+
+            Debug.WriteLine("[AppStorePage] Background tasks halted. UI and data preserved in cache.");
         }
         #endregion
     }

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Numerics;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -16,6 +19,15 @@ namespace EvolveOS_Optimizer.Pages
         public ServicesPage()
         {
             this.InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
 
             //this.Loaded += (s, e) => DebugAvailableCards();
             this.Unloaded += ServicesPage_Unloaded;
@@ -160,22 +172,9 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[ServicesPage] Purge initiated...");
+            Debug.WriteLine("[ServicesPage] Caching Purge requested. Pausing page...");
 
-            if (this.DataContext is IDisposable disposableVM)
-            {
-                disposableVM.Dispose();
-                System.Diagnostics.Debug.WriteLine("[ServicesPage] ViewModel Disposed.");
-            }
-            this.DataContext = null;
-
-            _svcTweaks = null;
-
-            this.Content = null;
-
-            this.Unloaded -= ServicesPage_Unloaded;
-
-            System.Diagnostics.Debug.WriteLine("[ServicesPage] Purge Complete.");
+            Debug.WriteLine("[ServicesPage] UI and ViewModel preserved in cache.");
         }
         #endregion
     }

@@ -4325,19 +4325,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public void StartBackgroundGuardian() => _memoryGuardian?.StartBackgroundSentry();
         public void StopBackgroundGuardian() => _memoryGuardian?.StopBackgroundSentry();
 
+        public void ForceImmediateMemoryCleanup()
+        {
+            _memoryGuardian?.ForceImmediateCleanup();
+        }
+
         public void PauseUiUpdates()
         {
             _isUiActive = false;
 
-            //StopLiveTelemetry();
-            //StopLiveMonitoring();
+            _telemetryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            StopLiveMonitoring();
+
+            _securityRefreshTimer?.Stop();
 
             bool shouldBeInEfficiencyMode = LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low;
             EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(shouldBeInEfficiencyMode);
+
+            Debug.WriteLine("[DiagnosticsPageVM] Background engines CRYO-FROZEN.");
         }
 
         public void ResumeUiUpdates()
@@ -4349,9 +4355,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (LocalMachineSettingsEngine.EnableLiveDiagnostics)
             {
-                StartLiveTelemetry();
+                _telemetryTimer?.Change(0, 1000);
+
                 StartLiveMonitoring();
             }
+
+            _securityRefreshTimer?.Start();
 
             var dispatcher = MainWindow.Instance?.DispatcherQueue;
 
@@ -4368,6 +4377,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 RebuildGraphFromHistory();
                 OnPropertyChanged(string.Empty);
             }
+
+            Debug.WriteLine("[DiagnosticsPageVM] Background engines AWAKE.");
         }
 
         private void SetPropertySafe<T>(ref T field, T value, string propertyName)

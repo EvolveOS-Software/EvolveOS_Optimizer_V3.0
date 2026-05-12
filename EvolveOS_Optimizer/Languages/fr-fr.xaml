@@ -333,6 +333,17 @@
     <sys:String x:Key="Settings_Donation_Message">D'innombrables heures ont été consacrées à la création d'EvolveOS Optimizer pour optimiser les performances de votre PC, et je finance personnellement les coûts continus de fonctionnalités telles que l'API météo en direct. Si cet outil vous a aidé, n'hésitez pas à faire un petit don pour soutenir son développement ! ♥</sys:String>
     <sys:String x:Key="Settings_Donation_SupportBtn">Soutenir le projet</sys:String>
     <sys:String x:Key="Settings_Donation_DismissBtn">Peut-être plus tard</sys:String>
+
+    <sys:String x:Key="Settings_HighPerformance_Title">Mode Haute Performance</sys:String>
+    <sys:String x:Key="Settings_HighPerformance_Subtitle">Garde les pages en mémoire pour un basculement instantané. Désactiver ceci économise de la RAM mais augmente les temps de chargement.</sys:String>
+
+    <sys:String x:Key="Settings_Performance_Notify_Title">Changement de Performance</sys:String>
+    <sys:String x:Key="Settings_Performance_Notify_Msg">Paramètres du cache mis à jour. Redémarrez EvolveOS pour un effet maximum.</sys:String>
+
+    <sys:String x:Key="Settings_Performance_Restart_Title">Redémarrage Requis</sys:String>
+    <sys:String x:Key="Settings_Performance_Restart_Content">Les paramètres du mode Haute Performance ont été modifiés. Voulez-vous redémarrer EvolveOS Optimizer maintenant pour appliquer ces changements ?</sys:String>
+    <sys:String x:Key="Settings_Performance_Restart_Confirm">Redémarrer maintenant</sys:String>
+    <sys:String x:Key="Settings_Performance_Restart_Cancel">Plus tard</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

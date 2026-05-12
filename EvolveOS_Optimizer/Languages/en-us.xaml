@@ -339,6 +339,17 @@
     <sys:String x:Key="Settings_Donation_Message">Countless hours went into building EvolveOS Optimizer to keep your PC running at its best, and I personally cover the ongoing costs for features like the live Weather API. If this tool has helped you, please consider a small donation for its continued development! ♥</sys:String>
     <sys:String x:Key="Settings_Donation_SupportBtn">Support the project</sys:String>
     <sys:String x:Key="Settings_Donation_DismissBtn">Maybe later</sys:String>
+
+    <sys:String x:Key="Settings_HighPerformance_Title">High Performance Mode</sys:String>
+    <sys:String x:Key="Settings_HighPerformance_Subtitle">Keeps pages in memory for instant switching. Disabling this saves RAM but increases loading times.</sys:String>
+
+    <sys:String x:Key="Settings_Performance_Notify_Title">Performance Change</sys:String>
+    <sys:String x:Key="Settings_Performance_Notify_Msg">Cache settings updated. Restart EvolveOS Optimizer for maximum effect.</sys:String>
+
+    <sys:String x:Key="Settings_Performance_Restart_Title">Restart Required</sys:String>
+    <sys:String x:Key="Settings_Performance_Restart_Content">High Performance Mode settings have changed. Would you like to restart EvolveOS Optimizer now to apply these changes?</sys:String>
+    <sys:String x:Key="Settings_Performance_Restart_Confirm">Restart Now</sys:String>
+    <sys:String x:Key="Settings_Performance_Restart_Cancel">Later</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->

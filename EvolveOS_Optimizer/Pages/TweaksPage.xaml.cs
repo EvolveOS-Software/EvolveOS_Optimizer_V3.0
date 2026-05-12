@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using EvolveOS_Optimizer.Core.Interfaces;
-using Microsoft.UI.Xaml.Navigation;
+using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -16,7 +16,18 @@ namespace EvolveOS_Optimizer.Pages
         public TweaksPage()
         {
             InitializeComponent();
+
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+
             ContentFrame.Navigated += ContentFrame_Navigated;
+            this.Unloaded += Page_Unloaded;
         }
 
         private void TweaksNav_Loaded(object sender, RoutedEventArgs e)
@@ -49,14 +60,6 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (ContentFrame.CurrentSourcePageType != pageType)
                 {
-                    if (ContentFrame.Content is IPurgeable oldGhostTab)
-                    {
-                        oldGhostTab.Purge();
-                        Debug.WriteLine($"[TweaksPage] Purged ghost tab: {oldGhostTab.GetType().Name}");
-                    }
-
-                    ContentFrame.Content = null;
-
                     ContentFrame.Navigate(pageType);
 
                     if (ContentFrame.CurrentSourcePageType != pageType)
@@ -115,37 +118,15 @@ namespace EvolveOS_Optimizer.Pages
         #region Purge Page
         public void Purge()
         {
-            Debug.WriteLine("[TweaksPage] Purge initiated...");
-
-            ContentFrame.Navigated -= ContentFrame_Navigated;
-            this.Unloaded -= Page_Unloaded;
+            Debug.WriteLine("[TweaksPage] Caching Purge requested. Broadcasting sleep signal...");
 
             if (ContentFrame?.Content is IPurgeable activeChildPage)
             {
                 activeChildPage.Purge();
-                Debug.WriteLine($"[TweaksPage] Cascaded Purge to child: {activeChildPage.GetType().Name}");
+                Debug.WriteLine($"[TweaksPage] Sleep signal sent to child: {activeChildPage.GetType().Name}");
             }
 
-            if (ContentFrame != null)
-            {
-                ContentFrame.Content = null;
-                ContentFrame.BackStack.Clear();
-                ContentFrame.ForwardStack.Clear();
-            }
-
-            TweaksNav.SelectedItem = null;
-            _previousItem = null;
-            this.Content = null;
-
-            Task.Run(() =>
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-                Debug.WriteLine($"[MemoryGuardian] Aggressive background GC completed for {this.GetType().Name}.");
-            });
-
-            Debug.WriteLine("[TweaksPage] Purge Complete.");
+            Debug.WriteLine("[TweaksPage] Host frame preserved in cache.");
         }
         #endregion
     }

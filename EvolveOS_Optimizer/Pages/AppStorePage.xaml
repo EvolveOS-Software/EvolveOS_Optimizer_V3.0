@@ -7,7 +7,7 @@
     xmlns:models="using:EvolveOS_Optimizer.Core.Model"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
-    mc:Ignorable="d" NavigationCacheMode="Disabled">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <Style x:Key="PackageItemContainerStyle" TargetType="ListViewItem">
