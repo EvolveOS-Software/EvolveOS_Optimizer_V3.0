@@ -98,7 +98,7 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
 
     private void ProcessesPage_Unloaded(object sender, RoutedEventArgs e)
     {
-        Purge();
+        _ = Purge();
     }
     #endregion
 
@@ -612,10 +612,10 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
 
     #endregion
 
-    #region Purge Page (Blueprint: Pause, Don't Destroy)
-    public void Purge()
+    #region Purge Page
+    public async Task Purge()
     {
-        Debug.WriteLine("[ProcessManagerPage] Caching Purge requested. Pausing page...");
+        Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
         StopAutoRefresh();
 
@@ -626,11 +626,40 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
 
         if (_cts != null)
         {
-            try { _cts.Cancel(); _cts.Dispose(); } catch { }
+            try { _cts.Cancel(); _cts.Dispose(); } catch (ObjectDisposedException) { }
             _cts = null;
         }
 
-        Debug.WriteLine("[ProcessManagerPage] Engines halted. UI and Process snapshot preserved in cache.");
+        if (!SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Process Collections...");
+
+            _allProcesses.Clear();
+            _appsGroup.Clear();
+            _backgroundGroup.Clear();
+            _windowsGroup.Clear();
+            _groupedProcesses.Clear();
+            _iconCache.Clear();
+
+            this.Loaded -= ProcessesPage_Loaded;
+            this.Unloaded -= ProcessesPage_Unloaded;
+
+            if (CVSProcesses != null) CVSProcesses.Source = null;
+            if (ProcessListView != null) ProcessListView.ItemsSource = null;
+
+            this.DataContext = null;
+            this.Content = null;
+            this.Bindings?.StopTracking();
+
+            _ = Task.Run(() =>
+            {
+                DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+        }
     }
     #endregion
 }

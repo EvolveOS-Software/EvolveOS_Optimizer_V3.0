@@ -23,7 +23,14 @@ namespace EvolveOS_Optimizer.Pages
         {
             this.InitializeComponent();
 
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            if (SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+            }
+            else
+            {
+                this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
 
             this.DataContext = new SystemViewModel();
 
@@ -606,11 +613,32 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-        public void Purge()
+        public Task Purge()
         {
-            Debug.WriteLine("[SystemPage] Caching Purge requested. Pausing page...");
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-            Debug.WriteLine("[SystemPage] UI and ViewModel preserved in cache.");
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
+
+                this.Loaded -= SystemPage_Loaded;
+                this.Unloaded -= SystemPage_Unloaded;
+
+                this.DataContext = null;
+                this.Content = null;
+                //this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
+
+            return Task.CompletedTask;
         }
         #endregion
     }

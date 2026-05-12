@@ -13,6 +13,7 @@ using System.Text.Json;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Animation;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -1744,23 +1745,44 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-        public void Purge()
+        public Task Purge()
         {
-            Debug.WriteLine("[SettingsPage] Caching Purge requested. Pausing timers...");
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-            if (_sessionTimer != null)
+            _sessionTimer?.Stop();
+            _themeSchedulerTimer?.Stop();
+
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
             {
-                _sessionTimer.Stop();
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Events...");
+
+                if (_localizationHandler != null)
+                {
+                    LocalizationService.Instance.PropertyChanged -= _localizationHandler;
+                    _localizationHandler = null;
+                }
+
+                this.Loaded -= SettingsPage_Loaded;
+                this.Unloaded -= SettingsPage_Unloaded;
+
+                this.DataContext = null;
+                this.Content = null;
+                this.Bindings?.StopTracking();
+
+                _isInitialized = false;
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                _isInitialized = false;
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
             }
 
-            if (_themeSchedulerTimer != null)
-            {
-                _themeSchedulerTimer.Stop();
-            }
-
-            _isInitialized = false;
-
-            Debug.WriteLine("[SettingsPage] UI and preferences preserved in cache.");
+            return Task.CompletedTask;
         }
         #endregion
     }

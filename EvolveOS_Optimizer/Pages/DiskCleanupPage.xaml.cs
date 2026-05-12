@@ -74,7 +74,7 @@ namespace EvolveOS_Optimizer.Pages
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
             }
 
-            Purge();
+            _ = Purge();
         }
         #endregion
 
@@ -361,9 +361,9 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-        public void Purge()
+        public async Task Purge()
         {
-            Debug.WriteLine("[DiskCleanupPage] Caching Purge requested. Pausing page...");
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
             if (_cts != null)
             {
@@ -371,8 +371,41 @@ namespace EvolveOS_Optimizer.Pages
                 _cts = null;
             }
 
-            Debug.WriteLine("[DiskCleanupPage] Background tasks halted. UI and data preserved in cache.");
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
+
+                if (_viewModel != null)
+                {
+                    _viewModel.Categories?.Clear();
+                    _viewModel.ResultLines?.Clear();
+                    _viewModel.DetailLines?.Clear();
+                    _viewModel.HistoryChart?.Clear();
+                    _viewModel.CategoryInsights?.Clear();
+
+                    _viewModel = null;
+                }
+
+                _buttonsWithOpenFlyouts.Clear();
+
+                this.Loaded -= DiskCleanupPage_Loaded;
+                this.Unloaded -= DiskCleanupPage_Unloaded;
+
+                this.DataContext = null;
+                this.Content = null;
+                this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
         }
+
         #endregion
     }
 }

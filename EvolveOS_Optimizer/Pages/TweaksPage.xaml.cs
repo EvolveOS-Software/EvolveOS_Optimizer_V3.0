@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Pages
@@ -116,7 +117,7 @@ namespace EvolveOS_Optimizer.Pages
         }
 
         #region Purge Page
-        public void Purge()
+        public Task Purge()
         {
             Debug.WriteLine("[TweaksPage] Caching Purge requested. Broadcasting sleep signal...");
 
@@ -126,7 +127,32 @@ namespace EvolveOS_Optimizer.Pages
                 Debug.WriteLine($"[TweaksPage] Sleep signal sent to child: {activeChildPage.GetType().Name}");
             }
 
-            Debug.WriteLine("[TweaksPage] Host frame preserved in cache.");
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking Host Frame...");
+
+                _previousItem = null;
+
+                if (ContentFrame != null) ContentFrame.Navigated -= ContentFrame_Navigated;
+                this.Unloaded -= Page_Unloaded;
+
+                if (ContentFrame != null) ContentFrame.Content = null;
+
+                this.DataContext = null;
+                this.Content = null;
+                //this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: Host frame preserved in RAM cache.");
+            }
+
+            return Task.CompletedTask;
         }
         #endregion
     }

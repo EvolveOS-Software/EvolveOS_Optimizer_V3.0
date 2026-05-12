@@ -6,6 +6,7 @@ using System.ServiceProcess;
 using System.Threading;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Win32;
@@ -78,7 +79,7 @@ public sealed partial class ServiceManagerPage : Page, IPurgeable
 
     private void ServicesPage_Unloaded(object sender, RoutedEventArgs e)
     {
-        Purge();
+        _ = Purge();
     }
     #endregion
 
@@ -572,19 +573,45 @@ public sealed partial class ServiceManagerPage : Page, IPurgeable
     #endregion
 
     #region Purge Page
-    public void Purge()
+    public async Task Purge()
     {
-        Debug.WriteLine("[ServiceManagerPage] Caching Purge requested. Pausing page...");
+        Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
         StopAutoRefresh();
 
         if (_cts != null)
         {
-            try { _cts.Cancel(); _cts.Dispose(); } catch { }
+            try { _cts.Cancel(); _cts.Dispose(); } catch (ObjectDisposedException) { }
             _cts = null;
         }
 
-        Debug.WriteLine("[ServiceManagerPage] Engines halted. UI and Service snapshot preserved in cache.");
+        if (!SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Service Collections...");
+
+            _allServices.Clear();
+            _filteredServices.Clear();
+            _registryCache.Clear();
+            _userInteractedComboBoxes.Clear();
+
+            this.Loaded -= ServicesPage_Loaded;
+            this.Unloaded -= ServicesPage_Unloaded;
+
+            if (ServicesListView != null) ServicesListView.ItemsSource = null;
+
+            this.DataContext = null;
+            this.Content = null;
+            //this.Bindings?.StopTracking();
+
+            _ = Task.Run(() =>
+            {
+                DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+        }
     }
     #endregion
 }

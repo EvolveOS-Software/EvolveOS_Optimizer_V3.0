@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
@@ -45,7 +46,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void WinBuilderPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            Purge();
+            _ = Purge();
         }
 
         private void LoadCatalog()
@@ -264,11 +265,45 @@ namespace EvolveOS_Optimizer.Pages
         }
 
         #region Purge Page
-        public void Purge()
+        public async Task Purge()
         {
-            Debug.WriteLine("[WinBuilderPage] Caching Purge requested. Pausing UI...");
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-            Debug.WriteLine("[WinBuilderPage] UI preserved in RAM cache.");
+            if (_buildCts != null)
+            {
+                try { _buildCts.Cancel(); _buildCts.Dispose(); } catch (ObjectDisposedException) { }
+                _buildCts = null;
+            }
+
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Catalog Collections...");
+
+                AvailableTweaks?.Clear();
+                AvailableApps?.Clear();
+                AvailableServices?.Clear();
+                AvailableElements?.Clear();
+
+                this.Unloaded -= WinBuilderPage_Unloaded;
+
+                if (TweaksItemsControl != null) TweaksItemsControl.ItemsSource = null;
+                if (AppsItemsControl != null) AppsItemsControl.ItemsSource = null;
+                if (ServicesItemsControl != null) ServicesItemsControl.ItemsSource = null;
+                if (ElementsItemsControl != null) ElementsItemsControl.ItemsSource = null;
+
+                this.DataContext = null;
+                this.Content = null;
+                this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
         }
         #endregion
     }

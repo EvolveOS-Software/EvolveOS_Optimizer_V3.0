@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 
@@ -71,7 +72,7 @@ namespace EvolveOS_Optimizer.Pages
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             _isUnloading = true;
-            Purge();
+            _ = Purge();
         }
 
         private async Task LoadDataAsync()
@@ -471,7 +472,7 @@ namespace EvolveOS_Optimizer.Pages
 
         #region Purge Page
 
-        public void Purge()
+        public async Task Purge()
         {
             Debug.WriteLine("[StartupManagerPage] Caching Purge requested. Pausing page...");
 
@@ -492,7 +493,31 @@ namespace EvolveOS_Optimizer.Pages
                 _delayDebounceTokens.Clear();
             }
 
-            Debug.WriteLine("[StartupManagerPage] Engines halted. UI and data preserved in cache.");
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and App Collections...");
+
+                _allApps.Clear();
+                _startupApps.Clear();
+
+                this.Loaded -= Page_Loaded;
+                this.Unloaded -= Page_Unloaded;
+
+                if (StartupAppsListView != null) StartupAppsListView.ItemsSource = null;
+
+                this.DataContext = null;
+                this.Content = null;
+                //this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
         }
 
         #endregion

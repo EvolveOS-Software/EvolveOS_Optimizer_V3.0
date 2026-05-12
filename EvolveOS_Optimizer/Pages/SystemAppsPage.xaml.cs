@@ -95,7 +95,7 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
 
     private void SystemAppsPage_Unloaded(object sender, RoutedEventArgs e)
     {
-        Purge();
+        _ = Purge();
     }
     #endregion
 
@@ -1059,7 +1059,7 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
     #endregion
 
     #region Purge Page
-    public void Purge()
+    public async Task Purge()
     {
         Debug.WriteLine("[SystemAppsPage] Caching Purge requested. Pausing page...");
 
@@ -1069,7 +1069,30 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
             cancellationTokenSource = null;
         }
 
-        Debug.WriteLine("[SystemAppsPage] Background tasks halted. UI and data preserved in cache.");
+        if (!SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and App Collections...");
+
+            AppList?.Clear();
+            allApps?.Clear();
+
+            this.Loaded -= SystemAppsPage_Loaded;
+            this.Unloaded -= SystemAppsPage_Unloaded;
+
+            ViewModel = null;
+            this.DataContext = null;
+            this.Content = null;
+            this.Bindings?.StopTracking();
+
+            _ = Task.Run(() =>
+            {
+                DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+        }
     }
     #endregion
 }

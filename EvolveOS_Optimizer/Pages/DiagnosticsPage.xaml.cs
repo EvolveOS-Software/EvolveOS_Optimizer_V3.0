@@ -212,6 +212,8 @@ namespace EvolveOS_Optimizer.Pages
             }
 
             ExternalPaneRequest = null;
+
+            _ = Purge();
         }
 
         private void SwitchToPane(string paneName)
@@ -1323,8 +1325,8 @@ namespace EvolveOS_Optimizer.Pages
         }*/
         #endregion
 
-        #region Purge Page
-        public async void Purge()
+        #region Purge Page (old cache mode)
+        /*public async void Purge()
         {
             _isCurrentPageActive = false;
             _navGeneration++;
@@ -1350,6 +1352,72 @@ namespace EvolveOS_Optimizer.Pages
             catch (Exception ex)
             {
                 Debug.WriteLine($"[DiagnosticsPage] Error during purge: {ex.Message}");
+            }
+        }*/
+        #endregion
+
+
+        #region Purge Page
+        public async Task Purge()
+        {
+            _isCurrentPageActive = false;
+            _navGeneration++;
+
+            try
+            {
+                Debug.WriteLine("[DiagnosticsPage] Singleton Purge Initiated...");
+
+                await StopCurrentOperationAsync();
+
+                if (_cancellationTokenSource != null)
+                {
+                    try { _cancellationTokenSource.Cancel(); _cancellationTokenSource.Dispose(); } catch { }
+                    _cancellationTokenSource = null;
+                }
+
+                ViewModel?.PauseUiUpdates();
+
+                if (!SettingsEngine.IsHighPerformanceModeEnabled)
+                {
+                    Debug.WriteLine("[DiagnosticsPage] Low Resource Mode: Evicting Singleton data...");
+
+                    foreach (var result in _scanResults.Values)
+                    {
+                        result.Clear();
+                    }
+
+                    _controls.Clear();
+
+                    if (ViewModel != null)
+                    {
+                        ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                        ViewModel.ShowSecurityIssuesRequested -= ViewModel_ShowSecurityIssuesRequested;
+                        ViewModel.CloseActiveDialogsRequested -= ViewModel_CloseActiveDialogsRequested;
+                        ViewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
+                        ViewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
+                        ViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
+                        ViewModel.OpenDnsToolkitRequested -= ViewModel_OpenDnsToolkitRequested;
+                    }
+
+                    this.DataContext = null;
+                    this.Content = null;
+                    this.Bindings?.StopTracking();
+
+                    _isInitialized = false;
+
+                    _ = Task.Run(() =>
+                    {
+                        ViewModel?.ForceImmediateMemoryCleanup();
+                    });
+                }
+                else
+                {
+                    Debug.WriteLine("[DiagnosticsPage] High Performance Mode: Singleton state preserved.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DiagnosticsPage] Error during singleton purge: {ex.Message}");
             }
         }
         #endregion

@@ -1,4 +1,8 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using EvolveOS_Optimizer.Core.Interfaces;
+using System.Threading.Tasks;
 
 namespace EvolveOS_Optimizer.Core.Base
 {
@@ -6,10 +10,10 @@ namespace EvolveOS_Optimizer.Core.Base
     {
         public PageBase()
         {
-            this.Unloaded += (s, e) => Purge();
+            this.Unloaded += (s, e) => _ = Purge();
         }
 
-        public virtual void Purge()
+        public virtual Task Purge()
         {
             if (this.DataContext is IDisposable disposable)
             {
@@ -17,6 +21,8 @@ namespace EvolveOS_Optimizer.Core.Base
             }
 
             this.DataContext = null;
+
+            return Task.CompletedTask;
         }
     }
 }

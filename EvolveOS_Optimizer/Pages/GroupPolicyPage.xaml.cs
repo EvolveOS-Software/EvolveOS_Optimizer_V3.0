@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Core.ViewModel.Items;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -85,7 +86,7 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
 
     private void GroupPolicyPage_Unloaded(object sender, RoutedEventArgs e)
     {
-        Purge();
+        _ = Purge();
     }
     #endregion
 
@@ -699,9 +700,9 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
     #endregion
 
     #region Purge Page
-    public void Purge()
+    public async Task Purge()
     {
-        Debug.WriteLine("[GroupPolicyPage] Caching Purge requested. Halting engines...");
+        Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
         if (_cancellationTokenSource != null)
         {
@@ -714,7 +715,32 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             _cancellationTokenSource = null;
         }
 
-        Debug.WriteLine("[GroupPolicyPage] Engines halted. UI preserved in cache.");
+        if (!SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Collections...");
+
+            _policyStates = null;
+
+            ConfiguredPoliciesListView.ItemsSource = null;
+            CategorySummaryRepeater.ItemsSource = null;
+
+            this.Loaded -= GroupPolicyPage_Loaded;
+            this.Unloaded -= GroupPolicyPage_Unloaded;
+            ConfiguredPoliciesListView.SelectionChanged -= ConfiguredPoliciesListView_SelectionChanged;
+
+            this.DataContext = null;
+            this.Content = null;
+            //this.Bindings?.StopTracking();
+
+            _ = Task.Run(() =>
+            {
+                DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+        }
     }
     #endregion
 }

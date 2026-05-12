@@ -134,9 +134,10 @@ public sealed partial class SoftwareCenterPage : Page
     }
 
     #region Purge Page
-    public void Purge()
+    public Task Purge()
     {
-        Debug.WriteLine("[SoftwareCenterPage] Caching Purge requested. Broadcasting sleep signal...");
+        Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
+
         ExternalPaneRequest = null;
 
         if (ContentFrame.Content is IPurgeable purgeablePage)
@@ -144,7 +145,39 @@ public sealed partial class SoftwareCenterPage : Page
             purgeablePage.Purge();
         }
 
-        Debug.WriteLine("[SoftwareCenterPage] Sleep signal sent. Host frame and Shared VM preserved in cache.");
+        if (!SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking Host Frame and Shared ViewModel...");
+
+            if (_sharedViewModel != null)
+            {
+                _sharedViewModel.DisplayState?.Clear();
+                _sharedViewModel.SelectedPackages?.Clear();
+                _sharedViewModel = null;
+            }
+
+            _previousItem = null;
+
+            this.Loaded -= SoftwareCenterPage_Loaded;
+            this.Unloaded -= Page_Unloaded;
+
+            if (ContentFrame != null) ContentFrame.Content = null;
+
+            this.DataContext = null;
+            this.Content = null;
+            //this.Bindings?.StopTracking();
+
+            _ = Task.Run(() =>
+            {
+                DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: Host frame and Shared VM preserved in RAM cache.");
+        }
+
+        return Task.CompletedTask;
     }
     #endregion
 }

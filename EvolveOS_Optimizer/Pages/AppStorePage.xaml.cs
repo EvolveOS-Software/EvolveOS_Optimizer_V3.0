@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
@@ -98,14 +99,13 @@ namespace EvolveOS_Optimizer.Pages
 
             await ErrorLogging.LogInfo("AppStorePage Loaded and starting package load.");
 
-            // This naturally supports caching: it only scans if the list is empty!
             if (_allPackages.Count == 0)
                 await LoadPackagesAsync();
         }
 
         private void AppStorePage_Unloaded(object sender, RoutedEventArgs e)
         {
-            Purge();
+            _ = Purge();
         }
         #endregion
 
@@ -2224,9 +2224,9 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-        public void Purge()
+        public async Task Purge()
         {
-            Debug.WriteLine("[AppStorePage] Caching Purge requested. Pausing page...");
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
             try
             {
@@ -2235,9 +2235,43 @@ namespace EvolveOS_Optimizer.Pages
                     _cts.Cancel();
                 }
             }
-            catch { }
+            catch (ObjectDisposedException) { }
 
-            Debug.WriteLine("[AppStorePage] Background tasks halted. UI and data preserved in cache.");
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and WinGet Collections...");
+
+                PackageList?.Clear();
+                UpdatesList?.Clear();
+                InstalledList?.Clear();
+                _allPackages?.Clear();
+                _updateablePackages?.Clear();
+                _installedSnapshot?.Clear();
+
+                _wingetCatalog = null;
+                _localCatalog = null;
+                _packageManager = null;
+
+                this.Loaded -= AppStorePage_Loaded;
+                this.Unloaded -= AppStorePage_Unloaded;
+
+                if (PackagesGridView != null) PackagesGridView.ItemsSource = null;
+                if (UpdatesGridView != null) UpdatesGridView.ItemsSource = null;
+                if (InstalledGridView != null) InstalledGridView.ItemsSource = null;
+
+                this.DataContext = null;
+                this.Content = null;
+                this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
         }
         #endregion
     }

@@ -634,21 +634,50 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-        public void Purge()
+        public Task Purge()
         {
-            Debug.WriteLine("[PackagesPage] Caching Purge requested. Putting engines to sleep...");
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
             _timer?.Stop();
             _staggerTimer?.Stop();
 
             if (_pageCts != null)
             {
-                try { _pageCts.Cancel(); _pageCts.Dispose(); } catch { }
+                try { _pageCts.Cancel(); _pageCts.Dispose(); } catch (ObjectDisposedException) { }
                 _pageCts = null;
             }
 
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
 
-            Debug.WriteLine("[PackagesPage] Engines sleeping. UI and VM securely cached.");
+                _currentCardStates.Clear();
+                _entranceQueue.Clear();
+
+                if (this.DataContext is PackagesViewModel vm)
+                {
+                    vm.DisplayState?.Clear();
+                    vm.SelectedPackages?.Clear();
+                }
+
+                this.Loaded -= PackagesPage_Loaded;
+                this.Unloaded -= PackagesPage_Unloaded;
+
+                this.DataContext = null;
+                this.Content = null;
+                //this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
+
+            return Task.CompletedTask;
         }
         #endregion
     }

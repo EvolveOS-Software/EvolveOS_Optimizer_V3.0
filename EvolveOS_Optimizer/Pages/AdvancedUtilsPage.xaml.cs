@@ -19,7 +19,6 @@ namespace EvolveOS_Optimizer.Pages
         {
             this.InitializeComponent();
 
-            // BLUEPRINT: Adjustable Cache Mode
             if (SettingsEngine.IsHighPerformanceModeEnabled)
             {
                 this.NavigationCacheMode = NavigationCacheMode.Required;
@@ -225,11 +224,31 @@ namespace EvolveOS_Optimizer.Pages
         }
 
         #region Purge Page
-        public void Purge()
+        public Task Purge()
         {
-            Debug.WriteLine("[AdvancedUtilsPage] Caching Purge requested. Pausing UI...");
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-            Debug.WriteLine("[AdvancedUtilsPage] Page preserved in cache.");
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
+
+                this.Unloaded -= AdvancedUtilsPage_Unloaded;
+
+                this.DataContext = null;
+                this.Content = null;
+                this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
+
+            return Task.CompletedTask;
         }
         #endregion
     }

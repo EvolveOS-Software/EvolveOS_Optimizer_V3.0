@@ -51,7 +51,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ScriptsPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            Purge();
+            _ = Purge();
         }
 
         private void InitializeTimer()
@@ -102,7 +102,7 @@ namespace EvolveOS_Optimizer.Pages
         }
 
         #region Purge Page
-        public void Purge()
+        public async Task Purge()
         {
             Debug.WriteLine("[ScriptsPage] Caching Purge requested. Halting engines...");
 
@@ -112,8 +112,32 @@ namespace EvolveOS_Optimizer.Pages
                 Debug.WriteLine("[ScriptsPage] TimerControlManager paused.");
             }
 
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
 
-            Debug.WriteLine("[ScriptsPage] Engines halted. UI and Script collection preserved in RAM.");
+                if (_viewModel != null)
+                {
+                    _viewModel.OnScriptsUpdated -= UpdateEmptyState;
+                }
+
+                this.Loaded -= ScriptsPage_Loaded;
+                this.Unloaded -= ScriptsPage_Unloaded;
+
+                _viewModel = null;
+                this.DataContext = null;
+                this.Content = null;
+                this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
         }
         #endregion
     }

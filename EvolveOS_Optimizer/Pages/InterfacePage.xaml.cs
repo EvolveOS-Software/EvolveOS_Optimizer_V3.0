@@ -180,11 +180,31 @@ namespace EvolveOS_Optimizer.Pages
         }
 
         #region Purge Page
-        public void Purge()
+        public Task Purge()
         {
-            Debug.WriteLine("[InterfacePage] Caching Purge requested. Pausing page...");
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-            Debug.WriteLine("[InterfacePage] UI and ViewModel preserved in cache.");
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
+
+                this.Unloaded -= InterfacePage_Unloaded;
+
+                this.DataContext = null;
+                this.Content = null;
+                //this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
+
+            return Task.CompletedTask;
         }
         #endregion
     }

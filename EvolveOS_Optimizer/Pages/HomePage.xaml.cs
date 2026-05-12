@@ -152,6 +152,8 @@ namespace EvolveOS_Optimizer.Pages
             PauseLiveMonitoring();
 
             Debug.WriteLine("[HomePage] Page cached and background engines paused.");
+
+            _ = Purge();
         }
 
         private void PauseLiveMonitoring()
@@ -1956,20 +1958,43 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-        public void Purge()
+        public async Task Purge()
         {
-            if (!_isCurrentPageActive) return;
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-            Debug.WriteLine("[HomePage] Safe Purge (Sleep) Initiated...");
+            _monitoringTimer?.Stop();
+            _wallpaperTimer?.Stop();
 
-            Page_Unloaded(this, new RoutedEventArgs());
+            ViewModel?.PauseUpdates();
 
-            Task.Run(() =>
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
             {
-                GC.Collect(2, GCCollectionMode.Optimized, false, false);
-            });
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Graph Histories...");
 
-            Debug.WriteLine("[HomePage] Safe Purge complete. Visuals cached in RAM.");
+                _cpuHistory.Clear();
+                _ramHistory.Clear();
+                _netDownHistory.Clear();
+                _netUpHistory.Clear();
+                _gpuHistory.Clear();
+
+                MainWinViewModel.AppHidden -= PauseLiveMonitoring;
+                MainWinViewModel.AppRestored -= ResumeLiveMonitoring;
+                this.Loaded -= HomePage_Loaded;
+                this.Unloaded -= Page_Unloaded;
+
+                this.DataContext = null;
+                this.Content = null;
+                this.Bindings?.StopTracking();
+
+                _ = Task.Run(() =>
+                {
+                    DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
         }
         #endregion
     }
