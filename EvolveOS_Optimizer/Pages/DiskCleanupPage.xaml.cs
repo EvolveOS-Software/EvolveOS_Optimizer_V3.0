@@ -68,14 +68,19 @@ namespace EvolveOS_Optimizer.Pages
 
         private void DiskCleanupPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            EfficiencyModeHelper.IsUIWakeLockActive = false;
+            _ = Purge();
+        }
 
-            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            if (ViewModel?.CancelStorageAnalysisCommand.CanExecute(null) == true)
             {
-                EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
+                ViewModel.CancelStorageAnalysisCommand.Execute(null);
             }
 
-            _ = Purge();
+            EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
         }
         #endregion
 
@@ -313,6 +318,14 @@ namespace EvolveOS_Optimizer.Pages
                         });
                     });
                 }
+            }
+        }
+
+        private void CategoryList_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if (e.ClickedItem is FileCategoryInsight category)
+            {
+                ViewModel.FilterTreeByCategory(category.CategoryName);
             }
         }
 

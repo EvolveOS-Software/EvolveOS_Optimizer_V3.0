@@ -440,10 +440,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public void UpdatePowerState(string tag)
         {
+            // Efficiency Mode should be OFF
             if (tag == "Home" ||
                 tag == "Diagnostics" ||
                 tag == "SystemManager" ||
-                tag == "Software")
+                tag == "Software" ||
+                tag == "SystemCleaner")
             {
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);

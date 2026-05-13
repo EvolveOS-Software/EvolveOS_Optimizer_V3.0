@@ -55,8 +55,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [ObservableProperty] public partial bool IsScheduledCleanEnabled { get; set; }
         [ObservableProperty] public partial int ScheduledCleanDayIndex { get; set; } = 0;
         [ObservableProperty] public partial TimeSpan ScheduledCleanTime { get; set; } = new TimeSpan(12, 0, 0);
+        [ObservableProperty] public partial bool IsCategoryPaneOpen { get; set; } = true;
 
         public ObservableCollection<StorageInsight> AnalyzerInsights { get; } = new();
+        public ObservableCollection<FileCategoryInsight> FileCategories { get; } = new();
+
+        private List<StorageNode> _unfilteredRootNodes = new();
+
+        private readonly Dictionary<string, (string Name, string Color, string Icon)> _categoryMap;
 
         public IReadOnlyList<string> ScheduleDayOptions { get; } = new List<string>
         {
@@ -86,6 +92,28 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [ObservableProperty] public partial ObservableCollection<StorageNode> AnalyzedNodes { get; set; } = [];
         [ObservableProperty] public partial bool IsAnalyzerViewActive { get; set; }
         [ObservableProperty] public partial string AnalyzerStatusText { get; set; } = "";
+        #endregion
+
+        #region Constructor
+        public DiskCleanupViewModel()
+        {
+            string locVideos = ResourceString.GetString("analyzer_cat_videos") ?? "Videos";
+            string locAudio = ResourceString.GetString("analyzer_cat_audio") ?? "Audio";
+            string locImages = ResourceString.GetString("analyzer_cat_images") ?? "Images";
+            string locArchives = ResourceString.GetString("analyzer_cat_archives") ?? "Archives";
+            string locInstallers = ResourceString.GetString("analyzer_cat_installers") ?? "Installers";
+            string locDocs = ResourceString.GetString("analyzer_cat_documents") ?? "Documents";
+
+            _categoryMap = new Dictionary<string, (string Name, string Color, string Icon)>(StringComparer.OrdinalIgnoreCase)
+            {
+                { ".mp4", (locVideos, "#FF3B30", "\uE714") }, { ".mkv", (locVideos, "#FF3B30", "\uE714") }, { ".mov", (locVideos, "#FF3B30", "\uE714") },
+                { ".mp3", (locAudio, "#FF9500", "\uE8D6") }, { ".wav", (locAudio, "#FF9500", "\uE8D6") }, { ".flac", (locAudio, "#FF9500", "\uE8D6") },
+                { ".jpg", (locImages, "#FFCC00", "\uEB9F") }, { ".png", (locImages, "#FFCC00", "\uEB9F") }, { ".gif", (locImages, "#FFCC00", "\uEB9F") },
+                { ".zip", (locArchives, "#4CD964", "\uE7B8") }, { ".rar", (locArchives, "#4CD964", "\uE7B8") }, { ".7z", (locArchives, "#4CD964", "\uE7B8") },
+                { ".exe", (locInstallers, "#5AC8FA", "\uE896") }, { ".msi", (locInstallers, "#5AC8FA", "\uE896") }, { ".iso", (locInstallers, "#5AC8FA", "\uE896") },
+                { ".doc", (locDocs, "#007AFF", "\uE8A5") }, { ".pdf", (locDocs, "#007AFF", "\uE8A5") }, { ".txt", (locDocs, "#007AFF", "\uE8A5") }
+            };
+        }
         #endregion
 
         #region Property Change Hooks
@@ -220,6 +248,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     GenerateAnalyzerInsights(rootNodes[0]);
                 }
 
+                GenerateCategoryInsights(rootNodes);
+
                 AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_complete") ?? "Scan complete. Mapped {0}.", totalBytesScanned.FormatBytes());
             }
             catch (OperationCanceledException)
@@ -234,6 +264,126 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        public void GenerateCategoryInsights(List<StorageNode> rootNodes)
+        {
+            _unfilteredRootNodes = rootNodes.ToList();
+
+            string locAllFiles = ResourceString.GetString("analyzer_cat_all_files") ?? "All Files";
+            string locOther = ResourceString.GetString("analyzer_cat_other") ?? "Other";
+
+            FileCategories.Clear();
+            var tally = new Dictionary<string, long>();
+
+            void TallyNode(StorageNode node)
+            {
+                if (!node.IsFolder)
+                {
+                    string ext = Path.GetExtension(node.Name);
+                    string catName = _categoryMap.TryGetValue(ext, out var cat) ? cat.Name : locOther;
+
+                    if (!tally.ContainsKey(catName)) tally[catName] = 0;
+                    tally[catName] += node.SizeBytes;
+                }
+                foreach (var child in node.Children) TallyNode(child);
+            }
+
+            foreach (var root in rootNodes) TallyNode(root);
+
+            long totalBytes = tally.Values.Sum();
+
+            FileCategories.Add(new FileCategoryInsight
+            {
+                CategoryName = locAllFiles,
+                SizeBytes = totalBytes,
+                Percentage = 100,
+                ColorHex = "#FFFFFF",
+                IconGlyph = "\uE81E"
+            });
+
+            foreach (var kvp in tally.OrderByDescending(x => x.Value))
+            {
+                var mapping = _categoryMap.Values.FirstOrDefault(v => v.Name == kvp.Key);
+                FileCategories.Add(new FileCategoryInsight
+                {
+                    CategoryName = kvp.Key,
+                    SizeBytes = kvp.Value,
+                    Percentage = totalBytes > 0 ? ((double)kvp.Value / totalBytes) * 100 : 0,
+                    ColorHex = mapping.Color ?? "#8E8E93",
+                    IconGlyph = mapping.Icon ?? "\uE713"
+                });
+            }
+        }
+
+        public void FilterTreeByCategory(string categoryName)
+        {
+            AnalyzedNodes.Clear();
+
+            string locAllFiles = ResourceString.GetString("analyzer_cat_all_files") ?? "All Files";
+            string locOther = ResourceString.GetString("analyzer_cat_other") ?? "Other";
+
+            if (categoryName == locAllFiles)
+            {
+                foreach (var node in _unfilteredRootNodes) AnalyzedNodes.Add(node);
+                return;
+            }
+
+            StorageNode? CloneAndFilter(StorageNode node)
+            {
+                if (!node.IsFolder)
+                {
+                    string ext = Path.GetExtension(node.Name);
+                    string cat = _categoryMap.TryGetValue(ext, out var c) ? c.Name : locOther;
+
+                    if (cat == categoryName)
+                    {
+                        return new StorageNode
+                        {
+                            Name = node.Name,
+                            Path = node.Path,
+                            SizeBytes = node.SizeBytes,
+                            IsFolder = false
+                        };
+                    }
+                    return null;
+                }
+
+                var clonedFolder = new StorageNode
+                {
+                    Name = node.Name,
+                    Path = node.Path,
+                    IsFolder = true,
+                    IsExpanded = true
+                };
+                long newSize = 0;
+
+                foreach (var child in node.Children)
+                {
+                    var filteredChild = CloneAndFilter(child);
+                    if (filteredChild != null)
+                    {
+                        clonedFolder.Children.Add(filteredChild);
+                        newSize += filteredChild.SizeBytes;
+                    }
+                }
+
+                if (clonedFolder.Children.Count > 0)
+                {
+                    clonedFolder.SizeBytes = newSize;
+                    clonedFolder.Percentage = 100;
+
+                    return clonedFolder;
+                }
+
+                return null;
+            }
+
+            foreach (var root in _unfilteredRootNodes)
+            {
+                var filteredRoot = CloneAndFilter(root);
+                if (filteredRoot != null) AnalyzedNodes.Add(filteredRoot);
             }
         }
 

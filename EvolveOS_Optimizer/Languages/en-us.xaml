@@ -3406,6 +3406,18 @@
     <sys:String x:Key="analyzer_header_modified">Modified</sys:String>
     <sys:String x:Key="analyzer_header_actions">Actions</sys:String>
 
+    <sys:String x:Key="analyzer_cat_all_files">All Files</sys:String>
+    <sys:String x:Key="analyzer_cat_other">Other</sys:String>
+    <sys:String x:Key="analyzer_toggle_filetypes_tooltip">Toggle File Types Panel</sys:String>
+    <sys:String x:Key="analyzer_btn_cancel_scan">Cancel Scan</sys:String>
+    <sys:String x:Key="analyzer_header_filetypes">File Types</sys:String>
+
+    <sys:String x:Key="analyzer_cat_videos">Videos</sys:String>
+    <sys:String x:Key="analyzer_cat_audio">Audio</sys:String>
+    <sys:String x:Key="analyzer_cat_images">Images</sys:String>
+    <sys:String x:Key="analyzer_cat_archives">Archives</sys:String>
+    <sys:String x:Key="analyzer_cat_installers">Installers</sys:String>
+    <sys:String x:Key="analyzer_cat_documents">Documents</sys:String>
     <!-- endregion Disk Cleanup -->
 
     <!-- region First Run Performance/Eco Mode -->

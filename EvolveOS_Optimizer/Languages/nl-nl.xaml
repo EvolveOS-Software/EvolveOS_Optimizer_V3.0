@@ -3386,6 +3386,18 @@
     <sys:String x:Key="analyzer_header_modified">Gewijzigd</sys:String>
     <sys:String x:Key="analyzer_header_actions">Acties</sys:String>
 
+    <sys:String x:Key="analyzer_cat_all_files">Alle bestanden</sys:String>
+    <sys:String x:Key="analyzer_cat_other">Overige</sys:String>
+    <sys:String x:Key="analyzer_toggle_filetypes_tooltip">Bestandstypenpaneel in-/uitschakelen</sys:String>
+    <sys:String x:Key="analyzer_btn_cancel_scan">Scan annuleren</sys:String>
+    <sys:String x:Key="analyzer_header_filetypes">Bestandstypen</sys:String>
+
+    <sys:String x:Key="analyzer_cat_videos">Video's</sys:String>
+    <sys:String x:Key="analyzer_cat_audio">Audio</sys:String>
+    <sys:String x:Key="analyzer_cat_images">Afbeeldingen</sys:String>
+    <sys:String x:Key="analyzer_cat_archives">Archieven</sys:String>
+    <sys:String x:Key="analyzer_cat_installers">Installatieprogramma's</sys:String>
+    <sys:String x:Key="analyzer_cat_documents">Documenten</sys:String>
     <!-- endregion Disk Cleanup -->
 
     <!-- region First Run Performance/Eco Mode -->
