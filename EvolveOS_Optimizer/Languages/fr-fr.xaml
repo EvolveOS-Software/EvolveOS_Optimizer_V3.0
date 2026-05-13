@@ -3358,4 +3358,26 @@
     <sys:String x:Key="btn_eco_mode">Mode Éco</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Remarque : L'application va redémarrer pour appliquer cette architecture. Vous pouvez modifier votre sélection à tout moment dans les Paramètres.</sys:String>
     <!-- endregion First Run Performance/Eco Mode -->
+
+    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_header_name">Nom</sys:String>
+    <sys:String x:Key="analyzer_header_size">Taille</sys:String>
+    <sys:String x:Key="analyzer_header_allocated">Alloué</sys:String>
+    <sys:String x:Key="analyzer_header_files">Fichiers</sys:String>
+    <sys:String x:Key="analyzer_header_folders">Dossiers</sys:String>
+    <sys:String x:Key="analyzer_header_percent">% du parent</sys:String>
+    <sys:String x:Key="analyzer_header_modified">Modifié</sys:String>
+    <sys:String x:Key="analyzer_header_actions">Actions</sys:String>
+
+    <sys:String x:Key="ib_firstrun_title">Configuration de l'optimisation</sys:String>
+    <sys:String x:Key="ib_firstrun_msg">Bienvenue dans EvolveOS Optimizer. Comment devons-nous gérer la mémoire de votre système ?</sys:String>
+    <sys:String x:Key="txt_mode_selection_desc">Le mode Performance maintient la navigation instantanée en mettant les pages en cache dans la RAM. Le mode Éco vide agressivement la mémoire en arrière-plan pour réduire au maximum l'empreinte de votre système.</sys:String>
+    <sys:String x:Key="btn_perf_mode">Mode Performance</sys:String>
+    <sys:String x:Key="btn_eco_mode">Mode Éco</sys:String>
+    <sys:String x:Key="txt_mode_change_anytime">Remarque : L'application redémarrera pour appliquer cette architecture. Vous pouvez modifier votre sélection à tout moment dans les Paramètres.</sys:String>
+
+    <sys:String x:Key="analyzer_ctx_explorer">Afficher dans l'Explorateur</sys:String>
+    <sys:String x:Key="analyzer_ctx_unlock">Déverrouiller</sys:String>
+    <sys:String x:Key="analyzer_ctx_delete">Supprimer</sys:String>
+    <!-- endregion First Run Performance/Eco Mode -->
 </ResourceDictionary>

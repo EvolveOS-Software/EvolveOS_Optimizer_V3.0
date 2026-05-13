@@ -3356,4 +3356,26 @@
     <sys:String x:Key="btn_eco_mode">Modalità Eco</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Nota: L'app si riavvierà per applicare questa architettura. Puoi modificare la tua selezione in qualsiasi momento nelle Impostazioni.</sys:String>
     <!-- endregion First Run Performance/Eco Mode -->
+
+    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_header_name">Nome</sys:String>
+    <sys:String x:Key="analyzer_header_size">Dimensioni</sys:String>
+    <sys:String x:Key="analyzer_header_allocated">Allocato</sys:String>
+    <sys:String x:Key="analyzer_header_files">File</sys:String>
+    <sys:String x:Key="analyzer_header_folders">Cartelle</sys:String>
+    <sys:String x:Key="analyzer_header_percent">% del genitore</sys:String>
+    <sys:String x:Key="analyzer_header_modified">Modificato</sys:String>
+    <sys:String x:Key="analyzer_header_actions">Azioni</sys:String>
+
+    <sys:String x:Key="ib_firstrun_title">Configurazione Ottimizzazione</sys:String>
+    <sys:String x:Key="ib_firstrun_msg">Benvenuto in EvolveOS Optimizer. Come dovremmo gestire la memoria del tuo sistema?</sys:String>
+    <sys:String x:Key="txt_mode_selection_desc">La Modalità Prestazioni mantiene la navigazione istantanea memorizzando le pagine nella RAM. La Modalità Eco svuota aggressivamente la memoria in background per mantenere l'impronta del sistema il più piccola possibile.</sys:String>
+    <sys:String x:Key="btn_perf_mode">Modalità Prestazioni</sys:String>
+    <sys:String x:Key="btn_eco_mode">Modalità Eco</sys:String>
+    <sys:String x:Key="txt_mode_change_anytime">Nota: l'app si riavvierà per applicare questa architettura. Puoi modificare la tua selezione in qualsiasi momento nelle Impostazioni.</sys:String>
+
+    <sys:String x:Key="analyzer_ctx_explorer">Mostra in Esplora risorse</sys:String>
+    <sys:String x:Key="analyzer_ctx_unlock">Sblocca</sys:String>
+    <sys:String x:Key="analyzer_ctx_delete">Elimina</sys:String>
+    <!-- endregion First Run Performance/Eco Mode -->
 </ResourceDictionary>

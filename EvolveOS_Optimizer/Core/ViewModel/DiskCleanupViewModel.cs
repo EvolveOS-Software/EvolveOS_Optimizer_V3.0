@@ -32,15 +32,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private List<CleanerEntry> _loadedEntries = [];
         private List<string> _lastPaths = [];
         private bool _suppressSave;
+        private CancellationTokenSource? _analyzerCts;
         #endregion
 
-        #region Observable State
+        #region Observable State (Cleaner)
         [ObservableProperty] public partial ObservableCollection<DiskCleanupCategoryViewModel> Categories { get; set; } = [];
         [ObservableProperty] public partial ObservableCollection<ScanResultLine> ResultLines { get; set; } = [];
         [ObservableProperty] public partial ObservableCollection<DetailLine> DetailLines { get; set; } = [];
         [ObservableProperty] public partial ScanResultLine? SelectedResultLine { get; set; }
         [ObservableProperty] public partial string SearchText { get; set; } = "";
-        [ObservableProperty] public partial string StatusText { get; set; } = ResourceString.GetString("cleanup_status_loading");
+        [ObservableProperty] public partial string StatusText { get; set; } = ResourceString.GetString("cleanup_status_loading") ?? "Loading...";
         [ObservableProperty] public partial string TotalSize { get; set; } = "";
         [ObservableProperty] public partial string TotalSpaceSaved { get; set; } = "0 B";
         [ObservableProperty] public partial bool IsBusy { get; set; }
@@ -79,6 +80,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public bool CanRunCleaner => !IsBusy && Categories.Count > 0;
         #endregion
 
+        #region Observable State (Storage Analyzer)
+        [ObservableProperty] public partial ObservableCollection<StorageNode> AnalyzedNodes { get; set; } = [];
+        [ObservableProperty] public partial bool IsAnalyzerViewActive { get; set; }
+        [ObservableProperty] public partial string AnalyzerStatusText { get; set; } = "";
+        #endregion
+
         #region Property Change Hooks
         partial void OnIsPostCleanEnabledChanged(bool value) => SettingsEngine.IsPostCleanEnabled = value;
         partial void OnPostCleanCommandsChanged(string value) => SettingsEngine.PostCleanCommands = value;
@@ -96,8 +103,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             RebuildVisibleCategories();
             RefreshCategoryState();
             StatusText = Categories.Count > 0
-                ? string.Format(ResourceString.GetString("cleanup_status_search_found"), CountVisibleEntries())
-                : ResourceString.GetString("cleanup_status_search_empty");
+                ? string.Format(ResourceString.GetString("cleanup_status_search_found") ?? "Found {0} items", CountVisibleEntries())
+                : ResourceString.GetString("cleanup_status_search_empty") ?? "No results";
             OnPropertyChanged(nameof(HasSearchText));
         }
 
@@ -118,25 +125,276 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         partial void OnScheduledCleanDayIndexChanged(int value)
         {
             SettingsEngine.ScheduledCleanDayIndex = value;
-
-            if (IsScheduledCleanEnabled)
-            {
-                // Trigger background service update
-            }
+            if (IsScheduledCleanEnabled) { /* Trigger background service update */ }
         }
 
         partial void OnScheduledCleanTimeChanged(TimeSpan value)
         {
             SettingsEngine.ScheduledCleanTime = value;
-
-            if (IsScheduledCleanEnabled)
-            {
-                // Trigger background service update
-            }
+            if (IsScheduledCleanEnabled) { /* Trigger background service update */ }
         }
         #endregion
 
-        #region Commands
+        #region Commands (Storage Analyzer)
+
+        public List<DriveOption> GetAvailableDrives()
+        {
+            var drives = DriveInfo.GetDrives().Where(d => d.IsReady).Select(d => new DriveOption
+            {
+                Name = string.IsNullOrWhiteSpace(d.VolumeLabel) ? "Local Disk" : d.VolumeLabel,
+                Path = d.Name
+            }).ToList();
+
+            drives.Insert(0, new DriveOption { Name = ResourceString.GetString("analyzer_all_drives") ?? "All Drives", Path = "ALL" });
+            return drives;
+        }
+
+        [RelayCommand]
+        private async Task RunStorageAnalyzerAsync(string rootPath)
+        {
+            if (IsBusy) return;
+            IsBusy = true;
+            IsAnalyzerViewActive = true;
+            AnalyzedNodes.Clear();
+
+            _analyzerCts?.Cancel();
+            _analyzerCts = new CancellationTokenSource();
+            var token = _analyzerCts.Token;
+
+            AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_scanning") ?? "Mapping storage on {0}...", rootPath);
+
+            try
+            {
+                var drivesToScan = new List<string>();
+                if (rootPath == "ALL")
+                {
+                    drivesToScan.AddRange(DriveInfo.GetDrives().Where(d => d.IsReady && d.DriveType == DriveType.Fixed).Select(d => d.Name));
+                }
+                else
+                {
+                    drivesToScan.Add(rootPath);
+                }
+
+                long totalBytesAllDrives = 0;
+                var rootNodes = new List<StorageNode>();
+
+                foreach (var drive in drivesToScan)
+                {
+                    var node = await Task.Run(() => BuildStorageTree(drive, token), token);
+                    if (node != null)
+                    {
+                        totalBytesAllDrives += node.SizeBytes;
+                        rootNodes.Add(node);
+                    }
+                }
+
+                foreach (var node in rootNodes)
+                {
+                    node.Percentage = totalBytesAllDrives > 0 ? ((double)node.SizeBytes / totalBytesAllDrives) * 100 : 0;
+                    AnalyzedNodes.Add(node);
+                }
+
+                AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_complete") ?? "Scan complete. Mapped {0}.", totalBytesAllDrives.FormatBytes());
+            }
+            catch (OperationCanceledException)
+            {
+                AnalyzerStatusText = ResourceString.GetString("analyzer_status_cancelled") ?? "Scan cancelled.";
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                AnalyzerStatusText = "Error during storage analysis.";
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        [RelayCommand]
+        private void CancelStorageAnalysis()
+        {
+            _analyzerCts?.Cancel();
+        }
+
+        [RelayCommand]
+        private void ShowInExplorer(StorageNode node)
+        {
+            if (node == null || string.IsNullOrWhiteSpace(node.Path)) return;
+            try
+            {
+                Process.Start("explorer.exe", $"/select,\"{node.Path}\"");
+            }
+            catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+        }
+
+        [RelayCommand]
+        private async Task UnlockStorageItemAsync(StorageNode node)
+        {
+            if (node == null || string.IsNullOrWhiteSpace(node.Path)) return;
+
+            AnalyzerStatusText = ResourceString.GetString("analyzer_status_unlocking") ?? "Granting access and checking for locks...";
+            IsBusy = true;
+
+            try
+            {
+                List<string> terminatedProcesses = await Task.Run(() =>
+                {
+                    TakingOwnership.GrantAdministratorsAccess(
+                        node.Path,
+                        TakingOwnership.SE_OBJECT_TYPE.SE_FILE_OBJECT);
+
+                    var lockingNames = UnlockHandleHelper.GetLockingProcessNames(node.Path);
+
+                    UnlockHandleHelper.UnlockDirectory(node.Path);
+
+                    return lockingNames;
+                });
+
+                if (terminatedProcesses.Count > 0)
+                {
+                    string names = string.Join(", ", terminatedProcesses.Take(3));
+                    if (terminatedProcesses.Count > 3) names += " and others";
+
+                    AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_unlocked_procs") ?? "Access granted & unlocked. Terminated: {0}", names);
+                }
+                else
+                {
+                    AnalyzerStatusText = ResourceString.GetString("analyzer_status_unlocked_nolocks") ?? "Access granted. No active file locks found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                AnalyzerStatusText = "Failed to unlock item.";
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        [RelayCommand]
+        private async Task DeleteStorageItemAsync(StorageNode node)
+        {
+            if (node == null || string.IsNullOrWhiteSpace(node.Path)) return;
+            IsBusy = true;
+            try
+            {
+                await Task.Run(() =>
+                {
+                    if (node.IsFolder)
+                        Directory.Delete(node.Path, true);
+                    else
+                        File.Delete(node.Path);
+                });
+
+                RemoveNodeFromTree(AnalyzedNodes, node);
+                AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_deleted") ?? "Deleted {0}", node.Name);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                AnalyzerStatusText = $"Delete failed: {ex.Message}";
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        private StorageNode BuildStorageTree(string path, CancellationToken token)
+        {
+            var node = new StorageNode
+            {
+                Name = Path.GetFileName(path),
+                Path = path,
+                IsFolder = true
+            };
+
+            if (string.IsNullOrEmpty(node.Name)) node.Name = path;
+
+            try
+            {
+                var dirInfo = new DirectoryInfo(path);
+                node.LastModified = dirInfo.LastWriteTime;
+
+                foreach (var file in dirInfo.EnumerateFiles("*", new EnumerationOptions { IgnoreInaccessible = true }))
+                {
+                    if (token.IsCancellationRequested) return node;
+
+                    long fileSize = file.Length;
+
+                    long allocatedSize = ((fileSize + 4095) / 4096) * 4096;
+
+                    node.SizeBytes += fileSize;
+                    node.AllocatedSizeBytes += allocatedSize;
+                    node.FilesCount++;
+
+                    node.Children.Add(new StorageNode
+                    {
+                        Name = file.Name,
+                        Path = file.FullName,
+                        IsFolder = false,
+                        SizeBytes = fileSize,
+                        AllocatedSizeBytes = allocatedSize,
+                        FilesCount = 0,
+                        FoldersCount = 0,
+                        LastModified = file.LastWriteTime
+                    });
+                }
+
+                foreach (var dir in dirInfo.EnumerateDirectories("*", new EnumerationOptions { IgnoreInaccessible = true }))
+                {
+                    if (token.IsCancellationRequested) return node;
+
+                    if ((dir.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint) continue;
+
+                    var childNode = BuildStorageTree(dir.FullName, token);
+                    if (childNode != null && childNode.SizeBytes > 0)
+                    {
+                        childNode.Depth = node.Depth + 1;
+
+                        node.SizeBytes += childNode.SizeBytes;
+                        node.AllocatedSizeBytes += childNode.AllocatedSizeBytes;
+                        node.FilesCount += childNode.FilesCount;
+                        node.FoldersCount += (childNode.FoldersCount + 1);
+
+                        node.Children.Add(childNode);
+                    }
+                }
+
+                var sortedChildren = node.Children.OrderByDescending(c => c.SizeBytes).ToList();
+                node.Children.Clear();
+                foreach (var child in sortedChildren)
+                {
+                    child.Percentage = node.SizeBytes > 0 ? ((double)child.SizeBytes / node.SizeBytes) * 100 : 0;
+                    node.Children.Add(child);
+                }
+            }
+            catch (UnauthorizedAccessException) { /* System protected folder, ignore */ }
+            catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+
+            return node;
+        }
+
+        private bool RemoveNodeFromTree(ObservableCollection<StorageNode> nodes, StorageNode targetNode)
+        {
+            if (nodes.Contains(targetNode))
+            {
+                nodes.Remove(targetNode);
+                return true;
+            }
+            foreach (var node in nodes)
+            {
+                if (RemoveNodeFromTree(node.Children, targetNode))
+                    return true;
+            }
+            return false;
+        }
+        #endregion
+
+        #region Commands (Cleaner)
         [RelayCommand] private void SelectAll() => SetAllSelected(true);
         [RelayCommand] private void SelectNone() => SetAllSelected(false);
         [RelayCommand] private void SelectDefaults() => SetAllDefaults();
@@ -195,7 +453,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private bool CanDownload() => !IsBusy;
         #endregion
 
-        #region Load
+        #region Load (Cleaner)
         [RelayCommand(CanExecute = nameof(CanRefresh))]
         private async Task RefreshAsync() => await LoadWinapp2Async(_lastPaths);
         private bool CanRefresh() => !IsBusy && _lastPaths.Count > 0;
@@ -232,7 +490,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 return;
             }
 
-            StatusText = ResourceString.GetString("cleanup_status_parsing");
+            StatusText = ResourceString.GetString("cleanup_status_parsing") ?? "Parsing database...";
 
             var allEntries = new List<CleanerEntry>();
             foreach (var path in targetPaths)
@@ -267,20 +525,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             RefreshFileInfo();
 
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_analysis_ready"), installedEntries.Count, allEntries.Count);
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_analysis_ready") ?? "Ready. {0} rules applied.", installedEntries.Count, allEntries.Count);
             RefreshCategoryState();
             IsBusy = false;
         }
         #endregion
 
-        #region Analyze & Clean
+        #region Analyze & Clean (Cleaner)
         [RelayCommand(CanExecute = nameof(CanAnalyze))]
         private async Task AnalyzeAsync()
         {
             var selected = GetSelectedEntries();
-            if (selected.Count == 0) { StatusText = ResourceString.GetString("cleanup_status_nothing_selected"); return; }
+            if (selected.Count == 0) { StatusText = ResourceString.GetString("cleanup_status_nothing_selected") ?? "No items selected."; return; }
 
-            BeginResultsRun(ResourceString.GetString("cleanup_status_scanning"));
+            BeginResultsRun(ResourceString.GetString("cleanup_status_scanning") ?? "Scanning selected items...");
 
             long totalBytes = 0; int totalFiles = 0; int totalReg = 0;
             var progress = new Progress<string>(msg => StatusText = msg);
@@ -294,7 +552,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
 
             TotalSize = totalBytes.FormatBytes();
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_scan_complete"), totalFiles, totalReg, TotalSize);
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_scan_complete") ?? "Scan complete: {0} files found.", totalFiles, totalReg, TotalSize);
 
             UpdateHeatmap(ResultLines);
 
@@ -311,7 +569,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             IsBusy = true;
             SelectedResultLine = null;
-            StatusText = ResourceString.GetString("cleanup_status_cleaning");
+            StatusText = ResourceString.GetString("cleanup_status_cleaning") ?? "Cleaning...";
 
             var scannedBytes = _lastScan.Sum(r => r.TotalBytes);
             var (removed, freedBytes) = await CleanResultsAsync(_lastScan.ToList(), new Progress<string>(msg => StatusText = msg));
@@ -321,13 +579,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _lastScan.Clear();
             ResultLines.Clear();
-            ResultLines.Add(new ScanResultLine(ResourceString.GetString("cleanup_status_done"), removed, 0, "", 0, null));
+            ResultLines.Add(new ScanResultLine(ResourceString.GetString("cleanup_status_done") ?? "Done", removed, 0, "", 0, null));
             ClearAllEntrySizes();
 
             TotalSize = "";
             StatusText = skippedBytes > 0
-                ? string.Format(ResourceString.GetString("cleanup_status_finished_skipped"), freedBytes.FormatBytes(), skippedBytes.FormatBytes())
-                : string.Format(ResourceString.GetString("cleanup_status_finished_removed"), removed, freedBytes.FormatBytes());
+                ? string.Format(ResourceString.GetString("cleanup_status_finished_skipped") ?? "Cleaned {0}, Skipped {1}", freedBytes.FormatBytes(), skippedBytes.FormatBytes())
+                : string.Format(ResourceString.GetString("cleanup_status_finished_removed") ?? "Removed {0} items ({1})", removed, freedBytes.FormatBytes());
 
             await RunPostCleanTasksAsync();
 
@@ -431,7 +689,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             var result = await AnalyzeEntryInternalAsync(entryVm.Entry,
                 new Progress<string>(msg => StatusText = msg), keepDetailSelection: true);
 
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_scanned"), entryVm.Name, result.FilesToDelete.Count, result.RegistryToDelete.Count);
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_scanned") ?? "Scanned {0}", entryVm.Name, result.FilesToDelete.Count, result.RegistryToDelete.Count);
             UpdateTotalsFromLastScan();
             IsBusy = false;
         }
@@ -446,7 +704,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             var result = await EnsureEntryScanAsync(entryVm, new Progress<string>(msg => StatusText = msg));
             if (result.FilesToDelete.Count == 0 && result.RegistryToDelete.Count == 0)
             {
-                StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_nothing"), entryVm.Name);
+                StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_nothing") ?? "Nothing to clean for {0}", entryVm.Name);
                 IsBusy = false;
                 return;
             }
@@ -458,7 +716,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             await RecordCleaningSessionAsync(freedBytes);
 
             UpdateTotalsFromLastScan();
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_cleaned"), entryVm.Name, removed, freedBytes.FormatBytes());
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_cleaned") ?? "Cleaned {0}", entryVm.Name, removed, freedBytes.FormatBytes());
             IsBusy = false;
         }
 
@@ -466,7 +724,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (IsBusy) return;
 
-            BeginResultsRun(string.Format(ResourceString.GetString("cleanup_status_cat_scanning"), categoryVm.Name));
+            BeginResultsRun(string.Format(ResourceString.GetString("cleanup_status_cat_scanning") ?? "Scanning {0}...", categoryVm.Name));
             var progress = new Progress<string>(msg => StatusText = msg);
 
             var selected = categoryVm.Entries.Where(e => e.IsSelected).ToList();
@@ -474,7 +732,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 await AnalyzeEntryInternalAsync(entryVm.Entry, progress, keepDetailSelection: false);
 
             UpdateTotalsFromLastScan();
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_scanned"), categoryVm.Name, selected.Count);
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_scanned") ?? "Scanned category {0}", categoryVm.Name, selected.Count);
             IsBusy = false;
         }
 
@@ -484,7 +742,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             IsBusy = true;
             SelectedResultLine = null;
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_cleaning"), categoryVm.Name);
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_cleaning") ?? "Cleaning {0}...", categoryVm.Name);
             var progress = new Progress<string>(msg => StatusText = msg);
 
             var selected = categoryVm.Entries.Where(e => e.IsSelected).ToList();
@@ -497,7 +755,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             await RecordCleaningSessionAsync(freedBytes);
 
             UpdateTotalsFromLastScan();
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_cleaned"), categoryVm.Name, removed, freedBytes.FormatBytes());
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_cleaned") ?? "Cleaned {0}", categoryVm.Name, removed, freedBytes.FormatBytes());
             IsBusy = false;
         }
         #endregion
@@ -708,7 +966,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             var existing = _lastScan.FirstOrDefault(r => r.Entry == entryVm.Entry);
             if (existing is not null) return existing;
 
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_scanning"), entryVm.Name);
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_scanning") ?? "Scanning {0}", entryVm.Name);
             return await AnalyzeEntryInternalAsync(entryVm.Entry, progress, keepDetailSelection: false);
         }
 
@@ -869,11 +1127,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Cleanup & Memory Management
         public void DisposeCollections()
         {
+            _analyzerCts?.Cancel();
             Categories?.Clear();
             ResultLines?.Clear();
             DetailLines?.Clear();
             CategoryInsights?.Clear();
             HistoryChart?.Clear();
+            AnalyzedNodes?.Clear();
             _lastScan?.Clear();
             _loadedEntries?.Clear();
 
@@ -883,6 +1143,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
     }
 
     #region Supporting Types
+
     public partial class DiskCleanupCategoryViewModel : ObservableObject
     {
         public string Name { get; }
@@ -931,7 +1192,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (Entries == null || !Entries.Any())
             {
-                SelectionStateLabel = ResourceString.GetString("cleanup_badge_none");
+                SelectionStateLabel = ResourceString.GetString("cleanup_badge_none") ?? "None";
                 BadgeBackground = GetBrush("CardBackgroundFillColorSecondaryBrush");
                 BadgeForeground = GetBrush("TextFillColorSecondaryBrush");
                 return;
@@ -942,13 +1203,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (selectedCount == 0)
             {
-                SelectionStateLabel = ResourceString.GetString("cleanup_badge_none");
+                SelectionStateLabel = ResourceString.GetString("cleanup_badge_none") ?? "None";
                 BadgeBackground = GetBrush("CardBackgroundFillColorSecondaryBrush");
                 BadgeForeground = GetBrush("TextFillColorSecondaryBrush");
             }
             else if (selectedCount == totalCount)
             {
-                SelectionStateLabel = ResourceString.GetString("cleanup_badge_all");
+                SelectionStateLabel = ResourceString.GetString("cleanup_badge_all") ?? "All";
                 BadgeBackground = GetBrush("SystemFillColorSuccessBackgroundBrush");
                 BadgeForeground = GetBrush("SystemFillColorSuccessBrush");
             }
@@ -958,13 +1219,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 if (isExactlyDefault)
                 {
-                    SelectionStateLabel = ResourceString.GetString("cleanup_badge_default");
+                    SelectionStateLabel = ResourceString.GetString("cleanup_badge_default") ?? "Default";
                     BadgeBackground = GetBrush("AccentFillColorDefaultBrush");
                     BadgeForeground = GetBrush("TextOnAccentFillColorPrimaryBrush");
                 }
                 else
                 {
-                    SelectionStateLabel = ResourceString.GetString("cleanup_badge_custom");
+                    SelectionStateLabel = ResourceString.GetString("cleanup_badge_custom") ?? "Custom";
                     BadgeBackground = GetBrush("SystemFillColorCautionBackgroundBrush");
                     BadgeForeground = GetBrush("SystemFillColorCautionBrush");
                 }
@@ -1014,15 +1275,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             get
             {
                 var parts = new List<string>();
-                if (FileCount > 0) parts.Add(string.Format(ResourceString.GetString("cleanup_summary_files"), FileCount));
-                if (RegCount > 0) parts.Add(string.Format(ResourceString.GetString("cleanup_summary_registry"), RegCount));
+                if (FileCount > 0) parts.Add(string.Format(ResourceString.GetString("cleanup_summary_files") ?? "{0} files", FileCount));
+                if (RegCount > 0) parts.Add(string.Format(ResourceString.GetString("cleanup_summary_registry") ?? "{0} registry keys", RegCount));
                 return string.Join(" · ", parts);
             }
         }
 
         public string Summary => FileCount > 0 || RegCount > 0
-            ? string.Format(ResourceString.GetString("cleanup_summary_full"), FileCount, RegCount, Size)
-            : ResourceString.GetString("cleanup_summary_complete");
+            ? string.Format(ResourceString.GetString("cleanup_summary_full") ?? "{0} files, {1} registry keys ({2})", FileCount, RegCount, Size)
+            : ResourceString.GetString("cleanup_summary_complete") ?? "Complete";
     }
 
     public record DetailLine(string Text, bool IsHeader, string Path = "")

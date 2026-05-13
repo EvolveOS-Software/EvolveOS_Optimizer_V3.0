@@ -3338,4 +3338,26 @@
     <sys:String x:Key="btn_eco_mode">Eco-Modus</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Hinweis: Die App wird neu gestartet, um diese Architektur anzuwenden. Sie können Ihre Auswahl jederzeit in den Einstellungen ändern.</sys:String>
     <!-- endregion First Run Performance/Eco Mode -->
+
+    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_header_name">Name</sys:String>
+    <sys:String x:Key="analyzer_header_size">Größe</sys:String>
+    <sys:String x:Key="analyzer_header_allocated">Zugewiesen</sys:String>
+    <sys:String x:Key="analyzer_header_files">Dateien</sys:String>
+    <sys:String x:Key="analyzer_header_folders">Ordner</sys:String>
+    <sys:String x:Key="analyzer_header_percent">% vom übergeordneten Ordner</sys:String>
+    <sys:String x:Key="analyzer_header_modified">Geändert</sys:String>
+    <sys:String x:Key="analyzer_header_actions">Aktionen</sys:String>
+
+    <sys:String x:Key="ib_firstrun_title">Optimierungs-Setup</sys:String>
+    <sys:String x:Key="ib_firstrun_msg">Willkommen bei EvolveOS Optimizer. Wie sollen wir Ihren Systemspeicher verwalten?</sys:String>
+    <sys:String x:Key="txt_mode_selection_desc">Der Leistungsmodus hält die Navigation durch Caching von Seiten im RAM sofort bereit. Der Öko-Modus leert aggressiv den Hintergrundspeicher, um Ihren System-Fußabdruck so klein wie möglich zu halten.</sys:String>
+    <sys:String x:Key="btn_perf_mode">Leistungsmodus</sys:String>
+    <sys:String x:Key="btn_eco_mode">Öko-Modus</sys:String>
+    <sys:String x:Key="txt_mode_change_anytime">Hinweis: Die App wird neu gestartet, um diese Architektur anzuwenden. Sie können Ihre Auswahl jederzeit in den Einstellungen ändern.</sys:String>
+
+    <sys:String x:Key="analyzer_ctx_explorer">Im Explorer anzeigen</sys:String>
+    <sys:String x:Key="analyzer_ctx_unlock">Entsperren</sys:String>
+    <sys:String x:Key="analyzer_ctx_delete">Löschen</sys:String>
+    <!-- endregion First Run Performance/Eco Mode -->
 </ResourceDictionary>

@@ -12,6 +12,8 @@
 
     <Page.Resources>
         <conv:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <conv:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+        <conv:BoolToFolderIconConverter x:Key="BoolToFolderIconConverter" />
     </Page.Resources>
 
     <Grid x:Name="ContentArea" IsTabStop="True" Padding="4,14,24,0">
@@ -35,13 +37,23 @@
                     Padding="16,12"
                     Margin="0,0,8,0">
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <FontIcon Glyph="&#xE9F5;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                    <FontIcon Glyph="&#xE9F5;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}" 
+                              Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                    <FontIcon Glyph="&#xEDA2;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}" 
+                              Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{x:Bind ViewModel.StatusText, Mode=OneWay}" 
                                    FontSize="15" 
                                    FontFamily="{ThemeResource Jura-SemiBold}" 
                                    TextTrimming="CharacterEllipsis" 
-                                   MaxWidth="600"/>
+                                   MaxWidth="600"
+                                   Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                        <TextBlock Text="{x:Bind ViewModel.AnalyzerStatusText, Mode=OneWay}" 
+                                   FontSize="15" 
+                                   FontFamily="{ThemeResource Jura-SemiBold}" 
+                                   TextTrimming="CharacterEllipsis" 
+                                   MaxWidth="600"
+                                   Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <TextBlock helpers:Loc.Key="cleanup_status_label" FontFamily="{ThemeResource Jura}" FontSize="12" Opacity="0.7"/>
                     </StackPanel>
                 </StackPanel>
@@ -72,7 +84,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0" Padding="0,10,12,0">
+            <Grid Grid.Column="0" Padding="0,10,12,0" Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
@@ -103,208 +115,238 @@
                         ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_toggle_pane_tooltip}" />
             </Grid>
 
+            <Button Grid.Column="0" 
+                    Margin="0,10,0,0"
+                    VerticalAlignment="Top"
+                    Click="CloseStorageAnalyzer_Click"
+                    Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                    Background="Transparent" BorderThickness="0">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE72B;" FontSize="14"/>
+                    <TextBlock Text="Back to System Cleaner" FontFamily="{ThemeResource Jura-SemiBold}"/>
+                </StackPanel>
+            </Button>
+
             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="0,10,2,0" Orientation="Horizontal" Spacing="8">
-                <Button Content="{helpers:ResourceString Key=cleanup_btn_analyze}"
-                        Command="{x:Bind ViewModel.AnalyzeCommand}"
-                        FontFamily="{ThemeResource Jura}"
-                        MinWidth="110" 
-                        Height="32" />
-
-                <Button Content="{helpers:ResourceString Key=cleanup_btn_run}"
-                        Click="PerformCleanup_Click"
-                        IsEnabled="{x:Bind ViewModel.CanRunCleaner, Mode=OneWay}"
-                        FontFamily="{ThemeResource Jura}"
-                        MinWidth="120" 
-                        Height="32" />
-
-                <Button Width="36" Height="32" Padding="0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_page_actions_tooltip}">
-                    <FontIcon Glyph="&#xE712;" FontSize="14" />
-                    <Button.Flyout>
-                        <MenuFlyout x:Name="PageActionsFlyout" Placement="BottomEdgeAlignedRight">
-                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_defaults}" Command="{x:Bind ViewModel.SelectDefaultsCommand}" />
-                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_all}" Command="{x:Bind ViewModel.SelectAllCommand}" />
-                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_none}" Command="{x:Bind ViewModel.SelectNoneCommand}" />
-                            <MenuFlyoutSeparator />
-                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_expand_all}" Command="{x:Bind ViewModel.ExpandAllCommand}" />
-                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_collapse_all}" Command="{x:Bind ViewModel.CollapseAllCommand}" />
-                            <MenuFlyoutSeparator />
-                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_sort_asc}" Command="{x:Bind ViewModel.SortResultsAscCommand}" />
-                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_sort_desc}" Command="{x:Bind ViewModel.SortResultsDescCommand}" />
-                            <MenuFlyoutSeparator />
-                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_refresh}" Command="{x:Bind ViewModel.RefreshCommand}" />
-                        </MenuFlyout>
-                    </Button.Flyout>
-                </Button>
 
                 <Button FontFamily="Segoe MDL2 Assets" 
-                        Content="&#xE713;" 
+                        Content="&#xEDA2;" 
                         Width="36" 
                         Height="32" 
-                        ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_btn_settings_tooltip}"
-                        Background="Transparent" 
-                        BorderThickness="0">
-                    <Button.Flyout>
-                        <Flyout Placement="BottomEdgeAlignedRight">
-                            <Flyout.FlyoutPresenterStyle>
-                                <Style TargetType="FlyoutPresenter">
-                                    <Setter Property="MaxWidth" Value="420"/>
-                                    <Setter Property="MaxHeight" Value="600"/>
-                                    <Setter Property="Padding" Value="0"/>
-                                    <Setter Property="CornerRadius" Value="8"/>
-                                    <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
-                                    <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
-                                </Style>
-                            </Flyout.FlyoutPresenterStyle>
+                        ToolTipService.ToolTip="Storage Analyzer"
+                        BorderThickness="0"
+                        Click="OpenStorageAnalyzer_Click"/>
 
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
-                                <StackPanel Spacing="16" Width="380">
-                                    <TextBlock helpers:Loc.Key="cleanup_settings_title" FontFamily="{ThemeResource Jura}" FontSize="16" />
+                <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                    <Button Content="{helpers:ResourceString Key=cleanup_btn_analyze}"
+                            Command="{x:Bind ViewModel.AnalyzeCommand}"
+                            FontFamily="{ThemeResource Jura}"
+                            MinWidth="110" 
+                            Height="32" />
 
-                                    <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" 
-                                            BorderThickness="1" 
-                                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                                            CornerRadius="6" 
-                                            Padding="12">
-                                        <Grid ColumnSpacing="12">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <FontIcon Grid.Column="0" Glyph="&#xEA99;" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" FontSize="20" VerticalAlignment="Center"/>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="Winapp2" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14"/>
-                                                <TextBlock Text="{x:Bind ViewModel.Winapp2Info, Mode=OneWay}" FontSize="11" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
-                                            </StackPanel>
-                                            <Button Grid.Column="2" 
-                                                    Content="{helpers:ResourceString Key=cleanup_settings_update_btn}" 
-                                                    Command="{x:Bind ViewModel.DownloadLatestCommand}" 
-                                                    FontFamily="{ThemeResource Jura}" 
-                                                    VerticalAlignment="Center"/>
-                                        </Grid>
-                                    </Border>
+                    <Button Content="{helpers:ResourceString Key=cleanup_btn_run}"
+                            Click="PerformCleanup_Click"
+                            IsEnabled="{x:Bind ViewModel.CanRunCleaner, Mode=OneWay}"
+                            FontFamily="{ThemeResource Jura}"
+                            MinWidth="120" 
+                            Height="32" />
 
-                                    <StackPanel Spacing="8">
-                                        <TextBlock helpers:Loc.Key="cleanup_settings_custom_path" FontFamily="{ThemeResource Jura}" FontSize="14" />
-                                        <Grid ColumnSpacing="8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBox Grid.Column="0" 
-                                                     Text="{x:Bind ViewModel.CustomPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                     PlaceholderText="{helpers:ResourceString Key=cleanup_settings_path_placeholder}" 
-                                                     FontFamily="{ThemeResource Jura}" 
-                                                     FontSize="12"/>
-                                            <Button Grid.Column="1" 
-                                                    FontFamily="Segoe MDL2 Assets" 
-                                                    Content="&#xE8E5;" 
-                                                    Click="BrowseButton_Click" 
-                                                    ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_settings_browse_tooltip}"/>
-                                        </Grid>
-                                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                                            <Button Content="{helpers:ResourceString Key=cleanup_settings_apply_btn}" 
-                                                    Command="{x:Bind ViewModel.ApplyCustomPathCommand}" 
-                                                    FontFamily="{ThemeResource Jura}"/>
-                                            <Button FontFamily="Segoe MDL2 Assets" 
-                                                    Content="&#xE711;" 
-                                                    Command="{x:Bind ViewModel.RemoveCustomPathCommand}" 
-                                                    Visibility="{x:Bind ViewModel.IsCustomSource, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" 
-                                                    ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_settings_remove_tooltip}"/>
-                                        </StackPanel>
-                                    </StackPanel>
+                    <Button Width="36" Height="32" Padding="0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_page_actions_tooltip}">
+                        <FontIcon Glyph="&#xE712;" FontSize="14" />
+                        <Button.Flyout>
+                            <MenuFlyout x:Name="PageActionsFlyout" Placement="BottomEdgeAlignedRight">
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_defaults}" Command="{x:Bind ViewModel.SelectDefaultsCommand}" />
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_all}" Command="{x:Bind ViewModel.SelectAllCommand}" />
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_none}" Command="{x:Bind ViewModel.SelectNoneCommand}" />
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_expand_all}" Command="{x:Bind ViewModel.ExpandAllCommand}" />
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_collapse_all}" Command="{x:Bind ViewModel.CollapseAllCommand}" />
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_sort_asc}" Command="{x:Bind ViewModel.SortResultsAscCommand}" />
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_sort_desc}" Command="{x:Bind ViewModel.SortResultsDescCommand}" />
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_refresh}" Command="{x:Bind ViewModel.RefreshCommand}" />
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
 
-                                    <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,0"/>
+                    <Button FontFamily="Segoe MDL2 Assets" 
+                            Content="&#xE713;" 
+                            Width="36" 
+                            Height="32" 
+                            ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_btn_settings_tooltip}"
+                            Background="Transparent" 
+                            BorderThickness="0">
+                        <Button.Flyout>
+                            <Flyout Placement="BottomEdgeAlignedRight">
+                                <Flyout.FlyoutPresenterStyle>
+                                    <Style TargetType="FlyoutPresenter">
+                                        <Setter Property="MaxWidth" Value="420"/>
+                                        <Setter Property="MaxHeight" Value="600"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="CornerRadius" Value="8"/>
+                                        <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+                                        <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
+                                    </Style>
+                                </Flyout.FlyoutPresenterStyle>
 
-                                    <StackPanel Spacing="8">
-                                        <Grid>
-                                            <TextBlock helpers:Loc.Key="cleanup_settings_schedule_title" Margin="0,0,0,25" FontFamily="{ThemeResource Jura}" FontSize="14" VerticalAlignment="Center" />
-                                            <ToggleSwitch IsOn="{x:Bind ViewModel.IsScheduledCleanEnabled, Mode=TwoWay}" 
-                                                          HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                          OnContent="" OffContent="" MinWidth="0" Margin="0">
-                                                <ToggleSwitch.Resources>
-                                                    <StaticResource x:Key="ToggleSwitchFillOn" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchFillOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchFillOnPressed" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchStrokeOn" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchStrokeOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchStrokeOnPressed" ResourceKey="MyDynamicAccentBrush" />
-                                                </ToggleSwitch.Resources>
-                                            </ToggleSwitch>
-                                        </Grid>
-
-                                        <Grid ColumnSpacing="8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch" 
-                                                      ItemsSource="{x:Bind ViewModel.ScheduleDayOptions, Mode=OneWay}" 
-                                                      SelectedIndex="{x:Bind ViewModel.ScheduledCleanDayIndex, Mode=TwoWay}" 
-                                                      IsEnabled="{x:Bind ViewModel.IsScheduledCleanEnabled, Mode=OneWay}"
-                                                      FontFamily="{ThemeResource Jura}" FontSize="12" />
-                                            <TimePicker Grid.Column="1" HorizontalAlignment="Right" 
-                                                        SelectedTime="{x:Bind ViewModel.ScheduledCleanTime, Mode=TwoWay}" 
-                                                        IsEnabled="{x:Bind ViewModel.IsScheduledCleanEnabled, Mode=OneWay}"
-                                                        MinuteIncrement="15"
-                                                        FontFamily="{ThemeResource Jura}" FontSize="12" />
-                                        </Grid>
-
-                                        <TextBlock helpers:Loc.Key="cleanup_settings_schedule_desc" 
-                                                   FontFamily="{ThemeResource Jura}" FontSize="11" 
-                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
-                                                   TextWrapping="WrapWholeWords" Margin="0,2,0,0" />
-                                    </StackPanel>
-
-                                    <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,0"/>
-
-                                    <StackPanel Spacing="8">
-                                        <Grid>
-                                            <StackPanel VerticalAlignment="Center">
-                                                <TextBlock helpers:Loc.Key="cleanup_settings_postclean_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14" />
-                                                <TextBlock helpers:Loc.Key="cleanup_settings_postclean_desc" MaxWidth="300"
-                                                           FontFamily="{ThemeResource Jura}" HorizontalAlignment="Left" FontSize="11" Opacity="0.7" Margin="0,2,0,0" TextWrapping="Wrap" />
-                                            </StackPanel>
-                                            <ToggleSwitch IsOn="{x:Bind ViewModel.IsPostCleanEnabled, Mode=TwoWay}" 
-                                                          HorizontalAlignment="Right" VerticalAlignment="Top"
-                                                          OnContent="" OffContent="" MinWidth="0" Margin="0">
-                                                <ToggleSwitch.Resources>
-                                                    <StaticResource x:Key="ToggleSwitchFillOn" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchFillOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchFillOnPressed" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchStrokeOn" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchStrokeOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
-                                                    <StaticResource x:Key="ToggleSwitchStrokeOnPressed" ResourceKey="MyDynamicAccentBrush" />
-                                                </ToggleSwitch.Resources>
-                                            </ToggleSwitch>
-                                        </Grid>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+                                    <StackPanel Spacing="16" Width="380">
+                                        <TextBlock helpers:Loc.Key="cleanup_settings_title" FontFamily="{ThemeResource Jura}" FontSize="16" />
 
                                         <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" 
-                                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
                                                 BorderThickness="1" 
-                                                CornerRadius="6">
-                                            <TextBox Text="{x:Bind ViewModel.PostCleanCommands, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                     AcceptsReturn="True" 
-                                                     FontFamily="Consolas" 
-                                                     FontSize="12" 
-                                                     MinHeight="90" 
-                                                     IsEnabled="{x:Bind ViewModel.IsPostCleanEnabled, Mode=OneWay}" 
-                                                     TextWrapping="NoWrap" 
-                                                     BorderThickness="0" 
-                                                     Padding="10" 
-                                                     PlaceholderText="{helpers:ResourceString Key=cleanup_settings_postclean_placeholder}" />
+                                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                                CornerRadius="6" 
+                                                Padding="12">
+                                            <Grid ColumnSpacing="12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <FontIcon Grid.Column="0" Glyph="&#xEA99;" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" FontSize="20" VerticalAlignment="Center"/>
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock Text="Winapp2" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14"/>
+                                                    <TextBlock Text="{x:Bind ViewModel.Winapp2Info, Mode=OneWay}" FontSize="11" FontFamily="{ThemeResource Jura}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="2" 
+                                                        Content="{helpers:ResourceString Key=cleanup_settings_update_btn}" 
+                                                        Command="{x:Bind ViewModel.DownloadLatestCommand}" 
+                                                        FontFamily="{ThemeResource Jura}" 
+                                                        VerticalAlignment="Center"/>
+                                            </Grid>
                                         </Border>
-                                    </StackPanel>
 
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Flyout>
-                    </Button.Flyout>
-                </Button>
+                                        <StackPanel Spacing="8">
+                                            <TextBlock helpers:Loc.Key="cleanup_settings_custom_path" FontFamily="{ThemeResource Jura}" FontSize="14" />
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Grid.Column="0" 
+                                                         Text="{x:Bind ViewModel.CustomPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                         PlaceholderText="{helpers:ResourceString Key=cleanup_settings_path_placeholder}" 
+                                                         FontFamily="{ThemeResource Jura}" 
+                                                         FontSize="12"/>
+                                                <Button Grid.Column="1" 
+                                                        FontFamily="Segoe MDL2 Assets" 
+                                                        Content="&#xE8E5;" 
+                                                        Click="BrowseButton_Click" 
+                                                        ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_settings_browse_tooltip}"/>
+                                            </Grid>
+                                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                                                <Button Content="{helpers:ResourceString Key=cleanup_settings_apply_btn}" 
+                                                        Command="{x:Bind ViewModel.ApplyCustomPathCommand}" 
+                                                        FontFamily="{ThemeResource Jura}"/>
+                                                <Button FontFamily="Segoe MDL2 Assets" 
+                                                        Content="&#xE711;" 
+                                                        Command="{x:Bind ViewModel.RemoveCustomPathCommand}" 
+                                                        Visibility="{x:Bind ViewModel.IsCustomSource, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                                        ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_settings_remove_tooltip}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,0"/>
+
+                                        <StackPanel Spacing="8">
+                                            <Grid>
+                                                <TextBlock helpers:Loc.Key="cleanup_settings_schedule_title" Margin="0,0,0,25" FontFamily="{ThemeResource Jura}" FontSize="14" VerticalAlignment="Center" />
+                                                <ToggleSwitch IsOn="{x:Bind ViewModel.IsScheduledCleanEnabled, Mode=TwoWay}" 
+                                                              HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                              OnContent="" OffContent="" MinWidth="0" Margin="0">
+                                                    <ToggleSwitch.Resources>
+                                                        <StaticResource x:Key="ToggleSwitchFillOn" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchFillOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchFillOnPressed" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchStrokeOn" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchStrokeOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchStrokeOnPressed" ResourceKey="MyDynamicAccentBrush" />
+                                                    </ToggleSwitch.Resources>
+                                                </ToggleSwitch>
+                                            </Grid>
+
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <ComboBox Grid.Column="0" HorizontalAlignment="Stretch" 
+                                                          ItemsSource="{x:Bind ViewModel.ScheduleDayOptions, Mode=OneWay}" 
+                                                          SelectedIndex="{x:Bind ViewModel.ScheduledCleanDayIndex, Mode=TwoWay}" 
+                                                          IsEnabled="{x:Bind ViewModel.IsScheduledCleanEnabled, Mode=OneWay}"
+                                                          FontFamily="{ThemeResource Jura}" FontSize="12" />
+                                                <TimePicker Grid.Column="1" HorizontalAlignment="Right" 
+                                                            SelectedTime="{x:Bind ViewModel.ScheduledCleanTime, Mode=TwoWay}" 
+                                                            IsEnabled="{x:Bind ViewModel.IsScheduledCleanEnabled, Mode=OneWay}"
+                                                            MinuteIncrement="15"
+                                                            FontFamily="{ThemeResource Jura}" FontSize="12" />
+                                            </Grid>
+
+                                            <TextBlock helpers:Loc.Key="cleanup_settings_schedule_desc" 
+                                                       FontFamily="{ThemeResource Jura}" FontSize="11" 
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                                                       TextWrapping="WrapWholeWords" Margin="0,2,0,0" />
+                                        </StackPanel>
+
+                                        <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,0"/>
+
+                                        <StackPanel Spacing="8">
+                                            <Grid>
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock helpers:Loc.Key="cleanup_settings_postclean_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="14" />
+                                                    <TextBlock helpers:Loc.Key="cleanup_settings_postclean_desc" MaxWidth="300"
+                                                               FontFamily="{ThemeResource Jura}" HorizontalAlignment="Left" FontSize="11" Opacity="0.7" Margin="0,2,0,0" TextWrapping="Wrap" />
+                                                </StackPanel>
+                                                <ToggleSwitch IsOn="{x:Bind ViewModel.IsPostCleanEnabled, Mode=TwoWay}" 
+                                                              HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                              OnContent="" OffContent="" MinWidth="0" Margin="0">
+                                                    <ToggleSwitch.Resources>
+                                                        <StaticResource x:Key="ToggleSwitchFillOn" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchFillOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchFillOnPressed" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchStrokeOn" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchStrokeOnPointerOver" ResourceKey="MyDynamicAccentBrush" />
+                                                        <StaticResource x:Key="ToggleSwitchStrokeOnPressed" ResourceKey="MyDynamicAccentBrush" />
+                                                    </ToggleSwitch.Resources>
+                                                </ToggleSwitch>
+                                            </Grid>
+
+                                            <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" 
+                                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                                    BorderThickness="1" 
+                                                    CornerRadius="6">
+                                                <TextBox Text="{x:Bind ViewModel.PostCleanCommands, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                         AcceptsReturn="True" 
+                                                         FontFamily="Consolas" 
+                                                         FontSize="12" 
+                                                         MinHeight="90" 
+                                                         IsEnabled="{x:Bind ViewModel.IsPostCleanEnabled, Mode=OneWay}" 
+                                                         TextWrapping="NoWrap" 
+                                                         BorderThickness="0" 
+                                                         Padding="10" 
+                                                         PlaceholderText="{helpers:ResourceString Key=cleanup_settings_postclean_placeholder}" />
+                                            </Border>
+                                        </StackPanel>
+
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                </StackPanel>
+
+                <Button Content="Cancel Scan"
+                        Command="{x:Bind ViewModel.CancelStorageAnalysisCommand}"
+                        Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                        FontFamily="{ThemeResource Jura}"
+                        IsEnabled="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
+                        MinWidth="110" Height="32" />
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="2" Margin="0,3,0,10">
+        <Grid Grid.Row="2" Margin="0,3,0,10" Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
             <Border CornerRadius="1">
                 <SplitView x:Name="MainSplitView" 
                            IsPaneOpen="True" 
@@ -670,6 +712,193 @@
                         </Border>
                     </SplitView.Content>
                 </SplitView>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0,3,0,10" Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Padding="12">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <ProgressBar Grid.Row="0" VerticalAlignment="Top" MaxWidth="1425" IsIndeterminate="True" Margin="0,0,1,0"
+                                 Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                    <Grid Grid.Row="1"
+                          Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                          Padding="4,12,8,12"
+                          CornerRadius="4"
+                          Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="130" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="70" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{helpers:ResourceString Key=analyzer_header_name}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=analyzer_header_size}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="{helpers:ResourceString Key=analyzer_header_allocated}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="3" Text="{helpers:ResourceString Key=analyzer_header_files}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="4" Text="{helpers:ResourceString Key=analyzer_header_folders}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="5" Text="{helpers:ResourceString Key=analyzer_header_percent}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="6" Text="{helpers:ResourceString Key=analyzer_header_modified}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="7" Text="{helpers:ResourceString Key=analyzer_header_actions}" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <TreeView x:Name="StorageTreeView"
+                              Grid.Row="2"
+                              ItemsSource="{x:Bind ViewModel.AnalyzedNodes, Mode=OneWay}"
+                              SelectionMode="None"
+                              Margin="0,0,1,0">
+
+                        <TreeView.Resources>
+                            <x:Double x:Key="TreeViewItemMinHeight">28</x:Double>
+
+                            <x:Double x:Key="TreeViewItemIndent">0</x:Double>
+
+                            <x:Double x:Key="TreeViewItemMinExpandCollapseChevronVisualSize">32</x:Double>
+
+                            <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="Transparent" />
+                            <SolidColorBrush x:Key="TreeViewItemBackgroundPressed" Color="Transparent" />
+                            <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="Transparent" />
+
+                            <SolidColorBrush x:Key="TreeViewItemExpandCollapseChevronPointerOverForeground" Color="{ThemeResource MyDynamicAccentBrush}" />
+                        </TreeView.Resources>
+
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem">
+                                <Setter Property="MinHeight" Value="28" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0,-4,0,-4" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+
+                        <TreeView.ItemTemplate>
+                            <DataTemplate x:DataType="m:StorageNode">
+                                <TreeViewItem ItemsSource="{x:Bind Children, Mode=OneWay}"
+                                              IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}">
+
+                                    <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                            CornerRadius="4"
+                                            Margin="0,1"
+                                            MinHeight="32">
+
+                                        <Grid Padding="4,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="110" />
+                                                <ColumnDefinition Width="110" />
+                                                <ColumnDefinition Width="90" />
+                                                <ColumnDefinition Width="80" />
+                                                <ColumnDefinition Width="130" />
+                                                <ColumnDefinition Width="120" />
+                                                <ColumnDefinition Width="70" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Grid Grid.Column="0" VerticalAlignment="Stretch">
+                                                <ProgressBar Value="{x:Bind Percentage}"
+                                                             Maximum="100"
+                                                             Background="Transparent"
+                                                             Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                             Opacity="0.2"
+                                                             HorizontalAlignment="Stretch"
+                                                             VerticalAlignment="Stretch"
+                                                             MinHeight="28"
+                                                             Margin="0,2,20,2"
+                                                             IsHitTestVisible="False"/>
+
+                                                <StackPanel Orientation="Horizontal"
+                                                            Spacing="8"
+                                                            VerticalAlignment="Center"
+                                                            Margin="8,0">
+
+                                                    <FontIcon Glyph="{x:Bind IsFolder, Converter={StaticResource BoolToFolderIconConverter}}"
+                                                              FontSize="16"
+                                                              Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                              VerticalAlignment="Center"/>
+
+                                                    <TextBlock Text="{x:Bind Name}"
+                                                               FontFamily="{ThemeResource Jura-SemiBold}"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <TextBlock Grid.Column="1" Text="{x:Bind FormattedSize}" FontFamily="{ThemeResource Jura-Bold}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding AllocatedSizeFormatted, FallbackValue='--'}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" Opacity="0.8"/>
+                                            <TextBlock Grid.Column="3" Text="{Binding FilesCount, FallbackValue='--'}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" Opacity="0.8"/>
+                                            <TextBlock Grid.Column="4" Text="{Binding FoldersCount, FallbackValue='--'}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" Opacity="0.8"/>
+
+                                            <Grid Grid.Column="5" VerticalAlignment="Center" Margin="0,0,40,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="45" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <ProgressBar Grid.Column="0"
+                                                             Value="{x:Bind Percentage}"
+                                                             Maximum="100"
+                                                             VerticalAlignment="Center"
+                                                             Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                             Margin="0,0,8,0"
+                                                             CornerRadius="2"/>
+
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding PercentageString, FallbackValue='--'}"
+                                                           FontFamily="{ThemeResource Jura}"
+                                                           VerticalAlignment="Center"
+                                                           HorizontalAlignment="Right"
+                                                           Opacity="0.8"/>
+                                            </Grid>
+
+                                            <TextBlock Grid.Column="6" Text="{Binding LastModifiedString, FallbackValue='--'}" FontFamily="{ThemeResource Jura}" VerticalAlignment="Center" Opacity="0.8"/>
+
+                                            <Button Grid.Column="7" Width="30" Height="30" Padding="0" Background="Transparent" BorderThickness="0" HorizontalAlignment="Center">
+                                                <FontIcon Glyph="&#xE712;" FontSize="12" />
+                                                <Button.Flyout>
+                                                    <MenuFlyout>
+                                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=analyzer_ctx_explorer}" Tag="{x:Bind}" Click="AnalyzerShowInExplorer_Click">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <FontIcon Glyph="&#xE838;"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                        </MenuFlyoutItem>
+                                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=analyzer_ctx_unlock}" Tag="{x:Bind}" Click="AnalyzerUnlock_Click">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <FontIcon Glyph="&#xE72E;"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                        </MenuFlyoutItem>
+                                                        <MenuFlyoutSeparator />
+                                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=analyzer_ctx_delete}" Tag="{x:Bind}" Click="AnalyzerDelete_Click" Foreground="OrangeRed">
+                                                            <MenuFlyoutItem.Icon>
+                                                                <FontIcon Glyph="&#xE74D;" Foreground="OrangeRed"/>
+                                                            </MenuFlyoutItem.Icon>
+                                                        </MenuFlyoutItem>
+                                                    </MenuFlyout>
+                                                </Button.Flyout>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </TreeViewItem>
+                            </DataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                </Grid>
             </Border>
         </Grid>
     </Grid>

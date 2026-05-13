@@ -9,6 +9,7 @@ using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Xaml.Input;
+using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -105,6 +106,105 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region UI Event Handlers
+
+        private async void OpenStorageAnalyzer_Click(object sender, RoutedEventArgs e)
+        {
+            var drives = ViewModel.GetAvailableDrives();
+            DriveOption selectedDrive = drives[0];
+
+            var driveComboBox = new ComboBox
+            {
+                ItemsSource = drives,
+                DisplayMemberPath = "DisplayName",
+                SelectedIndex = 0,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(0, 15, 0, 0)
+            };
+
+            driveComboBox.SelectionChanged += (s, args) =>
+            {
+                if (driveComboBox.SelectedItem is DriveOption opt)
+                {
+                    selectedDrive = opt;
+                }
+            };
+
+            var dialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("analyzer_dialog_title") ?? "Storage Analyzer",
+                Content = new StackPanel
+                {
+                    Children =
+            {
+                new TextBlock
+                {
+                    Text = ResourceString.GetString("analyzer_dialog_desc") ?? "Select a local drive to map its storage footprint and find large forgotten files.",
+                    TextWrapping = TextWrapping.Wrap
+                },
+                driveComboBox
+            }
+                },
+                PrimaryButtonText = ResourceString.GetString("analyzer_dialog_analyze") ?? "Analyze",
+                CloseButtonText = ResourceString.GetString("cleanup_btn_close") ?? "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                await ViewModel.RunStorageAnalyzerCommand.ExecuteAsync(selectedDrive.Path);
+            }
+        }
+
+        private void AnalyzerShowInExplorer_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem { Tag: StorageNode node })
+            {
+                if (ViewModel.ShowInExplorerCommand.CanExecute(node))
+                {
+                    ViewModel.ShowInExplorerCommand.Execute(node);
+                }
+            }
+        }
+
+        private async void AnalyzerUnlock_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem { Tag: StorageNode node })
+            {
+                await ViewModel.UnlockStorageItemCommand.ExecuteAsync(node);
+            }
+        }
+
+        private async void AnalyzerDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem { Tag: StorageNode node })
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = ResourceString.GetString("analyzer_confirm_delete_title") ?? "Permanently delete item?",
+                    Content = string.Format(ResourceString.GetString("analyzer_confirm_delete_desc") ?? "Are you sure you want to permanently delete '{0}'? This action cannot be undone.", node.Name),
+                    PrimaryButtonText = ResourceString.GetString("analyzer_btn_delete") ?? "Delete",
+                    CloseButtonText = ResourceString.GetString("cleanup_btn_close") ?? "Cancel",
+                    DefaultButton = ContentDialogButton.Close,
+                    XamlRoot = this.XamlRoot
+                };
+
+                var result = await dialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    await ViewModel.DeleteStorageItemCommand.ExecuteAsync(node);
+                }
+            }
+        }
+
+        private void CloseStorageAnalyzer_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.IsAnalyzerViewActive = false;
+        }
+
         private void ResultsListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (e.ClickedItem is ScanResultLine line && line.Result is not null)
@@ -382,6 +482,7 @@ namespace EvolveOS_Optimizer.Pages
                     _viewModel.DetailLines?.Clear();
                     _viewModel.HistoryChart?.Clear();
                     _viewModel.CategoryInsights?.Clear();
+                    _viewModel.AnalyzedNodes?.Clear();
 
                     _viewModel = null;
                 }

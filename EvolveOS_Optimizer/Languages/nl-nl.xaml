@@ -3356,4 +3356,26 @@
     <sys:String x:Key="btn_eco_mode">Eco-modus</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Let op: De app wordt opnieuw opgestart om deze architectuur toe te passen. U kunt uw keuze op elk moment wijzigen in Instellingen.</sys:String>
     <!-- endregion First Run Performance/Eco Mode -->
+
+    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_header_name">Naam</sys:String>
+    <sys:String x:Key="analyzer_header_size">Grootte</sys:String>
+    <sys:String x:Key="analyzer_header_allocated">Toegewezen</sys:String>
+    <sys:String x:Key="analyzer_header_files">Bestanden</sys:String>
+    <sys:String x:Key="analyzer_header_folders">Mappen</sys:String>
+    <sys:String x:Key="analyzer_header_percent">% van bovenliggende</sys:String>
+    <sys:String x:Key="analyzer_header_modified">Gewijzigd</sys:String>
+    <sys:String x:Key="analyzer_header_actions">Acties</sys:String>
+
+    <sys:String x:Key="ib_firstrun_title">Optimalisatie-setup</sys:String>
+    <sys:String x:Key="ib_firstrun_msg">Welkom bij EvolveOS Optimizer. Hoe moeten we uw systeemgeheugen beheren?</sys:String>
+    <sys:String x:Key="txt_mode_selection_desc">Prestatiemodus houdt navigatie direct door pagina's in RAM te cachen. Ecomodus wist agressief het achtergrondgeheugen om uw systeemvoetafdruk zo klein mogelijk te houden.</sys:String>
+    <sys:String x:Key="btn_perf_mode">Prestatiemodus</sys:String>
+    <sys:String x:Key="btn_eco_mode">Ecomodus</sys:String>
+    <sys:String x:Key="txt_mode_change_anytime">Let op: de app wordt opnieuw opgestart om deze architectuur toe te passen. U kunt uw selectie op elk moment wijzigen in Instellingen.</sys:String>
+
+    <sys:String x:Key="analyzer_ctx_explorer">Weergeven in Verkenner</sys:String>
+    <sys:String x:Key="analyzer_ctx_unlock">Ontgrendelen</sys:String>
+    <sys:String x:Key="analyzer_ctx_delete">Verwijderen</sys:String>
+    <!-- endregion First Run Performance/Eco Mode -->
 </ResourceDictionary>
