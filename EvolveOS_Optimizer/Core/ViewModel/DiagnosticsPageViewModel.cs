@@ -846,11 +846,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             set => SetProperty(ref _performanceGraphPoints, value);
         }
 
+        private List<double> _cpuHistory = new();
         private PointCollection _performanceAreaPoints = new();
         public PointCollection PerformanceAreaPoints
         {
             get => _performanceAreaPoints;
-            set => SetProperty(ref _performanceAreaPoints, value);
+            set { _performanceAreaPoints = value; OnPropertyChanged(); }
         }
 
         private PointCollection _performanceGraphPointsAlt = new();
@@ -3603,6 +3604,88 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             StopLiveMonitoring();
             StopLiveTelemetry();
+        }
+
+        public void RebuildVisualPoints()
+        {
+            Debug.WriteLine("[DiagnosticsVM] Rebuilding all 8 visual point collections from history...");
+
+            var newGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+            var newAreaPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+            var newGraphPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
+            var newAreaPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
+
+            var newCpuTray = new Microsoft.UI.Xaml.Media.PointCollection();
+            var newRamTray = new Microsoft.UI.Xaml.Media.PointCollection();
+            var newGpuTray = new Microsoft.UI.Xaml.Media.PointCollection();
+            var newDiskTray = new Microsoft.UI.Xaml.Media.PointCollection();
+
+            var targetBuffer = ActiveGraphMetric switch
+            {
+                TelemetryMetric.RAM => _ramHistoryBuffer,
+                TelemetryMetric.Disk => _diskHistoryBuffer,
+                TelemetryMetric.Pagefile => _pageHistoryBuffer,
+                TelemetryMetric.GPU => _gpuHistoryBuffer,
+                TelemetryMetric.Network => _networkDownHistoryBuffer,
+                _ => _cpuHistoryBuffer
+            };
+
+            if (targetBuffer.Count > 0)
+            {
+                double logicalWidth = 400.0;
+                double pixelsPerSecond = logicalWidth / MaxGraphSeconds;
+                int pointsToShow = Math.Min(targetBuffer.Count, MaxGraphSeconds + 1);
+                var visibleHistory = targetBuffer.Skip(targetBuffer.Count - pointsToShow).ToList();
+                double currentX = logicalWidth - ((pointsToShow - 1) * pixelsPerSecond);
+
+                foreach (var yVal in visibleHistory)
+                {
+                    var p = new Point(currentX, yVal);
+                    newGraphPoints.Add(p);
+                    currentX += pixelsPerSecond;
+                }
+
+                if (newGraphPoints.Count > 0)
+                {
+                    newAreaPoints.Add(new Point(newGraphPoints.First().X, 100));
+                    foreach (var p in newGraphPoints) newAreaPoints.Add(p);
+                    newAreaPoints.Add(new Point(newGraphPoints.Last().X, 100));
+                }
+
+                if (ActiveGraphMetric == TelemetryMetric.Network && _networkUpHistoryBuffer.Count > 0)
+                {
+                    var visibleAltHistory = _networkUpHistoryBuffer.Skip(_networkUpHistoryBuffer.Count - pointsToShow).ToList();
+                    double currentAltX = logicalWidth - ((pointsToShow - 1) * pixelsPerSecond);
+
+                    foreach (var yVal in visibleAltHistory)
+                    {
+                        newGraphPointsAlt.Add(new Point(currentAltX, yVal));
+                        currentAltX += pixelsPerSecond;
+                    }
+
+                    if (newGraphPointsAlt.Count > 0)
+                    {
+                        newAreaPointsAlt.Add(new Point(newGraphPointsAlt.First().X, 100));
+                        foreach (var p in newGraphPointsAlt) newAreaPointsAlt.Add(p);
+                        newAreaPointsAlt.Add(new Point(newGraphPointsAlt.Last().X, 100));
+                    }
+                }
+            }
+
+            newCpuTray = GenerateTrayPoints(_cpuHistoryBuffer, 20, 3.0, 15.0);
+            newRamTray = GenerateTrayPoints(_ramHistoryBuffer, 20, 3.0, 15.0);
+            newGpuTray = GenerateTrayPoints(_gpuHistoryBuffer, 20, 3.0, 15.0);
+            newDiskTray = GenerateTrayPoints(_diskHistoryBuffer, 20, 3.0, 15.0);
+
+            this.PerformanceGraphPoints = newGraphPoints;
+            this.PerformanceAreaPoints = newAreaPoints;
+            this.PerformanceGraphPointsAlt = newGraphPointsAlt;
+            this.PerformanceAreaPointsAlt = newAreaPointsAlt;
+
+            this.CpuTrayPoints = newCpuTray;
+            this.RamTrayPoints = newRamTray;
+            this.GpuTrayPoints = newGpuTray;
+            this.DiskTrayPoints = newDiskTray;
         }
 
         internal void CalculateStabilityTrend(IEnumerable<SystemEventItem> events)

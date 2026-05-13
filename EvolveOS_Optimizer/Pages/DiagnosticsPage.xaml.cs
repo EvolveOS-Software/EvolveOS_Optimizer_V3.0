@@ -130,6 +130,47 @@ namespace EvolveOS_Optimizer.Pages
         #region Event Handlers
         private async void DiagnosticsPage_Loaded(object sender, RoutedEventArgs e)
         {
+            if (this.Content == null)
+            {
+                Debug.WriteLine("[DiagnosticsPage] Singleton UI missing. Re-hydrating visual tree...");
+
+                try
+                {
+                    Application.LoadComponent(this,
+                        new Uri("ms-appx:///Pages/DiagnosticsPage.xaml"),
+                        ComponentResourceLocation.Application);
+
+                    this.DataContext = ViewModel;
+
+                    _controls.Clear();
+                    _controls.Add(new DNSCryptSetting_ipv4_servers(), ipv4_servers);
+                    _controls.Add(new DNSCryptSetting_ipv6_servers(), ipv6_servers);
+                    _controls.Add(new DNSCryptSetting_dnscrypt_servers(), dnscrypt_servers);
+                    _controls.Add(new DNSCryptSetting_doh_servers(), doh_servers);
+                    _controls.Add(new DNSCryptSetting_require_dnssec(), require_dnssec);
+                    _controls.Add(new DNSCryptSetting_require_nolog(), require_nolog);
+                    _controls.Add(new DNSCryptSetting_require_nofilter(), require_nofilter);
+                    _controls.Add(new DNSCryptSetting_bootstrap_resolvers(), bootstrap_resolvers);
+                    _controls.Add(new DNSCryptSetting_dnscrypt_ephemeral_keys(), dnscrypt_ephemeral_keys);
+                    _controls.Add(new DNSCryptSetting_tls_disable_session_tickets(), tls_disable_session_tickets);
+                    _controls.Add(new DNSCryptSetting_netprobe_timeout(), netprobe_timeout);
+                    _controls.Add(new DNSCryptSetting_netprobe_address(), netprobe_address);
+                    _controls.Add(new DNSCryptSetting_block_ipv6(), block_ipv6);
+                    _controls.Add(new DNSCryptSetting_reject_ttl(), reject_ttl);
+
+                    BtnDownloadInstall.RenderTransform = new TransformGroup();
+                    ((TransformGroup)BtnDownloadInstall.RenderTransform).Children.Add(new TranslateTransform());
+
+                    ViewModel?.RebuildVisualPoints();
+
+                    _isInitialized = false;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[DiagnosticsPage] Re-hydration failure: {ex.Message}");
+                }
+            }
+
             _isCurrentPageActive = true;
             int currentGen = ++_navGeneration;
 
@@ -165,20 +206,17 @@ namespace EvolveOS_Optimizer.Pages
                 if (ViewModel.EventEmptyStateVisibility == Visibility.Visible) RadarSpinStoryboard?.Begin();
             }
 
-            var vm = ViewModel;
-
             this.DispatcherQueue.TryEnqueue(() =>
             {
                 if (currentGen != _navGeneration || !_isCurrentPageActive) return;
-
                 ViewModel?.ResumeUiUpdates();
             });
 
             if (!_isInitialized)
             {
-                if (vm?.SelectedProcess == null && vm?.Processes.Count > 0)
+                if (ViewModel?.SelectedProcess == null && ViewModel?.Processes.Count > 0)
                 {
-                    vm.SelectedProcess = vm.Processes[0];
+                    ViewModel.SelectedProcess = ViewModel.Processes[0];
                 }
 
                 await CalculateSystemHealthAsync();
@@ -186,7 +224,7 @@ namespace EvolveOS_Optimizer.Pages
                 AnimateInstallButton();
 
                 _isInitialized = true;
-                Debug.WriteLine("[DiagnosticsPage] Initial heavy data loaded.");
+                Debug.WriteLine("[DiagnosticsPage] Initial/Re-hydrated data loaded.");
             }
 
             if (!string.IsNullOrEmpty(_pendingScrollTarget))
@@ -1294,37 +1332,6 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
-        #region Purge Page (old good)
-        /*public async void Purge()
-        {
-            if (!_isCurrentPageActive) return;
-
-            try
-            {
-                Debug.WriteLine("[DiagnosticsPage] Safe Sleep Purge Initiated...");
-
-                await StopCurrentOperationAsync();
-
-                if (_cancellationTokenSource != null)
-                {
-                    try { _cancellationTokenSource.Cancel(); _cancellationTokenSource.Dispose(); } catch { }
-                    _cancellationTokenSource = null;
-                }
-
-                DiagnosticsPage_Unloaded(this, new RoutedEventArgs());
-                OnNavigatedFrom(null!);
-
-                _ = Task.Run(() => GC.Collect(2, GCCollectionMode.Optimized, false, false));
-
-                Debug.WriteLine("[DiagnosticsPage] Tasks cleaned. Collections preserved for Cache safety.");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[DiagnosticsPage] Error during purge: {ex.Message}");
-            }
-        }*/
-        #endregion
-
         #region Purge Page (old cache mode)
         /*public async void Purge()
         {
@@ -1356,7 +1363,6 @@ namespace EvolveOS_Optimizer.Pages
         }*/
         #endregion
 
-
         #region Purge Page
         public async Task Purge()
         {
@@ -1379,7 +1385,23 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (!SettingsEngine.IsHighPerformanceModeEnabled)
                 {
-                    Debug.WriteLine("[DiagnosticsPage] Low Resource Mode: Evicting Singleton data...");
+                    Debug.WriteLine("[DiagnosticsPage] Low Resource Mode: Evicting UI and heavy buffers...");
+
+                    if (ViewModel != null)
+                    {
+                        ViewModel.PerformanceGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+                        ViewModel.PerformanceAreaPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+
+                        ViewModel.PerformanceGraphPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
+                        ViewModel.PerformanceAreaPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
+
+                        ViewModel.CpuTrayPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+                        ViewModel.RamTrayPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+                        ViewModel.GpuTrayPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+                        ViewModel.DiskTrayPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+
+                        Debug.WriteLine("[DiagnosticsPage] Severed all 8 PointCollection handles to prevent stale references.");
+                    }
 
                     foreach (var result in _scanResults.Values)
                     {
@@ -1387,17 +1409,6 @@ namespace EvolveOS_Optimizer.Pages
                     }
 
                     _controls.Clear();
-
-                    if (ViewModel != null)
-                    {
-                        ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
-                        ViewModel.ShowSecurityIssuesRequested -= ViewModel_ShowSecurityIssuesRequested;
-                        ViewModel.CloseActiveDialogsRequested -= ViewModel_CloseActiveDialogsRequested;
-                        ViewModel.OnAddProcessToExclusionListCommandCompleted -= OnAddProcessToExclusionListCommandCompleted;
-                        ViewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
-                        ViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
-                        ViewModel.OpenDnsToolkitRequested -= ViewModel_OpenDnsToolkitRequested;
-                    }
 
                     this.DataContext = null;
                     this.Content = null;
@@ -1407,12 +1418,13 @@ namespace EvolveOS_Optimizer.Pages
 
                     _ = Task.Run(() =>
                     {
+                        GC.Collect(2, GCCollectionMode.Optimized, false, false);
                         ViewModel?.ForceImmediateMemoryCleanup();
                     });
                 }
                 else
                 {
-                    Debug.WriteLine("[DiagnosticsPage] High Performance Mode: Singleton state preserved.");
+                    Debug.WriteLine("[DiagnosticsPage] High Performance Mode: Keeping UI ready in background.");
                 }
             }
             catch (Exception ex)
