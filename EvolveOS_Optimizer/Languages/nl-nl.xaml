@@ -3347,4 +3347,13 @@
     <sys:String x:Key="warning_windows_update_cache">Verwijdert gedownloade Windows Update-bestanden. Als er updates in de wachtrij staan om te worden geïnstalleerd, moet Windows deze opnieuw downloaden.</sys:String>
 
     <!-- endregion Disk Cleanup -->
+
+    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="ib_firstrun_title">Optimalisatie Instellen</sys:String>
+    <sys:String x:Key="ib_firstrun_msg">Welkom bij EvolveOS Optimizer. Hoe moeten we uw systeemgeheugen beheren?</sys:String>
+    <sys:String x:Key="txt_mode_selection_desc">Prestatiemodus houdt navigatie direct door pagina's in het RAM op te slaan. Eco-modus leegt agressief achtergrondgeheugen om de systeemvoetafdruk zo klein mogelijk te houden.</sys:String>
+    <sys:String x:Key="btn_perf_mode">Prestatiemodus</sys:String>
+    <sys:String x:Key="btn_eco_mode">Eco-modus</sys:String>
+    <sys:String x:Key="txt_mode_change_anytime">Let op: De app wordt opnieuw opgestart om deze architectuur toe te passen. U kunt uw keuze op elk moment wijzigen in Instellingen.</sys:String>
+    <!-- endregion First Run Performance/Eco Mode -->
 </ResourceDictionary>

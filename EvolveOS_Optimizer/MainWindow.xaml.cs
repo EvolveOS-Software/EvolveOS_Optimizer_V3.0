@@ -287,6 +287,8 @@ namespace EvolveOS_Optimizer
         {
             SetupNavigationObserver();
 
+            CheckFirstRunStatus();
+
             if (!string.IsNullOrEmpty(UserSession.Username))
             {
                 await InitializeUserPermissionsAsync(UserSession.Username);
@@ -937,6 +939,37 @@ namespace EvolveOS_Optimizer
         private void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
+
+        #region First Run Performance/Eco Mode
+        private void CheckFirstRunStatus()
+        {
+            if (!LocalMachineSettingsEngine.HasChosenResourceMode)
+            {
+                FirstRunChoiceBar.IsOpen = true;
+            }
+        }
+
+        private void SelectPerformanceMode_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsEngine.IsHighPerformanceModeEnabled = true;
+            ApplyUserModeChoice();
+        }
+
+        private void SelectEcoMode_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsEngine.IsHighPerformanceModeEnabled = false;
+            ApplyUserModeChoice();
+        }
+
+        private void ApplyUserModeChoice()
+        {
+            LocalMachineSettingsEngine.HasChosenResourceMode = true;
+
+            FirstRunChoiceBar.IsOpen = false;
+
+            SettingsEngine.SelfReboot();
         }
         #endregion
     }

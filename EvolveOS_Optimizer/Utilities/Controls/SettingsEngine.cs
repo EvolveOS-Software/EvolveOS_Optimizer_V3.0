@@ -561,6 +561,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         Enums.Memory.Areas.StandbyList | Enums.Memory.Areas.SystemFileCache | Enums.Memory.Areas.WorkingSet | Enums.Memory.Areas.DiskCleanup | Enums.Memory.Areas.FlushDns),
             ["EnableDeveloperMode"] = false,
             ["IsFirstRun"] = true,
+            ["HasChosenResourceMode"] = false,
             ["EnableTranslationHotkey"] = false,
             ["TranslationHotkeyModifier"] = (int)(VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift),
             ["TranslationHotkeyKey"] = (int)VirtualKey.L,
@@ -599,6 +600,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static Enums.Memory.Areas MemoryAreas { get => (Enums.Memory.Areas)(int)_cachedSettings["MemoryAreas"]; set => ChangingParameters("MemoryAreas", (int)value); }
         internal static bool IsDeveloperMode { get => (bool)_cachedSettings["EnableDeveloperMode"]; set => ChangingParameters("EnableDeveloperMode", value); }
         internal static bool IsFirstRun { get => (bool)_cachedSettings["IsFirstRun"]; set => ChangingParameters("IsFirstRun", value); }
+        internal static bool HasChosenResourceMode { get => (bool)_cachedSettings["HasChosenResourceMode"]; set => ChangingParameters("HasChosenResourceMode", value); }
         internal static bool IsTranslationHotkeyEnabled { get => (bool)_cachedSettings["EnableTranslationHotkey"]; set => ChangingParameters("EnableTranslationHotkey", value); }
         internal static int TranslationHotkeyModifier { get => (int)_cachedSettings["TranslationHotkeyModifier"]; set => ChangingParameters("TranslationHotkeyModifier", value); }
         internal static int TranslationHotkeyKey { get => (int)_cachedSettings["TranslationHotkeyKey"]; set => ChangingParameters("TranslationHotkeyKey", value); }

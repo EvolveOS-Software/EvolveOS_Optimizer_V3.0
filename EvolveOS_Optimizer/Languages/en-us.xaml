@@ -3367,4 +3367,13 @@
     <sys:String x:Key="warning_windows_update_cache">Deletes downloaded Windows Update files. If you have pending updates waiting to install, Windows will need to re-download them.</sys:String>
 
     <!-- endregion Disk Cleanup -->
+
+    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="ib_firstrun_title">Optimization Setup</sys:String>
+    <sys:String x:Key="ib_firstrun_msg">Welcome to EvolveOS Optimizer. How should we manage your system memory?</sys:String>
+    <sys:String x:Key="txt_mode_selection_desc">Performance Mode keeps navigation instant by caching pages in RAM. Eco Mode aggressively flushes background memory to keep your system footprint as small as possible.</sys:String>
+    <sys:String x:Key="btn_perf_mode">Performance Mode</sys:String>
+    <sys:String x:Key="btn_eco_mode">Eco Mode</sys:String>
+    <sys:String x:Key="txt_mode_change_anytime">Note: The app will restart to apply this architecture. You can change your selection anytime in Settings.</sys:String>
+    <!-- endregion First Run Performance/Eco Mode -->
 </ResourceDictionary>
