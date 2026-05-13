@@ -56,6 +56,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [ObservableProperty] public partial int ScheduledCleanDayIndex { get; set; } = 0;
         [ObservableProperty] public partial TimeSpan ScheduledCleanTime { get; set; } = new TimeSpan(12, 0, 0);
 
+        public ObservableCollection<StorageInsight> AnalyzerInsights { get; } = new();
+
         public IReadOnlyList<string> ScheduleDayOptions { get; } = new List<string>
         {
             ResourceString.GetString("cleanup_schedule_every_day") ?? "Every Day",
@@ -157,6 +159,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             IsAnalyzerViewActive = true;
             AnalyzedNodes.Clear();
 
+            AnalyzerInsights.Clear();
+
             _analyzerCts?.Cancel();
             _analyzerCts = new CancellationTokenSource();
             var token = _analyzerCts.Token;
@@ -168,14 +172,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 var drivesToScan = new List<string>();
                 if (rootPath == "ALL")
                 {
-                    drivesToScan.AddRange(DriveInfo.GetDrives().Where(d => d.IsReady && d.DriveType == DriveType.Fixed).Select(d => d.Name));
+                    drivesToScan.AddRange(DriveInfo.GetDrives()
+                        .Where(d => d.IsReady && d.DriveType == DriveType.Fixed)
+                        .Select(d => d.Name));
                 }
                 else
                 {
                     drivesToScan.Add(rootPath);
                 }
 
-                long totalBytesAllDrives = 0;
                 var rootNodes = new List<StorageNode>();
 
                 foreach (var drive in drivesToScan)
@@ -183,18 +188,39 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     var node = await Task.Run(() => BuildStorageTree(drive, token), token);
                     if (node != null)
                     {
-                        totalBytesAllDrives += node.SizeBytes;
                         rootNodes.Add(node);
                     }
                 }
 
+                long totalBytesScanned = rootNodes.Sum(n => n.SizeBytes);
+
                 foreach (var node in rootNodes)
                 {
-                    node.Percentage = totalBytesAllDrives > 0 ? ((double)node.SizeBytes / totalBytesAllDrives) * 100 : 0;
+                    node.Percentage = totalBytesScanned > 0 ? ((double)node.SizeBytes / totalBytesScanned) * 100 : 0;
                     AnalyzedNodes.Add(node);
                 }
 
-                AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_complete") ?? "Scan complete. Mapped {0}.", totalBytesAllDrives.FormatBytes());
+                if (rootPath == "ALL")
+                {
+                    var virtualRoot = new StorageNode
+                    {
+                        Name = "My Computer",
+                        SizeBytes = totalBytesScanned
+                    };
+
+                    foreach (var drive in rootNodes)
+                    {
+                        virtualRoot.Children.Add(drive);
+                    }
+
+                    GenerateAnalyzerInsights(virtualRoot);
+                }
+                else if (rootNodes.Count > 0)
+                {
+                    GenerateAnalyzerInsights(rootNodes[0]);
+                }
+
+                AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_complete") ?? "Scan complete. Mapped {0}.", totalBytesScanned.FormatBytes());
             }
             catch (OperationCanceledException)
             {
@@ -208,6 +234,26 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        [RelayCommand]
+        private async Task BrowseAndAnalyzeFolderAsync()
+        {
+            if (IsBusy) return;
+
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.ComputerFolder;
+            folderPicker.FileTypeFilter.Add("*");
+
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
+
+            var folder = await folderPicker.PickSingleFolderAsync();
+
+            if (folder != null)
+            {
+                await RunStorageAnalyzerAsync(folder.Path);
             }
         }
 
@@ -391,6 +437,58 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     return true;
             }
             return false;
+        }
+
+        public void GenerateAnalyzerInsights(StorageNode rootNode)
+        {
+            App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+            {
+                AnalyzerInsights.Clear();
+
+                if (rootNode == null || rootNode.Children.Count == 0 || rootNode.SizeBytes == 0)
+                    return;
+
+                string[] colors = { "#FF3B30", "#FF9500", "#FFCC00", "#4CD964", "#5AC8FA", "#007AFF", "#5856D6" };
+
+                double totalVisualWidth = 1000.0;
+
+                var topNodes = rootNode.Children.OrderByDescending(n => n.SizeBytes).ToList();
+
+                var largestNodes = topNodes.Take(5).ToList();
+
+                int colorIndex = 0;
+                foreach (var node in largestNodes)
+                {
+                    double percentage = (double)node.SizeBytes / rootNode.SizeBytes;
+
+                    if (percentage > 0.01)
+                    {
+                        AnalyzerInsights.Add(new StorageInsight
+                        {
+                            ColorHex = colors[colorIndex % colors.Length],
+                            DynamicWidth = percentage * totalVisualWidth,
+                            TooltipText = $"{node.Name} - {node.FormattedSize} ({percentage:P1})",
+                            TargetNode = node
+                        });
+                        colorIndex++;
+                    }
+                }
+
+                var otherNodes = topNodes.Skip(5).ToList();
+                long otherSizeBytes = otherNodes.Sum(n => n.SizeBytes);
+
+                if (otherSizeBytes > 0)
+                {
+                    double otherPercentage = (double)otherSizeBytes / rootNode.SizeBytes;
+                    AnalyzerInsights.Add(new StorageInsight
+                    {
+                        ColorHex = "#8E8E93",
+                        DynamicWidth = otherPercentage * totalVisualWidth,
+                        TooltipText = $"Other files & folders - {otherSizeBytes.FormatBytes()} ({otherPercentage:P1})",
+                        TargetNode = null
+                    });
+                }
+            });
         }
         #endregion
 
@@ -1005,8 +1103,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     CategoryName = group.AppName,
                     Percentage = pct,
-                    ColorHex = palette[colorIndex % palette.Length]
+                    ColorHex = palette[colorIndex % palette.Length],
+                    DynamicWidth = Math.Max(2, (pct / 100) * 370),
+                    TooltipText = $"{group.AppName}: {pct:F1}%"
                 });
+
                 colorIndex++;
             }
         }

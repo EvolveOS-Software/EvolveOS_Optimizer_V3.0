@@ -3348,18 +3348,37 @@
     <sys:String x:Key="warning_windows_event_logs">Efface les journaux de diagnostic de Windows. Vous perdrez les données d'événements historiques qui sont parfois nécessaires pour résoudre les pannes du système.</sys:String>
     <sys:String x:Key="warning_windows_update_cache">Supprime les fichiers Windows Update téléchargés. Si des mises à jour sont en attente d'installation, Windows devra les retélécharger.</sys:String>
 
-    <!-- endregion Disk Cleanup -->
+    <!-- Storage Analyzer -->
+    <sys:String x:Key="analyzer_dialog_title">Analyseur de stockage</sys:String>
+    <sys:String x:Key="analyzer_dialog_desc">Sélectionnez un lecteur local pour cartographier son empreinte de stockage et trouver les gros fichiers oubliés.</sys:String>
+    <sys:String x:Key="analyzer_dialog_analyze">Analyser</sys:String>
+    <sys:String x:Key="analyzer_all_drives">Tous les lecteurs</sys:String>
+    <sys:String x:Key="analyzer_btn_tooltip">Analyseur de stockage</sys:String>
+    <sys:String x:Key="analyzer_btn_back">Retour au Nettoyeur système</sys:String>
+    <sys:String x:Key="analyzer_dialog_browse_folder">Parcourir le dossier...</sys:String>
 
-    <!-- region First Run Performance/Eco Mode -->
-    <sys:String x:Key="ib_firstrun_title">Configuration de l'optimisation</sys:String>
-    <sys:String x:Key="ib_firstrun_msg">Bienvenue dans EvolveOS Optimizer. Comment devons-nous gérer la mémoire de votre système ?</sys:String>
-    <sys:String x:Key="txt_mode_selection_desc">Le mode Performance maintient une navigation instantanée en mettant les pages en cache dans la RAM. Le mode Éco vide agressivement la mémoire en arrière-plan pour réduire au maximum l'empreinte de votre système.</sys:String>
-    <sys:String x:Key="btn_perf_mode">Mode Performance</sys:String>
-    <sys:String x:Key="btn_eco_mode">Mode Éco</sys:String>
-    <sys:String x:Key="txt_mode_change_anytime">Remarque : L'application va redémarrer pour appliquer cette architecture. Vous pouvez modifier votre sélection à tout moment dans les Paramètres.</sys:String>
-    <!-- endregion First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_ctx_explorer">Afficher dans l'Explorateur</sys:String>
+    <sys:String x:Key="analyzer_ctx_unlock">Déverrouiller le fichier/dossier</sys:String>
+    <sys:String x:Key="analyzer_ctx_delete">Supprimer définitivement</sys:String>
 
-    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_status_scanning">Cartographie du stockage sur {0}...</sys:String>
+    <sys:String x:Key="analyzer_status_complete">Analyse terminée. {0} cartographié.</sys:String>
+    <sys:String x:Key="analyzer_status_cancelled">Analyse annulée.</sys:String>
+    <sys:String x:Key="analyzer_status_deleted">{0} supprimé</sys:String>
+
+    <sys:String x:Key="analyzer_status_unlocking">Octroi de l'accès et vérification des verrous...</sys:String>
+    <sys:String x:Key="analyzer_status_unlocked_procs">Accès accordé &amp; déverrouillé. Terminé : {0}</sys:String>
+    <sys:String x:Key="analyzer_status_unlocked_nolocks">Accès accordé. Aucun verrou de fichier actif trouvé.</sys:String>
+
+    <sys:String x:Key="analyzer_error_scan">Erreur lors de l'analyse du stockage.</sys:String>
+    <sys:String x:Key="analyzer_error_unlock">Échec du déverrouillage de l'élément.</sys:String>
+    <sys:String x:Key="analyzer_error_delete">Échec de la suppression : {0}</sys:String>
+
+    <sys:String x:Key="analyzer_confirm_delete_title">Supprimer l'élément définitivement ?</sys:String>
+    <sys:String x:Key="analyzer_confirm_delete_desc">Voulez-vous vraiment supprimer définitivement '{0}' ? Cette action ne peut pas être annulée.</sys:String>
+    <sys:String x:Key="analyzer_btn_delete">Supprimer</sys:String>
+
+    <sys:String x:Key="analyzer_tooltip_btn_title">Analyseur de stockage</sys:String>
     <sys:String x:Key="analyzer_header_name">Nom</sys:String>
     <sys:String x:Key="analyzer_header_size">Taille</sys:String>
     <sys:String x:Key="analyzer_header_allocated">Alloué</sys:String>
@@ -3369,15 +3388,14 @@
     <sys:String x:Key="analyzer_header_modified">Modifié</sys:String>
     <sys:String x:Key="analyzer_header_actions">Actions</sys:String>
 
+    <!-- endregion Disk Cleanup -->
+
+    <!-- region First Run Performance/Eco Mode -->
     <sys:String x:Key="ib_firstrun_title">Configuration de l'optimisation</sys:String>
     <sys:String x:Key="ib_firstrun_msg">Bienvenue dans EvolveOS Optimizer. Comment devons-nous gérer la mémoire de votre système ?</sys:String>
     <sys:String x:Key="txt_mode_selection_desc">Le mode Performance maintient la navigation instantanée en mettant les pages en cache dans la RAM. Le mode Éco vide agressivement la mémoire en arrière-plan pour réduire au maximum l'empreinte de votre système.</sys:String>
     <sys:String x:Key="btn_perf_mode">Mode Performance</sys:String>
     <sys:String x:Key="btn_eco_mode">Mode Éco</sys:String>
-    <sys:String x:Key="txt_mode_change_anytime">Remarque : L'application redémarrera pour appliquer cette architecture. Vous pouvez modifier votre sélection à tout moment dans les Paramètres.</sys:String>
-
-    <sys:String x:Key="analyzer_ctx_explorer">Afficher dans l'Explorateur</sys:String>
-    <sys:String x:Key="analyzer_ctx_unlock">Déverrouiller</sys:String>
-    <sys:String x:Key="analyzer_ctx_delete">Supprimer</sys:String>
-    <!-- endregion First Run Performance/Eco Mode -->
+    <sys:String x:Key="txt_mode_change_anytime">Remarque : l'application redémarrera pour appliquer cette architecture. Vous pouvez modifier votre sélection à tout moment dans les Paramètres.</sys:String>
+    <!-- endregion  First Run Performance/Eco Mode -->
 </ResourceDictionary>

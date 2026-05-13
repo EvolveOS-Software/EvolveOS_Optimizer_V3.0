@@ -3346,18 +3346,37 @@
     <sys:String x:Key="warning_windows_event_logs">Wist de diagnostische logboeken van Windows. U verliest historische gebeurtenisgegevens die soms nodig zijn om systeemcrashes op te lossen.</sys:String>
     <sys:String x:Key="warning_windows_update_cache">Verwijdert gedownloade Windows Update-bestanden. Als er updates in de wachtrij staan om te worden geïnstalleerd, moet Windows deze opnieuw downloaden.</sys:String>
 
-    <!-- endregion Disk Cleanup -->
+    <!-- Storage Analyzer -->
+    <sys:String x:Key="analyzer_dialog_title">Opslaganalyse</sys:String>
+    <sys:String x:Key="analyzer_dialog_desc">Selecteer een lokaal station om de opslagvoetafdruk in kaart te brengen en grote vergeten bestanden te vinden.</sys:String>
+    <sys:String x:Key="analyzer_dialog_analyze">Analyseren</sys:String>
+    <sys:String x:Key="analyzer_all_drives">Alle stations</sys:String>
+    <sys:String x:Key="analyzer_btn_tooltip">Opslaganalyse</sys:String>
+    <sys:String x:Key="analyzer_btn_back">Terug naar Systeemreiniger</sys:String>
+    <sys:String x:Key="analyzer_dialog_browse_folder">Map bladeren...</sys:String>
 
-    <!-- region First Run Performance/Eco Mode -->
-    <sys:String x:Key="ib_firstrun_title">Optimalisatie Instellen</sys:String>
-    <sys:String x:Key="ib_firstrun_msg">Welkom bij EvolveOS Optimizer. Hoe moeten we uw systeemgeheugen beheren?</sys:String>
-    <sys:String x:Key="txt_mode_selection_desc">Prestatiemodus houdt navigatie direct door pagina's in het RAM op te slaan. Eco-modus leegt agressief achtergrondgeheugen om de systeemvoetafdruk zo klein mogelijk te houden.</sys:String>
-    <sys:String x:Key="btn_perf_mode">Prestatiemodus</sys:String>
-    <sys:String x:Key="btn_eco_mode">Eco-modus</sys:String>
-    <sys:String x:Key="txt_mode_change_anytime">Let op: De app wordt opnieuw opgestart om deze architectuur toe te passen. U kunt uw keuze op elk moment wijzigen in Instellingen.</sys:String>
-    <!-- endregion First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_ctx_explorer">Weergeven in Verkenner</sys:String>
+    <sys:String x:Key="analyzer_ctx_unlock">Bestand/map ontgrendelen</sys:String>
+    <sys:String x:Key="analyzer_ctx_delete">Definitief verwijderen</sys:String>
 
-    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_status_scanning">Opslag in kaart brengen op {0}...</sys:String>
+    <sys:String x:Key="analyzer_status_complete">Scan voltooid. {0} in kaart gebracht.</sys:String>
+    <sys:String x:Key="analyzer_status_cancelled">Scan geannuleerd.</sys:String>
+    <sys:String x:Key="analyzer_status_deleted">{0} verwijderd</sys:String>
+
+    <sys:String x:Key="analyzer_status_unlocking">Toegang verlenen en controleren op vergrendelingen...</sys:String>
+    <sys:String x:Key="analyzer_status_unlocked_procs">Toegang verleend &amp; ontgrendeld. Beëindigd: {0}</sys:String>
+    <sys:String x:Key="analyzer_status_unlocked_nolocks">Toegang verleend. Geen actieve bestandsvergrendelingen gevonden.</sys:String>
+
+    <sys:String x:Key="analyzer_error_scan">Fout tijdens opslaganalyse.</sys:String>
+    <sys:String x:Key="analyzer_error_unlock">Kan item niet ontgrendelen.</sys:String>
+    <sys:String x:Key="analyzer_error_delete">Verwijderen mislukt: {0}</sys:String>
+
+    <sys:String x:Key="analyzer_confirm_delete_title">Item definitief verwijderen?</sys:String>
+    <sys:String x:Key="analyzer_confirm_delete_desc">Weet u zeker dat u '{0}' definitief wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.</sys:String>
+    <sys:String x:Key="analyzer_btn_delete">Verwijderen</sys:String>
+
+    <sys:String x:Key="analyzer_tooltip_btn_title">Opslaganalyse</sys:String>
     <sys:String x:Key="analyzer_header_name">Naam</sys:String>
     <sys:String x:Key="analyzer_header_size">Grootte</sys:String>
     <sys:String x:Key="analyzer_header_allocated">Toegewezen</sys:String>
@@ -3367,15 +3386,14 @@
     <sys:String x:Key="analyzer_header_modified">Gewijzigd</sys:String>
     <sys:String x:Key="analyzer_header_actions">Acties</sys:String>
 
-    <sys:String x:Key="ib_firstrun_title">Optimalisatie-setup</sys:String>
+    <!-- endregion Disk Cleanup -->
+
+    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="ib_firstrun_title">Optimalisatie Setup</sys:String>
     <sys:String x:Key="ib_firstrun_msg">Welkom bij EvolveOS Optimizer. Hoe moeten we uw systeemgeheugen beheren?</sys:String>
     <sys:String x:Key="txt_mode_selection_desc">Prestatiemodus houdt navigatie direct door pagina's in RAM te cachen. Ecomodus wist agressief het achtergrondgeheugen om uw systeemvoetafdruk zo klein mogelijk te houden.</sys:String>
     <sys:String x:Key="btn_perf_mode">Prestatiemodus</sys:String>
     <sys:String x:Key="btn_eco_mode">Ecomodus</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Let op: de app wordt opnieuw opgestart om deze architectuur toe te passen. U kunt uw selectie op elk moment wijzigen in Instellingen.</sys:String>
-
-    <sys:String x:Key="analyzer_ctx_explorer">Weergeven in Verkenner</sys:String>
-    <sys:String x:Key="analyzer_ctx_unlock">Ontgrendelen</sys:String>
-    <sys:String x:Key="analyzer_ctx_delete">Verwijderen</sys:String>
-    <!-- endregion First Run Performance/Eco Mode -->
+    <!-- endregion  First Run Performance/Eco Mode -->
 </ResourceDictionary>

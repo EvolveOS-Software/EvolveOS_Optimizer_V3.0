@@ -8,20 +8,20 @@ namespace EvolveOS_Optimizer.Core.Model
     public partial class StorageInsight : ObservableObject
     {
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(DynamicWidth))]
-        [NotifyPropertyChangedFor(nameof(TooltipText))]
         public partial string CategoryName { get; set; } = string.Empty;
 
         [ObservableProperty]
         public partial string ColorHex { get; set; } = "#808080";
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(DynamicWidth))]
-        [NotifyPropertyChangedFor(nameof(TooltipText))]
         public partial double Percentage { get; set; }
 
-        public double DynamicWidth => Math.Max(2, (Percentage / 100) * 370);
+        [ObservableProperty]
+        public partial double DynamicWidth { get; set; }
 
-        public string TooltipText => $"{CategoryName}: {Percentage:F1}%";
+        [ObservableProperty]
+        public partial string TooltipText { get; set; } = string.Empty;
+
+        public StorageNode? TargetNode { get; set; }
     }
 }

@@ -3328,36 +3328,54 @@
     <sys:String x:Key="warning_windows_event_logs">Löscht die Windows Diagnoseprotokolle. Sie verlieren historische Ereignisdaten, die manchmal zur Behebung von Systemabstürzen benötigt werden.</sys:String>
     <sys:String x:Key="warning_windows_update_cache">Löscht heruntergeladene Windows Update-Dateien. Wenn ausstehende Updates auf die Installation warten, muss Windows diese erneut herunterladen.</sys:String>
 
-    <!-- endregion Disk Cleanup -->
+    <!-- Storage Analyzer -->
+    <sys:String x:Key="analyzer_dialog_title">Speicheranalyse</sys:String>
+    <sys:String x:Key="analyzer_dialog_desc">Wählen Sie ein lokales Laufwerk aus, um dessen Speicherbedarf zu ermitteln und große vergessene Dateien zu finden.</sys:String>
+    <sys:String x:Key="analyzer_dialog_analyze">Analysieren</sys:String>
+    <sys:String x:Key="analyzer_all_drives">Alle Laufwerke</sys:String>
+    <sys:String x:Key="analyzer_btn_tooltip">Speicheranalyse</sys:String>
+    <sys:String x:Key="analyzer_btn_back">Zurück zur Systembereinigung</sys:String>
+    <sys:String x:Key="analyzer_dialog_browse_folder">Ordner durchsuchen...</sys:String>
 
-    <!-- region First Run Performance/Eco Mode -->
-    <sys:String x:Key="ib_firstrun_title">Optimierungs-Setup</sys:String>
-    <sys:String x:Key="ib_firstrun_msg">Willkommen bei EvolveOS Optimizer. Wie sollen wir Ihren Systemspeicher verwalten?</sys:String>
-    <sys:String x:Key="txt_mode_selection_desc">Der Leistungsmodus sorgt für sofortige Navigation, indem Seiten im RAM zwischengespeichert werden. Der Eco-Modus leert aggressiv den Hintergrundspeicher, um den System-Fußabdruck so gering wie möglich zu halten.</sys:String>
-    <sys:String x:Key="btn_perf_mode">Leistungsmodus</sys:String>
-    <sys:String x:Key="btn_eco_mode">Eco-Modus</sys:String>
-    <sys:String x:Key="txt_mode_change_anytime">Hinweis: Die App wird neu gestartet, um diese Architektur anzuwenden. Sie können Ihre Auswahl jederzeit in den Einstellungen ändern.</sys:String>
-    <!-- endregion First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_ctx_explorer">Im Explorer anzeigen</sys:String>
+    <sys:String x:Key="analyzer_ctx_unlock">Datei/Ordner entsperren</sys:String>
+    <sys:String x:Key="analyzer_ctx_delete">Endgültig löschen</sys:String>
 
-    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_status_scanning">Speicher auf {0} wird zugeordnet...</sys:String>
+    <sys:String x:Key="analyzer_status_complete">Scan abgeschlossen. {0} zugeordnet.</sys:String>
+    <sys:String x:Key="analyzer_status_cancelled">Scan abgebrochen.</sys:String>
+    <sys:String x:Key="analyzer_status_deleted">{0} gelöscht</sys:String>
+
+    <sys:String x:Key="analyzer_status_unlocking">Zugriff wird gewährt und auf Sperren geprüft...</sys:String>
+    <sys:String x:Key="analyzer_status_unlocked_procs">Zugriff gewährt &amp; entsperrt. Beendet: {0}</sys:String>
+    <sys:String x:Key="analyzer_status_unlocked_nolocks">Zugriff gewährt. Keine aktiven Dateisperren gefunden.</sys:String>
+
+    <sys:String x:Key="analyzer_error_scan">Fehler während der Speicheranalyse.</sys:String>
+    <sys:String x:Key="analyzer_error_unlock">Element konnte nicht entsperrt werden.</sys:String>
+    <sys:String x:Key="analyzer_error_delete">Löschen fehlgeschlagen: {0}</sys:String>
+
+    <sys:String x:Key="analyzer_confirm_delete_title">Element endgültig löschen?</sys:String>
+    <sys:String x:Key="analyzer_confirm_delete_desc">Sind Sie sicher, dass Sie '{0}' endgültig löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.</sys:String>
+    <sys:String x:Key="analyzer_btn_delete">Löschen</sys:String>
+
+    <sys:String x:Key="analyzer_tooltip_btn_title">Speicheranalyse</sys:String>
     <sys:String x:Key="analyzer_header_name">Name</sys:String>
     <sys:String x:Key="analyzer_header_size">Größe</sys:String>
     <sys:String x:Key="analyzer_header_allocated">Zugewiesen</sys:String>
     <sys:String x:Key="analyzer_header_files">Dateien</sys:String>
     <sys:String x:Key="analyzer_header_folders">Ordner</sys:String>
-    <sys:String x:Key="analyzer_header_percent">% vom übergeordneten Ordner</sys:String>
+    <sys:String x:Key="analyzer_header_percent">% vom übergeordneten</sys:String>
     <sys:String x:Key="analyzer_header_modified">Geändert</sys:String>
     <sys:String x:Key="analyzer_header_actions">Aktionen</sys:String>
 
-    <sys:String x:Key="ib_firstrun_title">Optimierungs-Setup</sys:String>
+    <!-- endregion Disk Cleanup -->
+
+    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="ib_firstrun_title">Optimierungs Setup</sys:String>
     <sys:String x:Key="ib_firstrun_msg">Willkommen bei EvolveOS Optimizer. Wie sollen wir Ihren Systemspeicher verwalten?</sys:String>
     <sys:String x:Key="txt_mode_selection_desc">Der Leistungsmodus hält die Navigation durch Caching von Seiten im RAM sofort bereit. Der Öko-Modus leert aggressiv den Hintergrundspeicher, um Ihren System-Fußabdruck so klein wie möglich zu halten.</sys:String>
     <sys:String x:Key="btn_perf_mode">Leistungsmodus</sys:String>
     <sys:String x:Key="btn_eco_mode">Öko-Modus</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Hinweis: Die App wird neu gestartet, um diese Architektur anzuwenden. Sie können Ihre Auswahl jederzeit in den Einstellungen ändern.</sys:String>
-
-    <sys:String x:Key="analyzer_ctx_explorer">Im Explorer anzeigen</sys:String>
-    <sys:String x:Key="analyzer_ctx_unlock">Entsperren</sys:String>
-    <sys:String x:Key="analyzer_ctx_delete">Löschen</sys:String>
-    <!-- endregion First Run Performance/Eco Mode -->
+    <!-- endregion  First Run Performance/Eco Mode -->
 </ResourceDictionary>

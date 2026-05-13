@@ -3346,18 +3346,37 @@
     <sys:String x:Key="warning_windows_event_logs">Cancella i registri diagnostici di Windows. Perderai i dati storici degli eventi che a volte sono necessari per risolvere gli arresti anomali del sistema.</sys:String>
     <sys:String x:Key="warning_windows_update_cache">Elimina i file di Windows Update scaricati. Se ci sono aggiornamenti in attesa di essere installati, Windows dovrà scaricarli nuovamente.</sys:String>
 
-    <!-- endregion Disk Cleanup -->
+    <!-- Storage Analyzer -->
+    <sys:String x:Key="analyzer_dialog_title">Analizzatore di archiviazione</sys:String>
+    <sys:String x:Key="analyzer_dialog_desc">Seleziona un'unità locale per mappare la sua impronta di archiviazione e trovare file di grandi dimensioni dimenticati.</sys:String>
+    <sys:String x:Key="analyzer_dialog_analyze">Analizza</sys:String>
+    <sys:String x:Key="analyzer_all_drives">Tutte le unità</sys:String>
+    <sys:String x:Key="analyzer_btn_tooltip">Analizzatore di archiviazione</sys:String>
+    <sys:String x:Key="analyzer_btn_back">Torna alla Pulizia sistema</sys:String>
+    <sys:String x:Key="analyzer_dialog_browse_folder">Sfoglia cartella...</sys:String>
 
-    <!-- region First Run Performance/Eco Mode -->
-    <sys:String x:Key="ib_firstrun_title">Configurazione Ottimizzazione</sys:String>
-    <sys:String x:Key="ib_firstrun_msg">Ti diamo il benvenuto in EvolveOS Optimizer. Come dovremmo gestire la memoria di sistema?</sys:String>
-    <sys:String x:Key="txt_mode_selection_desc">La Modalità Prestazioni mantiene la navigazione istantanea memorizzando le pagine nella RAM. La Modalità Eco svuota in modo aggressivo la memoria in background per ridurre al minimo l'impronta di sistema.</sys:String>
-    <sys:String x:Key="btn_perf_mode">Modalità Prestazioni</sys:String>
-    <sys:String x:Key="btn_eco_mode">Modalità Eco</sys:String>
-    <sys:String x:Key="txt_mode_change_anytime">Nota: L'app si riavvierà per applicare questa architettura. Puoi modificare la tua selezione in qualsiasi momento nelle Impostazioni.</sys:String>
-    <!-- endregion First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_ctx_explorer">Mostra in Esplora risorse</sys:String>
+    <sys:String x:Key="analyzer_ctx_unlock">Sblocca file/cartella</sys:String>
+    <sys:String x:Key="analyzer_ctx_delete">Elimina definitivamente</sys:String>
 
-    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_status_scanning">Mappatura dell'archiviazione su {0}...</sys:String>
+    <sys:String x:Key="analyzer_status_complete">Scansione completata. Mappati {0}.</sys:String>
+    <sys:String x:Key="analyzer_status_cancelled">Scansione annullata.</sys:String>
+    <sys:String x:Key="analyzer_status_deleted">{0} eliminato</sys:String>
+
+    <sys:String x:Key="analyzer_status_unlocking">Concessione dell'accesso e controllo dei blocchi...</sys:String>
+    <sys:String x:Key="analyzer_status_unlocked_procs">Accesso concesso &amp; sbloccato. Terminato: {0}</sys:String>
+    <sys:String x:Key="analyzer_status_unlocked_nolocks">Accesso concesso. Nessun blocco file attivo trovato.</sys:String>
+
+    <sys:String x:Key="analyzer_error_scan">Errore durante l'analisi dell'archiviazione.</sys:String>
+    <sys:String x:Key="analyzer_error_unlock">Impossibile sbloccare l'elemento.</sys:String>
+    <sys:String x:Key="analyzer_error_delete">Eliminazione non riuscita: {0}</sys:String>
+
+    <sys:String x:Key="analyzer_confirm_delete_title">Eliminare definitivamente l'elemento?</sys:String>
+    <sys:String x:Key="analyzer_confirm_delete_desc">Sei sicuro di voler eliminare definitivamente '{0}'? Questa azione non può essere annullata.</sys:String>
+    <sys:String x:Key="analyzer_btn_delete">Elimina</sys:String>
+
+    <sys:String x:Key="analyzer_tooltip_btn_title">Analizzatore di archiviazione</sys:String>
     <sys:String x:Key="analyzer_header_name">Nome</sys:String>
     <sys:String x:Key="analyzer_header_size">Dimensioni</sys:String>
     <sys:String x:Key="analyzer_header_allocated">Allocato</sys:String>
@@ -3367,15 +3386,14 @@
     <sys:String x:Key="analyzer_header_modified">Modificato</sys:String>
     <sys:String x:Key="analyzer_header_actions">Azioni</sys:String>
 
+    <!-- endregion Disk Cleanup -->
+
+    <!-- region First Run Performance/Eco Mode -->
     <sys:String x:Key="ib_firstrun_title">Configurazione Ottimizzazione</sys:String>
     <sys:String x:Key="ib_firstrun_msg">Benvenuto in EvolveOS Optimizer. Come dovremmo gestire la memoria del tuo sistema?</sys:String>
     <sys:String x:Key="txt_mode_selection_desc">La Modalità Prestazioni mantiene la navigazione istantanea memorizzando le pagine nella RAM. La Modalità Eco svuota aggressivamente la memoria in background per mantenere l'impronta del sistema il più piccola possibile.</sys:String>
     <sys:String x:Key="btn_perf_mode">Modalità Prestazioni</sys:String>
     <sys:String x:Key="btn_eco_mode">Modalità Eco</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Nota: l'app si riavvierà per applicare questa architettura. Puoi modificare la tua selezione in qualsiasi momento nelle Impostazioni.</sys:String>
-
-    <sys:String x:Key="analyzer_ctx_explorer">Mostra in Esplora risorse</sys:String>
-    <sys:String x:Key="analyzer_ctx_unlock">Sblocca</sys:String>
-    <sys:String x:Key="analyzer_ctx_delete">Elimina</sys:String>
-    <!-- endregion First Run Performance/Eco Mode -->
+    <!-- endregion  First Run Performance/Eco Mode -->
 </ResourceDictionary>

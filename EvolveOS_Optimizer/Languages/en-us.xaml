@@ -3373,6 +3373,7 @@
     <sys:String x:Key="analyzer_all_drives">All Drives</sys:String>
     <sys:String x:Key="analyzer_btn_tooltip">Storage Analyzer</sys:String>
     <sys:String x:Key="analyzer_btn_back">Back to System Cleaner</sys:String>
+    <sys:String x:Key="analyzer_dialog_browse_folder">Browse Folder...</sys:String>
 
     <sys:String x:Key="analyzer_ctx_explorer">Show in Explorer</sys:String>
     <sys:String x:Key="analyzer_ctx_unlock">Unlock File/Folder</sys:String>
@@ -3394,10 +3395,8 @@
     <sys:String x:Key="analyzer_confirm_delete_title">Permanently delete item?</sys:String>
     <sys:String x:Key="analyzer_confirm_delete_desc">Are you sure you want to permanently delete '{0}'? This action cannot be undone.</sys:String>
     <sys:String x:Key="analyzer_btn_delete">Delete</sys:String>
-    
-    <!-- endregion Disk Cleanup -->
 
-    <!-- region First Run Performance/Eco Mode -->
+    <sys:String x:Key="analyzer_tooltip_btn_title">Storage Analyzer</sys:String>
     <sys:String x:Key="analyzer_header_name">Name</sys:String>
     <sys:String x:Key="analyzer_header_size">Size</sys:String>
     <sys:String x:Key="analyzer_header_allocated">Allocated</sys:String>
@@ -3406,16 +3405,15 @@
     <sys:String x:Key="analyzer_header_percent">% of Parent</sys:String>
     <sys:String x:Key="analyzer_header_modified">Modified</sys:String>
     <sys:String x:Key="analyzer_header_actions">Actions</sys:String>
-    
+
+    <!-- endregion Disk Cleanup -->
+
+    <!-- region First Run Performance/Eco Mode -->
     <sys:String x:Key="ib_firstrun_title">Optimization Setup</sys:String>
     <sys:String x:Key="ib_firstrun_msg">Welcome to EvolveOS Optimizer. How should we manage your system memory?</sys:String>
     <sys:String x:Key="txt_mode_selection_desc">Performance Mode keeps navigation instant by caching pages in RAM. Eco Mode aggressively flushes background memory to keep your system footprint as small as possible.</sys:String>
     <sys:String x:Key="btn_perf_mode">Performance Mode</sys:String>
     <sys:String x:Key="btn_eco_mode">Eco Mode</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Note: The app will restart to apply this architecture. You can change your selection anytime in Settings.</sys:String>
-
-    <sys:String x:Key="analyzer_ctx_explorer">Show in Explorer</sys:String>
-    <sys:String x:Key="analyzer_ctx_unlock">Unlock</sys:String>
-    <sys:String x:Key="analyzer_ctx_delete">Delete</sys:String>
-    <!-- endregion First Run Performance/Eco Mode -->
+    <!-- endregion  First Run Performance/Eco Mode -->
 </ResourceDictionary>

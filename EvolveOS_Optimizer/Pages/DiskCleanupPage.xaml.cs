@@ -145,6 +145,9 @@ namespace EvolveOS_Optimizer.Pages
             }
                 },
                 PrimaryButtonText = ResourceString.GetString("analyzer_dialog_analyze") ?? "Analyze",
+
+                SecondaryButtonText = ResourceString.GetString("analyzer_dialog_browse_folder") ?? "Browse Folder...",
+
                 CloseButtonText = ResourceString.GetString("cleanup_btn_close") ?? "Cancel",
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = this.XamlRoot
@@ -155,6 +158,10 @@ namespace EvolveOS_Optimizer.Pages
             if (result == ContentDialogResult.Primary)
             {
                 await ViewModel.RunStorageAnalyzerCommand.ExecuteAsync(selectedDrive.Path);
+            }
+            else if (result == ContentDialogResult.Secondary)
+            {
+                await ViewModel.BrowseAndAnalyzeFolderCommand.ExecuteAsync(null);
             }
         }
 
@@ -280,6 +287,35 @@ namespace EvolveOS_Optimizer.Pages
             await ((IAsyncRelayCommand)ViewModel.RunCleanerCommand).ExecuteAsync(null);
         }
 
+        private void AnalyzerBarSegment_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is StorageInsight insight)
+            {
+                if (insight.TargetNode != null)
+                {
+                    if (ViewModel.AnalyzedNodes.Count > 0)
+                    {
+                        ViewModel.AnalyzedNodes[0].IsExpanded = true;
+                    }
+
+                    insight.TargetNode.IsExpanded = true;
+
+                    StorageTreeView.SelectedItem = insight.TargetNode;
+
+                    ViewModel.GenerateAnalyzerInsights(insight.TargetNode);
+
+                    StorageTreeView.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        var container = StorageTreeView.ContainerFromItem(insight.TargetNode) as FrameworkElement;
+                        container?.StartBringIntoView(new BringIntoViewOptions
+                        {
+                            VerticalAlignmentRatio = 0.5
+                        });
+                    });
+                }
+            }
+        }
+
         private async void CategoryExpander_Expanding(Expander sender, ExpanderExpandingEventArgs args)
         {
             await Task.Delay(100);
@@ -289,6 +325,14 @@ namespace EvolveOS_Optimizer.Pages
                 VerticalAlignmentRatio = 0.0f,
                 HorizontalAlignmentRatio = 0.0f
             });
+        }
+
+        private void StorageTreeView_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
+        {
+            if (args.InvokedItem is StorageNode selectedNode)
+            {
+                ViewModel.GenerateAnalyzerInsights(selectedNode);
+            }
         }
 
         private async void BrowseButton_Click(object sender, RoutedEventArgs e)
