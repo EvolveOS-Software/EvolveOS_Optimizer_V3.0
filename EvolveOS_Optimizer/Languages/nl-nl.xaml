@@ -3400,6 +3400,7 @@
     <sys:String x:Key="analyzer_cat_documents">Documenten</sys:String>
 
     <sys:String x:Key="analyzer_status_mft">[MFT Turbo] Opslag in kaart brengen op {0}...</sys:String>
+    <sys:String x:Key="analyzer_search_placeholder">Zoek in toegewezen bestanden...</sys:String>
     <!-- endregion Disk Cleanup -->
 
     <!-- region First Run Performance/Eco Mode -->

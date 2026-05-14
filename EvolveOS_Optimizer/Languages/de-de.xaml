@@ -3382,6 +3382,7 @@
     <sys:String x:Key="analyzer_cat_documents">Dokumente</sys:String>
 
     <sys:String x:Key="analyzer_status_mft">[MFT Turbo] Speicheranalyse auf {0}...</sys:String>
+    <sys:String x:Key="analyzer_search_placeholder">Zugeordnete Dateien suchen...</sys:String>
     <!-- endregion Disk Cleanup -->
 
     <!-- region First Run Performance/Eco Mode -->

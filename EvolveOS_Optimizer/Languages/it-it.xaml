@@ -3400,6 +3400,7 @@
     <sys:String x:Key="analyzer_cat_documents">Documenti</sys:String>
 
     <sys:String x:Key="analyzer_status_mft">[MFT Turbo] Mappatura dell'archiviazione su {0}...</sys:String>
+    <sys:String x:Key="analyzer_search_placeholder">Cerca file mappati...</sys:String>
     <!-- endregion Disk Cleanup -->
 
     <!-- region First Run Performance/Eco Mode -->

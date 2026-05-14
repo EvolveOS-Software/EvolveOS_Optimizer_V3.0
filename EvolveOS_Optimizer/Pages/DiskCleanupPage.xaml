@@ -345,6 +345,15 @@
                     </Button>
                 </StackPanel>
 
+                <AutoSuggestBox PlaceholderText="{helpers:ResourceString Key=analyzer_search_placeholder}"
+                                Text="{x:Bind ViewModel.AnalyzerSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Width="220"
+                                Height="32"
+                                QueryIcon="Find"
+                                VerticalAlignment="Center"
+                                FontFamily="{ThemeResource Jura}"
+                                Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+
                 <ToggleButton IsChecked="{x:Bind ViewModel.IsCategoryPaneOpen, Mode=TwoWay}"
                               Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
                               ToolTipService.ToolTip="{helpers:ResourceString Key=analyzer_toggle_filetypes_tooltip}"

@@ -34,6 +34,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private List<string> _lastPaths = [];
         private bool _suppressSave;
         private CancellationTokenSource? _analyzerCts;
+        private CancellationTokenSource? _analyzerSearchCts;
         #endregion
 
         #region Observable State (Cleaner)
@@ -57,6 +58,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [ObservableProperty] public partial int ScheduledCleanDayIndex { get; set; } = 0;
         [ObservableProperty] public partial TimeSpan ScheduledCleanTime { get; set; } = new TimeSpan(12, 0, 0);
         [ObservableProperty] public partial bool IsCategoryPaneOpen { get; set; } = true;
+        [ObservableProperty] public partial string AnalyzerSearchText { get; set; } = "";
 
         public ObservableCollection<StorageInsight> AnalyzerInsights { get; } = new();
         public ObservableCollection<FileCategoryInsight> FileCategories { get; } = new();
@@ -163,6 +165,70 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             SettingsEngine.ScheduledCleanTime = value;
             if (IsScheduledCleanEnabled) { /* Trigger background service update */ }
+        }
+
+        partial void OnAnalyzerSearchTextChanged(string value)
+        {
+            _analyzerSearchCts?.Cancel();
+            _analyzerSearchCts = new CancellationTokenSource();
+            var token = _analyzerSearchCts.Token;
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(300, token);
+                    if (token.IsCancellationRequested) return;
+
+                    var isSearchEmpty = string.IsNullOrWhiteSpace(value);
+                    var results = new List<StorageNode>();
+
+                    if (isSearchEmpty)
+                    {
+                        results = _unfilteredRootNodes;
+                    }
+                    else
+                    {
+                        void SearchNode(StorageNode node)
+                        {
+                            if (token.IsCancellationRequested) return;
+
+                            if (node.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
+                            {
+                                results.Add(new StorageNode
+                                {
+                                    Name = node.Name,
+                                    Path = node.Path,
+                                    IsFolder = node.IsFolder,
+                                    SizeBytes = node.SizeBytes,
+                                    AllocatedSizeBytes = node.AllocatedSizeBytes,
+                                    LastModified = node.LastModified,
+                                    IsHidden = node.IsHidden,
+                                    Percentage = node.Percentage
+                                });
+                            }
+                            foreach (var child in node.Children) SearchNode(child);
+                        }
+
+                        foreach (var root in _unfilteredRootNodes) SearchNode(root);
+
+                        results = results.OrderByDescending(n => n.SizeBytes).Take(200).ToList();
+                    }
+
+                    if (token.IsCancellationRequested) return;
+
+                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        AnalyzedNodes.Clear();
+                        foreach (var res in results)
+                        {
+                            AnalyzedNodes.Add(res);
+                        }
+                    });
+                }
+                catch (TaskCanceledException) { /* Ignore cancelled searches */ }
+                catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+            }, token);
         }
         #endregion
 
