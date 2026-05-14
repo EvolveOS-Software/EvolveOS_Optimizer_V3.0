@@ -3380,6 +3380,8 @@
     <sys:String x:Key="analyzer_cat_archives">Archive</sys:String>
     <sys:String x:Key="analyzer_cat_installers">Installationsprogramme</sys:String>
     <sys:String x:Key="analyzer_cat_documents">Dokumente</sys:String>
+
+    <sys:String x:Key="analyzer_status_mft">[MFT Turbo] Speicheranalyse auf {0}...</sys:String>
     <!-- endregion Disk Cleanup -->
 
     <!-- region First Run Performance/Eco Mode -->

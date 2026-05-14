@@ -3398,6 +3398,8 @@
     <sys:String x:Key="analyzer_cat_archives">Archieven</sys:String>
     <sys:String x:Key="analyzer_cat_installers">Installatieprogramma's</sys:String>
     <sys:String x:Key="analyzer_cat_documents">Documenten</sys:String>
+
+    <sys:String x:Key="analyzer_status_mft">[MFT Turbo] Opslag in kaart brengen op {0}...</sys:String>
     <!-- endregion Disk Cleanup -->
 
     <!-- region First Run Performance/Eco Mode -->

@@ -26,6 +26,7 @@ namespace EvolveOS_Optimizer.Core.Model
         public int FoldersCount { get; set; }
 
         public bool IsHidden { get; set; }
+        public object? Tag { get; set; }
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PercentageString))]

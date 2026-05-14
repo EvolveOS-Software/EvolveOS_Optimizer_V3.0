@@ -4,6 +4,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Http;
+using System.Security.Principal;
 using System.Text.Json;
 using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -183,20 +184,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private async Task RunStorageAnalyzerAsync(string rootPath)
         {
             if (IsBusy) return;
-            IsBusy = true;
-            IsAnalyzerViewActive = true;
-            AnalyzedNodes.Clear();
-
-            AnalyzerInsights.Clear();
-
-            _analyzerCts?.Cancel();
-            _analyzerCts = new CancellationTokenSource();
-            var token = _analyzerCts.Token;
-
-            AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_scanning") ?? "Mapping storage on {0}...", rootPath);
 
             try
             {
+                IsBusy = true;
+                IsAnalyzerViewActive = true;
+                AnalyzedNodes.Clear();
+                AnalyzerInsights.Clear();
+
+                _analyzerCts?.Cancel();
+                _analyzerCts = new CancellationTokenSource();
+                var token = _analyzerCts.Token;
+
                 var drivesToScan = new List<string>();
                 if (rootPath == "ALL")
                 {
@@ -211,9 +210,36 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 var rootNodes = new List<StorageNode>();
 
+                bool isAdmin = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+
                 foreach (var drive in drivesToScan)
                 {
-                    var node = await Task.Run(() => BuildStorageTree(drive, token), token);
+                    StorageNode? node = null;
+
+                    bool isWholeDrive = drive.Length <= 3;
+                    bool isNtfs = false;
+
+                    if (isWholeDrive)
+                    {
+                        try
+                        {
+                            var driveInfo = new DriveInfo(drive);
+                            isNtfs = driveInfo.DriveFormat.Equals("NTFS", StringComparison.OrdinalIgnoreCase);
+                        }
+                        catch { /* Ignore if drive info fails */ }
+                    }
+
+                    if (isAdmin && isWholeDrive && isNtfs)
+                    {
+                        AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_mft") ?? "[MFT Turbo] Mapping storage on {0}...", drive);
+                        node = await Task.Run(() => FastMftScanner.BuildTreeFromMFT(drive, token), token);
+                    }
+                    else
+                    {
+                        AnalyzerStatusText = string.Format(ResourceString.GetString("analyzer_status_scanning") ?? "Mapping storage on {0}...", drive);
+                        node = await Task.Run(() => BuildStorageTree(drive, token), token);
+                    }
+
                     if (node != null)
                     {
                         rootNodes.Add(node);

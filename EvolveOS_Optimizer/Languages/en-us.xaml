@@ -3418,6 +3418,8 @@
     <sys:String x:Key="analyzer_cat_archives">Archives</sys:String>
     <sys:String x:Key="analyzer_cat_installers">Installers</sys:String>
     <sys:String x:Key="analyzer_cat_documents">Documents</sys:String>
+
+    <sys:String x:Key="analyzer_status_mft">[MFT Turbo] Mapping storage on {0}...</sys:String>
     <!-- endregion Disk Cleanup -->
 
     <!-- region First Run Performance/Eco Mode -->

@@ -3398,6 +3398,8 @@
     <sys:String x:Key="analyzer_cat_archives">Archivi</sys:String>
     <sys:String x:Key="analyzer_cat_installers">Programmi di installazione</sys:String>
     <sys:String x:Key="analyzer_cat_documents">Documenti</sys:String>
+
+    <sys:String x:Key="analyzer_status_mft">[MFT Turbo] Mappatura dell'archiviazione su {0}...</sys:String>
     <!-- endregion Disk Cleanup -->
 
     <!-- region First Run Performance/Eco Mode -->
