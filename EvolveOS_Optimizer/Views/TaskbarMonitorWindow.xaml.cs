@@ -51,12 +51,10 @@ namespace EvolveOS_Optimizer.Views
             _appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
             _appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
 
-            AppWindow.Changed += AppWindow_Changed;
-
             TaskbarOverlayManager.InjectIntoTaskbar(_hWnd);
 
             // Position (e.g., 400px from the right edge, 6px down from the top of the taskbar)
-            TaskbarOverlayManager.PositionInsideTaskbar(_hWnd, 650, 6);
+            TaskbarOverlayManager.PositionInsideTaskbar(_hWnd, 650, 8);
 
             _appWindow.Resize(new SizeInt32(355, 40));
 
@@ -65,15 +63,6 @@ namespace EvolveOS_Optimizer.Views
             _syncTimer.Interval = TimeSpan.FromMilliseconds(500);
             _syncTimer.Tick += SyncTimer_Tick;
             _syncTimer.Start();
-        }
-
-        private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
-        {
-            if (args.DidPositionChange)
-            {
-                var taskbarRect = TaskbarOverlayManager.GetTaskbarRect();
-                _currentXOffset = taskbarRect.Right - sender.Position.X;
-            }
         }
 
         private void SyncTimer_Tick(object sender, object e)

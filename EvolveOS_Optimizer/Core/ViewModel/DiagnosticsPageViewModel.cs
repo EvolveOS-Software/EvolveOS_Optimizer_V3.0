@@ -4419,16 +4419,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             _isUiActive = false;
 
-            _telemetryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
-
-            StopLiveMonitoring();
-
-            _securityRefreshTimer?.Stop();
-
             bool shouldBeInEfficiencyMode = LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low;
             EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(shouldBeInEfficiencyMode);
 
-            Debug.WriteLine("[DiagnosticsPageVM] Background engines CRYO-FROZEN.");
+            StopLiveMonitoring();
+            _securityRefreshTimer?.Stop();
+
+            if (ShowHardwarePanelInTray)
+            {
+                _telemetryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+                Debug.WriteLine("[DiagnosticsPageVM] All background engines CRYO-FROZEN.");
+            }
+            else
+            {
+                Debug.WriteLine("[DiagnosticsPageVM] Heavy engines frozen. Lightweight Telemetry kept alive for Taskbar.");
+            }
         }
 
         public void ResumeUiUpdates()
