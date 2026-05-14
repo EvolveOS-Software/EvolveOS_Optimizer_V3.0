@@ -1507,6 +1507,9 @@
     <sys:String x:Key="systray_maintenance">Operazioni di sistema</sys:String>
     <sys:String x:Key="systray_dns">DNS Sicuro</sys:String>
     <sys:String x:Key="systray_low_priority">Modalità efficienza</sys:String>
+
+    <sys:String x:Key="systray_menu_detach">Sgancia (Barra)</sys:String>
+    <sys:String x:Key="systray_menu_attach">Aggancia (Tray)</sys:String>
     <!-- endregion System TrayIcon -->
 
     <!-- region Run On StartUp -->

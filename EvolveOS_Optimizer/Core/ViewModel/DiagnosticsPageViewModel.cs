@@ -402,6 +402,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     UpdateSystemStatus();
                 });
             };
+
+            ShowHardwarePanelInTray = true;
         }
 
         private void OnGlobalSettingChanged(object? sender, string settingKey)
@@ -3376,11 +3378,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(ActivePrimaryValueStr));
                     OnPropertyChanged(nameof(HeroStandardVisibility));
 
-                    OnPropertyChanged(nameof(ShowHardwarePanelInTray));
+                    /*OnPropertyChanged(nameof(ShowHardwarePanelInTray));
                     OnPropertyChanged(nameof(ShowCpuInTray));
                     OnPropertyChanged(nameof(ShowRamInTray));
                     OnPropertyChanged(nameof(ShowGpuInTray));
-                    OnPropertyChanged(nameof(ShowDiskInTray));
+                    OnPropertyChanged(nameof(ShowDiskInTray));*/
 
                     int sparklinePoints = 20;
                     double stepX = 3.0;

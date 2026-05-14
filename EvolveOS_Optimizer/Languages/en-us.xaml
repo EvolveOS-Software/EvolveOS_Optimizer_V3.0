@@ -1515,6 +1515,9 @@
     <sys:String x:Key="systray_dns">Secure DNS</sys:String>
 
     <sys:String x:Key="systray_low_priority">Efficiency Mode</sys:String>
+
+    <sys:String x:Key="systray_menu_detach">Detach Monitor to Taskbar</sys:String>
+    <sys:String x:Key="systray_menu_attach">Attach Monitor to Tray</sys:String>
     <!-- endregion System TrayIcon -->
 
     <!-- region Run On StartUp -->

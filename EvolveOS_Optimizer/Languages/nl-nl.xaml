@@ -1496,6 +1496,9 @@
     <sys:String x:Key="systray_maintenance">Systeem bewerkingen</sys:String>
     <sys:String x:Key="systray_dns">DNS Beveiliging</sys:String>
     <sys:String x:Key="systray_low_priority">Efficiëntie modus</sys:String>
+
+    <sys:String x:Key="systray_menu_detach">Zet op taakbalk</sys:String>
+    <sys:String x:Key="systray_menu_attach">Zet in systeemvak</sys:String>
     <!-- endregion System TrayIcon -->
 
     <!-- region Run On StartUp -->

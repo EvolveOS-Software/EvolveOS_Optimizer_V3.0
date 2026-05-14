@@ -1501,6 +1501,9 @@
     <sys:String x:Key="systray_maintenance">Opérations système</sys:String>
     <sys:String x:Key="systray_dns">DNS Sécurisé</sys:String>
     <sys:String x:Key="systray_low_priority">Mode d'efficacité</sys:String>
+
+    <sys:String x:Key="systray_menu_detach">Détacher (Barre des tâches)</sys:String>
+    <sys:String x:Key="systray_menu_attach">Attacher (Zone de notif)</sys:String>
     <!-- endregion System TrayIcon -->
 
     <!-- region Run On StartUp -->

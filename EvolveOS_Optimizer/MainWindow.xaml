@@ -150,14 +150,21 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <tb:TaskbarIcon x:Name="TrayIcon" 
-                Style="{StaticResource EvolveOSTrayIconStyle}"
-                DataContext="{Binding DataContext, ElementName=RootGrid}"
-                DoubleClickCommand="{Binding ToggleWindowVisibilityCommand}"
-                ContextMenuMode="SecondWindow">
+        <tb:TaskbarIcon x:Name="TrayIcon"
+                        Style="{StaticResource EvolveOSTrayIconStyle}"
+                        DataContext="{Binding DataContext, ElementName=RootGrid}"
+                        DoubleClickCommand="{Binding ToggleWindowVisibilityCommand}"
+                        ContextMenuMode="SecondWindow">
 
             <tb:TaskbarIcon.ContextFlyout>
                 <MenuFlyout MenuFlyoutPresenterStyle="{StaticResource EvolveOSPresenterStyle}">
+
+                    <MenuFlyoutItem x:Name="MenuDetachMonitor" MinWidth="225" Text="{helpers:ResourceString Key=systray_menu_detach}" Click="MenuDetachMonitor_Click" FontFamily="{StaticResource Jura-Regular}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE8A7;"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator Opacity="0.5"/>
 
                     <MenuFlyoutSeparator x:Name="HardwarePanelSeparator" Style="{StaticResource TrayWidgetSeparatorStyle}" />
 

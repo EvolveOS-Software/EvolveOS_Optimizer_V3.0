@@ -51,6 +51,8 @@ namespace EvolveOS_Optimizer
         private DateTime _sessionExpiryTime;
 
         string iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "EvolveOS_Optimizer.ico");
+
+        private Views.TaskbarMonitorWindow? _taskbarMonitor;
         #endregion
 
         #region Properties & Methods
@@ -451,6 +453,34 @@ namespace EvolveOS_Optimizer
 
                     this.Close();
                 });
+            }
+        }
+        #endregion
+
+        #region Taskbar Monitoring
+        private void MenuDetachMonitor_Click(object sender, RoutedEventArgs e)
+        {
+            if (_taskbarMonitor == null)
+            {
+                DiagnosticsVM.ShowHardwarePanelInTray = false;
+
+                _taskbarMonitor = new Views.TaskbarMonitorWindow();
+
+                _taskbarMonitor.Closed += (s, args) =>
+                {
+                    _taskbarMonitor = null;
+                    DiagnosticsVM.ShowHardwarePanelInTray = true;
+
+                    MenuDetachMonitor.Text = ResourceString.GetString("systray_menu_detach") ?? "Detach Monitor to Taskbar";
+                };
+
+                _taskbarMonitor.Activate();
+
+                MenuDetachMonitor.Text = ResourceString.GetString("systray_menu_attach") ?? "Attach Monitor to Tray";
+            }
+            else
+            {
+                _taskbarMonitor.Close();
             }
         }
         #endregion
