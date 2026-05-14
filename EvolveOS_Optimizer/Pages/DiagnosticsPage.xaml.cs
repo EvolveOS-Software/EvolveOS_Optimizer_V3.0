@@ -1385,22 +1385,16 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (!SettingsEngine.IsHighPerformanceModeEnabled)
                 {
-                    Debug.WriteLine("[DiagnosticsPage] Low Resource Mode: Evicting UI and heavy buffers...");
+                    Debug.WriteLine("[DiagnosticsPage] Low Resource Mode: Evicting heavy UI buffers...");
 
                     if (ViewModel != null)
                     {
                         ViewModel.PerformanceGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
                         ViewModel.PerformanceAreaPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-
                         ViewModel.PerformanceGraphPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
                         ViewModel.PerformanceAreaPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
 
-                        ViewModel.CpuTrayPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-                        ViewModel.RamTrayPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-                        ViewModel.GpuTrayPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-                        ViewModel.DiskTrayPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-
-                        Debug.WriteLine("[DiagnosticsPage] Severed all 8 PointCollection handles to prevent stale references.");
+                        Debug.WriteLine("[DiagnosticsPage] Severed main window PointCollections. Tray collections preserved.");
                     }
 
                     foreach (var result in _scanResults.Values)
@@ -1424,7 +1418,7 @@ namespace EvolveOS_Optimizer.Pages
                 }
                 else
                 {
-                    Debug.WriteLine("[DiagnosticsPage] High Performance Mode: Keeping UI ready in background.");
+                    Debug.WriteLine("[DiagnosticsPage] Bypass Purge: High Performance Mode is ON.");
                 }
             }
             catch (Exception ex)

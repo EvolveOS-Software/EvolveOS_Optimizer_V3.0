@@ -4419,16 +4419,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             _isUiActive = false;
 
-            _telemetryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
-
-            StopLiveMonitoring();
-
-            _securityRefreshTimer?.Stop();
-
             bool shouldBeInEfficiencyMode = LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low;
             EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(shouldBeInEfficiencyMode);
 
-            Debug.WriteLine("[DiagnosticsPageVM] Background engines CRYO-FROZEN.");
+            StopLiveMonitoring();
+            _securityRefreshTimer?.Stop();
+
+            Debug.WriteLine("[DiagnosticsPageVM] Heavy engines frozen. Lightweight Telemetry kept alive for Tray/Taskbar.");
         }
 
         public void ResumeUiUpdates()

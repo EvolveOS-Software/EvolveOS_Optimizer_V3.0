@@ -24,9 +24,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [DllImport("user32.dll")]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {
@@ -43,7 +40,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private const long WS_EX_TOOLWINDOW = 0x00000080L;
         private const long WS_EX_TOPMOST = 0x00000008L;
-        private const long WS_CHILD = 0x40000000L;
+
+        private const int GWLP_HWNDPARENT = -8;
 
         private const long WS_POPUP = 0x80000000L;
         private const long WS_CAPTION = 0x00C00000L;
@@ -84,28 +82,37 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             IntPtr taskbarHwnd = FindWindow("Shell_TrayWnd", null);
             if (taskbarHwnd == IntPtr.Zero) return;
 
-            SetParent(monitorHwnd, taskbarHwnd);
+            SetWindowLongPtr(monitorHwnd, GWLP_HWNDPARENT, taskbarHwnd);
 
             long style = GetWindowLongPtr(monitorHwnd, GWL_STYLE).ToInt64();
-
-            style &= ~(WS_POPUP | WS_CAPTION | WS_THICKFRAME | WS_BORDER);
-            style |= WS_CHILD;
-
+            style &= ~(WS_CAPTION | WS_THICKFRAME | WS_BORDER);
+            style |= WS_POPUP;
             SetWindowLongPtr(monitorHwnd, GWL_STYLE, new IntPtr(style));
 
             long exStyle = GetWindowLongPtr(monitorHwnd, GWL_EXSTYLE).ToInt64();
-            exStyle |= WS_EX_TOOLWINDOW;
+            exStyle |= WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
             SetWindowLongPtr(monitorHwnd, GWL_EXSTYLE, new IntPtr(exStyle));
 
-            SetWindowPos(monitorHwnd, IntPtr.Zero, 0, 0, 0, 0,
-                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+            GetWindowRect(taskbarHwnd, out RECT taskbarRect);
+
+            int widgetHeight = 36;
+            int taskbarHeight = taskbarRect.Bottom - taskbarRect.Top;
+            int targetY = taskbarRect.Top + ((taskbarHeight - widgetHeight) / 2);
+            int targetX = 500;
+
+            SetWindowPos(monitorHwnd, HWND_TOPMOST, targetX, targetY, 0, 0,
+                SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
         }
 
         public static void PositionInsideTaskbar(IntPtr monitorHwnd, int xOffsetFromRight, int yOffsetFromTop)
         {
             var taskbarRect = GetTaskbarRect();
-            int relativeX = taskbarRect.Width - xOffsetFromRight;
-            SetWindowPos(monitorHwnd, HWND_TOP, relativeX, yOffsetFromTop, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW | SWP_NOACTIVATE);
+
+            int absoluteX = taskbarRect.Right - xOffsetFromRight;
+            int absoluteY = taskbarRect.Top + yOffsetFromTop;
+
+            SetWindowPos(monitorHwnd, HWND_TOPMOST, absoluteX, absoluteY, 0, 0,
+                SWP_NOSIZE | SWP_SHOWWINDOW | SWP_NOACTIVATE);
         }
         #endregion
 
