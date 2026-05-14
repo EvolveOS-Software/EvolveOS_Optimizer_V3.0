@@ -59,15 +59,6 @@ namespace EvolveOS_Optimizer
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
             AppDomain.CurrentDomain.ProcessExit += (s, ev) => HandleCleanup();
-
-            MemoryGuardian = new MemoryGuardian((before, after) =>
-            {
-                long diff = (long)before - (long)after;
-                if (diff > 5 * 1024 * 1024)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[Global] GC Trimmed: {diff / 1024 / 1024}MB");
-                }
-            });
         }
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
@@ -182,6 +173,15 @@ namespace EvolveOS_Optimizer
                 {
                     StartupChangeMonitor.StartWatching();
                 }
+
+                MemoryGuardian = new MemoryGuardian((before, after) =>
+                {
+                    long diff = (long)before - (long)after;
+                    if (diff > 5 * 1024 * 1024)
+                    {
+                        Debug.WriteLine($"[Global] GC Trimmed: {diff / 1024 / 1024}MB");
+                    }
+                });
             });
         }
 
