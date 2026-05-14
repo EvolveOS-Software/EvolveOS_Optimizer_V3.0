@@ -35,6 +35,8 @@ namespace EvolveOS_Optimizer
         public static bool IsPrimaryInstance { get; private set; }
         private static bool _isExiting = false;
 
+        public static MemoryGuardian? MemoryGuardian { get; private set; }
+
         public static Microsoft.UI.Dispatching.DispatcherQueue? UIThreadDispatcher { get; private set; }
 
         private static Mutex? _mutex;
@@ -57,6 +59,15 @@ namespace EvolveOS_Optimizer
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
             AppDomain.CurrentDomain.ProcessExit += (s, ev) => HandleCleanup();
+
+            MemoryGuardian = new MemoryGuardian((before, after) =>
+            {
+                long diff = (long)before - (long)after;
+                if (diff > 5 * 1024 * 1024)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Global] GC Trimmed: {diff / 1024 / 1024}MB");
+                }
+            });
         }
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
@@ -756,6 +767,13 @@ namespace EvolveOS_Optimizer
 
             try
             {
+                MemoryGuardian?.Dispose();
+                _hotkeyService?.Dispose();
+            }
+            catch { }
+
+            try
+            {
                 bool hasActiveAutoLogin = TokenManager.TokenExists();
 
                 if (LocalMachineSettingsEngine.KeepDevModeOnExit || hasActiveAutoLogin)
@@ -869,8 +887,6 @@ namespace EvolveOS_Optimizer
 
             try
             {
-                _hotkeyService?.Dispose();
-
                 if (_mutex != null)
                 {
                     _mutex.ReleaseMutex();

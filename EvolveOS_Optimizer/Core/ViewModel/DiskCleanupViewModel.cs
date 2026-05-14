@@ -254,6 +254,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             try
             {
                 IsBusy = true;
+
+                App.MemoryGuardian?.Pause();
+
                 IsAnalyzerViewActive = true;
                 AnalyzedNodes.Clear();
                 AnalyzerInsights.Clear();
@@ -356,6 +359,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             finally
             {
                 IsBusy = false;
+
+                App.MemoryGuardian?.Resume();
+
+                App.MemoryGuardian?.ForceImmediateCleanup();
             }
         }
 

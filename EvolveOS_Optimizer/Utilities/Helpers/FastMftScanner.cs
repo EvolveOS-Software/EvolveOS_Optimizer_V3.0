@@ -206,20 +206,25 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             node.Path = currentPath;
 
-            if (!node.IsFolder)
+            if (GetFileAttributesEx(currentPath, 0, out var fileData))
             {
-                if (GetFileAttributesEx(currentPath, 0, out var fileData))
+                long ft = (((long)fileData.ftLastWriteTime.dwHighDateTime) << 32) | (uint)fileData.ftLastWriteTime.dwLowDateTime;
+
+                if (ft != 0)
+                {
+                    node.LastModified = DateTime.FromFileTime(ft);
+                }
+
+                if (!node.IsFolder)
                 {
                     long fileSize = ((long)fileData.nFileSizeHigh << 32) | (fileData.nFileSizeLow & 0xFFFFFFFFL);
                     node.SizeBytes = fileSize;
-
                     node.AllocatedSizeBytes = ((fileSize + 4095) / 4096) * 4096;
+                    return;
                 }
-                return;
             }
 
             string dirPath = currentPath.EndsWith("\\") ? currentPath : currentPath + "\\";
-
             foreach (var child in node.Children)
             {
                 PopulatePathsAndSizes(child, dirPath + child.Name, token);

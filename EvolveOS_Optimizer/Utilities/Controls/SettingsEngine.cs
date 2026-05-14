@@ -574,7 +574,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["ShowCpuInTray"] = true,
             ["ShowRamInTray"] = true,
             ["ShowDiskInTray"] = true,
-            ["ShowGpuInTray"] = true
+            ["ShowGpuInTray"] = true,
+            ["GuardianPaused"] = false,
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -613,6 +614,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool ShowRamInTray { get => (bool)_cachedSettings["ShowRamInTray"]; set => ChangingParameters("ShowRamInTray", value); }
         internal static bool ShowDiskInTray { get => (bool)_cachedSettings["ShowDiskInTray"]; set => ChangingParameters("ShowDiskInTray", value); }
         internal static bool ShowGpuInTray { get => (bool)_cachedSettings["ShowGpuInTray"]; set => ChangingParameters("ShowGpuInTray", value); }
+
+        internal static bool IsGuardianPaused { get => (bool)_cachedSettings["GuardianPaused"]; set => ChangingParameters("GuardianPaused", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)

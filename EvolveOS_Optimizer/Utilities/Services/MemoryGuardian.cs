@@ -1,23 +1,25 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
+using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {
-    public class MemoryGuardian
+    public class MemoryGuardian : IDisposable
     {
         #region Fields & Properties
         private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer? _checkTimer;
         private readonly Action<ulong, ulong>? _onCleanupPerformed;
+        private PerformanceCounter? _ramCounter;
 
         private ulong _currentThresholdBytes;
         private ulong _emergencyThresholdBytes; // Active UI threshold
 
         private bool _isBackgroundMode = false; // Tracks if the app is minimized
         private int _highMemorySeconds = 0;
+
+        private bool _isDisposed;
 
         private const int RequiredSustainedSeconds = 15; // Must stay high for 15s to trigger GC
         private const int TimerIntervalSeconds = 5;
@@ -36,6 +38,8 @@ namespace EvolveOS_Optimizer.Utilities.Services
             _currentThresholdBytes = 300 * 1024 * 1024; // 300MB Deep Clean (Background)
             _emergencyThresholdBytes = 600 * 1024 * 1024; // 600MB Gentle Clean (Active UI)
 
+            InitializeCounter();
+
             var queue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             if (queue != null)
             {
@@ -46,9 +50,47 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 _checkTimer.Start();
             }
         }
+
+        private void InitializeCounter()
+        {
+            try
+            {
+                using var currentProcess = Process.GetCurrentProcess();
+                _ramCounter = new PerformanceCounter("Process", "Working Set - Private", currentProcess.ProcessName, true);
+            }
+            catch
+            {
+                Debug.WriteLine("[MemoryGuardian] PerformanceCounter failed. Falling back to PrivateMemorySize64.");
+            }
+        }
         #endregion
 
-        #region Heartbeat Control
+        #region Public API
+        public void SetThreshold(int megabytes)
+        {
+            _currentThresholdBytes = (ulong)megabytes * 1024 * 1024;
+            Debug.WriteLine($"[MemoryGuardian] Background Threshold adjusted to {megabytes}MB");
+        }
+        #endregion
+
+        #region Control API (The "Silence" Fix)
+        public void Pause()
+        {
+            LocalMachineSettingsEngine.IsGuardianPaused = true;
+
+            _checkTimer?.Stop();
+            Debug.WriteLine("[MemoryGuardian] Guardian STOPPED for critical task.");
+        }
+
+        public void Resume()
+        {
+            LocalMachineSettingsEngine.IsGuardianPaused = false;
+
+            _highMemorySeconds = 0;
+            _checkTimer?.Start();
+            Debug.WriteLine("[MemoryGuardian] Guardian RESTORED.");
+        }
+
         public void StartBackgroundSentry()
         {
             _isBackgroundMode = true;
@@ -63,21 +105,16 @@ namespace EvolveOS_Optimizer.Utilities.Services
         }
         #endregion
 
-        #region Public API
-        public void SetThreshold(int megabytes)
-        {
-            _currentThresholdBytes = (ulong)megabytes * 1024 * 1024;
-            Debug.WriteLine($"[MemoryGuardian] Background Threshold adjusted to {megabytes}MB");
-        }
-        #endregion
-
         #region Core Logic
         private ulong GetAccurateMemoryUsage(Process process)
         {
             try
             {
-                using var counter = new PerformanceCounter("Process", "Working Set - Private", process.ProcessName, true);
-                return (ulong)counter.RawValue;
+                if (_ramCounter != null)
+                {
+                    return (ulong)_ramCounter.NextValue();
+                }
+                return (ulong)process.PrivateMemorySize64;
             }
             catch
             {
@@ -87,6 +124,11 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         private void CheckMemoryState()
         {
+            if (LocalMachineSettingsEngine.IsGuardianPaused)
+            {
+                return;
+            }
+
             using var currentProcess = Process.GetCurrentProcess();
             ulong privateUsage = GetAccurateMemoryUsage(currentProcess);
 
@@ -174,6 +216,18 @@ namespace EvolveOS_Optimizer.Utilities.Services
             {
                 _onCleanupPerformed?.Invoke(physicalBefore, physicalAfter);
             }
+        }
+        #endregion
+
+        #region Cleanup
+        public void Dispose()
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
+
+            _ramCounter?.Dispose();
+
+            GC.SuppressFinalize(this);
         }
         #endregion
     }
