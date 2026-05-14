@@ -515,7 +515,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 var dirInfo = new DirectoryInfo(path);
                 node.LastModified = dirInfo.LastWriteTime;
 
-                foreach (var file in dirInfo.EnumerateFiles("*", new EnumerationOptions { IgnoreInaccessible = true }))
+                node.IsHidden = (dirInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden ||
+                        (dirInfo.Attributes & FileAttributes.System) == FileAttributes.System;
+
+                foreach (var file in dirInfo.EnumerateFiles("*", new EnumerationOptions { IgnoreInaccessible = true, AttributesToSkip = FileAttributes.None }))
                 {
                     if (token.IsCancellationRequested) return node;
 
@@ -540,7 +543,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     });
                 }
 
-                foreach (var dir in dirInfo.EnumerateDirectories("*", new EnumerationOptions { IgnoreInaccessible = true }))
+                foreach (var dir in dirInfo.EnumerateDirectories("*", new EnumerationOptions { IgnoreInaccessible = true, AttributesToSkip = FileAttributes.None }))
                 {
                     if (token.IsCancellationRequested) return node;
 
@@ -550,6 +553,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     if (childNode != null && childNode.SizeBytes > 0)
                     {
                         childNode.Depth = node.Depth + 1;
+
+                        childNode.IsHidden = (dir.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden ||
+                                     (dir.Attributes & FileAttributes.System) == FileAttributes.System;
 
                         node.SizeBytes += childNode.SizeBytes;
                         node.AllocatedSizeBytes += childNode.AllocatedSizeBytes;

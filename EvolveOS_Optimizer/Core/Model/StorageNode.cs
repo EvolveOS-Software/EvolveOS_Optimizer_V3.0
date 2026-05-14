@@ -25,6 +25,8 @@ namespace EvolveOS_Optimizer.Core.Model
         public int FilesCount { get; set; }
         public int FoldersCount { get; set; }
 
+        public bool IsHidden { get; set; }
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PercentageString))]
         public partial double Percentage { get; set; }
