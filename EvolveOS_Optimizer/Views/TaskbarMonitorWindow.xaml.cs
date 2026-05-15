@@ -5,6 +5,7 @@ using Microsoft.UI.Windowing;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using WinRT.Interop;
 using Windows.Graphics;
+using Microsoft.UI.Xaml.Input;
 
 namespace EvolveOS_Optimizer.Views
 {
@@ -24,8 +25,11 @@ namespace EvolveOS_Optimizer.Views
         private readonly IntPtr _hWnd;
         private readonly AppWindow _appWindow;
         private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer _syncTimer;
+        private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer _uiWatchdogTimer;
 
-        private int _currentXOffset = 400;
+        private bool _isHiddenBySystem = false;
+
+        private int _currentXOffset = 650;
         private bool _isDragging = false;
         private int _dragStartX;
         private int _initialXOffset;
@@ -54,7 +58,9 @@ namespace EvolveOS_Optimizer.Views
             TaskbarOverlayManager.InjectIntoTaskbar(_hWnd);
 
             // Position (e.g., 400px from the right edge, 6px down from the top of the taskbar)
-            TaskbarOverlayManager.PositionInsideTaskbar(_hWnd, 650, 8);
+            TaskbarOverlayManager.PositionInsideTaskbar(_hWnd, 650, 6);
+
+            TaskbarOverlayManager.PositionInsideTaskbar(_hWnd, _currentXOffset, 6);
 
             _appWindow.Resize(new SizeInt32(355, 40));
 
@@ -63,10 +69,34 @@ namespace EvolveOS_Optimizer.Views
             _syncTimer.Interval = TimeSpan.FromMilliseconds(500);
             _syncTimer.Tick += SyncTimer_Tick;
             _syncTimer.Start();
+
+            _uiWatchdogTimer = queue.CreateTimer();
+            _uiWatchdogTimer.Interval = TimeSpan.FromMilliseconds(32); // ~30 FPS
+            _uiWatchdogTimer.Tick += UiWatchdogTimer_Tick;
+            _uiWatchdogTimer.Start();
+        }
+
+        private void UiWatchdogTimer_Tick(object sender, object e)
+        {
+            bool shouldHide = TaskbarOverlayManager.ShouldHideWidget();
+
+            if (shouldHide && !_isHiddenBySystem)
+            {
+                _appWindow.Hide();
+                _isHiddenBySystem = true;
+            }
+            else if (!shouldHide && _isHiddenBySystem)
+            {
+                _appWindow.Show();
+                TaskbarOverlayManager.PositionInsideTaskbar(_hWnd, _currentXOffset, 8);
+                _isHiddenBySystem = false;
+            }
         }
 
         private void SyncTimer_Tick(object sender, object e)
         {
+            if (_isHiddenBySystem) return;
+
             var vm = Core.ViewModel.DiagnosticsPageViewModel.Current;
             if (vm != null)
             {
@@ -77,17 +107,17 @@ namespace EvolveOS_Optimizer.Views
             }
         }
 
-        private void RootGrid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void RootGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             RootGrid.CapturePointer(e.Pointer);
             _isDragging = true;
 
             GetCursorPos(out POINT pt);
             _dragStartX = pt.X;
-            _initialXOffset = _currentXOffset;
+            _initialXOffset = TaskbarOverlayManager.GetCurrentWidgetXOffset(_hWnd);
         }
 
-        private void RootGrid_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void RootGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
             if (_isDragging)
             {
@@ -100,7 +130,7 @@ namespace EvolveOS_Optimizer.Views
             }
         }
 
-        private void RootGrid_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void RootGrid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             _isDragging = false;
             RootGrid.ReleasePointerCapture(e.Pointer);
@@ -111,6 +141,7 @@ namespace EvolveOS_Optimizer.Views
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             _syncTimer.Stop();
+            _uiWatchdogTimer.Stop();
             this.Close();
         }
     }

@@ -24,6 +24,26 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [DllImport("user32.dll")]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+
+        private const uint MONITOR_DEFAULTTONEAREST = 2;
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct MONITORINFO
+        {
+            public int cbSize;
+            public RECT rcMonitor;
+            public RECT rcWork;
+            public uint dwFlags;
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {
@@ -68,6 +88,15 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 return rect;
             }
             return new RECT { Left = 0, Top = 1040, Right = 1920, Bottom = 1080 };
+        }
+
+        public static int GetCurrentWidgetXOffset(IntPtr monitorHwnd)
+        {
+            GetWindowRect(monitorHwnd, out RECT windowRect);
+
+            var taskbarRect = GetTaskbarRect();
+
+            return taskbarRect.Right - windowRect.Left;
         }
 
         public static bool AreRectsEqual(RECT a, RECT b)
@@ -132,6 +161,55 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         public static void EnsureTopmost(IntPtr monitorHwnd)
         {
             SetWindowPos(monitorHwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+        #endregion
+
+        #region Visibility & Fullscreen Detection
+        public static bool ShouldHideWidget()
+        {
+            IntPtr taskbarHwnd = FindWindow("Shell_TrayWnd", null);
+            if (taskbarHwnd == IntPtr.Zero) return false;
+
+            IntPtr tbMonitor = MonitorFromWindow(taskbarHwnd, MONITOR_DEFAULTTONEAREST);
+
+            GetWindowRect(taskbarHwnd, out RECT tbRect);
+            MONITORINFO miTb = new MONITORINFO();
+            miTb.cbSize = Marshal.SizeOf(typeof(MONITORINFO));
+
+            if (GetMonitorInfo(tbMonitor, ref miTb))
+            {
+                if (tbRect.Top >= miTb.rcMonitor.Bottom - 10)
+                {
+                    return true;
+                }
+            }
+
+            IntPtr fgHwnd = GetForegroundWindow();
+            if (fgHwnd != IntPtr.Zero)
+            {
+                IntPtr desktopHwnd = FindWindow("Progman", null);
+                IntPtr workerwHwnd = FindWindow("WorkerW", null);
+
+                if (fgHwnd != desktopHwnd && fgHwnd != workerwHwnd)
+                {
+                    IntPtr fgMonitor = MonitorFromWindow(fgHwnd, MONITOR_DEFAULTTONEAREST);
+
+                    if (fgMonitor == tbMonitor)
+                    {
+                        GetWindowRect(fgHwnd, out RECT fgRect);
+
+                        if (fgRect.Left <= miTb.rcMonitor.Left &&
+                            fgRect.Top <= miTb.rcMonitor.Top &&
+                            fgRect.Right >= miTb.rcMonitor.Right &&
+                            fgRect.Bottom >= miTb.rcMonitor.Bottom)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
         #endregion
     }

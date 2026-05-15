@@ -4425,7 +4425,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             StopLiveMonitoring();
             _securityRefreshTimer?.Stop();
 
-            Debug.WriteLine("[DiagnosticsPageVM] Heavy engines frozen. Lightweight Telemetry kept alive for Tray/Taskbar.");
+            if (ShowHardwarePanelInTray || ShowCpuInTray || ShowRamInTray || ShowGpuInTray || ShowDiskInTray)
+            {
+                Debug.WriteLine("[DiagnosticsPageVM] Heavy engines frozen. Lightweight Telemetry kept alive for Tray/Taskbar.");
+            }
+            else
+            {
+                _telemetryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+                Debug.WriteLine("[DiagnosticsPageVM] All background engines CRYO-FROZEN. Telemetry stopped.");
+            }
         }
 
         public void ResumeUiUpdates()
