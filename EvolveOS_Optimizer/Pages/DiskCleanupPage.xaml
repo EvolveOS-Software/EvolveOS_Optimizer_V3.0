@@ -146,18 +146,37 @@
                            Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
 
                 <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{x:Bind ViewModel.IsAnalyzerViewActive, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                    <Button Content="{helpers:ResourceString Key=cleanup_btn_analyze}"
-                            Command="{x:Bind ViewModel.AnalyzeCommand}"
-                            FontFamily="{ThemeResource Jura}"
-                            MinWidth="110" 
-                            Height="32" />
 
-                    <Button Content="{helpers:ResourceString Key=cleanup_btn_run}"
-                            Click="PerformCleanup_Click"
-                            IsEnabled="{x:Bind ViewModel.CanRunCleaner, Mode=OneWay}"
-                            FontFamily="{ThemeResource Jura}"
-                            MinWidth="120" 
-                            Height="32" />
+                    <Grid>
+                        <Button Content="{helpers:ResourceString Key=cleanup_btn_analyze}"
+                                Command="{x:Bind ViewModel.AnalyzeCommand}"
+                                Visibility="{x:Bind ViewModel.IsAnalyzing, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                FontFamily="{ThemeResource Jura}"
+                                MinWidth="110" Height="32" />
+
+                        <Button Content="{helpers:ResourceString Key=cleanup_btn_cancel}"
+                                ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_btn_cancel_tooltip}"
+                                Command="{x:Bind ViewModel.CancelCommand}"
+                                Visibility="{x:Bind ViewModel.IsAnalyzing, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                                FontFamily="{ThemeResource Jura}"
+                                MinWidth="110" Height="32" />
+                    </Grid>
+
+                    <Grid>
+                        <Button Content="{helpers:ResourceString Key=cleanup_btn_run}"
+                                Click="PerformCleanup_Click"
+                                IsEnabled="{x:Bind ViewModel.CanRunCleaner, Mode=OneWay}"
+                                Visibility="{x:Bind ViewModel.IsCleaning, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                FontFamily="{ThemeResource Jura}"
+                                MinWidth="120" Height="32" />
+
+                        <Button Content="{helpers:ResourceString Key=cleanup_btn_cancel}"
+                                ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_btn_cancel_tooltip}"
+                                Command="{x:Bind ViewModel.CancelCommand}"
+                                Visibility="{x:Bind ViewModel.IsCleaning, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                                FontFamily="{ThemeResource Jura}"
+                                MinWidth="120" Height="32" />
+                    </Grid>
 
                     <Button Width="36" Height="32" Padding="0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_page_actions_tooltip}">
                         <FontIcon Glyph="&#xE712;" FontSize="14" />

@@ -3329,6 +3329,11 @@
     <sys:String x:Key="cleanup_confirm_primary">Pulisci</sys:String>
     <sys:String x:Key="cleanup_confirm_cancel">Annulla</sys:String>
 
+    <sys:String x:Key="cleanup_btn_cancel">Annulla</sys:String>
+    <sys:String x:Key="cleanup_btn_cancel_tooltip">Interrompi l'operazione corrente</sys:String>
+    <sys:String x:Key="cleanup_status_cancelling">Annullamento in corso...</sys:String>
+    <sys:String x:Key="cleanup_status_cancelled">Operazione annullata.</sys:String>
+
     <!-- Winapp32 Warnings -->
     <sys:String x:Key="warning_ms_mouse_keyboard_settings">Questo eliminerà anche tutte le impostazioni specifiche dell'app.</sys:String>
     <sys:String x:Key="warning_paramount_rss">Ciò comporterà un nuovo download del file RSS dinamico di Paramount.</sys:String>

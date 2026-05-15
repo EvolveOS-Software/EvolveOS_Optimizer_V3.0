@@ -3311,6 +3311,11 @@
     <sys:String x:Key="cleanup_confirm_primary">Reinigen</sys:String>
     <sys:String x:Key="cleanup_confirm_cancel">Abbrechen</sys:String>
 
+    <sys:String x:Key="cleanup_btn_cancel">Abbrechen</sys:String>
+    <sys:String x:Key="cleanup_btn_cancel_tooltip">Aktuellen Vorgang abbrechen</sys:String>
+    <sys:String x:Key="cleanup_status_cancelling">Wird abgebrochen...</sys:String>
+    <sys:String x:Key="cleanup_status_cancelled">Vorgang abgebrochen.</sys:String>
+
     <!-- Winapp32 Warnings -->
     <sys:String x:Key="warning_ms_mouse_keyboard_settings">Dadurch werden auch alle app spezifischen Einstellungen gelöscht.</sys:String>
     <sys:String x:Key="warning_paramount_rss">Dies führt dazu, dass die dynamische RSS-Datei von Paramount erneut heruntergeladen werden muss.</sys:String>

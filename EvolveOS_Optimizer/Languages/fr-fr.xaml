@@ -3331,6 +3331,11 @@
     <sys:String x:Key="cleanup_confirm_primary">Nettoyer</sys:String>
     <sys:String x:Key="cleanup_confirm_cancel">Annuler</sys:String>
 
+    <sys:String x:Key="cleanup_btn_cancel">Annuler</sys:String>
+    <sys:String x:Key="cleanup_btn_cancel_tooltip">Arrêter l'opération en cours</sys:String>
+    <sys:String x:Key="cleanup_status_cancelling">Annulation...</sys:String>
+    <sys:String x:Key="cleanup_status_cancelled">Opération annulée.</sys:String>
+
     <!-- Winapp32 Warnings -->
     <sys:String x:Key="warning_ms_mouse_keyboard_settings">Cela supprimera également tous les paramètres spécifiques aux applications.</sys:String>
     <sys:String x:Key="warning_paramount_rss">Cela entraînera le retéléchargement du fichier RSS dynamique de Paramount.</sys:String>

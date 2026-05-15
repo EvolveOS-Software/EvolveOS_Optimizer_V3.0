@@ -35,6 +35,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private bool _suppressSave;
         private CancellationTokenSource? _analyzerCts;
         private CancellationTokenSource? _analyzerSearchCts;
+        private CancellationTokenSource? _cleanerCts;
         #endregion
 
         #region Observable State (Cleaner)
@@ -59,6 +60,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [ObservableProperty] public partial TimeSpan ScheduledCleanTime { get; set; } = new TimeSpan(12, 0, 0);
         [ObservableProperty] public partial bool IsCategoryPaneOpen { get; set; } = true;
         [ObservableProperty] public partial string AnalyzerSearchText { get; set; } = "";
+        [ObservableProperty] public partial bool IsAnalyzing { get; set; }
+        [ObservableProperty] public partial bool IsCleaning { get; set; }
 
         public ObservableCollection<StorageInsight> AnalyzerInsights { get; } = new();
         public ObservableCollection<FileCategoryInsight> FileCategories { get; } = new();
@@ -758,6 +761,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [RelayCommand] private void ClearDetail() => SelectedResultLine = null;
 
         [RelayCommand]
+        private void Cancel()
+        {
+            _cleanerCts?.Cancel();
+        }
+
+        [RelayCommand]
         private async Task CleanSelected()
         {
             var entry = Categories.SelectMany(c => c.Entries)
@@ -892,24 +901,41 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (selected.Count == 0) { StatusText = ResourceString.GetString("cleanup_status_nothing_selected") ?? "No items selected."; return; }
 
             BeginResultsRun(ResourceString.GetString("cleanup_status_scanning") ?? "Scanning selected items...");
+            IsAnalyzing = true;
 
             long totalBytes = 0; int totalFiles = 0; int totalReg = 0;
             var progress = new Progress<string>(msg => StatusText = msg);
 
-            foreach (var entry in selected)
+            _cleanerCts?.Cancel();
+            _cleanerCts?.Dispose();
+            _cleanerCts = new CancellationTokenSource();
+            var token = _cleanerCts.Token;
+
+            try
             {
-                var result = await AnalyzeEntryInternalAsync(entry, progress, keepDetailSelection: false);
-                totalBytes += result.TotalBytes;
-                totalFiles += result.FilesToDelete.Count;
-                totalReg += result.RegistryToDelete.Count;
+                foreach (var entry in selected)
+                {
+                    token.ThrowIfCancellationRequested();
+                    var result = await AnalyzeEntryInternalAsync(entry, progress, keepDetailSelection: false, token);
+                    totalBytes += result.TotalBytes;
+                    totalFiles += result.FilesToDelete.Count;
+                    totalReg += result.RegistryToDelete.Count;
+                }
+
+                TotalSize = totalBytes.FormatBytes();
+                StatusText = string.Format(ResourceString.GetString("cleanup_status_scan_complete") ?? "Scan complete: {0} files found.", totalFiles, totalReg, TotalSize);
+
+                UpdateHeatmap(ResultLines);
             }
-
-            TotalSize = totalBytes.FormatBytes();
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_scan_complete") ?? "Scan complete: {0} files found.", totalFiles, totalReg, TotalSize);
-
-            UpdateHeatmap(ResultLines);
-
-            IsBusy = false;
+            catch (OperationCanceledException)
+            {
+                StatusText = ResourceString.GetString("cleanup_status_cancelled") ?? "Operation cancelled.";
+            }
+            finally
+            {
+                IsBusy = false;
+                IsAnalyzing = false;
+            }
         }
 
         private bool CanAnalyze() => !IsBusy && Categories.Count > 0;
@@ -918,31 +944,50 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private async Task RunCleanerAsync()
         {
             if (_lastScan.Count == 0)
+            {
                 await AnalyzeAsync();
+                if (_lastScan.Count == 0) return;
+            }
 
             IsBusy = true;
+            IsCleaning = true;
             SelectedResultLine = null;
             StatusText = ResourceString.GetString("cleanup_status_cleaning") ?? "Cleaning...";
 
-            var scannedBytes = _lastScan.Sum(r => r.TotalBytes);
-            var (removed, freedBytes) = await CleanResultsAsync(_lastScan.ToList(), new Progress<string>(msg => StatusText = msg));
-            var skippedBytes = scannedBytes - freedBytes;
+            _cleanerCts?.Cancel();
+            _cleanerCts?.Dispose();
+            _cleanerCts = new CancellationTokenSource();
+            var token = _cleanerCts.Token;
 
-            await RecordCleaningSessionAsync(freedBytes);
+            try
+            {
+                var scannedBytes = _lastScan.Sum(r => r.TotalBytes);
+                var (removed, freedBytes) = await CleanResultsAsync(_lastScan.ToList(), new Progress<string>(msg => StatusText = msg), token);
+                var skippedBytes = scannedBytes - freedBytes;
 
-            _lastScan.Clear();
-            ResultLines.Clear();
-            ResultLines.Add(new ScanResultLine(ResourceString.GetString("cleanup_status_done") ?? "Done", removed, 0, "", 0, null));
-            ClearAllEntrySizes();
+                await RecordCleaningSessionAsync(freedBytes);
 
-            TotalSize = "";
-            StatusText = skippedBytes > 0
-                ? string.Format(ResourceString.GetString("cleanup_status_finished_skipped") ?? "Cleaned {0}, Skipped {1}", freedBytes.FormatBytes(), skippedBytes.FormatBytes())
-                : string.Format(ResourceString.GetString("cleanup_status_finished_removed") ?? "Removed {0} items ({1})", removed, freedBytes.FormatBytes());
+                _lastScan.Clear();
+                ResultLines.Clear();
+                ResultLines.Add(new ScanResultLine(ResourceString.GetString("cleanup_status_done") ?? "Done", removed, 0, "", 0, null));
+                ClearAllEntrySizes();
 
-            await RunPostCleanTasksAsync();
+                TotalSize = "";
+                StatusText = skippedBytes > 0
+                    ? string.Format(ResourceString.GetString("cleanup_status_finished_skipped") ?? "Cleaned {0}, Skipped {1}", freedBytes.FormatBytes(), skippedBytes.FormatBytes())
+                    : string.Format(ResourceString.GetString("cleanup_status_finished_removed") ?? "Removed {0} items ({1})", removed, freedBytes.FormatBytes());
 
-            IsBusy = false;
+                await RunPostCleanTasksAsync();
+            }
+            catch (OperationCanceledException)
+            {
+                StatusText = ResourceString.GetString("cleanup_status_cancelled") ?? "Operation cancelled.";
+            }
+            finally
+            {
+                IsBusy = false;
+                IsCleaning = false;
+            }
         }
         #endregion
 
@@ -1037,14 +1082,31 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (IsBusy) return;
 
             IsBusy = true;
+            IsAnalyzing = true;
             SelectedResultLine = null;
 
-            var result = await AnalyzeEntryInternalAsync(entryVm.Entry,
-                new Progress<string>(msg => StatusText = msg), keepDetailSelection: true);
+            _cleanerCts?.Cancel();
+            _cleanerCts?.Dispose();
+            _cleanerCts = new CancellationTokenSource();
+            var token = _cleanerCts.Token;
 
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_scanned") ?? "Scanned {0}", entryVm.Name, result.FilesToDelete.Count, result.RegistryToDelete.Count);
-            UpdateTotalsFromLastScan();
-            IsBusy = false;
+            try
+            {
+                var result = await AnalyzeEntryInternalAsync(entryVm.Entry,
+                    new Progress<string>(msg => StatusText = msg), keepDetailSelection: true, token);
+
+                StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_scanned") ?? "Scanned {0}", entryVm.Name, result.FilesToDelete.Count, result.RegistryToDelete.Count);
+                UpdateTotalsFromLastScan();
+            }
+            catch (OperationCanceledException)
+            {
+                StatusText = ResourceString.GetString("cleanup_status_cancelled") ?? "Operation cancelled.";
+            }
+            finally
+            {
+                IsBusy = false;
+                IsAnalyzing = false;
+            }
         }
 
         public async Task CleanSingleEntryAsync(DiskCleanupEntryViewModel entryVm)
@@ -1052,25 +1114,42 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (IsBusy) return;
 
             IsBusy = true;
+            IsCleaning = true;
             SelectedResultLine = null;
 
-            var result = await EnsureEntryScanAsync(entryVm, new Progress<string>(msg => StatusText = msg));
-            if (result.FilesToDelete.Count == 0 && result.RegistryToDelete.Count == 0)
+            _cleanerCts?.Cancel();
+            _cleanerCts?.Dispose();
+            _cleanerCts = new CancellationTokenSource();
+            var token = _cleanerCts.Token;
+
+            try
             {
-                StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_nothing") ?? "Nothing to clean for {0}", entryVm.Name);
-                IsBusy = false;
-                return;
+                var result = await EnsureEntryScanAsync(entryVm, new Progress<string>(msg => StatusText = msg), token);
+                if (result.FilesToDelete.Count == 0 && result.RegistryToDelete.Count == 0)
+                {
+                    StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_nothing") ?? "Nothing to clean for {0}", entryVm.Name);
+                    IsBusy = false;
+                    return;
+                }
+
+                var (removed, freedBytes) = await _cleaner.CleanAsync(result, new Progress<string>(msg => StatusText = msg), token);
+                RemoveScanResult(result);
+                entryVm.SizeText = "";
+
+                await RecordCleaningSessionAsync(freedBytes);
+
+                UpdateTotalsFromLastScan();
+                StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_cleaned") ?? "Cleaned {0}", entryVm.Name, removed, freedBytes.FormatBytes());
             }
-
-            var (removed, freedBytes) = await _cleaner.CleanAsync(result, new Progress<string>(msg => StatusText = msg));
-            RemoveScanResult(result);
-            entryVm.SizeText = "";
-
-            await RecordCleaningSessionAsync(freedBytes);
-
-            UpdateTotalsFromLastScan();
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_cleaned") ?? "Cleaned {0}", entryVm.Name, removed, freedBytes.FormatBytes());
-            IsBusy = false;
+            catch (OperationCanceledException)
+            {
+                StatusText = ResourceString.GetString("cleanup_status_cancelled") ?? "Operation cancelled.";
+            }
+            finally
+            {
+                IsBusy = false;
+                IsCleaning = false;
+            }
         }
 
         public async Task AnalyzeCategoryAsync(DiskCleanupCategoryViewModel categoryVm)
@@ -1078,15 +1157,36 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (IsBusy) return;
 
             BeginResultsRun(string.Format(ResourceString.GetString("cleanup_status_cat_scanning") ?? "Scanning {0}...", categoryVm.Name));
+            IsAnalyzing = true;
+
             var progress = new Progress<string>(msg => StatusText = msg);
 
-            var selected = categoryVm.Entries.Where(e => e.IsSelected).ToList();
-            foreach (var entryVm in selected)
-                await AnalyzeEntryInternalAsync(entryVm.Entry, progress, keepDetailSelection: false);
+            _cleanerCts?.Cancel();
+            _cleanerCts?.Dispose();
+            _cleanerCts = new CancellationTokenSource();
+            var token = _cleanerCts.Token;
 
-            UpdateTotalsFromLastScan();
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_scanned") ?? "Scanned category {0}", categoryVm.Name, selected.Count);
-            IsBusy = false;
+            try
+            {
+                var selected = categoryVm.Entries.Where(e => e.IsSelected).ToList();
+                foreach (var entryVm in selected)
+                {
+                    token.ThrowIfCancellationRequested();
+                    await AnalyzeEntryInternalAsync(entryVm.Entry, progress, keepDetailSelection: false, token);
+                }
+
+                UpdateTotalsFromLastScan();
+                StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_scanned") ?? "Scanned category {0}", categoryVm.Name, selected.Count);
+            }
+            catch (OperationCanceledException)
+            {
+                StatusText = ResourceString.GetString("cleanup_status_cancelled") ?? "Operation cancelled.";
+            }
+            finally
+            {
+                IsBusy = false;
+                IsAnalyzing = false;
+            }
         }
 
         public async Task CleanCategoryAsync(DiskCleanupCategoryViewModel categoryVm)
@@ -1094,22 +1194,42 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (IsBusy) return;
 
             IsBusy = true;
+            IsCleaning = true;
             SelectedResultLine = null;
             StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_cleaning") ?? "Cleaning {0}...", categoryVm.Name);
             var progress = new Progress<string>(msg => StatusText = msg);
 
-            var selected = categoryVm.Entries.Where(e => e.IsSelected).ToList();
-            foreach (var vm in selected.Where(vm => !_lastScan.Any(r => r.Entry == vm.Entry)))
-                await AnalyzeEntryInternalAsync(vm.Entry, progress, keepDetailSelection: false);
+            _cleanerCts?.Cancel();
+            _cleanerCts?.Dispose();
+            _cleanerCts = new CancellationTokenSource();
+            var token = _cleanerCts.Token;
 
-            var results = _lastScan.Where(r => selected.Any(vm => vm.Entry == r.Entry)).ToList();
-            var (removed, freedBytes) = await CleanResultsAsync(results, progress);
+            try
+            {
+                var selected = categoryVm.Entries.Where(e => e.IsSelected).ToList();
+                foreach (var vm in selected.Where(vm => !_lastScan.Any(r => r.Entry == vm.Entry)))
+                {
+                    token.ThrowIfCancellationRequested();
+                    await AnalyzeEntryInternalAsync(vm.Entry, progress, keepDetailSelection: false, token);
+                }
 
-            await RecordCleaningSessionAsync(freedBytes);
+                var results = _lastScan.Where(r => selected.Any(vm => vm.Entry == r.Entry)).ToList();
+                var (removed, freedBytes) = await CleanResultsAsync(results, progress, token);
 
-            UpdateTotalsFromLastScan();
-            StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_cleaned") ?? "Cleaned {0}", categoryVm.Name, removed, freedBytes.FormatBytes());
-            IsBusy = false;
+                await RecordCleaningSessionAsync(freedBytes);
+
+                UpdateTotalsFromLastScan();
+                StatusText = string.Format(ResourceString.GetString("cleanup_status_cat_cleaned") ?? "Cleaned {0}", categoryVm.Name, removed, freedBytes.FormatBytes());
+            }
+            catch (OperationCanceledException)
+            {
+                StatusText = ResourceString.GetString("cleanup_status_cancelled") ?? "Operation cancelled.";
+            }
+            finally
+            {
+                IsBusy = false;
+                IsCleaning = false;
+            }
         }
         #endregion
 
@@ -1284,11 +1404,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private int CountVisibleEntries() =>
             Categories.Sum(c => c.Entries.Count);
 
-        private async Task<ScanResult> AnalyzeEntryInternalAsync(CleanerEntry entry, IProgress<string> progress, bool keepDetailSelection)
+        private async Task<ScanResult> AnalyzeEntryInternalAsync(CleanerEntry entry, IProgress<string> progress, bool keepDetailSelection, CancellationToken token)
         {
             RemoveScanResult(entry);
 
-            var result = await _cleaner.AnalyzeAsync(entry, progress);
+            var result = await _cleaner.AnalyzeAsync(entry, progress, token);
             _lastScan.Add(result);
             UpdateEntrySize(entry, result.FormattedSize);
 
@@ -1314,22 +1434,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             return result;
         }
 
-        private async Task<ScanResult> EnsureEntryScanAsync(DiskCleanupEntryViewModel entryVm, IProgress<string> progress)
+        private async Task<ScanResult> EnsureEntryScanAsync(DiskCleanupEntryViewModel entryVm, IProgress<string> progress, CancellationToken token)
         {
             var existing = _lastScan.FirstOrDefault(r => r.Entry == entryVm.Entry);
             if (existing is not null) return existing;
 
             StatusText = string.Format(ResourceString.GetString("cleanup_status_entry_scanning") ?? "Scanning {0}", entryVm.Name);
-            return await AnalyzeEntryInternalAsync(entryVm.Entry, progress, keepDetailSelection: false);
+            return await AnalyzeEntryInternalAsync(entryVm.Entry, progress, keepDetailSelection: false, token);
         }
 
-        private async Task<(int count, long bytes)> CleanResultsAsync(List<ScanResult> results, IProgress<string> progress)
+        private async Task<(int count, long bytes)> CleanResultsAsync(List<ScanResult> results, IProgress<string> progress, CancellationToken token)
         {
             int count = 0;
             long bytes = 0;
             foreach (var result in results)
             {
-                var (c, b) = await _cleaner.CleanAsync(result, progress);
+                token.ThrowIfCancellationRequested();
+                var (c, b) = await _cleaner.CleanAsync(result, progress, token);
                 count += c;
                 bytes += b;
                 RemoveScanResult(result);
@@ -1484,6 +1605,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public void DisposeCollections()
         {
             _analyzerCts?.Cancel();
+            _cleanerCts?.Cancel();
             Categories?.Clear();
             ResultLines?.Clear();
             DetailLines?.Clear();

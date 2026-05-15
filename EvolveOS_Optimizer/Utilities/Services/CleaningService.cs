@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.IO.Enumeration;
+using System.Threading;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -13,15 +14,15 @@ namespace EvolveOS_Optimizer.Utilities.Services
     public class CleaningService
     {
         #region Public API
-        public Task<ScanResult> AnalyzeAsync(CleanerEntry entry, IProgress<string>? progress = null) =>
-            Task.Run(() => Analyze(entry, progress));
+        public Task<ScanResult> AnalyzeAsync(CleanerEntry entry, IProgress<string>? progress = null, CancellationToken token = default) =>
+            Task.Run(() => Analyze(entry, progress, token), token);
 
-        public Task<(int count, long bytes)> CleanAsync(ScanResult result, IProgress<string>? progress = null) =>
-            Task.Run(() => Clean(result, progress));
+        public Task<(int count, long bytes)> CleanAsync(ScanResult result, IProgress<string>? progress = null, CancellationToken token = default) =>
+            Task.Run(() => Clean(result, progress, token), token);
         #endregion
 
         #region Analyze Logic
-        private ScanResult Analyze(CleanerEntry entry, IProgress<string>? progress)
+        private ScanResult Analyze(CleanerEntry entry, IProgress<string>? progress, CancellationToken token)
         {
             var result = new ScanResult { Entry = entry };
             var excluded = BuildExclusions(entry);
@@ -31,10 +32,12 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             foreach (var fileKey in entry.FileKeys)
             {
+                if (token.IsCancellationRequested) break;
                 try
                 {
-                    foreach (var file in FindFiles(fileKey, excluded, entryProgress))
+                    foreach (var file in FindFiles(fileKey, excluded, entryProgress, token))
                     {
+                        if (token.IsCancellationRequested) break;
                         if (result.FilesToDelete.Contains(file)) continue;
 
                         var size = TryGetDeletableSize(file);
@@ -49,6 +52,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             foreach (var regKey in entry.RegKeys)
             {
+                token.ThrowIfCancellationRequested();
                 try { result.RegistryToDelete.AddRange(RegistryHelp.FindRegistryItems(regKey)); }
                 catch { }
             }
@@ -56,29 +60,37 @@ namespace EvolveOS_Optimizer.Utilities.Services
             return result;
         }
 
-        private IEnumerable<string> FindFiles(FileKeyEntry fileKey, List<ExclusionRule> excluded, IProgress<string>? progress)
+        private IEnumerable<string> FindFiles(FileKeyEntry fileKey, List<ExclusionRule> excluded, IProgress<string>? progress, CancellationToken token)
         {
             bool recurse = fileKey.Flag is FileKeyFlag.Recurse or FileKeyFlag.RemoveSelf;
 
             foreach (var dir in PathLocator.ResolvePaths(fileKey.Path))
             {
+                if (token.IsCancellationRequested) yield break;
                 if (!Directory.Exists(dir)) continue;
 
                 progress?.Report(dir);
 
                 foreach (var pattern in fileKey.Pattern.Split(';', StringSplitOptions.RemoveEmptyEntries))
-                    foreach (var f in EnumerateFilesSafe(dir, pattern.Trim(), recurse, progress))
+                    foreach (var f in EnumerateFilesSafe(dir, pattern.Trim(), recurse, progress, token))
+                    {
+                        if (token.IsCancellationRequested) yield break;
                         if (!IsExcluded(f, excluded))
                             yield return f;
+                    }
             }
         }
 
-        private static IEnumerable<string> EnumerateFilesSafe(string root, string pattern, bool recurse, IProgress<string>? progress = null)
+        private static IEnumerable<string> EnumerateFilesSafe(string root, string pattern, bool recurse, IProgress<string>? progress = null, CancellationToken token = default)
         {
             IEnumerable<string> files;
             try { files = Directory.EnumerateFiles(root, pattern); }
             catch { files = []; }
-            foreach (var f in files) yield return f;
+            foreach (var f in files)
+            {
+                if (token.IsCancellationRequested) yield break;
+                yield return f;
+            }
 
             if (!recurse) yield break;
 
@@ -88,21 +100,23 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             foreach (var sub in dirs)
             {
+                if (token.IsCancellationRequested) yield break;
                 progress?.Report(sub);
-                foreach (var f in EnumerateFilesSafe(sub, pattern, recurse: true, progress))
+                foreach (var f in EnumerateFilesSafe(sub, pattern, recurse: true, progress, token))
                     yield return f;
             }
         }
         #endregion
 
         #region Clean Logic
-        private (int count, long bytes) Clean(ScanResult result, IProgress<string>? progress)
+        private (int count, long bytes) Clean(ScanResult result, IProgress<string>? progress, CancellationToken token)
         {
             int deletedCount = 0;
             long deletedBytes = 0;
 
             foreach (var file in result.FilesToDelete)
             {
+                token.ThrowIfCancellationRequested();
                 long size = 0;
                 try
                 {
@@ -140,6 +154,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             foreach (var regItem in result.RegistryToDelete)
             {
+                token.ThrowIfCancellationRequested();
                 try
                 {
                     RegistryHelp.DeleteRegistryItem(regItem);
@@ -151,16 +166,17 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             foreach (var fk in result.Entry.FileKeys.Where(fk => fk.Flag == FileKeyFlag.RemoveSelf))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (var resolved in PathLocator.ResolvePaths(fk.Path))
                 {
-                    TryPruneEmptyDirs(resolved, progress);
+                    TryPruneEmptyDirs(resolved, progress, token);
                 }
             }
 
             return (deletedCount, deletedBytes);
         }
 
-        private static void TryPruneEmptyDirs(string path, IProgress<string>? progress)
+        private static void TryPruneEmptyDirs(string path, IProgress<string>? progress, CancellationToken token)
         {
             if (!Directory.Exists(path)) return;
             try
@@ -168,6 +184,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 foreach (var sub in Directory.GetDirectories(path, "*", SearchOption.AllDirectories)
                                              .OrderByDescending(d => d.Length))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (Directory.GetFileSystemEntries(sub).Length == 0)
                         Directory.Delete(sub);
                 }
