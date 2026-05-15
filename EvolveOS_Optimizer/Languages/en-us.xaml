@@ -350,6 +350,27 @@
     <sys:String x:Key="Settings_Performance_Restart_Content">High Performance Mode settings have changed. Would you like to restart EvolveOS Optimizer now to apply these changes?</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Confirm">Restart Now</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Cancel">Later</sys:String>
+
+    <sys:String x:Key="Settings_AI_SectionTitle">AI Integration</sys:String>
+    <sys:String x:Key="Settings_AI_Title">AI Explanations</sys:String>
+    <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart1">Click the (···) button on any entry in the System Cleaner →</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart2">✨ Explain.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart3">Powered by Groq and Google Gemini. Nothing is sent without your explicit action. Requires your own API key.</sys:String>
+    <sys:String x:Key="Settings_AI_ProviderLabel">Active AI Provider</sys:String>
+    <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>
+    <sys:String x:Key="Settings_AI_GeminiPlaceholder">AIza...</sys:String>
+    <sys:String x:Key="Settings_AI_SaveBtn">Save</sys:String>
+    <sys:String x:Key="Settings_AI_TestBtn">Test</sys:String>
+    <sys:String x:Key="Settings_AI_GetKeyLink">Get key</sys:String>
+    <sys:String x:Key="Settings_AI_RevealTooltip">Show/Hide Key</sys:String>
+    <sys:String x:Key="Settings_AI_DeleteTooltip">Delete saved key</sys:String>
+
+    <sys:String x:Key="Settings_AI_Delete_Title">Delete API Key?</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_Content">Are you sure you want to remove your saved API key? You will need to re-enter it to use AI features.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_Confirm">Delete</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessGroq">Groq API key removed.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessGemini">Google Gemini API key removed.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
@@ -3439,4 +3460,10 @@
     <sys:String x:Key="btn_eco_mode">Eco Mode</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Note: The app will restart to apply this architecture. You can change your selection anytime in Settings.</sys:String>
     <!-- endregion  First Run Performance/Eco Mode -->
+
+    <!-- region Ai Explainer -->
+    <sys:String x:Key="ai_explainer_btn_text">Explain with AI</sys:String>
+    <sys:String x:Key="ai_explainer_test_prompt">Based on the following facts, describe EvolveOS Optimizer in 2 short sentences: It is a modern, self-contained Windows management suite built with WinUI 3. It combines aggressive system optimization, deep privacy controls, and military-grade security tools into a single lightweight executable. Do NOT mention AI, machine learning or any AI-related features. Keep it factual.</sys:String>
+    <sys:String x:Key="no_internet_connection_notif_key">No internet connection detected. Please check your network and try again.</sys:String>
+    <!-- endregion Ai Explainer -->
 </ResourceDictionary>

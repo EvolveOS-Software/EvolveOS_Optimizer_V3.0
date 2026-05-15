@@ -3,13 +3,14 @@
 
 using System.Threading;
 using CommunityToolkit.Mvvm.Input;
-using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Input;
-using EvolveOS_Optimizer.Core.Model;
+using static EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -69,6 +70,13 @@ namespace EvolveOS_Optimizer.Pages
         private void DiskCleanupPage_Unloaded(object sender, RoutedEventArgs e)
         {
             _ = Purge();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            this.Bindings.Update();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -264,6 +272,30 @@ namespace EvolveOS_Optimizer.Pages
 
                 await ViewModel.CleanCategoryAsync(vm);
             }
+        }
+
+        private async void EntryExplain_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuFlyoutItem { Tag: DiskCleanupEntryViewModel vm }) return;
+
+            var textBlock = new TextBlock
+            {
+                Text = "Thinking…",
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 400
+            };
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = XamlRoot,
+                Title = vm.Name,
+                CloseButtonText = "Close",
+                Content = textBlock
+            };
+
+            var showTask = dialog.ShowAsync().AsTask();
+            textBlock.Text = await AiExplainerService.ExplainAsync(vm.Entry);
+            await showTask;
         }
 
         private async void PerformCleanup_Click(object sender, RoutedEventArgs e)

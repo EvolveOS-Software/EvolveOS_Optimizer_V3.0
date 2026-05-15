@@ -14,6 +14,7 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
+using static EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -1738,6 +1739,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
 
         public bool HasWarning => !string.IsNullOrWhiteSpace(Entry.Warning);
+
+        public bool IsAiEnabled()
+        {
+            var provider = LocalMachineSettingsEngine.ActiveAiProvider;
+
+            if (provider == AiProvider.Groq)
+            {
+                return !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey);
+            }
+            else if (provider == AiProvider.Gemini)
+            {
+                return !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey);
+            }
+
+            return false;
+        }
 
         public DiskCleanupEntryViewModel(CleanerEntry entry)
         {

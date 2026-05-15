@@ -182,17 +182,55 @@
                         <FontIcon Glyph="&#xE712;" FontSize="14" />
                         <Button.Flyout>
                             <MenuFlyout x:Name="PageActionsFlyout" Placement="BottomEdgeAlignedRight">
-                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_defaults}" Command="{x:Bind ViewModel.SelectDefaultsCommand}" />
-                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_all}" Command="{x:Bind ViewModel.SelectAllCommand}" />
-                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_none}" Command="{x:Bind ViewModel.SelectNoneCommand}" />
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_defaults}" Command="{x:Bind ViewModel.SelectDefaultsCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE72C;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_all}" Command="{x:Bind ViewModel.SelectAllCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE762;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_none}" Command="{x:Bind ViewModel.SelectNoneCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE8E6;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+
                                 <MenuFlyoutSeparator />
-                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_expand_all}" Command="{x:Bind ViewModel.ExpandAllCommand}" />
-                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_collapse_all}" Command="{x:Bind ViewModel.CollapseAllCommand}" />
+
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_expand_all}" Command="{x:Bind ViewModel.ExpandAllCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE70D;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_collapse_all}" Command="{x:Bind ViewModel.CollapseAllCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE70E;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+
                                 <MenuFlyoutSeparator />
-                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_sort_asc}" Command="{x:Bind ViewModel.SortResultsAscCommand}" />
-                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_sort_desc}" Command="{x:Bind ViewModel.SortResultsDescCommand}" />
+
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_sort_asc}" Command="{x:Bind ViewModel.SortResultsAscCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE17C;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_sort_desc}" Command="{x:Bind ViewModel.SortResultsDescCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE17D;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+
                                 <MenuFlyoutSeparator />
-                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_refresh}" Command="{x:Bind ViewModel.RefreshCommand}" />
+
+                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_refresh}" Command="{x:Bind ViewModel.RefreshCommand}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE895;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
                             </MenuFlyout>
                         </Button.Flyout>
                     </Button>
@@ -549,8 +587,34 @@
                                                                         <FontIcon Glyph="&#xE712;" FontSize="10" />
                                                                         <Button.Flyout>
                                                                             <MenuFlyout Placement="Bottom" Opened="ActionMenu_Opened" Closed="ActionMenu_Closed">
-                                                                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_analyze_entry}" Tag="{x:Bind}" Click="EntryAnalyze_Click" />
-                                                                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_clean_entry}" Tag="{x:Bind}" Click="EntryClean_Click" />
+                                                                                
+                                                                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_analyze_entry}"
+                                                                                                Tag="{x:Bind}"
+                                                                                                Click="EntryAnalyze_Click">
+                                                                                    <MenuFlyoutItem.Icon>
+                                                                                        <FontIcon Glyph="&#xE11A;" />
+                                                                                    </MenuFlyoutItem.Icon>
+                                                                                </MenuFlyoutItem>
+
+                                                                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_clean_entry}"
+                                                                                                Tag="{x:Bind}"
+                                                                                                Click="EntryClean_Click">
+                                                                                    <MenuFlyoutItem.Icon>
+                                                                                        <FontIcon Glyph="&#xE74D;" />
+                                                                                    </MenuFlyoutItem.Icon>
+                                                                                </MenuFlyoutItem>
+
+                                                                                <MenuFlyoutSeparator />
+
+                                                                                <MenuFlyoutItem Text="{helpers:ResourceString Key=ai_explainer_btn_text}"
+                                                                                                Tag="{x:Bind}"
+                                                                                                IsEnabled="{x:Bind IsAiEnabled(), Mode=OneWay}"
+                                                                                                Click="EntryExplain_Click">
+                                                                                    <MenuFlyoutItem.Icon>
+                                                                                        <FontIcon Glyph="&#xE946;" />
+                                                                                    </MenuFlyoutItem.Icon>
+                                                                                </MenuFlyoutItem>
+                                                                                
                                                                             </MenuFlyout>
                                                                         </Button.Flyout>
                                                                     </Button>

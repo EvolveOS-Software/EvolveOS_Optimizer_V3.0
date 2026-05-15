@@ -115,5 +115,11 @@ namespace EvolveOS_Optimizer.Core
             Recurse,
             RemoveSelf
         }
+
+        public enum AiProvider
+        {
+            Groq,
+            Gemini
+        }
     }
 }

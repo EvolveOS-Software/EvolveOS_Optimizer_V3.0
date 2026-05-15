@@ -344,6 +344,27 @@
     <sys:String x:Key="Settings_Performance_Restart_Content">De instellingen voor de Hoge Prestatiemodus zijn gewijzigd. Wilt u EvolveOS Optimizer nu herstarten om deze wijzigingen toe te passen?</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Confirm">Nu herstarten</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Cancel">Later</sys:String>
+
+    <sys:String x:Key="Settings_AI_SectionTitle">AI-integratie</sys:String>
+    <sys:String x:Key="Settings_AI_Title">AI-uitleg</sys:String>
+    <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart1">Klik op de (···) knop bij een item in de Systeem reiniger →</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart2">✨ Uitleggen.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart3">Aangedreven door Groq en Google Gemini. Er wordt niets verzonden zonder uw expliciete actie. Vereist uw eigen API-sleutel.</sys:String>
+    <sys:String x:Key="Settings_AI_ProviderLabel">Actieve AI-provider</sys:String>
+    <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>
+    <sys:String x:Key="Settings_AI_GeminiPlaceholder">AIza...</sys:String>
+    <sys:String x:Key="Settings_AI_SaveBtn">Opslaan</sys:String>
+    <sys:String x:Key="Settings_AI_TestBtn">Testen</sys:String>
+    <sys:String x:Key="Settings_AI_GetKeyLink">Sleutel ophalen</sys:String>
+    <sys:String x:Key="Settings_AI_RevealTooltip">Sleutel tonen/verbergen</sys:String>
+    <sys:String x:Key="Settings_AI_DeleteTooltip">Opgeslagen sleutel verwijderen</sys:String>
+
+    <sys:String x:Key="Settings_AI_Delete_Title">API-sleutel verwijderen?</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_Content">Weet u zeker dat u uw opgeslagen API-sleutel wilt verwijderen? U moet deze opnieuw invoeren om AI-functies te gebruiken.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_Confirm">Verwijderen</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessGroq">Groq API-sleutel verwijderd.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessGemini">Google Gemini API-sleutel verwijderd.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
@@ -3354,6 +3375,8 @@
     <sys:String x:Key="warning_windows_event_logs">Wist de diagnostische logboeken van Windows. U verliest historische gebeurtenisgegevens die soms nodig zijn om systeemcrashes op te lossen.</sys:String>
     <sys:String x:Key="warning_windows_update_cache">Verwijdert gedownloade Windows Update-bestanden. Als er updates in de wachtrij staan om te worden geïnstalleerd, moet Windows deze opnieuw downloaden.</sys:String>
 
+    <sys:String x:Key="no_internet_connection_notif_key">Geen internetverbinding gedetecteerd. Controleer je netwerk en probeer het opnieuw.</sys:String>
+
     <!-- Storage Analyzer -->
     <sys:String x:Key="analyzer_dialog_title">Opslaganalyse</sys:String>
     <sys:String x:Key="analyzer_dialog_desc">Selecteer een lokaal station om de opslagvoetafdruk in kaart te brengen en grote vergeten bestanden te vinden.</sys:String>
@@ -3419,4 +3442,10 @@
     <sys:String x:Key="btn_eco_mode">Ecomodus</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Let op: de app wordt opnieuw opgestart om deze architectuur toe te passen. U kunt uw selectie op elk moment wijzigen in Instellingen.</sys:String>
     <!-- endregion  First Run Performance/Eco Mode -->
+
+    <!-- region Ai Explainer -->
+    <sys:String x:Key="ai_explainer_btn_text">Uitleggen met AI</sys:String>
+    <sys:String x:Key="ai_explainer_test_prompt">Beschrijf EvolveOS Optimizer in 2 korte zinnen op basis van de volgende feiten: Het is een moderne, op zichzelf staande Windows-beheersuite gebouwd met WinUI 3. Het combineert agressieve systeemoptimalisatie, diepgaande privacycontroles en beveiligingstools van militair niveau in één enkele lichtgewicht executable. Vermeld GEEN AI, machine learning of enige AI-gerelateerde functies. Houd het feitelijk.</sys:String>
+    <sys:String x:Key="no_internet_connection_notif_key">Geen internetverbinding gedetecteerd. Controleer je netwerk en probeer het opnieuw.</sys:String>
+    <!-- endregion Ai Explainer -->
 </ResourceDictionary>

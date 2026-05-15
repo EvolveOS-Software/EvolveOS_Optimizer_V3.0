@@ -344,6 +344,27 @@
     <sys:String x:Key="Settings_Performance_Restart_Content">Le impostazioni della modalità Alte Prestazioni sono cambiate. Vuoi riavviare EvolveOS Optimizer ora per applicare queste modifiche?</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Confirm">Riavvia ora</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Cancel">Più tardi</sys:String>
+
+    <sys:String x:Key="Settings_AI_SectionTitle">Integrazione IA</sys:String>
+    <sys:String x:Key="Settings_AI_Title">Spiegazioni IA</sys:String>
+    <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart1">Fai clic sul pulsante (···) su qualsiasi voce in Pulizia sistema →</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart2">✨ Spiega.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart3">Basato su Groq e Google Gemini. Nulla viene inviato senza un'azione esplicita. Richiede una chiave API personale.</sys:String>
+    <sys:String x:Key="Settings_AI_ProviderLabel">Fornitore IA attivo</sys:String>
+    <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>
+    <sys:String x:Key="Settings_AI_GeminiPlaceholder">AIza...</sys:String>
+    <sys:String x:Key="Settings_AI_SaveBtn">Salva</sys:String>
+    <sys:String x:Key="Settings_AI_TestBtn">Test</sys:String>
+    <sys:String x:Key="Settings_AI_GetKeyLink">Ottieni chiave</sys:String>
+    <sys:String x:Key="Settings_AI_RevealTooltip">Mostra/Nascondi chiave</sys:String>
+    <sys:String x:Key="Settings_AI_DeleteTooltip">Elimina chiave salvata</sys:String>
+
+    <sys:String x:Key="Settings_AI_Delete_Title">Eliminare la chiave API?</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_Content">Sei sicuro di voler rimuovere la chiave API salvata? Dovrai reinserirla per utilizzare le funzioni IA.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_Confirm">Elimina</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessGroq">Chiave API Groq rimossa.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessGemini">Chiave API Google Gemini rimossa.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
@@ -3419,4 +3440,10 @@
     <sys:String x:Key="btn_eco_mode">Modalità Eco</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Nota: l'app si riavvierà per applicare questa architettura. Puoi modificare la tua selezione in qualsiasi momento nelle Impostazioni.</sys:String>
     <!-- endregion  First Run Performance/Eco Mode -->
+
+    <!-- region Ai Explainer -->
+    <sys:String x:Key="ai_explainer_btn_text">Spiega con l'IA</sys:String>
+    <sys:String x:Key="ai_explainer_test_prompt">In base ai seguenti fatti, descrivi EvolveOS Optimizer in 2 brevi frasi: È una suite di gestione Windows moderna e autonoma creata con WinUI 3. Combina un'ottimizzazione aggressiva del sistema, controlli approfonditi sulla privacy e strumenti di sicurezza di livello militare in un singolo eseguibile leggero. NON menzionare IA, machine learning o alcuna funzionalità correlata all'IA. Mantieni un tono fattuale.</sys:String>
+    <sys:String x:Key="no_internet_connection_notif_key">Nessuna connessione Internet rilevata. Controlla la tua rete e riprova.</sys:String>
+    <!-- endregion Ai Explainer -->
 </ResourceDictionary>

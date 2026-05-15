@@ -344,6 +344,27 @@
     <sys:String x:Key="Settings_Performance_Restart_Content">Les paramètres du mode Haute Performance ont été modifiés. Voulez-vous redémarrer EvolveOS Optimizer maintenant pour appliquer ces changements ?</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Confirm">Redémarrer maintenant</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Cancel">Plus tard</sys:String>
+
+    <sys:String x:Key="Settings_AI_SectionTitle">Intégration de l'IA</sys:String>
+    <sys:String x:Key="Settings_AI_Title">Explications par l'IA</sys:String>
+    <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart1">Cliquez sur le bouton (···) de n'importe quelle entrée du Nettoyeur →</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart2">✨ Expliquer.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart3">Propulsé par Groq et Google Gemini. Rien n'est envoyé sans votre action explicite. Nécessite votre propre clé API.</sys:String>
+    <sys:String x:Key="Settings_AI_ProviderLabel">Fournisseur d'IA actif</sys:String>
+    <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>
+    <sys:String x:Key="Settings_AI_GeminiPlaceholder">AIza...</sys:String>
+    <sys:String x:Key="Settings_AI_SaveBtn">Enregistrer</sys:String>
+    <sys:String x:Key="Settings_AI_TestBtn">Tester</sys:String>
+    <sys:String x:Key="Settings_AI_GetKeyLink">Obtenir une clé</sys:String>
+    <sys:String x:Key="Settings_AI_RevealTooltip">Afficher/Masquer la clé</sys:String>
+    <sys:String x:Key="Settings_AI_DeleteTooltip">Supprimer la clé enregistrée</sys:String>
+
+    <sys:String x:Key="Settings_AI_Delete_Title">Supprimer la clé API ?</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_Content">Voulez-vous vraiment supprimer votre clé API enregistrée ? Vous devrez la saisir à nouveau pour utiliser les fonctions d'IA.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_Confirm">Supprimer</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessGroq">Clé API Groq supprimée.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessGemini">Clé API Google Gemini supprimée.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
@@ -3421,4 +3442,10 @@
     <sys:String x:Key="btn_eco_mode">Mode Éco</sys:String>
     <sys:String x:Key="txt_mode_change_anytime">Remarque : l'application redémarrera pour appliquer cette architecture. Vous pouvez modifier votre sélection à tout moment dans les Paramètres.</sys:String>
     <!-- endregion  First Run Performance/Eco Mode -->
+
+    <!-- region Ai Explainer -->
+    <sys:String x:Key="ai_explainer_btn_text">Expliquer avec l'IA</sys:String>
+    <sys:String x:Key="ai_explainer_test_prompt">En vous basant sur les faits suivants, décrivez EvolveOS Optimizer en 2 phrases courtes : Il s'agit d'une suite de gestion Windows moderne et autonome conçue avec WinUI 3. Elle combine une optimisation agressive du système, des contrôles de confidentialité approfondis et des outils de sécurité de niveau militaire dans un seul exécutable léger. Ne mentionnez PAS l'IA, l'apprentissage automatique ou toute fonctionnalité liée à l'IA. Restez factuel.</sys:String>
+    <sys:String x:Key="no_internet_connection_notif_key">Aucune connexion Internet détectée. Veuillez vérifier votre réseau et réessayer.</sys:String>
+    <!-- endregion Ai Explainer -->
 </ResourceDictionary>

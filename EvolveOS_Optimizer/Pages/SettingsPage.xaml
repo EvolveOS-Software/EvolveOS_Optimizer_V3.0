@@ -487,6 +487,86 @@
                 </Border>
             </StackPanel>
 
+            <StackPanel Spacing="12">
+                <TextBlock Text="{x:Bind GetText('Settings_AI_SectionTitle'), Mode=OneWay}" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
+
+                <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="16">
+
+                        <StackPanel Spacing="6">
+                            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                <TextBlock Text="{x:Bind GetText('Settings_AI_Title'), Mode=OneWay}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <Border Background="{ThemeResource SystemFillColorSuccessBrush}" CornerRadius="3" Padding="4,1" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Bind GetText('Settings_AI_BadgeOptIn'), Mode=OneWay}" FontSize="10" Foreground="White" />
+                                </Border>
+                            </StackPanel>
+
+                            <TextBlock TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}">
+                                <Run Text="{x:Bind GetText('Settings_AI_DescPart1'), Mode=OneWay}" />
+                                <Run FontWeight="SemiBold" Text="{x:Bind GetText('Settings_AI_DescPart2'), Mode=OneWay}" />
+                                <Run Text="{x:Bind GetText('Settings_AI_DescPart3'), Mode=OneWay}" />
+                            </TextBlock>
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{x:Bind GetText('Settings_AI_ProviderLabel'), Mode=OneWay}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="CbAiProvider" Grid.Column="1" Width="200" SelectionChanged="CbAiProvider_SelectionChanged">
+                                <ComboBoxItem Content="Groq (Llama 3.3)" Tag="Groq"/>
+                                <ComboBoxItem Content="Google Gemini (1.5 Flash)" Tag="Gemini"/>
+                            </ComboBox>
+                        </Grid>
+
+                        <MenuFlyoutSeparator Opacity="0.5"/>
+
+                        <Grid x:Name="GridGroqSettings" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
+                                <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                            </Border>
+                            <PasswordBox Grid.Column="1" x:Name="TxtGroqKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_GroqPlaceholder'), Mode=OneWay}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                <Button x:Name="BtnRevealGroq" Content="&#xE7B3;" FontSize="18" Height="32" Width="32" Padding="0" FontFamily="Segoe MDL2 Assets" Click="BtnRevealGroq_Click" ToolTipService.ToolTip="{x:Bind GetText('Settings_AI_RevealTooltip'), Mode=OneWay}"/>
+                                <Button Content="{x:Bind GetText('Settings_AI_SaveBtn'), Mode=OneWay}" Style="{StaticResource AccentButtonStyle}" Click="BtnSaveGroqKey_Click" />
+                                <Button Content="{x:Bind GetText('Settings_AI_TestBtn'), Mode=OneWay}" Click="BtnTestGroqKey_Click" />
+                                <Button x:Name="BtnDeleteGroq" Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" Height="32" Width="32" Padding="0" VerticalAlignment="Center" Click="BtnDeleteGroq_Click" ToolTipService.ToolTip="{x:Bind GetText('Settings_AI_DeleteTooltip'), Mode=OneWay}"/>
+                            </StackPanel>
+                            <HyperlinkButton Grid.Column="3" Content="{x:Bind GetText('Settings_AI_GetKeyLink'), Mode=OneWay}" NavigateUri="https://console.groq.com/keys" VerticalAlignment="Center" />
+                        </Grid>
+
+                        <Grid x:Name="GridGeminiSettings" ColumnSpacing="12" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="{ThemeResource SubtleFillColorSecondaryBrush}" VerticalAlignment="Center">
+                                <FontIcon Glyph="&#xE899;" FontSize="18" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                            </Border>
+                            <PasswordBox Grid.Column="1" x:Name="TxtGeminiKey" PasswordRevealMode="Hidden" PlaceholderText="{x:Bind GetText('Settings_AI_GeminiPlaceholder'), Mode=OneWay}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                <Button x:Name="BtnRevealGemini" Content="&#xE7B3;" FontSize="18" Height="32" Width="32" Padding="0" FontFamily="Segoe MDL2 Assets" Click="BtnRevealGemini_Click" ToolTipService.ToolTip="{x:Bind GetText('Settings_AI_RevealTooltip'), Mode=OneWay}"/>
+                                <Button Content="{x:Bind GetText('Settings_AI_SaveBtn'), Mode=OneWay}" Style="{StaticResource AccentButtonStyle}" Click="BtnSaveGeminiKey_Click" />
+                                <Button Content="{x:Bind GetText('Settings_AI_TestBtn'), Mode=OneWay}" Click="BtnTestGeminiKey_Click" />
+                                <Button x:Name="BtnDeleteGemini" Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" Height="32" Width="32" Padding="0" VerticalAlignment="Center" Click="BtnDeleteGemini_Click" ToolTipService.ToolTip="{x:Bind GetText('Settings_AI_DeleteTooltip'), Mode=OneWay}"/>
+                            </StackPanel>
+                            <HyperlinkButton Grid.Column="3" Content="{x:Bind GetText('Settings_AI_GetKeyLink'), Mode=OneWay}" NavigateUri="https://aistudio.google.com/app/apikey" VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock x:Name="LblApiTestResult" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" Visibility="Collapsed" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
             <StackPanel x:Name="SecurityPrivacy" Spacing="12" Visibility="{x:Bind IsAdmin, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="Security &amp; Privacy" FontWeight="Bold" FontSize="18" Margin="0,12,0,0"/>
 

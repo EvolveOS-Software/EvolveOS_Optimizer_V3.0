@@ -26,7 +26,9 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.Windows.Storage.Pickers;
 using Windows.Storage;
 using WinRT.Interop;
+using static EvolveOS_Optimizer.Core.Enums;
 using static EvolveOS_Optimizer.Utilities.Controls.PathLocator;
+using static EvolveOS_Optimizer.Utilities.Managers.NotificationManager;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -128,10 +130,7 @@ namespace EvolveOS_Optimizer.Pages
 
             PopulateTranslationHotkeyComboBoxes();
 
-            _isInitialized = true;
-
-            ApplyUIPermissions();
-
+            #region Load Backdrop
             string currentBackdrop = SettingsEngine.Backdrop;
             foreach (ComboBoxItem item in BackdropSelector.Items)
             {
@@ -153,21 +152,39 @@ namespace EvolveOS_Optimizer.Pages
             {
                 BackdropSelector_SelectionChanged(BackdropSelector, null!);
             }
+            #endregion
 
             if (SliderSessionHours != null)
             {
                 SliderSessionHours.Value = SettingsEngine.AutoLoginSessionHours;
             }
 
+            #region AI Explainer
+            TxtGroqKey.Password = LocalMachineSettingsEngine.GroqApiKey ?? string.Empty;
+            TxtGeminiKey.Password = LocalMachineSettingsEngine.GeminiApiKey ?? string.Empty;
+
+            var savedProvider = LocalMachineSettingsEngine.ActiveAiProvider;
+            int providerIndex = -1;
+            for (int i = 0; i < CbAiProvider.Items.Count; i++)
+            {
+                if (CbAiProvider.Items[i] is ComboBoxItem cbItem &&
+                    cbItem.Tag?.ToString() == savedProvider.ToString())
+                {
+                    providerIndex = i;
+                    break;
+                }
+            }
+
+            CbAiProvider.SelectedIndex = providerIndex != -1 ? providerIndex : 0;
+            CbAiProvider_SelectionChanged(CbAiProvider, null!);
+            #endregion
+
             if (AuthSessionManager.IsSessionValid(out string? sessionUser, out DateTime expiry))
             {
                 _isInitialized = false;
-
                 if (CbEnableAutoLogin != null) CbEnableAutoLogin.IsOn = true;
                 if (AutoLoginSettings != null) AutoLoginSettings.Visibility = Visibility.Visible;
-
                 StartLiveSessionTimer(expiry);
-
                 _isInitialized = true;
             }
 
@@ -176,7 +193,9 @@ namespace EvolveOS_Optimizer.Pages
                 BtnDeveloperMode.IsOn = LocalMachineSettingsEngine.IsDeveloperMode;
             }
 
+            _isInitialized = true;
             InitializeAutoThemeScheduler();
+            ApplyUIPermissions();
         }
 
         private void SettingsPage_Unloaded(object sender, RoutedEventArgs e)
@@ -375,6 +394,133 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.AccentColor = _pendingHexColor;
 
             ((App)Application.Current).UpdateGlobalAccentColor(_pendingHexColor);
+        }
+        #endregion
+
+        #region Event Handlers - AI Explainer
+        private void CbAiProvider_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbAiProvider.SelectedItem is ComboBoxItem item && GridGroqSettings != null && GridGeminiSettings != null)
+            {
+                string? provider = item.Tag.ToString();
+
+                LocalMachineSettingsEngine.ActiveAiProvider = provider == "Groq" ? AiProvider.Groq : AiProvider.Gemini;
+
+                GridGroqSettings.Visibility = provider == "Groq" ? Visibility.Visible : Visibility.Collapsed;
+                GridGeminiSettings.Visibility = provider == "Gemini" ? Visibility.Visible : Visibility.Collapsed;
+
+                LblApiTestResult.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void BtnSaveGroqKey_Click(object sender, RoutedEventArgs e)
+        {
+            LocalMachineSettingsEngine.GroqApiKey = TxtGroqKey.Password;
+            NotificationManager.Show("Success", "Groq API key saved.").WithSeverity(NoticeSeverity.Success).Create();
+        }
+
+        private void BtnSaveGeminiKey_Click(object sender, RoutedEventArgs e)
+        {
+            LocalMachineSettingsEngine.GeminiApiKey = TxtGeminiKey.Password;
+            NotificationManager.Show("Success", "Google Gemini API key saved.").WithSeverity(NoticeSeverity.Success).Create();
+        }
+
+        private async void BtnTestGroqKey_Click(object sender, RoutedEventArgs e)
+        {
+            LblApiTestResult.Text = "Testing connection...";
+            LblApiTestResult.Visibility = Visibility.Visible;
+            string keyToTest = string.IsNullOrWhiteSpace(TxtGroqKey.Password) ? LocalMachineSettingsEngine.GroqApiKey : TxtGroqKey.Password;
+            LblApiTestResult.Text = await AiExplainerService.TestGroqKeyAsync(keyToTest);
+        }
+
+        private async void BtnTestGeminiKey_Click(object sender, RoutedEventArgs e)
+        {
+            LblApiTestResult.Text = "Testing connection...";
+            LblApiTestResult.Visibility = Visibility.Visible;
+            string keyToTest = string.IsNullOrWhiteSpace(TxtGeminiKey.Password) ? LocalMachineSettingsEngine.GeminiApiKey : TxtGeminiKey.Password;
+            LblApiTestResult.Text = await AiExplainerService.TestGeminiKeyAsync(keyToTest);
+        }
+
+        private void BtnRevealGroq_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtGroqKey.PasswordRevealMode == PasswordRevealMode.Hidden)
+            {
+                TxtGroqKey.PasswordRevealMode = PasswordRevealMode.Visible;
+                BtnRevealGroq.Content = "\uED1A";
+            }
+            else
+            {
+                TxtGroqKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealGroq.Content = "\uE7B3";
+            }
+        }
+
+        private void BtnRevealGemini_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtGeminiKey.PasswordRevealMode == PasswordRevealMode.Hidden)
+            {
+                TxtGeminiKey.PasswordRevealMode = PasswordRevealMode.Visible;
+                BtnRevealGemini.Content = "\uED1A";
+            }
+            else
+            {
+                TxtGeminiKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealGemini.Content = "\uE7B3";
+            }
+        }
+
+        private async void BtnDeleteGroq_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog deleteDialog = new ContentDialog
+            {
+                Title = GetText("Settings_AI_Delete_Title"),
+                Content = GetText("Settings_AI_Delete_Content"),
+                PrimaryButtonText = GetText("Settings_AI_Delete_Confirm"),
+                CloseButtonText = GetText("Generic_Cancel"),
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await deleteDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                LocalMachineSettingsEngine.GroqApiKey = string.Empty;
+                TxtGroqKey.Password = string.Empty;
+                TxtGroqKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealGroq.Content = "\uE7B3";
+
+                NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Delete_SuccessGroq"))
+                    .WithSeverity(NoticeSeverity.Success)
+                    .Create();
+            }
+        }
+
+        private async void BtnDeleteGemini_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog deleteDialog = new ContentDialog
+            {
+                Title = GetText("Settings_AI_Delete_Title"),
+                Content = GetText("Settings_AI_Delete_Content"),
+                PrimaryButtonText = GetText("Settings_AI_Delete_Confirm"),
+                CloseButtonText = GetText("Generic_Cancel"),
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await deleteDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                LocalMachineSettingsEngine.GeminiApiKey = string.Empty;
+                TxtGeminiKey.Password = string.Empty;
+                TxtGeminiKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealGemini.Content = "\uE7B3";
+
+                NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Delete_SuccessGemini"))
+                    .WithSeverity(NoticeSeverity.Success)
+                    .Create();
+            }
         }
         #endregion
 

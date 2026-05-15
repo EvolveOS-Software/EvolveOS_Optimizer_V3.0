@@ -8,6 +8,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 using Windows.System;
+using static EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Utilities.Controls
 {
@@ -576,6 +577,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["ShowDiskInTray"] = true,
             ["ShowGpuInTray"] = true,
             ["GuardianPaused"] = false,
+
+            ["ActiveAiProvider"] = (int)AiProvider.Groq,
+            ["GroqApiKey"] = "",
+            ["GeminiApiKey"] = ""
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -616,6 +621,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool ShowGpuInTray { get => (bool)_cachedSettings["ShowGpuInTray"]; set => ChangingParameters("ShowGpuInTray", value); }
 
         internal static bool IsGuardianPaused { get => (bool)_cachedSettings["GuardianPaused"]; set => ChangingParameters("GuardianPaused", value); }
+
+        internal static AiProvider ActiveAiProvider { get => (AiProvider)(int)_cachedSettings["ActiveAiProvider"]; set => ChangingParameters("ActiveAiProvider", (int)value); }
+        internal static string GroqApiKey { get => (string)_cachedSettings["GroqApiKey"]; set => ChangingParameters("GroqApiKey", value); }
+        internal static string GeminiApiKey { get => (string)_cachedSettings["GeminiApiKey"]; set => ChangingParameters("GeminiApiKey", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)
