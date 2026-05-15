@@ -90,9 +90,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     {
                         window.SystemBackdrop = name switch
                         {
-                            "Mica" => new MicaBackdrop() { Kind = MicaKind.Base },
-                            "MicaAlt" => new MicaBackdrop() { Kind = MicaKind.BaseAlt },
-                            "Acrylic" => new DesktopAcrylicBackdrop(),
+                            "Mica" => new AlwaysActiveMicaBackdrop() { Kind = MicaKind.Base },
+                            "MicaAlt" => new AlwaysActiveMicaBackdrop() { Kind = MicaKind.BaseAlt },
+                            "Acrylic" => new AlwaysActiveAcrylicBackdrop(),
                             _ => null
                         };
                     }
