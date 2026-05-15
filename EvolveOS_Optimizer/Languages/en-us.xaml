@@ -3480,7 +3480,7 @@
     <sys:String x:Key="ai_explainer_test_prompt">Based on the following facts, describe EvolveOS Optimizer in 2 short sentences: It is a modern, self-contained Windows management suite built with WinUI 3. It combines aggressive system optimization, deep privacy controls, and military-grade security tools into a single lightweight executable. Do NOT mention AI, machine learning or any AI-related features. Keep it factual.</sys:String>
     <sys:String x:Key="no_internet_connection_notif_key">No internet connection detected. Please check your network and try again.</sys:String>
 
-    <sys:String x:Key="ai_explainer_system_prompt">You are a Windows PC expert. Explain Winapp2 cleaner entries concisely and accurately based on the file paths and registry keys provided.</sys:String>
+    <sys:String x:Key="ai_explainer_system_prompt">You are a Windows PC expert. Explain system files, running processes, running services, and optimization entries concisely and accurately based on the provided context.</sys:String>
 
     <sys:String x:Key="ai_explainer_prompt_start">Explain what the Windows cleaner entry "{0}" cleans and whether it is safe to delete.</sys:String>
     <sys:String x:Key="ai_explainer_prompt_warning">Warning from the database:</sys:String>

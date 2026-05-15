@@ -3462,7 +3462,7 @@
     <sys:String x:Key="ai_explainer_test_prompt">Beschrijf EvolveOS Optimizer in 2 korte zinnen op basis van de volgende feiten: Het is een moderne, op zichzelf staande Windows-beheersuite gebouwd met WinUI 3. Het combineert agressieve systeemoptimalisatie, diepgaande privacycontroles en beveiligingstools van militair niveau in één enkele lichtgewicht executable. Vermeld GEEN AI, machine learning of enige AI-gerelateerde functies. Houd het feitelijk.</sys:String>
     <sys:String x:Key="no_internet_connection_notif_key">Geen internetverbinding gedetecteerd. Controleer je netwerk en probeer het opnieuw.</sys:String>
 
-    <sys:String x:Key="ai_explainer_system_prompt">Je bent een Windows PC-expert. Leg Winapp2-schoonmaakitems beknopt en nauwkeurig uit op basis van de opgegeven bestandspaden en registersleutels.</sys:String>
+    <sys:String x:Key="ai_explainer_system_prompt">Je bent een Windows PC-expert. Leg systeembestanden, actieve processen, actieve services en optimalisatie-items beknopt en nauwkeurig uit op basis van de geboden context.</sys:String>
 
     <sys:String x:Key="ai_explainer_prompt_start">Leg uit wat het Windows schoonmaakitem "{0}" verwijdert en of het veilig is om te verwijderen.</sys:String>
     <sys:String x:Key="ai_explainer_prompt_warning">Waarschuwing uit de database:</sys:String>

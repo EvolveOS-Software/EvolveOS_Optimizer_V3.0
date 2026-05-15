@@ -13,6 +13,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
 {
     public static class AiExplainerService
     {
+        #region Fields & Properties
         private static readonly HttpClient _http = new();
         private static readonly Dictionary<string, string> _cache = new(StringComparer.OrdinalIgnoreCase);
 
@@ -23,16 +24,38 @@ namespace EvolveOS_Optimizer.Utilities.Services
                "Do NOT mention AI, machine learning or any AI-related features. Keep it factual.";
 
         private static string SystemPrompt => ResourceString.GetString("ai_explainer_system_prompt")
-            ?? "You are a Windows PC expert. Explain Winapp2 cleaner entries concisely and accurately based on the file paths and registry keys provided.";
+            ?? "You are a Windows PC expert. Explain system files, running processes, running services, and optimization entries concisely and accurately based on the provided context.";
+        #endregion
+
+        #region Core Service Methods
+        public static void PreWarmConnection()
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    AiProvider provider = LocalMachineSettingsEngine.ActiveAiProvider;
+                    string? url = provider switch
+                    {
+                        AiProvider.Groq => "https://api.groq.com/openai/v1/models",
+                        AiProvider.OpenRouter => "https://openrouter.ai/api/v1/models",
+                        AiProvider.Mistral => "https://api.mistral.ai/v1/models",
+                        AiProvider.Gemini => "https://generativelanguage.googleapis.com/v1beta/models",
+                        AiProvider.Cohere => "https://api.cohere.com/v1/models",
+                        _ => null
+                    };
+
+                    if (url != null)
+                    {
+                        await _http.GetAsync(url);
+                    }
+                }
+                catch { /* Silently ignore */ }
+            });
+        }
 
         public static async Task<string> ExplainAsync(CleanerEntry entry)
         {
-            if (!await NetworkHelper.IsConnectedAsync())
-            {
-                return ResourceString.GetString("no_internet_connection_notif_key")
-                       ?? "No internet connection detected. Please check your network and try again.";
-            }
-
             if (_cache.TryGetValue(entry.Name, out var cached))
                 return cached;
 
@@ -59,6 +82,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             return result;
         }
+        #endregion
 
         #region Groq Integration
         private static async Task<string> ExplainWithGroqAsync(string prompt)
@@ -141,8 +165,6 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         public static async Task<string> TestCohereKeyAsync(string apiKey)
         {
-            if (!await NetworkHelper.IsConnectedAsync()) return "✗ " + ResourceString.GetString("no_internet_connection_notif_key");
-
             try
             {
                 using var req = new HttpRequestMessage(HttpMethod.Post, "https://api.cohere.com/v1/chat");
@@ -208,8 +230,6 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         public static async Task<string> TestGeminiKeyAsync(string apiKey)
         {
-            if (!await NetworkHelper.IsConnectedAsync()) return "✗ " + ResourceString.GetString("no_internet_connection_notif_key");
-
             try
             {
                 string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
@@ -270,8 +290,6 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         private static async Task<string> TestOpenAiCompatibleKeyAsync(string endpoint, string apiKey, string model)
         {
-            if (!await NetworkHelper.IsConnectedAsync()) return "✗ " + ResourceString.GetString("no_internet_connection_notif_key");
-
             try
             {
                 using var req = new HttpRequestMessage(HttpMethod.Post, endpoint);
