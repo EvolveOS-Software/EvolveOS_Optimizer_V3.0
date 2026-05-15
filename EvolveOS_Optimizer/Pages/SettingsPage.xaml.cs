@@ -398,16 +398,28 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Event Handlers - AI Explainer
+
         private void CbAiProvider_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbAiProvider.SelectedItem is ComboBoxItem item && GridGroqSettings != null && GridGeminiSettings != null)
+            if (CbAiProvider.SelectedItem is ComboBoxItem item &&
+                GridGroqSettings != null &&
+                GridGeminiSettings != null &&
+                GridOpenRouterSettings != null &&
+                GridCohereSettings != null &&
+                GridMistralSettings != null)
             {
-                string? provider = item.Tag.ToString();
+                string? providerStr = item.Tag?.ToString();
 
-                LocalMachineSettingsEngine.ActiveAiProvider = provider == "Groq" ? AiProvider.Groq : AiProvider.Gemini;
+                if (Enum.TryParse<AiProvider>(providerStr, out var parsedProvider))
+                {
+                    LocalMachineSettingsEngine.ActiveAiProvider = parsedProvider;
+                }
 
-                GridGroqSettings.Visibility = provider == "Groq" ? Visibility.Visible : Visibility.Collapsed;
-                GridGeminiSettings.Visibility = provider == "Gemini" ? Visibility.Visible : Visibility.Collapsed;
+                GridGroqSettings.Visibility = providerStr == "Groq" ? Visibility.Visible : Visibility.Collapsed;
+                GridGeminiSettings.Visibility = providerStr == "Gemini" ? Visibility.Visible : Visibility.Collapsed;
+                GridOpenRouterSettings.Visibility = providerStr == "OpenRouter" ? Visibility.Visible : Visibility.Collapsed;
+                GridCohereSettings.Visibility = providerStr == "Cohere" ? Visibility.Visible : Visibility.Collapsed;
+                GridMistralSettings.Visibility = providerStr == "Mistral" ? Visibility.Visible : Visibility.Collapsed;
 
                 LblApiTestResult.Visibility = Visibility.Collapsed;
             }
@@ -416,18 +428,18 @@ namespace EvolveOS_Optimizer.Pages
         private void BtnSaveGroqKey_Click(object sender, RoutedEventArgs e)
         {
             LocalMachineSettingsEngine.GroqApiKey = TxtGroqKey.Password;
-            NotificationManager.Show("Success", "Groq API key saved.").WithSeverity(NoticeSeverity.Success).Create();
+            NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Save_SuccessGroq")).WithSeverity(NoticeSeverity.Success).Create();
         }
 
         private void BtnSaveGeminiKey_Click(object sender, RoutedEventArgs e)
         {
             LocalMachineSettingsEngine.GeminiApiKey = TxtGeminiKey.Password;
-            NotificationManager.Show("Success", "Google Gemini API key saved.").WithSeverity(NoticeSeverity.Success).Create();
+            NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Save_SuccessGemini")).WithSeverity(NoticeSeverity.Success).Create();
         }
 
         private async void BtnTestGroqKey_Click(object sender, RoutedEventArgs e)
         {
-            LblApiTestResult.Text = "Testing connection...";
+            LblApiTestResult.Text = GetText("Settings_AI_TestingConnection");
             LblApiTestResult.Visibility = Visibility.Visible;
             string keyToTest = string.IsNullOrWhiteSpace(TxtGroqKey.Password) ? LocalMachineSettingsEngine.GroqApiKey : TxtGroqKey.Password;
             LblApiTestResult.Text = await AiExplainerService.TestGroqKeyAsync(keyToTest);
@@ -435,7 +447,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void BtnTestGeminiKey_Click(object sender, RoutedEventArgs e)
         {
-            LblApiTestResult.Text = "Testing connection...";
+            LblApiTestResult.Text = GetText("Settings_AI_TestingConnection");
             LblApiTestResult.Visibility = Visibility.Visible;
             string keyToTest = string.IsNullOrWhiteSpace(TxtGeminiKey.Password) ? LocalMachineSettingsEngine.GeminiApiKey : TxtGeminiKey.Password;
             LblApiTestResult.Text = await AiExplainerService.TestGeminiKeyAsync(keyToTest);
@@ -522,6 +534,172 @@ namespace EvolveOS_Optimizer.Pages
                     .Create();
             }
         }
+
+        private void BtnSaveOpenRouterKey_Click(object sender, RoutedEventArgs e)
+        {
+            LocalMachineSettingsEngine.OpenRouterApiKey = TxtOpenRouterKey.Password;
+            NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Save_SuccessOpenRouter")).WithSeverity(NoticeSeverity.Success).Create();
+        }
+
+        private async void BtnTestOpenRouterKey_Click(object sender, RoutedEventArgs e)
+        {
+            LblApiTestResult.Text = GetText("Settings_AI_TestingConnection");
+            LblApiTestResult.Visibility = Visibility.Visible;
+            string keyToTest = string.IsNullOrWhiteSpace(TxtOpenRouterKey.Password) ? LocalMachineSettingsEngine.OpenRouterApiKey : TxtOpenRouterKey.Password;
+            LblApiTestResult.Text = await AiExplainerService.TestOpenRouterKeyAsync(keyToTest);
+        }
+
+        private void BtnRevealOpenRouter_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtOpenRouterKey.PasswordRevealMode == PasswordRevealMode.Hidden)
+            {
+                TxtOpenRouterKey.PasswordRevealMode = PasswordRevealMode.Visible;
+                BtnRevealOpenRouter.Content = "\uED1A";
+            }
+            else
+            {
+                TxtOpenRouterKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealOpenRouter.Content = "\uE7B3";
+            }
+        }
+
+        private async void BtnDeleteOpenRouter_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog deleteDialog = new ContentDialog
+            {
+                Title = GetText("Settings_AI_Delete_Title"),
+                Content = GetText("Settings_AI_Delete_Content"),
+                PrimaryButtonText = GetText("Settings_AI_Delete_Confirm"),
+                CloseButtonText = GetText("Generic_Cancel"),
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await deleteDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                LocalMachineSettingsEngine.OpenRouterApiKey = string.Empty;
+                TxtOpenRouterKey.Password = string.Empty;
+                TxtOpenRouterKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealOpenRouter.Content = "\uE7B3";
+
+                NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Delete_SuccessOpenRouter"))
+                    .WithSeverity(NoticeSeverity.Success)
+                    .Create();
+            }
+        }
+
+        private void BtnSaveCohereKey_Click(object sender, RoutedEventArgs e)
+        {
+            LocalMachineSettingsEngine.CohereApiKey = TxtCohereKey.Password;
+            NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Save_SuccessCohere")).WithSeverity(NoticeSeverity.Success).Create();
+        }
+
+        private async void BtnTestCohereKey_Click(object sender, RoutedEventArgs e)
+        {
+            LblApiTestResult.Text = GetText("Settings_AI_TestingConnection");
+            LblApiTestResult.Visibility = Visibility.Visible;
+            string keyToTest = string.IsNullOrWhiteSpace(TxtCohereKey.Password) ? LocalMachineSettingsEngine.CohereApiKey : TxtCohereKey.Password;
+            LblApiTestResult.Text = await AiExplainerService.TestCohereKeyAsync(keyToTest);
+        }
+
+        private void BtnRevealCohere_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtCohereKey.PasswordRevealMode == PasswordRevealMode.Hidden)
+            {
+                TxtCohereKey.PasswordRevealMode = PasswordRevealMode.Visible;
+                BtnRevealCohere.Content = "\uED1A";
+            }
+            else
+            {
+                TxtCohereKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealCohere.Content = "\uE7B3";
+            }
+        }
+
+        private async void BtnDeleteCohere_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog deleteDialog = new ContentDialog
+            {
+                Title = GetText("Settings_AI_Delete_Title"),
+                Content = GetText("Settings_AI_Delete_Content"),
+                PrimaryButtonText = GetText("Settings_AI_Delete_Confirm"),
+                CloseButtonText = GetText("Generic_Cancel"),
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await deleteDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                LocalMachineSettingsEngine.CohereApiKey = string.Empty;
+                TxtCohereKey.Password = string.Empty;
+                TxtCohereKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealCohere.Content = "\uE7B3";
+
+                NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Delete_SuccessCohere"))
+                    .WithSeverity(NoticeSeverity.Success)
+                    .Create();
+            }
+        }
+
+        private void BtnSaveMistralKey_Click(object sender, RoutedEventArgs e)
+        {
+            LocalMachineSettingsEngine.MistralApiKey = TxtMistralKey.Password;
+            NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Save_SuccessMistral")).WithSeverity(NoticeSeverity.Success).Create();
+        }
+
+        private async void BtnTestMistralKey_Click(object sender, RoutedEventArgs e)
+        {
+            LblApiTestResult.Text = GetText("Settings_AI_TestingConnection");
+            LblApiTestResult.Visibility = Visibility.Visible;
+            string keyToTest = string.IsNullOrWhiteSpace(TxtMistralKey.Password) ? LocalMachineSettingsEngine.MistralApiKey : TxtMistralKey.Password;
+            LblApiTestResult.Text = await AiExplainerService.TestMistralKeyAsync(keyToTest);
+        }
+
+        private void BtnRevealMistral_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtMistralKey.PasswordRevealMode == PasswordRevealMode.Hidden)
+            {
+                TxtMistralKey.PasswordRevealMode = PasswordRevealMode.Visible;
+                BtnRevealMistral.Content = "\uED1A";
+            }
+            else
+            {
+                TxtMistralKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealMistral.Content = "\uE7B3";
+            }
+        }
+
+        private async void BtnDeleteMistral_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog deleteDialog = new ContentDialog
+            {
+                Title = GetText("Settings_AI_Delete_Title"),
+                Content = GetText("Settings_AI_Delete_Content"),
+                PrimaryButtonText = GetText("Settings_AI_Delete_Confirm"),
+                CloseButtonText = GetText("Generic_Cancel"),
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await deleteDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                LocalMachineSettingsEngine.MistralApiKey = string.Empty;
+                TxtMistralKey.Password = string.Empty;
+                TxtMistralKey.PasswordRevealMode = PasswordRevealMode.Hidden;
+                BtnRevealMistral.Content = "\uE7B3";
+
+                NotificationManager.Show(GetText("Generic_Success"), GetText("Settings_AI_Delete_SuccessMistral"))
+                    .WithSeverity(NoticeSeverity.Success)
+                    .Create();
+            }
+        }
+
         #endregion
 
         #region Auto Theme / LightSwitch Feature

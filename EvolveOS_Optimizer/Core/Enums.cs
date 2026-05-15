@@ -119,7 +119,10 @@ namespace EvolveOS_Optimizer.Core
         public enum AiProvider
         {
             Groq,
-            Gemini
+            Gemini,
+            OpenRouter,
+            Cohere,
+            Mistral
         }
     }
 }

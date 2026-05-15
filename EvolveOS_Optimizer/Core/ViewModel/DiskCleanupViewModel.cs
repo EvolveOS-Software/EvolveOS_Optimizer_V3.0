@@ -1744,16 +1744,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             var provider = LocalMachineSettingsEngine.ActiveAiProvider;
 
-            if (provider == AiProvider.Groq)
+            return provider switch
             {
-                return !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey);
-            }
-            else if (provider == AiProvider.Gemini)
-            {
-                return !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey);
-            }
-
-            return false;
+                AiProvider.Groq => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey),
+                AiProvider.Gemini => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey),
+                AiProvider.OpenRouter => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.OpenRouterApiKey),
+                AiProvider.Cohere => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.CohereApiKey),
+                AiProvider.Mistral => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.MistralApiKey),
+                _ => false,
+            };
         }
 
         public DiskCleanupEntryViewModel(CleanerEntry entry)

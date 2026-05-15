@@ -345,19 +345,19 @@
     <sys:String x:Key="Settings_Performance_Restart_Confirm">Jetzt neu starten</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Cancel">Später</sys:String>
 
-    <sys:String x:Key="Settings_AI_SectionTitle">KI-Integration</sys:String>
+    <sys:String x:Key="Settings_AI_SectionTitle">KI Integration</sys:String>
     <sys:String x:Key="Settings_AI_Title">KI-Erklärungen</sys:String>
     <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
     <sys:String x:Key="Settings_AI_DescPart1">Klicken Sie auf die (···) Schaltfläche bei einem Eintrag im Systemreiniger →</sys:String>
     <sys:String x:Key="Settings_AI_DescPart2">✨ Erklären.</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart3">Unterstützt von Groq und Google Gemini. Ohne Ihre ausdrückliche Aktion wird nichts gesendet. Erfordert Ihren eigenen API-Schlüssel.</sys:String>
-    <sys:String x:Key="Settings_AI_ProviderLabel">Aktiver KI-Anbieter</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart3">Unterstützt von KI. Ohne Ihre ausdrückliche Aktion wird nichts gesendet. Erfordert einen eigenen API-Schlüssel.</sys:String>
+    <sys:String x:Key="Settings_AI_ProviderLabel">Aktiver KI Anbieter</sys:String>
     <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>
     <sys:String x:Key="Settings_AI_GeminiPlaceholder">AIza...</sys:String>
     <sys:String x:Key="Settings_AI_SaveBtn">Speichern</sys:String>
     <sys:String x:Key="Settings_AI_TestBtn">Testen</sys:String>
-    <sys:String x:Key="Settings_AI_GetKeyLink">Schlüssel abrufen</sys:String>
-    <sys:String x:Key="Settings_AI_RevealTooltip">Schlüssel anzeigen/ausblenden</sys:String>
+    <sys:String x:Key="Settings_AI_GetKeyLink">Schlüssel holen</sys:String>
+    <sys:String x:Key="Settings_AI_RevealTooltip">Schlüssel ein-/ausblenden</sys:String>
     <sys:String x:Key="Settings_AI_DeleteTooltip">Gespeicherten Schlüssel löschen</sys:String>
 
     <sys:String x:Key="Settings_AI_Delete_Title">API-Schlüssel löschen?</sys:String>
@@ -365,6 +365,20 @@
     <sys:String x:Key="Settings_AI_Delete_Confirm">Löschen</sys:String>
     <sys:String x:Key="Settings_AI_Delete_SuccessGroq">Groq API-Schlüssel entfernt.</sys:String>
     <sys:String x:Key="Settings_AI_Delete_SuccessGemini">Google Gemini API-Schlüssel entfernt.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessOpenRouter">OpenRouter API-Schlüssel entfernt.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessCohere">Cohere API-Schlüssel entfernt.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessMistral">Mistral API-Schlüssel entfernt.</sys:String>
+
+    <sys:String x:Key="Settings_AI_OpenRouterPlaceholder">sk-or-v1-...</sys:String>
+    <sys:String x:Key="Settings_AI_CoherePlaceholder">Fügen Sie Ihren Trial-Schlüssel hier ein</sys:String>
+    <sys:String x:Key="Settings_AI_MistralPlaceholder">Geben Sie Ihren Mistral API-Schlüssel ein</sys:String>
+
+    <sys:String x:Key="Settings_AI_TestingConnection">Verbindung wird getestet...</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessGroq">Groq API-Schlüssel gespeichert.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessGemini">Google Gemini API-Schlüssel gespeichert.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessOpenRouter">OpenRouter API-Schlüssel gespeichert.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessCohere">Cohere API-Schlüssel gespeichert.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessMistral">Mistral API-Schlüssel gespeichert.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
@@ -3427,5 +3441,25 @@
     <sys:String x:Key="ai_explainer_btn_text">Mit KI erklären</sys:String>
     <sys:String x:Key="ai_explainer_test_prompt">Beschreiben Sie EvolveOS Optimizer in 2 kurzen Sätzen basierend auf den folgenden Fakten: Es handelt sich um eine moderne, eigenständige Windows-Verwaltungssuite, die mit WinUI 3 erstellt wurde. Sie kombiniert aggressive Systemoptimierung, tiefgreifende Datenschutzkontrollen und Sicherheitstools auf Militärniveau in einer einzigen ressourcenschonenden ausführbaren Datei. Erwähnen Sie KEINE KI, maschinelles Lernen oder KI-bezogene Funktionen. Bleiben Sie sachlich.</sys:String>
     <sys:String x:Key="no_internet_connection_notif_key">Keine Internetverbindung erkannt. Bitte überprüfen Sie Ihr Netzwerk und versuchen Sie es erneut.</sys:String>
+
+    <sys:String x:Key="ai_explainer_system_prompt">Sie sind ein Windows-PC-Experte. Erklären Sie Winapp2-Bereinigungseinträge prägnant und genau basierend auf den bereitgestellten Dateipfaden und Registrierungsschlüsseln.</sys:String>
+
+    <sys:String x:Key="ai_explainer_prompt_start">Erklären Sie, was der Windows-Bereinigungseintrag "{0}" reinigt und ob es sicher ist, ihn zu löschen.</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_warning">Warnung aus der Datenbank:</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_files">Es löscht Dateien von diesen Speicherorten:</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_registry">Es entfernt diese Registrierungsschlüssel:</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_end">Antworten Sie in 2-3 Sätzen. Seien Sie spezifisch und praktisch.</sys:String>
+
+    <sys:String x:Key="ai_err_invalid_provider">Ausgewählter KI-Anbieter wird nicht unterstützt.</sys:String>
+    <sys:String x:Key="ai_err_prefix">API-Fehler</sys:String>
+    <sys:String x:Key="ai_err_network">API konnte nicht erreicht werden</sys:String>
+    <sys:String x:Key="ai_err_unknown">Ein unbekannter Fehler ist aufgetreten.</sys:String>
+    <sys:String x:Key="ai_err_no_response">Keine gültige Antwort vom KI-Anbieter erhalten.</sys:String>
+
+    <sys:String x:Key="ai_err_no_key_groq">Kein API-Schlüssel konfiguriert. Gehen Sie zu den Einstellungen, um Ihren kostenlosen Groq API-Schlüssel hinzuzufügen (console.groq.com).</sys:String>
+    <sys:String x:Key="ai_err_no_key_gemini">Kein API-Schlüssel konfiguriert. Gehen Sie zu den Einstellungen, um Ihren kostenlosen Google Gemini API-Schlüssel hinzuzufügen (aistudio.google.com).</sys:String>
+    <sys:String x:Key="ai_err_no_key_openrouter">Kein API-Schlüssel konfiguriert. Gehen Sie zu den Einstellungen, um Ihren kostenlosen OpenRouter API-Schlüssel hinzuzufügen (openrouter.ai).</sys:String>
+    <sys:String x:Key="ai_err_no_key_mistral">Kein API-Schlüssel konfiguriert. Gehen Sie zu den Einstellungen, um Ihren Mistral API-Schlüssel hinzuzufügen (console.mistral.ai).</sys:String>
+    <sys:String x:Key="ai_err_no_key_cohere">Kein API-Schlüssel konfiguriert. Gehen Sie zu den Einstellungen, um Ihren kostenlosen Cohere Trial API-Schlüssel hinzuzufügen (dashboard.cohere.com).</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

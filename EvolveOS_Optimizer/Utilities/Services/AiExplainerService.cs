@@ -22,6 +22,9 @@ namespace EvolveOS_Optimizer.Utilities.Services
                "It combines aggressive system optimization, deep privacy controls, and military-grade security tools into a single lightweight executable. " +
                "Do NOT mention AI, machine learning or any AI-related features. Keep it factual.";
 
+        private static string SystemPrompt => ResourceString.GetString("ai_explainer_system_prompt")
+            ?? "You are a Windows PC expert. Explain Winapp2 cleaner entries concisely and accurately based on the file paths and registry keys provided.";
+
         public static async Task<string> ExplainAsync(CleanerEntry entry)
         {
             if (!await NetworkHelper.IsConnectedAsync())
@@ -35,19 +38,21 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             AiProvider selectedProvider = LocalMachineSettingsEngine.ActiveAiProvider;
             string result;
-
             string prompt = BuildPrompt(entry);
 
-            if (selectedProvider == AiProvider.Groq)
+            result = selectedProvider switch
             {
-                result = await ExplainWithGroqAsync(prompt);
-            }
-            else
-            {
-                result = await ExplainWithGeminiAsync(prompt);
-            }
+                AiProvider.Groq => await ExplainWithGroqAsync(prompt),
+                AiProvider.Gemini => await ExplainWithGeminiAsync(prompt),
+                AiProvider.OpenRouter => await ExplainWithOpenRouterAsync(prompt),
+                AiProvider.Cohere => await ExplainWithCohereAsync(prompt),
+                AiProvider.Mistral => await ExplainWithMistralAsync(prompt),
+                _ => ResourceString.GetString("ai_err_invalid_provider") ?? "Selected AI provider is not supported."
+            };
 
-            if (!result.StartsWith("Error") && !result.StartsWith("No API key") && !result.StartsWith("Could not reach"))
+            if (!result.StartsWith(ResourceString.GetString("ai_err_prefix") ?? "Error") &&
+                !result.Contains("API key") &&
+                !result.Contains("Could not reach"))
             {
                 _cache[entry.Name] = result;
             }
@@ -60,70 +65,106 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             var apiKey = LocalMachineSettingsEngine.GroqApiKey ?? Environment.GetEnvironmentVariable("GROQ_API_KEY");
             if (string.IsNullOrWhiteSpace(apiKey))
-                return "No API key configured. Go to Settings to add your free Groq API key (console.groq.com).";
+                return ResourceString.GetString("ai_err_no_key_groq") ?? "No API key configured. Go to Settings to add your free Groq API key.";
+
+            return await ExecuteOpenAiCompatibleRequestAsync("https://api.groq.com/openai/v1/chat/completions", apiKey, "llama-3.3-70b-versatile", prompt);
+        }
+
+        public static async Task<string> TestGroqKeyAsync(string apiKey) =>
+            await TestOpenAiCompatibleKeyAsync("https://api.groq.com/openai/v1/chat/completions", apiKey, "llama-3.3-70b-versatile");
+        #endregion
+
+        #region OpenRouter Integration
+        private static async Task<string> ExplainWithOpenRouterAsync(string prompt)
+        {
+            var apiKey = LocalMachineSettingsEngine.OpenRouterApiKey ?? Environment.GetEnvironmentVariable("OPENROUTER_API_KEY");
+            if (string.IsNullOrWhiteSpace(apiKey))
+                return ResourceString.GetString("ai_err_no_key_openrouter") ?? "No API key configured. Go to Settings to add your free OpenRouter API key.";
+
+            return await ExecuteOpenAiCompatibleRequestAsync("https://openrouter.ai/api/v1/chat/completions", apiKey, "meta-llama/llama-3-8b-instruct:free", prompt);
+        }
+
+        public static async Task<string> TestOpenRouterKeyAsync(string apiKey) =>
+            await TestOpenAiCompatibleKeyAsync("https://openrouter.ai/api/v1/chat/completions", apiKey, "meta-llama/llama-3-8b-instruct:free");
+        #endregion
+
+        #region Mistral AI Integration
+        private static async Task<string> ExplainWithMistralAsync(string prompt)
+        {
+            var apiKey = LocalMachineSettingsEngine.MistralApiKey ?? Environment.GetEnvironmentVariable("MISTRAL_API_KEY");
+            if (string.IsNullOrWhiteSpace(apiKey))
+                return ResourceString.GetString("ai_err_no_key_mistral") ?? "No API key configured. Go to Settings to add your Mistral API key.";
+
+            return await ExecuteOpenAiCompatibleRequestAsync("https://api.mistral.ai/v1/chat/completions", apiKey, "open-mistral-7b", prompt);
+        }
+
+        public static async Task<string> TestMistralKeyAsync(string apiKey) =>
+            await TestOpenAiCompatibleKeyAsync("https://api.mistral.ai/v1/chat/completions", apiKey, "open-mistral-7b");
+        #endregion
+
+        #region Cohere Integration
+        private static async Task<string> ExplainWithCohereAsync(string prompt)
+        {
+            var apiKey = LocalMachineSettingsEngine.CohereApiKey ?? Environment.GetEnvironmentVariable("COHERE_API_KEY");
+            if (string.IsNullOrWhiteSpace(apiKey))
+                return ResourceString.GetString("ai_err_no_key_cohere") ?? "No API key configured. Go to Settings to add your free Cohere Trial API key.";
 
             try
             {
-                using var req = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
+                using var req = new HttpRequestMessage(HttpMethod.Post, "https://api.cohere.com/v1/chat");
                 req.Headers.Add("Authorization", $"Bearer {apiKey}");
-                req.Content = new StringContent(
-                    JsonSerializer.Serialize(new
-                    {
-                        model = "llama-3.3-70b-versatile",
-                        max_tokens = 300,
-                        messages = new[]
-                        {
-                            new { role = "system", content = "You are a Windows PC expert. Explain Winapp2 cleaner entries concisely and accurately based on the file paths and registry keys provided." },
-                            new { role = "user", content = prompt }
-                        }
-                    }),
-                    Encoding.UTF8, "application/json");
+                req.Headers.Add("Accept", "application/json");
+
+                req.Content = new StringContent(JsonSerializer.Serialize(new
+                {
+                    model = "command-light",
+                    message = prompt,
+                    preamble = SystemPrompt,
+                    max_tokens = 300
+                }), Encoding.UTF8, "application/json");
 
                 var res = await _http.SendAsync(req);
                 var json = await res.Content.ReadAsStringAsync();
                 using var doc = JsonDocument.Parse(json);
                 var root = doc.RootElement;
 
-                if (root.TryGetProperty("error", out var err))
-                {
-                    var msg = err.TryGetProperty("message", out var m) ? m.GetString() : "Unknown error";
-                    return $"Groq API error: {msg}";
-                }
+                if (root.TryGetProperty("message", out var err))
+                    return $"{ResourceString.GetString("ai_err_prefix")} Cohere: {err.GetString()}";
 
-                return root.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString() ?? "No response received.";
+                return root.GetProperty("text").GetString() ?? ResourceString.GetString("ai_err_no_response");
             }
             catch (Exception ex)
             {
-                return $"Could not reach Groq API: {ex.Message}";
+                return $"{ResourceString.GetString("ai_err_network")} Cohere: {ex.Message}";
             }
         }
 
-        public static async Task<string> TestGroqKeyAsync(string apiKey)
+        public static async Task<string> TestCohereKeyAsync(string apiKey)
         {
-            if (!await NetworkHelper.IsConnectedAsync())
-                return "✗ No internet connection.";
+            if (!await NetworkHelper.IsConnectedAsync()) return "✗ " + ResourceString.GetString("no_internet_connection_notif_key");
 
             try
             {
-                using var req = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
+                using var req = new HttpRequestMessage(HttpMethod.Post, "https://api.cohere.com/v1/chat");
                 req.Headers.Add("Authorization", $"Bearer {apiKey}");
-                req.Content = new StringContent(
-                    JsonSerializer.Serialize(new
-                    {
-                        model = "llama-3.3-70b-versatile",
-                        max_tokens = 150,
-                        messages = new[] { new { role = "user", content = TestPrompt } }
-                    }), Encoding.UTF8, "application/json");
+                req.Headers.Add("Accept", "application/json");
+
+                req.Content = new StringContent(JsonSerializer.Serialize(new
+                {
+                    model = "command-light",
+                    message = TestPrompt,
+                    max_tokens = 150
+                }), Encoding.UTF8, "application/json");
 
                 var res = await _http.SendAsync(req);
                 var json = await res.Content.ReadAsStringAsync();
                 using var doc = JsonDocument.Parse(json);
                 var root = doc.RootElement;
 
-                if (root.TryGetProperty("error", out var err))
-                    return "✗ " + (err.TryGetProperty("message", out var m) ? m.GetString() : "API error");
+                if (root.TryGetProperty("message", out var err))
+                    return "✗ " + err.GetString();
 
-                return "✓ " + root.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
+                return "✓ " + root.GetProperty("text").GetString()?.Trim();
             }
             catch (Exception ex) { return "✗ " + ex.Message; }
         }
@@ -134,14 +175,12 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             var apiKey = LocalMachineSettingsEngine.GeminiApiKey ?? Environment.GetEnvironmentVariable("GEMINI_API_KEY");
             if (string.IsNullOrWhiteSpace(apiKey))
-                return "No API key configured. Go to Settings to add your free Google Gemini API key (aistudio.google.com).";
+                return ResourceString.GetString("ai_err_no_key_gemini") ?? "No API key configured. Go to Settings to add your free Google Gemini API key.";
 
             try
             {
                 string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
-
-                var fullPrompt = "You are a Windows PC expert. Explain Winapp2 cleaner entries concisely and accurately based on the file paths and registry keys provided.\n\n" + prompt;
-
+                var fullPrompt = SystemPrompt + "\n\n" + prompt;
                 var requestBody = new { contents = new[] { new { parts = new[] { new { text = fullPrompt } } } } };
                 var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
@@ -152,25 +191,24 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
                 if (root.TryGetProperty("error", out var err))
                 {
-                    var msg = err.TryGetProperty("message", out var m) ? m.GetString() : "Unknown error";
-                    return $"Gemini API error: {msg}";
+                    var msg = err.TryGetProperty("message", out var m) ? m.GetString() : ResourceString.GetString("ai_err_unknown");
+                    return $"{ResourceString.GetString("ai_err_prefix")} Gemini: {msg}";
                 }
 
                 return root.GetProperty("candidates")[0]
                            .GetProperty("content")
                            .GetProperty("parts")[0]
-                           .GetProperty("text").GetString()?.Trim() ?? "No response received.";
+                           .GetProperty("text").GetString()?.Trim() ?? ResourceString.GetString("ai_err_no_response");
             }
             catch (Exception ex)
             {
-                return $"Could not reach Gemini API: {ex.Message}";
+                return $"{ResourceString.GetString("ai_err_network")} Gemini: {ex.Message}";
             }
         }
 
         public static async Task<string> TestGeminiKeyAsync(string apiKey)
         {
-            if (!await NetworkHelper.IsConnectedAsync())
-                return "✗ No internet connection.";
+            if (!await NetworkHelper.IsConnectedAsync()) return "✗ " + ResourceString.GetString("no_internet_connection_notif_key");
 
             try
             {
@@ -184,10 +222,76 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 var root = doc.RootElement;
 
                 if (root.TryGetProperty("error", out var err))
-                    return "✗ " + (err.TryGetProperty("message", out var m) ? m.GetString() : "API error");
+                    return "✗ " + (err.TryGetProperty("message", out var m) ? m.GetString() : ResourceString.GetString("ai_err_unknown"));
 
                 var text = root.GetProperty("candidates")[0].GetProperty("content").GetProperty("parts")[0].GetProperty("text").GetString();
                 return "✓ " + text?.Trim();
+            }
+            catch (Exception ex) { return "✗ " + ex.Message; }
+        }
+        #endregion
+
+        #region Shared OpenAI-Compatible Helpers (Groq, OpenRouter, Mistral)
+        private static async Task<string> ExecuteOpenAiCompatibleRequestAsync(string endpoint, string apiKey, string model, string prompt)
+        {
+            try
+            {
+                using var req = new HttpRequestMessage(HttpMethod.Post, endpoint);
+                req.Headers.Add("Authorization", $"Bearer {apiKey}");
+                req.Content = new StringContent(JsonSerializer.Serialize(new
+                {
+                    model = model,
+                    max_tokens = 300,
+                    messages = new[]
+                    {
+                        new { role = "system", content = SystemPrompt },
+                        new { role = "user", content = prompt }
+                    }
+                }), Encoding.UTF8, "application/json");
+
+                var res = await _http.SendAsync(req);
+                var json = await res.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("error", out var err))
+                {
+                    var msg = err.TryGetProperty("message", out var m) ? m.GetString() : ResourceString.GetString("ai_err_unknown");
+                    return $"{ResourceString.GetString("ai_err_prefix")}: {msg}";
+                }
+
+                return root.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString() ?? ResourceString.GetString("ai_err_no_response");
+            }
+            catch (Exception ex)
+            {
+                return $"{ResourceString.GetString("ai_err_network")}: {ex.Message}";
+            }
+        }
+
+        private static async Task<string> TestOpenAiCompatibleKeyAsync(string endpoint, string apiKey, string model)
+        {
+            if (!await NetworkHelper.IsConnectedAsync()) return "✗ " + ResourceString.GetString("no_internet_connection_notif_key");
+
+            try
+            {
+                using var req = new HttpRequestMessage(HttpMethod.Post, endpoint);
+                req.Headers.Add("Authorization", $"Bearer {apiKey}");
+                req.Content = new StringContent(JsonSerializer.Serialize(new
+                {
+                    model = model,
+                    max_tokens = 150,
+                    messages = new[] { new { role = "user", content = TestPrompt } }
+                }), Encoding.UTF8, "application/json");
+
+                var res = await _http.SendAsync(req);
+                var json = await res.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("error", out var err))
+                    return "✗ " + (err.TryGetProperty("message", out var m) ? m.GetString() : ResourceString.GetString("ai_err_unknown"));
+
+                return "✓ " + root.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
             }
             catch (Exception ex) { return "✗ " + ex.Message; }
         }
@@ -197,26 +301,26 @@ namespace EvolveOS_Optimizer.Utilities.Services
         private static string BuildPrompt(CleanerEntry entry)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"Explain what the Windows cleaner entry \"{entry.Name}\" cleans and whether it is safe to delete.");
+            sb.AppendLine(string.Format(ResourceString.GetString("ai_explainer_prompt_start") ?? "Explain what the Windows cleaner entry \"{0}\" cleans and whether it is safe to delete.", entry.Name));
 
             if (!string.IsNullOrWhiteSpace(entry.Warning))
-                sb.AppendLine($"Warning from the database: {entry.Warning}");
+                sb.AppendLine($"{ResourceString.GetString("ai_explainer_prompt_warning") ?? "Warning from the database:"} {entry.Warning}");
 
             if (entry.FileKeys.Count > 0)
             {
-                sb.AppendLine("It deletes files from these locations:");
+                sb.AppendLine(ResourceString.GetString("ai_explainer_prompt_files") ?? "It deletes files from these locations:");
                 foreach (var fk in entry.FileKeys.Take(6))
                     sb.AppendLine($"  - {fk.Path}  (pattern: {fk.Pattern})");
             }
 
             if (entry.RegKeys.Count > 0)
             {
-                sb.AppendLine("It removes these registry keys:");
+                sb.AppendLine(ResourceString.GetString("ai_explainer_prompt_registry") ?? "It removes these registry keys:");
                 foreach (var rk in entry.RegKeys.Take(4))
                     sb.AppendLine($"  - {rk.KeyPath}");
             }
 
-            sb.AppendLine("Answer in 2-3 sentences. Be specific and practical.");
+            sb.AppendLine(ResourceString.GetString("ai_explainer_prompt_end") ?? "Answer in 2-3 sentences. Be specific and practical.");
             return sb.ToString();
         }
         #endregion

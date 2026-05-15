@@ -580,7 +580,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             ["ActiveAiProvider"] = (int)AiProvider.Groq,
             ["GroqApiKey"] = "",
-            ["GeminiApiKey"] = ""
+            ["GeminiApiKey"] = "",
+            ["OpenRouterApiKey"] = "",
+            ["CohereApiKey"] = "",
+            ["MistralApiKey"] = ""
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -625,6 +628,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static AiProvider ActiveAiProvider { get => (AiProvider)(int)_cachedSettings["ActiveAiProvider"]; set => ChangingParameters("ActiveAiProvider", (int)value); }
         internal static string GroqApiKey { get => (string)_cachedSettings["GroqApiKey"]; set => ChangingParameters("GroqApiKey", value); }
         internal static string GeminiApiKey { get => (string)_cachedSettings["GeminiApiKey"]; set => ChangingParameters("GeminiApiKey", value); }
+        internal static string OpenRouterApiKey { get => (string)_cachedSettings["OpenRouterApiKey"]; set => ChangingParameters("OpenRouterApiKey", value); }
+        internal static string CohereApiKey { get => (string)_cachedSettings["CohereApiKey"]; set => ChangingParameters("CohereApiKey", value); }
+        internal static string MistralApiKey { get => (string)_cachedSettings["MistralApiKey"]; set => ChangingParameters("MistralApiKey", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)

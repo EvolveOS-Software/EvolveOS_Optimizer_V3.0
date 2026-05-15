@@ -348,9 +348,9 @@
     <sys:String x:Key="Settings_AI_SectionTitle">Intégration de l'IA</sys:String>
     <sys:String x:Key="Settings_AI_Title">Explications par l'IA</sys:String>
     <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart1">Cliquez sur le bouton (···) de n'importe quelle entrée du Nettoyeur →</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart1">Cliquez sur le bouton (···) sur n'importe quelle entrée du Nettoyeur système →</sys:String>
     <sys:String x:Key="Settings_AI_DescPart2">✨ Expliquer.</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart3">Propulsé par Groq et Google Gemini. Rien n'est envoyé sans votre action explicite. Nécessite votre propre clé API.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart3">Propulsé par l'IA. Rien n'est envoyé sans votre action explicite. Nécessite votre propre clé API.</sys:String>
     <sys:String x:Key="Settings_AI_ProviderLabel">Fournisseur d'IA actif</sys:String>
     <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>
     <sys:String x:Key="Settings_AI_GeminiPlaceholder">AIza...</sys:String>
@@ -365,6 +365,20 @@
     <sys:String x:Key="Settings_AI_Delete_Confirm">Supprimer</sys:String>
     <sys:String x:Key="Settings_AI_Delete_SuccessGroq">Clé API Groq supprimée.</sys:String>
     <sys:String x:Key="Settings_AI_Delete_SuccessGemini">Clé API Google Gemini supprimée.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessOpenRouter">Clé API OpenRouter supprimée.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessCohere">Clé API Cohere supprimée.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessMistral">Clé API Mistral supprimée.</sys:String>
+
+    <sys:String x:Key="Settings_AI_OpenRouterPlaceholder">sk-or-v1-...</sys:String>
+    <sys:String x:Key="Settings_AI_CoherePlaceholder">Collez votre clé d'essai ici</sys:String>
+    <sys:String x:Key="Settings_AI_MistralPlaceholder">Entrez votre clé API Mistral</sys:String>
+
+    <sys:String x:Key="Settings_AI_TestingConnection">Test de la connexion...</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessGroq">Clé API Groq enregistrée.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessGemini">Clé API Google Gemini enregistrée.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessOpenRouter">Clé API OpenRouter enregistrée.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessCohere">Clé API Cohere enregistrée.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessMistral">Clé API Mistral enregistrée.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
@@ -3447,5 +3461,25 @@
     <sys:String x:Key="ai_explainer_btn_text">Expliquer avec l'IA</sys:String>
     <sys:String x:Key="ai_explainer_test_prompt">En vous basant sur les faits suivants, décrivez EvolveOS Optimizer en 2 phrases courtes : Il s'agit d'une suite de gestion Windows moderne et autonome conçue avec WinUI 3. Elle combine une optimisation agressive du système, des contrôles de confidentialité approfondis et des outils de sécurité de niveau militaire dans un seul exécutable léger. Ne mentionnez PAS l'IA, l'apprentissage automatique ou toute fonctionnalité liée à l'IA. Restez factuel.</sys:String>
     <sys:String x:Key="no_internet_connection_notif_key">Aucune connexion Internet détectée. Veuillez vérifier votre réseau et réessayer.</sys:String>
+
+    <sys:String x:Key="ai_explainer_system_prompt">Vous êtes un expert en PC Windows. Expliquez les entrées du nettoyeur Winapp2 de manière concise et précise en vous basant sur les chemins de fichiers et les clés de registre fournis.</sys:String>
+
+    <sys:String x:Key="ai_explainer_prompt_start">Expliquez ce que nettoie l'entrée Windows "{0}" et s'il est sûr de la supprimer.</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_warning">Avertissement de la base de données :</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_files">Il supprime les fichiers de ces emplacements :</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_registry">Il supprime ces clés de registre :</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_end">Répondez en 2 à 3 phrases. Soyez précis et pratique.</sys:String>
+
+    <sys:String x:Key="ai_err_invalid_provider">Le fournisseur d'IA sélectionné n'est pas pris en charge.</sys:String>
+    <sys:String x:Key="ai_err_prefix">Erreur API</sys:String>
+    <sys:String x:Key="ai_err_network">Impossible de joindre l'API</sys:String>
+    <sys:String x:Key="ai_err_unknown">Une erreur inconnue s'est produite.</sys:String>
+    <sys:String x:Key="ai_err_no_response">Aucune réponse valide reçue du fournisseur d'IA.</sys:String>
+
+    <sys:String x:Key="ai_err_no_key_groq">Aucune clé API configurée. Allez dans les paramètres pour ajouter votre clé API Groq gratuite (console.groq.com).</sys:String>
+    <sys:String x:Key="ai_err_no_key_gemini">Aucune clé API configurée. Allez dans les paramètres pour ajouter votre clé API Google Gemini gratuite (aistudio.google.com).</sys:String>
+    <sys:String x:Key="ai_err_no_key_openrouter">Aucune clé API configurée. Allez dans les paramètres pour ajouter votre clé API OpenRouter gratuite (openrouter.ai).</sys:String>
+    <sys:String x:Key="ai_err_no_key_mistral">Aucune clé API configurée. Allez dans les paramètres pour ajouter votre clé API Mistral (console.mistral.ai).</sys:String>
+    <sys:String x:Key="ai_err_no_key_cohere">Aucune clé API configurée. Allez dans les paramètres pour ajouter votre clé API d'essai Cohere gratuite (dashboard.cohere.com).</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

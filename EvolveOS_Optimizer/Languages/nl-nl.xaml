@@ -345,13 +345,13 @@
     <sys:String x:Key="Settings_Performance_Restart_Confirm">Nu herstarten</sys:String>
     <sys:String x:Key="Settings_Performance_Restart_Cancel">Later</sys:String>
 
-    <sys:String x:Key="Settings_AI_SectionTitle">AI-integratie</sys:String>
+    <sys:String x:Key="Settings_AI_SectionTitle">AI Integratie</sys:String>
     <sys:String x:Key="Settings_AI_Title">AI-uitleg</sys:String>
     <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart1">Klik op de (···) knop bij een item in de Systeem reiniger →</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart1">Klik op de (···) knop bij een item in de Systeemreiniger →</sys:String>
     <sys:String x:Key="Settings_AI_DescPart2">✨ Uitleggen.</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart3">Aangedreven door Groq en Google Gemini. Er wordt niets verzonden zonder uw expliciete actie. Vereist uw eigen API-sleutel.</sys:String>
-    <sys:String x:Key="Settings_AI_ProviderLabel">Actieve AI-provider</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart3">Mogelijk gemaakt door AI. Er wordt niets verzonden zonder uw expliciete actie. Vereist uw eigen API-sleutel.</sys:String>
+    <sys:String x:Key="Settings_AI_ProviderLabel">Actieve AI provider</sys:String>
     <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>
     <sys:String x:Key="Settings_AI_GeminiPlaceholder">AIza...</sys:String>
     <sys:String x:Key="Settings_AI_SaveBtn">Opslaan</sys:String>
@@ -365,6 +365,20 @@
     <sys:String x:Key="Settings_AI_Delete_Confirm">Verwijderen</sys:String>
     <sys:String x:Key="Settings_AI_Delete_SuccessGroq">Groq API-sleutel verwijderd.</sys:String>
     <sys:String x:Key="Settings_AI_Delete_SuccessGemini">Google Gemini API-sleutel verwijderd.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessOpenRouter">OpenRouter API-sleutel verwijderd.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessCohere">Cohere API-sleutel verwijderd.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessMistral">Mistral API-sleutel verwijderd.</sys:String>
+
+    <sys:String x:Key="Settings_AI_OpenRouterPlaceholder">sk-or-v1-...</sys:String>
+    <sys:String x:Key="Settings_AI_CoherePlaceholder">Plak uw Trial Key hier</sys:String>
+    <sys:String x:Key="Settings_AI_MistralPlaceholder">Voer uw Mistral API-sleutel in</sys:String>
+
+    <sys:String x:Key="Settings_AI_TestingConnection">Verbinding testen...</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessGroq">Groq API-sleutel opgeslagen.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessGemini">Google Gemini API-sleutel opgeslagen.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessOpenRouter">OpenRouter API-sleutel opgeslagen.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessCohere">Cohere API-sleutel opgeslagen.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessMistral">Mistral API-sleutel opgeslagen.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
@@ -3447,5 +3461,25 @@
     <sys:String x:Key="ai_explainer_btn_text">Uitleggen met AI</sys:String>
     <sys:String x:Key="ai_explainer_test_prompt">Beschrijf EvolveOS Optimizer in 2 korte zinnen op basis van de volgende feiten: Het is een moderne, op zichzelf staande Windows-beheersuite gebouwd met WinUI 3. Het combineert agressieve systeemoptimalisatie, diepgaande privacycontroles en beveiligingstools van militair niveau in één enkele lichtgewicht executable. Vermeld GEEN AI, machine learning of enige AI-gerelateerde functies. Houd het feitelijk.</sys:String>
     <sys:String x:Key="no_internet_connection_notif_key">Geen internetverbinding gedetecteerd. Controleer je netwerk en probeer het opnieuw.</sys:String>
+
+    <sys:String x:Key="ai_explainer_system_prompt">Je bent een Windows PC-expert. Leg Winapp2-schoonmaakitems beknopt en nauwkeurig uit op basis van de opgegeven bestandspaden en registersleutels.</sys:String>
+
+    <sys:String x:Key="ai_explainer_prompt_start">Leg uit wat het Windows schoonmaakitem "{0}" verwijdert en of het veilig is om te verwijderen.</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_warning">Waarschuwing uit de database:</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_files">Het verwijdert bestanden van deze locaties:</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_registry">Het verwijdert deze registersleutels:</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_end">Antwoord in 2-3 zinnen. Wees specifiek en praktisch.</sys:String>
+
+    <sys:String x:Key="ai_err_invalid_provider">Geselecteerde AI provider wordt niet ondersteund.</sys:String>
+    <sys:String x:Key="ai_err_prefix">API fout</sys:String>
+    <sys:String x:Key="ai_err_network">Kan API niet bereiken</sys:String>
+    <sys:String x:Key="ai_err_unknown">Er is een onbekende fout opgetreden.</sys:String>
+    <sys:String x:Key="ai_err_no_response">Geen geldig antwoord ontvangen van de AI-provider.</sys:String>
+
+    <sys:String x:Key="ai_err_no_key_groq">Geen API-sleutel geconfigureerd. Ga naar Instellingen om uw gratis Groq API-sleutel toe te voegen (console.groq.com).</sys:String>
+    <sys:String x:Key="ai_err_no_key_gemini">Geen API-sleutel geconfigureerd. Ga naar Instellingen om uw gratis Google Gemini API-sleutel toe te voegen (aistudio.google.com).</sys:String>
+    <sys:String x:Key="ai_err_no_key_openrouter">Geen API-sleutel geconfigureerd. Ga naar Instellingen om uw gratis OpenRouter API-sleutel toe te voegen (openrouter.ai).</sys:String>
+    <sys:String x:Key="ai_err_no_key_mistral">Geen API-sleutel geconfigureerd. Ga naar Instellingen om uw Mistral API-sleutel toe te voegen (console.mistral.ai).</sys:String>
+    <sys:String x:Key="ai_err_no_key_cohere">Geen API-sleutel geconfigureerd. Ga naar Instellingen om uw gratis Cohere Trial API-sleutel toe te voegen (dashboard.cohere.com).</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

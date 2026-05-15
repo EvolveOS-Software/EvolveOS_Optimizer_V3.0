@@ -356,7 +356,7 @@
     <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
     <sys:String x:Key="Settings_AI_DescPart1">Click the (···) button on any entry in the System Cleaner →</sys:String>
     <sys:String x:Key="Settings_AI_DescPart2">✨ Explain.</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart3">Powered by Groq and Google Gemini. Nothing is sent without your explicit action. Requires your own API key.</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart3">Powered by AI. Nothing is sent without your explicit action. Requires your own API key.</sys:String>
     <sys:String x:Key="Settings_AI_ProviderLabel">Active AI Provider</sys:String>
     <sys:String x:Key="Settings_AI_GroqPlaceholder">gsk_...</sys:String>
     <sys:String x:Key="Settings_AI_GeminiPlaceholder">AIza...</sys:String>
@@ -371,6 +371,20 @@
     <sys:String x:Key="Settings_AI_Delete_Confirm">Delete</sys:String>
     <sys:String x:Key="Settings_AI_Delete_SuccessGroq">Groq API key removed.</sys:String>
     <sys:String x:Key="Settings_AI_Delete_SuccessGemini">Google Gemini API key removed.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessOpenRouter">OpenRouter API key removed.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessCohere">Cohere API key removed.</sys:String>
+    <sys:String x:Key="Settings_AI_Delete_SuccessMistral">Mistral API key removed.</sys:String>
+
+    <sys:String x:Key="Settings_AI_OpenRouterPlaceholder">sk-or-v1-...</sys:String>
+    <sys:String x:Key="Settings_AI_CoherePlaceholder">Paste your Trial Key here</sys:String>
+    <sys:String x:Key="Settings_AI_MistralPlaceholder">Enter your Mistral API key</sys:String>
+
+    <sys:String x:Key="Settings_AI_TestingConnection">Testing connection...</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessGroq">Groq API key saved.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessGemini">Google Gemini API key saved.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessOpenRouter">OpenRouter API key saved.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessCohere">Cohere API key saved.</sys:String>
+    <sys:String x:Key="Settings_AI_Save_SuccessMistral">Mistral API key saved.</sys:String>
     <!-- endregion Settings -->
 
     <!-- region HomePage -->
@@ -3465,5 +3479,25 @@
     <sys:String x:Key="ai_explainer_btn_text">Explain with AI</sys:String>
     <sys:String x:Key="ai_explainer_test_prompt">Based on the following facts, describe EvolveOS Optimizer in 2 short sentences: It is a modern, self-contained Windows management suite built with WinUI 3. It combines aggressive system optimization, deep privacy controls, and military-grade security tools into a single lightweight executable. Do NOT mention AI, machine learning or any AI-related features. Keep it factual.</sys:String>
     <sys:String x:Key="no_internet_connection_notif_key">No internet connection detected. Please check your network and try again.</sys:String>
+
+    <sys:String x:Key="ai_explainer_system_prompt">You are a Windows PC expert. Explain Winapp2 cleaner entries concisely and accurately based on the file paths and registry keys provided.</sys:String>
+
+    <sys:String x:Key="ai_explainer_prompt_start">Explain what the Windows cleaner entry "{0}" cleans and whether it is safe to delete.</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_warning">Warning from the database:</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_files">It deletes files from these locations:</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_registry">It removes these registry keys:</sys:String>
+    <sys:String x:Key="ai_explainer_prompt_end">Answer in 2-3 sentences. Be specific and practical.</sys:String>
+
+    <sys:String x:Key="ai_err_invalid_provider">Selected AI provider is not supported.</sys:String>
+    <sys:String x:Key="ai_err_prefix">API Error</sys:String>
+    <sys:String x:Key="ai_err_network">Could not reach API</sys:String>
+    <sys:String x:Key="ai_err_unknown">Unknown error occurred.</sys:String>
+    <sys:String x:Key="ai_err_no_response">No valid response received from the AI provider.</sys:String>
+
+    <sys:String x:Key="ai_err_no_key_groq">No API key configured. Go to Settings to add your free Groq API key (console.groq.com).</sys:String>
+    <sys:String x:Key="ai_err_no_key_gemini">No API key configured. Go to Settings to add your free Google Gemini API key (aistudio.google.com).</sys:String>
+    <sys:String x:Key="ai_err_no_key_openrouter">No API key configured. Go to Settings to add your free OpenRouter API key (openrouter.ai).</sys:String>
+    <sys:String x:Key="ai_err_no_key_mistral">No API key configured. Go to Settings to add your Mistral API key (console.mistral.ai).</sys:String>
+    <sys:String x:Key="ai_err_no_key_cohere">No API key configured. Go to Settings to add your free Cohere Trial API key (dashboard.cohere.com).</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>
