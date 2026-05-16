@@ -80,6 +80,7 @@
         <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
         <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
         <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+        <PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.2.250604" />
         <PackageReference Include="DnsClient" Version="1.8.0" />
         <PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
@@ -121,6 +122,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Update="Assets\thinking_nodes.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
       <Content Update="Assets\Winapp2.ini">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>

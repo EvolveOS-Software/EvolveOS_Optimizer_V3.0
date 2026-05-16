@@ -135,7 +135,6 @@ namespace EvolveOS_Optimizer
 
             RefreshAiStatus();
 
-            // Listen for the user entering an API key in the Settings page
             LocalMachineSettingsEngine.SettingChanged += OnSettingChanged;
 
             LocalizationService.Instance.PropertyChanged += (s, e) =>

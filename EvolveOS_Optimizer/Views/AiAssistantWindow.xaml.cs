@@ -1,6 +1,7 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System.IO;
 using System.Runtime.InteropServices;
 using EvolveOS_Optimizer.Utilities.Animation;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -14,8 +15,11 @@ namespace EvolveOS_Optimizer.Views
 {
     public sealed partial class AiAssistantWindow : Window
     {
+        #region Private Fields
         private AppWindow _appWindow;
+        #endregion
 
+        #region Constructor
         public AiAssistantWindow()
         {
             this.InitializeComponent();
@@ -25,6 +29,8 @@ namespace EvolveOS_Optimizer.Views
             _appWindow = AppWindow.GetFromWindowId(windowId);
 
             this.ExtendsContentIntoTitleBar = true;
+
+            LoadLottieHardWay();
 
             if (AppWindowTitleBar.IsCustomizationSupported())
             {
@@ -63,7 +69,9 @@ namespace EvolveOS_Optimizer.Views
 
             UserInputBox.Loaded += (s, e) => UserInputBox.Focus(FocusState.Programmatic);
         }
+        #endregion
 
+        #region Window Management Helpers
         private void CenterWindow(IntPtr hwnd, int width, int height)
         {
             var displayArea = DisplayArea.GetFromWindowId(_appWindow.Id, DisplayAreaFallback.Primary);
@@ -77,12 +85,39 @@ namespace EvolveOS_Optimizer.Views
 
             _appWindow.MoveAndResize(new RectInt32(x, y, scaledWidth, scaledHeight));
         }
+        #endregion
 
-        private void AiAssistantWindow_Closed(object sender, WindowEventArgs args)
+        #region Asset & Animation Loading
+        private async void LoadLottieHardWay()
         {
-            UIHelper.SetOverlay(false);
-        }
+            try
+            {
+                string baseDir = AppContext.BaseDirectory;
+                string jsonPath = Path.Combine(baseDir, "Assets", "thinking_nodes.json");
 
+                if (File.Exists(jsonPath))
+                {
+                    using var fileStream = File.OpenRead(jsonPath);
+                    using var randomAccessStream = fileStream.AsRandomAccessStream();
+
+                    await LottieSource.SetSourceAsync(randomAccessStream);
+
+                    DispatcherQueue.TryEnqueue(() =>
+                    {
+                        LottiePlayer.Source = LottieSource;
+                        Debug.WriteLine("Lottie: Source linked and ready (Idle).");
+                    });
+                }
+                else
+                {
+                    Debug.WriteLine("Lottie: File missing at " + jsonPath);
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine("Lottie Load Error: " + ex.Message); }
+        }
+        #endregion
+
+        #region AI Logic & Processing
         private async void ProcessUserQuestion()
         {
             string question = UserInputBox.Text.Trim();
@@ -92,19 +127,30 @@ namespace EvolveOS_Optimizer.Views
             SendButton.IsEnabled = false;
             UserInputBox.Text = "";
 
-            string thinkingText = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking...";
-            TypewriterAnimation.Create(thinkingText, AiOutputTextBlock, TimeSpan.FromSeconds(0.5));
+            AiOutputTextBlock.Text = "";
+            LottiePlayer.Visibility = Visibility.Visible;
+
+            _ = LottiePlayer.PlayAsync(0, 1, true);
 
             try
             {
                 string response = await AiExplainerService.ExplainGenericItemAsync(
                     itemName: question,
-                    itemCategory: "General System Inquiry",
-                    contextDetails: "The user is asking a direct question. Answer it directly and conversationally."
+                    itemCategory: "General Assistant Query",
+                    contextDetails: "Direct assistant interaction."
                 );
+
+                LottiePlayer.Stop();
+                LottiePlayer.Visibility = Visibility.Collapsed;
 
                 double seconds = Math.Max(1.0, response.Length / 40.0);
                 TypewriterAnimation.Create(response, AiOutputTextBlock, TimeSpan.FromSeconds(seconds));
+            }
+            catch (Exception ex)
+            {
+                LottiePlayer.Stop();
+                LottiePlayer.Visibility = Visibility.Collapsed;
+                AiOutputTextBlock.Text = "Error: " + ex.Message;
             }
             finally
             {
@@ -112,6 +158,13 @@ namespace EvolveOS_Optimizer.Views
                 SendButton.IsEnabled = true;
                 UserInputBox.Focus(FocusState.Programmatic);
             }
+        }
+        #endregion
+
+        #region Event Handlers
+        private void AiAssistantWindow_Closed(object sender, WindowEventArgs args)
+        {
+            UIHelper.SetOverlay(false);
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
@@ -127,6 +180,7 @@ namespace EvolveOS_Optimizer.Views
                 e.Handled = true;
             }
         }
+        #endregion
 
         #region Win32 Window Ownership Logic
 

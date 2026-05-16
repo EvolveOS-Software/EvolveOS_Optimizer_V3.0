@@ -235,7 +235,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             try
             {
-                string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
+                string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
                 var fullPrompt = SystemPrompt + "\n\n" + prompt;
                 var requestBody = new { contents = new[] { new { parts = new[] { new { text = fullPrompt } } } } };
                 var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
@@ -266,7 +266,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             try
             {
-                string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
+                string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
                 var requestBody = new { contents = new[] { new { parts = new[] { new { text = TestPrompt } } } } };
                 var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 

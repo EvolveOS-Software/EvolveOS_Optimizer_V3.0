@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 <#
-    string displayVersion = "Build: 1.1.2"; 
+    string displayVersion = "Build: 1.1.3"; 
     string cleanVersion = displayVersion.Replace("Build:", "").Trim(); 
     string[] versionParts = cleanVersion.Split('.');
     string majorMinor = $"{versionParts[0]}.{versionParts[1]}";

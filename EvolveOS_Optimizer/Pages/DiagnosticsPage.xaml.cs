@@ -127,7 +127,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    //this.Bindings.Update();
+                    this.Bindings.Update();
 
                     if (!ViewModel.IsScanning && ViewModel.DetectedHardwareIssues.Count > 0)
                     {
@@ -401,8 +401,8 @@ namespace EvolveOS_Optimizer.Pages
         {
             base.OnNavigatedTo(e);
 
-            //this.Bindings.Initialize();
-            //this.Bindings.Update();
+            this.Bindings.Initialize();
+            this.Bindings.Update();
 
             _isCurrentPageActive = true;
 
@@ -422,7 +422,7 @@ namespace EvolveOS_Optimizer.Pages
             HeartbeatStoryboard?.Stop();
             RadarSpinStoryboard?.Stop();
 
-            //this.Bindings.StopTracking();
+            this.Bindings.StopTracking();
 
             base.OnNavigatedFrom(e);
         }
@@ -1598,7 +1598,7 @@ namespace EvolveOS_Optimizer.Pages
 
                     this.DataContext = null;
                     this.Content = null;
-                    //this.Bindings?.StopTracking();
+                    this.Bindings?.StopTracking();
 
                     _isInitialized = false;
 
