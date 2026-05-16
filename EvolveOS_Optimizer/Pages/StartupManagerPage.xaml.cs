@@ -8,6 +8,8 @@ using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Services;
+using static EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -67,6 +69,8 @@ namespace EvolveOS_Optimizer.Pages
             {
                 await LoadDataAsync();
             }
+
+            AiExplainerService.PreWarmConnection();
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
@@ -205,6 +209,53 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        #endregion
+
+        #region AI Explainer
+        public bool IsAiEnabled()
+        {
+            var activeProvider = LocalMachineSettingsEngine.ActiveAiProvider;
+            return activeProvider switch
+            {
+                AiProvider.Groq => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey),
+                AiProvider.Gemini => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey),
+                AiProvider.OpenRouter => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.OpenRouterApiKey),
+                AiProvider.Cohere => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.CohereApiKey),
+                AiProvider.Mistral => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.MistralApiKey),
+                _ => false
+            };
+        }
+
+        private async void ExplainStartupApp_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is StartupApp app)
+            {
+                var flyout = button.Flyout as Flyout;
+                if (flyout == null) return;
+
+                var stackPanel = flyout.Content as StackPanel;
+                var textBlock = stackPanel?.Children.OfType<TextBlock>().FirstOrDefault(x => x.Name == "AiExplanationText");
+
+                if (textBlock == null) return;
+
+                textBlock.Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking...";
+
+                string context = $"Name: {app.DisplayName}\n" +
+                                 $"Publisher: {app.Publisher}\n" +
+                                 $"Path: {app.Path}\n" +
+                                 $"Source/Registry: {app.SourceLocation}";
+
+                string category = ResourceString.GetString("startup_manager_page_category_name") ?? "Startup Application";
+
+                string explanation = await AiExplainerService.ExplainGenericItemAsync(
+                    itemName: app.DisplayName,
+                    itemCategory: category,
+                    contextDetails: context
+                );
+
+                textBlock.Text = explanation;
+            }
+        }
         #endregion
 
         #region Standard Actions

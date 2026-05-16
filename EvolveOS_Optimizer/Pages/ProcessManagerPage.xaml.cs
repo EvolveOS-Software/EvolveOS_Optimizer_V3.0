@@ -13,6 +13,8 @@ using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Services;
+using static EvolveOS_Optimizer.Core.Enums;
 using static EvolveOS_Optimizer.Core.Structs.Windows;
 
 namespace EvolveOS_Optimizer.Pages;
@@ -92,6 +94,8 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
         {
             await RefreshProcessesAsync();
         }
+
+        AiExplainerService.PreWarmConnection();
 
         StartAutoRefresh();
     }
@@ -456,6 +460,52 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
                 await RefreshProcessesAsync();
             });
         });
+    }
+
+    private async void ExplainProcess_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is ProcessManagerModel vm)
+        {
+            var flyout = button.Flyout as Flyout;
+            if (flyout == null) return;
+
+            var stackPanel = flyout.Content as StackPanel;
+            var textBlock = stackPanel?.Children.OfType<TextBlock>().FirstOrDefault(x => x.Name == "AiExplanationText");
+
+            if (textBlock == null) return;
+
+            textBlock.Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking...";
+
+            string context = $"PID: {vm.Id}\n" +
+                             $"Memory: {vm.MemoryDisplay}\n" +
+                             $"Threads: {vm.ThreadCount}\n" +
+                             $"Priority: {vm.Priority}";
+
+            string category = ResourceString.GetString("process_manager_page_category_name") ?? "Running Process";
+
+            string explanation = await AiExplainerService.ExplainGenericItemAsync(
+                itemName: vm.Name,
+                itemCategory: category,
+                contextDetails: context
+            );
+
+            textBlock.Text = explanation;
+        }
+    }
+
+    public bool IsAiEnabled()
+    {
+        var activeProvider = LocalMachineSettingsEngine.ActiveAiProvider;
+
+        return activeProvider switch
+        {
+            AiProvider.Groq => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey),
+            AiProvider.Gemini => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey),
+            AiProvider.OpenRouter => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.OpenRouterApiKey),
+            AiProvider.Cohere => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.CohereApiKey),
+            AiProvider.Mistral => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.MistralApiKey),
+            _ => false
+        };
     }
     #endregion
 

@@ -3482,5 +3482,14 @@
     <sys:String x:Key="ai_err_no_key_openrouter">Geen API-sleutel geconfigureerd. Ga naar Instellingen om uw gratis OpenRouter API-sleutel toe te voegen (openrouter.ai).</sys:String>
     <sys:String x:Key="ai_err_no_key_mistral">Geen API-sleutel geconfigureerd. Ga naar Instellingen om uw Mistral API-sleutel toe te voegen (console.mistral.ai).</sys:String>
     <sys:String x:Key="ai_err_no_key_cohere">Geen API-sleutel geconfigureerd. Ga naar Instellingen om uw gratis Cohere Trial API-sleutel toe te voegen (dashboard.cohere.com).</sys:String>
+
+    <sys:String x:Key="service_manager_page_ai_tooltip">Leg deze service uit met AI</sys:String>
+    <sys:String x:Key="service_manager_page_category_name">Windows-service</sys:String>
+    <sys:String x:Key="process_manager_page_ai_tooltip">Leg dit proces uit met AI</sys:String>
+    <sys:String x:Key="process_manager_page_category_name">Actief proces</sys:String>
+    <sys:String x:Key="GroupPolicyPage_AiTooltip">Leg dit beleid uit met AI</sys:String>
+    <sys:String x:Key="group_policy_page_category_name">Groepsbeleid</sys:String>
+    <sys:String x:Key="startup_manager_page_ai_tooltip">Leg deze opstart-app uit met AI</sys:String>
+    <sys:String x:Key="startup_manager_page_category_name">Opstarttoepassing</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

@@ -1,5 +1,6 @@
 <Page
     x:Class="EvolveOS_Optimizer.Pages.ProcessManagerPage"
+    x:Name="RootPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -336,19 +337,36 @@
                                                FontSize="12"
                                                Opacity="0.8"/>
 
-                                    <Button Grid.Column="5"
-                                            Tag="{Binding Id}"
-                                            Click="EndTask_Click"
-                                            FontFamily="{ThemeResource Jura}"
-                                            ToolTipService.ToolTip="{helpers:ResourceString Key=process_manager_page_end_task_tooltip}"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Padding="12,6">
-                                        <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <FontIcon Glyph="&#xE711;" FontSize="12"/>
-                                            <TextBlock helpers:Loc.Key="process_manager_page_end_task" FontFamily="{ThemeResource Jura}" FontSize="12"/>
-                                        </StackPanel>
-                                    </Button>
+                                    <StackPanel Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                        <Button Tag="{Binding}"
+                                                Click="ExplainProcess_Click"
+                                                ToolTipService.ToolTip="{helpers:ResourceString Key=process_manager_page_ai_tooltip}"
+                                                Padding="8,6"
+                                                IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled}"
+                                                Background="Transparent"
+                                                BorderThickness="0">
+                                            <Button.Flyout>
+                                                <Flyout Placement="LeftEdgeAlignedTop">
+                                                    <StackPanel Width="300" Spacing="8">
+                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                        <TextBlock x:Name="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                    </StackPanel>
+                                                </Flyout>
+                                            </Button.Flyout>
+                                            <FontIcon Glyph="&#xED15;" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                        </Button>
+
+                                        <Button Tag="{Binding Id}"
+                                                Click="EndTask_Click"
+                                                FontFamily="{ThemeResource Jura}"
+                                                ToolTipService.ToolTip="{helpers:ResourceString Key=process_manager_page_end_task_tooltip}"
+                                                Padding="12,6">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <FontIcon Glyph="&#xE711;" FontSize="12"/>
+                                                <TextBlock helpers:Loc.Key="process_manager_page_end_task" FontFamily="{ThemeResource Jura}" FontSize="12"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
                                 </Grid>
                             </Border>
                         </Grid>

@@ -3482,5 +3482,14 @@
     <sys:String x:Key="ai_err_no_key_openrouter">Aucune clé API configurée. Allez dans les paramètres pour ajouter votre clé API OpenRouter gratuite (openrouter.ai).</sys:String>
     <sys:String x:Key="ai_err_no_key_mistral">Aucune clé API configurée. Allez dans les paramètres pour ajouter votre clé API Mistral (console.mistral.ai).</sys:String>
     <sys:String x:Key="ai_err_no_key_cohere">Aucune clé API configurée. Allez dans les paramètres pour ajouter votre clé API d'essai Cohere gratuite (dashboard.cohere.com).</sys:String>
+
+    <sys:String x:Key="service_manager_page_ai_tooltip">Expliquer ce service avec l'IA</sys:String>
+    <sys:String x:Key="service_manager_page_category_name">Service Windows</sys:String>
+    <sys:String x:Key="process_manager_page_ai_tooltip">Expliquer ce processus avec l'IA</sys:String>
+    <sys:String x:Key="process_manager_page_category_name">Processus en cours</sys:String>
+    <sys:String x:Key="GroupPolicyPage_AiTooltip">Expliquer cette stratégie avec l'IA</sys:String>
+    <sys:String x:Key="group_policy_page_category_name">Stratégie de groupe</sys:String>
+    <sys:String x:Key="startup_manager_page_ai_tooltip">Expliquer cette application de démarrage avec l'IA</sys:String>
+    <sys:String x:Key="startup_manager_page_category_name">Application de démarrage</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

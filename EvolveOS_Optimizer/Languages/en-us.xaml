@@ -3500,5 +3500,14 @@
     <sys:String x:Key="ai_err_no_key_openrouter">No API key configured. Go to Settings to add your free OpenRouter API key (openrouter.ai).</sys:String>
     <sys:String x:Key="ai_err_no_key_mistral">No API key configured. Go to Settings to add your Mistral API key (console.mistral.ai).</sys:String>
     <sys:String x:Key="ai_err_no_key_cohere">No API key configured. Go to Settings to add your free Cohere Trial API key (dashboard.cohere.com).</sys:String>
+
+    <sys:String x:Key="service_manager_page_ai_tooltip">Explain this service with AI</sys:String>
+    <sys:String x:Key="service_manager_page_category_name">Windows Service</sys:String>
+    <sys:String x:Key="process_manager_page_ai_tooltip">Explain this process with AI</sys:String>
+    <sys:String x:Key="process_manager_page_category_name">Running Process</sys:String>
+    <sys:String x:Key="GroupPolicyPage_AiTooltip">Explain this policy with AI</sys:String>
+    <sys:String x:Key="group_policy_page_category_name">Group Policy</sys:String>
+    <sys:String x:Key="startup_manager_page_ai_tooltip">Explain this startup app with AI</sys:String>
+    <sys:String x:Key="startup_manager_page_category_name">Startup Application</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

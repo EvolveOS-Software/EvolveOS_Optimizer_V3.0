@@ -3462,5 +3462,14 @@
     <sys:String x:Key="ai_err_no_key_openrouter">Kein API-Schlüssel konfiguriert. Gehen Sie zu den Einstellungen, um Ihren kostenlosen OpenRouter API-Schlüssel hinzuzufügen (openrouter.ai).</sys:String>
     <sys:String x:Key="ai_err_no_key_mistral">Kein API-Schlüssel konfiguriert. Gehen Sie zu den Einstellungen, um Ihren Mistral API-Schlüssel hinzuzufügen (console.mistral.ai).</sys:String>
     <sys:String x:Key="ai_err_no_key_cohere">Kein API-Schlüssel konfiguriert. Gehen Sie zu den Einstellungen, um Ihren kostenlosen Cohere Trial API-Schlüssel hinzuzufügen (dashboard.cohere.com).</sys:String>
+
+    <sys:String x:Key="service_manager_page_ai_tooltip">Diesen Dienst mit KI erklären</sys:String>
+    <sys:String x:Key="service_manager_page_category_name">Windows-Dienst</sys:String>
+    <sys:String x:Key="process_manager_page_ai_tooltip">Diesen Prozess mit KI erklären</sys:String>
+    <sys:String x:Key="process_manager_page_category_name">Laufender Prozess</sys:String>
+    <sys:String x:Key="GroupPolicyPage_AiTooltip">Diese Richtlinie mit KI erklären</sys:String>
+    <sys:String x:Key="group_policy_page_category_name">Gruppenrichtlinie</sys:String>
+    <sys:String x:Key="startup_manager_page_ai_tooltip">Diese Autostart-App mit KI erklären</sys:String>
+    <sys:String x:Key="startup_manager_page_category_name">Autostart-Anwendung</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>
