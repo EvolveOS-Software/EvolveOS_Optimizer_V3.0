@@ -154,6 +154,9 @@ namespace EvolveOS_Optimizer
                 };
             }
 
+            Visibility trayItemsVisibility = DiagnosticsVM.ShowHardwarePanelInTray ? Visibility.Visible : Visibility.Collapsed;
+            MenuDetachMonitor.Visibility = trayItemsVisibility;
+
             DiagnosticsVM.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(DiagnosticsVM.IsBusy))
@@ -163,6 +166,20 @@ namespace EvolveOS_Optimizer
                         if (GlobalOptimizationOverlay != null)
                         {
                             AnimateOptimizationOverlay(DiagnosticsVM.IsBusy);
+                        }
+                    });
+                }
+
+                if (e.PropertyName == nameof(DiagnosticsVM.ShowHardwarePanelInTray))
+                {
+                    this.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        Visibility newVisibility = DiagnosticsVM.ShowHardwarePanelInTray ? Visibility.Visible : Visibility.Collapsed;
+                        MenuDetachMonitor.Visibility = newVisibility;
+
+                        if (!DiagnosticsVM.ShowHardwarePanelInTray && _taskbarMonitor != null)
+                        {
+                            _taskbarMonitor.Close();
                         }
                     });
                 }
@@ -470,14 +487,11 @@ namespace EvolveOS_Optimizer
         {
             if (_taskbarMonitor == null)
             {
-                DiagnosticsVM.ShowHardwarePanelInTray = false;
-
                 _taskbarMonitor = new Views.TaskbarMonitorWindow();
 
                 _taskbarMonitor.Closed += (s, args) =>
                 {
                     _taskbarMonitor = null;
-                    DiagnosticsVM.ShowHardwarePanelInTray = true;
 
                     MenuDetachMonitor.Text = ResourceString.GetString("systray_menu_detach") ?? "Detach Monitor to Taskbar";
                 };
