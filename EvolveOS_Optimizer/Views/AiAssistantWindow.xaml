@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:EvolveOS_Optimizer.Utilities.Controls"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
     mc:Ignorable="d">
 
     <Grid Background="Transparent" Padding="1">
@@ -29,14 +30,26 @@
                 </Grid>
 
                 <ScrollViewer Grid.Row="1" Margin="20,10,20,10" VerticalScrollBarVisibility="Auto">
-                    <TextBlock x:Name="AiOutputTextBlock"
-                               Text="{helpers:ResourceString Key=AIAssistant_Greeting}"
-                               FontFamily="{ThemeResource Jura}"
-                               TextWrapping="Wrap"
-                               FontSize="14"
-                               LineHeight="22"
-                               Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                               Opacity="0.9"/>
+                    <StackPanel x:Name="OutputContainer" VerticalAlignment="Center">
+
+                        <AnimatedVisualPlayer x:Name="LottiePlayer"
+                              AutoPlay="False"
+                              Visibility="Collapsed"
+                              Height="150" Width="150"
+                              HorizontalAlignment="Center">
+                            <lottie:LottieVisualSource x:Name="LottieSource"/>
+                        </AnimatedVisualPlayer>
+
+                        <TextBlock x:Name="AiOutputTextBlock"
+                                   Text="{helpers:ResourceString Key=AIAssistant_Greeting}"
+                                   FontFamily="{ThemeResource Jura}"
+                                   TextWrapping="Wrap"
+                                   FontSize="14"
+                                   LineHeight="22"
+                                   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                   Opacity="0.9"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
                 </ScrollViewer>
 
                 <Border Grid.Row="2" Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="0,0,12,12" Padding="20,15">

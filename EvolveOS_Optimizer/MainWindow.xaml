@@ -343,6 +343,7 @@
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     Padding="10,6"
                     CornerRadius="6"
+                    IsTabStop="False"
                     Click="BtnAiAssistant_Click"
                     ToolTipService.ToolTip="{x:Bind GetText('AIAssistant_Tooltip'), Mode=OneWay}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
