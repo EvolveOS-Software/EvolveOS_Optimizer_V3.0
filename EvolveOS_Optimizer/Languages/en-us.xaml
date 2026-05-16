@@ -3509,5 +3509,15 @@
     <sys:String x:Key="group_policy_page_category_name">Group Policy</sys:String>
     <sys:String x:Key="startup_manager_page_ai_tooltip">Explain this startup app with AI</sys:String>
     <sys:String x:Key="startup_manager_page_category_name">Startup Application</sys:String>
+    <sys:String x:Key="diag_tooltip_explain_event">Explain this event with AI</sys:String>
+    <sys:String x:Key="diag_page_event_category_name">Windows System Event</sys:String>
+
+    <sys:String x:Key="diag_category_memory">Windows Memory Architecture</sys:String>
+    <sys:String x:Key="diag_category_repair">Windows Command Line Utility</sys:String>
+    <sys:String x:Key="diag_category_dns">DNS &amp; Networking Strategy</sys:String>
+
+    <sys:String x:Key="diag_item_dism">DISM (Deployment Image Servicing and Management) Repair</sys:String>
+    <sys:String x:Key="diag_item_sfc">SFC (System File Checker) Scannow</sys:String>
+    <sys:String x:Key="diag_item_chkdsk">CHKDSK (Check Disk) File System Repair</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

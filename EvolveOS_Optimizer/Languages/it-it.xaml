@@ -3489,5 +3489,15 @@
     <sys:String x:Key="group_policy_page_category_name">Criterio di gruppo</sys:String>
     <sys:String x:Key="startup_manager_page_ai_tooltip">Spiega questa app di avvio con l'IA</sys:String>
     <sys:String x:Key="startup_manager_page_category_name">Applicazione di avvio</sys:String>
+    <sys:String x:Key="diag_tooltip_explain_event">Spiega questo evento con l'IA</sys:String>
+    <sys:String x:Key="diag_page_event_category_name">Evento di sistema Windows</sys:String>
+
+    <sys:String x:Key="diag_category_memory">Architettura della memoria di Windows</sys:String>
+    <sys:String x:Key="diag_category_repair">Utilità della riga di comando di Windows</sys:String>
+    <sys:String x:Key="diag_category_dns">Strategia DNS e di Rete</sys:String>
+
+    <sys:String x:Key="diag_item_dism">Riparazione DISM (Gestione e manutenzione immagini di distribuzione)</sys:String>
+    <sys:String x:Key="diag_item_sfc">SFC (Controllo file di sistema) Scannow</sys:String>
+    <sys:String x:Key="diag_item_chkdsk">Riparazione del file system CHKDSK (Controllo disco)</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

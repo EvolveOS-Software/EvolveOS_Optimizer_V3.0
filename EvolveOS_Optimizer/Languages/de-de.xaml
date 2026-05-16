@@ -3471,5 +3471,15 @@
     <sys:String x:Key="group_policy_page_category_name">Gruppenrichtlinie</sys:String>
     <sys:String x:Key="startup_manager_page_ai_tooltip">Diese Autostart-App mit KI erklären</sys:String>
     <sys:String x:Key="startup_manager_page_category_name">Autostart-Anwendung</sys:String>
+    <sys:String x:Key="diag_tooltip_explain_event">Dieses Ereignis mit KI erklären</sys:String>
+    <sys:String x:Key="diag_page_event_category_name">Windows-Systemereignis</sys:String>
+
+    <sys:String x:Key="diag_category_memory">Windows Speicherarchitektur</sys:String>
+    <sys:String x:Key="diag_category_repair">Windows Befehlszeilen Dienstprogramm</sys:String>
+    <sys:String x:Key="diag_category_dns">DNS- &amp; Netzwerkstrategie</sys:String>
+
+    <sys:String x:Key="diag_item_dism">DISM (Deployment Image Servicing and Management) Reparatur</sys:String>
+    <sys:String x:Key="diag_item_sfc">SFC (System File Checker) Scannow</sys:String>
+    <sys:String x:Key="diag_item_chkdsk">CHKDSK (Check Disk) Dateisystem-Reparatur</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

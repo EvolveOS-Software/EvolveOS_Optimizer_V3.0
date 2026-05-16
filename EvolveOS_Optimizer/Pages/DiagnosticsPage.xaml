@@ -1,5 +1,6 @@
 <Page
     x:Class="EvolveOS_Optimizer.Pages.DiagnosticsPage"
+    x:Name="RootPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -687,7 +688,25 @@
                                                     <ItemsControl ItemsSource="{x:Bind ViewModel.MemoryAreaItems, Mode=OneWay}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding Value, Mode=TwoWay}" FontFamily="{StaticResource Jura}" FontSize="13" Margin="0,2"/>
+                                                                <StackPanel Orientation="Horizontal" Margin="0,2">
+                                                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding Value, Mode=TwoWay}" FontFamily="{StaticResource Jura}" FontSize="13" VerticalAlignment="Center"/>
+
+                                                                    <Button Tag="{Binding Name}"
+                                                                            Click="ExplainMemoryArea_Click"
+                                                                            IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled}"
+                                                                            ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_explain_event}"
+                                                                            Background="Transparent" BorderThickness="0" Padding="4" VerticalAlignment="Center" Margin="4,0,0,0">
+                                                                        <Button.Flyout>
+                                                                            <Flyout Placement="RightEdgeAlignedTop">
+                                                                                <StackPanel Width="300" Spacing="8">
+                                                                                    <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                    <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                                                </StackPanel>
+                                                                            </Flyout>
+                                                                        </Button.Flyout>
+                                                                        <FontIcon Glyph="&#xED15;" FontSize="11" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                    </Button>
+                                                                </StackPanel>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>
@@ -828,9 +847,63 @@
                                                     </StackPanel>
                                                 </Expander.Header>
                                                 <StackPanel Padding="0,5,0,0" Spacing="5">
-                                                    <CheckBox x:Name="DismCheckBox" Content="{helpers:ResourceString Key=diag_check_dism}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
-                                                    <CheckBox x:Name="SfcCheckBox" Content="{helpers:ResourceString Key=diag_check_sfc}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
-                                                    <CheckBox x:Name="ChkdskCheckBox" Content="{helpers:ResourceString Key=diag_check_chkdsk}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <CheckBox x:Name="DismCheckBox" Content="{helpers:ResourceString Key=diag_check_dism}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed" VerticalAlignment="Center"/>
+                                                        <Button Tag="{helpers:ResourceString Key=diag_item_dism}"
+                                                                Click="ExplainRepairTask_Click"
+                                                                IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled}"
+                                                                ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_explain_event}"
+                                                                Background="Transparent" BorderThickness="0" Padding="4" VerticalAlignment="Center" Margin="4,0,0,0">
+                                                            <Button.Flyout>
+                                                                <Flyout Placement="RightEdgeAlignedTop">
+                                                                    <StackPanel Width="300" Spacing="8">
+                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                                    </StackPanel>
+                                                                </Flyout>
+                                                            </Button.Flyout>
+                                                            <FontIcon Glyph="&#xED15;" FontSize="11" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                        </Button>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <CheckBox x:Name="SfcCheckBox" Content="{helpers:ResourceString Key=diag_check_sfc}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed" VerticalAlignment="Center"/>
+                                                        <Button Tag="{helpers:ResourceString Key=diag_item_sfc}"
+                                                                Click="ExplainRepairTask_Click"
+                                                                IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled}"
+                                                                ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_explain_event}"
+                                                                Background="Transparent" BorderThickness="0" Padding="4" VerticalAlignment="Center" Margin="4,0,0,0">
+                                                            <Button.Flyout>
+                                                                <Flyout Placement="RightEdgeAlignedTop">
+                                                                    <StackPanel Width="300" Spacing="8">
+                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                                    </StackPanel>
+                                                                </Flyout>
+                                                            </Button.Flyout>
+                                                            <FontIcon Glyph="&#xED15;" FontSize="11" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                        </Button>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <CheckBox x:Name="ChkdskCheckBox" Content="{helpers:ResourceString Key=diag_check_chkdsk}" FontFamily="{StaticResource Jura}" FontSize="13" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed" VerticalAlignment="Center"/>
+                                                        <Button Tag="{helpers:ResourceString Key=diag_item_chkdsk}"
+                                                                Click="ExplainRepairTask_Click"
+                                                                IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled}"
+                                                                ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_explain_event}"
+                                                                Background="Transparent" BorderThickness="0" Padding="4" VerticalAlignment="Center" Margin="4,0,0,0">
+                                                            <Button.Flyout>
+                                                                <Flyout Placement="RightEdgeAlignedTop">
+                                                                    <StackPanel Width="300" Spacing="8">
+                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                                    </StackPanel>
+                                                                </Flyout>
+                                                            </Button.Flyout>
+                                                            <FontIcon Glyph="&#xED15;" FontSize="11" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                        </Button>
+                                                    </StackPanel>
 
                                                     <StackPanel x:Name="ScanRepairPanel" Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
                                                         <Button Content="{helpers:ResourceString Key=diag_btn_scan_action}" Click="OnScanButtonClick" Width="145"/>
@@ -1082,10 +1155,31 @@
 
                                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                                 <Expander.Header>
-                                                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                        <FontIcon Glyph="&#xE774;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                                        <TextBlock Text="{helpers:ResourceString Key=header_core_dns}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
-                                                                    </StackPanel>
+                                                                    <Grid ColumnSpacing="8">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <FontIcon Glyph="&#xE774;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_core_dns}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}" VerticalAlignment="Center"/>
+
+                                                                        <Button Grid.Column="2" Tag="Core DNS Services (IPv4, IPv6, DoH, DNSCrypt)"
+                                                                                Click="ExplainDnsOption_Click"
+                                                                                IsEnabled="{x:Bind IsAiEnabled, Mode=OneWay}"
+                                                                                ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_explain_event}"
+                                                                                Background="Transparent" BorderThickness="0" Padding="4">
+                                                                            <Button.Flyout>
+                                                                                <Flyout Placement="RightEdgeAlignedTop">
+                                                                                    <StackPanel Width="300" Spacing="8">
+                                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                        <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                                                    </StackPanel>
+                                                                                </Flyout>
+                                                                            </Button.Flyout>
+                                                                            <FontIcon Glyph="&#xED15;" FontSize="11" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        </Button>
+                                                                    </Grid>
                                                                 </Expander.Header>
                                                                 <StackPanel Padding="0,5,0,0" Spacing="12">
                                                                     <StackPanel Spacing="4">
@@ -1109,10 +1203,31 @@
 
                                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                                 <Expander.Header>
-                                                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                        <FontIcon Glyph="&#xE7EF;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                                        <TextBlock Text="{helpers:ResourceString Key=header_security_privacy}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
-                                                                    </StackPanel>
+                                                                    <Grid ColumnSpacing="8">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <FontIcon Glyph="&#xE7EF;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_security_privacy}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}" VerticalAlignment="Center"/>
+
+                                                                        <Button Grid.Column="2" Tag="DNS Security &amp; Privacy (No-Log, DNSSEC, No-Filter, Ephemeral Keys)"
+                                                                                Click="ExplainDnsOption_Click"
+                                                                                IsEnabled="{x:Bind IsAiEnabled, Mode=OneWay}"
+                                                                                ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_explain_event}"
+                                                                                Background="Transparent" BorderThickness="0" Padding="4">
+                                                                            <Button.Flyout>
+                                                                                <Flyout Placement="RightEdgeAlignedTop">
+                                                                                    <StackPanel Width="300" Spacing="8">
+                                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                        <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                                                    </StackPanel>
+                                                                                </Flyout>
+                                                                            </Button.Flyout>
+                                                                            <FontIcon Glyph="&#xED15;" FontSize="11" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        </Button>
+                                                                    </Grid>
                                                                 </Expander.Header>
                                                                 <StackPanel Padding="0,5,0,0" Spacing="12">
                                                                     <StackPanel Spacing="4">
@@ -1140,10 +1255,31 @@
 
                                                             <Expander Expanding="Expander_Expanding" IsExpanded="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="8">
                                                                 <Expander.Header>
-                                                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                        <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
-                                                                        <TextBlock Text="{helpers:ResourceString Key=header_advanced_system}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}"/>
-                                                                    </StackPanel>
+                                                                    <Grid ColumnSpacing="8">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Center"/>
+                                                                        <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=header_advanced_system}" FontWeight="SemiBold" FontFamily="{StaticResource Jura}" VerticalAlignment="Center"/>
+
+                                                                        <Button Grid.Column="2" Tag="Advanced DNS Options (Bootstrap Resolvers, Netprobe, Reject TTL, Block IPv6)"
+                                                                                Click="ExplainDnsOption_Click"
+                                                                                IsEnabled="{x:Bind IsAiEnabled, Mode=OneWay}"
+                                                                                ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_explain_event}"
+                                                                                Background="Transparent" BorderThickness="0" Padding="4">
+                                                                            <Button.Flyout>
+                                                                                <Flyout Placement="RightEdgeAlignedTop">
+                                                                                    <StackPanel Width="300" Spacing="8">
+                                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                        <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                                                    </StackPanel>
+                                                                                </Flyout>
+                                                                            </Button.Flyout>
+                                                                            <FontIcon Glyph="&#xED15;" FontSize="11" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        </Button>
+                                                                    </Grid>
                                                                 </Expander.Header>
                                                                 <StackPanel Padding="0,5,0,0" Spacing="12">
                                                                     <StackPanel Spacing="4">
@@ -1169,7 +1305,6 @@
                                                                 </StackPanel>
                                                             </Expander>
                                                         </StackPanel>
-
                                                     </StackPanel>
                                                 </Grid>
                                             </ScrollViewer>
@@ -1738,6 +1873,22 @@
                                                                         </StackPanel>
 
                                                                         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="10,0,0,0">
+                                                                            <Button Tag="{x:Bind}"
+                                                                                    Click="ExplainEvent_Click"
+                                                                                    IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled}"
+                                                                                    ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_explain_event}"
+                                                                                    Background="Transparent" BorderThickness="0" Padding="6" Height="28" Width="28">
+                                                                                <Button.Flyout>
+                                                                                    <Flyout Placement="LeftEdgeAlignedTop">
+                                                                                        <StackPanel Width="320" Spacing="8">
+                                                                                            <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                            <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                                                        </StackPanel>
+                                                                                    </Flyout>
+                                                                                </Button.Flyout>
+                                                                                <FontIcon Glyph="&#xED15;" FontSize="13" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                            </Button>
+                                                                            
                                                                             <Button Content="{helpers:ResourceString Key=diag_btn_fix}"
                                                                                     FontSize="10" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}"
                                                                                     Background="{ThemeResource ControlFillColorDefaultBrush}" BorderBrush="{ThemeResource MyDynamicAccentBrush}"

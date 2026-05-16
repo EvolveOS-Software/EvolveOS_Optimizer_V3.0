@@ -3491,5 +3491,15 @@
     <sys:String x:Key="group_policy_page_category_name">Groepsbeleid</sys:String>
     <sys:String x:Key="startup_manager_page_ai_tooltip">Leg deze opstart-app uit met AI</sys:String>
     <sys:String x:Key="startup_manager_page_category_name">Opstarttoepassing</sys:String>
+    <sys:String x:Key="diag_tooltip_explain_event">Leg deze gebeurtenis uit met AI</sys:String>
+    <sys:String x:Key="diag_page_event_category_name">Windows Systeemgebeurtenis</sys:String>
+
+    <sys:String x:Key="diag_category_memory">Windows geheugenarchitectuur</sys:String>
+    <sys:String x:Key="diag_category_repair">Windows Opdrachtregelprogramma</sys:String>
+    <sys:String x:Key="diag_category_dns">DNS &amp; Netwerk strategie</sys:String>
+
+    <sys:String x:Key="diag_item_dism">DISM (Deployment Image Servicing and Management) Reparatie</sys:String>
+    <sys:String x:Key="diag_item_sfc">SFC (System File Checker) Scannow</sys:String>
+    <sys:String x:Key="diag_item_chkdsk">CHKDSK (Check Disk) Bestandssysteem Reparatie</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

@@ -13,6 +13,7 @@ using EvolveOS_Optimizer.Core.Settings;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using static EvolveOS_Optimizer.Core.Enums;
@@ -22,6 +23,15 @@ namespace EvolveOS_Optimizer.Pages
     public sealed partial class DiagnosticsPage : Page, IPurgeable
     {
         public DiagnosticsPageViewModel? ViewModel { get; } = DiagnosticsPageViewModel.Current;
+
+        public static readonly DependencyProperty IsAiEnabledProperty =
+                DependencyProperty.Register(nameof(IsAiEnabled), typeof(bool), typeof(DiagnosticsPage), new PropertyMetadata(false));
+
+        public bool IsAiEnabled
+        {
+            get => (bool)GetValue(IsAiEnabledProperty);
+            set => SetValue(IsAiEnabledProperty, value);
+        }
 
         private int _navGeneration = 0;
         private bool _isCurrentPageActive = false;
@@ -66,6 +76,18 @@ namespace EvolveOS_Optimizer.Pages
             {
                 this.NavigationCacheMode = NavigationCacheMode.Disabled;
             }
+
+            RefreshAiStatus();
+
+            LocalMachineSettingsEngine.SettingChanged += (s, e) =>
+            {
+                if (e.Contains("ApiKey") || e == "ActiveAiProvider")
+                {
+                    this.DispatcherQueue.TryEnqueue(() => {
+                        RefreshAiStatus();
+                    });
+                }
+            };
 
             this.DataContext = ViewModel;
 
@@ -222,6 +244,8 @@ namespace EvolveOS_Optimizer.Pages
                 await CalculateSystemHealthAsync();
                 UpdateDnsCryptControls();
                 AnimateInstallButton();
+
+                AiExplainerService.PreWarmConnection();
 
                 _isInitialized = true;
                 Debug.WriteLine("[DiagnosticsPage] Initial/Re-hydrated data loaded.");
@@ -983,6 +1007,143 @@ namespace EvolveOS_Optimizer.Pages
             if (sender is Microsoft.UI.Xaml.Controls.Button btn && btn.DataContext is DnsPreset preset)
             {
                 ViewModel?.ApplyDnsPresetCommand.Execute(preset);
+            }
+        }
+        #endregion
+
+        #region AI Event Log Explainer
+        public void RefreshAiStatus()
+        {
+            var activeProvider = LocalMachineSettingsEngine.ActiveAiProvider;
+            bool hasKey = activeProvider switch
+            {
+                AiProvider.Groq => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey),
+                AiProvider.Gemini => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey),
+                AiProvider.OpenRouter => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.OpenRouterApiKey),
+                AiProvider.Cohere => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.CohereApiKey),
+                AiProvider.Mistral => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.MistralApiKey),
+                _ => false
+            };
+
+            // System.Diagnostics.Debug.WriteLine($"AI Status Update: Provider {activeProvider}, HasKey: {hasKey}");
+
+            IsAiEnabled = hasKey;
+        }
+
+        private async void ExplainEvent_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is SystemEventItem vm)
+            {
+                var flyout = button.Flyout as Flyout;
+                if (flyout == null) return;
+
+                var stackPanel = flyout.Content as StackPanel;
+                var textBlock = stackPanel?.Children.OfType<TextBlock>().FirstOrDefault(x => x.Tag?.ToString() == "AiExplanationText");
+
+                if (textBlock == null) return;
+
+                textBlock.Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking...";
+
+                string context = $"Source: {vm.SourceName}\n" +
+                                 $"Event ID: {vm.EventId}\n" +
+                                 $"Time: {vm.FormattedTime}\n" +
+                                 $"Severity: {vm.StatusGlyph} (Visual Indicator)\n" +
+                                 $"Message: {vm.Message}\n" +
+                                 $"Detailed Payload: {vm.FullMessage}";
+
+                string category = ResourceString.GetString("diag_page_event_category_name") ?? "Windows System Event";
+
+                string explanation = await AiExplainerService.ExplainGenericItemAsync(
+                    itemName: $"Event {vm.EventId} ({vm.SourceName})",
+                    itemCategory: category,
+                    contextDetails: context
+                );
+
+                textBlock.Text = explanation;
+            }
+        }
+
+        private async void ExplainMemoryArea_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is string memoryAreaName)
+            {
+                var flyout = button.Flyout as Flyout;
+                if (flyout == null) return;
+
+                var stackPanel = flyout.Content as StackPanel;
+
+                var textBlock = stackPanel?.Children.OfType<TextBlock>().FirstOrDefault(x => x.Tag?.ToString() == "AiExplanationText");
+
+                if (textBlock == null) return;
+
+                textBlock.Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking...";
+
+                string context = $"Target: Windows Memory Management Area\nItem: {memoryAreaName}";
+                string category = ResourceString.GetString("diag_category_memory") ?? "Windows Memory Architecture";
+
+                string explanation = await AiExplainerService.ExplainGenericItemAsync(
+                    itemName: memoryAreaName,
+                    itemCategory: category,
+                    contextDetails: context
+                );
+
+                textBlock.Text = explanation;
+            }
+        }
+
+        private async void ExplainRepairTask_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is string repairTaskName)
+            {
+                var flyout = button.Flyout as Flyout;
+                if (flyout == null) return;
+
+                var stackPanel = flyout.Content as StackPanel;
+
+                var textBlock = stackPanel?.Children.OfType<TextBlock>().FirstOrDefault(x => x.Tag?.ToString() == "AiExplanationText");
+
+                if (textBlock == null) return;
+
+                textBlock.Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking...";
+
+                string context = $"Target: Windows System Repair Utility\nUtility Name: {repairTaskName}";
+                string category = ResourceString.GetString("diag_category_repair") ?? "Windows Command Line Utility";
+
+                string explanation = await AiExplainerService.ExplainGenericItemAsync(
+                    itemName: repairTaskName,
+                    itemCategory: category,
+                    contextDetails: context
+                );
+
+                textBlock.Text = explanation;
+            }
+        }
+
+        private async void ExplainDnsOption_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is string optionScope)
+            {
+                var flyout = button.Flyout as Flyout;
+                if (flyout == null) return;
+
+                var stackPanel = flyout.Content as StackPanel;
+
+                var textBlock = stackPanel?.Children.OfType<TextBlock>().FirstOrDefault(x => x.Tag?.ToString() == "AiExplanationText");
+
+                if (textBlock == null) return;
+
+                textBlock.Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking...";
+
+                string context = $"Context: Windows DNS Configuration\nSettings Group: {optionScope}";
+                string category = ResourceString.GetString("diag_category_dns") ?? "DNS & Networking Strategy";
+
+                string explanation = await AiExplainerService.ExplainGenericItemAsync(
+                    itemName: optionScope,
+                    itemCategory: category,
+                    contextDetails: context
+                );
+
+                textBlock.Text = explanation;
             }
         }
         #endregion
