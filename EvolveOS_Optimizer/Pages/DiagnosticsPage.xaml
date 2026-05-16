@@ -1668,6 +1668,23 @@
                                                                             <TextBlock Text="{x:Bind ErrorCodeHex}" Style="{StaticResource TechnicalValueStyle}" FontSize="11" Opacity="0.8" HorizontalAlignment="Right"/>
                                                                             <TextBlock Text="{x:Bind ErrorCodeDescription}" Style="{StaticResource TechnicalLabelStyle}" FontSize="10" HorizontalAlignment="Right"/>
                                                                         </StackPanel>
+
+                                                                        <Button Tag="{x:Bind}"
+                                                                                Click="ExplainHardwareIssue_Click"
+                                                                                IsEnabled="{Binding ElementName=RootPage, Path=IsAiEnabled, Mode=OneWay}"
+                                                                                ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_explain_event}"
+                                                                                Background="Transparent" BorderThickness="0" Padding="6" Height="28" Width="28">
+                                                                            <Button.Flyout>
+                                                                                <Flyout Placement="LeftEdgeAlignedTop">
+                                                                                    <StackPanel Width="320" Spacing="8">
+                                                                                        <TextBlock Text="AI Explainer" FontFamily="{StaticResource Jura-SemiBold}" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                                        <TextBlock Tag="AiExplanationText" TextWrapping="Wrap" FontSize="12" Opacity="0.9"/>
+                                                                                    </StackPanel>
+                                                                                </Flyout>
+                                                                            </Button.Flyout>
+                                                                            <FontIcon Glyph="&#xED15;" FontSize="13" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                                                        </Button>
+
                                                                         <Button Content="{helpers:ResourceString Key=diag_btn_enable}" FontSize="10" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}" Background="#1100D6E8" BorderBrush="{ThemeResource MyDynamicAccentBrush}" BorderThickness="1" CornerRadius="4" Height="28" Margin="10,0,0,0" Visibility="{x:Bind FixButtonVisibility}" Command="{Binding ElementName=HardwareIssuesListView, Path=DataContext.FixHardwareCommand}" CommandParameter="{x:Bind}"/>
                                                                     </StackPanel>
                                                                 </Grid>

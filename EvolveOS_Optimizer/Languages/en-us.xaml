@@ -3515,6 +3515,7 @@
     <sys:String x:Key="diag_category_memory">Windows Memory Architecture</sys:String>
     <sys:String x:Key="diag_category_repair">Windows Command Line Utility</sys:String>
     <sys:String x:Key="diag_category_dns">DNS &amp; Networking Strategy</sys:String>
+    <sys:String x:Key="diag_category_hardware">Hardware &amp; Driver Diagnostics</sys:String>
 
     <sys:String x:Key="system_apps_ai_tooltip">Explain this application with AI</sys:String>
     <sys:String x:Key="system_apps_page_category_name">Installed Application</sys:String>

@@ -3477,6 +3477,7 @@
     <sys:String x:Key="diag_category_memory">Windows Speicherarchitektur</sys:String>
     <sys:String x:Key="diag_category_repair">Windows Befehlszeilen Dienstprogramm</sys:String>
     <sys:String x:Key="diag_category_dns">DNS- &amp; Netzwerkstrategie</sys:String>
+    <sys:String x:Key="diag_category_hardware">Hardware- und Treiberdiagnose</sys:String>
 
     <sys:String x:Key="system_apps_ai_tooltip">Diese Anwendung mit KI erklären</sys:String>
     <sys:String x:Key="system_apps_page_category_name">Installierte Anwendung</sys:String>

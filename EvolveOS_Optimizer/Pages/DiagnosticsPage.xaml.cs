@@ -127,7 +127,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    this.Bindings.Update();
+                    //this.Bindings.Update();
 
                     if (!ViewModel.IsScanning && ViewModel.DetectedHardwareIssues.Count > 0)
                     {
@@ -401,8 +401,8 @@ namespace EvolveOS_Optimizer.Pages
         {
             base.OnNavigatedTo(e);
 
-            this.Bindings.Initialize();
-            this.Bindings.Update();
+            //this.Bindings.Initialize();
+            //this.Bindings.Update();
 
             _isCurrentPageActive = true;
 
@@ -422,7 +422,7 @@ namespace EvolveOS_Optimizer.Pages
             HeartbeatStoryboard?.Stop();
             RadarSpinStoryboard?.Stop();
 
-            this.Bindings.StopTracking();
+            //this.Bindings.StopTracking();
 
             base.OnNavigatedFrom(e);
         }
@@ -1146,6 +1146,37 @@ namespace EvolveOS_Optimizer.Pages
                 textBlock.Text = explanation;
             }
         }
+
+        private async void ExplainHardwareIssue_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is HardwareIssue issue)
+            {
+                var flyout = button.Flyout as Flyout;
+                if (flyout == null) return;
+
+                var stackPanel = flyout.Content as StackPanel;
+                var textBlock = stackPanel?.Children.OfType<TextBlock>().FirstOrDefault(x => x.Tag?.ToString() == "AiExplanationText");
+
+                if (textBlock == null) return;
+
+                textBlock.Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking...";
+
+                string context = $"Device: {issue.ComponentDisplayName ?? "Unknown Device"}\n" +
+                                 $"Hardware Type: {issue.HardwareType ?? "Unknown Type"}\n" +
+                                 $"Error Code: {issue.ErrorCodeHex} - {issue.ErrorCodeDescription}\n" +
+                                 $"Diagnostic Summary: {issue.IssueSummary}";
+
+                string category = ResourceString.GetString("diag_category_hardware") ?? "Hardware & Driver Diagnostics";
+
+                string explanation = await AiExplainerService.ExplainGenericItemAsync(
+                    itemName: issue.ComponentDisplayName ?? "Unknown Device",
+                    itemCategory: category,
+                    contextDetails: context
+                );
+
+                textBlock.Text = explanation;
+            }
+        }
         #endregion
 
         #region Neural AI Explanations (Event Card Interaction)
@@ -1567,7 +1598,7 @@ namespace EvolveOS_Optimizer.Pages
 
                     this.DataContext = null;
                     this.Content = null;
-                    this.Bindings?.StopTracking();
+                    //this.Bindings?.StopTracking();
 
                     _isInitialized = false;
 
