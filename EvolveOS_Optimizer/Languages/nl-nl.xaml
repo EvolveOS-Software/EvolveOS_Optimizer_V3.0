@@ -3498,6 +3498,9 @@
     <sys:String x:Key="diag_category_repair">Windows Opdrachtregelprogramma</sys:String>
     <sys:String x:Key="diag_category_dns">DNS &amp; Netwerk strategie</sys:String>
 
+    <sys:String x:Key="system_apps_ai_tooltip">Leg deze toepassing uit met AI</sys:String>
+    <sys:String x:Key="system_apps_page_category_name">Geïnstalleerde toepassing</sys:String>
+
     <sys:String x:Key="diag_item_dism">DISM (Deployment Image Servicing and Management) Reparatie</sys:String>
     <sys:String x:Key="diag_item_sfc">SFC (System File Checker) Scannow</sys:String>
     <sys:String x:Key="diag_item_chkdsk">CHKDSK (Check Disk) Bestandssysteem Reparatie</sys:String>

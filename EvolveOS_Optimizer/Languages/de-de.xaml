@@ -3478,6 +3478,9 @@
     <sys:String x:Key="diag_category_repair">Windows Befehlszeilen Dienstprogramm</sys:String>
     <sys:String x:Key="diag_category_dns">DNS- &amp; Netzwerkstrategie</sys:String>
 
+    <sys:String x:Key="system_apps_ai_tooltip">Diese Anwendung mit KI erklären</sys:String>
+    <sys:String x:Key="system_apps_page_category_name">Installierte Anwendung</sys:String>
+
     <sys:String x:Key="diag_item_dism">DISM (Deployment Image Servicing and Management) Reparatur</sys:String>
     <sys:String x:Key="diag_item_sfc">SFC (System File Checker) Scannow</sys:String>
     <sys:String x:Key="diag_item_chkdsk">CHKDSK (Check Disk) Dateisystem-Reparatur</sys:String>

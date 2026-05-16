@@ -3498,6 +3498,9 @@
     <sys:String x:Key="diag_category_repair">Utilitaire de ligne de commande Windows</sys:String>
     <sys:String x:Key="diag_category_dns">Stratégie DNS et Réseau</sys:String>
 
+    <sys:String x:Key="system_apps_ai_tooltip">Expliquer cette application avec l'IA</sys:String>
+    <sys:String x:Key="system_apps_page_category_name">Application installée</sys:String>
+
     <sys:String x:Key="diag_item_dism">Réparation DISM (Gestion et maintenance des images de déploiement)</sys:String>
     <sys:String x:Key="diag_item_sfc">SFC (Vérificateur des fichiers système) Scannow</sys:String>
     <sys:String x:Key="diag_item_chkdsk">Réparation du système de fichiers CHKDSK (Vérification du disque)</sys:String>

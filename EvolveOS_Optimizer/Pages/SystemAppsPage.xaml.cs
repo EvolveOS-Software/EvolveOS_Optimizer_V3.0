@@ -12,8 +12,10 @@ using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
+using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.Win32;
+using static EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -54,8 +56,24 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
             this.NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
+        RefreshAiStatus();
+        LocalMachineSettingsEngine.SettingChanged += OnSettingChanged;
+
+        AiExplainerService.PreWarmConnection();
+
         Loaded += SystemAppsPage_Loaded;
         Unloaded += SystemAppsPage_Unloaded;
+
+        Loaded += SystemAppsPage_Loaded;
+        Unloaded += SystemAppsPage_Unloaded;
+    }
+
+    private void OnSettingChanged(object? sender, string settingName)
+    {
+        if (settingName.Contains("ApiKey") || settingName == "ActiveAiProvider")
+        {
+            DispatcherQueue.TryEnqueue(() => RefreshAiStatus());
+        }
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -1058,6 +1076,63 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
     }
     #endregion
 
+    #region AI Explainer Integration
+
+    public static readonly DependencyProperty IsAiEnabledProperty =
+        DependencyProperty.Register(nameof(IsAiEnabled), typeof(bool), typeof(SystemAppsPage), new PropertyMetadata(false));
+
+    public bool IsAiEnabled
+    {
+        get => (bool)GetValue(IsAiEnabledProperty);
+        set => SetValue(IsAiEnabledProperty, value);
+    }
+
+    private void RefreshAiStatus()
+    {
+        var activeProvider = LocalMachineSettingsEngine.ActiveAiProvider;
+        IsAiEnabled = activeProvider switch
+        {
+            AiProvider.Groq => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey),
+            AiProvider.Gemini => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey),
+            AiProvider.OpenRouter => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.OpenRouterApiKey),
+            AiProvider.Cohere => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.CohereApiKey),
+            AiProvider.Mistral => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.MistralApiKey),
+            _ => false
+        };
+    }
+
+    private async void ExplainApp_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is SystemAppItem app)
+        {
+            var flyout = button.Flyout as Flyout;
+            if (flyout == null) return;
+
+            var stackPanel = flyout.Content as StackPanel;
+            var textBlock = stackPanel?.Children.OfType<TextBlock>().FirstOrDefault(x => x.Tag?.ToString() == "AiExplanationText");
+
+            if (textBlock == null) return;
+
+            textBlock.Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking...";
+
+            string context = $"App Name: {app.DisplayName}\n" +
+                             $"Version: {app.Version}\n" +
+                             $"Type: {(app.IsWin32 ? "Win32 Executable" : "UWP/Modern App")}\n" +
+                             $"Install Path: {app.InstallLocation}";
+
+            string category = ResourceString.GetString("system_apps_page_category_name") ?? "Installed Application";
+
+            string explanation = await AiExplainerService.ExplainGenericItemAsync(
+                itemName: app.DisplayName,
+                itemCategory: category,
+                contextDetails: context
+            );
+
+            textBlock.Text = explanation;
+        }
+    }
+    #endregion
+
     #region Purge Page
     public async Task Purge()
     {
@@ -1082,7 +1157,6 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
             ViewModel = null;
             this.DataContext = null;
             this.Content = null;
-            this.Bindings?.StopTracking();
 
             _ = Task.Run(() =>
             {

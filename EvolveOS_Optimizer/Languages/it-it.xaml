@@ -3496,6 +3496,9 @@
     <sys:String x:Key="diag_category_repair">Utilità della riga di comando di Windows</sys:String>
     <sys:String x:Key="diag_category_dns">Strategia DNS e di Rete</sys:String>
 
+    <sys:String x:Key="system_apps_ai_tooltip">Spiega questa applicazione con l'IA</sys:String>
+    <sys:String x:Key="system_apps_page_category_name">Applicazione installata</sys:String>
+
     <sys:String x:Key="diag_item_dism">Riparazione DISM (Gestione e manutenzione immagini di distribuzione)</sys:String>
     <sys:String x:Key="diag_item_sfc">SFC (Controllo file di sistema) Scannow</sys:String>
     <sys:String x:Key="diag_item_chkdsk">Riparazione del file system CHKDSK (Controllo disco)</sys:String>
