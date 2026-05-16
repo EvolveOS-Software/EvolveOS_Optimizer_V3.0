@@ -54,22 +54,19 @@ namespace EvolveOS_Optimizer.Utilities.Services
             });
         }
 
-        public static async Task<string> ExplainAsync(CleanerEntry entry)
+        private static async Task<string> FetchExplanationAsync(string cacheKey, string fullPrompt)
         {
-            if (_cache.TryGetValue(entry.Name, out var cached))
+            if (_cache.TryGetValue(cacheKey, out var cached))
                 return cached;
 
             AiProvider selectedProvider = LocalMachineSettingsEngine.ActiveAiProvider;
-            string result;
-            string prompt = BuildPrompt(entry);
-
-            result = selectedProvider switch
+            string result = selectedProvider switch
             {
-                AiProvider.Groq => await ExplainWithGroqAsync(prompt),
-                AiProvider.Gemini => await ExplainWithGeminiAsync(prompt),
-                AiProvider.OpenRouter => await ExplainWithOpenRouterAsync(prompt),
-                AiProvider.Cohere => await ExplainWithCohereAsync(prompt),
-                AiProvider.Mistral => await ExplainWithMistralAsync(prompt),
+                AiProvider.Groq => await ExplainWithGroqAsync(fullPrompt),
+                AiProvider.Gemini => await ExplainWithGeminiAsync(fullPrompt),
+                AiProvider.OpenRouter => await ExplainWithOpenRouterAsync(fullPrompt),
+                AiProvider.Cohere => await ExplainWithCohereAsync(fullPrompt),
+                AiProvider.Mistral => await ExplainWithMistralAsync(fullPrompt),
                 _ => ResourceString.GetString("ai_err_invalid_provider") ?? "Selected AI provider is not supported."
             };
 
@@ -77,10 +74,33 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 !result.Contains("API key") &&
                 !result.Contains("Could not reach"))
             {
-                _cache[entry.Name] = result;
+                _cache[cacheKey] = result;
             }
 
             return result;
+        }
+
+        public static async Task<string> ExplainAsync(CleanerEntry entry)
+        {
+            string prompt = BuildPrompt(entry);
+            return await FetchExplanationAsync(entry.Name, prompt);
+        }
+
+        public static async Task<string> ExplainGenericItemAsync(string itemName, string itemCategory, string contextDetails = "")
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"Explain the purpose of the {itemCategory} named \"{itemName}\" and whether it is safe to modify, disable, or delete.");
+
+            if (!string.IsNullOrWhiteSpace(contextDetails))
+            {
+                sb.AppendLine("Context/Details:");
+                sb.AppendLine(contextDetails);
+            }
+
+            sb.AppendLine(ResourceString.GetString("ai_explainer_prompt_end") ?? "Answer in 2-3 sentences. Be specific and practical.");
+
+            return await FetchExplanationAsync($"{itemCategory}_{itemName}", sb.ToString());
         }
         #endregion
 

@@ -3469,6 +3469,7 @@
     <sys:String x:Key="ai_explainer_prompt_files">Il supprime les fichiers de ces emplacements :</sys:String>
     <sys:String x:Key="ai_explainer_prompt_registry">Il supprime ces clés de registre :</sys:String>
     <sys:String x:Key="ai_explainer_prompt_end">Répondez en 2 à 3 phrases. Soyez précis et pratique.</sys:String>
+    <sys:String x:Key="ai_explainer_thinking">Réflexion…</sys:String>
 
     <sys:String x:Key="ai_err_invalid_provider">Le fournisseur d'IA sélectionné n'est pas pris en charge.</sys:String>
     <sys:String x:Key="ai_err_prefix">Erreur API</sys:String>

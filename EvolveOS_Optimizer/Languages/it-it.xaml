@@ -3467,6 +3467,7 @@
     <sys:String x:Key="ai_explainer_prompt_files">Elimina i file da queste posizioni:</sys:String>
     <sys:String x:Key="ai_explainer_prompt_registry">Rimuove queste chiavi di registro:</sys:String>
     <sys:String x:Key="ai_explainer_prompt_end">Rispondi in 2-3 frasi. Sii specifico e pratico.</sys:String>
+    <sys:String x:Key="ai_explainer_thinking">Analisi in corso…</sys:String>
 
     <sys:String x:Key="ai_err_invalid_provider">Il provider IA selezionato non è supportato.</sys:String>
     <sys:String x:Key="ai_err_prefix">Errore API</sys:String>

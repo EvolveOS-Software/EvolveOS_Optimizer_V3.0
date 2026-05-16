@@ -3449,6 +3449,7 @@
     <sys:String x:Key="ai_explainer_prompt_files">Es löscht Dateien von diesen Speicherorten:</sys:String>
     <sys:String x:Key="ai_explainer_prompt_registry">Es entfernt diese Registrierungsschlüssel:</sys:String>
     <sys:String x:Key="ai_explainer_prompt_end">Antworten Sie in 2-3 Sätzen. Seien Sie spezifisch und praktisch.</sys:String>
+    <sys:String x:Key="ai_explainer_thinking">Analyse läuft…</sys:String>
 
     <sys:String x:Key="ai_err_invalid_provider">Ausgewählter KI-Anbieter wird nicht unterstützt.</sys:String>
     <sys:String x:Key="ai_err_prefix">API-Fehler</sys:String>

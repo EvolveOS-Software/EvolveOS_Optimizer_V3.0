@@ -3469,6 +3469,7 @@
     <sys:String x:Key="ai_explainer_prompt_files">Het verwijdert bestanden van deze locaties:</sys:String>
     <sys:String x:Key="ai_explainer_prompt_registry">Het verwijdert deze registersleutels:</sys:String>
     <sys:String x:Key="ai_explainer_prompt_end">Antwoord in 2-3 zinnen. Wees specifiek en praktisch.</sys:String>
+    <sys:String x:Key="ai_explainer_thinking">Nadenken…</sys:String>
 
     <sys:String x:Key="ai_err_invalid_provider">Geselecteerde AI provider wordt niet ondersteund.</sys:String>
     <sys:String x:Key="ai_err_prefix">API fout</sys:String>

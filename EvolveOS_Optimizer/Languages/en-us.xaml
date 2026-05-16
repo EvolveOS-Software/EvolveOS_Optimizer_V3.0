@@ -3487,6 +3487,7 @@
     <sys:String x:Key="ai_explainer_prompt_files">It deletes files from these locations:</sys:String>
     <sys:String x:Key="ai_explainer_prompt_registry">It removes these registry keys:</sys:String>
     <sys:String x:Key="ai_explainer_prompt_end">Answer in 2-3 sentences. Be specific and practical.</sys:String>
+    <sys:String x:Key="ai_explainer_thinking">Thinking…</sys:String>
 
     <sys:String x:Key="ai_err_invalid_provider">Selected AI provider is not supported.</sys:String>
     <sys:String x:Key="ai_err_prefix">API Error</sys:String>

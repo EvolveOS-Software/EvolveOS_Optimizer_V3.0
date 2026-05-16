@@ -76,6 +76,8 @@ namespace EvolveOS_Optimizer.Pages
         {
             base.OnNavigatedTo(e);
 
+            AiExplainerService.PreWarmConnection();
+
             this.Bindings.Update();
         }
 
@@ -280,7 +282,7 @@ namespace EvolveOS_Optimizer.Pages
 
             var textBlock = new TextBlock
             {
-                Text = "Thinking…",
+                Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking…",
                 TextWrapping = TextWrapping.Wrap,
                 MaxWidth = 400
             };
