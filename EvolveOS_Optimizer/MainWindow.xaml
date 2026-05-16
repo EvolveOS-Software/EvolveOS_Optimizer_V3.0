@@ -281,7 +281,7 @@
                 <Grid Width="30" Height="30">
                     <Border CornerRadius="15" Width="30" Height="30" BorderBrush="{StaticResource MyDynamicAccentBrush}" BorderThickness="1">
                         <Border.Background>
-                            <ImageBrush x:Name="ProfileImage" ImageSource="{Binding DisplayProfileAvatar, Mode=OneWay}" Stretch="UniformToFill"/>
+                            <ImageBrush x:Name="ProfileImage" ImageSource="{Binding DisplayProfileAvatar, Mode=TwoWay}" Stretch="UniformToFill"/>
                         </Border.Background>
                     </Border>
                     <Ellipse Stroke="{StaticResource MyDynamicAccentBrush}" StrokeThickness="0.5" Opacity="0.5" Margin="-2"/>

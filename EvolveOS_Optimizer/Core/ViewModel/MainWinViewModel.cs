@@ -56,6 +56,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Events
         public static event Action? AppHidden;
         public static event Action? AppRestored;
+        public static event Action<ImageSource?>? UserProfileUpdated;
+
+        public static void NotifyUserProfileUpdated(ImageSource? newImage) => UserProfileUpdated?.Invoke(newImage);
         #endregion
 
         #region Properties
@@ -145,7 +148,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 if (_displayProfileAvatar == null)
                 {
-                    _displayProfileAvatar = _systemDiagnostics.GetProfileImage();
+                    if (UserSession.ProfileImage != null)
+                    {
+                        _displayProfileAvatar = UserSession.ProfileImage;
+                    }
+                    else
+                    {
+                        _displayProfileAvatar = _systemDiagnostics.GetProfileImage();
+                    }
                 }
                 return _displayProfileAvatar;
             }
@@ -259,6 +269,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             LocalizationService.Instance.PropertyChanged += OnLocalizationPropertyChanged;
 
+            UserProfileUpdated += OnUserProfileUpdated;
+
             ToggleRunOnStartupCommand = new RelayCommand(_ =>
             {
                 IsRunOnStartUp = !IsRunOnStartUp;
@@ -303,6 +315,27 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             CurrentViewTag = tag;
 
             UpdatePowerState(tag);
+        }
+
+        private void OnUserProfileUpdated(ImageSource? newImage)
+        {
+            App.UIThreadDispatcher?.TryEnqueue(() =>
+            {
+                if (newImage != null)
+                {
+                    _displayProfileAvatar = newImage;
+                }
+                else
+                {
+                    // Fallback just in case
+                    _displayProfileAvatar = null;
+                }
+
+                _displayProfileName = null;
+
+                OnPropertyChanged(nameof(DisplayProfileAvatar));
+                OnPropertyChanged(nameof(DisplayProfileName));
+            });
         }
 
         protected override void Dispose(bool disposing)

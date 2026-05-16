@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Data.SqlClient;
 using WinRT.Interop;
@@ -652,6 +653,29 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 string action = IsEditMode ? "updated" : "created";
                 NativeToastHelper.SendNativeToast("Success", $"Account '{FormUsername}' has been {action}.");
+
+                if (IsEditMode && SelectedUser != null)
+                {
+                    if (SelectedUser.Username == UserSession.Username)
+                    {
+                        UserSession.ProfileImage = FormImageSource;
+
+                        if (FormUsername != UserSession.Username)
+                        {
+                            UserSession.Username = FormUsername;
+                        }
+
+                        MainWinViewModel.NotifyUserProfileUpdated(FormImageSource);
+                    }
+                    else
+                    {
+                        MainWinViewModel.NotifyUserProfileUpdated(null);
+                    }
+                }
+                else
+                {
+                    MainWinViewModel.NotifyUserProfileUpdated(null);
+                }
             }
             catch (Exception ex)
             {
