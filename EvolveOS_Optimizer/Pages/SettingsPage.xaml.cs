@@ -1264,6 +1264,19 @@ namespace EvolveOS_Optimizer.Pages
                 .Perform();
             }
         }
+
+        public bool AiUseLocalization
+        {
+            get => LocalMachineSettingsEngine.AiUseLocalization;
+            set
+            {
+                if (LocalMachineSettingsEngine.AiUseLocalization != value)
+                {
+                    LocalMachineSettingsEngine.AiUseLocalization = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged Implementation
@@ -2091,7 +2104,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 this.DataContext = null;
                 this.Content = null;
-                this.Bindings?.StopTracking();
+                //this.Bindings?.StopTracking();
 
                 _isInitialized = false;
 

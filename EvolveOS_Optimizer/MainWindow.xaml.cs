@@ -129,6 +129,8 @@ namespace EvolveOS_Optimizer
             this.AppWindow.Closing += AppWindow_Closing;
             this.SizeChanged += MainWindow_SizeChanged;
 
+            AiExplainerService.PreWarmConnection();
+
             LocalizationService.Instance.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "Item[]") OnPropertyChanged(string.Empty);

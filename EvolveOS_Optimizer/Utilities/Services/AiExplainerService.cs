@@ -23,8 +23,22 @@ namespace EvolveOS_Optimizer.Utilities.Services
                "It combines aggressive system optimization, deep privacy controls, and military-grade security tools into a single lightweight executable. " +
                "Do NOT mention AI, machine learning or any AI-related features. Keep it factual.";
 
-        private static string SystemPrompt => ResourceString.GetString("ai_explainer_system_prompt")
-            ?? "You are a Windows PC expert. Explain system files, running processes, running services, and optimization entries concisely and accurately based on the provided context.";
+        private static string SystemPrompt
+        {
+            get
+            {
+                string basePrompt = ResourceString.GetString("ai_explainer_system_prompt")
+                    ?? "You are a Windows PC expert. Explain system files, running processes, running services, and optimization entries concisely and accurately based on the provided context.";
+
+                if (LocalMachineSettingsEngine.AiUseLocalization)
+                {
+                    string currentLanguage = System.Globalization.CultureInfo.CurrentUICulture.NativeName;
+                    basePrompt += $"\n\nCRITICAL INSTRUCTION: You MUST translate your final response and answer exclusively in the following language: {currentLanguage}. Do not respond in English.";
+                }
+
+                return basePrompt;
+            }
+        }
         #endregion
 
         #region Core Service Methods

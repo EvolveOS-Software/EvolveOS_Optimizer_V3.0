@@ -3485,5 +3485,10 @@
     <sys:String x:Key="diag_item_dism">DISM (Deployment Image Servicing and Management) Reparatur</sys:String>
     <sys:String x:Key="diag_item_sfc">SFC (System File Checker) Scannow</sys:String>
     <sys:String x:Key="diag_item_chkdsk">CHKDSK (Check Disk) Dateisystem-Reparatur</sys:String>
+
+    <sys:String x:Key="Settings_AI_LocalizationTitle">KI Sprachlokalisierung</sys:String>
+    <sys:String x:Key="Settings_AI_LocalizationDesc">Zwingt die KI-Erklärung, alle Erkenntnisse, Fehlercodes und Beschreibungen in die aktuelle Anzeigesprache Ihres Systems zu übersetzen.</sys:String>
+    <sys:String x:Key="Settings_Toggle_On">Ein</sys:String>
+    <sys:String x:Key="Settings_Toggle_Off">Aus</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

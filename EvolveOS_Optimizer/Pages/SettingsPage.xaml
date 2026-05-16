@@ -525,6 +525,25 @@
 
                         <MenuFlyoutSeparator Opacity="0.5"/>
 
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Spacing="4" VerticalAlignment="Center" Margin="0,0,20,0">
+                                <TextBlock Text="{x:Bind GetText('Settings_AI_LocalizationTitle'), Mode=OneWay}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{x:Bind GetText('Settings_AI_LocalizationDesc'), Mode=OneWay}" FontSize="12" Opacity="0.7" TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <ToggleSwitch Grid.Column="1"
+                                          IsOn="{x:Bind AiUseLocalization, Mode=TwoWay}"
+                                          OnContent="{x:Bind GetText('Settings_Toggle_On'), Mode=OneWay}"
+                                          OffContent="{x:Bind GetText('Settings_Toggle_Off'), Mode=OneWay}"
+                                          VerticalAlignment="Center" Margin="0"/>
+                        </Grid>
+
+                        <MenuFlyoutSeparator Opacity="0.5"/>
+
                         <Grid x:Name="GridGroqSettings" ColumnSpacing="12">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />

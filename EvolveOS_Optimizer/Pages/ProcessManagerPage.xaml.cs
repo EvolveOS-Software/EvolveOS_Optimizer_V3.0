@@ -66,6 +66,12 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
         _groupedProcesses.Add(_windowsGroup);
         CVSProcesses.Source = _groupedProcesses;
 
+        RefreshAiStatus();
+
+        LocalMachineSettingsEngine.SettingChanged += OnSettingChanged;
+
+        AiExplainerService.PreWarmConnection();
+
         Loaded += ProcessesPage_Loaded;
         Unloaded += ProcessesPage_Unloaded;
     }
@@ -94,8 +100,6 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
         {
             await RefreshProcessesAsync();
         }
-
-        AiExplainerService.PreWarmConnection();
 
         StartAutoRefresh();
     }
@@ -461,6 +465,40 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
             });
         });
     }
+    #endregion
+
+    #region AI Explainer Integration
+
+    public static readonly DependencyProperty IsAiEnabledProperty =
+        DependencyProperty.Register(nameof(IsAiEnabled), typeof(bool), typeof(ProcessManagerPage), new PropertyMetadata(false));
+
+    public bool IsAiEnabled
+    {
+        get => (bool)GetValue(IsAiEnabledProperty);
+        set => SetValue(IsAiEnabledProperty, value);
+    }
+
+    private void RefreshAiStatus()
+    {
+        var activeProvider = LocalMachineSettingsEngine.ActiveAiProvider;
+        IsAiEnabled = activeProvider switch
+        {
+            AiProvider.Groq => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey),
+            AiProvider.Gemini => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey),
+            AiProvider.OpenRouter => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.OpenRouterApiKey),
+            AiProvider.Cohere => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.CohereApiKey),
+            AiProvider.Mistral => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.MistralApiKey),
+            _ => false
+        };
+    }
+
+    private void OnSettingChanged(object? sender, string settingName)
+    {
+        if (settingName.Contains("ApiKey") || settingName == "ActiveAiProvider")
+        {
+            DispatcherQueue.TryEnqueue(() => RefreshAiStatus());
+        }
+    }
 
     private async void ExplainProcess_Click(object sender, RoutedEventArgs e)
     {
@@ -491,21 +529,6 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
 
             textBlock.Text = explanation;
         }
-    }
-
-    public bool IsAiEnabled()
-    {
-        var activeProvider = LocalMachineSettingsEngine.ActiveAiProvider;
-
-        return activeProvider switch
-        {
-            AiProvider.Groq => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey),
-            AiProvider.Gemini => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey),
-            AiProvider.OpenRouter => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.OpenRouterApiKey),
-            AiProvider.Cohere => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.CohereApiKey),
-            AiProvider.Mistral => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.MistralApiKey),
-            _ => false
-        };
     }
     #endregion
 
@@ -693,6 +716,8 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
 
             this.Loaded -= ProcessesPage_Loaded;
             this.Unloaded -= ProcessesPage_Unloaded;
+
+            LocalMachineSettingsEngine.SettingChanged -= OnSettingChanged;
 
             if (CVSProcesses != null) CVSProcesses.Source = null;
             if (ProcessListView != null) ProcessListView.ItemsSource = null;

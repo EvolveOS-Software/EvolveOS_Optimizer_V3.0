@@ -3505,5 +3505,10 @@
     <sys:String x:Key="diag_item_dism">DISM (Deployment Image Servicing and Management) Reparatie</sys:String>
     <sys:String x:Key="diag_item_sfc">SFC (System File Checker) Scannow</sys:String>
     <sys:String x:Key="diag_item_chkdsk">CHKDSK (Check Disk) Bestandssysteem Reparatie</sys:String>
+
+    <sys:String x:Key="Settings_AI_LocalizationTitle">AI taal lokalisatie</sys:String>
+    <sys:String x:Key="Settings_AI_LocalizationDesc">Dwingt de AI Explainer om alle inzichten, foutcodes en beschrijvingen te vertalen naar de huidige weergavetaal van uw systeem.</sys:String>
+    <sys:String x:Key="Settings_Toggle_On">Aan</sys:String>
+    <sys:String x:Key="Settings_Toggle_Off">Uit</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

@@ -583,7 +583,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["GeminiApiKey"] = "",
             ["OpenRouterApiKey"] = "",
             ["CohereApiKey"] = "",
-            ["MistralApiKey"] = ""
+            ["MistralApiKey"] = "",
+            ["AiUseLocalization"] = true
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -631,6 +632,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string OpenRouterApiKey { get => (string)_cachedSettings["OpenRouterApiKey"]; set => ChangingParameters("OpenRouterApiKey", value); }
         internal static string CohereApiKey { get => (string)_cachedSettings["CohereApiKey"]; set => ChangingParameters("CohereApiKey", value); }
         internal static string MistralApiKey { get => (string)_cachedSettings["MistralApiKey"]; set => ChangingParameters("MistralApiKey", value); }
+        internal static bool AiUseLocalization { get => (bool)_cachedSettings["AiUseLocalization"]; set => ChangingParameters("AiUseLocalization", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)

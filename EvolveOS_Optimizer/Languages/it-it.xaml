@@ -3503,5 +3503,10 @@
     <sys:String x:Key="diag_item_dism">Riparazione DISM (Gestione e manutenzione immagini di distribuzione)</sys:String>
     <sys:String x:Key="diag_item_sfc">SFC (Controllo file di sistema) Scannow</sys:String>
     <sys:String x:Key="diag_item_chkdsk">Riparazione del file system CHKDSK (Controllo disco)</sys:String>
+
+    <sys:String x:Key="Settings_AI_LocalizationTitle">Localizzazione della lingua dell'IA</sys:String>
+    <sys:String x:Key="Settings_AI_LocalizationDesc">Forza l'IA a tradurre tutte le analisi, i codici di errore e le descrizioni nell'attuale lingua di visualizzazione del sistema.</sys:String>
+    <sys:String x:Key="Settings_Toggle_On">Attivato</sys:String>
+    <sys:String x:Key="Settings_Toggle_Off">Disattivato</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>
