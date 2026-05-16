@@ -3528,5 +3528,10 @@
     <sys:String x:Key="Settings_AI_LocalizationDesc">Forces the AI Explainer to translate all insights, error codes, and descriptions into your system's current display language.</sys:String>
     <sys:String x:Key="Settings_Toggle_On">On</sys:String>
     <sys:String x:Key="Settings_Toggle_Off">Off</sys:String>
+
+    <sys:String x:Key="AIAssistant_Title">EvolveOS AI Assistant</sys:String>
+    <sys:String x:Key="AIAssistant_Greeting">Hello! I am your system assistant. Ask me anything about Windows, optimizations, or your PC.</sys:String>
+    <sys:String x:Key="AIAssistant_Placeholder">Ask me anything...</sys:String>
+    <sys:String x:Key="AIAssistant_Tooltip">Open EvolveOS AI Assistant</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

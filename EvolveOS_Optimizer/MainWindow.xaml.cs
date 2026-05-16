@@ -16,6 +16,7 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
+using EvolveOS_Optimizer.Views;
 using Microsoft.Data.SqlClient;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
@@ -23,6 +24,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using WinRT.Interop;
+using static EvolveOS_Optimizer.Core.Enums;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace EvolveOS_Optimizer
@@ -130,6 +132,11 @@ namespace EvolveOS_Optimizer
             this.SizeChanged += MainWindow_SizeChanged;
 
             AiExplainerService.PreWarmConnection();
+
+            RefreshAiStatus();
+
+            // Listen for the user entering an API key in the Settings page
+            LocalMachineSettingsEngine.SettingChanged += OnSettingChanged;
 
             LocalizationService.Instance.PropertyChanged += (s, e) =>
             {
@@ -897,6 +904,46 @@ namespace EvolveOS_Optimizer
         }
         #endregion
 
+        #region AI Assistant State Management
+
+        private bool _isAiEnabled;
+        public bool IsAiEnabled
+        {
+            get => _isAiEnabled;
+            set
+            {
+                if (_isAiEnabled != value)
+                {
+                    _isAiEnabled = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAiEnabled)));
+                }
+            }
+        }
+
+        private void RefreshAiStatus()
+        {
+            var activeProvider = LocalMachineSettingsEngine.ActiveAiProvider;
+            IsAiEnabled = activeProvider switch
+            {
+                AiProvider.Groq => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey),
+                AiProvider.Gemini => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey),
+                AiProvider.OpenRouter => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.OpenRouterApiKey),
+                AiProvider.Cohere => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.CohereApiKey),
+                AiProvider.Mistral => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.MistralApiKey),
+                _ => false
+            };
+        }
+
+        private void OnSettingChanged(object? sender, string settingName)
+        {
+            if (settingName.Contains("ApiKey") || settingName == "ActiveAiProvider")
+            {
+                DispatcherQueue.TryEnqueue(() => RefreshAiStatus());
+            }
+        }
+
+        #endregion
+
         #region User Permissions & Access Control
         private bool _isAdmin;
         public bool IsAdmin
@@ -967,6 +1014,11 @@ namespace EvolveOS_Optimizer
         private void Banner_PointerEntered(object sender, PointerRoutedEventArgs e) => NotificationManager.SetPaused(true);
         private void Banner_PointerExited(object sender, PointerRoutedEventArgs e) => NotificationManager.SetPaused(false);
         private void DismissNotification_Click(object sender, RoutedEventArgs e) => NotificationManager.HideBanner();
+        private void BtnAiAssistant_Click(object sender, RoutedEventArgs e)
+        {
+            var assistantWindow = new AiAssistantWindow();
+            assistantWindow.Activate();
+        }
 
         private void OnPropertyChanged([CallerMemberName] string? name = null)
         {

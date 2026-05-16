@@ -3508,5 +3508,7 @@
     <sys:String x:Key="Settings_AI_LocalizationDesc">Forza l'IA a tradurre tutte le analisi, i codici di errore e le descrizioni nell'attuale lingua di visualizzazione del sistema.</sys:String>
     <sys:String x:Key="Settings_Toggle_On">Attivato</sys:String>
     <sys:String x:Key="Settings_Toggle_Off">Disattivato</sys:String>
+
+    <sys:String x:Key="AIAssistant_Tooltip">Apri l'Assistente IA di EvolveOS</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

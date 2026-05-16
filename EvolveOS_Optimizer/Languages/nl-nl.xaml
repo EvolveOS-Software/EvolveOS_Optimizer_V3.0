@@ -3510,5 +3510,7 @@
     <sys:String x:Key="Settings_AI_LocalizationDesc">Dwingt de AI Explainer om alle inzichten, foutcodes en beschrijvingen te vertalen naar de huidige weergavetaal van uw systeem.</sys:String>
     <sys:String x:Key="Settings_Toggle_On">Aan</sys:String>
     <sys:String x:Key="Settings_Toggle_Off">Uit</sys:String>
+
+    <sys:String x:Key="AIAssistant_Tooltip">Open EvolveOS AI assistent</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

@@ -1,0 +1,67 @@
+<Window
+    x:Class="EvolveOS_Optimizer.Views.AiAssistantWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:EvolveOS_Optimizer.Utilities.Controls"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    mc:Ignorable="d">
+
+    <Grid Background="Transparent" Padding="1">
+        <Border Background="{ThemeResource LayerFillColorDefaultBrush}" 
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                BorderThickness="1" 
+                CornerRadius="12">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="AppTitleBar" Background="Transparent" Height="40" Padding="12,0">
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <FontIcon Glyph="&#xE994;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                        <TextBlock Text="{helpers:ResourceString Key=AIAssistant_Title}" FontFamily="{StaticResource Jura}" FontSize="14" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+
+                <ScrollViewer Grid.Row="1" Margin="20,10,20,10" VerticalScrollBarVisibility="Auto">
+                    <TextBlock x:Name="AiOutputTextBlock"
+                               Text="{helpers:ResourceString Key=AIAssistant_Greeting}"
+                               FontFamily="{ThemeResource Jura}"
+                               TextWrapping="Wrap"
+                               FontSize="14"
+                               LineHeight="22"
+                               Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                               Opacity="0.9"/>
+                </ScrollViewer>
+
+                <Border Grid.Row="2" Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="0,0,12,12" Padding="20,15">
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="UserInputBox"
+                                 PlaceholderText="{helpers:ResourceString Key=AIAssistant_Placeholder}"
+                                 KeyDown="UserInputBox_KeyDown"
+                                 VerticalAlignment="Center"
+                                 FontFamily="{StaticResource Jura}"/>
+
+                        <Button x:Name="SendButton"
+                                Grid.Column="1"
+                                Style="{StaticResource AccentButtonStyle}"
+                                Click="SendButton_Click"
+                                Width="40" Height="32" Padding="0">
+                            <FontIcon Glyph="&#xE72A;" FontSize="14"/>
+                        </Button>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

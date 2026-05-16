@@ -3510,5 +3510,7 @@
     <sys:String x:Key="Settings_AI_LocalizationDesc">Force l'Explicateur IA à traduire toutes les analyses, codes d'erreur et descriptions dans la langue d'affichage actuelle de votre système.</sys:String>
     <sys:String x:Key="Settings_Toggle_On">Activé</sys:String>
     <sys:String x:Key="Settings_Toggle_Off">Désactivé</sys:String>
+
+    <sys:String x:Key="AIAssistant_Tooltip">Ouvrir l'Assistant IA EvolveOS</sys:String>
     <!-- endregion Ai Explainer -->
 </ResourceDictionary>

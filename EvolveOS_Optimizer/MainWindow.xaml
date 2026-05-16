@@ -332,6 +332,25 @@
                 </Button>
 
             </StackPanel>
+
+            <Button x:Name="BtnAiAssistant"
+                    IsEnabled="{x:Bind IsAiEnabled, Mode=OneWay}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="0,0,140,10"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    Padding="10,6"
+                    CornerRadius="6"
+                    Click="BtnAiAssistant_Click"
+                    ToolTipService.ToolTip="{x:Bind GetText('AIAssistant_Tooltip'), Mode=OneWay}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE994;" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                    <TextBlock Text="AI Assistant" FontFamily="{StaticResource Jura}" FontSize="12" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
         </Grid>
 
         <Grid Grid.Row="2">
