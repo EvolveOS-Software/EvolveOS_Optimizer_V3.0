@@ -329,6 +329,32 @@
     <sys:String x:Key="Generic_Continue">Doorgaan</sys:String>
     <sys:String x:Key="Generic_Cancel">Annuleren</sys:String>
 
+    <sys:String x:Key="sys_core_optimizations_title">KERN OPTIMALISATIES</sys:String>
+    <sys:String x:Key="sys_custom_performance_title">AANGEPASTE PRESTATIES</sys:String>
+    <sys:String x:Key="sys_windows_baseline_title">WINDOWS BASISLIJN</sys:String>
+    <sys:String x:Key="intf_total_tweaks">TOTAAL INTERFACE AANPASSINGEN</sys:String>
+    <sys:String x:Key="intf_custom_ui_states">AANGEPASTE UI STATUSSEN</sys:String>
+    <sys:String x:Key="intf_default_interface">STANDAARD INTERFACE</sys:String>
+    <sys:String x:Key="priv_total_tweaks">TOTAAL PRIVACY AANPASSINGEN</sys:String>
+    <sys:String x:Key="priv_custom_settings">AANGEPASTE INSTELLINGEN</sys:String>
+    <sys:String x:Key="priv_original_state">OORSPRONKELIJKE STAAT</sys:String>
+    <sys:String x:Key="svc_total">SYSTEEMSERVICES</sys:String>
+    <sys:String x:Key="svc_optimized">GEOPTIMALISEERDE STATUSSEN</sys:String>
+    <sys:String x:Key="svc_default">STANDAARDCONFIGURATIE</sys:String>
+
+    <sys:String x:Key="sys_header_id">ID</sys:String>
+    <sys:String x:Key="sys_header_component_name">OPTIMALISATIE COMPONENT</sys:String>
+    <sys:String x:Key="sys_header_status_toggle">UIT / AAN</sys:String>
+    <sys:String x:Key="intf_id">ID</sys:String>
+    <sys:String x:Key="intf_component_config">INTERFACE COMPONENT &amp; CONFIGURATIE</sys:String>
+    <sys:String x:Key="intf_toggle_status">UIT / AAN</sys:String>
+    <sys:String x:Key="priv_header_id">ID</sys:String>
+    <sys:String x:Key="priv_header_comp_status">PRIVACY AANPASSING &amp; STATUS</sys:String>
+    <sys:String x:Key="priv_header_toggle">UIT / AAN</sys:String>
+    <sys:String x:Key="svc_id">ID</sys:String>
+    <sys:String x:Key="svc_header_desc">SERVICE DESCRIPTIE &amp; OPTIMALISATIE STATUS</sys:String>
+    <sys:String x:Key="svc_toggle">UIT / AAN</sys:String>
+
     <sys:String x:Key="Settings_Donation_Title">Steun de open-source ontwikkeling van EvolveOS Optimizer.</sys:String>
     <sys:String x:Key="Settings_Donation_Message">Er zijn talloze uren gestoken in het bouwen van EvolveOS Optimizer om je pc optimaal te laten presteren, en ik dek persoonlijk de doorlopende kosten voor functies zoals de live Weer-API. Als deze tool je heeft geholpen, overweeg dan een kleine donatie voor de verdere ontwikkeling ervan! ♥</sys:String>
     <sys:String x:Key="Settings_Donation_SupportBtn">Steun het project</sys:String>

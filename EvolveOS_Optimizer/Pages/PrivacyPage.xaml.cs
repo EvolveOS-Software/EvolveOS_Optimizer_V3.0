@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System.Numerics;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -9,9 +8,6 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Navigation;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -37,71 +33,23 @@ namespace EvolveOS_Optimizer.Pages
                 NotificationManager.Show("info", "warn_activate_noty").Perform();
             }
 
+            this.Loaded += PrivacyPage_loaded;
             this.Unloaded += PrivacyPage_Unloaded;
+        }
+
+        private void PrivacyPage_loaded(object sender, RoutedEventArgs e)
+        {
+            //DebugAvailableCards();
+
+            var vm = new PrivacyViewModel();
+            this.DataContext = vm;
+
+            vm.UpdateCounters();
         }
 
         private void PrivacyPage_Unloaded(object sender, RoutedEventArgs e)
         {
             Purge();
-        }
-
-        private void Tweak_MouseEnter(object sender, PointerRoutedEventArgs e)
-        {
-            if (sender is ContentControl card)
-            {
-                VisualStateManager.GoToState(card, SettingsEngine.IsHoverGlowEnabled ? "PointerOver" : "Normal", true);
-
-                if (SettingsEngine.IsHoverGlowEnabled)
-                {
-                    try
-                    {
-                        var backgroundBorder = UIHelper.FindVisualChildByName<Border>(card, "CardBackground");
-                        if (backgroundBorder != null)
-                        {
-                            var visual = ElementCompositionPreview.GetElementVisual(backgroundBorder);
-                            visual.CenterPoint = new Vector3((float)backgroundBorder.ActualWidth / 2, (float)backgroundBorder.ActualHeight / 2, 0);
-
-                            var compositor = visual.Compositor;
-                            var anim = compositor.CreateVector3KeyFrameAnimation();
-                            anim.InsertKeyFrame(1f, new Vector3(1.01f, 1.01f, 1f));
-                            anim.Duration = TimeSpan.FromMilliseconds(200);
-                            visual.StartAnimation("Scale", anim);
-                        }
-                    }
-                    catch { }
-                }
-
-                string tagName = card.Tag?.ToString() ?? string.Empty;
-                string resourceKey = $"{tagName.ToLower().Replace("button", "")}_desc_conf";
-                try
-                {
-                    DescBlock.Text = ResourceString.GetString(resourceKey);
-                }
-                catch { }
-            }
-        }
-
-        private void Tweak_MouseLeave(object sender, PointerRoutedEventArgs e)
-        {
-            if (sender is ContentControl card)
-            {
-                try
-                {
-                    var backgroundBorder = UIHelper.FindVisualChildByName<Border>(card, "CardBackground");
-                    if (backgroundBorder != null)
-                    {
-                        var visual = ElementCompositionPreview.GetElementVisual(backgroundBorder);
-                        var anim = visual.Compositor.CreateVector3KeyFrameAnimation();
-                        anim.InsertKeyFrame(1f, new Vector3(1.0f, 1.0f, 1f));
-                        anim.Duration = TimeSpan.FromMilliseconds(200);
-                        visual.StartAnimation("Scale", anim);
-                    }
-                }
-                catch { }
-
-                VisualStateManager.GoToState(card, "Normal", true);
-            }
-            DescBlock.Text = ResourceString.GetString("defaultDescription");
         }
 
         private void NativeTgl_Toggled(object sender, RoutedEventArgs e)
@@ -110,7 +58,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 if (!tgl.IsLoaded || tgl.FocusState == FocusState.Unfocused) return;
 
-                var card = UIHelper.FindParent<ContentControl>(tgl);
+                var card = UIHelper.FindParent<Border>(tgl);
                 if (card != null)
                 {
                     string key = card.Tag?.ToString() ?? string.Empty;
@@ -119,15 +67,14 @@ namespace EvolveOS_Optimizer.Pages
                     if (this.DataContext is PrivacyViewModel vm)
                     {
                         var model = vm[key];
-                        if (model != null) model.State = isOn;
+                        if (model != null)
+                        {
+                            model.State = isOn;
+                            vm.UpdateCounters();
+                        }
                     }
 
                     _confTweaks?.ApplyTweaks(key, isOn);
-
-                    if (SettingsEngine.IsSelectionGlowEnabled)
-                    {
-                        VisualStateManager.GoToState(card, isOn ? "Selected" : "Unselected", true);
-                    }
                 }
             }
         }

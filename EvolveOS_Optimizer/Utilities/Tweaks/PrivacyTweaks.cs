@@ -54,7 +54,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             _сontrolWriter.Button[8] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows", "CEIPEnable", "0") || !IsTaskEnabled(ceipTasks);
 
-            _сontrolWriter.Button[9] = IsDefaultHosts();
+            _сontrolWriter.Button[9] = !IsDefaultHosts();
 
             _сontrolWriter.Button[10] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors", "DisableLocation", "1") ||

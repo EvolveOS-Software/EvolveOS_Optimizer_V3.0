@@ -329,6 +329,32 @@
     <sys:String x:Key="Generic_Continue">Continuer</sys:String>
     <sys:String x:Key="Generic_Cancel">Annuler</sys:String>
 
+    <sys:String x:Key="sys_core_optimizations_title">OPTIMISATIONS DE BASE</sys:String>
+    <sys:String x:Key="sys_custom_performance_title">PERFORMANCES PERSONNALISÉES</sys:String>
+    <sys:String x:Key="sys_windows_baseline_title">BASE WINDOWS</sys:String>
+    <sys:String x:Key="intf_total_tweaks">TOTAL RÉGLAGES INTERFACE</sys:String>
+    <sys:String x:Key="intf_custom_ui_states">ÉTATS UI PERSONNALISÉS</sys:String>
+    <sys:String x:Key="intf_default_interface">INTERFACE PAR DÉFAUT</sys:String>
+    <sys:String x:Key="priv_total_tweaks">TOTAL RÉGLAGES CONFIDENTIALITÉ</sys:String>
+    <sys:String x:Key="priv_custom_settings">PARAMÈTRES PERSONNALISÉS</sys:String>
+    <sys:String x:Key="priv_original_state">ÉTAT D'ORIGINE</sys:String>
+    <sys:String x:Key="svc_total">SERVICES SYSTÈME</sys:String>
+    <sys:String x:Key="svc_optimized">ÉTATS OPTIMISÉS</sys:String>
+    <sys:String x:Key="svc_default">CONFIG. PAR DÉFAUT</sys:String>
+
+    <sys:String x:Key="sys_header_id">ID</sys:String>
+    <sys:String x:Key="sys_header_component_name">COMPOSANT D'OPTIMISATION</sys:String>
+    <sys:String x:Key="sys_header_status_toggle">DÉSACTIVÉ / ACTIVÉ</sys:String>
+    <sys:String x:Key="intf_id">ID</sys:String>
+    <sys:String x:Key="intf_component_config">COMPOSANT INTERFACE &amp; CONFIGURATION</sys:String>
+    <sys:String x:Key="intf_toggle_status">DÉSACTIVÉ / ACTIVÉ</sys:String>
+    <sys:String x:Key="priv_header_id">ID</sys:String>
+    <sys:String x:Key="priv_header_comp_status">RÉGLAGE CONFIDENTIALITÉ &amp; STATUT</sys:String>
+    <sys:String x:Key="priv_header_toggle">DÉSACTIVÉ / ACTIVÉ</sys:String>
+    <sys:String x:Key="svc_id">ID</sys:String>
+    <sys:String x:Key="svc_header_desc">DESCRIPTION DU SERVICE &amp; STATUT OPTIMISATION</sys:String>
+    <sys:String x:Key="svc_toggle">DÉSACTIVÉ / ACTIVÉ</sys:String>
+
     <sys:String x:Key="Settings_Donation_Title">Soutenez le développement open-source d'EvolveOS Optimizer.</sys:String>
     <sys:String x:Key="Settings_Donation_Message">D'innombrables heures ont été consacrées à la création d'EvolveOS Optimizer pour optimiser les performances de votre PC, et je finance personnellement les coûts continus de fonctionnalités telles que l'API météo en direct. Si cet outil vous a aidé, n'hésitez pas à faire un petit don pour soutenir son développement ! ♥</sys:String>
     <sys:String x:Key="Settings_Donation_SupportBtn">Soutenir le projet</sys:String>

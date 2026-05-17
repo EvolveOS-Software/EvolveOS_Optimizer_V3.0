@@ -994,6 +994,10 @@
     <sys:String x:Key="tgl26_sys">Hide «PC Health Check» from update system</sys:String>
     <sys:String x:Key="tgl27_sys">Windows Insider’s Background Tasks</sys:String>
     <sys:String x:Key="tgl28_sys">System Disk Defragmentation</sys:String>
+    <sys:String x:Key="tgl29_sys">Power Throttling</sys:String>
+    <sys:String x:Key="tgl30_sys">Clear page file at shutdown</sys:String>
+    <sys:String x:Key="tgl31_sys">Network offload</sys:String>
+    <sys:String x:Key="tgl32_sys">Disable fast datagram sending for UDP traffic</sys:String>
 
     <sys:String x:Key="Feature_AddUltimatePowerPlan_Button">Add Plan</sys:String>
     <sys:String x:Key="Feature_CompressOSButton_Content">Check Compression</sys:String>
@@ -1044,6 +1048,34 @@
     <sys:String x:Key="Create">Create</sys:String>
     <sys:String x:Key="Cancel">Cancel</sys:String>
 
+    <!-- Summary Card Labels -->
+    <sys:String x:Key="sys_core_optimizations_title">CORE OPTIMIZATIONS</sys:String>
+    <sys:String x:Key="sys_custom_performance_title">CUSTOM PERFORMANCE</sys:String>
+    <sys:String x:Key="sys_windows_baseline_title">WINDOWS BASELINE</sys:String>
+    <sys:String x:Key="intf_total_tweaks">TOTAL INTERFACE TWEAKS</sys:String>
+    <sys:String x:Key="intf_custom_ui_states">CUSTOM UI STATES</sys:String>
+    <sys:String x:Key="intf_default_interface">DEFAULT INTERFACE</sys:String>
+    <sys:String x:Key="priv_total_tweaks">TOTAL PRIVACY TWEAKS</sys:String>
+    <sys:String x:Key="priv_custom_settings">CUSTOM SETTINGS</sys:String>
+    <sys:String x:Key="priv_original_state">ORIGINAL STATE</sys:String>
+    <sys:String x:Key="svc_total">SYSTEM SERVICES</sys:String>
+    <sys:String x:Key="svc_optimized">OPTIMIZED STATES</sys:String>
+    <sys:String x:Key="svc_default">DEFAULT CONFIG</sys:String>
+
+    <!-- Header Labels -->
+    <sys:String x:Key="sys_header_id">ID</sys:String>
+    <sys:String x:Key="sys_header_component_name">OPTIMIZATION COMPONENT</sys:String>
+    <sys:String x:Key="sys_header_status_toggle">OFF / ON</sys:String>
+    <sys:String x:Key="intf_id">ID</sys:String>
+    <sys:String x:Key="intf_component_config">INTERFACE COMPONENT &amp; CONFIGURATION</sys:String>
+    <sys:String x:Key="intf_toggle_status">OFF / ON</sys:String>
+    <sys:String x:Key="priv_header_id">ID</sys:String>
+    <sys:String x:Key="priv_header_comp_status">PRIVACY TWEAK &amp; STATUS</sys:String>
+    <sys:String x:Key="priv_header_toggle">OFF / ON</sys:String>
+    <sys:String x:Key="svc_id">ID</sys:String>
+    <sys:String x:Key="svc_header_desc">SERVICE DESCRIPTION &amp; OPTIMIZATION STATUS</sys:String>
+    <sys:String x:Key="svc_toggle">OFF / ON</sys:String>
+
     <sys:String x:Key="slider_desc_sys">Adjust mouse pointer sensitivity and keyboard responsiveness, including repeat delay and repetition rates</sys:String>
     <sys:String x:Key="slider1_desc_sys">Changes the speed of the mouse pointer, saving you time to search for mouse parameters.</sys:String>
     <sys:String x:Key="slider2_desc_sys">Will change the delay before starting to repeat the entered character, the recommended value is 0.</sys:String>
@@ -1076,7 +1108,13 @@
     <sys:String x:Key="tgl26_desc_sys">Tweak blocks intrusive automatic installation of PC Health Check - Microsoft utility that forcibly deploys itself through Windows Update without permission. Once installed, program constantly nags about «checking Windows 11 readiness» and pushes unsolicited «optimization recommendations».</sys:String>
     <sys:String x:Key="tgl27_desc_sys">For Windows Insider participants, these tasks should remain enabled. However, if you are not part of the program, all associated tasks become unnecessary overhead: they consume system resources, generate useless logs, and may initiate telemetry connections without providing any benefit. Disabling them can improve startup time and overall system performance while also eliminating unneeded experimental data collection channels.</sys:String>
     <sys:String x:Key="tgl28_desc_sys">If you have an SSD, disabling defragmentation and boot file optimization, which are effective only for hard drives (HDD), helps extend the lifespan of your drive. At the same time, the TRIM optimization function continues to work: it informs the SSD controller which data blocks are no longer in use and clears them, maintaining stable speed and drive longevity.</sys:String>
+    <sys:String x:Key="tgl29_desc_sys">Show or hide Home in the navigation pane of File Explorer.</sys:String>
+    <sys:String x:Key="tgl30_desc_sys">This tweak clears the page file at shutdown. When this setting is enabled, Windows clears the contents of the page file (virtual memory) during shutdown. This means that any data that was swapped out of RAM to the page file is removed, which can reduce the overhead associated with managing that data during system shutdown. Reduced disk activity and enhance security by ensuring that sensitive data is not left on disk.</sys:String>
+    <sys:String x:Key="tgl31_desc_sys">This tweak turns off all network adapter offload features. Normally these features are handled by the network card, but with modern cpu's we can let the cpu take care of this. Turning off the offload features will improve your latency timings drastically.</sys:String>
+    <sys:String x:Key="tgl32_desc_sys">Fast datagram sending for UDP traffic is by default disabled in windows. This tweak will enable fast datagram sending for UDP traffic and improve your network traffic latency.</sys:String>
 
+
+    <sys:String x:Key="Feature_PowerMode_Description">Select and apply a power plan to balance system performance and energy consumption.</sys:String>
     <sys:String x:Key="powerplangroup_desc_sys">Select or add a power plan to balance performance and energy consumption</sys:String>
     <sys:String x:Key="addultimatepowerplan_desc_sys">Adds the hidden Ultimate Performance power plan to your system for maximum performance.</sys:String>
     <sys:String x:Key="menushowdelay_desc_sys">Controls the delay before menus appear after a mouse hover. Disabling this feature can make the menus open instantly, improving responsiveness but may reduce user control.</sys:String>

@@ -146,8 +146,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\mpssvc", "Start", "4");
 
             _сontrolWriter.Button[21] =
-                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\GameBar", "AutoGameModeEnabled", "0") ||
-                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\GameBar", "AllowAutoGameMode", "0");
+                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\GameBar", "AutoGameModeEnabled", "1") ||
+                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\GameBar", "AllowAutoGameMode", "1");
 
             _сontrolWriter.Button[22] =
                 RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\GameBar", "UseNexusForGameBarEnabled", "0") ||
@@ -177,10 +177,10 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\defragsvc", "Start", "2");
 
             _сontrolWriter.Button[29] =
-                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff", "0");
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff", "1");
 
             _сontrolWriter.Button[30] =
-                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Session Manager\Memory Management", "ClearPageFileAtShutdown", "0");
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Session Manager\Memory Management", "ClearPageFileAtShutdown", "1");
 
             _сontrolWriter.Button[31] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0009", "*PMARPOffload", "1") ||
@@ -763,18 +763,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             {
                 if (token.IsCancellationRequested) return;
 
-                Process _powercfg = new Process()
-                {
-                    StartInfo = {
-                        FileName = PathLocator.Executable.PowerCfg,
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        UseShellExecute = true,
-                        Verb = "runas",
-                        CreateNoWindow = true
-                    },
-                };
-
-                string unlockFrequency = @"-attributes SUB_PROCESSOR 75b0ae3f-bce0-45a7-8c89-c9611c25e100 -ATTRIB_HIDE";
+                string unlockFrequency = $@"{PathLocator.Executable.PowerCfg} -attributes SUB_PROCESSOR 75b0ae3f-bce0-45a7-8c89-c9611c25e100 -ATTRIB_HIDE";
 
                 try
                 {
@@ -783,26 +772,26 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         string? searchScheme = string.Empty;
                         using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"root\cimv2\power", "SELECT InstanceID FROM Win32_PowerPlan WHERE IsActive=false"))
                         {
-                            foreach (ManagementObject managementObj in searcher.Get().Cast<ManagementObject>())
+                            using (var collection = searcher.Get())
                             {
-                                if (token.IsCancellationRequested) return;
-
-                                using (managementObj)
+                                foreach (ManagementObject managementObj in collection.Cast<ManagementObject>())
                                 {
-                                    string rawInstanceId = managementObj["InstanceID"]?.ToString() ?? string.Empty;
-                                    var match = Regex.Match(rawInstanceId, @"\{([^)]*)\}");
-                                    string schemeGuid = match.Success ? match.Groups[1].Value : "00000000-0000-0000-0000-000000000000";
+                                    if (token.IsCancellationRequested) return;
 
-                                    if (RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "Description", string.Empty).Contains("-18") &&
-                                        RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "FriendlyName", string.Empty).Contains("-19"))
+                                    using (managementObj)
                                     {
-                                        searchScheme = schemeGuid;
-                                        _powercfg.StartInfo.Arguments = $"/setactive {searchScheme}";
-                                        _powercfg.Start();
+                                        string rawInstanceId = managementObj["InstanceID"]?.ToString() ?? string.Empty;
+                                        var match = Regex.Match(rawInstanceId, @"\{([^)]*)\}");
+                                        string schemeGuid = match.Success ? match.Groups[1].Value : "00000000-0000-0000-0000-000000000000";
 
-                                        _powercfg.StartInfo.Arguments = unlockFrequency;
-                                        _powercfg.Start();
-                                        break;
+                                        if (RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "Description", string.Empty).Contains("-18") &&
+                                            RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "FriendlyName", string.Empty).Contains("-19"))
+                                        {
+                                            searchScheme = schemeGuid;
+                                            await CommandExecutor.RunCommand($"{PathLocator.Executable.PowerCfg} /setactive {searchScheme}");
+                                            await CommandExecutor.RunCommand(unlockFrequency);
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -814,19 +803,15 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                             if (resourceData.Length > 0) ArchiveManager.Unarchive(PathLocator.Files.PowPlan, resourceData);
 
                             string _guid = Guid.NewGuid().ToString("D");
-                            _powercfg.StartInfo.Arguments = $@"-import ""{PathLocator.Files.PowPlan}"" {_guid}";
-                            _powercfg.Start();
+                            await CommandExecutor.RunCommand($@"{PathLocator.Executable.PowerCfg} -import ""{PathLocator.Files.PowPlan}"" {_guid}");
 
                             await Task.Delay(5, token);
 
-                            _powercfg.StartInfo.Arguments = $"/setactive {_guid}";
-                            _powercfg.Start();
-
-                            _powercfg.StartInfo.Arguments = unlockFrequency;
-                            _powercfg.Start();
+                            await CommandExecutor.RunCommand($"{PathLocator.Executable.PowerCfg} /setactive {_guid}");
+                            await CommandExecutor.RunCommand(unlockFrequency);
 
                             _currentPowerGuid = _guid;
-                            await Task.Run(() => CommandExecutor.RunCommand($"/c timeout /t 10 && rd /s /q \"{PathLocator.Folders.Workspace}\""));
+                            await CommandExecutor.RunCommand($"/c timeout /t 10 && rd /s /q \"{PathLocator.Folders.Workspace}\"");
                         }
                     }
                     else
@@ -837,23 +822,26 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
                         using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"root\cimv2\power", "SELECT InstanceID FROM Win32_PowerPlan WHERE InstanceID !='" + activePath + "'"))
                         {
-                            foreach (ManagementObject managementObj in searcher.Get().Cast<ManagementObject>())
+                            using (var collection = searcher.Get())
                             {
-                                if (token.IsCancellationRequested) return;
-
-                                using (managementObj)
+                                foreach (ManagementObject managementObj in collection.Cast<ManagementObject>())
                                 {
-                                    string instanceId = Convert.ToString(managementObj["InstanceID"]) ?? string.Empty;
-                                    var match = Regex.Match(instanceId, @"\{([a-fA-F0-9\-]{36})\}");
-                                    string schemeGuid = match.Groups[1].Value;
+                                    if (token.IsCancellationRequested) return;
 
-                                    if (!RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "Description", string.Empty).Contains("-10") &&
-                                        !RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "FriendlyName", string.Empty).Contains("-11"))
+                                    using (managementObj)
                                     {
-                                        selectedScheme = schemeGuid;
-                                        break;
+                                        string instanceId = Convert.ToString(managementObj["InstanceID"]) ?? string.Empty;
+                                        var match = Regex.Match(instanceId, @"\{([a-fA-F0-9\-]{36})\}");
+                                        string schemeGuid = match.Groups[1].Value;
+
+                                        if (!RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "Description", string.Empty).Contains("-10") &&
+                                            !RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{schemeGuid}", "FriendlyName", string.Empty).Contains("-11"))
+                                        {
+                                            selectedScheme = schemeGuid;
+                                            break;
+                                        }
+                                        backupScheme = string.IsNullOrEmpty(backupScheme) ? schemeGuid : backupScheme;
                                     }
-                                    backupScheme = string.IsNullOrEmpty(backupScheme) ? schemeGuid : backupScheme;
                                 }
                             }
                         }
@@ -863,8 +851,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         if (!string.IsNullOrEmpty(selectedScheme))
                         {
                             _currentPowerGuid = selectedScheme;
-                            _powercfg.StartInfo.Arguments = $"/setactive {selectedScheme}";
-                            _powercfg.Start();
+                            await CommandExecutor.RunCommand($"{PathLocator.Executable.PowerCfg} /setactive {selectedScheme}");
                         }
                     }
                 }

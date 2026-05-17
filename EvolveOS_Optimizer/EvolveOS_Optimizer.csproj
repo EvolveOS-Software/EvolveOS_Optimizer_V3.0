@@ -82,6 +82,7 @@
         <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
         <PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.2.250604" />
         <PackageReference Include="DnsClient" Version="1.8.0" />
+        <PackageReference Include="FluentIcons.WinUI" Version="2.1.326" />
         <PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
         <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />

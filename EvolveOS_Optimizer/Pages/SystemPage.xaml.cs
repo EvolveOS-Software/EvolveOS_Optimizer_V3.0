@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Text.RegularExpressions;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
@@ -7,7 +10,6 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Pages
@@ -34,7 +36,6 @@ namespace EvolveOS_Optimizer.Pages
 
             this.DataContext = new SystemViewModel();
 
-            //this.Loaded += (s, e) => DebugAvailableCards();
             Loaded += SystemPage_Loaded;
             Unloaded += SystemPage_Unloaded;
         }
@@ -43,59 +44,19 @@ namespace EvolveOS_Optimizer.Pages
         {
             await InitializePowerModeAsync();
             await InitializeWindowsUpdatesAsync();
+
+            //DebugAvailableCards();
+
+            var vm = new SystemViewModel();
+            this.DataContext = vm;
+
+            vm.UpdateCounters();
         }
 
         private void SystemPage_Unloaded(object sender, RoutedEventArgs e)
         {
             Purge();
         }
-
-        #region Interaction & Hover Logic
-
-        private void Tweak_MouseEnter(object sender, PointerRoutedEventArgs e)
-        {
-            if (sender is ContentControl card)
-            {
-                if (SettingsEngine.IsHoverGlowEnabled)
-                {
-                    VisualStateManager.GoToState(card, "PointerOver", true);
-                }
-                else
-                {
-                    VisualStateManager.GoToState(card, "Normal", true);
-                }
-
-                string tagName = card.Tag?.ToString() ?? string.Empty;
-                string resourceKey = (tagName == "SliderGroup")
-                    ? "slider_desc_sys"
-                    : $"{tagName.ToLower().Replace("button", "")}_desc_sys";
-
-                try
-                {
-                    string description = ResourceString.GetString(resourceKey);
-                    if (!string.IsNullOrEmpty(description) && DescBlock != null)
-                    {
-                        DescBlock.Text = description;
-                    }
-                }
-                catch { }
-            }
-        }
-
-        private void Tweak_MouseLeave(object sender, PointerRoutedEventArgs e)
-        {
-            if (sender is ContentControl card)
-            {
-                VisualStateManager.GoToState(card, "Normal", true);
-            }
-
-            if (DescBlock != null)
-            {
-                DescBlock.Text = ResourceString.GetString("defaultDescriptionApp");
-            }
-        }
-
-        #endregion
 
         #region Toggles & Sliders Logic
 
@@ -112,11 +73,16 @@ namespace EvolveOS_Optimizer.Pages
                     string key = model.Name;
 
                     bool isOn = tgl.IsOn;
-                    bool isDisabled = !isOn;
+                    bool isDisabled = isOn;
 
                     model.State = isOn;
 
                     //Debug.WriteLine($"[SYSTEM] {key} Toggled | UI On: {isOn} | Sending isDisabled: {isDisabled}");
+
+                    if (this.DataContext is SystemViewModel vm)
+                    {
+                        vm.UpdateCounters();
+                    }
 
                     await Task.Run(async () =>
                     {
@@ -130,16 +96,9 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         NotificationManager.Show().WithDuration(300).Perform(action);
                     }
-
-                    var card = UIHelper.FindParent<ContentControl>(tgl);
-                    if (card != null && SettingsEngine.IsSelectionGlowEnabled)
-                    {
-                        VisualStateManager.GoToState(card, isOn ? "Selected" : "Unselected", true);
-                    }
                 }
             }
         }
-
 
         private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
@@ -582,7 +541,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             var allButtonKeys = Enumerable.Range(1, 32).Select(i => $"TglButton{i}").ToList();
 
-            var existingCards = UIHelper.FindVisualChildren<ContentControl>(this)
+            var existingCards = UIHelper.FindVisualChildren<Border>(this)
                                 .Where(c => c.Tag?.ToString()?.StartsWith("TglButton") == true)
                                 .ToList();
 
