@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Text.RegularExpressions;
+using System.Threading;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -393,6 +394,132 @@ namespace EvolveOS_Optimizer.Pages
                 ErrorLogging.LogDebug(ex);
                 App.ShowNotification(
                     ResourceString.GetString("CreatePowerPlanTitle"),
+                    ResourceString.GetString("UnexpectedError"),
+                    InfoBarSeverity.Error,
+                    3000);
+            }
+        }
+
+        private async void TogglePowerButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn) btn.IsEnabled = false;
+            PowerModeComboBox.IsEnabled = false;
+
+            await SystemTweaks.RunPowerCfgAsync(CancellationToken.None);
+
+            await RefreshPowerPlansAsync();
+
+            if (sender is Button b) b.IsEnabled = true;
+            PowerModeComboBox.IsEnabled = true;
+
+            App.ShowNotification(
+                ResourceString.GetString("PowerPlanTitle"),
+                ResourceString.GetString("PowerPlanAppliedSuccess"),
+                InfoBarSeverity.Success,
+                3000);
+        }
+
+        private async Task RefreshPowerPlansAsync()
+        {
+            PowerModeComboBox.SelectionChanged -= PowerModeComboBox_SelectionChanged;
+
+            string listOutput = await CommandExecutor.StartTaskAsync("powercfg /list");
+            string[] lines = listOutput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var plans = new List<KeyValuePair<string, string>>();
+            int activeIndex = -1;
+            int currentIndex = 0;
+
+            foreach (string line in lines)
+            {
+                var match = Regex.Match(line, @"([0-9a-fA-F\-]{36})\s+\(([^)]+)\)");
+                if (match.Success)
+                {
+                    string guid = match.Groups[1].Value;
+                    string name = match.Groups[2].Value;
+
+                    plans.Add(new KeyValuePair<string, string>(guid, name));
+
+                    if (line.Contains("*"))
+                    {
+                        activeIndex = currentIndex;
+                    }
+                    currentIndex++;
+                }
+            }
+
+            PowerModeComboBox.ItemsSource = plans;
+            PowerModeComboBox.DisplayMemberPath = "Value";
+            PowerModeComboBox.SelectedValuePath = "Key";
+
+            if (activeIndex != -1)
+            {
+                PowerModeComboBox.SelectedIndex = activeIndex;
+            }
+
+            PowerModeComboBox.SelectionChanged += PowerModeComboBox_SelectionChanged;
+        }
+
+        private async void DeletePowerPlanButton_Click(object sender, RoutedEventArgs e)
+        {
+            var powerPlans = await GetAvailablePowerPlansAsync();
+            string? activeGuid = await GetActivePowerPlanGuidAsync();
+
+            var deletablePlans = powerPlans.Where(p => p.Guid != activeGuid).ToList();
+
+            if (deletablePlans.Count == 0)
+            {
+                App.ShowNotification(
+                    ResourceString.GetString("DeletePowerPlanTitle"),
+                    ResourceString.GetString("NoDeletablePlansFound"),
+                    InfoBarSeverity.Informational,
+                    3000);
+                return;
+            }
+
+            var planSelector = new ComboBox { MinWidth = 250, HorizontalAlignment = HorizontalAlignment.Stretch };
+            foreach (var plan in deletablePlans)
+            {
+                planSelector.Items.Add(new ComboBoxItem { Content = plan.Name, Tag = plan.Guid });
+            }
+            planSelector.SelectedIndex = 0;
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = this.XamlRoot,
+                Title = ResourceString.GetString("DeletePowerPlanTitle"),
+                Content = new StackPanel { Children = { new TextBlock { Text = ResourceString.GetString("SelectPlanToDelete") }, planSelector }},
+                PrimaryButtonText = ResourceString.GetString("Delete"),
+                CloseButtonText = ResourceString.GetString("Cancel"),
+                PrimaryButtonStyle = (Style)Application.Current.Resources["AccentButtonStyle"]
+            };
+
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary && planSelector.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string guidToDelete = (string)selectedItem.Tag;
+                await DeletePowerPlanAsync(guidToDelete);
+            }
+        }
+
+        private async Task DeletePowerPlanAsync(string guid)
+        {
+            try
+            {
+                await CommandExecutor.StartTaskAsync($"powercfg /delete {guid}");
+
+                await InitializePowerModeAsync();
+
+                App.ShowNotification(
+                    ResourceString.GetString("DeletePowerPlanTitle"),
+                    ResourceString.GetString("PowerPlanDeletedSuccess"),
+                    InfoBarSeverity.Success,
+                    3000);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+                App.ShowNotification(
+                    ResourceString.GetString("ErrorTitle"),
                     ResourceString.GetString("UnexpectedError"),
                     InfoBarSeverity.Error,
                     3000);

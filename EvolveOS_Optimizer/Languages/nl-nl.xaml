@@ -1001,7 +1001,7 @@
     <sys:String x:Key="tgl15_sys">Vertraging bij het opstarten van Windows en programma's</sys:String>
     <sys:String x:Key="tgl16_sys">Gebruiksgeschiedenis voor de werkbalk Snelle toegang</sys:String>
     <sys:String x:Key="tgl17_sys">Automatisch afspelen van verwijderbare media</sys:String>
-    <sys:String x:Key="tgl18_sys">Standaard energiebeheerschema gebruiken</sys:String>
+    <sys:String x:Key="tgl18_sys">EvolveX Ultimate-prestatieschema toevoegen</sys:String>
     <sys:String x:Key="tgl19_sys">De functie «Bluetooth en apparaten» gebruiken</sys:String>
     <sys:String x:Key="tgl20_sys">Windows Defender Firewall</sys:String>
     <sys:String x:Key="tgl21_sys">De functie «Gamemodus» gebruiken</sys:String>
@@ -1061,6 +1061,22 @@
     <sys:String x:Key="BasePowerPlanLabel">Basis energieschema</sys:String>
     <sys:String x:Key="Create">Maken</sys:String>
     <sys:String x:Key="Cancel">Annuleren</sys:String>
+    <sys:String x:Key="Delete">Verwijderen</sys:String>
+    
+    <sys:String x:Key="Feature_DeletePowerPlan_Header">Energiebeheerschema verwijderen</sys:String>
+    <sys:String x:Key="deletepowerplan_desc_sys">Verwijder het geselecteerde energiebeheerschema uit uw systeemconfiguratie.</sys:String>
+    <sys:String x:Key="SelectPlanToDelete">Selecteer een schema om te verwijderen:</sys:String>
+    <sys:String x:Key="DeletePowerPlan_Button">Verwijderen</sys:String>
+    <sys:String x:Key="DeletePowerPlanTitle">Energiebeheerschema verwijderen</sys:String>
+    <sys:String x:Key="CannotDeleteActivePlan">U kunt het energiebeheerschema dat momenteel actief is niet verwijderen.</sys:String>
+    <sys:String x:Key="ConfirmDeleteMessage">Weet u zeker dat u dit energiebeheerschema wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.</sys:String>
+    <sys:String x:Key="PowerPlanDeletedSuccess">Energiebeheerschema is verwijderd.</sys:String>
+    <sys:String x:Key="ErrorTitle">Fout</sys:String>
+    <sys:String x:Key="UnexpectedError">Er is een onverwachte fout opgetreden.</sys:String>
+
+    <sys:String x:Key="PowerPlanTitle">Energiebeheerschema</sys:String>
+    <sys:String x:Key="PowerPlanAppliedSuccess">EvolveX Ultimate-energiebeheerschema is toegepast.</sys:String>
+    <sys:String x:Key="NoDeletablePlansFound">Geen te verwijderen schema's gevonden (huidig schema kan niet worden verwijderd).</sys:String>
 
     <sys:String x:Key="slider_desc_sys">Pas de gevoeligheid van de muisaanwijzer en de responsiviteit van het toetsenbord aan, inclusief de herhaalvertraging en herhaalsnelheid.</sys:String>
     <sys:String x:Key="slider1_desc_sys">Wijzigt de snelheid van de muisaanwijzer, waardoor u tijd bespaart bij het zoeken naar muisparameters.</sys:String>
@@ -1083,7 +1099,7 @@
     <sys:String x:Key="tgl15_desc_sys">Windows vertraagt standaard het opstarten van programma's. Dit is nuttig voor HDD's, maar overbodig en vertragend voor moderne SSD's.</sys:String>
     <sys:String x:Key="tgl16_desc_sys">Stopt het bijhouden van recent geopende bestanden en mappen in het Snelle toegang-paneel.</sys:String>
     <sys:String x:Key="tgl17_desc_sys">Schakelt het automatisch openen van verwisselbare media uit om de uitvoering van onbekende software te voorkomen.</sys:String>
-    <sys:String x:Key="tgl18_desc_sys">Activeert het schema 'Ultieme prestaties' en ontgrendelt instellingen voor de maximale processorfrequentie.</sys:String>
+    <sys:String x:Key="tgl18_desc_sys">Past het «EvolveX Ultimate»-energiebeheerschema toe en ontgrendelt de instelling voor de maximale processorfrequentie.</sys:String>
     <sys:String x:Key="tgl19_desc_sys">Schakel Bluetooth volledig uit als u het niet gebruikt; dit verwijdert ook het pictogram in het systeemvak.</sys:String>
     <sys:String x:Key="tgl20_desc_sys">Reguleert netwerktoegang. Alleen uitschakelen als u precies weet wat u doet; voor de meeste gebruikers wordt inschakelen aanbevolen.</sys:String>
     <sys:String x:Key="tgl21_desc_sys">Zorgt ervoor dat achtergrondprocessen de prestaties van games niet negatief beïnvloeden.</sys:String>

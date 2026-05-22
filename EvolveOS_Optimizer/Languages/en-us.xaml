@@ -983,7 +983,7 @@
     <sys:String x:Key="tgl15_sys">Slowing down Windows and program startup</sys:String>
     <sys:String x:Key="tgl16_sys">Usage history for the Quick Access Toolbar</sys:String>
     <sys:String x:Key="tgl17_sys">Autorun removable media</sys:String>
-    <sys:String x:Key="tgl18_sys">Import EvolveOS performance plan</sys:String>
+    <sys:String x:Key="tgl18_sys">Add EvolveX Ultimate performance plan</sys:String>
     <sys:String x:Key="tgl19_sys">Use the function «Bluetooth and devices»</sys:String>
     <sys:String x:Key="tgl20_sys">Windows Defender Firewall</sys:String>
     <sys:String x:Key="tgl21_sys">Use the function «Game mode»</sys:String>
@@ -1047,6 +1047,22 @@
     <sys:String x:Key="BasePowerPlanLabel">Base power plan</sys:String>
     <sys:String x:Key="Create">Create</sys:String>
     <sys:String x:Key="Cancel">Cancel</sys:String>
+    <sys:String x:Key="Delete">Delete</sys:String>
+
+    <sys:String x:Key="Feature_DeletePowerPlan_Header">Delete Power Plan</sys:String>
+    <sys:String x:Key="deletepowerplan_desc_sys">Remove the selected power plan from your system configuration.</sys:String>
+    <sys:String x:Key="SelectPlanToDelete">Select a plan to delete:</sys:String>
+    <sys:String x:Key="DeletePowerPlan_Button">Delete</sys:String>
+    <sys:String x:Key="DeletePowerPlanTitle">Delete Power Plan</sys:String>
+    <sys:String x:Key="CannotDeleteActivePlan">You cannot delete the power plan that is currently active.</sys:String>
+    <sys:String x:Key="ConfirmDeleteMessage">Are you sure you want to delete this power plan? This action cannot be undone.</sys:String>
+    <sys:String x:Key="PowerPlanDeletedSuccess">Power plan has been removed.</sys:String>
+    <sys:String x:Key="ErrorTitle">Error</sys:String>
+    <sys:String x:Key="UnexpectedError">An unexpected error occurred.</sys:String>
+    
+    <sys:String x:Key="PowerPlanTitle">Power Plan</sys:String>
+    <sys:String x:Key="PowerPlanAppliedSuccess">EvolveX Ultimate Power Plan has been applied.</sys:String>
+    <sys:String x:Key="NoDeletablePlansFound">No deletable plans found (current plan cannot be deleted).</sys:String>
 
     <sys:String x:Key="badge_default">DEFAULT</sys:String>
     <sys:String x:Key="badge_custom">CUSTOM</sys:String>
@@ -1099,7 +1115,7 @@
     <sys:String x:Key="tgl15_desc_sys">By default, Windows has a built-in mechanism to slow down startup programs. This solution works quite well on older computers with HDD, but on modern PCs with SSD unnecessarily slows down the system startup with programs.</sys:String>
     <sys:String x:Key="tgl16_desc_sys">The tweak will disable the recording of the usage history of files and folders displayed on the Quick Access panel. In other words, the system will no longer automatically save and show the most recent active items.</sys:String>
     <sys:String x:Key="tgl17_desc_sys">The tweak disables autorun for various removable media types connected to your computer that Explorer is trying to open. Thus, a program unknown to you will not open automatically on a medium that you are not sure of its reliability.</sys:String>
-    <sys:String x:Key="tgl18_desc_sys">Adds the «Ultimate Performance» power supply circuit, or if available, simply switches to the existing power supply circuit. In addition, it unlocks the setting of the maximum processor frequency in the processor power management settings.</sys:String>
+    <sys:String x:Key="tgl18_desc_sys">Applies the «EvolveX Ultimate» power plan and unlocks the maximum processor frequency setting.</sys:String>
     <sys:String x:Key="tgl19_desc_sys">If you don't need Bluetooth and you don't want to use your devices via Bluetooth, then turn it off, and it will also remove the tray icon.</sys:String>
     <sys:String x:Key="tgl20_desc_sys">The firewall allows you to regulate the access of programs to the Internet by permitting or blocking their connections and controlling the traffic. If you are confident in your actions and understand what you are doing, you can disable the firewall; however, it is recommended to keep it enabled for most users.</sys:String>
     <sys:String x:Key="tgl21_desc_sys">The game mode does not have much effect on powerful systems. However, if you have a lot of processes running in the background, then the mode ensures that background processes will not affect the operation of the game.</sys:String>

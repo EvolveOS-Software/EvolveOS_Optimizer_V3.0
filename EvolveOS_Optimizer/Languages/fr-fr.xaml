@@ -1001,7 +1001,7 @@
     <sys:String x:Key="tgl15_sys">Ralentissement du démarrage de Windows et des apps</sys:String>
     <sys:String x:Key="tgl16_sys">Historique d'utilisation de l'Accès rapide</sys:String>
     <sys:String x:Key="tgl17_sys">Exécution automatique des médias amovibles</sys:String>
-    <sys:String x:Key="tgl18_sys">Utiliser le mode de gestion d'alimentation par défaut</sys:String>
+    <sys:String x:Key="tgl18_sys">Ajouter le mode de performances EvolveX Ultimate</sys:String>
     <sys:String x:Key="tgl19_sys">Utiliser la fonction «Bluetooth et appareils»</sys:String>
     <sys:String x:Key="tgl20_sys">Pare-feu Windows Defender</sys:String>
     <sys:String x:Key="tgl21_sys">Utiliser la fonction «Mode Jeu»</sys:String>
@@ -1061,6 +1061,22 @@
     <sys:String x:Key="BasePowerPlanLabel">Mode d'alimentation de base</sys:String>
     <sys:String x:Key="Create">Créer</sys:String>
     <sys:String x:Key="Cancel">Annuler</sys:String>
+    <sys:String x:Key="Delete">Supprimer</sys:String>
+    
+    <sys:String x:Key="Feature_DeletePowerPlan_Header">Supprimer le mode de gestion de l'alimentation</sys:String>
+    <sys:String x:Key="deletepowerplan_desc_sys">Supprimez le mode de gestion de l'alimentation sélectionné de votre configuration système.</sys:String>
+    <sys:String x:Key="SelectPlanToDelete">Sélectionnez un mode à supprimer :</sys:String>
+    <sys:String x:Key="DeletePowerPlan_Button">Supprimer</sys:String>
+    <sys:String x:Key="DeletePowerPlanTitle">Supprimer le mode de gestion de l'alimentation</sys:String>
+    <sys:String x:Key="CannotDeleteActivePlan">Vous ne pouvez pas supprimer le mode de gestion de l'alimentation actuellement actif.</sys:String>
+    <sys:String x:Key="ConfirmDeleteMessage">Êtes-vous sûr de vouloir supprimer ce mode de gestion de l'alimentation ? Cette action est irréversible.</sys:String>
+    <sys:String x:Key="PowerPlanDeletedSuccess">Le mode de gestion de l'alimentation a été supprimé.</sys:String>
+    <sys:String x:Key="ErrorTitle">Erreur</sys:String>
+    <sys:String x:Key="UnexpectedError">Une erreur inattendue s'est produite.</sys:String>
+
+    <sys:String x:Key="PowerPlanTitle">Mode de gestion de l'alimentation</sys:String>
+    <sys:String x:Key="PowerPlanAppliedSuccess">Le mode de gestion de l'alimentation EvolveX Ultimate a été appliqué.</sys:String>
+    <sys:String x:Key="NoDeletablePlansFound">Aucun mode supprimable trouvé (le mode actuel ne peut pas être supprimé).</sys:String>
 
     <sys:String x:Key="slider_desc_sys">Ajustez la sensibilité du pointeur de la souris et la réactivité du clavier, y compris le délai avant répétition et la vitesse de répétition.</sys:String>
     <sys:String x:Key="slider1_desc_sys">Modifie la vitesse du pointeur, vous évitant de chercher dans les paramètres de la souris.</sys:String>
@@ -1083,7 +1099,7 @@
     <sys:String x:Key="tgl15_desc_sys">Windows retarde par défaut le lancement des programmes au démarrage. Utile pour les HDD, mais inutilement lent pour les SSD modernes.</sys:String>
     <sys:String x:Key="tgl16_desc_sys">Désactive l'enregistrement de l'historique des fichiers et dossiers affichés dans le volet Accès rapide.</sys:String>
     <sys:String x:Key="tgl17_desc_sys">Désactive l'exécution automatique des médias amovibles pour éviter le lancement de programmes inconnus.</sys:String>
-    <sys:String x:Key="tgl18_desc_sys">Ajoute le mode «Performances optimales» et débloque le réglage de la fréquence maximale du processeur.</sys:String>
+    <sys:String x:Key="tgl18_desc_sys">Applique le mode de gestion de l'alimentation « EvolveX Ultimate » et débloque le paramètre de fréquence maximale du processeur.</sys:String>
     <sys:String x:Key="tgl19_desc_sys">Désactive complètement le Bluetooth si vous ne l'utilisez pas, supprimant ainsi l'icône de la barre des tâches.</sys:String>
     <sys:String x:Key="tgl20_desc_sys">Régule l'accès des programmes à Internet. À ne désactiver que si vous savez ce que vous faites ; recommandé pour la plupart des utilisateurs.</sys:String>
     <sys:String x:Key="tgl21_desc_sys">Garantit que les processus en arrière-plan n'affectent pas les performances de vos jeux.</sys:String>

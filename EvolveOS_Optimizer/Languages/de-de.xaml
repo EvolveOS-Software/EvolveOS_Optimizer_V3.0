@@ -1003,7 +1003,7 @@
     <sys:String x:Key="tgl15_sys">Verlangsamung von Windows und Programmstarts</sys:String>
     <sys:String x:Key="tgl16_sys">Nutzungsverlauf für den Schnellzugriff</sys:String>
     <sys:String x:Key="tgl17_sys">Automatisches Ausführen von Wechselmedien</sys:String>
-    <sys:String x:Key="tgl18_sys">EvolveOS-Leistungsplan importieren</sys:String>
+    <sys:String x:Key="tgl18_sys">EvolveX Ultimate-Leistungsplan hinzufügen</sys:String>
     <sys:String x:Key="tgl19_sys">Funktion «Bluetooth und Geräte» verwenden</sys:String>
     <sys:String x:Key="tgl20_sys">Windows Defender Firewall</sys:String>
     <sys:String x:Key="tgl21_sys">Funktion «Spielmodus» verwenden</sys:String>
@@ -1063,6 +1063,22 @@
     <sys:String x:Key="BasePowerPlanLabel">Basis-Energiesparplan</sys:String>
     <sys:String x:Key="Create">Erstellen</sys:String>
     <sys:String x:Key="Cancel">Abbrechen</sys:String>
+    <sys:String x:Key="Delete">Löschen</sys:String>
+    
+    <sys:String x:Key="Feature_DeletePowerPlan_Header">Energiesparplan löschen</sys:String>
+    <sys:String x:Key="deletepowerplan_desc_sys">Entfernen Sie den ausgewählten Energiesparplan aus Ihrer Systemkonfiguration.</sys:String>
+    <sys:String x:Key="SelectPlanToDelete">Wählen Sie einen Plan zum Löschen aus:</sys:String>
+    <sys:String x:Key="DeletePowerPlan_Button">Löschen</sys:String>
+    <sys:String x:Key="DeletePowerPlanTitle">Energiesparplan löschen</sys:String>
+    <sys:String x:Key="CannotDeleteActivePlan">Sie können den derzeit aktiven Energiesparplan nicht löschen.</sys:String>
+    <sys:String x:Key="ConfirmDeleteMessage">Sind Sie sicher, dass Sie diesen Energiesparplan löschen möchten? Dieser Vorgang kann nicht rückgängig gemacht werden.</sys:String>
+    <sys:String x:Key="PowerPlanDeletedSuccess">Energiesparplan wurde entfernt.</sys:String>
+    <sys:String x:Key="ErrorTitle">Fehler</sys:String>
+    <sys:String x:Key="UnexpectedError">Ein unerwarteter Fehler ist aufgetreten.</sys:String>
+
+    <sys:String x:Key="PowerPlanTitle">Energiesparplan</sys:String>
+    <sys:String x:Key="PowerPlanAppliedSuccess">Der EvolveX Ultimate-Energiesparplan wurde angewendet.</sys:String>
+    <sys:String x:Key="NoDeletablePlansFound">Keine löschbaren Pläne gefunden (aktueller Plan kann nicht gelöscht werden).</sys:String>
 
     <sys:String x:Key="slider_desc_sys">Passen Sie die Mauszeigerempfindlichkeit und die Reaktionsfähigkeit der Tastatur an, einschließlich Wiederholungsverzögerung und -raten</sys:String>
     <sys:String x:Key="slider1_desc_sys">Ändert die Geschwindigkeit des Mauszeigers, so sparen Sie Zeit bei der Suche nach den Mausparametern.</sys:String>
@@ -1085,7 +1101,7 @@
     <sys:String x:Key="tgl15_desc_sys">Standardmäßig verfügt Windows über einen integrierten Mechanismus zur Verlangsamung von Startprogrammen. Diese Lösung funktioniert auf älteren Computern mit HDD recht gut, verlangsamt aber auf modernen PCs mit SSD den Systemstart mit Programmen unnötig.</sys:String>
     <sys:String x:Key="tgl16_desc_sys">Der Tweak deaktiviert die Aufzeichnung des Nutzungsverlaufs von Dateien und Ordnern, die in der Schnellzugriffsleiste angezeigt werden. Mit anderen Worten, das System wird die zuletzt aktiven Elemente nicht mehr automatisch speichern und anzeigen.</sys:String>
     <sys:String x:Key="tgl17_desc_sys">Der Tweak deaktiviert den automatischen Start (Autorun) für verschiedene an den Computer angeschlossene Wechselmedien, die der Explorer zu öffnen versucht. Auf diese Weise öffnet sich ein Ihnen unbekanntes Programm nicht automatisch auf einem Medium, dessen Zuverlässigkeit Sie nicht sicher sind.</sys:String>
-    <sys:String x:Key="tgl18_desc_sys">Fügt das «Ultimative Leistung» Energieprofil hinzu, oder wechselt einfach zum bestehenden Energieprofil, falls vorhanden. Darüber hinaus schaltet es die Einstellung der maximalen Prozessorfrequenz in den Energieverwaltungsoptionen des Prozessors frei.</sys:String>
+    <sys:String x:Key="tgl18_desc_sys">Wendet den Energiesparplan „EvolveX Ultimate“ an und entsperrt die Einstellung für die maximale Prozessorfrequenz.</sys:String>
     <sys:String x:Key="tgl19_desc_sys">Wenn Sie kein Bluetooth benötigen und Ihre Geräte nicht über Bluetooth nutzen möchten, schalten Sie es aus, was auch das Symbol im Infobereich (Tray) entfernt.</sys:String>
     <sys:String x:Key="tgl20_desc_sys">Die Firewall ermöglicht es Ihnen, den Internetzugang von Programmen zu regulieren, indem sie deren Verbindungen erlaubt oder blockiert und den Datenverkehr kontrolliert. Wenn Sie sich Ihrer Handlungen sicher sind und verstehen, was Sie tun, können Sie die Firewall deaktivieren; für die meisten Benutzer wird jedoch empfohlen, sie aktiviert zu lassen.</sys:String>
     <sys:String x:Key="tgl21_desc_sys">Der Spielmodus hat auf leistungsstarken Systemen keine großen Auswirkungen. Wenn jedoch viele Prozesse im Hintergrund laufen, stellt der Modus sicher, dass Hintergrundprozesse den Betrieb des Spiels nicht beeinträchtigen.</sys:String>

@@ -1007,7 +1007,7 @@
     <sys:String x:Key="tgl15_sys">Rallentamento di Windows e dell'avvio dei programmi</sys:String>
     <sys:String x:Key="tgl16_sys">Cronologia di utilizzo per la Barra di accesso rapido</sys:String>
     <sys:String x:Key="tgl17_sys">Esecuzione automatica (Autorun) dei supporti rimovibili</sys:String>
-    <sys:String x:Key="tgl18_sys">Importa piano di prestazioni EvolveOS</sys:String>
+    <sys:String x:Key="tgl18_sys">Aggiungi la combinazione per prestazioni EvolveX Ultimate</sys:String>
     <sys:String x:Key="tgl19_sys">Usa la funzione «Bluetooth e dispositivi»</sys:String>
     <sys:String x:Key="tgl20_sys">Windows Defender Firewall</sys:String>
     <sys:String x:Key="tgl21_sys">Usa la funzione «Modalità gioco»</sys:String>
@@ -1067,6 +1067,22 @@
     <sys:String x:Key="BasePowerPlanLabel">Piano di alimentazione di base</sys:String>
     <sys:String x:Key="Create">Crea</sys:String>
     <sys:String x:Key="Cancel">Annulla</sys:String>
+    <sys:String x:Key="Delete">Elimina</sys:String>
+    
+    <sys:String x:Key="Feature_DeletePowerPlan_Header">Elimina combinazione per il risparmio di energia</sys:String>
+    <sys:String x:Key="deletepowerplan_desc_sys">Rimuovi la combinazione per il risparmio di energia selezionata dalla configurazione di sistema.</sys:String>
+    <sys:String x:Key="SelectPlanToDelete">Seleziona una combinazione da eliminare:</sys:String>
+    <sys:String x:Key="DeletePowerPlan_Button">Elimina</sys:String>
+    <sys:String x:Key="DeletePowerPlanTitle">Elimina combinazione per il risparmio di energia</sys:String>
+    <sys:String x:Key="CannotDeleteActivePlan">Impossibile eliminare la combinazione per il risparmio di energia attualmente attiva.</sys:String>
+    <sys:String x:Key="ConfirmDeleteMessage">Sei sicuro di voler eliminare questa combinazione per il risparmio di energia? Questa azione non può essere annullata.</sys:String>
+    <sys:String x:Key="PowerPlanDeletedSuccess">La combinazione per il risparmio di energia è stata rimossa.</sys:String>
+    <sys:String x:Key="ErrorTitle">Errore</sys:String>
+    <sys:String x:Key="UnexpectedError">Si è verificato un errore imprevisto.</sys:String>
+
+    <sys:String x:Key="PowerPlanTitle">Combinazione per il risparmio di energia</sys:String>
+    <sys:String x:Key="PowerPlanAppliedSuccess">La combinazione per il risparmio di energia EvolveX Ultimate è stata applicata.</sys:String>
+    <sys:String x:Key="NoDeletablePlansFound">Nessuna combinazione eliminabile trovata (la combinazione attuale non può essere eliminata).</sys:String>
 
     <sys:String x:Key="slider_desc_sys">Regola la sensibilità del puntatore del mouse e la reattività della tastiera, inclusi il ritardo e la velocità di ripetizione</sys:String>
     <sys:String x:Key="slider1_desc_sys">Modifica la velocità del puntatore del mouse, risparmiandoti il tempo di cercare i parametri del mouse nelle impostazioni.</sys:String>
@@ -1089,7 +1105,7 @@
     <sys:String x:Key="tgl15_desc_sys">Di default, Windows ha un meccanismo integrato per rallentare i programmi all'avvio. Questa soluzione funziona abbastanza bene su computer meno recenti con HDD, ma sui PC moderni con SSD rallenta inutilmente l'avvio del sistema insieme ai programmi.</sys:String>
     <sys:String x:Key="tgl16_desc_sys">Il tweak disabiliterà la registrazione della cronologia di utilizzo di file e cartelle visualizzati nel pannello di Accesso rapido. In altre parole, il sistema non salverà e non mostrerà più automaticamente gli elementi attivi più recenti.</sys:String>
     <sys:String x:Key="tgl17_desc_sys">Il tweak disabilita l'esecuzione automatica (autorun) per i vari tipi di supporti rimovibili collegati al computer che Esplora risorse tenta di aprire. Pertanto, un programma a te sconosciuto non si aprirà automaticamente su un supporto di cui non sei certo dell'affidabilità.</sys:String>
-    <sys:String x:Key="tgl18_desc_sys">Aggiunge il piano di alimentazione «Prestazioni eccellenti», o, se già presente, vi passa semplicemente. Inoltre, sblocca l'impostazione della frequenza massima del processore nelle impostazioni di risparmio energia del processore.</sys:String>
+    <sys:String x:Key="tgl18_desc_sys">Applica la combinazione per il risparmio di energia «EvolveX Ultimate» e sblocca l'impostazione della frequenza massima del processore.</sys:String>
     <sys:String x:Key="tgl19_desc_sys">Se non hai bisogno del Bluetooth e non vuoi usare i tuoi dispositivi via Bluetooth, disattivalo e verrà rimossa anche l'icona nell'area di notifica.</sys:String>
     <sys:String x:Key="tgl20_desc_sys">Il firewall ti consente di regolare l'accesso dei programmi a Internet consentendo o bloccando le loro connessioni e controllando il traffico. Se sei sicuro delle tue azioni e capisci cosa stai facendo, puoi disabilitare il firewall; tuttavia, si consiglia di mantenerlo abilitato per la maggior parte degli utenti.</sys:String>
     <sys:String x:Key="tgl21_desc_sys">La modalità gioco non ha molto effetto sui sistemi potenti. Tuttavia, se hai molti processi in esecuzione in background, questa modalità assicura che i processi in background non influiscano sul funzionamento del gioco.</sys:String>

@@ -442,7 +442,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             internal static readonly string Hosts = Path.Combine(Environment.SystemDirectory ?? "", "drivers", "etc", "hosts");
 
-            internal static readonly string PowPlan = Path.Combine(Folders.Workspace, "UltimatePerformance.pow");
+            internal static readonly string PowPlan = Path.Combine(Folders.Workspace, "EvolveX.pow");
 
             private static string BaseDir => AppDomain.CurrentDomain.BaseDirectory ?? "";
 

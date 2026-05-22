@@ -34,23 +34,6 @@
             <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}"/>
         </Style>
 
-        <Style x:Key="TweakStatusBadgeStyle" TargetType="Border">
-            <Setter Property="Padding" Value="8,3"/>
-            <Setter Property="CornerRadius" Value="4"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="#10FFFFFF"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-
-        <Style x:Key="TweakStatusTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="9"/>
-            <Setter Property="FontFamily" Value="{ThemeResource Jura}"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="CharacterSpacing" Value="40"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-
         <Style x:Key="BadgeIconStyle" TargetType="FontIcon">
             <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}"/>
             <Setter Property="FontSize" Value="10"/>
@@ -123,7 +106,7 @@
 
                 <TextBlock helpers:Loc.Key="SystemPage_BasicOptimization" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Margin="0,0,0,10"/>
 
-                <ContentControl Style="{StaticResource SystemCardStyle}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6" MinHeight="98">
                     <StackPanel Padding="16" Spacing="0">
                         <Grid Padding="0,0,0,16">
                             <Grid.ColumnDefinitions>
@@ -173,7 +156,7 @@
                                 <Border Style="{StaticResource BadgeRecommendedStyle}" HorizontalAlignment="Left" Margin="0,4,0,0">
                                     <StackPanel Orientation="Horizontal">
                                         <FontIcon Glyph="&#xE735;" Style="{StaticResource BadgeIconStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
@@ -184,62 +167,62 @@
                                 </StackPanel>
                             </Button>
                         </Grid>
+
                         <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Opacity="0.4" Margin="0,0,0,16"/>
 
-                        <Grid DataContext="{Binding [TglButton18]}">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <FontIcon Glyph="&#xE7FC;" FontSize="20" VerticalAlignment="Top" Margin="0,4,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+
+                            <FontIcon Glyph="&#xE945;" FontSize="20" VerticalAlignment="Top" Margin="0,4,0,0" Opacity="0.8" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+
                             <StackPanel Grid.Column="1" Spacing="4" Margin="10,0,20,0">
                                 <TextBlock Text="{helpers:ResourceString Key=tgl18_sys}" Style="{StaticResource BodyStrongTextBlockStyle}" FontSize="14"/>
-                                <TextBlock helpers:Loc.Key="tgl18_desc_sys" FontSize="11.5" Opacity="0.5" TextWrapping="Wrap" MaxLines="2"/>
-                                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
-                                    <Border Style="{StaticResource BadgeDefaultStyle}">
-                                        <Grid>
-                                            <StackPanel Orientation="Horizontal" Visibility="{Binding State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-                                                <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Visibility="{Binding State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
-                                                <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <Border Style="{StaticResource BadgeCustomStyle}">
-                                        <Grid>
-                                            <StackPanel Orientation="Horizontal" Visibility="{Binding State, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                                <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Visibility="{Binding State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
-                                                <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                                <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                        <Grid>
-                                            <StackPanel Orientation="Horizontal" Visibility="{Binding IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                            </StackPanel>
-
-                                            <StackPanel Orientation="Horizontal" Visibility="{Binding IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
-                                                <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
+                                <TextBlock helpers:Loc.Key="tgl18_desc_sys" FontSize="11.5" Opacity="0.5" MaxWidth="1300" TextWrapping="Wrap" MaxLines="2"/>
+                                <Border Style="{StaticResource BadgeRecommendedStyle}" HorizontalAlignment="Left" Margin="0,4,0,15">
+                                    <StackPanel Orientation="Horizontal">
+                                        <FontIcon Glyph="&#xE735;" Style="{StaticResource BadgeIconStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                    </StackPanel>
+                                </Border>
                             </StackPanel>
-                            <ToggleSwitch Grid.Column="2" VerticalAlignment="Center" Style="{StaticResource ToggleSwitchStyle}" IsOn="{Binding State, Mode=OneWay}" Toggled="NativeTgl_Toggled"/>
+
+                            <Button Grid.Column="2" x:Name="TogglePowerButton" Click="TogglePowerButton_Click" MinWidth="180" VerticalAlignment="Center" Style="{StaticResource AccentButtonStyle}">
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                                    <FontIcon Glyph="&#xE945;" FontSize="14"/>
+                                    <TextBlock helpers:Loc.Key="Feature_AddUltimatePowerPlan_Button" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </Grid>
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Opacity="0.4" Margin="0,0,0,16"/>
+
+                        <Grid Padding="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="220"/>
+                            </Grid.ColumnDefinitions>
+
+                            <FontIcon Grid.Column="0" Glyph="&#xE945;" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,4,0,0" Opacity="0.8" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+
+                            <StackPanel Grid.Column="1" Spacing="4" Margin="10,0,20,0">
+                                <TextBlock Text="{helpers:ResourceString Key=Feature_DeletePowerPlan_Header}" Style="{StaticResource BodyStrongTextBlockStyle}" FontSize="14"/>
+                                <TextBlock helpers:Loc.Key="deletepowerplan_desc_sys" FontSize="11.5" Opacity="0.5" TextWrapping="Wrap" MaxLines="2"/>
+                            </StackPanel>
+
+                            <Button Grid.Column="2" x:Name="DeletePowerPlanButton" Click="DeletePowerPlanButton_Click" MinWidth="180" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                                    <FontIcon Glyph="&#xE74D;" FontSize="14"/>
+                                    <TextBlock helpers:Loc.Key="DeletePowerPlan_Button" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        
                     </StackPanel>
-                </ContentControl>
+                </Border>
 
                 <ContentControl Style="{StaticResource SystemCardStyle}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                     <StackPanel Padding="16" Spacing="0">
