@@ -329,6 +329,10 @@
     <sys:String x:Key="Generic_Continue">Weiter</sys:String>
     <sys:String x:Key="Generic_Cancel">Abbrechen</sys:String>
 
+    <sys:String x:Key="badge_default">BENUTZERDEF</sys:String>
+    <sys:String x:Key="badge_custom">STANDARD</sys:String>
+    <sys:String x:Key="badge_recommended">EMPFOHLEN</sys:String>
+
     <sys:String x:Key="sys_core_optimizations_title">KERN OPTIMIERUNGEN</sys:String>
     <sys:String x:Key="sys_custom_performance_title">BENUTZER DEFINIERTE LEISTUNG</sys:String>
     <sys:String x:Key="sys_windows_baseline_title">WINDOWS BASELINE</sys:String>

@@ -16,6 +16,30 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
         internal static Dictionary<string, object> ControlStates = new Dictionary<string, object>();
         private readonly ControlWriterManager _сontrolWriter = new ControlWriterManager(ControlStates);
 
+        public static readonly Dictionary<string, bool> RecommendedStates = new Dictionary<string, bool>
+        {
+            { "TglButton1", true },
+            { "TglButton2", true },
+            { "TglButton3", true },
+            { "TglButton4", true },
+            { "TglButton5", true },
+            { "TglButton6", true },
+            { "TglButton7", true },
+            { "TglButton8", true },
+            { "TglButton9", true },
+            { "TglButton10", true },
+            { "TglButton11", true },
+            { "TglButton12", true },
+            { "TglButton13", true },
+            { "TglButton14", true },
+            { "TglButton15", true },
+            { "TglButton16", true },
+            { "TglButton17", true },
+            { "TglButton18", true },
+            { "TglButton19", true },
+            { "TglButton20", true }
+        };
+
         internal void AnalyzeAndUpdate()
         {
             _сontrolWriter.Button[1] =

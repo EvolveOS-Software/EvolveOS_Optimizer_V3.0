@@ -45,6 +45,7 @@ namespace EvolveOS_Optimizer.Pages
             this.DataContext = vm;
 
             vm.UpdateCounters();
+            vm.ApplyRecommendations();
         }
 
         private void PrivacyPage_Unloaded(object sender, RoutedEventArgs e)
@@ -71,6 +72,7 @@ namespace EvolveOS_Optimizer.Pages
                         {
                             model.State = isOn;
                             vm.UpdateCounters();
+                            vm.ApplyRecommendations();
                         }
                     }
 

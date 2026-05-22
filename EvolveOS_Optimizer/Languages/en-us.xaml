@@ -1048,7 +1048,10 @@
     <sys:String x:Key="Create">Create</sys:String>
     <sys:String x:Key="Cancel">Cancel</sys:String>
 
-    <!-- Summary Card Labels -->
+    <sys:String x:Key="badge_default">DEFAULT</sys:String>
+    <sys:String x:Key="badge_custom">CUSTOM</sys:String>
+    <sys:String x:Key="badge_recommended">RECOMMENDED</sys:String>
+
     <sys:String x:Key="sys_core_optimizations_title">CORE OPTIMIZATIONS</sys:String>
     <sys:String x:Key="sys_custom_performance_title">CUSTOM PERFORMANCE</sys:String>
     <sys:String x:Key="sys_windows_baseline_title">WINDOWS BASELINE</sys:String>
@@ -1062,7 +1065,6 @@
     <sys:String x:Key="svc_optimized">OPTIMIZED STATES</sys:String>
     <sys:String x:Key="svc_default">DEFAULT CONFIG</sys:String>
 
-    <!-- Header Labels -->
     <sys:String x:Key="sys_header_id">ID</sys:String>
     <sys:String x:Key="sys_header_component_name">OPTIMIZATION COMPONENT</sys:String>
     <sys:String x:Key="sys_header_status_toggle">OFF / ON</sys:String>

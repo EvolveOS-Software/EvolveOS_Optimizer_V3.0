@@ -39,6 +39,7 @@ namespace EvolveOS_Optimizer.Pages
             this.DataContext = vm;
 
             vm.UpdateCounters();
+            vm.ApplyRecommendations();
         }
 
         private void ServicesPage_Unloaded(object sender, RoutedEventArgs e)
@@ -64,6 +65,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 model.State = tgl.IsOn;
                 vm.UpdateCounters();
+                vm.ApplyRecommendations();
 
                 _svcTweaks?.ApplyTweaks(key, tgl.IsOn);
 

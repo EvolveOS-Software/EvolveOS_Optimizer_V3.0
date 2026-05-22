@@ -105,11 +105,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton1].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton1].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -117,19 +117,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton1].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton1].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton1].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton1].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -155,11 +162,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton2].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton2].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -167,19 +174,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton2].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton2].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton2].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton2].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -205,11 +219,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton3].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton3].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -217,19 +231,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton3].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton3].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton3].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton3].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -255,11 +276,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton4].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton4].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -267,19 +288,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton4].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton4].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton4].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton4].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -305,11 +333,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton5].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton5].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -317,19 +345,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton5].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton5].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton5].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton5].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -355,11 +390,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton6].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton6].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -367,19 +402,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton6].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton6].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton6].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton6].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -405,11 +447,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton7].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton7].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -417,19 +459,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton7].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton7].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton7].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton7].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -455,11 +504,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton8].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton8].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -467,19 +516,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton8].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton8].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton8].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton8].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -505,11 +561,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton9].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton9].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -517,19 +573,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton9].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton9].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton9].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton9].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -555,11 +618,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton10].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton10].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -567,19 +630,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton10].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton10].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton10].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton10].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -605,11 +675,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton11].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton11].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -617,19 +687,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton11].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton11].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton11].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton11].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -655,11 +732,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton12].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton12].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -667,19 +744,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton12].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton12].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton12].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton12].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -705,11 +789,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton13].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton13].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -717,19 +801,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton13].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton13].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton13].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton13].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -755,11 +846,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton14].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton14].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -767,19 +858,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton14].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton14].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton14].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton14].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -805,11 +903,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton15].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton15].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -817,19 +915,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton15].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton15].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton15].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton15].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -855,11 +960,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton16].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton16].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -867,19 +972,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton16].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton16].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton16].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton16].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -905,11 +1017,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton17].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton17].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -917,19 +1029,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton17].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton17].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton17].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton17].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -955,11 +1074,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton18].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton18].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -967,19 +1086,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton18].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton18].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton18].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton18].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1005,11 +1131,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton19].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton19].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1017,19 +1143,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton19].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton19].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton19].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton19].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1055,11 +1188,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton20].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton20].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1067,19 +1200,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton20].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton20].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton20].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton20].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1105,11 +1245,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton21].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton21].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1117,19 +1257,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton21].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton21].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton21].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton21].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1155,11 +1302,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton22].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton22].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1167,19 +1314,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton22].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton22].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton22].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton22].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1205,11 +1359,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton23].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton23].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1217,19 +1371,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton23].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton23].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton23].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton23].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1255,11 +1416,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton24].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton24].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1267,19 +1428,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton24].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton24].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton24].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton24].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1305,11 +1473,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton25].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton25].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1317,19 +1485,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton25].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton25].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton25].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton25].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1355,11 +1530,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton26].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton26].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1367,19 +1542,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton26].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton26].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton26].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton26].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1405,11 +1587,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton27].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton27].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1417,19 +1599,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton27].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton27].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton27].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton27].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1455,11 +1644,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton28].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton28].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1467,19 +1656,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton28].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton28].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton28].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton28].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1505,11 +1701,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton29].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton29].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1517,19 +1713,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton29].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton29].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton29].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton29].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -1555,11 +1758,11 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton30].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton30].State, Converter={StaticResource BooleanToVisibilityConverter}}" Opacity="0.3">
                                             <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            <TextBlock Text="DEFAULT" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_default" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeDefaultForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1567,19 +1770,26 @@
                                     <Grid>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton30].State, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton30].State, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
                                             <fluentIcons:SymbolIcon Symbol="PersonWrench" IconVariant="Regular" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            <TextBlock Text="CUSTOM" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_custom" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeCustomForeground}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                                 <Border Style="{StaticResource BadgeRecommendedStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                        <TextBlock Text="RECOMMENDED" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                    </StackPanel>
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton30].IsRecommendedVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding [TglButton30].IsRecommendedVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Opacity="0.3">
+                                            <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                            <TextBlock helpers:Loc.Key="badge_recommended" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
                             </StackPanel>
                         </StackPanel>

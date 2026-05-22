@@ -36,6 +36,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         protected override void Analyze(InterfaceTweaks tweaks) => tweaks?.AnalyzeAndUpdate();
 
+        public void ApplyRecommendations()
+        {
+            foreach (var kvp in InterfaceTweaks.RecommendedStates)
+            {
+                var model = this[kvp.Key];
+
+                if (model != null)
+                {
+                    model.RecommendedState = kvp.Value;
+                    model.OnPropertyChanged(nameof(model.IsRecommendedVisible));
+                }
+            }
+        }
+
         private int _totalCount;
         public int TotalCount
         {

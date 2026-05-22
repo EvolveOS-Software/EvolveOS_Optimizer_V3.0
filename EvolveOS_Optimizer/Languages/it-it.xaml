@@ -329,6 +329,10 @@
     <sys:String x:Key="Generic_Continue">Continua</sys:String>
     <sys:String x:Key="Generic_Cancel">Annulla</sys:String>
 
+    <sys:String x:Key="badge_default">PERSONALIZZATO</sys:String>
+    <sys:String x:Key="badge_custom">PREDEFINITO</sys:String>
+    <sys:String x:Key="badge_recommended">CONSIGLIATO</sys:String>
+
     <sys:String x:Key="sys_core_optimizations_title">OTTIMIZZAZIONI PRINCIPALI</sys:String>
     <sys:String x:Key="sys_custom_performance_title">PRESTAZIONI PERSONALIZZATE</sys:String>
     <sys:String x:Key="sys_windows_baseline_title">BASE WINDOWS</sys:String>

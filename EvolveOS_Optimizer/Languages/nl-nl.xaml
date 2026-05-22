@@ -329,6 +329,10 @@
     <sys:String x:Key="Generic_Continue">Doorgaan</sys:String>
     <sys:String x:Key="Generic_Cancel">Annuleren</sys:String>
 
+    <sys:String x:Key="badge_default">AANGEPAST</sys:String>
+    <sys:String x:Key="badge_custom">STANDAARD</sys:String>
+    <sys:String x:Key="badge_recommended">AANBEVOLEN</sys:String>
+
     <sys:String x:Key="sys_core_optimizations_title">KERN OPTIMALISATIES</sys:String>
     <sys:String x:Key="sys_custom_performance_title">AANGEPASTE PRESTATIES</sys:String>
     <sys:String x:Key="sys_windows_baseline_title">WINDOWS BASISLIJN</sys:String>

@@ -30,6 +30,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         protected override void Analyze(PrivacyTweaks tweaks) => tweaks?.AnalyzeAndUpdate();
 
+        public void ApplyRecommendations()
+        {
+            foreach (var kvp in PrivacyTweaks.RecommendedStates)
+            {
+                var model = this[kvp.Key];
+
+                if (model != null)
+                {
+                    model.RecommendedState = kvp.Value;
+                    model.OnPropertyChanged(nameof(model.IsRecommendedVisible));
+                }
+            }
+        }
+
         private int _totalTweaksCount;
         public int TotalTweaksCount
         {
