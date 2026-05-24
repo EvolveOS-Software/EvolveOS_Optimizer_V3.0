@@ -793,11 +793,13 @@
 
                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
                                                         <ComboBox ItemsSource="{x:Bind ViewModel.KeyboardModifiers, Mode=OneWay}"
-                                                                  SelectedValue="{x:Bind ViewModel.OptimizationModifiers, Mode=TwoWay}"
-                                                                  SelectedValuePath="Key" IsEnabled="{x:Bind ViewModel.UseHotkey, Mode=OneWay}" MinWidth="120">
+                                                                  SelectedItem="{x:Bind ViewModel.SelectedOptimizationModifier, Mode=TwoWay}"
+                                                                  SelectedValuePath="Key"
+                                                                  IsEnabled="{x:Bind ViewModel.UseHotkey, Mode=OneWay}"
+                                                                  MinWidth="120">
                                                             <ComboBox.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <TextBlock Text="{Binding Value}"/>
+                                                                <DataTemplate x:DataType="m:ModifierOption">
+                                                                    <TextBlock Text="{x:Bind Label}"/>
                                                                 </DataTemplate>
                                                             </ComboBox.ItemTemplate>
                                                         </ComboBox>

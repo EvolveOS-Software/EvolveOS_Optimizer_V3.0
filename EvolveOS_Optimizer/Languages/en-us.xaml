@@ -119,6 +119,7 @@
     <sys:String x:Key="Nav_System_Cleaner">System Cleaner</sys:String>
     <sys:String x:Key="Nav_System_Manager">System Manager</sys:String>
     <sys:String x:Key="Nav_GroupPolicy">Policies</sys:String>
+    <sys:String x:Key="Nav_RegistryEditor">Registry Editor</sys:String>
     <sys:String x:Key="Nav_Services">Service Tweaks</sys:String>
     <sys:String x:Key="Nav_System">System</sys:String>
     <sys:String x:Key="Nav_Tweaks">Tweaks</sys:String>
@@ -3590,4 +3591,280 @@
     <sys:String x:Key="AIAssistant_Placeholder">Ask me anything...</sys:String>
     <sys:String x:Key="AIAssistant_Tooltip">Open EvolveOS AI Assistant</sys:String>
     <!-- endregion Ai Explainer -->
+
+    <!-- region Registry Editor -->
+    <sys:String x:Key="registry_editor_page_title">Registry Editor</sys:String>
+    <sys:String x:Key="registry_editor_page_description">Manage and modify system configurations safely.</sys:String>
+    <sys:String x:Key="registry_editor_page_new_workspace">New Workspace</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_new">New</sys:String>
+    <sys:String x:Key="values_viewer_menu_key">Key</sys:String>
+    <sys:String x:Key="values_viewer_menu_string">String Value</sys:String>
+    <sys:String x:Key="values_viewer_menu_binary">Binary Value</sys:String>
+    <sys:String x:Key="values_viewer_menu_dword">DWORD (32-bit) Value</sys:String>
+    <sys:String x:Key="values_viewer_menu_qword">QWORD (64-bit) Value</sys:String>
+    <sys:String x:Key="values_viewer_menu_multistring">Multi-String Value</sys:String>
+    <sys:String x:Key="values_viewer_menu_expandstring">Expandable String Value</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_import">Import</sys:String>
+    <sys:String x:Key="values_viewer_btn_export">Export</sys:String>
+    <sys:String x:Key="values_viewer_btn_connect">Connect</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_permissions">Permissions</sys:String>
+    <sys:String x:Key="values_viewer_menu_perm_standard">View Standard Permissions</sys:String>
+    <sys:String x:Key="values_viewer_menu_perm_unlock">Force Unlock Key (Take Ownership)</sys:String>
+    <sys:String x:Key="values_viewer_menu_perm_restore">Restore Ownership to TrustedInstaller</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_undo">Undo</sys:String>
+    <sys:String x:Key="values_viewer_btn_history">History</sys:String>
+    <sys:String x:Key="values_viewer_btn_clear">Clear</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_regshot">RegShot</sys:String>
+    <sys:String x:Key="values_viewer_menu_snapshot_a">Take Snapshot A (Baseline)</sys:String>
+    <sys:String x:Key="values_viewer_menu_snapshot_b">Take Snapshot B (Compare)</sys:String>
+    <sys:String x:Key="values_viewer_btn_find">Find</sys:String>
+
+    <sys:String x:Key="values_viewer_session_history">Session History</sys:String>
+    <sys:String x:Key="values_viewer_undo_button">Undo</sys:String>
+
+    <sys:String x:Key="values_viewer_header_name">Name</sys:String>
+    <sys:String x:Key="values_viewer_header_type">Type</sys:String>
+    <sys:String x:Key="values_viewer_header_data">Data</sys:String>
+
+    <sys:String x:Key="values_viewer_context_modify">Modify...</sys:String>
+    <sys:String x:Key="values_viewer_context_modify_binary">Modify binary data...</sys:String>
+    <sys:String x:Key="values_viewer_context_ask_ai">Ask AI to Explain</sys:String>
+    <sys:String x:Key="values_viewer_context_rename">Rename</sys:String>
+    <sys:String x:Key="values_viewer_context_delete">Delete</sys:String>
+
+    <sys:String x:Key="values_viewer_ai_explainer">AI Explainer</sys:String>
+    <sys:String x:Key="values_viewer_ai_loading">Loading...</sys:String>
+
+    <sys:String x:Key="values_viewer_search_results">Search Results</sys:String>
+    <sys:String x:Key="values_viewer_matches_found">matches found</sys:String>
+    <sys:String x:Key="values_viewer_close_search">Close Search</sys:String>
+
+    <sys:String x:Key="values_viewer_snapshot_results">Snapshot Comparison Results</sys:String>
+    <sys:String x:Key="values_viewer_changes_detected">changes detected</sys:String>
+    <sys:String x:Key="values_viewer_close">Close</sys:String>
+
+    <sys:String x:Key="values_viewer_statusbar_items">items</sys:String>
+    <sys:String x:Key="values_viewer_statusbar_one_item_selected">1 item selected</sys:String>
+    <sys:String x:Key="values_viewer_statusbar_bytes">Bytes</sys:String>
+
+    <sys:String x:Key="main_property_title">Property</sys:String>
+    <sys:String x:Key="main_property_tab_general">General</sys:String>
+    <sys:String x:Key="main_property_tab_security">Security</sys:String>
+    <sys:String x:Key="main_property_btn_ok">OK</sys:String>
+    <sys:String x:Key="main_property_btn_cancel">Cancel</sys:String>
+
+    <sys:String x:Key="registry_workspace_empty_state">Select a key to view its values</sys:String>
+
+    <sys:String x:Key="treeview_menu_expand">Expand</sys:String>
+    <sys:String x:Key="treeview_menu_collapse">Collapse</sys:String>
+    <sys:String x:Key="treeview_menu_new">New</sys:String>
+    <sys:String x:Key="treeview_menu_find">Find</sys:String>
+    <sys:String x:Key="treeview_menu_delete">Delete</sys:String>
+    <sys:String x:Key="treeview_menu_rename">Rename</sys:String>
+    <sys:String x:Key="treeview_menu_ask_ai">Ask AI to Explain</sys:String>
+    <sys:String x:Key="treeview_menu_export">Export</sys:String>
+    <sys:String x:Key="treeview_menu_permissions">Permissions</sys:String>
+    <sys:String x:Key="treeview_menu_copy_key">Copy key name</sys:String>
+
+    <sys:String x:Key="treeview_ai_explainer">AI Explainer</sys:String>
+    <sys:String x:Key="treeview_ai_loading">Loading...</sys:String>
+
+    <sys:String x:Key="ai_analysis_dialog_title">Registry Analysis</sys:String>
+    <sys:String x:Key="ai_analysis_dialog_close">Close</sys:String>
+    <sys:String x:Key="ai_analysis_dialog_loading">Consulting AI for analysis...</sys:String>
+
+    <sys:String x:Key="cloud_connect_dialog_title">Connect to EvolveOS Cloud</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_save_connect">Save &amp; Connect</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_cancel">Cancel</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_subtitle">Unlock cloud syncing and AI-powered registry analysis.</sys:String>
+
+    <sys:String x:Key="cloud_connect_dialog_ai_provider">AI Provider Connection</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_select_provider">Select AI Provider</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_secure_api_key">Secure API Key</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_paste_key">Paste your provider key here...</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_reveal_key">Reveal API Key</sys:String>
+
+    <sys:String x:Key="cloud_connect_dialog_cloud_sync">Cloud Sync Account</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_sync_desc">Sync your optimization preferences across devices.</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_sign_in">Sign in with EvolveOS Account</sys:String>
+
+    <sys:String x:Key="find_dialog_title">Find</sys:String>
+    <sys:String x:Key="find_dialog_primary_btn">Find Next</sys:String>
+    <sys:String x:Key="find_dialog_close_btn">Cancel</sys:String>
+    <sys:String x:Key="find_dialog_find_what">Find what:</sys:String>
+    <sys:String x:Key="find_dialog_placeholder">Enter search term...</sys:String>
+
+    <sys:String x:Key="find_dialog_look_at">Look at</sys:String>
+    <sys:String x:Key="find_dialog_chk_keys">Keys</sys:String>
+    <sys:String x:Key="find_dialog_chk_values">Values</sys:String>
+    <sys:String x:Key="find_dialog_chk_data">Data</sys:String>
+    <sys:String x:Key="find_dialog_chk_whole_string">Match whole string only</sys:String>
+
+    <sys:String x:Key="find_dialog_expander_shortcuts">Shortcut Remapping Engine</sys:String>
+    <sys:String x:Key="find_dialog_lbl_find_hotkey">Find Configuration String:</sys:String>
+    <sys:String x:Key="find_dialog_placeholder_hotkey">Perform combination keystroke...</sys:String>
+    <sys:String x:Key="find_dialog_btn_commit_shortcut">Commit Shortcut Matrix</sys:String>
+
+    <sys:String x:Key="value_adding_dialog_title">Add New Item</sys:String>
+    <sys:String x:Key="value_adding_dialog_primary_btn">Add</sys:String>
+    <sys:String x:Key="value_adding_dialog_close_btn">Cancel</sys:String>
+
+    <sys:String x:Key="value_adding_dialog_header_name">Name</sys:String>
+    <sys:String x:Key="value_adding_dialog_placeholder_name">Enter name...</sys:String>
+
+    <sys:String x:Key="value_adding_dialog_header_type">Type</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_key">Key</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_string">String Value</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_binary">Binary Value</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_dword">DWORD (32-bit) Value</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_qword">QWORD (64-bit) Value</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_multistring">Multi-String Value</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_expandstring">Expandable String Value</sys:String>
+
+    <sys:String x:Key="value_editing_dialog_ok">OK</sys:String>
+    <sys:String x:Key="value_editing_dialog_cancel">Cancel</sys:String>
+
+    <sys:String x:Key="value_editing_dialog_title">Edit value</sys:String>
+
+    <sys:String x:Key="value_editing_dialog_value_name">Value name</sys:String>
+    <sys:String x:Key="value_editing_dialog_placeholder_name">Value name</sys:String>
+
+    <sys:String x:Key="value_editing_dialog_value_data">Value data</sys:String>
+    <sys:String x:Key="value_editing_dialog_placeholder_data">Value data</sys:String>
+
+    <sys:String x:Key="value_editing_dialog_base_16">16</sys:String>
+    <sys:String x:Key="value_editing_dialog_base_10">10</sys:String>
+
+    <sys:String x:Key="registry_editor_workspace_prefix">Workspace</sys:String>
+    <sys:String x:Key="registry_editor_close_workspace">Close Workspace</sys:String>
+
+    <sys:String x:Key="registry_editor_notice_title">Notice</sys:String>
+    <sys:String x:Key="registry_editor_notice_min_workspace">You must have at least one workspace open.</sys:String>
+
+    <sys:String x:Key="registry_editor_warn_title">⚠️ Registry Editor Warning</sys:String>
+    <sys:String x:Key="registry_editor_warn_desc1">Modifying the Windows Registry is for advanced users only. Deleting or altering critical keys can cause system instability, application crashes, or prevent Windows from booting entirely.</sys:String>
+    <sys:String x:Key="registry_editor_warn_pro_tips">Pro Tips for this Workspace:</sys:String>
+    <sys:String x:Key="registry_editor_warn_desc2">• Ask AI: Right-click unknown keys or values to have the AI explain what they do before touching them.&#x0a;• Backups: Always right-click and 'Export' a key before deleting or modifying it.&#x0a;• Multi-Tab: Open different hives in separate tabs safely without losing your place.&#x0a;• RegShot: Use the snapshot tool to compare your registry before and after installing software or making system changes.</sys:String>
+    <sys:String x:Key="registry_editor_warn_dont_show">I understand the risks, don't show this again</sys:String>
+    <sys:String x:Key="registry_editor_warn_btn_primary">I Understand, Continue</sys:String>
+    <sys:String x:Key="registry_editor_warn_btn_close">Go Back</sys:String>
+
+    <sys:String x:Key="values_viewer_dialog_cancel">Cancel</sys:String>
+
+    <sys:String x:Key="values_viewer_search_setup_title">Search Setup</sys:String>
+    <sys:String x:Key="values_viewer_search_setup_msg">Please open the Registry tab first to use this shortcut.</sys:String>
+
+    <sys:String x:Key="values_viewer_force_unlock_title">⚠️ DANGER: Force Unlock Key</sys:String>
+    <sys:String x:Key="values_viewer_force_unlock_content">You are about to forcefully take ownership of:&#x0a;{0}&#x0a;&#x0a;Modifying system keys can brick your OS. Do you want to proceed?</sys:String>
+    <sys:String x:Key="values_viewer_force_unlock_primary">Yes, Unlock Key</sys:String>
+
+    <sys:String x:Key="values_viewer_restore_title">Restore Ownership</sys:String>
+    <sys:String x:Key="values_viewer_restore_content">This will return ownership of this key back to NT SERVICE\TrustedInstaller:&#x0a;{0}</sys:String>
+    <sys:String x:Key="values_viewer_restore_primary">Restore Ownership</sys:String>
+
+    <sys:String x:Key="values_viewer_notice_title">Notice</sys:String>
+    <sys:String x:Key="values_viewer_notice_deleted_snapshot">Cannot navigate to this key because it was deleted in Snapshot B.</sys:String>
+
+    <sys:String x:Key="values_viewer_rename_title">Rename Value</sys:String>
+    <sys:String x:Key="values_viewer_rename_ok">OK</sys:String>
+
+    <sys:String x:Key="values_viewer_delete_title">Confirm Value Delete</sys:String>
+    <sys:String x:Key="values_viewer_delete_content">Are you sure you want to permanently delete this value?&#x0a;&#x0a;{0}</sys:String>
+    <sys:String x:Key="values_viewer_delete_yes">Yes</sys:String>
+    <sys:String x:Key="values_viewer_delete_no">No</sys:String>
+
+    <sys:String x:Key="values_viewer_new_key_default">New Key #1</sys:String>
+    <sys:String x:Key="values_viewer_new_value_default">New Value #1</sys:String>
+
+    <sys:String x:Key="values_viewer_status_ready">Ready.</sys:String>
+    <sys:String x:Key="values_viewer_status_error">Error: {0}</sys:String>
+    <sys:String x:Key="values_viewer_status_error_open">Error opening key: {0}</sys:String>
+
+    <sys:String x:Key="values_viewer_status_unlocked">Key unlocked. You now have full control.</sys:String>
+    <sys:String x:Key="values_viewer_status_unlock_failed">Failed to unlock key. Check debug logs.</sys:String>
+
+    <sys:String x:Key="values_viewer_status_restored">Ownership safely restored to TrustedInstaller.</sys:String>
+    <sys:String x:Key="values_viewer_status_restore_failed">Failed to restore ownership. Check debug logs.</sys:String>
+
+    <sys:String x:Key="values_viewer_status_api_key_req">Please enter an API Key for {0} in Settings.</sys:String>
+    <sys:String x:Key="values_viewer_status_connecting">Connecting to {0}...</sys:String>
+    <sys:String x:Key="values_viewer_status_connected_success">Successfully connected to {0}.</sys:String>
+    <sys:String x:Key="values_viewer_status_connected_failed">Connection to {0} failed. Check your API key.</sys:String>
+
+    <sys:String x:Key="values_viewer_status_ai_disabled">AI Explainer disabled. No API key found.</sys:String>
+    <sys:String x:Key="values_viewer_status_ai_verifying">Verifying {0} connection...</sys:String>
+    <sys:String x:Key="values_viewer_status_ai_connected">Connected to {0}.</sys:String>
+    <sys:String x:Key="values_viewer_status_ai_conn_failed">{0} connection failed.</sys:String>
+
+    <sys:String x:Key="values_viewer_ai_analyzing">Analyzing registry value...</sys:String>
+    <sys:String x:Key="values_viewer_ai_failed">Failed to get explanation: {0}</sys:String>
+
+    <sys:String x:Key="values_viewer_status_renamed">Successfully renamed to '{0}'.</sys:String>
+    <sys:String x:Key="values_viewer_status_rename_failed">Rename failed: {0}</sys:String>
+
+    <sys:String x:Key="values_viewer_status_deleted">Successfully deleted '{0}'.</sys:String>
+    <sys:String x:Key="values_viewer_status_delete_failed">Failed to delete value: {0}</sys:String>
+
+    <sys:String x:Key="values_viewer_status_created_key">Created '{0}'. (Refresh the left tree to see it)</sys:String>
+    <sys:String x:Key="values_viewer_status_create_failed">Failed to create key: {0}</sys:String>
+
+    <sys:String x:Key="values_viewer_status_created_val">{0} created successfully.</sys:String>
+    <sys:String x:Key="values_viewer_status_val_failed">Failed: {0}</sys:String>
+
+    <sys:String x:Key="values_viewer_status_invalid_path">Invalid Registry Path: Could not resolve '{0}'.</sys:String>
+
+    <sys:String x:Key="treeview_new_key_default">New Key #1</sys:String>
+
+    <sys:String x:Key="treeview_delete_title">Confirm Key Delete</sys:String>
+    <sys:String x:Key="treeview_delete_content">Are you sure you want to permanently delete this key and all of its subkeys?&#x0a;&#x0a;{0}</sys:String>
+    <sys:String x:Key="treeview_delete_yes">Yes</sys:String>
+    <sys:String x:Key="treeview_delete_no">No</sys:String>
+
+    <sys:String x:Key="treeview_status_deleted">Successfully deleted '{0}'.</sys:String>
+    <sys:String x:Key="treeview_status_delete_failed">Failed to delete key: {0}</sys:String>
+
+    <sys:String x:Key="treeview_status_renamed">Successfully renamed to '{0}'.</sys:String>
+    <sys:String x:Key="treeview_status_rename_failed">Failed to rename key: {0}</sys:String>
+
+    <sys:String x:Key="treeview_ai_analyzing">Analyzing registry key...</sys:String>
+    <sys:String x:Key="treeview_ai_failed">Failed to get explanation: {0}</sys:String>
+
+    <sys:String x:Key="treeview_nav_root_not_found">Could not find Root Hive in Tree.</sys:String>
+    <sys:String x:Key="treeview_nav_folder_not_found">Navigation stopped: Could not find folder '{0}'.</sys:String>
+
+    <sys:String x:Key="values_vm_default_name">(Default)</sys:String>
+    <sys:String x:Key="values_vm_zero_length_binary">(zero-length binary value)</sys:String>
+    <sys:String x:Key="values_vm_value_not_set">(Value not set)</sys:String>
+
+    <sys:String x:Key="values_vm_ready">Ready.</sys:String>
+
+    <sys:String x:Key="values_vm_refreshing_undo">Refreshing values after Undo...</sys:String>
+    <sys:String x:Key="values_vm_refresh_failed">Failed to refresh: {0}</sys:String>
+    <sys:String x:Key="values_vm_undo_success">Undo successful. Ready.</sys:String>
+
+    <sys:String x:Key="values_vm_snapshot_a_start">Starting Snapshot A. This may take a moment...</sys:String>
+    <sys:String x:Key="values_vm_snapshot_a_scan">Snapshot A: Scanned {0} keys...</sys:String>
+    <sys:String x:Key="values_vm_snapshot_a_complete">Snapshot A complete. Make your Windows changes, then take Snapshot B.</sys:String>
+
+    <sys:String x:Key="values_vm_snapshot_b_error">Error: You must take Snapshot A before taking Snapshot B.</sys:String>
+    <sys:String x:Key="values_vm_snapshot_b_start">Starting Snapshot B. This may take a moment...</sys:String>
+    <sys:String x:Key="values_vm_snapshot_b_scan">Snapshot B: Scanned {0} keys...</sys:String>
+
+    <sys:String x:Key="values_vm_comparing_snapshots">Comparing snapshots. Calculating differences...</sys:String>
+    <sys:String x:Key="values_vm_compare_complete">Comparison complete! Found {0} registry changes.</sys:String>
+
+    <sys:String x:Key="values_vm_searching_registry">Searching registry for '{0}'...</sys:String>
+    <sys:String x:Key="values_vm_search_cancelled">Search cancelled. Found {0} matches.</sys:String>
+    <sys:String x:Key="values_vm_search_finished">Finished searching. Found {0} matches.</sys:String>
+    <sys:String x:Key="values_vm_search_aborted">Search aborted: {0}</sys:String>
+    <sys:String x:Key="values_vm_searching_found">Searching... Found {0} matches.</sys:String>
+
+    <sys:String x:Key="values_vm_loading_values">Loading values...</sys:String>
+    <sys:String x:Key="values_vm_load_keys_failed">Failed to load keys: {0}</sys:String>
+    <!-- endregion Registry Editor -->
 </ResourceDictionary>

@@ -122,6 +122,13 @@ namespace EvolveOS_Optimizer.Core
         }
         #endregion
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct InteropPoint
+        {
+            public int X;
+            public int Y;
+        }
+
         public static class Windows
         {
             #region Memory Management Structs

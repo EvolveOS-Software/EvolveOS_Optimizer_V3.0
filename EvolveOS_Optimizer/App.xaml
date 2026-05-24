@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="ms-appx:///Styles/Display/Badges.xaml" />
                 <ResourceDictionary Source="ms-appx:///Styles/Display/Cards.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Display/TextBlock.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Styles/Display/Registry.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Color x:Key="MyDynamicAccentColor">#FF0078D4</Color>

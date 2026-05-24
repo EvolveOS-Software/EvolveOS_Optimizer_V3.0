@@ -584,7 +584,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["OpenRouterApiKey"] = "",
             ["CohereApiKey"] = "",
             ["MistralApiKey"] = "",
-            ["AiUseLocalization"] = true
+            ["AiUseLocalization"] = true,
+
+            ["EnableFindHotkey"] = false,
+            ["FindHotkeyModifier"] = (int)(VirtualKeyModifiers.Control),
+            ["FindHotkeyKey"] = (int)VirtualKey.F,
+            ["HideRegistryWarning"] = false
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -633,6 +638,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string CohereApiKey { get => (string)_cachedSettings["CohereApiKey"]; set => ChangingParameters("CohereApiKey", value); }
         internal static string MistralApiKey { get => (string)_cachedSettings["MistralApiKey"]; set => ChangingParameters("MistralApiKey", value); }
         internal static bool AiUseLocalization { get => (bool)_cachedSettings["AiUseLocalization"]; set => ChangingParameters("AiUseLocalization", value); }
+
+        internal static bool IsFindHotkeyEnabled { get => (bool)_cachedSettings["EnableFindHotkey"]; set => ChangingParameters("EnableFindHotkey", value); }
+        internal static int FindHotkeyModifier { get => (int)_cachedSettings["FindHotkeyModifier"]; set => ChangingParameters("FindHotkeyModifier", value); }
+        internal static int FindHotkeyKey { get => (int)_cachedSettings["FindHotkeyKey"]; set => ChangingParameters("FindHotkeyKey", value); }
+        internal static bool HideRegistryWarning { get => (bool)_cachedSettings["HideRegistryWarning"]; set => ChangingParameters("HideRegistryWarning", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)

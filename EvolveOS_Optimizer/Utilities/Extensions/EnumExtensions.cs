@@ -1,4 +1,9 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
+using System.Reflection;
 using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Utilities.Extensions
 {
@@ -51,6 +56,42 @@ namespace EvolveOS_Optimizer.Utilities.Extensions
 
             var firstDigit = obj.ToString()[0];
             return !char.IsDigit(firstDigit) && firstDigit != '-';
+        }
+
+        public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            var index = 0;
+
+            foreach (var item in source)
+            {
+                if (predicate(item)) return index;
+
+                index++;
+            }
+
+            return -1;
+        }
+
+        public static TEnum GetEnum<TEnum>(string text) where TEnum : struct
+        {
+            if (!typeof(TEnum).GetTypeInfo().IsEnum)
+            {
+                throw new InvalidOperationException("Generic parameter 'TEnum' must be an enum.");
+            }
+            return Enum.Parse<TEnum>(text);
+        }
+
+        public static IEnumerable<KeyItem> GetFlattenNodes(this IEnumerable<KeyItem> masterList)
+        {
+            foreach (var node in masterList)
+            {
+                yield return node;
+
+                foreach (var children in node.Children.GetFlattenNodes())
+                {
+                    yield return children;
+                }
+            }
         }
     }
 }

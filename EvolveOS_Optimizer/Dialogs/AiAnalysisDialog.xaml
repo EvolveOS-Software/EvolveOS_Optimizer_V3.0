@@ -1,0 +1,24 @@
+<ContentDialog
+    x:Class="EvolveOS_Optimizer.Dialogs.AiAnalysisDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    Title="{helpers:ResourceString Key=ai_analysis_dialog_title}"
+    CloseButtonText="{helpers:ResourceString Key=ai_analysis_dialog_close}"
+    DefaultButton="Close"
+    Style="{StaticResource DefaultContentDialogStyle}">
+
+    <StackPanel Spacing="16" MinWidth="400" MaxWidth="600">
+        <StackPanel x:Name="LoadingPanel" Orientation="Horizontal" Spacing="12">
+            <ProgressRing IsActive="True" Width="24" Height="24" />
+            <TextBlock helpers:Loc.Key="ai_analysis_dialog_loading" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <ScrollViewer x:Name="ResultScrollViewer" MaxHeight="400" Visibility="Collapsed">
+            <TextBlock x:Name="AiResponseText" 
+                       TextWrapping="Wrap" 
+                       FontSize="14" 
+                       LineHeight="20" />
+        </ScrollViewer>
+    </StackPanel>
+</ContentDialog>

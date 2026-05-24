@@ -555,6 +555,7 @@ namespace EvolveOS_Optimizer
                 "SystemCleaner" => typeof(Pages.DiskCleanupPage),
                 "Software" => typeof(Pages.SoftwareCenterPage),
                 "GroupPolicy" => typeof(Pages.GroupPolicyPage),
+                "RegistryEditor" => typeof(Pages.RegistryEditorPage),
                 "Tweaks" => typeof(Pages.TweaksPage),
                 "Utilities" => typeof(Pages.UtilitiesPage),
                 "Scripts" => typeof(Pages.ScriptsPage),
@@ -614,14 +615,12 @@ namespace EvolveOS_Optimizer
             {
                 BtnNavUtilities.IsChecked = true;
             }
-            else if (tag == "Diagnostics")
-            {
-                BtnNavDiagnostics.IsChecked = true;
-            }
-            else if (tag == "SystemManager")
-            {
-                BtnNavSystemManager.IsChecked = true;
-            }
+            else if (tag == "Diagnostics") BtnNavDiagnostics.IsChecked = true;
+            else if (tag == "SystemManager") BtnNavSystemManager.IsChecked = true;
+            else if (tag == "Home") BtnNavHome.IsChecked = true;
+            else if (tag == "Software") BtnNavSoftware.IsChecked = true;
+            else if (tag == "SystemCleaner") BtnNavSystemCleaner.IsChecked = true;
+            else if (tag == "RegistryEditor") BtnNavRegEditor.IsChecked = true;
         }
 
         private void SidebarContainer_PointerEntered(object sender, PointerRoutedEventArgs e)

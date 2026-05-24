@@ -1,3 +1,5 @@
+
+
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -112,15 +114,17 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         #region Registration Logic
 
-        public void Register(uint modifiers, uint key, Action action)
+        public Task<bool> Register(uint modifiers, uint key, Action action)
         {
             var hotkey = new Hotkey((VirtualKeyModifiers)modifiers, (VirtualKey)key);
-            Register(hotkey, action);
+            return Register(hotkey, action);
         }
 
-        public bool Register(Hotkey hotkey, Action action)
+        public Task<bool> Register(Hotkey hotkey, Action action)
         {
-            if (!_isSupported || hotkey == null || action == null || !_isRunning) return false;
+            if (!_isSupported || hotkey == null || action == null || !_isRunning) return Task.FromResult(false);
+
+            var tcs = new TaskCompletionSource<bool>();
 
             _threadActions.Enqueue(() =>
             {
@@ -137,23 +141,26 @@ namespace EvolveOS_Optimizer.Utilities.Services
                     {
                         _registeredActions[id] = action;
                         if (!_registeredKeys.Contains(hotkey)) _registeredKeys.Add(hotkey);
-                        Debug.WriteLine($"[Hotkey] Registered {hotkey.Modifiers} + {hotkey.Key} on Thread {_threadId}");
+                        System.Diagnostics.Debug.WriteLine($"[Hotkey] Registered {hotkey.Modifiers} + {hotkey.Key} on Thread {_threadId}");
                     }
                     else
                     {
                         int error = Marshal.GetLastWin32Error();
-                        Debug.WriteLine($"[Hotkey] Failed to register. Error code: {error}");
+                        System.Diagnostics.Debug.WriteLine($"[Hotkey] Failed to register. Error code: {error}");
                     }
+
+                    tcs.SetResult(result);
                 }
                 catch (Exception ex)
                 {
                     ErrorLogging.LogDebug(ex);
+                    tcs.SetResult(false);
                 }
             });
 
             Win32Helper.PostThreadMessage(_threadId, Win32Helper.WM_USER_REGISTER_HOTKEY, IntPtr.Zero, IntPtr.Zero);
 
-            return true;
+            return tcs.Task;
         }
 
         public bool Unregister(Hotkey hotkey)

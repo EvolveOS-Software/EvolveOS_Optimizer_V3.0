@@ -17,6 +17,8 @@ namespace EvolveOS_Optimizer.Utilities.Services
         private static readonly HttpClient _http = new();
         private static readonly Dictionary<string, string> _cache = new(StringComparer.OrdinalIgnoreCase);
 
+        public static bool IsAiReady { get; set; } = false;
+
         private static string TestPrompt => ResourceString.GetString("ai_explainer_test_prompt")
             ?? "Based on the following facts, describe EvolveOS Optimizer in 2 short sentences: " +
                "It is a modern, self-contained Windows management suite built with WinUI 3. " +

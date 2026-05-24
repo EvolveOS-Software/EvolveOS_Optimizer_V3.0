@@ -10,6 +10,7 @@
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:vm="using:EvolveOS_Optimizer.Core.ViewModel"
     xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
+    xmlns:controls="using:FluentIcons.WinUI"
     xmlns:tb="using:H.NotifyIcon"
     mc:Ignorable="d" 
     d:Height="870" 
@@ -399,7 +400,7 @@
                               HorizontalAlignment="Left">
 
                     <StackPanel Orientation="Vertical" Spacing="4" Padding="10,10,0,0" HorizontalAlignment="Left">
-                        <RadioButton Style="{StaticResource BtnNavigation}"
+                        <RadioButton x:Name="BtnNavHome" Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Home"
                                      IsTabStop="False"
@@ -440,7 +441,7 @@
                                      CommandParameter="Software"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Software_Center'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE74C;" FontSize="18"/>
+                            <controls:SymbolIcon Symbol="AppGeneric" />
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -449,6 +450,14 @@
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_GroupPolicy'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE9D5;" FontSize="18"/>
+                        </RadioButton>
+
+                        <RadioButton x:Name="BtnNavRegEditor" Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="RegistryEditor"
+                                     IsTabStop="False"
+                                     Tag="{x:Bind GetText('Nav_RegistryEditor'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xE74C;" FontSize="18"/>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"

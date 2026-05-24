@@ -1,0 +1,68 @@
+<Page
+    x:Class="EvolveOS_Optimizer.Pages.RegistryEditorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    mc:Ignorable="d">
+
+    <Grid Padding="5,24,24,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Grid.Row="0"
+            Orientation="Horizontal"
+            Spacing="12"
+            Margin="0,-12,0,5">
+            <FontIcon
+                Glyph="&#xE74C;"
+                FontSize="24"
+                Foreground="{ThemeResource MyDynamicAccentBrush}"
+                VerticalAlignment="Center"/>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock helpers:Loc.Key="registry_editor_page_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="24" />
+                <TextBlock helpers:Loc.Key="registry_editor_page_description" FontFamily="{ThemeResource Jura}" FontSize="13" Opacity="0.6"/>
+            </StackPanel>
+        </StackPanel>
+
+        <NavigationView x:Name="WorkspaceNavView"
+                        Grid.Row="1"
+                        PaneDisplayMode="Top"
+                        IsBackButtonVisible="Collapsed"
+                        IsSettingsVisible="False" 
+                        Background="Transparent"
+                        SelectionChanged="WorkspaceNavView_SelectionChanged">
+
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+            </NavigationView.Resources>
+
+            <NavigationView.PaneFooter>
+                <NavigationViewItem x:Name="AddWorkspaceButton" Margin="0,0,-6,0" SelectsOnInvoked="False" Tapped="AddWorkspaceButton_Tapped">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE710;"/>
+                    </NavigationViewItem.Icon>
+                    <NavigationViewItem.Content>
+                        <TextBlock helpers:Loc.Key="registry_editor_page_new_workspace" FontFamily="{ThemeResource Jura-SemiBold}"/>
+                    </NavigationViewItem.Content>
+                </NavigationViewItem>
+            </NavigationView.PaneFooter>
+
+            <ContentControl x:Name="WorkspaceContainer" 
+                            HorizontalAlignment="Stretch" 
+                            VerticalAlignment="Stretch" 
+                            HorizontalContentAlignment="Stretch" 
+                            VerticalContentAlignment="Stretch" 
+                            Margin="0,6,0,0"/>
+
+        </NavigationView>
+
+    </Grid>
+</Page>

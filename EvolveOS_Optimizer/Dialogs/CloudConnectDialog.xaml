@@ -1,0 +1,54 @@
+<ContentDialog
+    x:Class="EvolveOS_Optimizer.Dialogs.CloudConnectDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:fluentIcons="using:FluentIcons.WinUI"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    Title="{helpers:ResourceString Key=cloud_connect_dialog_title}"
+    PrimaryButtonText="{helpers:ResourceString Key=cloud_connect_dialog_save_connect}"
+    CloseButtonText="{helpers:ResourceString Key=cloud_connect_dialog_cancel}"
+    DefaultButton="Primary"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    Style="{StaticResource DefaultContentDialogStyle}">
+
+    <StackPanel Spacing="16" Width="350">
+        <TextBlock helpers:Loc.Key="cloud_connect_dialog_subtitle" TextWrapping="Wrap" Opacity="0.8" />
+
+        <Expander Header="{helpers:ResourceString Key=cloud_connect_dialog_ai_provider}" HorizontalAlignment="Stretch" IsExpanded="True">
+            <StackPanel Spacing="12" Margin="0,8,0,0">
+                <ComboBox x:Name="CmbProvider" Header="{helpers:ResourceString Key=cloud_connect_dialog_select_provider}" HorizontalAlignment="Stretch">
+                    <ComboBoxItem Content="Google Gemini" Tag="Gemini" />
+                    <ComboBoxItem Content="Groq Cloud" Tag="Groq" />
+                    <ComboBoxItem Content="OpenRouter" Tag="OpenRouter" />
+                    <ComboBoxItem Content="Cohere" Tag="Cohere" />
+                    <ComboBoxItem Content="Mistral AI" Tag="Mistral" />
+                </ComboBox>
+
+                <Grid ColumnDefinitions="*, Auto">
+                    <PasswordBox x:Name="TxtApiKey"
+                                 Header="{helpers:ResourceString Key=cloud_connect_dialog_secure_api_key}"
+                                 PlaceholderText="{helpers:ResourceString Key=cloud_connect_dialog_paste_key}"
+                                 Grid.Column="0" />
+
+                    <ToggleButton x:Name="BtnReveal"
+                                  Grid.Column="1"
+                                  Margin="8,24,0,0"
+                                  VerticalAlignment="Center"
+                                  ToolTipService.ToolTip="{helpers:ResourceString Key=cloud_connect_dialog_reveal_key}"
+                                  Checked="BtnReveal_Checked"
+                                  Unchecked="BtnReveal_Unchecked">
+
+                        <fluentIcons:SymbolIcon x:Name="RevealIcon" Symbol="Eye" />
+                    </ToggleButton>
+                </Grid>
+            </StackPanel>
+        </Expander>
+
+        <Expander Header="{helpers:ResourceString Key=cloud_connect_dialog_cloud_sync}" HorizontalAlignment="Stretch">
+            <StackPanel Spacing="12" Margin="0,8,0,0">
+                <TextBlock helpers:Loc.Key="cloud_connect_dialog_sync_desc" Opacity="0.8" FontSize="12" />
+                <Button Content="{helpers:ResourceString Key=cloud_connect_dialog_sign_in}" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" />
+            </StackPanel>
+        </Expander>
+    </StackPanel>
+</ContentDialog>

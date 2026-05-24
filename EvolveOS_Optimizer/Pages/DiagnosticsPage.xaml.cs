@@ -363,13 +363,13 @@ namespace EvolveOS_Optimizer.Pages
         private async void FixHardwareButton_Click(object sender, RoutedEventArgs e)
         {
             var vm = ViewModel;
-            if (vm != null && sender is Button button && button.DataContext is EvolveOS_Optimizer.Core.Model.HardwareIssue selectedIssue)
+            if (vm != null && sender is Button button && button.DataContext is HardwareIssue selectedIssue)
             {
                 await vm.FixHardwareAsync(selectedIssue);
             }
         }
 
-        private async void StartFullScan_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private async void StartFullScan_Click(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null && !ViewModel.IsScanning)
             {
@@ -378,7 +378,7 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private async void Expander_Expanding(Microsoft.UI.Xaml.Controls.Expander sender, Microsoft.UI.Xaml.Controls.ExpanderExpandingEventArgs args)
+        private async void Expander_Expanding(Expander sender, ExpanderExpandingEventArgs args)
         {
             await Task.Delay(150);
 

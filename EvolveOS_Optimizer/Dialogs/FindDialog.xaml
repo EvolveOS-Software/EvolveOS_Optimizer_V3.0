@@ -1,0 +1,44 @@
+<ContentDialog
+    x:Class="EvolveOS_Optimizer.Dialogs.FindDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    Title="{helpers:ResourceString Key=find_dialog_title}"
+    PrimaryButtonText="{helpers:ResourceString Key=find_dialog_primary_btn}"
+    CloseButtonText="{helpers:ResourceString Key=find_dialog_close_btn}"
+    DefaultButton="Primary"
+    Style="{StaticResource DefaultContentDialogStyle}">
+
+    <StackPanel MinWidth="320" Spacing="8" Margin="0,8,0,0">
+
+        <TextBox
+            x:Name="SearchInput"
+            Header="{helpers:ResourceString Key=find_dialog_find_what}"
+            PlaceholderText="{helpers:ResourceString Key=find_dialog_placeholder}"
+            TextChanged="SearchInput_TextChanged" />
+
+        <TextBlock helpers:Loc.Key="find_dialog_look_at" FontWeight="SemiBold" Margin="0,12,0,0" />
+
+        <CheckBox x:Name="ChkKeys" Content="{helpers:ResourceString Key=find_dialog_chk_keys}" IsChecked="True" />
+        <CheckBox x:Name="ChkValues" Content="{helpers:ResourceString Key=find_dialog_chk_values}" IsChecked="True" />
+        <CheckBox x:Name="ChkData" Content="{helpers:ResourceString Key=find_dialog_chk_data}" IsChecked="True" />
+
+        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,8" />
+
+        <CheckBox x:Name="ChkWholeString" Content="{helpers:ResourceString Key=find_dialog_chk_whole_string}" />
+
+        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
+        <Expander Header="{helpers:ResourceString Key=find_dialog_expander_shortcuts}" HorizontalAlignment="Stretch" ExpandDirection="Down">
+            <StackPanel Spacing="12" Margin="0,4,0,4">
+                <StackPanel Spacing="4">
+                    <TextBlock helpers:Loc.Key="find_dialog_lbl_find_hotkey" FontSize="13" FontWeight="Medium" />
+                    <TextBox x:Name="TxtFindHotkey" IsReadOnly="True" PlaceholderText="{helpers:ResourceString Key=find_dialog_placeholder_hotkey}" PreviewKeyDown="HotkeyTextBox_PreviewKeyDown" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+
+                <Button Content="{helpers:ResourceString Key=find_dialog_btn_commit_shortcut}" Click="OnSaveShortcutsClick" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Margin="0,4,0,0"/>
+            </StackPanel>
+        </Expander>
+
+    </StackPanel>
+</ContentDialog>

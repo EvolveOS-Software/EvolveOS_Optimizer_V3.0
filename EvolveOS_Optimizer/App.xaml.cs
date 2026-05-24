@@ -1,6 +1,7 @@
 using System.IO;
 using System.Security.Principal;
 using System.Threading;
+using CommunityToolkit.Mvvm.Messaging;
 using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
@@ -46,6 +47,8 @@ namespace EvolveOS_Optimizer
         private static PasswordGeneratorWindow? _passwordGeneratorWindow;
 
         public static new App Current => (App)Application.Current;
+
+        public static IntPtr WindowHandle { get; private set; }
 
         public App()
         {
@@ -165,7 +168,7 @@ namespace EvolveOS_Optimizer
                 await Task.Delay(500);
                 UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
 
-                NotifyHotkeySettingsChanged();
+                await NotifyHotkeySettingsChanged();
 
                 _ = StartBackgroundServices();
 
@@ -307,7 +310,7 @@ namespace EvolveOS_Optimizer
             return false;
         }
 
-        public static bool NotifyHotkeySettingsChanged()
+        public static async Task<bool> NotifyHotkeySettingsChanged()
         {
             HotkeySettingsChanged?.Invoke(null, EventArgs.Empty);
 
@@ -325,7 +328,7 @@ namespace EvolveOS_Optimizer
                     LocalMachineSettingsEngine.OptimizationKey
                 );
 
-                bool success = service.Register(hotkey, () =>
+                bool success = await service.Register(hotkey, () =>
                 {
                     Task.Run(() => RunGlobalOptimizationAsync());
                 });
@@ -344,7 +347,7 @@ namespace EvolveOS_Optimizer
                     (Windows.System.VirtualKey)SettingsEngine.PasswordGenHotkeyKey
                 );
 
-                bool success = service.Register(pwHotkey, () =>
+                bool success = await service.Register(pwHotkey, () =>
                 {
                     UIThreadDispatcher?.TryEnqueue(DispatcherQueuePriority.Normal, () =>
                     {
@@ -369,7 +372,7 @@ namespace EvolveOS_Optimizer
                     (Windows.System.VirtualKey)LocalMachineSettingsEngine.TranslationHotkeyKey
                 );
 
-                bool success = service.Register(locHotkey, () =>
+                bool success = await service.Register(locHotkey, () =>
                 {
                     UIThreadDispatcher?.TryEnqueue(DispatcherQueuePriority.Normal, async () =>
                     {
@@ -384,8 +387,29 @@ namespace EvolveOS_Optimizer
                 }
             }
 
-            return allSuccess;
+            if (LocalMachineSettingsEngine.IsFindHotkeyEnabled)
+            {
+                var findHotkey = new Hotkey(
+                    (Windows.System.VirtualKeyModifiers)LocalMachineSettingsEngine.FindHotkeyModifier,
+                    (Windows.System.VirtualKey)LocalMachineSettingsEngine.FindHotkeyKey
+                );
 
+                bool success = await service.Register(findHotkey, () =>
+                {
+                    UIThreadDispatcher?.TryEnqueue(DispatcherQueuePriority.Normal, () =>
+                    {
+                        WeakReferenceMessenger.Default.Send(new OpenFindDialogMessage());
+                    });
+                });
+
+                if (!success)
+                {
+                    ShowNotification("Hotkey Conflict", $"The Find Hotkey {findHotkey} is already assigned or restricted.", InfoBarSeverity.Warning, 5000);
+                    allSuccess = false;
+                }
+            }
+
+            return allSuccess;
         }
 
         private static void OpenPasswordGeneratorWindow()

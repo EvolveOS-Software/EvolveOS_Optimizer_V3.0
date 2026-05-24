@@ -993,7 +993,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Settings & Configuration Properties (Maintenance)
         public List<VirtualKey> KeyboardKeys => _hotKeyService.Keys;
-        public Dictionary<VirtualKeyModifiers, string> KeyboardModifiers => _hotKeyService.Modifiers;
+        //public Dictionary<VirtualKeyModifiers, string> KeyboardModifiers => _hotKeyService.Modifiers;
+        private List<ModifierOption>? _keyboardModifiers;
+        public List<ModifierOption> KeyboardModifiers
+        {
+            get
+            {
+                if (_keyboardModifiers == null)
+                {
+                    _keyboardModifiers = _hotKeyService.Modifiers
+                        .Select(x => new ModifierOption { Key = x.Key, Label = x.Value })
+                        .ToList();
+                }
+                return _keyboardModifiers;
+            }
+        }
 
         public VirtualKey OptimizationKey
         {
@@ -1005,22 +1019,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     LocalMachineSettingsEngine.OptimizationKey = value;
                     OnPropertyChanged(nameof(OptimizationKey));
-                    IsOptimizationKeyValid = App.NotifyHotkeySettingsChanged();
+                    UpdateHotkeyValidityAsync();
                 }
             }
         }
 
-        public VirtualKeyModifiers OptimizationModifiers
+        public ModifierOption? SelectedOptimizationModifier
         {
-            get => LocalMachineSettingsEngine.OptimizationModifiers;
+            get => KeyboardModifiers.FirstOrDefault(x => x.Key == LocalMachineSettingsEngine.OptimizationModifiers);
             set
             {
-                if (value == VirtualKeyModifiers.None || (int)value == 0) return;
-                if (value != LocalMachineSettingsEngine.OptimizationModifiers)
+                if (value == null || value.Key == VirtualKeyModifiers.None || (int)value.Key == 0) return;
+
+                if (value.Key != LocalMachineSettingsEngine.OptimizationModifiers)
                 {
-                    LocalMachineSettingsEngine.OptimizationModifiers = value;
-                    OnPropertyChanged(nameof(OptimizationModifiers));
-                    IsOptimizationKeyValid = App.NotifyHotkeySettingsChanged();
+                    LocalMachineSettingsEngine.OptimizationModifiers = value.Key;
+
+                    OnPropertyChanged(nameof(SelectedOptimizationModifier));
+                    UpdateHotkeyValidityAsync();
                 }
             }
         }
@@ -1047,9 +1063,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     LocalMachineSettingsEngine.UseHotkey = value;
                     OnPropertyChanged(nameof(UseHotkey));
-                    IsOptimizationKeyValid = App.NotifyHotkeySettingsChanged();
+                    UpdateHotkeyValidityAsync();
                 }
             }
+        }
+
+        private async void UpdateHotkeyValidityAsync()
+        {
+            IsOptimizationKeyValid = await App.NotifyHotkeySettingsChanged();
         }
 
         public bool RestartExplorerAfterOptimization
@@ -4560,7 +4581,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private void OnHotkeySettingsChanged(object? sender, EventArgs e)
         {
             OnPropertyChanged(nameof(OptimizationKey));
-            OnPropertyChanged(nameof(OptimizationModifiers));
+            OnPropertyChanged(nameof(SelectedOptimizationModifier));
             OnPropertyChanged(nameof(UseHotkey));
         }
 
@@ -4574,7 +4595,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     if (UseHotkey)
                     {
-                        IsOptimizationKeyValid = App.NotifyHotkeySettingsChanged();
+                        UpdateHotkeyValidityAsync();
                     }
 
                     if (Computer != null)

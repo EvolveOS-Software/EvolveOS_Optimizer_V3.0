@@ -22,7 +22,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsComboEnabled));
 
-                    App.NotifyHotkeySettingsChanged();
+                    _ = App.NotifyHotkeySettingsChanged();
                 }
             }
         }
@@ -36,7 +36,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     SettingsEngine.PasswordGenHotkeyModifier = (int)value;
                     OnPropertyChanged();
-                    App.NotifyHotkeySettingsChanged();
+                    _ = App.NotifyHotkeySettingsChanged();
                 }
             }
         }
@@ -50,7 +50,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     SettingsEngine.PasswordGenHotkeyKey = (int)value;
                     OnPropertyChanged();
-                    App.NotifyHotkeySettingsChanged();
+                    _ = App.NotifyHotkeySettingsChanged();
                 }
             }
         }

@@ -917,7 +917,7 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     LocalMachineSettingsEngine.IsTranslationHotkeyEnabled = value;
                     OnPropertyChanged();
-                    App.NotifyHotkeySettingsChanged();
+                    _ = App.NotifyHotkeySettingsChanged();
                 }
             }
         }
@@ -986,14 +986,14 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (!_isInitialized || CbTranslationModifier.SelectedItem is not ComboBoxItem item) return;
             LocalMachineSettingsEngine.TranslationHotkeyModifier = (int)item.Tag;
-            App.NotifyHotkeySettingsChanged();
+            _ = App.NotifyHotkeySettingsChanged();
         }
 
         private void CbTranslationKey_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!_isInitialized || CbTranslationKey.SelectedItem is not ComboBoxItem item) return;
             LocalMachineSettingsEngine.TranslationHotkeyKey = (int)item.Tag;
-            App.NotifyHotkeySettingsChanged();
+            _ = App.NotifyHotkeySettingsChanged();
         }
 
         private async void CreateNewLanguage_Click(object sender, RoutedEventArgs e)

@@ -27,7 +27,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Fields
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
+
         private string _currentViewTag = "Home";
+        public string PreviousViewTag { get; private set; } = "Home";
+
+        public string CurrentViewTag
+        {
+            get => _currentViewTag;
+            set
+            {
+                if (_currentViewTag != value)
+                {
+                    PreviousViewTag = _currentViewTag;
+
+                    _currentViewTag = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private ImageSource? _displayProfileAvatar;
         private string? _displayProfileName;
         private bool _isNeedUpdate;
@@ -83,7 +101,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     LocalMachineSettingsEngine.UseHotkey = value;
                     OnPropertyChanged();
-                    App.NotifyHotkeySettingsChanged();
+                    _ = App.NotifyHotkeySettingsChanged();
                 }
             }
         }
@@ -97,7 +115,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     LocalMachineSettingsEngine.OptimizationModifiers = value;
                     OnPropertyChanged();
-                    App.NotifyHotkeySettingsChanged();
+                    _ = App.NotifyHotkeySettingsChanged();
                 }
             }
         }
@@ -111,10 +129,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     LocalMachineSettingsEngine.OptimizationKey = value;
                     OnPropertyChanged();
-                    App.NotifyHotkeySettingsChanged();
+                    _ = App.NotifyHotkeySettingsChanged();
                 }
             }
         }
+
+
 
         public bool IsOverlayVisible
         {
@@ -124,19 +144,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (_isOverlayVisible != value)
                 {
                     _isOverlayVisible = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public string CurrentViewTag
-        {
-            get => _currentViewTag;
-            set
-            {
-                if (_currentViewTag != value)
-                {
-                    _currentViewTag = value;
                     OnPropertyChanged();
                 }
             }
@@ -369,7 +376,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (CurrentViewTag == "Home" ||
                 CurrentViewTag == "Diagnostics" ||
                 CurrentViewTag == "SystemManager" ||
-                CurrentViewTag == "Software")
+                CurrentViewTag == "Software" ||
+                CurrentViewTag == "RegistryEditor")
             {
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
@@ -478,7 +486,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 tag == "Diagnostics" ||
                 tag == "SystemManager" ||
                 tag == "Software" ||
-                tag == "SystemCleaner")
+                tag == "SystemCleaner" ||
+                tag == "RegistryEditor")
             {
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);

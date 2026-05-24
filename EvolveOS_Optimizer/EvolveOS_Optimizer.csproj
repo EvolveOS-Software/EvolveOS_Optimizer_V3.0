@@ -13,6 +13,7 @@
         <ApplicationIcon>Assets\EvolveOS_Optimizer.ico</ApplicationIcon>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <CsWinRTIncludes>Microsoft.Management.Deployment</CsWinRTIncludes>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -80,6 +81,7 @@
         <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
         <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
         <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+        <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.251219" />
         <PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.2.250604" />
         <PackageReference Include="DnsClient" Version="1.8.0" />
         <PackageReference Include="FluentIcons.WinUI" Version="2.1.326" />
@@ -96,6 +98,8 @@
         <PackageReference Include="System.Management" Version="10.0.8" />
         <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.8" />
         <PackageReference Include="TaskScheduler" Version="2.12.2" />
+        <PackageReference Include="Vanara.PInvoke.Kernel32" Version="5.0.5" />
+        <PackageReference Include="Vanara.PInvoke.Security" Version="5.0.5" />
         <PackageReference Include="vocaluxe.dependencies.netfwtypelib" Version="1.0.1">
             <EmbedInteropTypes>True</EmbedInteropTypes>
         </PackageReference>

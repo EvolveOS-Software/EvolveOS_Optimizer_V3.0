@@ -4,6 +4,7 @@ using System.Security;
 using System.Text;
 using EvolveOS_Optimizer.Core;
 using Microsoft.Win32.SafeHandles;
+using static EvolveOS_Optimizer.Core.Structs;
 using static EvolveOS_Optimizer.Core.Structs.Windows;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
@@ -350,6 +351,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern SafeFileHandle CreateFileW(string lpFileName, uint dwDesiredAccess, uint dwShareMode, IntPtr lpSecurityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, IntPtr hTemplateFile);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetCursorPos(out InteropPoint lpPoint);
 
         #endregion
 
