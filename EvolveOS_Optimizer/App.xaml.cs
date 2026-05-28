@@ -264,35 +264,21 @@ namespace EvolveOS_Optimizer
 
         public static void SetPriority(Enums.Priority priority)
         {
-            var (boost, procClass, threadPri, threadLevel, isEfficiencyMode) = priority switch
+            var (boost, procClass, isEfficiencyMode) = priority switch
             {
-                Enums.Priority.Low => (false, ProcessPriorityClass.Idle, ThreadPriority.Lowest, ThreadPriorityLevel.Idle, true),
-                Enums.Priority.Normal => (true, ProcessPriorityClass.Normal, ThreadPriority.Normal, ThreadPriorityLevel.Normal, false),
-                Enums.Priority.High => (true, ProcessPriorityClass.High, ThreadPriority.Highest, ThreadPriorityLevel.Highest, false),
+                Enums.Priority.Low => (false, ProcessPriorityClass.Idle, true),
+                Enums.Priority.Normal => (true, ProcessPriorityClass.Normal, false),
+                Enums.Priority.High => (true, ProcessPriorityClass.High, false),
                 _ => throw new NotImplementedException()
             };
 
             try
             {
-                Thread.CurrentThread.Priority = threadPri;
                 var process = Process.GetCurrentProcess();
                 process.PriorityBoostEnabled = boost;
                 process.PriorityClass = procClass;
 
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(isEfficiencyMode);
-
-                Task.Run(() =>
-                {
-                    foreach (ProcessThread thread in process.Threads)
-                    {
-                        try
-                        {
-                            thread.PriorityBoostEnabled = boost;
-                            thread.PriorityLevel = threadLevel;
-                        }
-                        catch { }
-                    }
-                });
             }
             catch { }
         }
