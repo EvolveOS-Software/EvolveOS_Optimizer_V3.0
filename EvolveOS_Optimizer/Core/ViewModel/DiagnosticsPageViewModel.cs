@@ -17,6 +17,7 @@ using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
+using Microsoft.Windows.System.Power;
 using Windows.Foundation;
 using Windows.System;
 
@@ -65,6 +66,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private Dictionary<string, PerformanceCounter> _networkDownCounters = new Dictionary<string, PerformanceCounter>();
         private readonly PerformanceCounterCategory _gpuCategory = new PerformanceCounterCategory("GPU Engine");
         private int _hardwareRefreshTick = 10;
+
+        private int _networkRefreshTick = 10;
+        private List<string> _activeNetworkDescriptions = new();
 
         private System.Management.ManagementEventWatcher? _pnpWatcher;
         private DateTime _lastPnpEventTime = DateTime.MinValue;
@@ -404,6 +408,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             };
 
             ShowHardwarePanelInTray = true;
+
+            IsAfk = PowerManager.DisplayStatus == DisplayStatus.Off;
+            PowerManager.DisplayStatusChanged += PowerManager_DisplayStatusChanged;
         }
 
         private void OnGlobalSettingChanged(object? sender, string settingKey)
@@ -428,9 +435,28 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             }
         }
+
+        private void PowerManager_DisplayStatusChanged(object? sender, object e)
+        {
+            bool isDisplayOff = PowerManager.DisplayStatus == DisplayStatus.Off;
+
+            var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
+            dispatcher?.TryEnqueue(() =>
+            {
+                IsAfk = isDisplayOff;
+                Debug.WriteLine($"[PowerManager] Display status changed. Monitors Off: {isDisplayOff}");
+            });
+        }
         #endregion
 
         #region Standard Properties (Diagnostics)
+        private bool _isAfk;
+        public bool IsAfk
+        {
+            get => _isAfk;
+            set => SetProperty(ref _isAfk, value);
+        }
+
         public ObservableCollection<DismissedEventCard> HistoryCards { get; } = new();
 
         public Visibility EventEmptyStateVisibility =>
@@ -2336,7 +2362,118 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             await _scannerEngine.ExecuteFullScanAsync();
         }
 
+        // Test Method (Optimize telemetry rendering)
         private void RebuildGraphFromHistory()
+        {
+            double logicalWidth = 400.0;
+
+            var newPoints = new PointCollection();
+            var areaPoints = new PointCollection();
+
+            var newPointsAlt = new PointCollection();
+            var areaPointsAlt = new PointCollection();
+
+            var targetBuffer = ActiveGraphMetric switch
+            {
+                TelemetryMetric.RAM => _ramHistoryBuffer,
+                TelemetryMetric.Disk => _diskHistoryBuffer,
+                TelemetryMetric.Pagefile => _pageHistoryBuffer,
+                TelemetryMetric.GPU => _gpuHistoryBuffer,
+                TelemetryMetric.Network => _networkDownHistoryBuffer,
+                _ => _cpuHistoryBuffer
+            };
+
+            if (targetBuffer.Count == 0)
+            {
+                newPoints.Add(new Point(logicalWidth, 100));
+                PerformanceGraphPoints = newPoints;
+                PerformanceAreaPoints = areaPoints;
+
+                newPointsAlt.Add(new Point(logicalWidth, 100));
+                PerformanceGraphPointsAlt = newPointsAlt;
+                PerformanceAreaPointsAlt = areaPointsAlt;
+                return;
+            }
+
+            int pointsToShow = Math.Min(targetBuffer.Count, MaxGraphSeconds + 1);
+            var visibleHistory = targetBuffer.Skip(targetBuffer.Count - pointsToShow).ToList();
+
+            int maxVisualPoints = 60;
+            var pointsToProcess = visibleHistory;
+            var altPointsToProcess = new List<double>();
+
+            bool useAlt = ActiveGraphMetric == TelemetryMetric.Network && _networkUpHistoryBuffer.Count > 0;
+            if (useAlt)
+            {
+                altPointsToProcess = _networkUpHistoryBuffer.Skip(_networkUpHistoryBuffer.Count - pointsToShow).ToList();
+            }
+
+            if (pointsToProcess.Count > maxVisualPoints)
+            {
+                var downsampled = new List<double>();
+                var downsampledAlt = new List<double>();
+
+                double step = (double)(pointsToProcess.Count - 1) / (maxVisualPoints - 1);
+
+                for (int i = 0; i < maxVisualPoints; i++)
+                {
+                    int index = (int)Math.Min(Math.Round(i * step), pointsToProcess.Count - 1);
+                    downsampled.Add(pointsToProcess[index]);
+
+                    if (useAlt) downsampledAlt.Add(altPointsToProcess[index]);
+                }
+
+                pointsToProcess = downsampled;
+                if (useAlt) altPointsToProcess = downsampledAlt;
+            }
+
+            double pixelsPerStep = pointsToProcess.Count > 1 ? logicalWidth / (pointsToProcess.Count - 1) : 0;
+            double currentX = 0;
+
+            foreach (var yVal in pointsToProcess)
+            {
+                newPoints.Add(new Point(currentX, yVal));
+                currentX += pixelsPerStep;
+            }
+
+            PerformanceGraphPoints = newPoints;
+
+            if (newPoints.Count > 0)
+            {
+                areaPoints.Add(new Point(newPoints.First().X, 100));
+                foreach (var p in newPoints) areaPoints.Add(p);
+                areaPoints.Add(new Point(newPoints.Last().X, 100));
+            }
+            PerformanceAreaPoints = areaPoints;
+
+            if (useAlt)
+            {
+                double currentAltX = 0;
+                foreach (var yVal in altPointsToProcess)
+                {
+                    newPointsAlt.Add(new Point(currentAltX, yVal));
+                    currentAltX += pixelsPerStep;
+                }
+
+                PerformanceGraphPointsAlt = newPointsAlt;
+
+                if (newPointsAlt.Count > 0)
+                {
+                    areaPointsAlt.Add(new Point(newPointsAlt.First().X, 100));
+                    foreach (var p in newPointsAlt) areaPointsAlt.Add(p);
+                    areaPointsAlt.Add(new Point(newPointsAlt.Last().X, 100));
+                }
+                PerformanceAreaPointsAlt = areaPointsAlt;
+            }
+            else
+            {
+                newPointsAlt.Add(new Point(logicalWidth, 100));
+                PerformanceGraphPointsAlt = newPointsAlt;
+                PerformanceAreaPointsAlt = areaPointsAlt;
+            }
+        }
+
+        /*private void RebuildGraphFromHistory()
         {
             double logicalWidth = 400.0;
             double pixelsPerSecond = logicalWidth / MaxGraphSeconds;
@@ -2418,7 +2555,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
             }
-        }
+        }*/
 
         [RelayCommand]
         public async Task ScanNetworkPortsAsync()
@@ -3285,6 +3422,33 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _telemetryTimer = new System.Threading.Timer(UpdateTelemetryGraph, null, 0, 1000);
         }
 
+        #region AFK / Idle Detection
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        private struct LASTINPUTINFO
+        {
+            public uint cbSize;
+            public uint dwTime;
+        }
+
+        /*private bool IsUserAfk()
+        {
+            var lastInputInfo = new LASTINPUTINFO();
+            lastInputInfo.cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(lastInputInfo);
+
+            if (GetLastInputInfo(ref lastInputInfo))
+            {
+                uint tickCount = (uint)Environment.TickCount;
+                uint idleTimeMs = tickCount - lastInputInfo.dwTime;
+
+                return idleTimeMs > 300000;
+            }
+            return false;
+        }*/
+        #endregion
+
         private void UpdateTelemetryGraph(object? state)
         {
             try
@@ -3359,11 +3523,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         _networkUpHistoryBuffer.RemoveAt(0);
                     }
 
-                    var cpuSnapshot = _cpuHistoryBuffer.ToList();
-                    var ramSnapshot = _ramHistoryBuffer.ToList();
-                    var gpuSnapshot = _gpuHistoryBuffer.ToList();
-                    var diskSnapshot = _diskHistoryBuffer.ToList();
-
                     CurrentCpuLoadStr = $"{(int)cpuUsage}%";
                     CurrentRamLoadStr = $"{(int)ramUsage}%";
                     CurrentIoLoadStr = $"{(int)diskUsage}%";
@@ -3384,23 +3543,42 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(ShowGpuInTray));
                     OnPropertyChanged(nameof(ShowDiskInTray));*/
 
-                    int sparklinePoints = 20;
-                    double stepX = 3.0;
-                    double chartHeight = 15.0;
+                    //bool isAfk = IsUserAfk();
 
-                    CpuTrayPoints = GenerateTrayPoints(cpuSnapshot, sparklinePoints, stepX, chartHeight);
-                    RamTrayPoints = GenerateTrayPoints(ramSnapshot, sparklinePoints, stepX, chartHeight);
-                    GpuTrayPoints = GenerateTrayPoints(gpuSnapshot, sparklinePoints, stepX, chartHeight);
-                    DiskTrayPoints = GenerateTrayPoints(diskSnapshot, sparklinePoints, stepX, chartHeight);
-
-                    OnPropertyChanged(nameof(CpuTrayPoints));
-                    OnPropertyChanged(nameof(RamTrayPoints));
-                    OnPropertyChanged(nameof(GpuTrayPoints));
-                    OnPropertyChanged(nameof(DiskTrayPoints));
-
-                    if (_isUiActive)
+                    if (_isUiActive && !IsAfk)
                     {
+                        var cpuSnapshot = _cpuHistoryBuffer.ToList();
+                        var ramSnapshot = _ramHistoryBuffer.ToList();
+                        var gpuSnapshot = _gpuHistoryBuffer.ToList();
+                        var diskSnapshot = _diskHistoryBuffer.ToList();
+
+                        int sparklinePoints = 20;
+                        double stepX = 3.0;
+                        double chartHeight = 15.0;
+
+                        if (ShowCpuInTray)
+                        {
+                            CpuTrayPoints = GenerateTrayPoints(cpuSnapshot, sparklinePoints, stepX, chartHeight);
+                            OnPropertyChanged(nameof(CpuTrayPoints));
+                        }
+                        if (ShowRamInTray)
+                        {
+                            RamTrayPoints = GenerateTrayPoints(ramSnapshot, sparklinePoints, stepX, chartHeight);
+                            OnPropertyChanged(nameof(RamTrayPoints));
+                        }
+                        if (ShowGpuInTray)
+                        {
+                            GpuTrayPoints = GenerateTrayPoints(gpuSnapshot, sparklinePoints, stepX, chartHeight);
+                            OnPropertyChanged(nameof(GpuTrayPoints));
+                        }
+                        if (ShowDiskInTray)
+                        {
+                            DiskTrayPoints = GenerateTrayPoints(diskSnapshot, sparklinePoints, stepX, chartHeight);
+                            OnPropertyChanged(nameof(DiskTrayPoints));
+                        }
+
                         RebuildGraphFromHistory();
+
                     }
                 });
             }
@@ -3806,32 +3984,39 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 if (_hardwareRefreshTick >= 10)
                 {
+                    _hardwareRefreshTick = 0;
+
                     var currentInstances = _gpuCategory.GetInstanceNames()
                         .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
                         .ToList();
-
-                    var toRemove = _gpuCounters.Keys.Except(currentInstances).ToList();
-                    foreach (var key in toRemove)
-                    {
-                        _gpuCounters[key].Dispose();
-                        _gpuCounters.Remove(key);
-                    }
 
                     foreach (var instance in currentInstances)
                     {
                         if (!_gpuCounters.ContainsKey(instance))
                         {
-                            var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance);
-                            counter.NextValue();
-                            _gpuCounters.Add(instance, counter);
+                            try
+                            {
+                                var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance);
+                                counter.NextValue();
+                                _gpuCounters.Add(instance, counter);
+                            }
+                            catch { /* Ignore creation errors if engine sleeps instantly */ }
                         }
                     }
                 }
 
                 float totalGpu = 0;
-                foreach (var counter in _gpuCounters.Values)
+
+                foreach (var key in _gpuCounters.Keys.ToList())
                 {
-                    totalGpu += counter.NextValue();
+                    try
+                    {
+                        totalGpu += _gpuCounters[key].NextValue();
+                    }
+                    catch
+                    {
+                        // Silently ignore if the GPU engine went to sleep this exact millisecond
+                    }
                 }
 
                 return Math.Clamp(totalGpu, 0f, 100f);
@@ -3846,52 +4031,57 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                var interfaces = NetworkInterface.GetAllNetworkInterfaces()
-                    .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
-                                 ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                                 ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
-                    .ToList();
+                _networkRefreshTick++;
 
-                var activeDescriptions = interfaces.Select(i => FormatPerformanceCounterInstanceName(i.Description)).ToList();
-
-                var toRemove = _networkUpCounters.Keys.Except(activeDescriptions).ToList();
-                foreach (var key in toRemove)
+                if (_networkRefreshTick >= 10)
                 {
-                    _networkUpCounters[key].Dispose();
-                    _networkUpCounters.Remove(key);
-                    _networkDownCounters[key].Dispose();
-                    _networkDownCounters.Remove(key);
-                }
+                    _networkRefreshTick = 0;
 
-                foreach (var desc in activeDescriptions)
-                {
-                    if (!_networkUpCounters.ContainsKey(desc))
+                    var interfaces = NetworkInterface.GetAllNetworkInterfaces()
+                        .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
+                                     ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                                     ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                        .ToList();
+
+                    _activeNetworkDescriptions = interfaces.Select(i => FormatPerformanceCounterInstanceName(i.Description)).ToList();
+
+                    foreach (var desc in _activeNetworkDescriptions)
                     {
-                        try
+                        if (!_networkUpCounters.ContainsKey(desc))
                         {
-                            var upCounter = new PerformanceCounter("Network Interface", "Bytes Sent/sec", desc);
-                            upCounter.NextValue();
-                            _networkUpCounters.Add(desc, upCounter);
+                            try
+                            {
+                                var upCounter = new PerformanceCounter("Network Interface", "Bytes Sent/sec", desc);
+                                upCounter.NextValue();
+                                _networkUpCounters.Add(desc, upCounter);
 
-                            var downCounter = new PerformanceCounter("Network Interface", "Bytes Received/sec", desc);
-                            downCounter.NextValue();
-                            _networkDownCounters.Add(desc, downCounter);
+                                var downCounter = new PerformanceCounter("Network Interface", "Bytes Received/sec", desc);
+                                downCounter.NextValue();
+                                _networkDownCounters.Add(desc, downCounter);
+                            }
+                            catch { /* Ignore if adapter drops during creation */ }
                         }
-                        catch { /* Ignore if counter instance is missing/locked */ }
                     }
                 }
 
                 float totalUpBytes = 0;
                 float totalDownBytes = 0;
 
-                foreach (var key in _networkUpCounters.Keys.ToList())
+                foreach (var desc in _activeNetworkDescriptions)
                 {
-                    try
+                    if (_networkUpCounters.TryGetValue(desc, out var upCounter) &&
+                        _networkDownCounters.TryGetValue(desc, out var downCounter))
                     {
-                        totalUpBytes += _networkUpCounters[key].NextValue();
-                        totalDownBytes += _networkDownCounters[key].NextValue();
+                        try
+                        {
+                            totalUpBytes += upCounter.NextValue();
+                            totalDownBytes += downCounter.NextValue();
+                        }
+                        catch
+                        {
+                            // Silently ignore if adapter disconnected a millisecond ago
+                        }
                     }
-                    catch { }
                 }
 
                 float downMbps = (totalDownBytes * 8) / 1_000_000f;
