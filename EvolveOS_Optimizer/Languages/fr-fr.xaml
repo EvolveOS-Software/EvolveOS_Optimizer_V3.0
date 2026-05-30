@@ -3559,4 +3559,182 @@
 
     <sys:String x:Key="AIAssistant_Tooltip">Ouvrir l'Assistant IA EvolveOS</sys:String>
     <!-- endregion Ai Explainer -->
+
+    <!-- region Registry Editor -->
+    <sys:String x:Key="registry_editor_page_title">Éditeur du Registre</sys:String>
+    <sys:String x:Key="registry_editor_page_description">Gérez et modifiez les configurations système en toute sécurité.</sys:String>
+    <sys:String x:Key="registry_editor_page_new_workspace">Nouvel espace de travail</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_new">Nouveau</sys:String>
+    <sys:String x:Key="values_viewer_menu_key">Clé</sys:String>
+    <sys:String x:Key="values_viewer_menu_string">Valeur chaîne</sys:String>
+    <sys:String x:Key="values_viewer_menu_binary">Valeur binaire</sys:String>
+    <sys:String x:Key="values_viewer_menu_dword">Valeur DWORD (32 bits)</sys:String>
+    <sys:String x:Key="values_viewer_menu_qword">Valeur QWORD (64 bits)</sys:String>
+    <sys:String x:Key="values_viewer_menu_multistring">Valeur chaîne multiple</sys:String>
+    <sys:String x:Key="values_viewer_menu_expandstring">Valeur chaîne extensible</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_import">Importer</sys:String>
+    <sys:String x:Key="values_viewer_btn_export">Exporter</sys:String>
+    <sys:String x:Key="values_viewer_btn_connect">Connecter</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_permissions">Autorisations</sys:String>
+    <sys:String x:Key="values_viewer_menu_perm_standard">Afficher les autorisations standard</sys:String>
+    <sys:String x:Key="values_viewer_menu_perm_unlock">Forcer le déverrouillage de la clé (Prendre possession)</sys:String>
+    <sys:String x:Key="values_viewer_menu_perm_restore">Restaurer la possession à TrustedInstaller</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_undo">Annuler</sys:String>
+    <sys:String x:Key="values_viewer_btn_history">Historique</sys:String>
+    <sys:String x:Key="values_viewer_btn_clear">Effacer</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_regshot">RegShot</sys:String>
+    <sys:String x:Key="values_viewer_menu_snapshot_a">Prendre un instantané A (Base)</sys:String>
+    <sys:String x:Key="values_viewer_menu_snapshot_b">Prendre un instantané B (Comparer)</sys:String>
+    <sys:String x:Key="values_viewer_btn_find">Rechercher</sys:String>
+
+    <sys:String x:Key="values_viewer_session_history">Historique de la session</sys:String>
+    <sys:String x:Key="values_viewer_undo_button">Annuler</sys:String>
+
+    <sys:String x:Key="values_viewer_header_name">Nom</sys:String>
+    <sys:String x:Key="values_viewer_header_type">Type</sys:String>
+    <sys:String x:Key="values_viewer_header_data">Données</sys:String>
+
+    <sys:String x:Key="values_viewer_context_modify">Modifier...</sys:String>
+    <sys:String x:Key="values_viewer_context_modify_binary">Modifier les données binaires...</sys:String>
+    <sys:String x:Key="values_viewer_context_ask_ai">Demander à l'IA d'expliquer</sys:String>
+    <sys:String x:Key="values_viewer_context_rename">Renommer</sys:String>
+    <sys:String x:Key="values_viewer_context_delete">Supprimer</sys:String>
+
+    <sys:String x:Key="values_viewer_ai_explainer">Explicateur IA</sys:String>
+    <sys:String x:Key="values_viewer_ai_loading">Chargement...</sys:String>
+
+    <sys:String x:Key="values_viewer_search_results">Résultats de la recherche</sys:String>
+    <sys:String x:Key="values_viewer_matches_found">correspondances trouvées</sys:String>
+    <sys:String x:Key="values_viewer_close_search">Fermer la recherche</sys:String>
+
+    <sys:String x:Key="values_viewer_snapshot_results">Résultats de comparaison d'instantanés</sys:String>
+    <sys:String x:Key="values_viewer_changes_detected">modifications détectées</sys:String>
+    <sys:String x:Key="values_viewer_close">Fermer</sys:String>
+
+    <sys:String x:Key="values_viewer_statusbar_items">éléments</sys:String>
+    <sys:String x:Key="values_viewer_statusbar_one_item_selected">1 élément sélectionné</sys:String>
+    <sys:String x:Key="values_viewer_statusbar_bytes">Octets</sys:String>
+
+    <sys:String x:Key="main_property_title">Propriété</sys:String>
+    <sys:String x:Key="main_property_tab_general">Général</sys:String>
+    <sys:String x:Key="main_property_tab_security">Sécurité</sys:String>
+    <sys:String x:Key="main_property_btn_ok">OK</sys:String>
+    <sys:String x:Key="main_property_btn_cancel">Annuler</sys:String>
+
+    <sys:String x:Key="registry_workspace_empty_state">Sélectionnez une clé pour afficher ses valeurs</sys:String>
+
+    <sys:String x:Key="treeview_menu_expand">Développer</sys:String>
+    <sys:String x:Key="treeview_menu_collapse">Réduire</sys:String>
+    <sys:String x:Key="treeview_menu_new">Nouveau</sys:String>
+    <sys:String x:Key="treeview_menu_find">Rechercher</sys:String>
+    <sys:String x:Key="treeview_menu_delete">Supprimer</sys:String>
+    <sys:String x:Key="treeview_menu_rename">Renommer</sys:String>
+    <sys:String x:Key="treeview_menu_ask_ai">Demander à l'IA d'expliquer</sys:String>
+    <sys:String x:Key="treeview_menu_export">Exporter</sys:String>
+    <sys:String x:Key="treeview_menu_permissions">Autorisations</sys:String>
+    <sys:String x:Key="treeview_menu_copy_key">Copier le nom de la clé</sys:String>
+
+    <sys:String x:Key="treeview_ai_explainer">Explicateur IA</sys:String>
+    <sys:String x:Key="treeview_ai_loading">Chargement...</sys:String>
+
+    <sys:String x:Key="ai_analysis_dialog_title">Analyse du Registre</sys:String>
+    <sys:String x:Key="ai_analysis_dialog_close">Fermer</sys:String>
+    <sys:String x:Key="ai_analysis_dialog_loading">Consultation de l'IA pour analyse...</sys:String>
+
+    <sys:String x:Key="cloud_connect_dialog_title">Se connecter au cloud EvolveOS</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_save_connect">Enregistrer &amp; Connecter</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_cancel">Annuler</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_subtitle">Déverrouillez la synchronisation cloud et l'analyse de registre par IA.</sys:String>
+
+    <sys:String x:Key="cloud_connect_dialog_ai_provider">Connexion au fournisseur IA</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_select_provider">Sélectionner un fournisseur IA</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_secure_api_key">Clé API sécurisée</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_paste_key">Collez votre clé de fournisseur ici...</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_reveal_key">Révéler la clé API</sys:String>
+
+    <sys:String x:Key="cloud_connect_dialog_cloud_sync">Compte de synchronisation cloud</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_sync_desc">Synchronisez vos préférences d'optimisation sur tous vos appareils.</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_sign_in">Se connecter avec un compte EvolveOS</sys:String>
+
+    <sys:String x:Key="find_dialog_title">Rechercher</sys:String>
+    <sys:String x:Key="find_dialog_primary_btn">Suivant</sys:String>
+    <sys:String x:Key="find_dialog_close_btn">Annuler</sys:String>
+    <sys:String x:Key="find_dialog_find_what">Rechercher :</sys:String>
+    <sys:String x:Key="find_dialog_placeholder">Entrez le terme de recherche...</sys:String>
+
+    <sys:String x:Key="find_dialog_look_at">Rechercher dans</sys:String>
+    <sys:String x:Key="find_dialog_chk_keys">Clés</sys:String>
+    <sys:String x:Key="find_dialog_chk_values">Valeurs</sys:String>
+    <sys:String x:Key="find_dialog_chk_data">Données</sys:String>
+    <sys:String x:Key="find_dialog_chk_whole_string">Chaîne entière uniquement</sys:String>
+
+    <sys:String x:Key="find_dialog_expander_shortcuts">Moteur de remappage des raccourcis</sys:String>
+    <sys:String x:Key="find_dialog_lbl_find_hotkey">Chaîne de configuration de recherche :</sys:String>
+    <sys:String x:Key="find_dialog_placeholder_hotkey">Effectuez la combinaison de touches...</sys:String>
+    <sys:String x:Key="find_dialog_btn_commit_shortcut">Valider la matrice des raccourcis</sys:String>
+
+    <sys:String x:Key="value_adding_dialog_title">Ajouter un nouvel élément</sys:String>
+    <sys:String x:Key="value_adding_dialog_primary_btn">Ajouter</sys:String>
+    <sys:String x:Key="value_adding_dialog_close_btn">Annuler</sys:String>
+    <sys:String x:Key="value_adding_dialog_header_name">Nom</sys:String>
+    <sys:String x:Key="value_adding_dialog_placeholder_name">Entrez le nom...</sys:String>
+    <sys:String x:Key="value_adding_dialog_header_type">Type</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_key">Clé</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_string">Valeur chaîne</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_binary">Valeur binaire</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_dword">Valeur DWORD (32 bits)</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_qword">Valeur QWORD (64 bits)</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_multistring">Valeur chaîne multiple</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_expandstring">Valeur chaîne extensible</sys:String>
+
+    <sys:String x:Key="value_editing_dialog_ok">OK</sys:String>
+    <sys:String x:Key="value_editing_dialog_cancel">Annuler</sys:String>
+    <sys:String x:Key="value_editing_dialog_title">Modifier la valeur</sys:String>
+    <sys:String x:Key="value_editing_dialog_value_name">Nom de la valeur</sys:String>
+    <sys:String x:Key="value_editing_dialog_placeholder_name">Nom de la valeur</sys:String>
+    <sys:String x:Key="value_editing_dialog_value_data">Données de la valeur</sys:String>
+    <sys:String x:Key="value_editing_dialog_placeholder_data">Données de la valeur</sys:String>
+    <sys:String x:Key="value_editing_dialog_base_16">16</sys:String>
+    <sys:String x:Key="value_editing_dialog_base_10">10</sys:String>
+
+    <sys:String x:Key="registry_editor_workspace_prefix">Espace de travail</sys:String>
+    <sys:String x:Key="registry_editor_close_workspace">Fermer l'espace de travail</sys:String>
+    <sys:String x:Key="registry_editor_notice_title">Avis</sys:String>
+    <sys:String x:Key="registry_editor_notice_min_workspace">Vous devez avoir au moins un espace de travail ouvert.</sys:String>
+    <sys:String x:Key="registry_editor_warn_title">⚠️ Avertissement de l'Éditeur du Registre</sys:String>
+    <sys:String x:Key="registry_editor_warn_desc1">La modification du Registre Windows est réservée aux utilisateurs avancés. La suppression ou la modification de clés critiques peut entraîner une instabilité du système, des plantages d'applications ou empêcher Windows de démarrer.</sys:String>
+    <sys:String x:Key="registry_editor_warn_pro_tips">Conseils pour cet espace de travail :</sys:String>
+    <sys:String x:Key="registry_editor_warn_desc2">• Demander à l'IA : Faites un clic droit sur des clés ou valeurs inconnues pour que l'IA vous explique leur fonction avant d'y toucher.&#x0a;• Sauvegardes : Faites toujours un clic droit et 'Exporter' une clé avant de la supprimer ou de la modifier.&#x0a;• Multi-onglet : Ouvrez différentes ruches dans des onglets séparés en toute sécurité sans perdre votre position.&#x0a;• RegShot : Utilisez l'outil d'instantané pour comparer votre registre avant et après l'installation de logiciels ou la modification des paramètres système.</sys:String>
+    <sys:String x:Key="registry_editor_warn_dont_show">Je comprends les risques, ne plus afficher cet avertissement</sys:String>
+    <sys:String x:Key="registry_editor_warn_btn_primary">Je comprends, continuer</sys:String>
+    <sys:String x:Key="registry_editor_warn_btn_close">Retourner</sys:String>
+
+    <sys:String x:Key="values_vm_default_name">(Par défaut)</sys:String>
+    <sys:String x:Key="values_vm_zero_length_binary">(valeur binaire de longueur zéro)</sys:String>
+    <sys:String x:Key="values_vm_value_not_set">(Valeur non définie)</sys:String>
+    <sys:String x:Key="values_vm_ready">Prêt.</sys:String>
+    <sys:String x:Key="values_vm_refreshing_undo">Actualisation des valeurs après l'annulation...</sys:String>
+    <sys:String x:Key="values_vm_refresh_failed">Actualisation échouée : {0}</sys:String>
+    <sys:String x:Key="values_vm_undo_success">Annulation réussie. Prêt.</sys:String>
+    <sys:String x:Key="values_vm_snapshot_a_start">Démarrage de l'instantané A. Cela peut prendre un instant...</sys:String>
+    <sys:String x:Key="values_vm_snapshot_a_scan">Instantané A : {0} clés scannées...</sys:String>
+    <sys:String x:Key="values_vm_snapshot_a_complete">Instantané A terminé. Effectuez vos modifications Windows, puis prenez l'instantané B.</sys:String>
+    <sys:String x:Key="values_vm_snapshot_b_error">Erreur : Vous devez prendre l'instantané A avant de prendre l'instantané B.</sys:String>
+    <sys:String x:Key="values_vm_snapshot_b_start">Démarrage de l'instantané B. Cela peut prendre un instant...</sys:String>
+    <sys:String x:Key="values_vm_snapshot_b_scan">Instantané B : {0} clés scannées...</sys:String>
+    <sys:String x:Key="values_vm_comparing_snapshots">Comparaison des instantanés. Calcul des différences...</sys:String>
+    <sys:String x:Key="values_vm_compare_complete">Comparaison terminée ! {0} modifications du registre trouvées.</sys:String>
+    <sys:String x:Key="values_vm_searching_registry">Recherche dans le registre pour '{0}'...</sys:String>
+    <sys:String x:Key="values_vm_search_cancelled">Recherche annulée. {0} correspondances trouvées.</sys:String>
+    <sys:String x:Key="values_vm_search_finished">Recherche terminée. {0} correspondances trouvées.</sys:String>
+    <sys:String x:Key="values_vm_search_aborted">Recherche abandonnée : {0}</sys:String>
+    <sys:String x:Key="values_vm_searching_found">Recherche... {0} correspondances trouvées.</sys:String>
+    <sys:String x:Key="values_vm_loading_values">Chargement des valeurs...</sys:String>
+    <sys:String x:Key="values_vm_load_keys_failed">Échec du chargement des clés : {0}</sys:String>
+    <!-- endregion Registry Editor -->
 </ResourceDictionary>

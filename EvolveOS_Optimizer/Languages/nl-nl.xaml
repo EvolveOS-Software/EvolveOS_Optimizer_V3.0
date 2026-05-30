@@ -3559,4 +3559,182 @@
 
     <sys:String x:Key="AIAssistant_Tooltip">Open EvolveOS AI assistent</sys:String>
     <!-- endregion Ai Explainer -->
+
+    <!-- region Registry Editor -->
+    <sys:String x:Key="registry_editor_page_title">Register-editor</sys:String>
+    <sys:String x:Key="registry_editor_page_description">Beheer en wijzig systeemconfiguraties veilig.</sys:String>
+    <sys:String x:Key="registry_editor_page_new_workspace">Nieuwe werkruimte</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_new">Nieuw</sys:String>
+    <sys:String x:Key="values_viewer_menu_key">Sleutel</sys:String>
+    <sys:String x:Key="values_viewer_menu_string">Tekenreekswaarde</sys:String>
+    <sys:String x:Key="values_viewer_menu_binary">Binaire waarde</sys:String>
+    <sys:String x:Key="values_viewer_menu_dword">DWORD-waarde (32-bits)</sys:String>
+    <sys:String x:Key="values_viewer_menu_qword">QWORD-waarde (64-bits)</sys:String>
+    <sys:String x:Key="values_viewer_menu_multistring">Multi-tekenreekswaarde</sys:String>
+    <sys:String x:Key="values_viewer_menu_expandstring">Uitbreidbare tekenreekswaarde</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_import">Importeren</sys:String>
+    <sys:String x:Key="values_viewer_btn_export">Exporteren</sys:String>
+    <sys:String x:Key="values_viewer_btn_connect">Verbinden</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_permissions">Machtigingen</sys:String>
+    <sys:String x:Key="values_viewer_menu_perm_standard">Standaardmachtigingen weergeven</sys:String>
+    <sys:String x:Key="values_viewer_menu_perm_unlock">Sleutel geforceerd ontgrendelen (Eigenaar worden)</sys:String>
+    <sys:String x:Key="values_viewer_menu_perm_restore">Eigendom herstellen naar TrustedInstaller</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_undo">Ongedaan maken</sys:String>
+    <sys:String x:Key="values_viewer_btn_history">Geschiedenis</sys:String>
+    <sys:String x:Key="values_viewer_btn_clear">Wissen</sys:String>
+
+    <sys:String x:Key="values_viewer_btn_regshot">RegShot</sys:String>
+    <sys:String x:Key="values_viewer_menu_snapshot_a">Snapshot A maken (Basislijn)</sys:String>
+    <sys:String x:Key="values_viewer_menu_snapshot_b">Snapshot B maken (Vergelijken)</sys:String>
+    <sys:String x:Key="values_viewer_btn_find">Zoeken</sys:String>
+
+    <sys:String x:Key="values_viewer_session_history">Sessiegeschiedenis</sys:String>
+    <sys:String x:Key="values_viewer_undo_button">Ongedaan maken</sys:String>
+
+    <sys:String x:Key="values_viewer_header_name">Naam</sys:String>
+    <sys:String x:Key="values_viewer_header_type">Type</sys:String>
+    <sys:String x:Key="values_viewer_header_data">Gegevens</sys:String>
+
+    <sys:String x:Key="values_viewer_context_modify">Wijzigen...</sys:String>
+    <sys:String x:Key="values_viewer_context_modify_binary">Binaire gegevens wijzigen...</sys:String>
+    <sys:String x:Key="values_viewer_context_ask_ai">AI vragen om uitleg</sys:String>
+    <sys:String x:Key="values_viewer_context_rename">Naam wijzigen</sys:String>
+    <sys:String x:Key="values_viewer_context_delete">Verwijderen</sys:String>
+
+    <sys:String x:Key="values_viewer_ai_explainer">AI-uitlegger</sys:String>
+    <sys:String x:Key="values_viewer_ai_loading">Bezig met laden...</sys:String>
+
+    <sys:String x:Key="values_viewer_search_results">Zoekresultaten</sys:String>
+    <sys:String x:Key="values_viewer_matches_found">overeenkomsten gevonden</sys:String>
+    <sys:String x:Key="values_viewer_close_search">Zoeken sluiten</sys:String>
+
+    <sys:String x:Key="values_viewer_snapshot_results">Snapshot-vergelijkingsresultaten</sys:String>
+    <sys:String x:Key="values_viewer_changes_detected">wijzigingen gedetecteerd</sys:String>
+    <sys:String x:Key="values_viewer_close">Sluiten</sys:String>
+
+    <sys:String x:Key="values_viewer_statusbar_items">items</sys:String>
+    <sys:String x:Key="values_viewer_statusbar_one_item_selected">1 item geselecteerd</sys:String>
+    <sys:String x:Key="values_viewer_statusbar_bytes">Bytes</sys:String>
+
+    <sys:String x:Key="main_property_title">Eigenschappen</sys:String>
+    <sys:String x:Key="main_property_tab_general">Algemeen</sys:String>
+    <sys:String x:Key="main_property_tab_security">Beveiliging</sys:String>
+    <sys:String x:Key="main_property_btn_ok">OK</sys:String>
+    <sys:String x:Key="main_property_btn_cancel">Annuleren</sys:String>
+
+    <sys:String x:Key="registry_workspace_empty_state">Selecteer een sleutel om de waarden te bekijken</sys:String>
+
+    <sys:String x:Key="treeview_menu_expand">Uitvouwen</sys:String>
+    <sys:String x:Key="treeview_menu_collapse">Samenvouwen</sys:String>
+    <sys:String x:Key="treeview_menu_new">Nieuw</sys:String>
+    <sys:String x:Key="treeview_menu_find">Zoeken</sys:String>
+    <sys:String x:Key="treeview_menu_delete">Verwijderen</sys:String>
+    <sys:String x:Key="treeview_menu_rename">Naam wijzigen</sys:String>
+    <sys:String x:Key="treeview_menu_ask_ai">AI vragen om uitleg</sys:String>
+    <sys:String x:Key="treeview_menu_export">Exporteren</sys:String>
+    <sys:String x:Key="treeview_menu_permissions">Machtigingen</sys:String>
+    <sys:String x:Key="treeview_menu_copy_key">Sleutelnaam kopiëren</sys:String>
+
+    <sys:String x:Key="treeview_ai_explainer">AI-uitlegger</sys:String>
+    <sys:String x:Key="treeview_ai_loading">Bezig met laden...</sys:String>
+
+    <sys:String x:Key="ai_analysis_dialog_title">Registeranalyse</sys:String>
+    <sys:String x:Key="ai_analysis_dialog_close">Sluiten</sys:String>
+    <sys:String x:Key="ai_analysis_dialog_loading">AI raadplegen voor analyse...</sys:String>
+
+    <sys:String x:Key="cloud_connect_dialog_title">Verbinden met EvolveOS Cloud</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_save_connect">Opslaan &amp; Verbinden</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_cancel">Annuleren</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_subtitle">Ontgrendel cloud-synchronisatie en AI-aangedreven registeranalyse.</sys:String>
+
+    <sys:String x:Key="cloud_connect_dialog_ai_provider">AI-providerverbinding</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_select_provider">Selecteer AI-provider</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_secure_api_key">Veilige API-sleutel</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_paste_key">Plak hier je providersleutel...</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_reveal_key">API-sleutel onthullen</sys:String>
+
+    <sys:String x:Key="cloud_connect_dialog_cloud_sync">Cloud-synchronisatieaccount</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_sync_desc">Synchroniseer je optimalisatievoorkeuren tussen apparaten.</sys:String>
+    <sys:String x:Key="cloud_connect_dialog_sign_in">Aanmelden met EvolveOS-account</sys:String>
+
+    <sys:String x:Key="find_dialog_title">Zoeken</sys:String>
+    <sys:String x:Key="find_dialog_primary_btn">Volgende zoeken</sys:String>
+    <sys:String x:Key="find_dialog_close_btn">Annuleren</sys:String>
+    <sys:String x:Key="find_dialog_find_what">Zoeken naar:</sys:String>
+    <sys:String x:Key="find_dialog_placeholder">Voer zoekterm in...</sys:String>
+
+    <sys:String x:Key="find_dialog_look_at">Zoeken in</sys:String>
+    <sys:String x:Key="find_dialog_chk_keys">Sleutels</sys:String>
+    <sys:String x:Key="find_dialog_chk_values">Waarden</sys:String>
+    <sys:String x:Key="find_dialog_chk_data">Gegevens</sys:String>
+    <sys:String x:Key="find_dialog_chk_whole_string">Alleen hele tekenreeks</sys:String>
+
+    <sys:String x:Key="find_dialog_expander_shortcuts">Sneltoets-hermapping-engine</sys:String>
+    <sys:String x:Key="find_dialog_lbl_find_hotkey">Configuratietekenreeks zoeken:</sys:String>
+    <sys:String x:Key="find_dialog_placeholder_hotkey">Voer sneltoetscombinatie uit...</sys:String>
+    <sys:String x:Key="find_dialog_btn_commit_shortcut">Sneltoetsmatrix doorvoeren</sys:String>
+
+    <sys:String x:Key="value_adding_dialog_title">Nieuw item toevoegen</sys:String>
+    <sys:String x:Key="value_adding_dialog_primary_btn">Toevoegen</sys:String>
+    <sys:String x:Key="value_adding_dialog_close_btn">Annuleren</sys:String>
+    <sys:String x:Key="value_adding_dialog_header_name">Naam</sys:String>
+    <sys:String x:Key="value_adding_dialog_placeholder_name">Voer naam in...</sys:String>
+    <sys:String x:Key="value_adding_dialog_header_type">Type</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_key">Sleutel</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_string">Tekenreekswaarde</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_binary">Binaire waarde</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_dword">DWORD-waarde (32-bits)</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_qword">QWORD-waarde (64-bits)</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_multistring">Multi-tekenreekswaarde</sys:String>
+    <sys:String x:Key="value_adding_dialog_type_expandstring">Uitbreidbare tekenreekswaarde</sys:String>
+
+    <sys:String x:Key="value_editing_dialog_ok">OK</sys:String>
+    <sys:String x:Key="value_editing_dialog_cancel">Annuleren</sys:String>
+    <sys:String x:Key="value_editing_dialog_title">Waarde bewerken</sys:String>
+    <sys:String x:Key="value_editing_dialog_value_name">Waardenaam</sys:String>
+    <sys:String x:Key="value_editing_dialog_placeholder_name">Waardenaam</sys:String>
+    <sys:String x:Key="value_editing_dialog_value_data">Waardegegevens</sys:String>
+    <sys:String x:Key="value_editing_dialog_placeholder_data">Waardegegevens</sys:String>
+    <sys:String x:Key="value_editing_dialog_base_16">16</sys:String>
+    <sys:String x:Key="value_editing_dialog_base_10">10</sys:String>
+
+    <sys:String x:Key="registry_editor_workspace_prefix">Werkruimte</sys:String>
+    <sys:String x:Key="registry_editor_close_workspace">Werkruimte sluiten</sys:String>
+    <sys:String x:Key="registry_editor_notice_title">Bericht</sys:String>
+    <sys:String x:Key="registry_editor_notice_min_workspace">Je moet minimaal één werkruimte open hebben.</sys:String>
+    <sys:String x:Key="registry_editor_warn_title">⚠️ Register-editor waarschuwing</sys:String>
+    <sys:String x:Key="registry_editor_warn_desc1">Het wijzigen van het Windows-register is alleen voor geavanceerde gebruikers. Het verwijderen of wijzigen van kritieke sleutels kan leiden tot systeeminstabiliteit, vastlopende applicaties of voorkomen dat Windows opstart.</sys:String>
+    <sys:String x:Key="registry_editor_warn_pro_tips">Pro-tips voor deze werkruimte:</sys:String>
+    <sys:String x:Key="registry_editor_warn_desc2">• AI vragen: Klik met de rechtermuisknop op onbekende sleutels of waarden om AI te vragen wat ze doen voordat je ze wijzigt.&#x0a;• Back-ups: Klik altijd met de rechtermuisknop en 'Exporteren' op een sleutel voordat je deze verwijdert of wijzigt.&#x0a;• Meerdere tabbladen: Open verschillende hives in afzonderlijke tabbladen veilig zonder je plek te verliezen.&#x0a;• RegShot: Gebruik de snapshot-tool om je register te vergelijken voor en na het installeren van software of het wijzigen van systeeminstellingen.</sys:String>
+    <sys:String x:Key="registry_editor_warn_dont_show">Ik begrijp de risico's, niet opnieuw weergeven</sys:String>
+    <sys:String x:Key="registry_editor_warn_btn_primary">Ik begrijp het, doorgaan</sys:String>
+    <sys:String x:Key="registry_editor_warn_btn_close">Teruggaan</sys:String>
+
+    <sys:String x:Key="values_vm_default_name">(Standaard)</sys:String>
+    <sys:String x:Key="values_vm_zero_length_binary">(binaire waarde met lengte nul)</sys:String>
+    <sys:String x:Key="values_vm_value_not_set">(Waarde niet ingesteld)</sys:String>
+    <sys:String x:Key="values_vm_ready">Gereed.</sys:String>
+    <sys:String x:Key="values_vm_refreshing_undo">Waarden vernieuwen na ongedaan maken...</sys:String>
+    <sys:String x:Key="values_vm_refresh_failed">Vernieuwen mislukt: {0}</sys:String>
+    <sys:String x:Key="values_vm_undo_success">Ongedaan maken gelukt. Gereed.</sys:String>
+    <sys:String x:Key="values_vm_snapshot_a_start">Snapshot A starten. Dit kan even duren...</sys:String>
+    <sys:String x:Key="values_vm_snapshot_a_scan">Snapshot A: {0} sleutels gescand...</sys:String>
+    <sys:String x:Key="values_vm_snapshot_a_complete">Snapshot A voltooid. Voer je wijzigingen in Windows door en maak vervolgens Snapshot B.</sys:String>
+    <sys:String x:Key="values_vm_snapshot_b_error">Fout: Je moet Snapshot A maken voordat je Snapshot B kunt maken.</sys:String>
+    <sys:String x:Key="values_vm_snapshot_b_start">Snapshot B starten. Dit kan even duren...</sys:String>
+    <sys:String x:Key="values_vm_snapshot_b_scan">Snapshot B: {0} sleutels gescand...</sys:String>
+    <sys:String x:Key="values_vm_comparing_snapshots">Snapshots vergelijken. Verschillen berekenen...</sys:String>
+    <sys:String x:Key="values_vm_compare_complete">Vergelijking voltooid! {0} registerwijzigingen gevonden.</sys:String>
+    <sys:String x:Key="values_vm_searching_registry">Register doorzoeken op '{0}'...</sys:String>
+    <sys:String x:Key="values_vm_search_cancelled">Zoeken geannuleerd. {0} overeenkomsten gevonden.</sys:String>
+    <sys:String x:Key="values_vm_search_finished">Zoeken voltooid. {0} overeenkomsten gevonden.</sys:String>
+    <sys:String x:Key="values_vm_search_aborted">Zoeken afgebroken: {0}</sys:String>
+    <sys:String x:Key="values_vm_searching_found">Zoeken... {0} overeenkomsten gevonden.</sys:String>
+    <sys:String x:Key="values_vm_loading_values">Waarden laden...</sys:String>
+    <sys:String x:Key="values_vm_load_keys_failed">Laden van sleutels mislukt: {0}</sys:String>
+    <!-- endregion Registry Editor -->
 </ResourceDictionary>
