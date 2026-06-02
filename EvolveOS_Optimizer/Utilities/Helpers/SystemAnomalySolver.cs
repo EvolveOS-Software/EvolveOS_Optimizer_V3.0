@@ -262,10 +262,17 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             var anomalies = new List<ServiceAnomaly>();
 
+            string[] protectedServices = { "RpcSs", "DcomLaunch", "SamSs", "LSM" };
+
             foreach (var svc in _criticalServices)
             {
                 string serviceName = svc.Key;
                 string friendlyName = svc.Value;
+
+                if (protectedServices.Contains(serviceName, StringComparer.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
 
                 try
                 {
@@ -274,7 +281,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                     int startValue = (int)(key.GetValue("Start", -1));
 
-                    // 1. BASE CHECK: Is it completely disabled?
                     if (startValue == 4)
                     {
                         anomalies.Add(new ServiceAnomaly
@@ -285,15 +291,13 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                             RecommendedEventId = 7000 + Math.Abs(serviceName.GetHashCode() % 99), // 7000 block
                             AlertMessage = $"CRITICAL: {friendlyName} ({serviceName}) is disabled."
                         });
-                        continue; // Skip other checks if it's dead
+                        continue;
                     }
 
-                    // 2. LIVE STATE (GHOSTED): Auto but Stopped?
                     if (startValue == 2)
                     {
                         try
                         {
-                            // Query the live Windows Service Control Manager
                             using var controller = new ServiceController(serviceName);
                             if (controller.Status == ServiceControllerStatus.Stopped)
                             {
@@ -310,7 +314,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         catch { /* Service missing from SCM despite registry entry */ }
                     }
 
-                    // 3. TAMPER DETECTION: ImagePath Hijacked?
                     string imagePath = key.GetValue("ImagePath") as string ?? "";
                     if (!IsPathTrusted(imagePath))
                     {
@@ -324,7 +327,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         });
                     }
 
-                    // 4. RECOVERY AUDIT: FailureActions Wiped?
                     byte[]? failureActions = key.GetValue("FailureActions") as byte[];
                     if (IsRecoveryWiped(failureActions))
                     {
@@ -338,7 +340,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         });
                     }
 
-                    // 5. DEPENDENCY CHAIN: Is the parent dead?
                     string[]? dependencies = key.GetValue("DependOnService") as string[];
                     if (dependencies != null)
                     {

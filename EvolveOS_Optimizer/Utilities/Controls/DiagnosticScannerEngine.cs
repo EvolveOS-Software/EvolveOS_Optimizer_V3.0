@@ -466,6 +466,13 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                     foreach (var ev in systemEvents)
                     {
+                        if (ev.EventId == 9111 ||
+                            (ev.SourceName != null && ev.SourceName.Contains("RpcSs", StringComparison.OrdinalIgnoreCase)) ||
+                            (ev.Message != null && ev.Message.Contains("Remote Procedure Call", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            continue;
+                        }
+
                         if (ev.EventId == 1801 && physicallyEnrolled)
                         {
                             continue;
