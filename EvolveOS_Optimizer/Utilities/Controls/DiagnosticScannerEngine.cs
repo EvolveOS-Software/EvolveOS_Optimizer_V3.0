@@ -565,8 +565,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         }
                     }
 
-                    float currentRam = _vm._ramCounter?.NextValue() ?? 0;
-                    double ramUsagePct = _vm._totalMemoryMb > 0 ? ((_vm._totalMemoryMb - currentRam) / _vm._totalMemoryMb) * 100 : 0;
+                    double ramUsagePct = SystemDiagnostics.GetMemoryUsagePercentage();
 
                     if (ramUsagePct > 80)
                     {
@@ -575,7 +574,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                         criticalCount++;
                     }
 
-                    float pagefileUsage = _vm._pagefileCounter?.NextValue() ?? 0;
+                    double pagefileUsage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
                     if (pagefileUsage > 75)
                     {
                         var pfAlert = _vm.CreateAlert(9002, neuralSource, string.Format(ResourceString.GetString("diag_alert_pf_usage_msg") ?? "WARNING: Pagefile usage exceeds {0}%. Disk bottleneck imminent.", Math.Round(pagefileUsage)));

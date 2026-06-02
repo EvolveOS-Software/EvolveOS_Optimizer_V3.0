@@ -249,8 +249,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 "Sydney", "Melbourne", "Auckland", "Perth", "Brisbane"
             };
 
+            SystemDiagnostics.InitCpuBaseline();
+
             _weatherLocation = LoadLocationFromRegistry();
-            _monitoringService.GetHardwareData();
+            Task.Run(() => _monitoringService.GetHardwareData());
 
             LocalIP = new IPWrapper { Data = _monitoringService.GetDefaultLocalIP() };
 
@@ -462,6 +464,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _statsTimer.Tick += StatsTimer_Tick;
             _statsTimer.Start();
 
+            StatsTimer_Tick(null, null);
+
             _weatherTimer?.Stop();
             _weatherTimer = new DispatcherTimer
             {
@@ -478,11 +482,29 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                await SystemDiagnostics.GetGpuUsage();
+                UpdateNetworkSpeed();
+
+                var processTask = _monitoringService.GetProcessCountAsync();
+                var servicesTask = _monitoringService.GetServicesCount();
+                var cpuTask = _monitoringService.GetTotalProcessorUsage();
+                var gpuTask = SystemDiagnostics.GetGpuUsage();
+
+                await Task.WhenAll(processTask, servicesTask, cpuTask, gpuTask);
+
+                HardwareData.Processor.Usage = (int)await cpuTask;
+                HardwareData.Memory.Usage = (int)SystemDiagnostics.GetMemoryUsagePercentage();
+                HardwareData.RunningProcessesCount = await processTask;
+                HardwareData.RunningServicesCount = await servicesTask;
 
                 RefreshStats(HardwareData.RunningProcessesCount, HardwareData.RunningServicesCount);
-
                 UpdateDateTime();
+
+                OnPropertyChanged(nameof(CpuUsage));
+                OnPropertyChanged(nameof(CpuUsageText));
+                OnPropertyChanged(nameof(RamUsage));
+                OnPropertyChanged(nameof(RamUsageText));
+                OnPropertyChanged(nameof(DownloadSpeed));
+                OnPropertyChanged(nameof(UploadSpeed));
             }
             catch (Exception ex)
             {

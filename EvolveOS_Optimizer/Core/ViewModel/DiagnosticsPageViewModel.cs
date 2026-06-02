@@ -39,17 +39,46 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private LiveEventWatcherHelper? _liveWatcher;
         private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         private CancellationTokenSource? _scanCts;
-
         private readonly DiagnosticScannerEngine _scannerEngine;
 
         private System.Threading.Timer? _telemetryTimer;
-        internal PerformanceCounter? _cpuCounter;
-        internal PerformanceCounter? _ramCounter;
-        internal PerformanceCounter? _diskCounter;
-        internal PerformanceCounter? _pagefileCounter;
         internal double _totalMemoryMb = 0;
-
         private float _peakNetworkSpeedMbps = 10f;
+
+        private ulong _prevIdleTime;
+        private ulong _prevKernelTime;
+        private ulong _prevUserTime;
+        private long _prevNetworkDownBytes;
+        private long _prevNetworkUpBytes;
+        private DateTime _lastNetworkCheckTime = DateTime.MinValue;
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetSystemTimes(out FILETIME lpIdleTime, out FILETIME lpKernelTime, out FILETIME lpUserTime);
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        private struct FILETIME
+        {
+            public uint dwLowDateTime;
+            public uint dwHighDateTime;
+        }
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        private struct MEMORYSTATUSEX
+        {
+            public uint dwLength;
+            public uint dwMemoryLoad;
+            public ulong ullTotalPhys;
+            public ulong ullAvailPhys;
+            public ulong ullTotalPageFile;
+            public ulong ullAvailPageFile;
+            public ulong ullTotalVirtual;
+            public ulong ullAvailVirtual;
+            public ulong ullAvailExtendedVirtual;
+        }
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
         private readonly List<double> _cpuHistoryBuffer = new List<double>();
         private readonly List<double> _ramHistoryBuffer = new List<double>();
@@ -59,16 +88,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly List<double> _networkUpHistoryBuffer = new List<double>();
         private readonly List<double> _networkDownHistoryBuffer = new List<double>();
         private const int MaxHistoryCapacity = 900;
+
         private readonly HashSet<string> _dismissedEventHashes = new();
-
-        private Dictionary<string, PerformanceCounter> _gpuCounters = new Dictionary<string, PerformanceCounter>();
-        private Dictionary<string, PerformanceCounter> _networkUpCounters = new Dictionary<string, PerformanceCounter>();
-        private Dictionary<string, PerformanceCounter> _networkDownCounters = new Dictionary<string, PerformanceCounter>();
-        private readonly PerformanceCounterCategory _gpuCategory = new PerformanceCounterCategory("GPU Engine");
-        private int _hardwareRefreshTick = 10;
-
-        private int _networkRefreshTick = 10;
-        private List<string> _activeNetworkDescriptions = new();
 
         private System.Management.ManagementEventWatcher? _pnpWatcher;
         private DateTime _lastPnpEventTime = DateTime.MinValue;
@@ -3412,33 +3433,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch { _totalMemoryMb = 0; }
 
-            try
+            if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
             {
-                _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-                _cpuCounter.NextValue();
+                _prevIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                _prevKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                _prevUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
             }
-            catch { _cpuCounter = null; }
 
-            try
-            {
-                _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
-                _ramCounter.NextValue();
-            }
-            catch { _ramCounter = null; }
-
-            try
-            {
-                _diskCounter = new PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total");
-                _diskCounter.NextValue();
-            }
-            catch { _diskCounter = null; }
-
-            try
-            {
-                _pagefileCounter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
-                _pagefileCounter.NextValue();
-            }
-            catch { _pagefileCounter = null; }
+            _lastNetworkCheckTime = DateTime.MinValue;
 
             _telemetryTimer = new System.Threading.Timer(UpdateTelemetryGraph, null, 0, 1000);
         }
@@ -3474,18 +3476,49 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                float cpuUsage = _cpuCounter?.NextValue() ?? 0;
+                float cpuUsage = 0;
+                if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+                {
+                    ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                    ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                    ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+
+                    ulong idleDiff = curIdleTime - _prevIdleTime;
+                    ulong kernelDiff = curKernelTime - _prevKernelTime;
+                    ulong userDiff = curUserTime - _prevUserTime;
+                    ulong totalSystemTime = kernelDiff + userDiff;
+
+                    _prevIdleTime = curIdleTime;
+                    _prevKernelTime = curKernelTime;
+                    _prevUserTime = curUserTime;
+
+                    if (totalSystemTime > 0)
+                    {
+                        cpuUsage = (float)((totalSystemTime - idleDiff) * 100.0 / totalSystemTime);
+                        cpuUsage = Math.Clamp(cpuUsage, 0f, 100f);
+                    }
+                }
+
+                float ramUsage = 0;
+                float pagefileUsage = 0;
+                MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
+                memStatus.dwLength = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+
+                if (GlobalMemoryStatusEx(ref memStatus))
+                {
+                    ramUsage = memStatus.dwMemoryLoad;
+
+                    double totalVirtual = memStatus.ullTotalPageFile;
+                    double usedVirtual = totalVirtual - memStatus.ullAvailPageFile;
+                    if (totalVirtual > 0)
+                    {
+                        pagefileUsage = (float)Math.Clamp((usedVirtual / totalVirtual) * 100.0, 0, 100);
+                    }
+                }
+
+                float diskUsage = GetDiskUsage();
                 float gpuUsage = GetGpuUsage();
-                float availableMb = _ramCounter?.NextValue() ?? 0;
-                double usedMb = _totalMemoryMb - availableMb;
 
-                double ramUsage = _totalMemoryMb > 0 ? (usedMb / _totalMemoryMb) * 100 : 0;
-                if (ramUsage < 0) ramUsage = 0;
-
-                float diskUsage = _diskCounter?.NextValue() ?? 0;
-                if (diskUsage > 100) diskUsage = 100;
-
-                float pagefileUsage = _pagefileCounter?.NextValue() ?? 0;
                 var netUsage = GetNetworkUsage();
                 float downMbps = netUsage.downMbps;
                 float upMbps = netUsage.upMbps;
@@ -3558,12 +3591,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(ActivePrimaryValueStr));
                     OnPropertyChanged(nameof(HeroStandardVisibility));
 
-                    /*OnPropertyChanged(nameof(ShowHardwarePanelInTray));
-                    OnPropertyChanged(nameof(ShowCpuInTray));
-                    OnPropertyChanged(nameof(ShowRamInTray));
-                    OnPropertyChanged(nameof(ShowGpuInTray));
-                    OnPropertyChanged(nameof(ShowDiskInTray));*/
-
                     //bool isAfk = IsUserAfk();
 
                     if (_isUiActive && !IsAfk)
@@ -3599,7 +3626,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         }
 
                         RebuildGraphFromHistory();
-
                     }
                 });
             }
@@ -3638,22 +3664,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _telemetryTimer = null;
                 }
 
-                _cpuCounter?.Dispose(); _cpuCounter = null;
-                _ramCounter?.Dispose(); _ramCounter = null;
-                _diskCounter?.Dispose(); _diskCounter = null;
-                _pagefileCounter?.Dispose(); _pagefileCounter = null;
-
-                foreach (var counter in _gpuCounters.Values)
-                {
-                    counter.Dispose();
-                }
-                _gpuCounters.Clear();
-
-                foreach (var counter in _networkUpCounters.Values) counter.Dispose();
-                foreach (var counter in _networkDownCounters.Values) counter.Dispose();
-                _networkUpCounters.Clear();
-                _networkDownCounters.Clear();
-
                 var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                 dispatcher?.TryEnqueue(() =>
                 {
@@ -3664,7 +3674,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         _diskHistoryBuffer.Clear();
                         _pageHistoryBuffer.Clear();
                         _gpuHistoryBuffer.Clear();
-
                         _networkUpHistoryBuffer.Clear();
                         _networkDownHistoryBuffer.Clear();
 
@@ -4001,114 +4010,91 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                _hardwareRefreshTick++;
+                long totalUsage = 0;
+                var scope = new ManagementScope(@"root\cimv2");
+                var query = new ObjectQuery("SELECT UtilizationPercentage FROM Win32_PerfFormattedData_GPUPerformanceCounters_GPUEngine WHERE Name LIKE '%engtype_3D'");
+                var options = new System.Management.EnumerationOptions { ReturnImmediately = true };
 
-                if (_hardwareRefreshTick >= 10)
+                using var searcher = new ManagementObjectSearcher(scope, query, options);
+                using var results = searcher.Get();
+                foreach (ManagementObject obj in results)
                 {
-                    _hardwareRefreshTick = 0;
-
-                    var currentInstances = _gpuCategory.GetInstanceNames()
-                        .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-
-                    foreach (var instance in currentInstances)
+                    using (obj)
                     {
-                        if (!_gpuCounters.ContainsKey(instance))
-                        {
-                            try
-                            {
-                                var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance);
-                                counter.NextValue();
-                                _gpuCounters.Add(instance, counter);
-                            }
-                            catch { /* Ignore creation errors if engine sleeps instantly */ }
-                        }
+                        totalUsage += Convert.ToInt64(obj["UtilizationPercentage"]);
                     }
                 }
-
-                float totalGpu = 0;
-
-                foreach (var key in _gpuCounters.Keys.ToList())
-                {
-                    try
-                    {
-                        totalGpu += _gpuCounters[key].NextValue();
-                    }
-                    catch
-                    {
-                        // Silently ignore if the GPU engine went to sleep this exact millisecond
-                    }
-                }
-
-                return Math.Clamp(totalGpu, 0f, 100f);
+                return Math.Clamp((float)totalUsage, 0f, 100f);
             }
-            catch
+            catch { return 0f; }
+        }
+
+        private float GetDiskUsage()
+        {
+            try
             {
-                return 0;
+                var scope = new ManagementScope(@"root\cimv2");
+                var query = new ObjectQuery("SELECT PercentDiskTime FROM Win32_PerfFormattedData_PerfDisk_PhysicalDisk WHERE Name='_Total'");
+                var options = new System.Management.EnumerationOptions { ReturnImmediately = true };
+
+                using var searcher = new ManagementObjectSearcher(scope, query, options);
+                using var results = searcher.Get();
+                foreach (ManagementObject obj in results)
+                {
+                    using (obj)
+                    {
+                        return Math.Clamp(Convert.ToSingle(obj["PercentDiskTime"]), 0f, 100f);
+                    }
+                }
+                return 0f;
             }
+            catch { return 0f; }
         }
 
         private (float downMbps, float upMbps) GetNetworkUsage()
         {
             try
             {
-                _networkRefreshTick++;
+                long currentDown = 0;
+                long currentUp = 0;
 
-                if (_networkRefreshTick >= 10)
+                var interfaces = NetworkInterface.GetAllNetworkInterfaces()
+                    .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
+                                 ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                                 ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel);
+
+                foreach (var ni in interfaces)
                 {
-                    _networkRefreshTick = 0;
-
-                    var interfaces = NetworkInterface.GetAllNetworkInterfaces()
-                        .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
-                                     ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                                     ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
-                        .ToList();
-
-                    _activeNetworkDescriptions = interfaces.Select(i => FormatPerformanceCounterInstanceName(i.Description)).ToList();
-
-                    foreach (var desc in _activeNetworkDescriptions)
+                    try
                     {
-                        if (!_networkUpCounters.ContainsKey(desc))
-                        {
-                            try
-                            {
-                                var upCounter = new PerformanceCounter("Network Interface", "Bytes Sent/sec", desc);
-                                upCounter.NextValue();
-                                _networkUpCounters.Add(desc, upCounter);
-
-                                var downCounter = new PerformanceCounter("Network Interface", "Bytes Received/sec", desc);
-                                downCounter.NextValue();
-                                _networkDownCounters.Add(desc, downCounter);
-                            }
-                            catch { /* Ignore if adapter drops during creation */ }
-                        }
+                        var stats = ni.GetIPStatistics();
+                        currentDown += stats.BytesReceived;
+                        currentUp += stats.BytesSent;
+                    }
+                    catch
+                    {
+                        // Silently ignore if an adapter disconnects exactly while reading stats
                     }
                 }
 
-                float totalUpBytes = 0;
-                float totalDownBytes = 0;
+                float downMbps = 0;
+                float upMbps = 0;
 
-                foreach (var desc in _activeNetworkDescriptions)
+                if (_lastNetworkCheckTime != DateTime.MinValue)
                 {
-                    if (_networkUpCounters.TryGetValue(desc, out var upCounter) &&
-                        _networkDownCounters.TryGetValue(desc, out var downCounter))
+                    double seconds = (DateTime.Now - _lastNetworkCheckTime).TotalSeconds;
+                    if (seconds > 0)
                     {
-                        try
-                        {
-                            totalUpBytes += upCounter.NextValue();
-                            totalDownBytes += downCounter.NextValue();
-                        }
-                        catch
-                        {
-                            // Silently ignore if adapter disconnected a millisecond ago
-                        }
+                        downMbps = (float)(((currentDown - _prevNetworkDownBytes) * 8f) / seconds / 1_000_000f);
+                        upMbps = (float)(((currentUp - _prevNetworkUpBytes) * 8f) / seconds / 1_000_000f);
                     }
                 }
 
-                float downMbps = (totalDownBytes * 8) / 1_000_000f;
-                float upMbps = (totalUpBytes * 8) / 1_000_000f;
+                _prevNetworkDownBytes = currentDown;
+                _prevNetworkUpBytes = currentUp;
+                _lastNetworkCheckTime = DateTime.Now;
 
-                return (downMbps, upMbps);
+                return (Math.Max(0f, downMbps), Math.Max(0f, upMbps));
             }
             catch
             {

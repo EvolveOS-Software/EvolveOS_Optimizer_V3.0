@@ -92,6 +92,14 @@ namespace EvolveOS_Optimizer.Pages
             MainWinViewModel.AppHidden += PauseLiveMonitoring;
             MainWinViewModel.AppRestored += ResumeLiveMonitoring;
 
+            var stats = GetCurrentNetworkBytes();
+            _lastDownloadBytes = stats.Down;
+            _lastUploadBytes = stats.Up;
+            _lastUpdateTime = DateTime.Now;
+
+            StartMonitoring();
+            StartWallpaperMonitor();
+
             if (!_isInitialized)
             {
                 ApplyElevationUI();
@@ -100,8 +108,8 @@ namespace EvolveOS_Optimizer.Pages
                 DashboardDragCursor();
                 UpdateDnsCardUI();
 
-                await CalculateSystemHealthAsync();
-                await CalculateSecurityHealthAsync();
+                _ = CalculateSystemHealthAsync();
+                _ = CalculateSecurityHealthAsync();
 
                 if (HardwareData.Memory.Total == 0)
                 {
@@ -131,14 +139,6 @@ namespace EvolveOS_Optimizer.Pages
 
                 _isInitialized = true;
             }
-
-            var stats = GetCurrentNetworkBytes();
-            _lastDownloadBytes = stats.Down;
-            _lastUploadBytes = stats.Up;
-            _lastUpdateTime = DateTime.Now;
-
-            StartMonitoring();
-            StartWallpaperMonitor();
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
@@ -214,12 +214,17 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                string pCount = await _systemDiagnostics.GetProcessCount();
-                string sCount = await _systemDiagnostics.GetServicesCount();
+                var pCountTask = _systemDiagnostics.GetProcessCountAsync();
+                var sCountTask = _systemDiagnostics.GetServicesCount();
+                var cpuTask = _systemDiagnostics.GetTotalProcessorUsage();
+                var gpuTask = SystemDiagnostics.GetGpuUsage();
 
-                double cpuPercentage = await _systemDiagnostics.GetTotalProcessorUsage();
+                await Task.WhenAll(pCountTask, sCountTask, cpuTask, gpuTask);
 
-                int gpuPercentage = await SystemDiagnostics.GetGpuUsage();
+                string pCount = await pCountTask;
+                string sCount = await sCountTask;
+                double cpuPercentage = await cpuTask;
+                int gpuPercentage = await gpuTask;
 
                 var memInfo = GC.GetGCMemoryInfo();
                 double totalBytes = (double)memInfo.TotalAvailableMemoryBytes;

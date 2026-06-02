@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Globalization;
 using System.IO;
 using System.Management;
@@ -23,12 +26,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         private ImageSource? _cachedAvatarSource;
         private string? _cachedAvatarPath;
-
-        private static readonly PerformanceCounter _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-        private static List<PerformanceCounter> _gpuCounters = new();
-        private static bool _gpuCountersInitialized = false;
-
-        //private bool _isRefreshing = false;
 
         internal static bool IsElevated => IsRunningAsAdmin();
         internal static bool IsNeedUpdate { get; private set; } = false;
@@ -56,6 +53,20 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetSystemTimes(out FILETIME lpIdleTime, out FILETIME lpKernelTime, out FILETIME lpUserTime);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct FILETIME
+        {
+            public uint dwLowDateTime;
+            public uint dwHighDateTime;
+        }
+
+        private static ulong _prevIdleTime;
+        private static ulong _prevKernelTime;
+        private static ulong _prevUserTime;
+
         private static readonly (object[] Keys, string Type)[] MediaTypeMap = new (object[] Keys, string Type)[]
         {
             (new object[] { (ushort)3, "Removable Media" }, "HDD"),
@@ -69,6 +80,16 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             { 12, "SD" },
             { 17, "NVMe" }
         };
+
+        internal static void InitCpuBaseline()
+        {
+            if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+            {
+                _prevIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                _prevKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                _prevUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+            }
+        }
 
         internal static bool IsRunningAsAdmin()
         {
@@ -108,11 +129,8 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 if (!string.IsNullOrWhiteSpace(avatarPath) && File.Exists(avatarPath) && new FileInfo(avatarPath).Length > 0)
                 {
                     var bitmap = new BitmapImage();
-
                     bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-
                     bitmap.DecodePixelWidth = 200;
-
                     bitmap.UriSource = new Uri(avatarPath);
 
                     _cachedAvatarPath = avatarPath;
@@ -360,52 +378,41 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         public static async Task<int> GetGpuUsage()
         {
-            try
+            return await Task.Run(() =>
             {
-                if (!_gpuCountersInitialized)
+                lock (_wmiLock)
                 {
-                    var category = new PerformanceCounterCategory("GPU Engine");
-                    var instanceNames = category.GetInstanceNames();
-
-                    foreach (var name in instanceNames)
+                    try
                     {
-                        if (name.EndsWith("engtype_3D"))
+                        long totalUsage = 0;
+
+                        var scope = new ManagementScope(@"root\cimv2");
+                        var query = new ObjectQuery("SELECT UtilizationPercentage FROM Win32_PerfFormattedData_GPUPerformanceCounters_GPUEngine WHERE Name LIKE '%engtype_3D'");
+
+                        var options = new System.Management.EnumerationOptions { ReturnImmediately = true };
+
+                        using var searcher = new ManagementObjectSearcher(scope, query, options);
+
+                        using var results = searcher.Get();
+                        foreach (ManagementObject obj in results)
                         {
-                            var counters = category.GetCounters(name);
-                            foreach (var counter in counters)
+                            using (obj)
                             {
-                                if (counter.CounterName == "Utilization Percentage")
-                                {
-                                    _gpuCounters.Add(counter);
-                                }
+                                totalUsage += Convert.ToInt64(obj["UtilizationPercentage"]);
                             }
                         }
+
+                        int finalUsage = (int)Math.Clamp(totalUsage, 0, 100);
+                        HardwareData.Gpu.Usage = finalUsage;
+
+                        return finalUsage;
                     }
-
-                    _gpuCounters.ForEach(x => x.NextValue());
-                    _gpuCountersInitialized = true;
+                    catch
+                    {
+                        return 0;
+                    }
                 }
-
-                if (_gpuCounters.Count == 0) return 0;
-
-                await Task.Delay(200);
-
-                float totalUsage = 0;
-                foreach (var counter in _gpuCounters)
-                {
-                    totalUsage += counter.NextValue();
-                }
-
-                int finalUsage = (int)Math.Clamp(totalUsage, 0, 100);
-
-                HardwareData.Gpu.Usage = finalUsage;
-
-                return finalUsage;
-            }
-            catch
-            {
-                return 0;
-            }
+            });
         }
 
         private void GetGraphicsInfo()
@@ -523,9 +530,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     }
 
                     HardwareData.Memory.Data = string.Join(Environment.NewLine, entries);
-
                     HardwareData.Memory.Total = totalCapacity / (1024.0 * 1024.0 * 1024.0);
-
                     HardwareData.Memory.Type = MapSmbiosMemoryType(memoryTypeCode);
                 }
                 catch
@@ -635,7 +640,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 string ip = host.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork)?.ToString() ?? "127.0.0.1";
 
                 HardwareData.LocalIPAddress = ip;
-
                 return ip;
             }
             catch
@@ -748,8 +752,36 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             return await Task.Run(() =>
             {
-                try { return Math.Round((double)_cpuCounter.NextValue(), 1); }
-                catch { return 0.0; }
+                if (!GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+                {
+                    return 0.0;
+                }
+
+                ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+
+                if (_prevIdleTime == 0)
+                {
+                    _prevIdleTime = curIdleTime;
+                    _prevKernelTime = curKernelTime;
+                    _prevUserTime = curUserTime;
+                    return 0.0;
+                }
+
+                ulong idleDiff = curIdleTime - _prevIdleTime;
+                ulong kernelDiff = curKernelTime - _prevKernelTime;
+                ulong userDiff = curUserTime - _prevUserTime;
+                ulong totalSystemTime = kernelDiff + userDiff;
+
+                _prevIdleTime = curIdleTime;
+                _prevKernelTime = curKernelTime;
+                _prevUserTime = curUserTime;
+
+                if (totalSystemTime == 0) return 0.0;
+
+                double cpuUsage = (totalSystemTime - idleDiff) * 100.0 / totalSystemTime;
+                return Math.Clamp(Math.Round(cpuUsage, 1), 0, 100);
             });
         }
 
@@ -786,11 +818,11 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 long totalBytes = 0;
 
                 List<string> foldersToCheck = new List<string>
-        {
-            Path.GetTempPath(),
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Temp"),
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"SoftwareDistribution\Download")
-        };
+                {
+                    Path.GetTempPath(),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Temp"),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), @"SoftwareDistribution\Download")
+                };
 
                 string? root = Path.GetPathRoot(Environment.SystemDirectory);
                 if (root != null)
@@ -854,7 +886,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
                 return Math.Round((usedVirtual / totalVirtual) * 100.0, 1);
             }
-
             return 0;
         }
 
