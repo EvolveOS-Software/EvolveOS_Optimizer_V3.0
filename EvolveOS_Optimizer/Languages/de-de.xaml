@@ -1250,6 +1250,7 @@
     <sys:String x:Key="tgl38_intf">Anzeige versteckter Dateien und Ordner im Explorer</sys:String>
     <sys:String x:Key="tgl39_intf">Snap Bar (Windows 11)</sys:String>
     <sys:String x:Key="tgl40_intf">Sekunden auf der Taskleistenuhr anzeigen</sys:String>
+    <sys:String x:Key="tgl41_intf">Benutzerdefiniertes Kontobild deaktivieren</sys:String>
 
     <sys:String x:Key="tgl1_desc_intf">Ändert die Farbe der Cursorauswahl von blau auf grau «nasser Asphalt».</sys:String>
     <sys:String x:Key="tgl2_desc_intf">Ändert die Farbe der QuickInfo in einigen Programmen von gelb auf hellblau «azurblau».</sys:String>
@@ -1291,6 +1292,7 @@
     <sys:String x:Key="tgl38_desc_intf">Standardmäßig blendet Windows Dateien und Ordner aus. Benutzer möchten jedoch möglicherweise auf versteckte Dateien zugreifen, um ihre Systemeinstellungen anzupassen, z.B. System-Designs, Symbole oder Start-Einstellungen. Versteckte Ordner wie “AppData” enthalten benutzerspezifische Anwendungsdaten und Einstellungen, die es Benutzern ermöglichen, ihr Windows 11-Erlebnis nach ihren Wünschen zu gestalten.</sys:String>
     <sys:String x:Key="tgl39_desc_intf">In Windows 11 erscheint standardmäßig die Snap Bar (Andockleiste), wenn Sie ein Fenster an den oberen Bildschirmrand ziehen. Der Tweak ermöglicht es Ihnen, die Snap Bar zu deaktivieren.</sys:String>
     <sys:String x:Key="tgl40_desc_intf">Wählen Sie aus, ob Sekunden auf der Uhr in der Taskleiste angezeigt werden sollen. Standardmäßig zeigt Windows die Sekunden in der Taskleistenuhr nicht an.</sys:String>
+    <sys:String x:Key="tgl41_desc_intf">Verhindert die Möglichkeit, das Profilbild Ihres lokalen Kontos in den Windows-Einstellungen zu ändern, indem der Standard-Windows-Avatar erzwungen wird.</sys:String>
     <!-- endregion Interface Page-->
 
     <!-- region Privacy Page -->

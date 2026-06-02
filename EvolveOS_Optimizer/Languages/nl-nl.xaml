@@ -1248,6 +1248,7 @@
     <sys:String x:Key="tgl38_intf">Verborgen bestanden en mappen weergeven in Verkenner</sys:String>
     <sys:String x:Key="tgl39_intf">Snap-balk (Windows 11)</sys:String>
     <sys:String x:Key="tgl40_intf">Seconden weergeven in de taakbalkklok</sys:String>
+    <sys:String x:Key="tgl41_intf">Aangepaste accountafbeelding uitschakelen</sys:String>
 
     <sys:String x:Key="tgl1_desc_intf">Verandert de kleur van de cursorselectie van blauw naar grijs «nat asfalt».</sys:String>
     <sys:String x:Key="tgl2_desc_intf">Verandert de kleur van de tooltip in sommige programma's van geel naar lichtblauw «azuur».</sys:String>
@@ -1289,6 +1290,7 @@
     <sys:String x:Key="tgl38_desc_intf">Standaard verbergt Windows bepaalde bestanden en mappen. Gebruikers willen deze vaak openen voor systeembeheer of om mappen zoals 'AppData' te bereiken, die applicatie-instellingen bevatten.</sys:String>
     <sys:String x:Key="tgl39_desc_intf">In Windows 11 verschijnt standaard de snap-balk bovenaan het scherm wanneer u een venster versleept. Met deze tweak kunt u deze balk uitschakelen.</sys:String>
     <sys:String x:Key="tgl40_desc_intf">Kies of u de seconden in de klok van de taakbalk wilt zien; Windows toont deze standaard niet.</sys:String>
+    <sys:String x:Key="tgl41_desc_intf">Voorkomt de mogelijkheid om uw lokale accountprofielfoto in de Windows-instellingen te wijzigen door de standaard Windows-avatar af te dwingen.</sys:String>
     <!-- endregion Interface Page-->
 
     <!-- region Privacy Page -->

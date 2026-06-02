@@ -1254,6 +1254,7 @@
     <sys:String x:Key="tgl38_intf">Visualizzazione file e cartelle nascoste in esplora risorse</sys:String>
     <sys:String x:Key="tgl39_intf">Barra di ancoraggio (Snap bar - Windows 11)</sys:String>
     <sys:String x:Key="tgl40_intf">Mostra secondi nell'orologio della barra delle applicazioni</sys:String>
+    <sys:String x:Key="tgl41_intf">Disabilita immagine dell'account personalizzata</sys:String>
 
     <sys:String x:Key="tgl1_desc_intf">Cambierà il colore della selezione del cursore da blu a grigio «asfalto bagnato».</sys:String>
     <sys:String x:Key="tgl2_desc_intf">Cambierà il colore dei tooltip in alcuni programmi da giallo ad azzurro chiaro.</sys:String>
@@ -1295,6 +1296,7 @@
     <sys:String x:Key="tgl38_desc_intf">Per impostazione predefinita, Windows nasconde determinati file e cartelle. Tuttavia, gli utenti potrebbero voler accedere ai file nascosti per personalizzare le preferenze di sistema, come la modifica di temi, icone o impostazioni di avvio. Le cartelle nascoste come “AppData” contengono dati e impostazioni delle applicazioni specifiche per l'utente, consentendo così di personalizzare l'esperienza di Windows 11 in base alle proprie esigenze.</sys:String>
     <sys:String x:Key="tgl39_desc_intf">Di default in Windows 11, appare una barra di ancoraggio (Snap bar) quando si trascina una finestra nella parte superiore dello schermo. Questo tweak ti permette di disabilitare la Snap bar.</sys:String>
     <sys:String x:Key="tgl40_desc_intf">Scegli se desideri che i secondi vengano mostrati nell'orologio della barra delle applicazioni; di default Windows non li mostra.</sys:String>
+    <sys:String x:Key="tgl41_desc_intf">Impedisce la possibilità di modificare l'immagine del profilo dell'account locale nelle Impostazioni di Windows forzando l'avatar utente predefinito di Windows.</sys:String>
     <!-- endregion Interface Page-->
 
     <!-- region Privacy Page -->

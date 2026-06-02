@@ -1271,6 +1271,7 @@
     <sys:String x:Key="tgl38_intf">Displaying hidden files and folders in explorer</sys:String>
     <sys:String x:Key="tgl39_intf">Snap bar (Windows 11)</sys:String>
     <sys:String x:Key="tgl40_intf">Show seconds in taskbar clock</sys:String>
+    <sys:String x:Key="tgl41_intf">Disable custom account picture</sys:String>
 
     <sys:String x:Key="tgl1_desc_intf">Will change the color of the cursor selection from blue to gray «wet asphalt».</sys:String>
     <sys:String x:Key="tgl2_desc_intf">Will change the color of the tooltip in some programs from yellow to light blue «azure».</sys:String>
@@ -1312,6 +1313,7 @@
     <sys:String x:Key="tgl38_desc_intf">By default, Windows hides files and folders. Users may want to access hidden files to customize their system preferences, such as modifying system themes, icons, or startup settings. Hidden folders like “AppData” contain user-specific application data and settings, allowing users to tailor their Windows 11 experience to their preferences.</sys:String>
     <sys:String x:Key="tgl39_desc_intf">By default in Windows 11, The snap bar appears when you drag a window to the top of the screen. The tweak allow you to disable the snap bar.</sys:String>
     <sys:String x:Key="tgl40_desc_intf">Choose if you want seconds in the taskbar clock to show, windows by default doesn't show the seconds in the taskbar clock.</sys:String>
+    <sys:String x:Key="tgl41_desc_intf">Prevents the ability to change your local account profile picture in Windows Settings by enforcing the default Windows user avatar.</sys:String>
     <!-- endregion Interface Page-->
 
     <!-- region Privacy Page -->

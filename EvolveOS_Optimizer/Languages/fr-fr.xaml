@@ -1249,6 +1249,7 @@
     <sys:String x:Key="tgl38_intf">Afficher les fichiers et dossiers cachés dans l'explorateur</sys:String>
     <sys:String x:Key="tgl39_intf">Barre d'ancrage / Snap bar (Windows 11)</sys:String>
     <sys:String x:Key="tgl40_intf">Afficher les secondes dans l'horloge de la barre des tâches</sys:String>
+    <sys:String x:Key="tgl41_intf">Désactiver l'image de compte personnalisée</sys:String>
 
     <sys:String x:Key="tgl1_desc_intf">Change la couleur de sélection du curseur du bleu au gris « asphalte mouillé ».</sys:String>
     <sys:String x:Key="tgl2_desc_intf">Change la couleur des info-bulles du jaune au bleu clair « azur » dans certains programmes.</sys:String>
@@ -1290,6 +1291,7 @@
     <sys:String x:Key="tgl38_desc_intf">Par défaut, Windows masque certains fichiers. Ce réglage permet d'accéder aux fichiers cachés, comme le dossier « AppData », pour personnaliser les paramètres ou modifier les thèmes système.</sys:String>
     <sys:String x:Key="tgl39_desc_intf">Sous Windows 11, la barre d'ancrage apparaît en haut de l'écran lorsque vous faites glisser une fenêtre. Ce tweak permet de désactiver cette barre.</sys:String>
     <sys:String x:Key="tgl40_desc_intf">Choisissez si vous souhaitez afficher les secondes dans l'horloge de la barre des tâches; Windows ne les affiche pas par défaut.</sys:String>
+    <sys:String x:Key="tgl41_desc_intf">Empêche la modification de la photo de profil de votre compte local dans les paramètres de Windows en imposant l'avatar d'utilisateur par défaut de Windows.</sys:String>
     <!-- endregion Interface Page-->
 
     <!-- region Privacy Page -->

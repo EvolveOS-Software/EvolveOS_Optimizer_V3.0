@@ -58,7 +58,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             { "TglButton37", true },
             { "TglButton38", true },
             { "TglButton39", true },
-            { "TglButton40", true }
+            { "TglButton40", true },
+            { "TglButton41", true }
         };
 
         internal void AnalyzeAndUpdate()
@@ -246,6 +247,10 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
             _сontrolWriter.Button[40] =
                 RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowSecondsInSystemClock", "1");
+
+            _сontrolWriter.Button[41] =
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer", "UseDefaultTile", "1") ||
+                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "UseDefaultTile", "1");
         }
 
         internal async Task ApplyTweaks(string tweak, bool isDisabled)
@@ -740,6 +745,18 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
                 case "TglButton40":
                     RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowSecondsInSystemClock", isDisabled ? 1 : 0, RegistryValueKind.DWord);
+                    break;
+                case "TglButton41":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer", "UseDefaultTile", 1, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "UseDefaultTile", 1, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer", "UseDefaultTile");
+                        RegistryHelp.DeleteValue(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "UseDefaultTile");
+                    }
                     break;
                 default:
                     break;
