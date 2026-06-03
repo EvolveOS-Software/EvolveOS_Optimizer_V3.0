@@ -1,5 +1,9 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Runtime.InteropServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Model;
@@ -7,8 +11,7 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Views;
-using Windows.Storage;
-using Windows.Storage.Pickers;
+using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -93,7 +96,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
         #endregion
 
-
         #region Drag & Drop Processing
         public async Task HandleDropAsync(string[] paths)
         {
@@ -167,33 +169,57 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Commands
         [RelayCommand]
-        private async Task SelectFolder()
+        private void SelectFolder()
         {
             try
             {
-                var folderPicker = new FolderPicker();
-                folderPicker.FileTypeFilter.Add("*");
+                var ofn = new OpenFileName();
+                ofn.structSize = Marshal.SizeOf(ofn);
 
                 var activeWindow = (Application.Current as App)?.GetType().GetProperty("MainWindow")?.GetValue(Application.Current) as Window;
                 if (activeWindow != null)
                 {
-                    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(activeWindow);
-                    WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
+                    ofn.hwnd = WindowNative.GetWindowHandle(activeWindow);
                 }
 
-                StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-                if (folder != null)
-                {
-                    if (!SavedPaths.Contains(folder.Path))
-                    {
-                        SavedPaths.Insert(0, folder.Path);
-                        SettingsEngine.AllUserScriptsPaths = SavedPaths.ToList();
-                    }
+                ofn.filter = "Folders\0*.none\0All Files (*.*)\0*.*\0";
+                ofn.filterIndex = 1;
 
-                    SelectedPath = folder.Path;
+                string dummyName = "Folder Selection";
+                char[] fileChars = new char[260];
+                dummyName.CopyTo(0, fileChars, 0, dummyName.Length);
+                ofn.file = new string(fileChars);
+                ofn.maxFile = fileChars.Length;
+
+                ofn.fileTitle = new string(new char[64]);
+                ofn.maxFileTitle = 64;
+
+                ofn.title = "Navigate to your Scripts folder and click 'Open'";
+                ofn.initialDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+                ofn.flags = 0x00000100 | 0x00000004 | 0x00000800 | 0x00010000;
+
+                if (GetOpenFileName(ofn))
+                {
+                    string selectedPath = ofn.file.TrimEnd('\0');
+                    string? folderPath = System.IO.Path.GetDirectoryName(selectedPath);
+
+                    if (!string.IsNullOrWhiteSpace(folderPath) && System.IO.Directory.Exists(folderPath))
+                    {
+                        if (!SavedPaths.Contains(folderPath))
+                        {
+                            SavedPaths.Insert(0, folderPath);
+                            SettingsEngine.AllUserScriptsPaths = SavedPaths.ToList();
+                        }
+
+                        SelectedPath = folderPath;
+                    }
                 }
             }
-            catch (Exception ex) { ErrorLogging.LogDebug(ex); }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+            }
         }
 
         [RelayCommand]
@@ -428,6 +454,41 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 catch (Exception ex) { ErrorLogging.LogDebug(ex); }
             });
         }
+        #endregion
+
+        #region Native Win32 File Dialog
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private class OpenFileName
+        {
+            public int structSize = 0;
+            public IntPtr hwnd = IntPtr.Zero;
+            public IntPtr hinst = IntPtr.Zero;
+            public string? filter = null;
+            public string? custFilter = null;
+            public int custFilterMax = 0;
+            public int filterIndex = 0;
+            public string? file = null;
+            public int maxFile = 0;
+            public string? fileTitle = null;
+            public int maxFileTitle = 0;
+            public string? initialDir = null;
+            public string? title = null;
+            public int flags = 0;
+            public short fileOffset = 0;
+            public short fileExtension = 0;
+            public string? defExt = null;
+            public IntPtr custData = IntPtr.Zero;
+            public IntPtr hook = IntPtr.Zero;
+            public string? templateName = null;
+            public IntPtr reservedPtr = IntPtr.Zero;
+            public int reservedInt = 0;
+            public int flagsEx = 0;
+        }
+
+        [DllImport("comdlg32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool GetOpenFileName([In, Out] OpenFileName ofn);
+
         #endregion
 
         #region Disposal

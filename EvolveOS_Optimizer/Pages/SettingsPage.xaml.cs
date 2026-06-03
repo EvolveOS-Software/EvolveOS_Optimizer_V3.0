@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Management;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text.Json;
 using EvolveOS_Optimizer.Core;
@@ -1285,19 +1286,45 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Database Backup & Folder Logic
-        private async void BrowseBackupFolder_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void BrowseBackupFolder_Click(object sender, RoutedEventArgs e)
         {
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
-            folderPicker.FileTypeFilter.Add("*");
-
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
-            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
-
-            var folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
+            try
             {
-                DatabaseBackupPath = folder.Path;
+                var ofn = new OpenFileName();
+                ofn.structSize = Marshal.SizeOf(ofn);
+                ofn.hwnd = WindowNative.GetWindowHandle(App.MainWindow);
+
+                ofn.filter = "Folders\0*.none\0All Files (*.*)\0*.*\0";
+                ofn.filterIndex = 1;
+
+                string dummyName = "Folder Selection";
+                char[] fileChars = new char[260];
+                dummyName.CopyTo(0, fileChars, 0, dummyName.Length);
+                ofn.file = new string(fileChars);
+                ofn.maxFile = fileChars.Length;
+
+                ofn.fileTitle = new string(new char[64]);
+                ofn.maxFileTitle = 64;
+
+                ofn.title = "Navigate to the desired folder and click 'Open'";
+                ofn.initialDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+                ofn.flags = 0x00000100 | 0x00000004 | 0x00000800 | 0x00010000;
+
+                if (GetOpenFileName(ofn))
+                {
+                    string selectedPath = ofn.file.TrimEnd('\0');
+                    string? folderPath = System.IO.Path.GetDirectoryName(selectedPath);
+
+                    if (!string.IsNullOrWhiteSpace(folderPath) && Directory.Exists(folderPath))
+                    {
+                        DatabaseBackupPath = folderPath;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Folder Picker Error]: {ex.Message}");
             }
         }
 
@@ -1305,50 +1332,58 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                var window = App.MainWindow;
-                if (window == null) return;
+                var ofn = new OpenFileName();
+                ofn.structSize = Marshal.SizeOf(ofn);
+                ofn.hwnd = WindowNative.GetWindowHandle(App.MainWindow);
 
-                var windowId = window.AppWindow.Id;
+                ofn.filter = "Database Backup Files (*.bak; *.dat)\0*.bak;*.dat\0All Files (*.*)\0*.*\0";
+                ofn.filterIndex = 1;
 
-                var picker = new FileOpenPicker(windowId);
+                ofn.file = new string(new char[256]);
+                ofn.maxFile = ofn.file.Length;
+                ofn.fileTitle = new string(new char[64]);
+                ofn.maxFileTitle = ofn.fileTitle.Length;
 
-                picker.FileTypeFilter.Add(".bak");
-                picker.FileTypeFilter.Add(".dat");
+                ofn.title = "Select Database Backup File";
+                ofn.initialDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-                var pickResult = await picker.PickSingleFileAsync();
-
-                if (pickResult != null && !string.IsNullOrEmpty(pickResult.Path))
+                if (GetOpenFileName(ofn))
                 {
-                    EfficiencyModeHelper.IsUIWakeLockActive = true;
-                    EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+                    string filePath = ofn.file;
 
-                    bool success = SqlConnectionHelper.RestoreDatabase(pickResult.Path);
-
-                    if (success)
+                    if (!string.IsNullOrEmpty(filePath))
                     {
-                        ContentDialog successDialog = new ContentDialog
+                        EfficiencyModeHelper.IsUIWakeLockActive = true;
+                        EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
+
+                        bool success = SqlConnectionHelper.RestoreDatabase(filePath);
+
+                        if (success)
                         {
-                            Title = ResourceString.GetString("Settings_DbRestore_Success_Title"),
-                            Content = ResourceString.GetString("Settings_DbRestore_Success_Content"),
-                            CloseButtonText = ResourceString.GetString("Settings_DbRestore_Success_Button"),
-                            XamlRoot = this.XamlRoot
-                        };
+                            ContentDialog successDialog = new ContentDialog
+                            {
+                                Title = ResourceString.GetString("Settings_DbRestore_Success_Title"),
+                                Content = ResourceString.GetString("Settings_DbRestore_Success_Content"),
+                                CloseButtonText = ResourceString.GetString("Settings_DbRestore_Success_Button"),
+                                XamlRoot = this.XamlRoot
+                            };
 
-                        await successDialog.ShowAsync();
+                            await successDialog.ShowAsync();
 
-                        SettingsEngine.SelfReboot();
-                    }
-                    else
-                    {
-                        ContentDialog errorDialog = new ContentDialog
+                            SettingsEngine.SelfReboot();
+                        }
+                        else
                         {
-                            Title = ResourceString.GetString("Settings_DbRestore_Error_Title"),
-                            Content = ResourceString.GetString("Settings_DbRestore_Error_Content"),
-                            CloseButtonText = ResourceString.GetString("Settings_DbRestore_Error_Button"),
-                            XamlRoot = this.XamlRoot
-                        };
+                            ContentDialog errorDialog = new ContentDialog
+                            {
+                                Title = ResourceString.GetString("Settings_DbRestore_Error_Title"),
+                                Content = ResourceString.GetString("Settings_DbRestore_Error_Content"),
+                                CloseButtonText = ResourceString.GetString("Settings_DbRestore_Error_Button"),
+                                XamlRoot = this.XamlRoot
+                            };
 
-                        await errorDialog.ShowAsync();
+                            await errorDialog.ShowAsync();
+                        }
                     }
                 }
             }
@@ -2079,6 +2114,41 @@ namespace EvolveOS_Optimizer.Pages
                 LblSessionExpiry.Text = $"{prefix}{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
             }
         }
+        #endregion
+
+        #region Native Win32 File Dialog
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private class OpenFileName
+        {
+            public int structSize = 0;
+            public IntPtr hwnd = IntPtr.Zero;
+            public IntPtr hinst = IntPtr.Zero;
+            public string? filter = null;
+            public string? custFilter = null;
+            public int custFilterMax = 0;
+            public int filterIndex = 0;
+            public string? file = null;
+            public int maxFile = 0;
+            public string? fileTitle = null;
+            public int maxFileTitle = 0;
+            public string? initialDir = null;
+            public string? title = null;
+            public int flags = 0;
+            public short fileOffset = 0;
+            public short fileExtension = 0;
+            public string? defExt = null;
+            public IntPtr custData = IntPtr.Zero;
+            public IntPtr hook = IntPtr.Zero;
+            public string? templateName = null;
+            public IntPtr reservedPtr = IntPtr.Zero;
+            public int reservedInt = 0;
+            public int flagsEx = 0;
+        }
+
+        [DllImport("comdlg32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool GetOpenFileName([In, Out] OpenFileName ofn);
+
         #endregion
 
         #region Purge Page

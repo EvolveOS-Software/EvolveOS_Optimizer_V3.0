@@ -335,6 +335,8 @@
 
     <sys:String x:Key="Generic_Continue">Continue</sys:String>
     <sys:String x:Key="Generic_Cancel">Cancel</sys:String>
+    <sys:String x:Key="Generic_Success">Success</sys:String>
+    
 
     <sys:String x:Key="Settings_Donation_Title">Support EvolveOS Optimizer's open-source development.</sys:String>
     <sys:String x:Key="Settings_Donation_Message">Countless hours went into building EvolveOS Optimizer to keep your PC running at its best, and I personally cover the ongoing costs for features like the live Weather API. If this tool has helped you, please consider a small donation for its continued development! ♥</sys:String>
@@ -1002,6 +1004,7 @@
 
     <sys:String x:Key="Feature_AddUltimatePowerPlan_Button">Add Plan</sys:String>
     <sys:String x:Key="Feature_CompressOSButton_Content">Check Compression</sys:String>
+    <sys:String x:Key="Feature_CompressOSButton_Description">Compress system files to free up disk space without affecting performance.</sys:String>
     <sys:String x:Key="Feature_WindowsUpdates_Default_Content">Default</sys:String>
     <sys:String x:Key="Feature_WindowsUpdates_Security_Content">Security Only</sys:String>
     <sys:String x:Key="Feature_WindowsUpdates_Manually_Content">Manually</sys:String>
@@ -1036,6 +1039,7 @@
     <sys:String x:Key="Feature_DisableSystemRestore_Header">Disable system restore</sys:String>
     <sys:String x:Key="Feature_DisableCortana_Header">Disable cortana</sys:String>
     <sys:String x:Key="Feature_WindowsUpdates_Header">Windows updates</sys:String>
+    <sys:String x:Key="Feature_WindowsUpdates_Description">Manage and configure Windows Update settings to prevent unexpected background downloads and restarts.</sys:String>
     <sys:String x:Key="Feature_DisableSmartScreen_Header">Disable Smart Screen</sys:String>
 
     <sys:String x:Key="settings_card_effects">Card Effects</sys:String>

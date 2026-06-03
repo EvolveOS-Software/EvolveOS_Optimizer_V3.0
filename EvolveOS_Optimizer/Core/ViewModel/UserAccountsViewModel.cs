@@ -5,6 +5,7 @@
 
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
@@ -490,22 +491,34 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             try
             {
-                var picker = new Windows.Storage.Pickers.FileOpenPicker();
-                picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-                picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
-                picker.FileTypeFilter.Add(".jpg");
-                picker.FileTypeFilter.Add(".jpeg");
-                picker.FileTypeFilter.Add(".png");
-                picker.FileTypeFilter.Add(".bmp");
+                var ofn = new OpenFileName();
+                ofn.structSize = Marshal.SizeOf(ofn);
 
-                var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
-                InitializeWithWindow.Initialize(picker, hwnd);
+                ofn.hwnd = WindowNative.GetWindowHandle(App.MainWindow);
 
-                var file = await picker.PickSingleFileAsync();
+                ofn.filter = "Image Files (*.jpg; *.jpeg; *.png; *.bmp)\0*.jpg;*.jpeg;*.png;*.bmp\0All Files (*.*)\0*.*\0";
+                ofn.filterIndex = 1;
 
-                if (file != null)
+                ofn.file = new string(new char[256]);
+                ofn.maxFile = ofn.file.Length;
+                ofn.fileTitle = new string(new char[64]);
+                ofn.maxFileTitle = ofn.fileTitle.Length;
+
+                ofn.title = "Select Profile Picture";
+                ofn.initialDir = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+
+                if (GetOpenFileName(ofn))
                 {
-                    _formImageData = await File.ReadAllBytesAsync(file.Path);
+                    string filePath = ofn.file;
+
+                    var fileInfo = new FileInfo(filePath);
+                    if (fileInfo.Length > 2 * 1024 * 1024)
+                    {
+                        NativeToastHelper.SendNativeToast("File Too Large", "Please select an image smaller than 2 MB.");
+                        return;
+                    }
+
+                    _formImageData = await File.ReadAllBytesAsync(filePath);
                     var loadedImage = await ImageHelper.LoadFromBytesAsync(_formImageData);
 
                     App.UIThreadDispatcher?.TryEnqueue(() => FormImageSource = loadedImage);
@@ -683,6 +696,42 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 NativeToastHelper.SendNativeToast("Database Error", $"Failed to save: {ex.Message}");
             }
         }
+
+        #endregion
+
+        #region Native Win32 File Dialog
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private class OpenFileName
+        {
+            public int structSize = 0;
+            public IntPtr hwnd = IntPtr.Zero;
+            public IntPtr hinst = IntPtr.Zero;
+            public string? filter = null;
+            public string? custFilter = null;
+            public int custFilterMax = 0;
+            public int filterIndex = 0;
+            public string? file = null;
+            public int maxFile = 0;
+            public string? fileTitle = null;
+            public int maxFileTitle = 0;
+            public string? initialDir = null;
+            public string? title = null;
+            public int flags = 0;
+            public short fileOffset = 0;
+            public short fileExtension = 0;
+            public string? defExt = null;
+            public IntPtr custData = IntPtr.Zero;
+            public IntPtr hook = IntPtr.Zero;
+            public string? templateName = null;
+            public IntPtr reservedPtr = IntPtr.Zero;
+            public int reservedInt = 0;
+            public int flagsEx = 0;
+        }
+
+        [DllImport("comdlg32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool GetOpenFileName([In, Out] OpenFileName ofn);
+
         #endregion
     }
 }
