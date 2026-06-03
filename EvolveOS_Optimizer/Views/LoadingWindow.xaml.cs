@@ -362,7 +362,7 @@ namespace EvolveOS_Optimizer.Views
                         {
                             ExecuteWithLogging(UninstallingPackages.CheckingForLocalAccount, nameof(UninstallingPackages.CheckingForLocalAccount));
                             ExecuteWithLogging(SystemTweaks.ViewNetshState, nameof(SystemTweaks.ViewNetshState));
-                            ExecuteWithLogging(SystemTweaks.ViewBluetoothStatus, nameof(SystemTweaks.ViewBluetoothStatus));
+                            ExecuteWithLogging(BluetoothManager.Initialize, nameof(BluetoothManager.Initialize));
                             ExecuteWithLogging(SystemTweaks.ViewConfigTick, nameof(SystemTweaks.ViewConfigTick));
                         }
                     );

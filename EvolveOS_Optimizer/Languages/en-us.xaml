@@ -1004,7 +1004,7 @@
 
     <sys:String x:Key="Feature_AddUltimatePowerPlan_Button">Add Plan</sys:String>
     <sys:String x:Key="Feature_CompressOSButton_Content">Check Compression</sys:String>
-    <sys:String x:Key="Feature_CompressOSButton_Description">Compress system files to free up disk space without affecting performance.</sys:String>
+    <sys:String x:Key="Feature_CompressOS_Description">Compress system files to free up disk space without affecting performance.</sys:String>
     <sys:String x:Key="Feature_WindowsUpdates_Default_Content">Default</sys:String>
     <sys:String x:Key="Feature_WindowsUpdates_Security_Content">Security Only</sys:String>
     <sys:String x:Key="Feature_WindowsUpdates_Manually_Content">Manually</sys:String>

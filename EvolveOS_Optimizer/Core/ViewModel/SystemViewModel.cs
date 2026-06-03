@@ -4,13 +4,15 @@
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
+using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Tweaks;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
     internal class SystemViewModel : ViewModelPageBase<SystemModel, SystemTweaks>
     {
-        public Visibility RealtekSupportAvailable => HardwareData.VendorDetection.Realtek ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility RealtekSupport => HardwareData.VendorDetection.Realtek ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility BluetoothSupport => BluetoothManager.IsAvailable ? Visibility.Visible : Visibility.Collapsed;
 
         protected override Dictionary<string, object> GetControlStates()
         {

@@ -619,7 +619,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6" MinHeight="98" Tag="TglButton7">
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6" MinHeight="98" Tag="TglButton7" Visibility="{Binding RealtekSupport}">
                     <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton7]}" Padding="30,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="32"/>
@@ -1246,7 +1246,7 @@
                     </Grid>
                 </Border>
 
-                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6" MinHeight="98" Tag="TglButton19">
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6" MinHeight="98" Tag="TglButton19"  Visibility="{Binding BluetoothSupport}">
                     <Grid HorizontalAlignment="Stretch" DataContext="{Binding [TglButton19]}" Padding="30,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="32"/>
