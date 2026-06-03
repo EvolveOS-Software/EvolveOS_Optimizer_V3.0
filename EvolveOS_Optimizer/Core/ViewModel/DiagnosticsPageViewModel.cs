@@ -18,6 +18,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Windows.System.Power;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System;
 
@@ -1813,9 +1814,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (ev == null) return;
 
-            string textToCopy = !string.IsNullOrWhiteSpace(ev.AiAnalysis) ? ev.AiAnalysis : ev.Message;
+            string textToCopy = !string.IsNullOrWhiteSpace(ev.FullMessage)
+                ? ev.FullMessage
+                : (ev.Message ?? "No description available.");
 
-            if (string.IsNullOrWhiteSpace(textToCopy)) textToCopy = ev.FullMessage ?? "No description available.";
+            if (!string.IsNullOrWhiteSpace(ev.AiAnalysis))
+            {
+                textToCopy = $"--- AI Analysis ---\n{ev.AiAnalysis}\n\n--- Raw Event Log ---\n{textToCopy}";
+            }
 
             if (!string.IsNullOrWhiteSpace(textToCopy))
             {
@@ -1825,7 +1831,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 SendSystemNotification(1,
                     ResourceString.GetString("diag_copy_success_title") ?? "Copied to Clipboard",
-                    ResourceString.GetString("diag_copy_success_msg") ?? "The event log message has been copied.");
+                    ResourceString.GetString("diag_copy_success_msg") ?? "The full event log message has been copied.");
             }
         }
 
