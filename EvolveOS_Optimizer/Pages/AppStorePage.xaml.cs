@@ -2050,22 +2050,38 @@ namespace EvolveOS_Optimizer.Pages
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var q in new[] { "browser", "media", "code", "chat", "game", "archive", "social", "utility", "system" })
-                foreach (var item in await SearchPackagesFromWingetCliAsync(q))
+            {
+                foreach (var item in await SearchPackagesFromWingetCliAsync(q, default, true))
+                {
                     if (seen.Add(item.Id)) results.Add(item);
+                }
+            }
 
             return results;
         }
 
         private async Task<List<DiscoveredPackageEntry>> SearchPackagesFromWingetCliAsync(
-            string query, CancellationToken cancellationToken = default)
+            string query, CancellationToken cancellationToken = default, bool isBackgroundFallback = false)
         {
             if (string.IsNullOrWhiteSpace(query)) return [];
             var token = cancellationToken.CanBeCanceled ? cancellationToken : _cts.Token;
 
+            string safeQuery = query.Replace("\"", "\"\"");
+            string searchArguments;
+
+            if (isBackgroundFallback)
+            {
+                searchArguments = $"search \"{safeQuery}\" --source winget --count 15 --accept-source-agreements";
+            }
+            else
+            {
+                searchArguments = $"search \"{safeQuery}\" --accept-source-agreements";
+            }
+
             var psi = new ProcessStartInfo
             {
                 FileName = "winget.exe",
-                Arguments = $"search --query \"{query.Replace("\"", "\"\"")}\" --source winget --accept-source-agreements",
+                Arguments = searchArguments,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -2087,10 +2103,8 @@ namespace EvolveOS_Optimizer.Pages
             catch (OperationCanceledException)
             {
                 TryTerminateProcess(process);
-
                 _ = stdOut.ContinueWith(t => t.Exception, TaskContinuationOptions.OnlyOnFaulted);
                 _ = stdErr.ContinueWith(t => t.Exception, TaskContinuationOptions.OnlyOnFaulted);
-
                 throw;
             }
 
@@ -2105,35 +2119,58 @@ namespace EvolveOS_Optimizer.Pages
             var packages = new List<DiscoveredPackageEntry>();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var line in output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            var lines = output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            int idIdx = -1, verIdx = -1, srcIdx = -1;
+            bool headerFound = false;
+
+            foreach (var line in lines)
             {
                 if (line.StartsWith("The `msstore`", StringComparison.OrdinalIgnoreCase) ||
                     line.StartsWith("Do you agree", StringComparison.OrdinalIgnoreCase)) continue;
-                if (line.StartsWith("Name", StringComparison.OrdinalIgnoreCase) && line.Contains("Id")) continue;
-                if (line.All(c => c == '-' || c == ' ')) continue;
 
-                var parts = Regex.Split(line, @"\s{2,}");
-                if (parts.Length < 2) continue;
-
-                var id = parts[1].Trim();
-                if (!PackageHelper.IsLikelyWingetPackageId(id) || !seen.Add(id)) continue;
-
-                var name = string.IsNullOrWhiteSpace(parts[0]) ? PackageHelper.FormatPackageName(id) : parts[0].Trim();
-                var ver = parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]) ? parts[2].Trim() : "N/A";
-                if (ver.Equals("Unknown", StringComparison.OrdinalIgnoreCase)) ver = "N/A";
-
-                string source = string.Empty;
-                if (parts.Length >= 4)
+                if (!headerFound && line.StartsWith("Name", StringComparison.OrdinalIgnoreCase) && line.Contains("Id"))
                 {
-                    string lastPart = parts.Last().Trim();
-                    if (lastPart.Equals("winget", StringComparison.OrdinalIgnoreCase) ||
-                        lastPart.Equals("msstore", StringComparison.OrdinalIgnoreCase))
-                    {
-                        source = lastPart;
-                    }
+                    idIdx = line.IndexOf("Id", StringComparison.OrdinalIgnoreCase);
+                    verIdx = line.IndexOf("Version", StringComparison.OrdinalIgnoreCase);
+                    srcIdx = line.IndexOf("Source", StringComparison.OrdinalIgnoreCase);
+                    headerFound = true;
+                    continue;
                 }
 
-                packages.Add(new DiscoveredPackageEntry(id, name, ver, source));
+                if (!headerFound || line.All(c => c == '-' || c == ' ')) continue;
+
+                if (idIdx > 0 && line.Length > idIdx)
+                {
+                    string name = line.Substring(0, idIdx).Trim();
+
+                    string id = string.Empty;
+                    if (verIdx > 0 && line.Length > verIdx)
+                        id = line.Substring(idIdx, verIdx - idIdx).Trim();
+                    else
+                        id = line.Substring(idIdx).Trim();
+
+                    if (string.IsNullOrWhiteSpace(id) || !PackageHelper.IsLikelyWingetPackageId(id) || !seen.Add(id)) continue;
+
+                    string ver = "N/A";
+                    if (verIdx > 0 && line.Length > verIdx)
+                    {
+                        if (srcIdx > 0 && line.Length > srcIdx)
+                            ver = line.Substring(verIdx, srcIdx - verIdx).Trim();
+                        else
+                            ver = line.Substring(verIdx).Trim();
+
+                        if (ver.Equals("Unknown", StringComparison.OrdinalIgnoreCase)) ver = "N/A";
+                    }
+
+                    string source = string.Empty;
+                    if (srcIdx > 0 && line.Length > srcIdx)
+                    {
+                        source = line.Substring(srcIdx).Trim();
+                    }
+
+                    packages.Add(new DiscoveredPackageEntry(id, string.IsNullOrWhiteSpace(name) ? PackageHelper.FormatPackageName(id) : name, ver, source));
+                }
             }
 
             return packages;
