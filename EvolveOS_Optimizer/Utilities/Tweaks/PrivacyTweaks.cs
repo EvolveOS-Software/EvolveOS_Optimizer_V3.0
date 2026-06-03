@@ -37,7 +37,17 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             { "TglButton17", true },
             { "TglButton18", true },
             { "TglButton19", true },
-            { "TglButton20", true }
+            { "TglButton20", true },
+            { "TglButton21", true },
+            { "TglButton22", true },
+            { "TglButton23", true },
+            { "TglButton24", true },
+            { "TglButton25", true },
+            { "TglButton26", true },
+            { "TglButton27", true },
+            { "TglButton28", true },
+            { "TglButton29", true },
+            { "TglButton30", true }
         };
 
         internal void AnalyzeAndUpdate()
@@ -56,19 +66,18 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
 
             _сontrolWriter.Button[3] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\Autologger\Diagtrack-Listener", "Start", "0") ||
-                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments", "SaveZoneInformation", "1") || !IsTaskEnabled(telemetryTasks);
+                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments", "SaveZoneInformation", "1") || IsTaskEnabled(telemetryTasks);
 
-            _сontrolWriter.Button[4] = !IsTaskEnabled(dataCollectTasks);
+            _сontrolWriter.Button[4] = IsTaskEnabled(dataCollectTasks);
 
             _сontrolWriter.Button[5] =
-                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat", "DisableInventory", "1") || !IsTaskEnabled(appExpInventoryTasks);
-
+                            RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat", "DisableInventory", "1");
 
             _сontrolWriter.Button[6] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection", "AllowTelemetry", "0") ||
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat", "AITEnable", "0") ||
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection", "AllowDeviceNameInTelemetry", "0") ||
-                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "Start_TrackProgs", "0") || !IsTaskEnabled(appExpUsageTasks);
+                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "Start_TrackProgs", "0") || IsTaskEnabled(appExpUsageTasks);
 
             _сontrolWriter.Button[7] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\TabletPC", "PreventHandwritingDataSharing", "1") ||
@@ -76,9 +85,9 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\Input\TIPC", "Enabled", "0");
 
             _сontrolWriter.Button[8] =
-                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows", "CEIPEnable", "0") || !IsTaskEnabled(ceipTasks);
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows", "CEIPEnable", "0") || IsTaskEnabled(ceipTasks);
 
-            _сontrolWriter.Button[9] = !IsDefaultHosts();
+            _сontrolWriter.Button[9] = IsDefaultHosts();
 
             _сontrolWriter.Button[10] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors", "DisableLocation", "1") ||
@@ -91,7 +100,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection", "DoNotShowFeedbackNotifications", "1");
 
             _сontrolWriter.Button[12] =
-                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Speech", "AllowSpeechModelUpdate", "0") || !IsTaskEnabled(speechTasks);
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Speech", "AllowSpeechModelUpdate", "0") || IsTaskEnabled(speechTasks);
 
             _сontrolWriter.Button[13] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\CDPUserSvc", "Start", "4");
@@ -100,15 +109,15 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\current\device\System", "AllowExperimentation", "0");
 
             _сontrolWriter.Button[15] =
-                !RegistryHelp.KeyExists(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\DiagTrack") &&
-                !RegistryHelp.KeyExists(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\dmwappushservice") &&
-                !RegistryHelp.KeyExists(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\diagsvc");
+                RegistryHelp.KeyExists(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\DiagTrack") ||
+                RegistryHelp.KeyExists(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\dmwappushservice") ||
+                RegistryHelp.KeyExists(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\diagsvc");
 
             _сontrolWriter.Button[16] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service", "Start", "4");
 
             _сontrolWriter.Button[17] =
-                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NvTelemetryContainer", "Start", "4") || !IsTaskEnabled(nvidiaTasks);
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NvTelemetryContainer", "Start", "4");
 
             _сontrolWriter.Button[18] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat", "DisableUAR", "1") ||
@@ -117,10 +126,42 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
             _сontrolWriter.Button[19] =
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\Maps", "MapUpdate", "0") ||
                 RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\Maps", "AutoUpdateEnabled", "0") ||
-                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps", "AutoDownloadAndUpdateMapData", "0") || !IsTaskEnabled(mapsTasks);
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps", "AutoDownloadAndUpdateMapData", "0");
 
             _сontrolWriter.Button[20] = (RegistryHelp.ValueExists(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Telemetry", "Start")
-                && RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Telemetry", "Start", "4")) || !IsTaskEnabled(intelTask);
+                && RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Telemetry", "Start", "4"));
+
+            _сontrolWriter.Button[21] =
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsAI", "DisableAIDataAnalysis", "1");
+
+            _сontrolWriter.Button[22] =
+                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", "1");
+
+            _сontrolWriter.Button[23] =
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge", "MetricsReportingEnabled", "0");
+
+            _сontrolWriter.Button[24] =
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome", "MetricsReportingEnabled", "0") ||
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Mozilla\Firefox", "DisableTelemetry", "1");
+
+            _сontrolWriter.Button[25] =
+                RegistryHelp.CheckValue(@"HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\Telemetry", "TurnOffSwitch", "1");
+
+            _сontrolWriter.Button[26] =
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting", "Disabled", "1");
+
+            _сontrolWriter.Button[27] =
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System", "AllowCrossDeviceClipboard", "0");
+
+            _сontrolWriter.Button[28] =
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search", "AllowCortana", "0");
+
+            _сontrolWriter.Button[29] =
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\FindMyDevice", "AllowFindMyDevice", "0");
+
+            _сontrolWriter.Button[30] =
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Biometrics", "Enabled", "0") ||
+                RegistryHelp.CheckValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy", "LetAppsActivateWithVoice", "2");
         }
 
 
@@ -185,10 +226,10 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         RegistryHelp.DeleteValue(Registry.CurrentUser, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments", "SaveZoneInformation");
                     }
 
-                    await SetTaskState(!isDisabled, token, telemetryTasks);
+                    try { await SetTaskState(!isDisabled, token, telemetryTasks); } catch { }
                     break;
                 case "TglButton4":
-                    await SetTaskState(!isDisabled, token, dataCollectTasks);
+                    try { await SetTaskState(!isDisabled, token, dataCollectTasks); } catch { }
                     break;
                 case "TglButton5":
                     if (isDisabled)
@@ -199,7 +240,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     {
                         RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\AppCompat", "DisableInventory");
                     }
-
+                    try { await SetTaskState(!isDisabled, token, appExpInventoryTasks); } catch { }
                     break;
                 case "TglButton6":
                     RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection", "AllowTelemetry", isDisabled ? 0 : 1, RegistryValueKind.DWord);
@@ -214,8 +255,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     {
                         RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\DataCollection", "AllowDeviceNameInTelemetry");
                     }
-                    await SetTaskState(!isDisabled, token, appExpUsageTasks);
-                    break;
+                    try { await SetTaskState(!isDisabled, token, appExpUsageTasks); } catch { }
+            break;
                 case "TglButton7":
                     RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports", "PreventHandwritingErrorReports", isDisabled ? 1 : 0, RegistryValueKind.DWord);
                     RegistryHelp.Write(Registry.CurrentUser, @"SOFTWARE\Microsoft\Input\TIPC", "Enabled", isDisabled ? 0 : 1, RegistryValueKind.DWord);
@@ -239,8 +280,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     {
                         RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\SQMClient");
                     }
-                    await SetTaskState(!isDisabled, token, ceipTasks);
-                    break;
+                    try { await SetTaskState(!isDisabled, token, ceipTasks); } catch { }
+            break;
                 case "TglButton9":
                     await BlockSpyDomain(isDisabled);
                     await Task.Run(async () =>
@@ -308,8 +349,8 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         RegistryHelp.DeleteValue(Registry.CurrentUser, @"SOFTWARE\Microsoft\Siuf\Rules", "PeriodInNanoSeconds");
                         RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\DataCollection", "DoNotShowFeedbackNotifications");
                     }
-                    await SetTaskState(!isDisabled, token, feedbackTasks);
-                    break;
+                    try { await SetTaskState(!isDisabled, token, feedbackTasks); } catch { }
+            break;
                 case "TglButton12":
                     if (isDisabled)
                     {
@@ -319,7 +360,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     {
                         RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Speech", "AllowSpeechModelUpdate");
                     }
-                    await SetTaskState(!isDisabled, token, speechTasks);
+                    try { await SetTaskState(!isDisabled, token, speechTasks); } catch { }
                     break;
                 case "TglButton13":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\CDPUserSvc", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
@@ -421,7 +462,7 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                     break;
                 case "TglButton17":
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\NvTelemetryContainer", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
-                    await SetTaskState(!isDisabled, token, nvidiaTasks);
+                    try { await SetTaskState(!isDisabled, token, nvidiaTasks); } catch { }
                     break;
                 case "TglButton18":
                     if (isDisabled)
@@ -447,15 +488,160 @@ namespace EvolveOS_Optimizer.Utilities.Tweaks
                         RegistryHelp.DeleteFolderTree(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\Maps");
                     }
                     RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\Maps", "MapUpdate", isDisabled ? 0 : 1, RegistryValueKind.DWord);
-                    await SetTaskState(!isDisabled, token, mapsTasks);
+                    try { await SetTaskState(!isDisabled, token, mapsTasks); } catch { }
                     break;
                 case "TglButton20":
                     if (RegistryHelp.ValueExists(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Telemetry", "Start"))
                     {
                         RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\Telemetry", "Start", isDisabled ? 4 : 2, RegistryValueKind.DWord);
                     }
-                    await SetTaskState(!isDisabled, token, intelTask);
+                    try { await SetTaskState(!isDisabled, token, intelTask); } catch { }
                     break;
+                case "TglButton21":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\WindowsAI", "DisableAIDataAnalysis", 1, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.CurrentUser, @"SOFTWARE\Policies\Microsoft\Windows\WindowsAI", "DisableAIDataAnalysis", 1, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\WindowsAI", "DisableAIDataAnalysis");
+                        RegistryHelp.DeleteValue(Registry.CurrentUser, @"SOFTWARE\Policies\Microsoft\Windows\WindowsAI", "DisableAIDataAnalysis");
+                    }
+                    break;
+
+                case "TglButton22":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.CurrentUser, @"Software\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", 1, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCopilotButton", 0, RegistryValueKind.DWord);
+                        _ = CommandExecutor.RunCommand(@"powershell ""Get-AppxPackage *Copilot* | Remove-AppxPackage""");
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.CurrentUser, @"Software\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot");
+                        RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCopilotButton", 1, RegistryValueKind.DWord);
+                        _ = CommandExecutor.RunCommand(@"powershell ""Get-AppxPackage *Copilot* | Add-AppxPackage""");
+                    }
+                    break;
+
+                case "TglButton23":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", "PersonalizationReportingEnabled", 0, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", "UserFeedbackAllowed", 0, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", "MetricsReportingEnabled", 0, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", "SpotlightExperiencesAndRecommendationsEnabled", 0, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", "PersonalizationReportingEnabled");
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", "UserFeedbackAllowed");
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", "MetricsReportingEnabled");
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Edge", "SpotlightExperiencesAndRecommendationsEnabled");
+                    }
+                    break;
+
+                case "TglButton24":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Google\Chrome", "MetricsReportingEnabled", 0, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Google\Chrome", "ChromeCleanupReportingEnabled", 0, RegistryValueKind.DWord);
+
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Mozilla\Firefox", "DisableTelemetry", 1, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Mozilla\Firefox", "DisableDefaultBrowserAgent", 1, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Google\Chrome", "MetricsReportingEnabled");
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Google\Chrome", "ChromeCleanupReportingEnabled");
+
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Mozilla\Firefox", "DisableTelemetry");
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Mozilla\Firefox", "DisableDefaultBrowserAgent");
+                    }
+                    break;
+
+                case "TglButton25":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\VisualStudio\Telemetry", "TurnOffSwitch", 1, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\VisualStudio\SQM", "OptIn", 0, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\VisualStudio\Feedback", "DisableFeedbackDialog", 1, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.CurrentUser, @"Software\Microsoft\VisualStudio\Telemetry", "TurnOffSwitch");
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\VisualStudio\SQM", "OptIn");
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\VisualStudio\Feedback", "DisableFeedbackDialog");
+                    }
+                    break;
+
+                case "TglButton26":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting", "Disabled", 1, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\WerSvc", "Start", 4, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting", "Disabled");
+                        RegistryHelp.Write(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Services\WerSvc", "Start", 3, RegistryValueKind.DWord);
+                    }
+                    break;
+
+                case "TglButton27":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\System", "AllowClipboardHistory", 0, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\System", "AllowCrossDeviceClipboard", 0, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\System", "AllowClipboardHistory");
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\System", "AllowCrossDeviceClipboard");
+                    }
+                    break;
+
+                case "TglButton28":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\Windows Search", "AllowCortana", 0, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\Windows Search", "DisableWebSearch", 1, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Search", "BingSearchEnabled", 0, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\Windows Search", "AllowCortana");
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\Windows Search", "DisableWebSearch");
+                        RegistryHelp.DeleteValue(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Search", "BingSearchEnabled");
+                    }
+                    break;
+
+                case "TglButton29":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\FindMyDevice", "AllowFindMyDevice", 0, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\FindMyDevice", "AllowFindMyDevice");
+                    }
+                    break;
+
+                case "TglButton30":
+                    if (isDisabled)
+                    {
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Biometrics", "Enabled", 0, RegistryValueKind.DWord);
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\AppPrivacy", "LetAppsActivateWithVoice", 2, RegistryValueKind.DWord);
+                    }
+                    else
+                    {
+                        RegistryHelp.DeleteValue(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Biometrics", "Enabled");
+                        RegistryHelp.Write(Registry.LocalMachine, @"SOFTWARE\Policies\Microsoft\Windows\AppPrivacy", "LetAppsActivateWithVoice", 1, RegistryValueKind.DWord);
+                    }
+                    break;
+
                 default:
                     break;
             }

@@ -578,6 +578,10 @@
 
     <sys:String x:Key="text_saved_successfully">Paramètres enregistrés en toute sécurité.</sys:String>
     <sys:String x:Key="text_ps_policy_restricted">Seules les commandes individuelles sont autorisées.</sys:String>
+    <sys:String x:Key="text_ps_policy_allsigned">Tous les scripts doivent être signés par un éditeur approuvé.</sys:String>
+    <sys:String x:Key="text_ps_policy_remotesigned">Seuls les scripts téléchargés nécessitent une signature numérique.</sys:String>
+    <sys:String x:Key="text_ps_policy_unrestricted">Exécute tous les scripts, mais avertit pour ceux téléchargés.</sys:String>
+    <sys:String x:Key="text_ps_policy_bypass">Exécute tous les scripts automatiquement, sans blocage ni avertissement.</sys:String>
 
     <sys:String x:Key="SecurityPage_NetworkAuditHeader">Audit des sockets réseau</sys:String>
     <sys:String x:Key="SecurityPage_NetworkAuditDesc">Analyser les ports d'écoute actifs et les applications exposées.</sys:String>
@@ -1295,47 +1299,67 @@
     <!-- endregion Interface Page-->
 
     <!-- region Privacy Page -->
-    <sys:String x:Key="tgl1_conf">Identifiant publicitaire et publicité ciblée</sys:String>
-    <sys:String x:Key="tgl2_conf">Tous les types de synchronisation de vos données</sys:String>
-    <sys:String x:Key="tgl3_conf">Collecte et surveillance de la télémétrie Windows</sys:String>
-    <sys:String x:Key="tgl4_conf">Collecte de données via le planificateur de tâches</sys:String>
-    <sys:String x:Key="tgl5_conf">Collecte de données sur les applications installées</sys:String>
-    <sys:String x:Key="tgl6_conf">Collecte des statistiques d'utilisation des applications</sys:String>
-    <sys:String x:Key="tgl7_conf">Collecte et envoi des données d'écriture manuscrite</sys:String>
-    <sys:String x:Key="tgl8_conf">Collecte des données de configuration matérielle</sys:String>
-    <sys:String x:Key="tgl9_conf">Accès réseau aux domaines espions de Microsoft</sys:String>
-    <sys:String x:Key="tgl10_conf">Détermination de l'emplacement de l'utilisateur</sys:String>
-    <sys:String x:Key="tgl11_conf">Vérification des demandes via les commentaires (Feedback)</sys:String>
-    <sys:String x:Key="tgl12_conf">Mises à jour cachées de la synthèse vocale en arrière-plan</sys:String>
-    <sys:String x:Key="tgl13_conf">Surveillance cachée de votre système</sys:String>
-    <sys:String x:Key="tgl14_conf">Expériences cachées sur votre système</sys:String>
-    <sys:String x:Key="tgl15_conf">Services de collecte et de transmission de données déguisés</sys:String>
-    <sys:String x:Key="tgl16_conf">« Journalisation » des événements Windows</sys:String>
-    <sys:String x:Key="tgl17_conf">Collecte et surveillance de la télémétrie NVIDIA</sys:String>
-    <sys:String x:Key="tgl18_conf">Enregistrement du comportement de l'utilisateur</sys:String>
-    <sys:String x:Key="tgl19_conf">Collecte de données et mises à jour en arrière-plan des cartes hors ligne</sys:String>
-    <sys:String x:Key="tgl20_conf">Collecte et surveillance de la télémétrie Intel</sys:String>
-
-    <sys:String x:Key="tgl1_desc_conf">Windows crée un identifiant publicitaire unique pour chaque utilisateur afin de suivre vos actions. Il est utilisé par les développeurs d'applications et Windows lui-même pour vous proposer des publicités ciblées.</sys:String>
-    <sys:String x:Key="tgl2_desc_conf">Même avec un compte local, Windows tente toujours de synchroniser vos données avec les serveurs Microsoft : thèmes, mots de passe, paramètres Windows, paramètres du navigateur, langue, accessibilité, etc.</sys:String>
-    <sys:String x:Key="tgl3_desc_conf">La télémétrie (données de diagnostic) est ce que Windows collecte automatiquement pour l'envoyer à Microsoft. Outre la confidentialité, cela peut entraîner une charge CPU excessive qui ralentit le système.</sys:String>
-    <sys:String x:Key="tgl4_desc_conf">Le « Planificateur de tâches » contient des services qui, après leur exécution, collectent des données sur leur travail pour les envoyer aux serveurs de Microsoft.</sys:String>
-    <sys:String x:Key="tgl5_desc_conf">Microsoft collecte des données sur vos logiciels pour diagnostiquer les problèmes de compatibilité. Désactiver cette fonction empêche l'envoi d'informations potentiellement sensibles.</sys:String>
-    <sys:String x:Key="tgl6_desc_conf">Ce tweak désactive la surveillance de l'utilisation des applications, éliminant la collecte de données sur la fréquence d'utilisation, la durée du travail et d'autres mesures de productivité.</sys:String>
-    <sys:String x:Key="tgl7_desc_conf">Ce tweak désactive le mécanisme de collecte de données utilisé par Microsoft pour améliorer sa technologie de reconnaissance manuscrite, qui suit votre activité même si vous ne l'utilisez pas.</sys:String>
-    <sys:String x:Key="tgl8_desc_conf">Le programme d'amélioration de l'expérience utilisateur (CEIP) collecte des informations sur votre matériel et l'utilisation des services. Ce programme est facultatif et sa désactivation protège votre vie privée.</sys:String>
-    <sys:String x:Key="tgl9_desc_conf">Ce tweak modifie le fichier hosts en ajoutant l'adresse 0.0.0.0 devant certains noms de domaine pour les bloquer. Il ajuste également le pare-feu Windows pour bloquer les IP liées à la télémétrie.</sys:String>
-    <sys:String x:Key="tgl10_desc_conf">La désactivation de la géolocalisation réduit l'utilisation des données de localisation à des fins publicitaires pour les services Microsoft et les applications tierces.</sys:String>
-    <sys:String x:Key="tgl11_desc_conf">Ce tweak bloque la collecte des commentaires et ses notifications dans Windows, empêchant la transmission de données sans votre consentement.</sys:String>
-    <sys:String x:Key="tgl12_desc_conf">Windows vérifie par défaut les mises à jour de son moteur de reconnaissance vocale, même si vous n'utilisez pas Cortana ou les fonctions d'ergonomie.</sys:String>
-    <sys:String x:Key="tgl13_desc_conf">Une fonction qui accède aux données utilisateur et communique avec les serveurs Microsoft sans bénéfice pour l'utilisateur ou le fonctionnement des applications.</sys:String>
-    <sys:String x:Key="tgl14_desc_conf">Microsoft mène régulièrement des expériences sur les utilisateurs pour tester des fonctionnalités. Cela constitue une violation de la confidentialité.</sys:String>
-    <sys:String x:Key="tgl15_desc_conf">Les services DiagTrack, dmwappushservice et diagsvc agissent comme des enregistreurs de frappe (keyloggers). À moins d'utiliser UWF, il est logique de supprimer ces services espions.</sys:String>
-    <sys:String x:Key="tgl16_desc_conf">Un journal d'événements qui collecte des informations de diagnostic, gaspillant les ressources de votre ordinateur sans apporter de bénéfice réel.</sys:String>
-    <sys:String x:Key="tgl17_desc_conf">Le service responsable de la collecte des données système par NVIDIA est inutile au bon fonctionnement du pilote graphique lui-même.</sys:String>
-    <sys:String x:Key="tgl18_desc_conf">Ce tweak désactive la fonction UAR (User Activity Recording) – un système qui enregistre chaque action : captures d'écran, texte saisi, lancement de programmes, etc.</sys:String>
-    <sys:String x:Key="tgl19_desc_conf">Windows met régulièrement à jour les cartes hors ligne et envoie des notifications sur les nouvelles données en arrière-plan. Ces processus peuvent collecter des informations sur votre position, vos itinéraires et votre utilisation des cartes. Si vous n'utilisez pas les cartes hors ligne, il est recommandé de les désactiver pour éviter les mises à jour cachées et la transmission de données vers les serveurs de Microsoft à votre insu.</sys:String>
-    <sys:String x:Key="tgl20_desc_conf">Le module Intel, qui fonctionne en arrière-plan pour collecter et transmettre des données, est présenté comme un outil d'amélioration des produits de l'entreprise. Cependant, pour l'utilisateur moyen, il n'apporte que peu d'avantages pratiques, et la désactivation de cette fonction peut réduire l'activité en arrière-plan et empêcher une transmission de données inutile.</sys:String>
+    <sys:String x:Key="tgl1_conf">Identifiant de publicité (ID)</sys:String>
+    <sys:String x:Key="tgl2_conf">Synchronisation des données et paramètres</sys:String>
+    <sys:String x:Key="tgl3_conf">Télémétrie et diagnostics Windows</sys:String>
+    <sys:String x:Key="tgl4_conf">Tâches de télémétrie planifiées</sys:String>
+    <sys:String x:Key="tgl5_conf">Inventaire des applications installées</sys:String>
+    <sys:String x:Key="tgl6_conf">Statistiques d'utilisation des applications</sys:String>
+    <sys:String x:Key="tgl7_conf">Données d'écriture manuscrite et de frappe</sys:String>
+    <sys:String x:Key="tgl8_conf">Amélioration de l'expérience utilisateur (CEIP)</sys:String>
+    <sys:String x:Key="tgl9_conf">Domaines de suivi Microsoft</sys:String>
+    <sys:String x:Key="tgl10_conf">Services de géolocalisation</sys:String>
+    <sys:String x:Key="tgl11_conf">Demandes de commentaires et de diagnostics</sys:String>
+    <sys:String x:Key="tgl12_conf">Mises à jour de la synthèse vocale</sys:String>
+    <sys:String x:Key="tgl13_conf">Plateforme d'appareils connectés (CDPUserSvc)</sys:String>
+    <sys:String x:Key="tgl14_conf">Expérimentations système Microsoft</sys:String>
+    <sys:String x:Key="tgl15_conf">Services de suivi diagnostic</sys:String>
+    <sys:String x:Key="tgl16_conf">Collecteur du Diagnostics Hub</sys:String>
+    <sys:String x:Key="tgl17_conf">Télémétrie NVIDIA</sys:String>
+    <sys:String x:Key="tgl18_conf">Enregistrement de l'activité utilisateur (UAR)</sys:String>
+    <sys:String x:Key="tgl19_conf">Cartes hors ligne et télémétrie</sys:String>
+    <sys:String x:Key="tgl20_conf">Télémétrie Intel</sys:String>
+    <sys:String x:Key="tgl21_conf">Windows Recall &amp; Analyse des données IA</sys:String>
+    <sys:String x:Key="tgl22_conf">Windows Copilot IA</sys:String>
+    <sys:String x:Key="tgl23_conf">Télémétrie Microsoft Edge</sys:String>
+    <sys:String x:Key="tgl24_conf">Télémétrie Chrome &amp; Firefox</sys:String>
+    <sys:String x:Key="tgl25_conf">Télémétrie Visual Studio</sys:String>
+    <sys:String x:Key="tgl26_conf">Rapport d'erreurs Windows (WER)</sys:String>
+    <sys:String x:Key="tgl27_conf">Synchronisation du presse-papiers cloud</sys:String>
+    <sys:String x:Key="tgl28_conf">Cortana et recherche Web dans le menu Démarrer</sys:String>
+    <sys:String x:Key="tgl29_conf">Suivi Localiser mon appareil</sys:String>
+    <sys:String x:Key="tgl30_conf">Biométrie et activation vocale</sys:String>
+    
+    <sys:String x:Key="tgl1_desc_conf">Windows crée un identifiant publicitaire unique pour suivre votre activité. Il est utilisé par Microsoft et des développeurs tiers pour diffuser des publicités ciblées dans les applications. Sa désactivation empêche les applications d'accéder à votre ID publicitaire.</sys:String>
+    <sys:String x:Key="tgl2_desc_conf">Windows tente fréquemment de synchroniser vos données locales avec les serveurs Microsoft. Cela inclut vos thèmes, mots de passe, préférences de navigation, options d'ergonomie et paramètres système. Désactiver cette option garantit que vos configurations restent strictement locales.</sys:String>
+    <sys:String x:Key="tgl3_desc_conf">Windows collecte automatiquement des données de diagnostic en arrière-plan (télémétrie) pour les envoyer à Microsoft. Bien que destinée à l'amélioration des produits, cette collecte continue compromet votre vie privée et consomme des ressources CPU. Sa désactivation bloque la transmission des données de diagnostic.</sys:String>
+    <sys:String x:Key="tgl4_desc_conf">Plusieurs tâches planifiées en arrière-plan existent dans Windows spécifiquement pour collecter des données d'utilisation du système et les transmettre à Microsoft. Désactiver cette option supprime ces planifications de collecte de données discrètes.</sys:String>
+    <sys:String x:Key="tgl5_desc_conf">Microsoft collecte un inventaire de vos logiciels installés et de vos habitudes d'utilisation sous prétexte de diagnostiquer des problèmes de compatibilité. Désactiver cette option empêche la transmission de votre inventaire de logiciels personnels et de vos statistiques d'utilisation.</sys:String>
+    <sys:String x:Key="tgl6_desc_conf">Désactive la surveillance de l'utilisation des applications, empêchant Windows de suivre les programmes que vous lancez, leur fréquence et leur durée. Cela évite que le système d'exploitation n'analyse votre flux de travail et préserve votre vie privée.</sys:String>
+    <sys:String x:Key="tgl7_desc_conf">Désactive le mécanisme de collecte de données utilisé pour améliorer la reconnaissance de l'écriture manuscrite et de la frappe. Windows suit votre activité de saisie par défaut même si vous n'utilisez pas activement ces fonctionnalités ; cela bloque strictement cette télémétrie.</sys:String>
+    <sys:String x:Key="tgl8_desc_conf">Le Programme d'amélioration de l'expérience utilisateur (CEIP) collecte des informations détaillées sur la configuration de votre matériel et l'utilisation des logiciels. Désactiver cette option désinscrit complètement votre système du programme et arrête les téléchargements périodiques de télémétrie.</sys:String>
+    <sys:String x:Key="tgl9_desc_conf">Modifie le fichier hosts du système pour rediriger les domaines de suivi connus vers 0.0.0.0, les neutralisant efficacement. Cela agit comme un bouclier strict au niveau du réseau contre les principaux serveurs de collecte de données de Microsoft.</sys:String>
+    <sys:String x:Key="tgl10_desc_conf">Désactive complètement les services de géolocalisation de Windows. Cela empêche Microsoft, les applications tierces et les scripts en arrière-plan de suivre l'emplacement physique de votre appareil et de l'utiliser pour la publicité ciblée.</sys:String>
+    <sys:String x:Key="tgl11_desc_conf">Bloque les invites automatiques de commentaires, la collecte silencieuse de données de commentaires et l'enregistrement des interactions avec le support. Cela garantit que Windows ne transmet pas discrètement d'enquêtes d'utilisation sans votre consentement explicite et manuel.</sys:String>
+    <sys:String x:Key="tgl12_desc_conf">Windows vérifie et télécharge régulièrement des mises à jour en arrière-plan pour ses modèles de reconnaissance et de synthèse vocale, même si vous n'utilisez pas les fonctionnalités vocales. Désactiver cette option arrête le téléchargement automatique de ces modèles.</sys:String>
+    <sys:String x:Key="tgl13_desc_conf">Désactive le service utilisateur de la plateforme d'appareils connectés (CDPUserSvc). Ce service synchronise en continu les données, les activités et les notifications entre les appareils via les serveurs Microsoft, mais est totalement inutile pour les fonctionnalités de base du système d'exploitation hors ligne.</sys:String>
+    <sys:String x:Key="tgl14_desc_conf">Microsoft effectue fréquemment des tests de type A/B silencieux et des expérimentations en arrière-plan sur les utilisateurs pour tester de nouvelles fonctionnalités ou des modifications d'interface. Désactiver cette option exclut définitivement votre machine des expérimentations système non sollicitées.</sys:String>
+    <sys:String x:Key="tgl15_desc_conf">Désactive les services de diagnostic approfondis (DiagTrack, dmwappushservice, diagsvc) qui enregistrent de manière agressive l'activité des utilisateurs, les données de saisie et les événements système. Cela les empêche de force de s'exécuter en arrière-plan et de transmettre des données à Microsoft.</sys:String>
+    <sys:String x:Key="tgl16_desc_conf">Désactive le collecteur standard du Diagnostics Hub de Microsoft. Ce service rassemble silencieusement des métriques système et des événements de diagnostic en temps réel, consommant des ressources en arrière-plan simplement pour packager vos données pour Microsoft.</sys:String>
+    <sys:String x:Key="tgl17_desc_conf">Désactive les services de télémétrie des pilotes NVIDIA. Ces tâches en arrière-plan collectent vos métriques matérielles, l'utilisation des logiciels et les données de plantage pour les envoyer à NVIDIA, mais sont totalement inutiles pour que votre carte graphique fonctionne correctement.</sys:String>
+    <sys:String x:Key="tgl18_desc_conf">Désactive la fonctionnalité d'enregistrement de l'activité utilisateur (UAR). Cela empêche Windows de consigner séquentiellement des données comportementales approfondies, telles que les lancements de programmes, le texte saisi et l'activité à l'écran, améliorant considérablement la confidentialité locale.</sys:String>
+    <sys:String x:Key="tgl19_desc_conf">Empêche Windows de télécharger automatiquement des cartes hors ligne et d'envoyer des données de localisation, d'itinéraire et d'utilisation des cartes en arrière-plan. Fortement recommandé pour bloquer la transmission cachée de données si vous n'utilisez pas activement Cartes Windows.</sys:String>
+    <sys:String x:Key="tgl20_desc_conf">Désactive les services de télémétrie Intel qui s'exécutent en arrière-plan pour récolter les performances du processeur et les données d'utilisation du système. Activer cette option libère des ressources système et arrête les transmissions de données indésirables vers Intel.</sys:String>
+    <sys:String x:Key="tgl21_desc_conf">Empêche Windows d'analyser votre activité à l'écran et de créer une frise chronologique de votre utilisation accessible par recherche IA.</sys:String>
+    <sys:String x:Key="tgl22_desc_conf">Désactive l'intégration de Windows Copilot, supprime le bouton de la barre des tâches et désinstalle le package en arrière-plan.</sys:String>
+    <sys:String x:Key="tgl23_desc_conf">Désactive les rapports de métriques, le suivi de la personnalisation et la collecte de données sur les commentaires des utilisateurs dans Microsoft Edge.</sys:String>
+    <sys:String x:Key="tgl24_desc_conf">Bloque la télémétrie en arrière-plan, les rapports de nettoyage et les tâches de l'agent de navigation par défaut pour Chrome et Firefox.</sys:String>
+    <sys:String x:Key="tgl25_desc_conf">Désactive le SQM, les boîtes de dialogue de commentaires et la collecte de données en arrière-plan pour les outils de développement Visual Studio.</sys:String>
+    <sys:String x:Key="tgl26_desc_conf">Empêche Windows d'envoyer automatiquement des images mémoire, des rapports de plantage d'applications et des diagnostics à Microsoft.</sys:String>
+    <sys:String x:Key="tgl27_desc_conf">Empêche vos textes et images copiés d'être téléchargés sur les serveurs Microsoft et synchronisés sur d'autres appareils.</sys:String>
+    <sys:String x:Key="tgl28_desc_conf">Désactive l'intégration de Cortana et empêche la barre de recherche du menu Démarrer de requêter Bing et d'envoyer des données locales sur le Web.</sys:String>
+    <sys:String x:Key="tgl29_desc_conf">Désactive le service de synchronisation de la localisation en arrière-plan utilisé pour suivre l'emplacement géographique de votre appareil.</sys:String>
+    <sys:String x:Key="tgl30_desc_conf">Bloque la collecte de données biométriques de Windows Hello et empêche les applications d'écouter les mots-clés d'activation vocale.</sys:String>
     <!-- endregion Privacy Page -->
 
     <!--#region Scripts Page -->

@@ -53,7 +53,38 @@ namespace EvolveOS_Optimizer.Pages
             Purge();
         }
 
-        private void NativeTgl_Toggled(object sender, RoutedEventArgs e)
+        private async void NativeTgl_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch tgl)
+            {
+                if (!tgl.IsLoaded) return;
+
+                var card = UIHelper.FindParent<Border>(tgl);
+                if (card != null)
+                {
+                    string key = card.Tag?.ToString() ?? string.Empty;
+                    bool isOn = tgl.IsOn;
+
+                    if (this.DataContext is PrivacyViewModel vm)
+                    {
+                        var model = vm[key];
+                        if (model != null)
+                        {
+                            model.State = isOn;
+                            vm.UpdateCounters();
+                            vm.ApplyRecommendations();
+                        }
+                    }
+
+                    if (_confTweaks != null)
+                    {
+                        await _confTweaks.ApplyTweaks(key, isOn);
+                    }
+                }
+            }
+        }
+
+        /*private void NativeTgl_Toggled(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleSwitch tgl)
             {
@@ -79,7 +110,7 @@ namespace EvolveOS_Optimizer.Pages
                     _confTweaks?.ApplyTweaks(key, isOn);
                 }
             }
-        }
+        }*/
 
         #region Purge Page
         public Task Purge()
