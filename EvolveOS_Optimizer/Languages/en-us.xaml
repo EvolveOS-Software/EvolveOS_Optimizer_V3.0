@@ -336,7 +336,9 @@
     <sys:String x:Key="Generic_Continue">Continue</sys:String>
     <sys:String x:Key="Generic_Cancel">Cancel</sys:String>
     <sys:String x:Key="Generic_Success">Success</sys:String>
-    
+
+    <sys:String x:Key="txt_yes">Yes</sys:String>
+    <sys:String x:Key="txt_no">No</sys:String>
 
     <sys:String x:Key="Settings_Donation_Title">Support EvolveOS Optimizer's open-source development.</sys:String>
     <sys:String x:Key="Settings_Donation_Message">Countless hours went into building EvolveOS Optimizer to keep your PC running at its best, and I personally cover the ongoing costs for features like the live Weather API. If this tool has helped you, please consider a small donation for its continued development! ♥</sys:String>

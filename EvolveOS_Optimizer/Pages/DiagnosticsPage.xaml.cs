@@ -244,6 +244,7 @@ namespace EvolveOS_Optimizer.Pages
                 await CalculateSystemHealthAsync();
                 UpdateDnsCryptControls();
                 AnimateInstallButton();
+                ValidateButtonStates();
 
                 AiExplainerService.PreWarmConnection();
 
@@ -953,10 +954,22 @@ namespace EvolveOS_Optimizer.Pages
 
         private void CheckBox_Changed(object sender, RoutedEventArgs e)
         {
+            ValidateButtonStates();
+        }
+
+        private void ValidateButtonStates()
+        {
+            if (ScanButton == null || RepairButton == null) return;
+
             selectedCount = 0;
             if (DismCheckBox?.IsChecked == true) selectedCount++;
             if (SfcCheckBox?.IsChecked == true) selectedCount++;
             if (ChkdskCheckBox?.IsChecked == true) selectedCount++;
+
+            bool isAnyChecked = selectedCount > 0;
+
+            ScanButton.IsEnabled = isAnyChecked;
+            RepairButton.IsEnabled = isAnyChecked;
         }
 
         private void OnSliderPointerPressed(object sender, PointerRoutedEventArgs e)
