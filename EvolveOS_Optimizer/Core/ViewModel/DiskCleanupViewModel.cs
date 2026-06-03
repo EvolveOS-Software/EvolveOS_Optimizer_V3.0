@@ -28,7 +28,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly string _historyFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EvolveOS", "cleanup_history.json");
 
         private const string Winapp2Url = "https://github.com/EvolveOS-Software/EvolveOS_Optimizer_V3.0/raw/master-net10.0/EvolveOS_Optimizer/Assets/Winapp2.ini";
-        private static string Winapp2LocalPath => Path.Combine(AppContext.BaseDirectory, "Winapp2.ini");
+        private static string Winapp2LocalPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EvolveOS", "Winapp2.ini");
 
         private readonly List<ScanResult> _lastScan = [];
         private List<CleanerEntry> _loadedEntries = [];
@@ -829,14 +829,44 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             ScheduledCleanDayIndex = SettingsEngine.ScheduledCleanDayIndex;
             ScheduledCleanTime = SettingsEngine.ScheduledCleanTime;
 
-            _lastPaths = new List<string>(filePaths);
-
             CustomPath = SettingsEngine.CustomWinapp2Path ?? "";
             IsCustomSource = !string.IsNullOrWhiteSpace(SettingsEngine.CustomWinapp2Path);
 
+            _lastPaths = filePaths.Select(p =>
+                p.EndsWith("Winapp2.ini", StringComparison.OrdinalIgnoreCase) ? Winapp2LocalPath : p
+            ).Distinct().ToList();
+
+            if (_lastPaths.Count == 0 && !IsCustomSource)
+            {
+                _lastPaths.Add(Winapp2LocalPath);
+            }
+
+            if (!IsCustomSource && !File.Exists(Winapp2LocalPath))
+            {
+                string? directoryPath = Path.GetDirectoryName(Winapp2LocalPath);
+                if (!string.IsNullOrWhiteSpace(directoryPath)) Directory.CreateDirectory(directoryPath);
+
+                string rootPath = Path.Combine(AppContext.BaseDirectory, "Winapp2.ini");
+                string assetsPath = Path.Combine(AppContext.BaseDirectory, "Assets", "Winapp2.ini");
+
+                if (File.Exists(rootPath))
+                {
+                    File.Copy(rootPath, Winapp2LocalPath, true);
+                }
+                else if (File.Exists(assetsPath))
+                {
+                    File.Copy(assetsPath, Winapp2LocalPath, true);
+                }
+                else
+                {
+                    StatusText = ResourceString.GetString("cleanup_status_downloading") ?? "Downloading initial database...";
+                    await DownloadFileAsync(Winapp2Url, Winapp2LocalPath, "Winapp2");
+                }
+            }
+
             var targetPaths = IsCustomSource && File.Exists(CustomPath)
                 ? new List<string> { CustomPath }
-                : filePaths.Where(File.Exists).ToList();
+                : _lastPaths.Where(File.Exists).ToList();
 
             IsBusy = true;
 
@@ -1274,6 +1304,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             StatusText = $"Downloading {label}…";
             try
             {
+                string? directoryPath = Path.GetDirectoryName(destination);
+                if (!string.IsNullOrWhiteSpace(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
                 using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
 
                 http.DefaultRequestHeaders.Add("User-Agent", "EvolveOS_Optimizer");

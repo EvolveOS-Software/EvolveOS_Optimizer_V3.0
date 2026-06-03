@@ -2496,6 +2496,15 @@
     <sys:String x:Key="diag_notif_dns_encrypted">System DNS queries are now encrypted.</sys:String>
     <sys:String x:Key="diag_fix_dns_fail">Failed to start DNS Encryption Service.</sys:String>
 
+    <sys:String x:Key="diag_fix_wmi_attempt">Rebuilding WMI Repository...</sys:String>
+    <sys:String x:Key="diag_wmi_repair_title">WMI Corruption Detected</sys:String>
+    <sys:String x:Key="diag_wmi_repair_msg">Your Windows Management Instrumentation (WMI) repository is corrupted, causing background tasks to crash. Would you like to rebuild it now?</sys:String>
+    <sys:String x:Key="txt_repair_now">Repair Now</sys:String>
+    <sys:String x:Key="txt_cancel">Cancel</sys:String>
+    <sys:String x:Key="diag_fix_wmi_success">WMI Repository rebuilt successfully.</sys:String>
+    <sys:String x:Key="diag_fix_wmi_fail">Failed to rebuild WMI repository.</sys:String>
+    <sys:String x:Key="diag_fix_wmi_cancelled">WMI repair aborted.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Restart Now</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

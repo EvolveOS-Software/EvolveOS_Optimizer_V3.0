@@ -1620,6 +1620,55 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             }
 
+            if (eventId == 9005)
+            {
+                ScanStatus = ResourceString.GetString("diag_fix_wmi_attempt") ?? "Rebuilding WMI Repository...";
+
+                var currentXamlRoot = App.MainWindow?.Content?.XamlRoot;
+                if (currentXamlRoot == null) return;
+
+                ContentDialog repairDialog = new ContentDialog
+                {
+                    XamlRoot = currentXamlRoot,
+                    Title = ResourceString.GetString("diag_wmi_repair_title") ?? "WMI Corruption Detected",
+                    Content = ResourceString.GetString("diag_wmi_repair_msg") ?? "Your Windows Management Instrumentation (WMI) repository is corrupted, causing background tasks to crash. Would you like to rebuild it now?",
+                    PrimaryButtonText = ResourceString.GetString("txt_repair_now") ?? "Repair Now",
+                    CloseButtonText = ResourceString.GetString("txt_cancel") ?? "Cancel",
+                    DefaultButton = ContentDialogButton.Primary
+                };
+
+                if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                {
+                    repairDialog.Style = (Style)style;
+                }
+
+                ContentDialogResult result = await repairDialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    bool wmiSuccess = await RemediationEngine.RunFixAsync(9005);
+
+                    if (wmiSuccess)
+                    {
+                        ScanStatus = ResourceString.GetString("diag_fix_wmi_success") ?? "WMI Repository rebuilt successfully.";
+                        var wmiEvent = MinedSystemEvents.FirstOrDefault(e => e.EventId == 9005);
+                        if (wmiEvent != null) MinedSystemEvents.Remove(wmiEvent);
+
+                        UpdateSystemStatus();
+                    }
+                    else
+                    {
+                        ScanStatus = ResourceString.GetString("diag_fix_wmi_fail") ?? "Failed to rebuild WMI repository.";
+                    }
+                }
+                else
+                {
+                    ScanStatus = ResourceString.GetString("diag_fix_wmi_cancelled") ?? "WMI repair aborted.";
+                }
+
+                return;
+            }
+
             if (eventId == 9003)
             {
                 ScanStatus = ResourceString.GetString("diag_fix_dwm_attempt") ?? "Unlocking .NET native cache...";

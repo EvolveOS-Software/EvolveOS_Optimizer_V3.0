@@ -2465,6 +2465,15 @@
     <sys:String x:Key="diag_notif_dns_encrypted">Le query DNS di sistema sono ora crittografate.</sys:String>
     <sys:String x:Key="diag_fix_dns_fail">Impossibile avviare il servizio di crittografia DNS.</sys:String>
 
+    <sys:String x:Key="diag_fix_wmi_attempt">Ricostruzione del repository WMI in corso...</sys:String>
+    <sys:String x:Key="diag_wmi_repair_title">Corruzione WMI rilevata</sys:String>
+    <sys:String x:Key="diag_wmi_repair_msg">Il repository di Windows Management Instrumentation (WMI) è corrotto, causando l'arresto anomalo delle attività in background. Vuoi ricostruirlo ora?</sys:String>
+    <sys:String x:Key="txt_repair_now">Ripara ora</sys:String>
+    <sys:String x:Key="txt_cancel">Annulla</sys:String>
+    <sys:String x:Key="diag_fix_wmi_success">Repository WMI ricostruito con successo.</sys:String>
+    <sys:String x:Key="diag_fix_wmi_fail">Impossibile ricostruire il repository WMI.</sys:String>
+    <sys:String x:Key="diag_fix_wmi_cancelled">Riparazione WMI annullata.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Riavvia ora</sys:String>
     <sys:String x:Key="txt_later">Più tardi</sys:String>
 

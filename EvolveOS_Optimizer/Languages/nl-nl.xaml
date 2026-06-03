@@ -2461,6 +2461,15 @@
     <sys:String x:Key="diag_notif_dns_encrypted">Systeem DNS query's zijn nu versleuteld.</sys:String>
     <sys:String x:Key="diag_fix_dns_fail">Starten van DNS versleutelingsservice mislukt.</sys:String>
 
+    <sys:String x:Key="diag_fix_wmi_attempt">WMI-repository opnieuw opbouwen...</sys:String>
+    <sys:String x:Key="diag_wmi_repair_title">WMI-corruptie gedetecteerd</sys:String>
+    <sys:String x:Key="diag_wmi_repair_msg">Uw Windows Management Instrumentation (WMI) repository is beschadigd, waardoor achtergrondtaken crashen. Wilt u deze nu opnieuw opbouwen?</sys:String>
+    <sys:String x:Key="txt_repair_now">Nu repareren</sys:String>
+    <sys:String x:Key="txt_cancel">Annuleren</sys:String>
+    <sys:String x:Key="diag_fix_wmi_success">WMI-repository succesvol opnieuw opgebouwd.</sys:String>
+    <sys:String x:Key="diag_fix_wmi_fail">WMI-repository opnieuw opbouwen mislukt.</sys:String>
+    <sys:String x:Key="diag_fix_wmi_cancelled">WMI-reparatie afgebroken.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Nu herstarten</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 

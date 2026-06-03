@@ -36,7 +36,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             5010, 5011, 5012, 5032, 5140, 5142, 5145, 5719, 6005, 6006, 6008, 6009, 6062, 6272, 6273, 6278, 7000, 7001, 7002,
             7003, 7004, 7005, 7006, 7009, 7011, 7022, 7023, 7024, 7026, 7030, 7031, 7032, 7034, 7035, 7036, 7040, 7042, 7045,
             7046, 7047, 7048, 7049, 7050, 7051, 7052, 8000, 8001, 8002, 8003, 8004, 8021, 8033, 8193, 8194, 8213, 8217, 8218,
-            8219, 8220, 8221, 8222, 8223, 8224, 8225, 8226, 9000, 9001, 10000, 10001, 10002, 10005, 10010, 10011, 10012, 10013,
+            8219, 8220, 8221, 8222, 8223, 8224, 8225, 8226, 9000, 9001, 9005, 10000, 10001, 10002, 10005, 10010, 10011, 10012, 10013,
             10014, 10015, 10016, 10020, 10053, 10054, 10060, 10061, 10065, 10066, 10067, 10068, 10069, 10070, 10071, 10072,
             10073, 10074, 10100, 10101, 10102, 10103, 10104, 10105, 10106, 10107, 10108, 10109, 10110, 10111, 10112, 10113,
             10114, 10115, 10116, 10117, 10118, 10119, 10120, 10200, 10400, 11001, 11002, 11004, 11005, 11006, 11706, 11707,
@@ -294,6 +294,17 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 catch
                 {
                     rawDescription = "Live Interception: The event description could not be parsed from the system publisher.";
+                }
+
+                if ((eventId == 1026 || eventId == 1000) &&
+                    rawDescription.Contains("powershell.exe") &&
+                    rawDescription.Contains("System.AccessViolationException") &&
+                    rawDescription.Contains("CimSession"))
+                {
+                    eventId = 9005;
+                    source = "WMI Engine";
+                    level = 1; // Mark as Critical
+                    rawDescription = "Critical WMI Repository corruption detected. Background scripts are crashing.\n\n" + rawDescription;
                 }
 
                 var newItem = new SystemEventItem

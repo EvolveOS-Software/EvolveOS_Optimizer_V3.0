@@ -2461,6 +2461,15 @@
     <sys:String x:Key="diag_notif_dns_encrypted">System DNS Abfragen sind jetzt verschlüsselt.</sys:String>
     <sys:String x:Key="diag_fix_dns_fail">Fehler beim Starten des DNS Verschlüsselungsdienstes.</sys:String>
 
+    <sys:String x:Key="diag_fix_wmi_attempt">WMI-Repository wird neu erstellt...</sys:String>
+    <sys:String x:Key="diag_wmi_repair_title">WMI-Beschädigung erkannt</sys:String>
+    <sys:String x:Key="diag_wmi_repair_msg">Ihr Windows Management Instrumentation (WMI) Repository ist beschädigt, was zum Absturz von Hintergrundaufgaben führt. Möchten Sie es jetzt neu erstellen?</sys:String>
+    <sys:String x:Key="txt_repair_now">Jetzt reparieren</sys:String>
+    <sys:String x:Key="txt_cancel">Abbrechen</sys:String>
+    <sys:String x:Key="diag_fix_wmi_success">WMI-Repository erfolgreich neu erstellt.</sys:String>
+    <sys:String x:Key="diag_fix_wmi_fail">WMI-Repository konnte nicht neu erstellt werden.</sys:String>
+    <sys:String x:Key="diag_fix_wmi_cancelled">WMI-Reparatur abgebrochen.</sys:String>
+
     <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>
     <sys:String x:Key="txt_later">Später</sys:String>
     

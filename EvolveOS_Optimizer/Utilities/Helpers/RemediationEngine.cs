@@ -98,6 +98,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     // "High-Level" repair. Secure Boot CA/Keys
                     1801 => await FixSecureBootKeysAsync(),
 
+                    // WMI / CIM Repository Corruption (Access Violation Exceptions)
+                    9005 => await FixWmiRepositoryAsync(),
+
                     // DNS Encryption (DoH) Enforcement
                     9120 => await EnforceDnsOverHttpsAsync(),
 
@@ -332,7 +335,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[RemediationEngine] Critical failure for ID {eventId}: {ex.Message}");
+                Debug.WriteLine($"[RemediationEngine] Critical failure for ID {eventId}: {ex.Message}");
                 return false;
             }
         }
@@ -720,6 +723,26 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: true);
             return true;
+        }
+
+        public static async Task<bool> FixWmiRepositoryAsync()
+        {
+            try
+            {
+                string script = @"
+                    net stop winmgmt /y
+                    winmgmt /resetrepository
+                    net start winmgmt
+                ";
+
+                await CommandExecutor.RunCommandAsTrustedInstaller(script, isPowerShell: false);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[RemediationEngine] WMI Reset Failed: {ex.Message}");
+                return false;
+            }
         }
 
         #endregion
