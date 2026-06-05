@@ -2472,7 +2472,12 @@
 
     <sys:String x:Key="txt_restart_now">Jetzt neu starten</sys:String>
     <sys:String x:Key="txt_later">Später</sys:String>
-    
+
+    <sys:String x:Key="label_reason">Grund</sys:String>
+    <sys:String x:Key="label_physical_mem">Physischer Speicher</sys:String>
+    <sys:String x:Key="label_virtual_mem">Virtueller Speicher</sys:String>
+    <sys:String x:Key="label_disk_recovered">Freigegebener Speicherplatz</sys:String>
+
     <sys:String x:Key="wmi_code_1_summary">Das Gerät ist nicht richtig konfiguriert.</sys:String>
     <sys:String x:Key="wmi_code_1_fix">Aktualisieren Sie den Treiber oder setzen Sie ihn auf die vorherige Version zurück.</sys:String>
 

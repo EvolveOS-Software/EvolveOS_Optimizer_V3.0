@@ -12,7 +12,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Input;
 using WinRT;
 using WinRT.Interop;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Views
 {

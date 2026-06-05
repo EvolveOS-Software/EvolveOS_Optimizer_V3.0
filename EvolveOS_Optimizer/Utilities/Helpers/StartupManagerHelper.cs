@@ -7,7 +7,7 @@ using System.Text.Json;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Win32;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

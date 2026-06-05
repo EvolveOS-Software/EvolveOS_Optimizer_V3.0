@@ -8,7 +8,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 using Windows.System;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Utilities.Controls
 {
@@ -554,12 +554,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["DisableAllOptimizationResults"] = false,
             ["ShowOptimizationNotifications"] = true,
             ["ShowVirtualMemory"] = false,
-            ["RunOnPriority"] = (int)Enums.Priority.Low,
+            ["RunOnPriority"] = (int)Priority.Low,
             ["UseHotkey"] = false,
             ["OptimizationKey"] = (int)VirtualKey.M,
             ["OptimizationModifiers"] = (int)(VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift),
-            ["MemoryAreas"] = (int)(Enums.Memory.Areas.CombinedPageList | Enums.Memory.Areas.ModifiedFileCache | Enums.Memory.Areas.ModifiedPageList | Enums.Memory.Areas.RegistryCache |
-                        Enums.Memory.Areas.StandbyList | Enums.Memory.Areas.SystemFileCache | Enums.Memory.Areas.WorkingSet | Enums.Memory.Areas.DiskCleanup | Enums.Memory.Areas.FlushDns),
+            ["MemoryAreas"] = (int)(Memory.Areas.CombinedPageList | Memory.Areas.ModifiedFileCache | Memory.Areas.ModifiedPageList | Memory.Areas.RegistryCache |
+                        Memory.Areas.StandbyList | Memory.Areas.SystemFileCache | Memory.Areas.WorkingSet | Memory.Areas.DiskCleanup | Memory.Areas.FlushDns),
             ["EnableDeveloperMode"] = false,
             ["IsFirstRun"] = true,
             ["HasChosenResourceMode"] = false,
@@ -609,10 +609,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool ShowOptimizationNotifications { get => (bool)_cachedSettings["ShowOptimizationNotifications"]; set => ChangingParameters("ShowOptimizationNotifications", value); }
         internal static bool ShowVirtualMemory { get => (bool)_cachedSettings["ShowVirtualMemory"]; set => ChangingParameters("ShowVirtualMemory", value); }
         internal static bool UseHotkey { get => (bool)_cachedSettings["UseHotkey"]; set => ChangingParameters("UseHotkey", value); }
-        internal static Enums.Priority RunOnPriority { get => (Enums.Priority)(int)_cachedSettings["RunOnPriority"]; set => ChangingParameters("RunOnPriority", (int)value); }
+        internal static Priority RunOnPriority { get => (Priority)(int)_cachedSettings["RunOnPriority"]; set => ChangingParameters("RunOnPriority", (int)value); }
         internal static VirtualKey OptimizationKey { get => (VirtualKey)Convert.ToInt32(_cachedSettings["OptimizationKey"]); set => ChangingParameters("OptimizationKey", (int)value); }
         internal static VirtualKeyModifiers OptimizationModifiers { get => (VirtualKeyModifiers)Convert.ToInt32(_cachedSettings["OptimizationModifiers"]); set => ChangingParameters("OptimizationModifiers", (int)value); }
-        internal static Enums.Memory.Areas MemoryAreas { get => (Enums.Memory.Areas)(int)_cachedSettings["MemoryAreas"]; set => ChangingParameters("MemoryAreas", (int)value); }
+        internal static Memory.Areas MemoryAreas { get => (Memory.Areas)(int)_cachedSettings["MemoryAreas"]; set => ChangingParameters("MemoryAreas", (int)value); }
         internal static bool IsDeveloperMode { get => (bool)_cachedSettings["EnableDeveloperMode"]; set => ChangingParameters("EnableDeveloperMode", value); }
         internal static bool IsFirstRun { get => (bool)_cachedSettings["IsFirstRun"]; set => ChangingParameters("IsFirstRun", value); }
         internal static bool HasChosenResourceMode { get => (bool)_cachedSettings["HasChosenResourceMode"]; set => ChangingParameters("HasChosenResourceMode", value); }
@@ -755,7 +755,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             if (System.IO.Directory.Exists(System.IO.Path.Combine(systemDrive, "Windows.old")))
             {
                 int currentAreas = Convert.ToInt32(_cachedSettings["MemoryAreas"]);
-                _cachedSettings["MemoryAreas"] = currentAreas | (int)Enums.Memory.Areas.WindowsOld;
+                _cachedSettings["MemoryAreas"] = currentAreas | (int)Memory.Areas.WindowsOld;
             }
 
             try

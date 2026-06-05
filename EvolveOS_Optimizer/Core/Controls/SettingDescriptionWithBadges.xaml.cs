@@ -1,0 +1,53 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
+using EvolveOS_Optimizer.Core.Model;
+
+namespace EvolveOS_Optimizer.Core.Controls;
+
+public sealed partial class SettingDescriptionWithBadges : UserControl
+{
+    public SettingDescriptionWithBadges()
+    {
+        InitializeComponent();
+    }
+
+    public static readonly DependencyProperty DescriptionTextProperty =
+        DependencyProperty.Register(
+            nameof(DescriptionText),
+            typeof(string),
+            typeof(SettingDescriptionWithBadges),
+            new PropertyMetadata(string.Empty));
+
+    public string DescriptionText
+    {
+        get => (string)GetValue(DescriptionTextProperty);
+        set => SetValue(DescriptionTextProperty, value);
+    }
+
+    public static readonly DependencyProperty BadgeRowProperty =
+        DependencyProperty.Register(
+            nameof(BadgeRow),
+            typeof(IReadOnlyList<BadgePillState>),
+            typeof(SettingDescriptionWithBadges),
+            new PropertyMetadata(null));
+
+    public IReadOnlyList<BadgePillState> BadgeRow
+    {
+        get => (IReadOnlyList<BadgePillState>)GetValue(BadgeRowProperty);
+        set => SetValue(BadgeRowProperty, value);
+    }
+
+    public static readonly DependencyProperty ShowBadgesProperty =
+        DependencyProperty.Register(
+            nameof(ShowBadges),
+            typeof(bool),
+            typeof(SettingDescriptionWithBadges),
+            new PropertyMetadata(false));
+
+    public bool ShowBadges
+    {
+        get => (bool)GetValue(ShowBadgesProperty);
+        set => SetValue(ShowBadgesProperty, value);
+    }
+}

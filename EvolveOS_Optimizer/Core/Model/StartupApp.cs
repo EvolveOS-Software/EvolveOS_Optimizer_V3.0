@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Core.Model
 {

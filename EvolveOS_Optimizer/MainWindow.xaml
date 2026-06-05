@@ -462,10 +462,18 @@
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
-                                     CommandParameter="Tweaks"
+                                     CommandParameter="Optimize"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Tweaks'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE9E9;" FontSize="18"/>
+                        </RadioButton>
+
+                        <RadioButton Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="Customize"
+                                     IsTabStop="False"
+                                     Tag="{x:Bind GetText('Nav_Customize'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xE790;" FontSize="18"/>
                         </RadioButton>
 
                         <RadioButton x:Name="BtnNavUtilities" Style="{StaticResource BtnNavigation}"

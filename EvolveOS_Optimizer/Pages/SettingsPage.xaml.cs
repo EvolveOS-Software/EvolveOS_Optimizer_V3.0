@@ -27,7 +27,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.Windows.Storage.Pickers;
 using Windows.Storage;
 using WinRT.Interop;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 using static EvolveOS_Optimizer.Utilities.Controls.PathLocator;
 using static EvolveOS_Optimizer.Utilities.Managers.NotificationManager;
 
@@ -1394,7 +1394,7 @@ namespace EvolveOS_Optimizer.Pages
             finally
             {
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
-                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
                 {
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
                 }

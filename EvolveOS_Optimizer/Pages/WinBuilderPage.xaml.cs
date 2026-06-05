@@ -221,7 +221,7 @@ namespace EvolveOS_Optimizer.Pages
                 _buildCts = null;
 
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
-                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
                 {
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
                 }

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="EvolveOS_Optimizer.Core.Controls.SettingsListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EvolveOS_Optimizer.Core.Controls"
+    xmlns:selectors="using:EvolveOS_Optimizer.Core.TemplateSelectors">
+
+    <Grid>
+        <ScrollView x:Name="ContentScrollView" 
+                    HorizontalAlignment="Stretch" 
+                    Background="Transparent">
+
+            <ScrollView.Transitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition IsStaggeringEnabled="False"/>
+                </TransitionCollection>
+            </ScrollView.Transitions>
+
+            <Grid Background="Transparent">
+
+                <StackPanel Spacing="{StaticResource SettingsCardSpacing}" 
+                            HorizontalAlignment="Stretch" 
+                            Padding="0,12,0,24" 
+                            Background="Transparent">
+
+                    <ListView
+                        x:Name="SettingsListViewControl"
+                        ItemContainerStyle="{StaticResource SettingsListViewItemContainerStyle}"
+                        SelectionMode="None"
+                        IsItemClickEnabled="False"
+                        IsTabStop="False"
+                        Background="Transparent"
+                        Padding="{StaticResource SettingsContentMargin}"
+                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollMode="Disabled"
+                        ScrollViewer.HorizontalScrollMode="Disabled">
+
+                        <ListView.ItemContainerTransitions>
+                            <TransitionCollection />
+                        </ListView.ItemContainerTransitions>
+
+                        <ListView.ItemTemplateSelector>
+                            <selectors:SettingItemTemplateSelector
+                                RegularTemplate="{StaticResource SettingItemTemplate}"
+                                ExpanderTemplate="{StaticResource SettingExpanderItemTemplate}"/>
+                        </ListView.ItemTemplateSelector>
+
+                        <ListView.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="D" Modifiers="Control"
+                                                 Invoked="TechnicalDetailsAccelerator_Invoked"/>
+                        </ListView.KeyboardAccelerators>
+
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="{StaticResource SettingsCardSpacing}"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+
+                        <ListView.GroupStyle>
+                            <GroupStyle HeaderTemplate="{StaticResource SettingsGroupHeaderTemplate}">
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="GroupItem">
+                                        <Setter Property="Margin" Value="0,0,0,24" />
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                        </ListView.GroupStyle>
+                    </ListView>
+
+                    <TextBlock
+                        Text="No settings match your search."
+                        Style="{StaticResource BodyTextBlockStyle}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        HorizontalAlignment="Center"
+                        Margin="0,40,0,0"
+                        Visibility="{x:Bind HasNoSearchResults, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</UserControl>

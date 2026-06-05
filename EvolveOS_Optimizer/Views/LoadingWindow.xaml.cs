@@ -5,7 +5,7 @@
 
 using System.IO;
 using System.Threading;
-using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Animation;
@@ -124,7 +124,7 @@ namespace EvolveOS_Optimizer.Views
 
             EfficiencyModeHelper.IsUIWakeLockActive = false;
 
-            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+            if (LocalMachineSettingsEngine.RunOnPriority == Priority.Low)
             {
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
             }

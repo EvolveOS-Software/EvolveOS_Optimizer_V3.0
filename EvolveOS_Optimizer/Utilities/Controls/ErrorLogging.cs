@@ -56,7 +56,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                     Exception? currentEx = ex;
                     byte exLevel = 1;
 
-                    await writer.WriteLineAsync($"EvolveOS_Optimizer has crashed!\n{headerLine}\nIf you wish to report this, please open an issue here:\nhttps://github.com/EvolveOS/EvolveOS_Optimizer/issues\n{headerLine}\n");
+                    await writer.WriteLineAsync($"EvolveOS Optimizer has crashed!\n{headerLine}\nIf you wish to report this, please open an issue here:\nhttps://github.com/EvolveOS/EvolveOS_Optimizer/issues\n{headerLine}\n");
                     await writer.WriteLineAsync($"{headerLine}\n[{DateTime.Now}]\nOS: {(string.IsNullOrEmpty(HardwareData.OS?.Name) ? "Unknown (Loading error)" : HardwareData.OS.Name)}\nRelease: {SettingsEngine.currentRelease}\n{headerLine}\n");
 
                     while (currentEx != null)

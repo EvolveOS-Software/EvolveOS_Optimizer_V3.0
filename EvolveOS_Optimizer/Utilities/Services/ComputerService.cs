@@ -12,6 +12,7 @@ using EvolveOS_Optimizer.Core.Model.MemoryModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Maintenance;
+using static EvolveOS_Optimizer.Core.Enums.Memory;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {
@@ -60,9 +61,9 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         #region Methods (Memory)
 
-        public async Task Optimize(Enums.Memory.Optimization.Reason reason, Enums.Memory.Areas areas)
+        public async Task Optimize(Optimization.Reason reason, Areas areas)
         {
-            if (areas == Enums.Memory.Areas.None)
+            if (areas == Areas.None)
             {
                 return;
             }
@@ -78,16 +79,16 @@ namespace EvolveOS_Optimizer.Utilities.Services
             var stopwatch = new Stopwatch();
 
             int totalSteps = 1;
-            if ((areas & Enums.Memory.Areas.WorkingSet) != 0) totalSteps++;
-            if ((areas & Enums.Memory.Areas.SystemFileCache) != 0) totalSteps++;
-            if ((areas & Enums.Memory.Areas.ModifiedPageList) != 0) totalSteps++;
-            if ((areas & (Enums.Memory.Areas.StandbyList | Enums.Memory.Areas.StandbyListLowPriority)) != 0) totalSteps++;
-            if ((areas & Enums.Memory.Areas.CombinedPageList) != 0) totalSteps++;
-            if ((areas & Enums.Memory.Areas.RegistryCache) != 0) totalSteps++;
-            if ((areas & Enums.Memory.Areas.ModifiedFileCache) != 0) totalSteps++;
-            if ((areas & Enums.Memory.Areas.DiskCleanup) != 0) totalSteps += 2;
-            if ((areas & Enums.Memory.Areas.FlushDns) != 0) totalSteps++;
-            if ((areas & Enums.Memory.Areas.WindowsOld) != 0) totalSteps++;
+            if ((areas & Areas.WorkingSet) != 0) totalSteps++;
+            if ((areas & Areas.SystemFileCache) != 0) totalSteps++;
+            if ((areas & Areas.ModifiedPageList) != 0) totalSteps++;
+            if ((areas & (Areas.StandbyList | Areas.StandbyListLowPriority)) != 0) totalSteps++;
+            if ((areas & Areas.CombinedPageList) != 0) totalSteps++;
+            if ((areas & Areas.RegistryCache) != 0) totalSteps++;
+            if ((areas & Areas.ModifiedFileCache) != 0) totalSteps++;
+            if ((areas & Areas.DiskCleanup) != 0) totalSteps += 2;
+            if ((areas & Areas.FlushDns) != 0) totalSteps++;
+            if ((areas & Areas.WindowsOld) != 0) totalSteps++;
 
             int currentStep = 0;
 
@@ -135,56 +136,56 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 await RunOptimizationStepAsync(name, () => { action(); return Task.CompletedTask; });
             }
 
-            if ((areas & Enums.Memory.Areas.WorkingSet) != 0)
+            if ((areas & Areas.WorkingSet) != 0)
             {
                 await RunSyncStepAsync(ResourceString.GetString("optimizations_step_working_set") ?? "Working Set", () => ClearingMemory.EmptyWorkingSetFunction());
             }
 
-            if ((areas & Enums.Memory.Areas.SystemFileCache) != 0)
+            if ((areas & Areas.SystemFileCache) != 0)
             {
                 await RunSyncStepAsync(ResourceString.GetString("optimizations_step_system_file_cache") ?? "System File Cache", () => ClearingMemory.ClearFileSystemCache(false));
             }
 
-            if ((areas & Enums.Memory.Areas.ModifiedPageList) != 0)
+            if ((areas & Areas.ModifiedPageList) != 0)
             {
                 await RunSyncStepAsync(ResourceString.GetString("optimizations_step_modified_page_list") ?? "Modified Page List", () => ClearingMemory.OptimizeModifiedPageList());
             }
 
-            if ((areas & (Enums.Memory.Areas.StandbyList | Enums.Memory.Areas.StandbyListLowPriority)) != 0)
+            if ((areas & (Areas.StandbyList | Areas.StandbyListLowPriority)) != 0)
             {
-                bool lowPriority = (areas & Enums.Memory.Areas.StandbyListLowPriority) != 0;
+                bool lowPriority = (areas & Areas.StandbyListLowPriority) != 0;
                 string label = lowPriority ? "optimizations_step_standby_list_lp" : "optimizations_step_standby_list";
 
                 await RunSyncStepAsync(ResourceString.GetString(label) ?? "Standby List", () => ClearingMemory.ClearFileSystemCache(true, lowPriority));
             }
 
-            if ((areas & Enums.Memory.Areas.CombinedPageList) != 0)
+            if ((areas & Areas.CombinedPageList) != 0)
             {
                 await RunSyncStepAsync(ResourceString.GetString("optimizations_step_combined_page_list") ?? "Combined Page List", () => ClearingMemory.OptimizeCombinedPageList());
             }
 
-            if ((areas & Enums.Memory.Areas.RegistryCache) != 0)
+            if ((areas & Areas.RegistryCache) != 0)
             {
                 await RunSyncStepAsync(ResourceString.GetString("optimizations_step_registry_cache") ?? "Registry Cache", () => ClearingMemory.OptimizeRegistryCache());
             }
 
-            if ((areas & Enums.Memory.Areas.ModifiedFileCache) != 0)
+            if ((areas & Areas.ModifiedFileCache) != 0)
             {
                 await RunSyncStepAsync(ResourceString.GetString("optimizations_step_modified_file_cache") ?? "Modified File Cache", () => ClearingMemory.OptimizeModifiedFileCache());
             }
 
-            if ((areas & Enums.Memory.Areas.DiskCleanup) != 0)
+            if ((areas & Areas.DiskCleanup) != 0)
             {
                 await RunOptimizationStepAsync(ResourceString.GetString("optimizations_step_disk_cleanup") ?? "Disk Cleanup", async () => await ClearingMemory.StartMemoryCleanup(clearRamCache: true, optimizeWorkingSet: false));
                 await RunOptimizationStepAsync(ResourceString.GetString("optimizations_step_update_cache") ?? "Update Cache", async () => await ClearingMemory.CleanSoftwareDistribution());
             }
 
-            if ((areas & Enums.Memory.Areas.FlushDns) != 0)
+            if ((areas & Areas.FlushDns) != 0)
             {
                 await RunSyncStepAsync(ResourceString.GetString("optimizations_step_flush_dns") ?? "Flush DNS", () => ClearingMemory.FlushDnsCache());
             }
 
-            if ((areas & Enums.Memory.Areas.WindowsOld) != 0)
+            if ((areas & Areas.WindowsOld) != 0)
             {
                 await RunOptimizationStepAsync(ResourceString.GetString("optimizations_step_windows_old") ?? "Windows.old", async () => await ClearingMemory.CleanWindowsOld());
             }
@@ -230,7 +231,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 var memoryStatusEx = new EvolveOS_Optimizer.Core.Structs.Windows.MemoryStatusEx();
                 if (Win32Helper.GlobalMemoryStatusEx(memoryStatusEx))
                 {
-                    _memory = new Core.Model.MemoryModel.Memory(memoryStatusEx);
+                    _memory = new Memory(memoryStatusEx);
                 }
             }
             catch (Exception ex)

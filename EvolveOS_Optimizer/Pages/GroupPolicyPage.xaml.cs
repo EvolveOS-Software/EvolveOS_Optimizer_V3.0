@@ -11,7 +11,7 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages;
 
@@ -172,7 +172,7 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
                 }
 
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
-                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
                 {
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
                 }
@@ -744,7 +744,7 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
             RefreshButton.IsEnabled = true;
 
             EfficiencyModeHelper.IsUIWakeLockActive = false;
-            if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+            if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
             {
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
             }

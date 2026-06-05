@@ -17,7 +17,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Input;
 using Vanara.PInvoke;
 using WinRT.Interop;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 using static Vanara.PInvoke.AdvApi32;
 using Microsoft.UI;
 

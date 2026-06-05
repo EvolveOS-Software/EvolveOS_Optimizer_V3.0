@@ -27,7 +27,24 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             if (string.IsNullOrEmpty(key)) return string.Empty;
 
-            return LocalizationService.Instance.Get(key);
+            return LocalizationService.Instance.GetString(key);
+        }
+
+        public static string GetString(string key, params object[] args)
+        {
+            string localizedString = GetString(key);
+
+            if (string.IsNullOrEmpty(localizedString))
+                return string.Empty;
+
+            try
+            {
+                return string.Format(localizedString, args);
+            }
+            catch
+            {
+                return localizedString;
+            }
         }
     }
 }

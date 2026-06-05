@@ -15,7 +15,7 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.Win32;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages;
 

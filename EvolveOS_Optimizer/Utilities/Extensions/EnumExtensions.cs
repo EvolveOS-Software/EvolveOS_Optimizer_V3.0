@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Reflection;
-using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Utilities.Extensions
@@ -14,17 +14,17 @@ namespace EvolveOS_Optimizer.Utilities.Extensions
             return obj.IsValueType && Nullable.GetUnderlyingType(obj) == null ? Activator.CreateInstance(obj) : null;
         }
 
-        public static KeyValuePair<string?, bool?> GetKeyValue(this Enums.Dialog.Button obj)
+        public static KeyValuePair<string?, bool?> GetKeyValue(this Dialog.Button obj)
         {
             switch (obj)
             {
-                case Enums.Dialog.Button.None:
+                case Dialog.Button.None:
                     return new KeyValuePair<string?, bool?>(null, null);
 
-                case Enums.Dialog.Button.Yes:
+                case Dialog.Button.Yes:
                     return new KeyValuePair<string?, bool?>("Yes", true);
 
-                case Enums.Dialog.Button.No:
+                case Dialog.Button.No:
                     return new KeyValuePair<string?, bool?>("No", false);
 
                 default:
@@ -32,17 +32,17 @@ namespace EvolveOS_Optimizer.Utilities.Extensions
             }
         }
 
-        public static string GetString(this Enums.Memory.Optimization.Reason obj)
+        public static string GetString(this Memory.Optimization.Reason obj)
         {
             switch (obj)
             {
-                case Enums.Memory.Optimization.Reason.LowMemory:
+                case Memory.Optimization.Reason.LowMemory:
                     return "Low memory";
 
-                case Enums.Memory.Optimization.Reason.Manual:
+                case Memory.Optimization.Reason.Manual:
                     return "Manual";
 
-                case Enums.Memory.Optimization.Reason.Schedule:
+                case Memory.Optimization.Reason.Schedule:
                     return "Schedule";
 
                 default:

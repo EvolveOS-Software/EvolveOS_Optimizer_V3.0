@@ -1,7 +1,7 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Dialogs
@@ -42,13 +42,13 @@ namespace EvolveOS_Optimizer.Dialogs
         {
             if (e.RemovedItems.Count > 0 && e.RemovedItems[0] is ComboBoxItem oldItem)
             {
-                if (Enum.TryParse<Enums.AiProvider>(oldItem.Tag.ToString(), out var oldProvider))
+                if (Enum.TryParse<Core.Enums.AiProvider>(oldItem.Tag.ToString(), out var oldProvider))
                 {
                     SaveKeyToEngine(oldProvider, TxtApiKey.Password);
                 }
             }
 
-            if (CmbProvider.SelectedItem is ComboBoxItem item && Enum.TryParse<Enums.AiProvider>(item.Tag.ToString(), out var provider))
+            if (CmbProvider.SelectedItem is ComboBoxItem item && Enum.TryParse<Core.Enums.AiProvider>(item.Tag.ToString(), out var provider))
             {
                 TxtApiKey.Password = GetKeyForProvider(provider);
             }
@@ -58,7 +58,7 @@ namespace EvolveOS_Optimizer.Dialogs
         {
             if (CmbProvider.SelectedItem is ComboBoxItem selectedItem && selectedItem.Tag is string providerTag)
             {
-                if (Enum.TryParse<Enums.AiProvider>(providerTag, out var provider))
+                if (Enum.TryParse<Core.Enums.AiProvider>(providerTag, out var provider))
                 {
                     LocalMachineSettingsEngine.ActiveAiProvider = provider;
                     SaveKeyToEngine(provider, TxtApiKey.Password);
@@ -80,40 +80,40 @@ namespace EvolveOS_Optimizer.Dialogs
         #endregion
 
         #region Helper Methods
-        private void UpdatePasswordBox(Enums.AiProvider provider)
+        private void UpdatePasswordBox(AiProvider provider)
         {
             TxtApiKey.Password = GetKeyForProvider(provider);
         }
 
-        private void SaveKeyToEngine(Enums.AiProvider provider, string key)
+        private void SaveKeyToEngine(AiProvider provider, string key)
         {
             switch (provider)
             {
-                case Enums.AiProvider.Gemini:
+                case AiProvider.Gemini:
                     LocalMachineSettingsEngine.GeminiApiKey = key;
                     break;
-                case Enums.AiProvider.Groq:
+                case AiProvider.Groq:
                     LocalMachineSettingsEngine.GroqApiKey = key;
                     break;
-                case Enums.AiProvider.OpenRouter:
+                case AiProvider.OpenRouter:
                     LocalMachineSettingsEngine.OpenRouterApiKey = key;
                     break;
-                case Enums.AiProvider.Cohere:
+                case AiProvider.Cohere:
                     LocalMachineSettingsEngine.CohereApiKey = key;
                     break;
-                case Enums.AiProvider.Mistral:
+                case AiProvider.Mistral:
                     LocalMachineSettingsEngine.MistralApiKey = key;
                     break;
             }
         }
 
-        private string GetKeyForProvider(Enums.AiProvider provider) => provider switch
+        private string GetKeyForProvider(AiProvider provider) => provider switch
         {
-            Enums.AiProvider.Groq => LocalMachineSettingsEngine.GroqApiKey ?? "",
-            Enums.AiProvider.Gemini => LocalMachineSettingsEngine.GeminiApiKey ?? "",
-            Enums.AiProvider.OpenRouter => LocalMachineSettingsEngine.OpenRouterApiKey ?? "",
-            Enums.AiProvider.Cohere => LocalMachineSettingsEngine.CohereApiKey ?? "",
-            Enums.AiProvider.Mistral => LocalMachineSettingsEngine.MistralApiKey ?? "",
+            AiProvider.Groq => LocalMachineSettingsEngine.GroqApiKey ?? "",
+            AiProvider.Gemini => LocalMachineSettingsEngine.GeminiApiKey ?? "",
+            AiProvider.OpenRouter => LocalMachineSettingsEngine.OpenRouterApiKey ?? "",
+            AiProvider.Cohere => LocalMachineSettingsEngine.CohereApiKey ?? "",
+            AiProvider.Mistral => LocalMachineSettingsEngine.MistralApiKey ?? "",
             _ => ""
         };
         #endregion

@@ -160,7 +160,7 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(false);
 
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
-                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
                 {
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
                 }
@@ -258,7 +258,7 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(false);
 
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
-                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
                 {
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
                 }
@@ -317,7 +317,7 @@ namespace EvolveOS_Optimizer.Pages
                 UIHelper.SetOverlay(false);
 
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
-                if (LocalMachineSettingsEngine.RunOnPriority == Enums.Priority.Low)
+                if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
                 {
                     EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(true);
                 }

@@ -21,7 +21,7 @@
             Margin="0,-12,0,5">
             <FontIcon
                 Glyph="&#xE74C;"
-                FontSize="24"
+                FontSize="48"
                 Foreground="{ThemeResource MyDynamicAccentBrush}"
                 VerticalAlignment="Center"/>
             <StackPanel VerticalAlignment="Center">

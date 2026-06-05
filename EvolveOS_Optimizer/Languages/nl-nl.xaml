@@ -2473,6 +2473,11 @@
     <sys:String x:Key="txt_restart_now">Nu herstarten</sys:String>
     <sys:String x:Key="txt_later">Later</sys:String>
 
+    <sys:String x:Key="label_reason">Reden</sys:String>
+    <sys:String x:Key="label_physical_mem">Fysiek geheugen</sys:String>
+    <sys:String x:Key="label_virtual_mem">Virtueel geheugen</sys:String>
+    <sys:String x:Key="label_disk_recovered">Schijfruimte teruggewonnen</sys:String>
+
     <sys:String x:Key="wmi_code_default_summary">Een cryptische foutcode (Code {0}) is gedetecteerd door de proactieve scan.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows heeft een interne fout ondervonden met dit stuurprogramma. Controleer Apparaatbeheer of installeer het standaard stuurprogramma opnieuw.</sys:String>
     <sys:String x:Key="wmi_code_extended_summary">Uitgebreide PnP-fout (Code {0}) gedetecteerd op de hardwarebus.</sys:String>

@@ -1,101 +1,77 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Xml.Linq;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {
     public enum StringStatus { Found, Fallback, Missing }
 
-    public class LocalizationService : INotifyPropertyChanged
+    public class LocalizationService : ILocalizationService, INotifyPropertyChanged
     {
         private static LocalizationService? _instance;
         public static LocalizationService Instance => _instance ??= new LocalizationService();
 
+        public event EventHandler? LanguageChanged;
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly Dictionary<string, string> _defaultCache = new();
         private readonly Dictionary<string, string> _targetCache = new();
-
         private readonly Dictionary<string, string> _missingStringsLog = new();
         private readonly object _logLock = new();
-        private string _currentLanguage = "en-us";
 
-        private static string RealBaseDir
-        {
-            get
-            {
-                string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
-                return Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
-            }
-        }
+        private string _currentLanguage = "en-us";
+        private string _currentLanguageCode = "en-us";
+        private CultureInfo _currentCulture = CultureInfo.CurrentUICulture;
+
+        private static string RealBaseDir => Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName) ?? AppContext.BaseDirectory;
+        private string LocalizationPath => Path.Combine(RealBaseDir, "Languages");
+
+        public string CurrentLanguage => _currentLanguageCode;
+        public bool IsRightToLeft => _currentCulture.TextInfo.IsRightToLeft;
 
         public LocalizationService()
         {
+            _instance = this;
+            _currentCulture = CultureInfo.CurrentUICulture;
             EnsureLanguageFilesExistLocally();
-
             LoadDefaultLanguage();
+            LoadLanguage("en-us");
         }
 
+        #region Initialization & Extraction
         private void EnsureLanguageFilesExistLocally()
         {
-            string langDir = Path.Combine(RealBaseDir, "Languages");
-
             try
             {
-                if (!Directory.Exists(langDir))
-                {
-                    Directory.CreateDirectory(langDir);
-                }
+                if (!Directory.Exists(LocalizationPath)) Directory.CreateDirectory(LocalizationPath);
 
-                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                var assembly = Assembly.GetExecutingAssembly();
                 string resourcePrefix = "EvolveOS_Optimizer.Languages.";
-                string[] resourceNames = assembly.GetManifestResourceNames();
 
-                foreach (string resourceName in resourceNames)
+                foreach (string resourceName in assembly.GetManifestResourceNames())
                 {
                     if (resourceName.StartsWith(resourcePrefix) && resourceName.EndsWith(".xaml"))
                     {
                         string fileName = resourceName.Substring(resourcePrefix.Length);
-                        string filePath = Path.Combine(langDir, fileName);
+                        string filePath = Path.Combine(LocalizationPath, fileName);
 
-                        using (Stream? resourceStream = assembly.GetManifestResourceStream(resourceName))
+                        using var resourceStream = assembly.GetManifestResourceStream(resourceName);
+                        if (resourceStream != null)
                         {
-                            if (resourceStream != null)
+                            if (!File.Exists(filePath) || new FileInfo(filePath).Length != resourceStream.Length)
                             {
-                                bool shouldExtract = false;
-
-                                if (!File.Exists(filePath))
-                                {
-                                    shouldExtract = true;
-                                }
-                                else
-                                {
-                                    long localFileSize = new FileInfo(filePath).Length;
-                                    long resourceSize = resourceStream.Length;
-
-                                    if (localFileSize != resourceSize)
-                                    {
-                                        shouldExtract = true;
-                                        Debug.WriteLine($"[Localization] Size mismatch detected for {fileName}. Updating local file...");
-                                    }
-                                }
-
-                                if (shouldExtract)
-                                {
-                                    using (FileStream fileStream = File.Create(filePath))
-                                    {
-                                        resourceStream.CopyTo(fileStream);
-                                    }
-                                    Debug.WriteLine($"[Localization] Successfully extracted/updated {fileName}");
-                                }
+                                using var fileStream = File.Create(filePath);
+                                resourceStream.CopyTo(fileStream);
+                                Debug.WriteLine($"[Localization] Successfully extracted/updated {fileName}");
                             }
                         }
                     }
@@ -103,21 +79,29 @@ namespace EvolveOS_Optimizer.Utilities.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Localization] Failed to extract or update language files: {ex.Message}");
+                Debug.WriteLine($"[Localization] Failed to extract files: {ex.Message}");
             }
         }
+        #endregion
 
-        public string Get(string key) => GetWithStatus(key).Value;
-        public string this[string key] => GetWithStatus(key).Value;
+        #region String Retrieval
+        public string GetString(string key) => GetWithStatus(key).Value;
+
+        public string this[string key] => GetString(key);
+
+        public string GetString(string key, params object[] args)
+        {
+            var format = GetString(key);
+            try { return string.Format(format, args); }
+            catch { return format; }
+        }
 
         public (string Value, StringStatus Status) GetWithStatus(string key)
         {
             if (string.IsNullOrEmpty(key)) return (string.Empty, StringStatus.Found);
 
             if (_targetCache.TryGetValue(key, out var targetValue))
-            {
                 return (targetValue, StringStatus.Found);
-            }
 
             if (_defaultCache.TryGetValue(key, out var defaultValue))
             {
@@ -126,25 +110,42 @@ namespace EvolveOS_Optimizer.Utilities.Services
             }
 
             LogMissingString(key, "");
-            return ($"[{key}]", StringStatus.Missing);
+            return (key, StringStatus.Missing);
         }
+        #endregion
 
-        private void LoadDefaultLanguage()
+        #region Language Management
+        public bool SetLanguage(string languageCode)
         {
-            string filePath = Path.Combine(RealBaseDir, "Languages", "en-us.xaml");
-            LoadDictionary(filePath, _defaultCache);
+            try
+            {
+                LoadLanguage(languageCode);
+                return true;
+            }
+            catch { return false; }
         }
 
         public void LoadLanguage(string langCode)
         {
             _currentLanguage = langCode.ToLower();
+            _currentLanguageCode = langCode;
 
-            string filePath = Path.Combine(RealBaseDir, "Languages", $"{_currentLanguage}.xaml");
+            try { _currentCulture = new CultureInfo(langCode); }
+            catch { _currentCulture = CultureInfo.InvariantCulture; }
+
+            string filePath = Path.Combine(LocalizationPath, $"{_currentLanguage}.xaml");
 
             _targetCache.Clear();
             LoadDictionary(filePath, _targetCache);
 
+            LanguageChanged?.Invoke(this, EventArgs.Empty);
             Refresh();
+        }
+
+        private void LoadDefaultLanguage()
+        {
+            string filePath = Path.Combine(LocalizationPath, "en-us.xaml");
+            LoadDictionary(filePath, _defaultCache);
         }
 
         private void LoadDictionary(string filePath, Dictionary<string, string> cache)
@@ -153,12 +154,12 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             try
             {
-                XDocument doc = XDocument.Load(filePath);
+                var doc = XDocument.Load(filePath);
                 XNamespace x = "http://schemas.microsoft.com/winfx/2006/xaml";
 
                 foreach (var element in doc.Descendants())
                 {
-                    var keyAttr = element.Attribute(x + "Key");
+                    var keyAttr = element.Attribute(x + "Key") ?? element.Attribute("Key");
                     if (keyAttr != null)
                     {
                         cache[keyAttr.Value] = element.Value;
@@ -170,33 +171,24 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 Debug.WriteLine($"[Localization] XML Read Error for {filePath}: {ex.Message}");
             }
         }
+        #endregion
 
+        #region Logging & UI
         private void LogMissingString(string key, string fallbackValue)
         {
-            if (!LocalMachineSettingsEngine.IsDeveloperMode) return;
-
-            if (_currentLanguage == "en-us") return;
+            if (!LocalMachineSettingsEngine.IsDeveloperMode || _currentLanguage == "en-us") return;
 
             lock (_logLock)
             {
                 if (!_missingStringsLog.ContainsKey(key))
                 {
                     _missingStringsLog[key] = string.IsNullOrEmpty(fallbackValue) ? "NEEDS_TRANSLATION" : fallbackValue;
-
                     try
                     {
-                        string logDir = Path.Combine(RealBaseDir, "Languages");
-                        Directory.CreateDirectory(logDir);
-                        string logPath = Path.Combine(logDir, $"MissingStrings_{_currentLanguage}.json");
-
-                        var options = new JsonSerializerOptions { WriteIndented = true };
-                        string json = JsonSerializer.Serialize(_missingStringsLog, options);
-                        File.WriteAllText(logPath, json);
+                        string jsonPath = Path.Combine(LocalizationPath, $"MissingStrings_{_currentLanguage}.json");
+                        File.WriteAllText(jsonPath, JsonSerializer.Serialize(_missingStringsLog, new JsonSerializerOptions { WriteIndented = true }));
                     }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"[Localization] Failed to write JSON log: {ex.Message}");
-                    }
+                    catch { }
                 }
             }
         }
@@ -207,5 +199,6 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        #endregion
     }
 }

@@ -16,7 +16,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -882,7 +882,7 @@ namespace EvolveOS_Optimizer.Pages
 
             if (ViewModel.CanOptimize)
             {
-                await ViewModel.Optimize(Enums.Memory.Optimization.Reason.Manual);
+                await ViewModel.Optimize(Core.Enums.Memory.Optimization.Reason.Manual);
             }
             else
             {
@@ -1230,7 +1230,7 @@ namespace EvolveOS_Optimizer.Pages
             PortScannerDialog?.Hide();
         }
 
-        private void OnOptimizeCommandCompleted(Enums.Memory.Optimization.Reason reason, string message)
+        private void OnOptimizeCommandCompleted(Memory.Optimization.Reason reason, string message)
         {
             if (_isShowingResult) return;
             _isShowingResult = true;

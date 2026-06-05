@@ -6,16 +6,20 @@ using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Core.Constants;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Dispatching;
 using Microsoft.Windows.AppNotifications;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer
 {
@@ -41,12 +45,18 @@ namespace EvolveOS_Optimizer
         public static Microsoft.UI.Dispatching.DispatcherQueue? UIThreadDispatcher { get; private set; }
 
         private static Mutex? _mutex;
+        private IHost? _host;
+
+        private ILogService? _logService;
 
         private static IHotkeyService? _hotkeyService;
         public static event EventHandler? HotkeySettingsChanged;
         private static PasswordGeneratorWindow? _passwordGeneratorWindow;
 
         public static new App Current => (App)Application.Current;
+
+        public static IServiceProvider Services => (Current as App)?._host?.Services
+            ?? throw new InvalidOperationException("Host not initialized");
 
         public static IntPtr WindowHandle { get; private set; }
 
@@ -62,6 +72,8 @@ namespace EvolveOS_Optimizer
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
             AppDomain.CurrentDomain.ProcessExit += (s, ev) => HandleCleanup();
+
+            Utilities.Services.LocalizationService.Instance.LoadLanguage("en-us");
         }
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
@@ -81,6 +93,27 @@ namespace EvolveOS_Optimizer
             }
 
             EnsureShortcutWithAumid();
+
+            _host = CompositionRoot.CreateEvolveOSHost().Build();
+            _logService = Services.GetService<ILogService>();
+            InitializeLocalization();
+
+            var interactiveUserService = Services.GetService<IInteractiveUserService>();
+            if (_logService is LogService concreteLogService)
+            {
+                if (interactiveUserService != null)
+                {
+                    concreteLogService.SetInteractiveUserService(interactiveUserService);
+                }
+                var systemInfoProvider = Services.GetService<ISystemInfoProvider>();
+                if (systemInfoProvider != null)
+                {
+                    concreteLogService.SetSystemInfoProvider(systemInfoProvider);
+                }
+            }
+            _logService?.StartLog();
+            var logPath = _logService?.GetLogPath();
+            _logService?.LogInformation("EvolveOS_Optimizer application starting...");
 
             _mutex = new Mutex(true, "EvolveOS_Optimizer_SingleInstance", out bool isNewInstance);
 
@@ -188,6 +221,23 @@ namespace EvolveOS_Optimizer
             });
         }
 
+        private void InitializeLocalization()
+        {
+            try
+            {
+                var localizationService = Services.GetRequiredService<ILocalizationService>();
+                StringKeys.Localized.Initialize(localizationService);
+
+                var preferencesService = Services.GetRequiredService<IUserPreferencesService>();
+                var savedLanguage = preferencesService.GetPreference("Language", "en");
+                localizationService.SetLanguage(savedLanguage);
+            }
+            catch (Exception ex)
+            {
+                _logService?.LogDebug($"Failed to initialize localization: {ex.Message}");
+            }
+        }
+
         private async void App_UnhandledException(object? sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             e.Handled = true;
@@ -265,13 +315,13 @@ namespace EvolveOS_Optimizer
             Win32Helper.SetCurrentProcessExplicitAppUserModelID(appId);
         }
 
-        public static void SetPriority(Enums.Priority priority)
+        public static void SetPriority(Priority priority)
         {
             var (boost, procClass, isEfficiencyMode) = priority switch
             {
-                Enums.Priority.Low => (false, ProcessPriorityClass.Idle, true),
-                Enums.Priority.Normal => (true, ProcessPriorityClass.Normal, false),
-                Enums.Priority.High => (true, ProcessPriorityClass.High, false),
+                Priority.Low => (false, ProcessPriorityClass.Idle, true),
+                Priority.Normal => (true, ProcessPriorityClass.Normal, false),
+                Priority.High => (true, ProcessPriorityClass.High, false),
                 _ => throw new NotImplementedException()
             };
 

@@ -5,6 +5,7 @@
 
 using System.Threading;
 using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Views;
@@ -379,7 +380,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
             try
             {
-                await sharedViewModel.Optimize(Enums.Memory.Optimization.Reason.Manual);
+                await sharedViewModel.Optimize(Memory.Optimization.Reason.Manual);
             }
             catch (Exception ex)
             {

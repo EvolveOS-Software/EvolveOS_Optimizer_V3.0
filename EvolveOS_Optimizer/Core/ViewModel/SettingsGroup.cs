@@ -1,0 +1,74 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+
+namespace EvolveOS_Optimizer.Core.ViewModel;
+
+public class SettingsGroup : ObservableCollection<SettingItemViewModel>
+{
+    private bool _hasVisibleItems = true;
+    public string Key { get; }
+
+    public bool HasVisibleItems
+    {
+        get => _hasVisibleItems;
+        private set
+        {
+            if (_hasVisibleItems != value)
+            {
+                _hasVisibleItems = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(HasVisibleItems)));
+            }
+        }
+    }
+
+    public SettingsGroup(string key, IEnumerable<SettingItemViewModel> items) : base(items)
+    {
+        Key = key ?? string.Empty;
+
+        foreach (var item in this)
+        {
+            item.PropertyChanged += OnItemPropertyChanged;
+        }
+
+        CollectionChanged += OnCollectionChanged;
+        UpdateHasVisibleItems();
+    }
+
+    private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            foreach (SettingItemViewModel item in e.OldItems)
+            {
+                item.PropertyChanged -= OnItemPropertyChanged;
+            }
+        }
+
+        if (e.NewItems != null)
+        {
+            foreach (SettingItemViewModel item in e.NewItems)
+            {
+                item.PropertyChanged += OnItemPropertyChanged;
+            }
+        }
+
+        UpdateHasVisibleItems();
+    }
+
+    private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SettingItemViewModel.IsVisible))
+        {
+            UpdateHasVisibleItems();
+        }
+    }
+
+    private void UpdateHasVisibleItems()
+    {
+        HasVisibleItems = this.Any(item => item.IsVisible);
+    }
+}

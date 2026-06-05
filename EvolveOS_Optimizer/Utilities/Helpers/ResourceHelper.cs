@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
 using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -99,9 +100,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         public static string GetOptimizationResultMessage(
             string reason,
-            KeyValuePair<double, Enums.Memory.Unit> physical,
-            KeyValuePair<double, Enums.Memory.Unit> virtualMem,
-            KeyValuePair<double, Enums.Memory.Unit> disk,
+            KeyValuePair<double, Memory.Unit> physical,
+            KeyValuePair<double, Memory.Unit> virtualMem,
+            KeyValuePair<double, Memory.Unit> disk,
             bool showVirtual,
             bool showDisk)
         {
@@ -149,7 +150,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             return sb.ToString();
         }
 
-        public static string GetLocalizedUnit(Enums.Memory.Unit unit)
+        public static string GetLocalizedUnit(Memory.Unit unit)
         {
             string resourceKey = "unit_" + unit.ToString();
             string localizedUnit = ResourceString.GetString(resourceKey);

@@ -2462,6 +2462,11 @@
     <sys:String x:Key="txt_restart_now">Redémarrer maintenant</sys:String>
     <sys:String x:Key="txt_later">Plus tard</sys:String>
 
+    <sys:String x:Key="label_reason">Raison</sys:String>
+    <sys:String x:Key="label_physical_mem">Mémoire physique</sys:String>
+    <sys:String x:Key="label_virtual_mem">Mémoire virtuelle</sys:String>
+    <sys:String x:Key="label_disk_recovered">Espace disque récupéré</sys:String>
+
     <sys:String x:Key="wmi_code_default_summary">Un code d'erreur cryptique (Code {0}) a été détecté par l'analyse proactive.</sys:String>
     <sys:String x:Key="wmi_code_default_fix">Windows a rencontré une erreur interne avec ce pilote. Vérifiez le Gestionnaire de périphériques ou réinstallez le pilote standard.</sys:String>
     <sys:String x:Key="wmi_code_extended_summary">Erreur PnP étendue (Code {0}) détectée sur le bus matériel.</sys:String>

@@ -3,29 +3,34 @@
     x:Class="EvolveOS_Optimizer.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:EvolveOS_Optimizer">
+    xmlns:local="using:EvolveOS_Optimizer"
+    xmlns:resources="using:EvolveOS_Optimizer.Core.Resources">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <ResourceDictionary Source="ms-appx:///Assets/Fonts/Fonts.xaml" />
                 <ResourceDictionary Source="ms-appx:///Assets/Images.xaml" />
+                <ResourceDictionary Source="ms-appx:///Assets/DrawingImages/FeatureIcons.xaml" />
                 <ResourceDictionary Source="ms-appx:///Assets/DrawingImages/SystemInfo.xaml" />
                 <ResourceDictionary Source="ms-appx:///Styles/Themes/Colors.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Themes/TrayStyles.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Buttons/RadioButtons.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Buttons/ToggleButtons.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Display/Badges.xaml" />
+                <ResourceDictionary Source="ms-appx:///Core/Resources/BadgeStyles.xaml" />
                 <ResourceDictionary Source="ms-appx:///Styles/Display/Cards.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Display/TextBlock.xaml"/>
                 <ResourceDictionary Source="ms-appx:///Styles/Display/Registry.xaml" />
+
+                <ResourceDictionary Source="ms-appx:///Core/Resources/Converters.xaml" />
+                <resources:SettingTemplates />
             </ResourceDictionary.MergedDictionaries>
 
             <Color x:Key="MyDynamicAccentColor">#FF0078D4</Color>
 
             <SolidColorBrush x:Key="MyDynamicAccentBrush" Color="{StaticResource MyDynamicAccentColor}"/>
             <SolidColorBrush x:Key="SystemFillColorBaseMediumBrush" Color="{ThemeResource SystemBaseMediumColor}" />
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -14,7 +14,7 @@ using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 using static EvolveOS_Optimizer.Core.Structs.Windows;
 
 namespace EvolveOS_Optimizer.Pages;
@@ -455,7 +455,7 @@ public sealed partial class ProcessManagerPage : Page, IPurgeable
         }
     }
 
-    private void OnGlobalOptimizationCompleted(Enums.Memory.Optimization.Reason reason, string message)
+    private void OnGlobalOptimizationCompleted(Memory.Optimization.Reason reason, string message)
     {
         Task.Delay(200).ContinueWith(async _ =>
         {

@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Principal;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Pages;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -18,13 +19,14 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Views;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using WinRT.Interop;
-using static EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Enums;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace EvolveOS_Optimizer
@@ -61,6 +63,7 @@ namespace EvolveOS_Optimizer
         public DiagnosticsPageViewModel DiagnosticsVM => DiagnosticsPageViewModel.Current;
 
         public string GetText(string key) => LocalizationService.Instance[key];
+
         #endregion
 
         #region Constructor
@@ -135,6 +138,10 @@ namespace EvolveOS_Optimizer
 
             RefreshAiStatus();
 
+            _ = BootEngineAsync();
+            InitializeDialogService();
+            InitializeDispatcherService();
+
             LocalMachineSettingsEngine.SettingChanged += OnSettingChanged;
 
             LocalizationService.Instance.PropertyChanged += (s, e) =>
@@ -184,6 +191,62 @@ namespace EvolveOS_Optimizer
                     });
                 }
             };
+        }
+
+        private async Task BootEngineAsync()
+        {
+            try
+            {
+                var registry = App.Services.GetRequiredService<ICompatibleSettingsRegistry>();
+                await registry.InitializeAsync();
+
+                var preloader = App.Services.GetRequiredService<IGlobalSettingsPreloader>();
+                await preloader.PreloadAllSettingsAsync();
+
+                Debug.WriteLine("[DEBUG] Engine booted and settings loaded into memory!");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DEBUG] Engine boot failed: {ex.Message}");
+            }
+        }
+
+        private void InitializeDispatcherService()
+        {
+            try
+            {
+                var dispatcherService = App.Services.GetRequiredService<IDispatcherService>();
+
+                if (dispatcherService is EvolveOS_Optimizer.Utilities.Services.DispatcherService concreteService)
+                {
+                    concreteService.Initialize(this.DispatcherQueue);
+                    Debug.WriteLine("[DEBUG] DispatcherService successfully initialized!");
+                }
+                else
+                {
+                    Debug.WriteLine("[DEBUG] Failed to cast DispatcherService!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DEBUG] Failed to initialize DispatcherService: {ex.Message}");
+            }
+        }
+
+        private void InitializeDialogService()
+        {
+            try
+            {
+                var dialogService = App.Services.GetRequiredService<IDialogService>();
+                if (dialogService is DialogService concreteService)
+                {
+                    concreteService.XamlRoot = RootGrid.XamlRoot;
+                }
+            }
+            catch (Exception)
+            {
+                //_logService?.LogDebug($"Failed to initialize DialogService: {ex.Message}");
+            }
         }
         #endregion
 
@@ -556,7 +619,8 @@ namespace EvolveOS_Optimizer
                 "Software" => typeof(Pages.SoftwareCenterPage),
                 "GroupPolicy" => typeof(Pages.GroupPolicyPage),
                 "RegistryEditor" => typeof(Pages.RegistryEditorPage),
-                "Tweaks" => typeof(Pages.TweaksPage),
+                "Optimize" => typeof(WinOptimizePage),
+                "Customize" => typeof(Pages.WinCustomizePage),
                 "Utilities" => typeof(Pages.UtilitiesPage),
                 "Scripts" => typeof(Pages.ScriptsPage),
                 "Settings" => typeof(Pages.SettingsPage),

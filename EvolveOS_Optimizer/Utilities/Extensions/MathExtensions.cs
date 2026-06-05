@@ -1,4 +1,4 @@
-using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Utilities.Extensions
 {
@@ -28,16 +28,16 @@ namespace EvolveOS_Optimizer.Utilities.Extensions
             }
         }
 
-        public static KeyValuePair<double, Enums.Memory.Unit> ToMemoryUnit(this long obj)
+        public static KeyValuePair<double, Memory.Unit> ToMemoryUnit(this long obj)
         {
             if (obj < 1024)
             {
-                return new KeyValuePair<double, Enums.Memory.Unit>(obj, Enums.Memory.Unit.B);
+                return new KeyValuePair<double, Memory.Unit>(obj, Memory.Unit.B);
             }
 
             var mag = (int)Math.Log(obj, 1024);
 
-            return new KeyValuePair<double, Enums.Memory.Unit>(obj / Math.Pow(1024, mag), (Enums.Memory.Unit)mag);
+            return new KeyValuePair<double, Memory.Unit>(obj / Math.Pow(1024, mag), (Memory.Unit)mag);
         }
 
         public static string FormatBytes(this long bytes)
