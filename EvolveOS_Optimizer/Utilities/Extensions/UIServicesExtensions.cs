@@ -41,14 +41,6 @@ public static class UIServicesExtensions
         services.AddSingleton<IStartupOrchestrator, StartupOrchestrator>();
         #endregion
 
-        #region Config Review Services
-        services.AddSingleton<IConfigReviewService, ConfigReviewService>();
-        services.AddSingleton<IConfigReviewModeService>(sp => (IConfigReviewModeService)sp.GetRequiredService<IConfigReviewService>());
-        services.AddSingleton<IConfigReviewDiffService>(sp => (IConfigReviewDiffService)sp.GetRequiredService<IConfigReviewService>());
-        services.AddSingleton<IConfigReviewBadgeService>(sp => (IConfigReviewBadgeService)sp.GetRequiredService<IConfigReviewService>());
-        services.AddSingleton<ISettingReviewDiffApplier, SettingReviewDiffApplier>();
-        #endregion
-
         #region Regedit Launcher
         services.AddSingleton<IRegeditLauncher, RegeditLauncher>();
         #endregion

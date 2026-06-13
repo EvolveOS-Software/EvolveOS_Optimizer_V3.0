@@ -9,7 +9,6 @@ using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Events;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using IConfigReviewService = EvolveOS_Optimizer.Core.Interfaces.IConfigReviewService;
 using ILocalizationService = EvolveOS_Optimizer.Core.Interfaces.ILocalizationService;
 using IUserPreferencesService = EvolveOS_Optimizer.Core.Interfaces.IUserPreferencesService;
 using IBulkSettingsActionService = EvolveOS_Optimizer.Core.Interfaces.IBulkSettingsActionService;
@@ -44,17 +43,16 @@ public sealed partial class WinOptimizePage : Page
         { "Sound", FeatureIds.Sound }
     };
 
-    private IConfigReviewService? _configReviewService;
     private IUserPreferencesService? _userPreferencesService;
     private ILocalizationService? _localizationService;
     private IBulkSettingsActionService? _bulkSettingsActionService;
-    private Dictionary<string, InfoBadge>? _flyoutBadges;
+
     private ISubscriptionToken? _settingAppliedSubscription;
     private ISubscriptionToken? _settingsRefreshedSubscription;
+
     private bool _isTechnicalDetailsVisible;
     private bool _isInfoBadgesVisible = true;
     private bool _isNewBadgesVisible = true;
-    private bool _showOnlyChanges;
 
     public OptimizeViewModel ViewModel { get; }
     #endregion
@@ -72,23 +70,6 @@ public sealed partial class WinOptimizePage : Page
             ViewModel = App.Services.GetRequiredService<OptimizeViewModel>();
             ViewModel.PropertyChanged += OnViewModelPropertyChanged;
             UpdateBreadcrumbMenuItems();
-
-            _flyoutBadges = new()
-            {
-                { "Privacy", FlyoutBadgePrivacy },
-                { "Power", FlyoutBadgePower },
-                { "Gaming", FlyoutBadgeGaming },
-                { "Update", FlyoutBadgeUpdate },
-                { "Notification", FlyoutBadgeNotification },
-                { "Sound", FlyoutBadgeSound }
-            };
-
-            _configReviewService = App.Services.GetService<IConfigReviewService>();
-            if (_configReviewService != null)
-            {
-                _configReviewService.ReviewModeChanged += OnReviewModeChanged;
-                _configReviewService.BadgeStateChanged += OnBadgeStateChanged;
-            }
 
             _userPreferencesService = App.Services.GetService<IUserPreferencesService>();
             _localizationService = App.Services.GetService<ILocalizationService>();
@@ -138,13 +119,7 @@ public sealed partial class WinOptimizePage : Page
 
             ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
             ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-            if (_configReviewService != null)
-            {
-                _configReviewService.ReviewModeChanged -= OnReviewModeChanged;
-                _configReviewService.ReviewModeChanged += OnReviewModeChanged;
-                _configReviewService.BadgeStateChanged -= OnBadgeStateChanged;
-                _configReviewService.BadgeStateChanged += OnBadgeStateChanged;
-            }
+
             var eventBus = App.Services.GetService<IEventBus>();
             if (eventBus != null)
             {
@@ -153,12 +128,14 @@ public sealed partial class WinOptimizePage : Page
                 {
                     DispatcherQueue.TryEnqueue(() => { UpdateOverviewBadgePills(); UpdateOverviewNewBadges(); });
                 });
+
                 _settingsRefreshedSubscription?.Dispose();
                 _settingsRefreshedSubscription = eventBus.Subscribe<SettingsRefreshedEvent>(e =>
                 {
                     DispatcherQueue.TryEnqueue(() => SyncViewStateToSettings());
                 });
             }
+
             UpdateBreadcrumbMenuItems();
 
             ViewModel.CurrentSectionKey = "Overview";
@@ -170,18 +147,11 @@ public sealed partial class WinOptimizePage : Page
             SetDropdownLabels();
 
             await InitializeTechnicalDetailsToggleAsync();
-
             await InitializeInfoBadgesAsync();
-
             await InitializeNewBadgesAsync();
 
-            UpdateOverviewBadges();
-            UpdateBreadcrumbBadges();
             UpdateOverviewBadgePills();
             UpdateOverviewNewBadges();
-
-            if (_showOnlyChanges)
-                ApplyShowOnlyChangesFilter();
 
             ErrorLogging.LogDebug("OptimizePage", "OnNavigatedTo complete");
         }
@@ -231,12 +201,6 @@ public sealed partial class WinOptimizePage : Page
 
             InnerContentFrame.Navigate(pageType, searchText, new SuppressNavigationTransitionInfo());
 
-            if (_configReviewService?.IsInReviewMode == true &&
-                SectionFeatureIds.TryGetValue(sectionKey, out var featureId))
-            {
-                _configReviewService.MarkFeatureVisited(featureId);
-            }
-
             await Task.Delay(50);
 
             UpdateContentVisibility();
@@ -281,9 +245,6 @@ public sealed partial class WinOptimizePage : Page
             nameof(GamingOptimizePage) => "Gaming",
             _ => "Overview"
         };
-
-        if (_showOnlyChanges)
-            ApplyShowOnlyChangesFilter();
     }
 
     private void UpdateContentVisibility()
@@ -324,8 +285,6 @@ public sealed partial class WinOptimizePage : Page
                     BreadcrumbSectionIcon.Data = geometry;
                 }
             }
-
-            UpdateBreadcrumbBadges();
         }
     }
     #endregion
@@ -403,43 +362,7 @@ public sealed partial class WinOptimizePage : Page
     }
     #endregion
 
-    #region Review Mode & Badge Management
-    private void OnReviewModeChanged(object? sender, EventArgs e)
-    {
-        DispatcherQueue.TryEnqueue(() =>
-        {
-            UpdateOverviewBadges();
-            UpdateBreadcrumbBadges();
-            UpdateQuickActionsForReviewMode();
-        });
-    }
-
-    private void OnBadgeStateChanged(object? sender, EventArgs e)
-    {
-        DispatcherQueue.TryEnqueue(() => { UpdateOverviewBadges(); UpdateBreadcrumbBadges(); });
-    }
-
-    private void UpdateOverviewBadges()
-    {
-        if (_configReviewService == null || !_configReviewService.IsInReviewMode)
-        {
-            PrivacyBadge.Visibility = Visibility.Collapsed;
-            PowerBadge.Visibility = Visibility.Collapsed;
-            GamingBadge.Visibility = Visibility.Collapsed;
-            UpdateBadge.Visibility = Visibility.Collapsed;
-            NotificationBadge.Visibility = Visibility.Collapsed;
-            SoundBadge.Visibility = Visibility.Collapsed;
-            return;
-        }
-
-        UpdateFeatureBadge(PrivacyBadge, FeatureIds.Privacy);
-        UpdateFeatureBadge(PowerBadge, FeatureIds.Power);
-        UpdateFeatureBadge(GamingBadge, FeatureIds.GamingPerformance);
-        UpdateFeatureBadge(UpdateBadge, FeatureIds.Update);
-        UpdateFeatureBadge(NotificationBadge, FeatureIds.Notifications);
-        UpdateFeatureBadge(SoundBadge, FeatureIds.Sound);
-    }
-
+    #region Badge Management
     private void UpdateOverviewBadgePills()
     {
         UpdateFeatureOverviewPills(
@@ -559,71 +482,6 @@ public sealed partial class WinOptimizePage : Page
 
         container.Visibility = showAny ? Visibility.Visible : Visibility.Collapsed;
     }
-
-    private void UpdateBreadcrumbBadges()
-    {
-        if (_configReviewService == null || !_configReviewService.IsInReviewMode)
-        {
-            BreadcrumbSectionBadge.Visibility = Visibility.Collapsed;
-            if (_flyoutBadges != null)
-            {
-                foreach (var badge in _flyoutBadges.Values)
-                    badge.Visibility = Visibility.Collapsed;
-            }
-            return;
-        }
-
-        if (_flyoutBadges != null)
-        {
-            foreach (var (sectionKey, badge) in _flyoutBadges)
-            {
-                if (SectionFeatureIds.TryGetValue(sectionKey, out var featureId))
-                    UpdateFeatureBadge(badge, featureId);
-            }
-        }
-
-        if (SectionFeatureIds.TryGetValue(ViewModel.CurrentSectionKey, out var currentFeatureId))
-            UpdateFeatureBadge(BreadcrumbSectionBadge, currentFeatureId);
-        else
-            BreadcrumbSectionBadge.Visibility = Visibility.Collapsed;
-    }
-
-    private void UpdateFeatureBadge(InfoBadge badge, string featureId)
-    {
-        var diffCount = _configReviewService!.GetFeatureDiffCount(featureId);
-        if (diffCount > 0)
-        {
-            badge.Visibility = Visibility.Visible;
-
-            if (_configReviewService.IsFeatureFullyReviewed(featureId))
-            {
-                badge.Value = -1;
-                if (Application.Current.Resources.TryGetValue("SuccessIconInfoBadgeStyle", out var successStyle) && successStyle is Style ss)
-                    badge.Style = ss;
-            }
-            else
-            {
-                var pendingCount = _configReviewService.GetFeaturePendingDiffCount(featureId);
-                badge.Value = pendingCount;
-                if (Application.Current.Resources.TryGetValue("AttentionValueInfoBadgeStyle", out var attentionStyle) && attentionStyle is Style ats)
-                    badge.Style = ats;
-            }
-        }
-        else if (_configReviewService.IsFeatureInConfig(featureId))
-        {
-            badge.Value = -1;
-            badge.Visibility = Visibility.Visible;
-
-            if (Application.Current.Resources.TryGetValue("SuccessIconInfoBadgeStyle", out var style) && style is Style badgeStyle)
-            {
-                badge.Style = badgeStyle;
-            }
-        }
-        else
-        {
-            badge.Visibility = Visibility.Collapsed;
-        }
-    }
     #endregion
 
     #region View & UI Toggles Initialization
@@ -632,6 +490,15 @@ public sealed partial class WinOptimizePage : Page
         QuickActionsLabel.Label = _localizationService?.GetString("QuickActions_Menu") ?? "Quick Actions";
         ApplyRecommendedItem.Text = _localizationService?.GetString("QuickActions_ApplyRecommended") ?? "Apply Recommended Settings";
         ResetDefaultsItem.Text = _localizationService?.GetString("QuickActions_ResetDefaults") ?? "Reset to Windows Defaults";
+
+        ApplyRecommendedIcon.Glyph = "\uE735";
+        ResetDefaultsItem.Icon = new PathIcon
+        {
+            Data = (Microsoft.UI.Xaml.Media.Geometry)Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(
+                typeof(Microsoft.UI.Xaml.Media.Geometry),
+                (string)Application.Current.Resources["WindowsLogoIconPath"])
+        };
+
         ViewMenuLabel.Label = _localizationService?.GetString("View_Menu") ?? "View";
         TechnicalDetailsToggleItem.Text = _localizationService?.GetString("View_TechnicalDetails") ?? "Technical Details";
         ToolTipService.SetToolTip(TechnicalDetailsToggleItem, _localizationService?.GetString("View_TechnicalDetails_Tooltip") ?? "Show or hide technical details for each setting");
@@ -639,9 +506,6 @@ public sealed partial class WinOptimizePage : Page
         ToolTipService.SetToolTip(InfoBadgesToggleItem, _localizationService?.GetString("View_InfoBadges_Tooltip") ?? "Show or hide status badges on settings cards");
         NewBadgesToggleItem.Text = _localizationService?.GetString("View_NewBadges") ?? "NEW Badges";
         ToolTipService.SetToolTip(NewBadgesToggleItem, _localizationService?.GetString("View_NewBadges_Tooltip") ?? "Show or hide NEW badges on settings added in this release");
-        ShowOnlyChangesToggleItem.Text = _localizationService?.GetString("View_ShowOnlyChanges") ?? "Show Only Changes";
-        ToolTipService.SetToolTip(ShowOnlyChangesToggleItem, _localizationService?.GetString("View_ShowOnlyChanges_Tooltip") ?? "Show only settings with pending changes from the imported config");
-        UpdateQuickActionsForReviewMode();
     }
 
     private async Task InitializeTechnicalDetailsToggleAsync()
@@ -792,53 +656,17 @@ public sealed partial class WinOptimizePage : Page
         UpdateOverviewBadgePills();
         UpdateOverviewNewBadges();
     }
-
-    private void ViewShowOnlyChanges_Click(object sender, RoutedEventArgs e)
-    {
-        _showOnlyChanges = ShowOnlyChangesToggleItem.IsChecked;
-        ApplyShowOnlyChangesFilter();
-    }
-
-    private void ApplyShowOnlyChangesFilter()
-    {
-        var sectionsToFilter = ViewModel.IsInDetailPage
-            ? OptimizeViewModel.Sections.Where(s => s.Key == ViewModel.CurrentSectionKey)
-            : OptimizeViewModel.Sections;
-
-        foreach (var section in sectionsToFilter)
-        {
-            var sectionVm = ViewModel.GetSectionViewModel(section.Key);
-            if (sectionVm == null) continue;
-            foreach (var setting in sectionVm.Settings)
-            {
-                if (_showOnlyChanges)
-                {
-                    setting.IsVisible = setting.HasReviewDiff || setting.HasReviewAction;
-                }
-                else
-                {
-                    setting.UpdateVisibility(ViewModel.SearchText ?? string.Empty);
-                }
-            }
-        }
-    }
     #endregion
 
     #region Quick Actions & Bulk Operations
     private async void ApplyRecommended_Click(object sender, RoutedEventArgs e)
     {
-        if (_configReviewService?.IsInReviewMode == true)
-            await ExecuteReviewBulkActionAsync(approved: true);
-        else
-            await ExecuteBulkActionAsync(BulkActionType.ApplyRecommended);
+        await ExecuteBulkActionAsync(BulkActionType.ApplyRecommended);
     }
 
     private async void ResetDefaults_Click(object sender, RoutedEventArgs e)
     {
-        if (_configReviewService?.IsInReviewMode == true)
-            await ExecuteReviewBulkActionAsync(approved: false);
-        else
-            await ExecuteBulkActionAsync(BulkActionType.ResetToDefaults);
+        await ExecuteBulkActionAsync(BulkActionType.ResetToDefaults);
     }
 
     private async Task ExecuteBulkActionAsync(BulkActionType actionType)
@@ -869,115 +697,6 @@ public sealed partial class WinOptimizePage : Page
         int applied = actionType == BulkActionType.ApplyRecommended
             ? await _bulkSettingsActionService.ApplyRecommendedAsync(settingIds)
             : await _bulkSettingsActionService.ResetToDefaultsAsync(settingIds);
-    }
-
-    private async Task ExecuteReviewBulkActionAsync(bool approved)
-    {
-        if (_configReviewService == null) return;
-
-        var settingIds = GetCurrentPageSettingIds();
-
-        int diffCount = 0;
-        foreach (var id in settingIds)
-        {
-            if (_configReviewService.GetDiffForSetting(id) != null)
-                diffCount++;
-        }
-
-        if (diffCount == 0) return;
-
-        var messageKey = approved ? "QuickActions_AcceptConfirmMessage" : "QuickActions_RejectConfirmMessage";
-        var confirmMessage = string.Format(
-            _localizationService?.GetString(messageKey) ?? (approved ? "This will accept {0} changes on this page. Continue?" : "This will reject {0} changes on this page. Continue?"),
-            diffCount);
-
-        var dialog = new ContentDialog
-        {
-            Title = _localizationService?.GetString("QuickActions_ConfirmTitle") ?? "Confirm Action",
-            Content = confirmMessage,
-            PrimaryButtonText = "OK",
-            CloseButtonText = _localizationService?.GetString("Button_Cancel") ?? "Cancel",
-            XamlRoot = this.XamlRoot
-        };
-
-        var result = await dialog.ShowAsync();
-        if (result != ContentDialogResult.Primary) return;
-
-        foreach (var id in settingIds)
-        {
-            var diff = _configReviewService.GetDiffForSetting(id);
-            if (diff == null) continue;
-
-            _configReviewService.SetSettingApproval(id, approved);
-
-            if (diff.IsActionSetting)
-                _configReviewService.SetActionApproval(id, approved);
-
-            UpdateSettingViewModelReviewState(id, approved);
-        }
-    }
-
-    private void UpdateSettingViewModelReviewState(string settingId, bool approved)
-    {
-        var sectionsToSearch = ViewModel.IsInDetailPage
-            ? OptimizeViewModel.Sections.Where(s => s.Key == ViewModel.CurrentSectionKey)
-            : OptimizeViewModel.Sections;
-
-        foreach (var section in sectionsToSearch)
-        {
-            var sectionVm = ViewModel.GetSectionViewModel(section.Key);
-            if (sectionVm == null) continue;
-            foreach (var setting in sectionVm.Settings)
-            {
-                if (setting.SettingId == settingId)
-                {
-                    if (setting.HasReviewDiff)
-                    {
-                        setting.IsReviewApproved = approved;
-                        setting.IsReviewRejected = !approved;
-                    }
-                    if (setting.HasReviewAction)
-                    {
-                        setting.IsReviewActionApproved = approved;
-                        setting.IsReviewActionRejected = !approved;
-                    }
-                    return;
-                }
-            }
-        }
-    }
-
-    private void UpdateQuickActionsForReviewMode()
-    {
-        if (_configReviewService?.IsInReviewMode == true)
-        {
-            ApplyRecommendedItem.Text = _localizationService?.GetString("QuickActions_AcceptAll") ?? "Accept All Changes";
-            ResetDefaultsItem.Text = _localizationService?.GetString("QuickActions_RejectAll") ?? "Reject All Changes";
-            ApplyRecommendedIcon.Glyph = "\uE73E";
-            ResetDefaultsItem.Icon = new FontIcon { Glyph = "\uE711", FontSize = 14 };
-            ShowOnlyChangesSeparator.Visibility = Visibility.Visible;
-            ShowOnlyChangesToggleItem.Visibility = Visibility.Visible;
-        }
-        else
-        {
-            ApplyRecommendedItem.Text = _localizationService?.GetString("QuickActions_ApplyRecommended") ?? "Apply Recommended Settings";
-            ResetDefaultsItem.Text = _localizationService?.GetString("QuickActions_ResetDefaults") ?? "Reset to Windows Defaults";
-            ApplyRecommendedIcon.Glyph = "\uE735";
-            ResetDefaultsItem.Icon = new PathIcon
-            {
-                Data = (Microsoft.UI.Xaml.Media.Geometry)Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(
-                    typeof(Microsoft.UI.Xaml.Media.Geometry),
-                    (string)Application.Current.Resources["WindowsLogoIconPath"])
-            };
-            ShowOnlyChangesSeparator.Visibility = Visibility.Collapsed;
-            ShowOnlyChangesToggleItem.Visibility = Visibility.Collapsed;
-            ShowOnlyChangesToggleItem.IsChecked = false;
-            if (_showOnlyChanges)
-            {
-                _showOnlyChanges = false;
-                ApplyShowOnlyChangesFilter();
-            }
-        }
     }
 
     private List<string> GetCurrentPageSettingIds()
@@ -1030,12 +749,6 @@ public sealed partial class WinOptimizePage : Page
         if (!SettingsEngine.IsHighPerformanceModeEnabled)
         {
             ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-
-            if (_configReviewService != null)
-            {
-                _configReviewService.ReviewModeChanged -= OnReviewModeChanged;
-                _configReviewService.BadgeStateChanged -= OnBadgeStateChanged;
-            }
 
             _settingAppliedSubscription?.Dispose();
             _settingAppliedSubscription = null;

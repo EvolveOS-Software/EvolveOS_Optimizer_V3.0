@@ -327,40 +327,41 @@ public partial class SettingItemViewModel : BaseViewModel
         var template = _localizationService?.GetString(key);
         if (!string.IsNullOrEmpty(template))
             return template.Replace("{0}", value?.ToString() ?? string.Empty);
-        return key == StringKeys.InfoBadge.NumericSetToRecommendedTooltip
+        return key == "InfoBadge_Numeric_SetToRecommended_Tooltip"
             ? $"Set to Recommended ({value})"
             : $"Set to Default ({value})";
     }
 
     public string RecommendedValueTooltip =>
-        NumericRecommendedValue is int rec
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToRecommendedTooltip, ConvertFromSystemUnits(rec))
-            : string.Empty;
+       NumericRecommendedValue is int rec
+           ? FormatValueTooltip("InfoBadge_Numeric_SetToRecommended_Tooltip", ConvertFromSystemUnits(rec))
+           : string.Empty;
 
     public string DefaultValueTooltip =>
         NumericDefaultValue is int def
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToDefaultTooltip, ConvertFromSystemUnits(def))
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToDefault_Tooltip", ConvertFromSystemUnits(def))
             : string.Empty;
 
     public string RecommendedAcValueTooltip =>
         AcRecommendedValue is int rec
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToRecommendedTooltip, ConvertFromSystemUnits(rec))
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToRecommended_Tooltip", ConvertFromSystemUnits(rec))
             : string.Empty;
 
     public string DefaultAcValueTooltip =>
         AcDefaultValue is int def
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToDefaultTooltip, ConvertFromSystemUnits(def))
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToDefault_Tooltip", ConvertFromSystemUnits(def))
             : string.Empty;
 
     public string RecommendedDcValueTooltip =>
         DcRecommendedValue is int rec
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToRecommendedTooltip, ConvertFromSystemUnits(rec))
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToRecommended_Tooltip", ConvertFromSystemUnits(rec))
             : string.Empty;
 
     public string DefaultDcValueTooltip =>
         DcDefaultValue is int def
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToDefaultTooltip, ConvertFromSystemUnits(def))
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToDefault_Tooltip", ConvertFromSystemUnits(def))
             : string.Empty;
+
 
     public bool ShowNumericQuickSetButtons
     {
@@ -464,12 +465,12 @@ public partial class SettingItemViewModel : BaseViewModel
 
     public string ToggleRecommendedTooltip =>
         ToggleRecommendedState is bool s
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToRecommendedTooltip, ToggleStateText(s))
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToRecommended_Tooltip", ToggleStateText(s))
             : string.Empty;
 
     public string ToggleDefaultTooltip =>
         ToggleDefaultState is bool s
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToDefaultTooltip, ToggleStateText(s))
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToDefault_Tooltip", ToggleStateText(s))
             : string.Empty;
 
     public bool ShowToggleQuickSetButtons
@@ -552,12 +553,12 @@ public partial class SettingItemViewModel : BaseViewModel
 
     public string SelectionRecommendedTooltip =>
         OptionDisplayText(SelectionRecommendedIndex) is { } label
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToRecommendedTooltip, label)
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToRecommended_Tooltip", label)
             : string.Empty;
 
     public string SelectionDefaultTooltip =>
         OptionDisplayText(SelectionDefaultIndex) is { } label
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToDefaultTooltip, label)
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToDefault_Tooltip", label)
             : string.Empty;
 
     public bool ShowSelectionQuickSetButtons
@@ -620,22 +621,22 @@ public partial class SettingItemViewModel : BaseViewModel
 
     public string AcSelectionRecommendedTooltip =>
         OptionDisplayText(AcSelectionRecommendedIndex) is { } label
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToRecommendedTooltip, label)
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToRecommended_Tooltip", label)
             : string.Empty;
 
     public string AcSelectionDefaultTooltip =>
         OptionDisplayText(AcSelectionDefaultIndex) is { } label
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToDefaultTooltip, label)
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToDefault_Tooltip", label)
             : string.Empty;
 
     public string DcSelectionRecommendedTooltip =>
         OptionDisplayText(DcSelectionRecommendedIndex) is { } label
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToRecommendedTooltip, label)
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToRecommended_Tooltip", label)
             : string.Empty;
 
     public string DcSelectionDefaultTooltip =>
         OptionDisplayText(DcSelectionDefaultIndex) is { } label
-            ? FormatValueTooltip(StringKeys.InfoBadge.NumericSetToDefaultTooltip, label)
+            ? FormatValueTooltip("InfoBadge_Numeric_SetToDefault_Tooltip", label)
             : string.Empty;
 
     public bool ShowAcSelectionQuickSetButtons
@@ -714,107 +715,6 @@ public partial class SettingItemViewModel : BaseViewModel
     public IAsyncRelayCommand UnlockCommand { get; }
     #endregion
 
-    #region Review Mode State
-    [ObservableProperty]
-    public partial bool IsInReviewMode { get; set; }
-
-    [ObservableProperty]
-    public partial bool HasReviewDiff { get; set; }
-
-    [ObservableProperty]
-    public partial string? ReviewDiffMessage { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsReviewApproved { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsReviewRejected { get; set; }
-
-    public bool IsReviewDecisionMade => IsReviewApproved || IsReviewRejected;
-
-    [ObservableProperty]
-    public partial bool HasReviewAction { get; set; }
-
-    [ObservableProperty]
-    public partial string? ReviewActionMessage { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsReviewActionApproved { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsReviewActionRejected { get; set; }
-
-    public bool IsReviewActionDecisionMade => IsReviewActionApproved || IsReviewActionRejected;
-
-    public string ReviewActionGroupName => $"{SettingId}_action";
-
-    public event EventHandler<bool>? ReviewActionApprovalChanged;
-
-    partial void OnIsReviewActionApprovedChanged(bool value)
-    {
-        if (value && IsReviewActionRejected)
-            IsReviewActionRejected = false;
-
-        OnPropertyChanged(nameof(IsReviewActionDecisionMade));
-        ReviewActionApprovalChanged?.Invoke(this, value);
-    }
-
-    partial void OnIsReviewActionRejectedChanged(bool value)
-    {
-        if (value && IsReviewActionApproved)
-            IsReviewActionApproved = false;
-
-        OnPropertyChanged(nameof(IsReviewActionDecisionMade));
-        if (value)
-            ReviewActionApprovalChanged?.Invoke(this, false);
-    }
-
-    partial void OnIsInReviewModeChanged(bool value)
-    {
-        OnPropertyChanged(nameof(EffectiveIsEnabled));
-
-        if (value)
-            IsExpanderExpanded = true;
-    }
-
-    partial void OnIsReviewApprovedChanged(bool value)
-    {
-        if (value && IsReviewRejected)
-            IsReviewRejected = false;
-
-        OnPropertyChanged(nameof(IsReviewDecisionMade));
-        ReviewApprovalChanged?.Invoke(this, value);
-    }
-
-    partial void OnIsReviewRejectedChanged(bool value)
-    {
-        if (value && IsReviewApproved)
-            IsReviewApproved = false;
-
-        OnPropertyChanged(nameof(IsReviewDecisionMade));
-        if (value)
-            ReviewApprovalChanged?.Invoke(this, false);
-    }
-
-    public event EventHandler<bool>? ReviewApprovalChanged;
-
-    public void ClearReviewState()
-    {
-        ReviewApprovalChanged = null;
-        ReviewActionApprovalChanged = null;
-
-        IsInReviewMode = false;
-        HasReviewDiff = false;
-        ReviewDiffMessage = null;
-        IsReviewApproved = false;
-        IsReviewRejected = false;
-        HasReviewAction = false;
-        ReviewActionMessage = null;
-        IsReviewActionApproved = false;
-        IsReviewActionRejected = false;
-    }
-    #endregion
-
     #region Hierarchy & Feature State
     partial void OnIsEnabledChanged(bool value)
     {
@@ -829,7 +729,7 @@ public partial class SettingItemViewModel : BaseViewModel
         OnPropertyChanged(nameof(EffectiveIsEnabled));
     }
 
-    public bool EffectiveIsEnabled => IsEnabled && ParentIsEnabled && !IsInReviewMode;
+    public bool EffectiveIsEnabled => IsEnabled && ParentIsEnabled;
     public bool IsToggleType => InputType == InputType.Toggle;
     public bool IsSelectionType => InputType == InputType.Selection;
     public bool IsNumericType => InputType == InputType.NumericRange;
@@ -1995,17 +1895,17 @@ public partial class SettingItemViewModel : BaseViewModel
         var (baseLabel, tooltip) = kind switch
         {
             SettingBadgeKind.Recommended => (
-                _localizationService?.GetString(StringKeys.InfoBadge.Recommended) ?? "Recommended",
-                _localizationService?.GetString(StringKeys.InfoBadge.RecommendedTooltip) ?? "Recommended value"),
+                _localizationService?.GetString("InfoBadge_Recommended") ?? "Recommended",
+                _localizationService?.GetString("InfoBadge_Recommended_Tooltip") ?? "Winhance's recommended value"),
             SettingBadgeKind.Default => (
-                _localizationService?.GetString(StringKeys.InfoBadge.Default) ?? "Default",
-                _localizationService?.GetString(StringKeys.InfoBadge.DefaultTooltip) ?? "Windows factory value"),
+                _localizationService?.GetString("InfoBadge_Default") ?? "Default",
+                _localizationService?.GetString("InfoBadge_Default_Tooltip") ?? "Windows factory value"),
             SettingBadgeKind.Custom => (
-                _localizationService?.GetString(StringKeys.InfoBadge.Custom) ?? "Custom",
-                _localizationService?.GetString(StringKeys.InfoBadge.CustomTooltip) ?? "Custom value (not a known option)"),
+                _localizationService?.GetString("InfoBadge_Custom") ?? "Custom",
+                _localizationService?.GetString("InfoBadge_Custom_Tooltip") ?? "Custom value (not a known option)"),
             SettingBadgeKind.Preference => (
-                _localizationService?.GetString(StringKeys.InfoBadge.Preference) ?? "Preference",
-                _localizationService?.GetString(StringKeys.InfoBadge.PreferenceTooltip) ?? "Personal preference"),
+                _localizationService?.GetString("InfoBadge_Preference") ?? "Preference",
+                _localizationService?.GetString("InfoBadge_Preference_Tooltip") ?? "Personal preference"),
             _ => ("", ""),
         };
 

@@ -132,7 +132,7 @@ public class DialogService : IDialogService
         {
             var dialog = new ContentDialog
             {
-                Title = string.IsNullOrEmpty(title) ? StringKeys.Localized.Dialog_Confirmation : title,
+                Title = string.IsNullOrEmpty(title) ? _localization.GetString("Dialog_Confirmation") : title,
                 Content = message,
                 PrimaryButtonText = okButtonText,
                 CloseButtonText = cancelButtonText,
@@ -143,18 +143,6 @@ public class DialogService : IDialogService
             var result = await dialog.ShowAsync();
             return result == ContentDialogResult.Primary;
         }, false);
-    }
-
-    public async Task<(ImportOption? Option, ImportOptions Options)> ShowConfigImportOptionsDialogAsync()
-    {
-        return await ExecuteDialogAsync(async () =>
-        {
-            var builder = new Dialogs.ConfigImportDialogBuilder(_localization);
-            var dialog = builder.Build(XamlRoot!);
-            ConfigureDialog(dialog);
-            var result = await dialog.ShowAsync();
-            return builder.ExtractResult(result);
-        }, ((ImportOption?)null, new ImportOptions { ReviewBeforeApplying = true }));
     }
 
     public async Task<(bool Confirmed, bool CheckboxChecked)> ShowConfirmationWithCheckboxAsync(

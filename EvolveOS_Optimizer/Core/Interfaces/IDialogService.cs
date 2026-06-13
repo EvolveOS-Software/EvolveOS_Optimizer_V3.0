@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Model;
 
 namespace EvolveOS_Optimizer.Core.Interfaces;
@@ -17,8 +16,6 @@ public interface IDialogService
     Task ShowWarningAsync(string message, string title = "Warning", string buttonText = "OK");
 
     Task ShowErrorAsync(string message, string title = "Error", string buttonText = "OK");
-
-    Task<(ImportOption? Option, ImportOptions Options)> ShowConfigImportOptionsDialogAsync();
 
     Task<(bool Confirmed, bool CheckboxChecked)> ShowConfirmationWithCheckboxAsync(
         string message,

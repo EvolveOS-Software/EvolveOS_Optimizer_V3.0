@@ -12,11 +12,8 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <!-- Header -->
             <RowDefinition Height="Auto"/>
-            <!-- NavRow -->
             <RowDefinition Height="Auto"/>
-            <!-- Content -->
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -99,7 +96,6 @@
                                 </Viewbox>
                                 <fluentIcons:FluentIcon x:Name="BreadcrumbSectionSymbol" IconVariant="Regular" FontSize="16" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}" Visibility="Collapsed"/>
                                 <TextBlock x:Name="BreadcrumbSectionText" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                                <InfoBadge x:Name="BreadcrumbSectionBadge" VerticalAlignment="Center" Visibility="Collapsed"/>
                             </StackPanel>
                         </DropDownButton.Content>
                         <DropDownButton.Flyout>
@@ -112,39 +108,35 @@
                                 </Flyout.FlyoutPresenterStyle>
                                 <StackPanel Spacing="0" MinWidth="180">
                                     <Button x:Name="FlyoutButtonWindowsTheme" Click="NavigateWindowsTheme_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
-                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Grid ColumnDefinitions="Auto,*">
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource WindowsThemeIconPath}"/>
                                             </Viewbox>
                                             <TextBlock x:Name="FlyoutTextWindowsTheme" Grid.Column="1" VerticalAlignment="Center"/>
-                                            <InfoBadge x:Name="FlyoutBadgeWindowsTheme" Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonTaskbar" Click="NavigateTaskbar_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
-                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Grid ColumnDefinitions="Auto,*">
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource TaskbarIconPath}"/>
                                             </Viewbox>
                                             <TextBlock x:Name="FlyoutTextTaskbar" Grid.Column="1" VerticalAlignment="Center"/>
-                                            <InfoBadge x:Name="FlyoutBadgeTaskbar" Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonStartMenu" Click="NavigateStartMenu_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
-                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Grid ColumnDefinitions="Auto,*">
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource StartMenuIconPath}"/>
                                             </Viewbox>
                                             <TextBlock x:Name="FlyoutTextStartMenu" Grid.Column="1" VerticalAlignment="Center"/>
-                                            <InfoBadge x:Name="FlyoutBadgeStartMenu" Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
                                         </Grid>
                                     </Button>
                                     <Button x:Name="FlyoutButtonExplorer" Click="NavigateExplorer_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
-                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Grid ColumnDefinitions="Auto,*">
                                             <Viewbox Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center">
                                                 <PathIcon Data="{StaticResource ExplorerIconPath}"/>
                                             </Viewbox>
                                             <TextBlock x:Name="FlyoutTextExplorer" Grid.Column="1" VerticalAlignment="Center"/>
-                                            <InfoBadge x:Name="FlyoutBadgeExplorer" Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
                                         </Grid>
                                     </Button>
                                 </StackPanel>
@@ -198,12 +190,6 @@
                                             <PathIcon Data="{StaticResource NewBoxIconPath}"/>
                                         </ToggleMenuFlyoutItem.Icon>
                                     </ToggleMenuFlyoutItem>
-                                    <MenuFlyoutSeparator x:Name="ShowOnlyChangesSeparator" Visibility="Collapsed"/>
-                                    <ToggleMenuFlyoutItem x:Name="ShowOnlyChangesToggleItem" Click="ViewShowOnlyChanges_Click" Visibility="Collapsed">
-                                        <ToggleMenuFlyoutItem.Icon>
-                                            <PathIcon Data="{StaticResource CogTransferIconPath}"/>
-                                        </ToggleMenuFlyoutItem.Icon>
-                                    </ToggleMenuFlyoutItem>
                                 </MenuFlyout>
                             </AppBarButton.Flyout>
                         </AppBarButton>
@@ -247,196 +233,187 @@
             <Grid>
                 <Grid x:Name="OverviewContent">
 
-                    <!-- Overview Cards -->
                     <ScrollView x:Name="OverviewScrollView" Visibility="{x:Bind ViewModel.IsNotLoading}">
                         <Grid>
-                        <StackPanel Spacing="8" Margin="{StaticResource SettingsContentMargin}" HorizontalAlignment="Stretch" Padding="0,12,0,12">
+                            <StackPanel Spacing="8" Margin="{StaticResource SettingsContentMargin}" HorizontalAlignment="Stretch" Padding="0,12,0,12">
 
-                            <!-- Windows Theme Card -->
-                            <controls:SettingsCard
+                                <controls:SettingsCard
                                 Description="{x:Bind ViewModel.WindowsThemeViewModel.GroupDescriptionText}"
                                 IsClickEnabled="True"
                                 Click="WindowsThemeCard_Click">
-                                <controls:SettingsCard.Header>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock Text="{x:Bind ViewModel.WindowsThemeViewModel.DisplayName}" VerticalAlignment="Center"/>
-                                        <Border x:Name="WindowsThemeNewBadge" Visibility="Collapsed"
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{x:Bind ViewModel.WindowsThemeViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <Border x:Name="WindowsThemeNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                            <TextBlock x:Name="WindowsThemeNewText" Style="{StaticResource NewBadgeTextStyle}"/>
-                                        </Border>
-                                    </StackPanel>
-                                </controls:SettingsCard.Header>
-                                <controls:SettingsCard.HeaderIcon>
-                                    <PathIcon Data="{StaticResource WindowsThemeIconPath}"/>
-                                </controls:SettingsCard.HeaderIcon>
-                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <InfoBadge x:Name="WindowsThemeBadge" Visibility="Collapsed"/>
-                                    <StackPanel x:Name="WindowsThemeOverviewBadges" Orientation="Horizontal" Spacing="4" Visibility="Collapsed">
-                                        <Border x:Name="WindowsThemeRecommendedPill" Style="{StaticResource BadgeRecommendedStyle}">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
+                                                <TextBlock x:Name="WindowsThemeNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                    <controls:SettingsCard.HeaderIcon>
+                                        <PathIcon Data="{StaticResource WindowsThemeIconPath}"/>
+                                    </controls:SettingsCard.HeaderIcon>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <StackPanel x:Name="WindowsThemeOverviewBadges" Orientation="Horizontal" Spacing="4" Visibility="Collapsed">
+                                            <Border x:Name="WindowsThemeRecommendedPill" Style="{StaticResource BadgeRecommendedStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                <TextBlock x:Name="WindowsThemeRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock x:Name="WindowsThemeRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border x:Name="WindowsThemeDefaultPill" Style="{StaticResource BadgeDefaultStyle}">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="WindowsThemeDefaultPill" Style="{StaticResource BadgeDefaultStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                <TextBlock x:Name="WindowsThemeDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock x:Name="WindowsThemeDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border x:Name="WindowsThemeCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <TextBlock x:Name="WindowsThemeCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="WindowsThemeCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock x:Name="WindowsThemeCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            </StackPanel>
-                                        </Border>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                            </controls:SettingsCard>
+                                </controls:SettingsCard>
 
-                            <!-- Taskbar Card -->
-                            <controls:SettingsCard
+                                <controls:SettingsCard
                                 Description="{x:Bind ViewModel.TaskbarViewModel.GroupDescriptionText}"
                                 IsClickEnabled="True"
                                 Click="TaskbarCard_Click">
-                                <controls:SettingsCard.Header>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock Text="{x:Bind ViewModel.TaskbarViewModel.DisplayName}" VerticalAlignment="Center"/>
-                                        <Border x:Name="TaskbarNewBadge" Visibility="Collapsed"
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{x:Bind ViewModel.TaskbarViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <Border x:Name="TaskbarNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                            <TextBlock x:Name="TaskbarNewText" Style="{StaticResource NewBadgeTextStyle}"/>
-                                        </Border>
-                                    </StackPanel>
-                                </controls:SettingsCard.Header>
-                                <controls:SettingsCard.HeaderIcon>
-                                    <PathIcon Data="{StaticResource TaskbarIconPath}"/>
-                                </controls:SettingsCard.HeaderIcon>
-                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <InfoBadge x:Name="TaskbarBadge" Visibility="Collapsed"/>
-                                    <StackPanel x:Name="TaskbarOverviewBadges" Orientation="Horizontal" Spacing="4" Visibility="Collapsed">
-                                        <Border x:Name="TaskbarRecommendedPill" Style="{StaticResource BadgeRecommendedStyle}">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
+                                                <TextBlock x:Name="TaskbarNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                    <controls:SettingsCard.HeaderIcon>
+                                        <PathIcon Data="{StaticResource TaskbarIconPath}"/>
+                                    </controls:SettingsCard.HeaderIcon>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <StackPanel x:Name="TaskbarOverviewBadges" Orientation="Horizontal" Spacing="4" Visibility="Collapsed">
+                                            <Border x:Name="TaskbarRecommendedPill" Style="{StaticResource BadgeRecommendedStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                <TextBlock x:Name="TaskbarRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock x:Name="TaskbarRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border x:Name="TaskbarDefaultPill" Style="{StaticResource BadgeDefaultStyle}">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="TaskbarDefaultPill" Style="{StaticResource BadgeDefaultStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                <TextBlock x:Name="TaskbarDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock x:Name="TaskbarDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border x:Name="TaskbarCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <TextBlock x:Name="TaskbarCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="TaskbarCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock x:Name="TaskbarCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            </StackPanel>
-                                        </Border>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                            </controls:SettingsCard>
+                                </controls:SettingsCard>
 
-                            <!-- Start Menu Card -->
-                            <controls:SettingsCard
+                                <controls:SettingsCard
                                 Description="{x:Bind ViewModel.StartMenuViewModel.GroupDescriptionText}"
                                 IsClickEnabled="True"
                                 Click="StartMenuCard_Click">
-                                <controls:SettingsCard.Header>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock Text="{x:Bind ViewModel.StartMenuViewModel.DisplayName}" VerticalAlignment="Center"/>
-                                        <Border x:Name="StartMenuNewBadge" Visibility="Collapsed"
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{x:Bind ViewModel.StartMenuViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <Border x:Name="StartMenuNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                            <TextBlock x:Name="StartMenuNewText" Style="{StaticResource NewBadgeTextStyle}"/>
-                                        </Border>
-                                    </StackPanel>
-                                </controls:SettingsCard.Header>
-                                <controls:SettingsCard.HeaderIcon>
-                                    <PathIcon Data="{StaticResource StartMenuIconPath}"/>
-                                </controls:SettingsCard.HeaderIcon>
-                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <InfoBadge x:Name="StartMenuBadge" Visibility="Collapsed"/>
-                                    <StackPanel x:Name="StartMenuOverviewBadges" Orientation="Horizontal" Spacing="4" Visibility="Collapsed">
-                                        <Border x:Name="StartMenuRecommendedPill" Style="{StaticResource BadgeRecommendedStyle}">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
+                                                <TextBlock x:Name="StartMenuNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                    <controls:SettingsCard.HeaderIcon>
+                                        <PathIcon Data="{StaticResource StartMenuIconPath}"/>
+                                    </controls:SettingsCard.HeaderIcon>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <StackPanel x:Name="StartMenuOverviewBadges" Orientation="Horizontal" Spacing="4" Visibility="Collapsed">
+                                            <Border x:Name="StartMenuRecommendedPill" Style="{StaticResource BadgeRecommendedStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                <TextBlock x:Name="StartMenuRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock x:Name="StartMenuRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border x:Name="StartMenuDefaultPill" Style="{StaticResource BadgeDefaultStyle}">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="StartMenuDefaultPill" Style="{StaticResource BadgeDefaultStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                <TextBlock x:Name="StartMenuDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock x:Name="StartMenuDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border x:Name="StartMenuCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <TextBlock x:Name="StartMenuCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="StartMenuCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock x:Name="StartMenuCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            </StackPanel>
-                                        </Border>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                            </controls:SettingsCard>
+                                </controls:SettingsCard>
 
-                            <!-- Explorer Card -->
-                            <controls:SettingsCard
+                                <controls:SettingsCard
                                 Description="{x:Bind ViewModel.ExplorerViewModel.GroupDescriptionText}"
                                 IsClickEnabled="True"
                                 Click="ExplorerCard_Click">
-                                <controls:SettingsCard.Header>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock Text="{x:Bind ViewModel.ExplorerViewModel.DisplayName}" VerticalAlignment="Center"/>
-                                        <Border x:Name="ExplorerNewBadge" Visibility="Collapsed"
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{x:Bind ViewModel.ExplorerViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <Border x:Name="ExplorerNewBadge" Visibility="Collapsed"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
-                                            <TextBlock x:Name="ExplorerNewText" Style="{StaticResource NewBadgeTextStyle}"/>
-                                        </Border>
-                                    </StackPanel>
-                                </controls:SettingsCard.Header>
-                                <controls:SettingsCard.HeaderIcon>
-                                    <PathIcon Data="{StaticResource ExplorerIconPath}"/>
-                                </controls:SettingsCard.HeaderIcon>
-                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <InfoBadge x:Name="ExplorerBadge" Visibility="Collapsed"/>
-                                    <StackPanel x:Name="ExplorerOverviewBadges" Orientation="Horizontal" Spacing="4" Visibility="Collapsed">
-                                        <Border x:Name="ExplorerRecommendedPill" Style="{StaticResource BadgeRecommendedStyle}">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
+                                                <TextBlock x:Name="ExplorerNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                    <controls:SettingsCard.HeaderIcon>
+                                        <PathIcon Data="{StaticResource ExplorerIconPath}"/>
+                                    </controls:SettingsCard.HeaderIcon>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <StackPanel x:Name="ExplorerOverviewBadges" Orientation="Horizontal" Spacing="4" Visibility="Collapsed">
+                                            <Border x:Name="ExplorerRecommendedPill" Style="{StaticResource BadgeRecommendedStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                                <TextBlock x:Name="ExplorerRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock x:Name="ExplorerRecommendedText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeRecommendedForeground}"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border x:Name="ExplorerDefaultPill" Style="{StaticResource BadgeDefaultStyle}">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="ExplorerDefaultPill" Style="{StaticResource BadgeDefaultStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
                                                           VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                                <TextBlock x:Name="ExplorerDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                    <TextBlock x:Name="ExplorerDefaultText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeDefaultForeground}"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Border x:Name="ExplorerCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <TextBlock x:Name="ExplorerCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="ExplorerCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock x:Name="ExplorerCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
-                                            </StackPanel>
-                                        </Border>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                            </controls:SettingsCard>
+                                </controls:SettingsCard>
 
-                        </StackPanel>
+                            </StackPanel>
                         </Grid>
                     </ScrollView>
                 </Grid>
@@ -458,7 +435,7 @@
                                HorizontalAlignment="Center"
                                TextAlignment="Center"/>
                 </StackPanel>
-                
+
             </Grid>
         </Border>
     </Grid>

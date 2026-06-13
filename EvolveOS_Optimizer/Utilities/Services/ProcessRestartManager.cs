@@ -11,7 +11,6 @@ namespace EvolveOS_Optimizer.Utilities.Services;
 
 public class ProcessRestartManager(
     IWindowsUIManagementService uiManagementService,
-    IConfigImportState configImportState,
     ILogService logService) : IProcessRestartManager
 {
     private int _suppressCount;
@@ -37,6 +36,7 @@ public class ProcessRestartManager(
 
     public async Task HandleProcessAndServiceRestartsAsync(SettingDefinition setting)
     {
+        // 1. Check if bulk operation is running (e.g. Apply Recommended)
         if (_suppressCount > 0)
         {
             if (!string.IsNullOrEmpty(setting.RestartProcess))
@@ -46,24 +46,7 @@ public class ProcessRestartManager(
             return;
         }
 
-        if (configImportState.IsActive)
-        {
-            if (!string.IsNullOrEmpty(setting.RestartProcess)
-                && setting.RestartProcess.Equals("explorer", StringComparison.OrdinalIgnoreCase))
-            {
-                await uiManagementService.RefreshWindowsGUI(killExplorer: false).ConfigureAwait(false);
-                logService.Log(LogLevel.Debug, $"[ProcessRestartManager] Broadcast Explorer-refresh for '{setting.Id}' (kill deferred — config import mode)");
-            }
-            else if (!string.IsNullOrEmpty(setting.RestartProcess))
-            {
-                logService.Log(LogLevel.Debug, $"[ProcessRestartManager] Skipping process restart for '{setting.RestartProcess}' (config import mode - will restart at end)");
-            }
-
-            if (!string.IsNullOrEmpty(setting.RestartService))
-                logService.Log(LogLevel.Debug, $"[ProcessRestartManager] Skipping service restart for '{setting.RestartService}' (config import mode - will restart at end)");
-            return;
-        }
-
+        // 2. Perform isolated restart
         if (!string.IsNullOrEmpty(setting.RestartProcess))
             await RestartProcessByNameAsync(setting.RestartProcess, setting.Id).ConfigureAwait(false);
 

@@ -169,8 +169,6 @@ public class SettingViewModelFactory : ISettingViewModelFactory
             viewModel.InitializeCompatibilityBanner();
         }
 
-        _enricher.ApplyReviewDiff(viewModel, currentState);
-
         viewModel.ComputeBadgeState();
 
         return viewModel;

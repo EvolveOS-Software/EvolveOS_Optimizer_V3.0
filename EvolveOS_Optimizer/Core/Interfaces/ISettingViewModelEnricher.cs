@@ -11,6 +11,4 @@ public interface ISettingViewModelEnricher
     Task DetectBatteryAsync(SettingItemViewModel viewModel);
 
     void SetCrossGroupInfoMessage(SettingItemViewModel viewModel, SettingDefinition setting);
-
-    void ApplyReviewDiff(SettingItemViewModel viewModel, SettingStateResult currentState);
 }

@@ -34,7 +34,6 @@ public static class InfrastructureServicesExtensions
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
         #region Core Infrastructure Services & Dependency Manager
-        services.AddSingleton<IConfigImportState, ConfigImportState>();
         services.AddSingleton<IProcessExecutor, ProcessExecutor>();
         services.AddSingleton<ILogService, EvolveOS_Optimizer.Utilities.Services.LogService>();
         services.AddSingleton<IInteractiveUserService, InteractiveUserService>();

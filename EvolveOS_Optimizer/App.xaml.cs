@@ -226,7 +226,6 @@ namespace EvolveOS_Optimizer
             try
             {
                 var localizationService = Services.GetRequiredService<ILocalizationService>();
-                StringKeys.Localized.Initialize(localizationService);
 
                 var preferencesService = Services.GetRequiredService<IUserPreferencesService>();
                 var savedLanguage = preferencesService.GetPreference("Language", "en");

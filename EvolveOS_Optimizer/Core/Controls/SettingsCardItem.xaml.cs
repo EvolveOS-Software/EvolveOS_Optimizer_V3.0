@@ -87,26 +87,6 @@ public sealed partial class SettingsCardItem : UserControl
                     "SettingApplied");
             }
         }
-        else if (e.PropertyName == nameof(SettingItemViewModel.IsReviewApproved) && vm.IsReviewApproved)
-        {
-            var peer = FrameworkElementAutomationPeer.FromElement(this)
-                       ?? FrameworkElementAutomationPeer.CreatePeerForElement(this);
-            peer?.RaiseNotificationEvent(
-                AutomationNotificationKind.ActionCompleted,
-                AutomationNotificationProcessing.ImportantMostRecent,
-                $"{vm.Name}: Apply",
-                "ReviewApproved");
-        }
-        else if (e.PropertyName == nameof(SettingItemViewModel.IsReviewRejected) && vm.IsReviewRejected)
-        {
-            var peer = FrameworkElementAutomationPeer.FromElement(this)
-                       ?? FrameworkElementAutomationPeer.CreatePeerForElement(this);
-            peer?.RaiseNotificationEvent(
-                AutomationNotificationKind.ActionCompleted,
-                AutomationNotificationProcessing.ImportantMostRecent,
-                $"{vm.Name}: Don't apply",
-                "ReviewRejected");
-        }
     }
 
     private static string GetSettingStateText(SettingItemViewModel vm)

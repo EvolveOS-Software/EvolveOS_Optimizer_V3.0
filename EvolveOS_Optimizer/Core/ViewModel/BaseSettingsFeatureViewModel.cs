@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Collections.ObjectModel;
 using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -97,7 +100,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
         _dispatcherService = dispatcherService ?? throw new ArgumentNullException(nameof(dispatcherService));
         _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
 
-        // Initialize partial property defaults
         Settings = new ObservableCollection<SettingItemViewModel>();
         GroupedSettings = new ObservableCollection<SettingsGroup>();
         IsExpanded = true;
@@ -107,10 +109,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
         ToggleExpandCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(() => IsExpanded = !IsExpanded);
     }
 
-    /// <summary>
-    /// Subscribes to external events. Called from <see cref="LoadSettingsAsync"/> on first load
-    /// to avoid triggering side effects during DI construction.
-    /// </summary>
     private void SubscribeToEvents()
     {
         if (_isSubscribed) return;
@@ -119,7 +117,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
         _localizationService.LanguageChanged += OnLanguageChanged;
         _settingAppliedSubscription = _eventBus.Subscribe<SettingAppliedEvent>(OnSettingApplied);
         _filterStateChangedSubscription = _eventBus.SubscribeAsync<FilterStateChangedEvent>(OnFilterStateChangedAsync);
-        _reviewModeExitedSubscription = _eventBus.Subscribe<ReviewModeExitedEvent>(OnReviewModeExited);
     }
 
     private void OnSettingApplied(SettingAppliedEvent evt)
@@ -166,7 +163,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
             OnPropertyChanged(nameof(DisplayName));
             await LoadSettingsAsync();
 
-            // Notify pages that settings were recreated so they can re-apply view state (badges, etc.)
             _eventBus.Publish(new SettingsRefreshedEvent(DisplayName));
         }
         catch (Exception ex)
@@ -180,27 +176,14 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
         await RefreshSettingsForFilterChangeAsync();
     }
 
-    private void OnReviewModeExited(ReviewModeExitedEvent e)
-    {
-        _dispatcherService.RunOnUIThread(() =>
-        {
-            foreach (var setting in Settings)
-            {
-                setting.ClearReviewState();
-            }
-        });
-    }
-
     private async Task RefreshSettingsForFilterChangeAsync()
     {
         try
         {
             _logService.Log(LogLevel.Info, $"Refreshing settings for {DisplayName} due to filter change");
 
-            // Reset the loaded flag to allow reloading
             _settingsLoaded = false;
 
-            // Clear and reload settings
             if (Settings?.Any() == true)
             {
                 foreach (var setting in Settings.OfType<IDisposable>())
@@ -214,7 +197,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
 
             _logService.Log(LogLevel.Info, $"Successfully refreshed {Settings!.Count} settings for {DisplayName}");
 
-            // Notify pages that settings were recreated so they can re-apply view state (badges, etc.)
             _eventBus.Publish(new SettingsRefreshedEvent(DisplayName));
         }
         catch (Exception ex)
@@ -261,7 +243,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
                             setting.UpdateVisibility(value);
                         }
 
-                        // If parent matches search, show all its children too
                         foreach (var kvp in _childrenByParentId)
                         {
                             if (_settingsById.TryGetValue(kvp.Key, out var parent) && parent.IsVisible)
@@ -271,7 +252,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
                             }
                         }
 
-                        // If any child matches search, ensure its parent is visible
                         foreach (var kvp in _childrenByParentId)
                         {
                             if (kvp.Value.Any(c => c.IsVisible))
@@ -296,8 +276,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
     {
         SubscribeToEvents();
 
-        // SemaphoreSlim is async-safe. WaitAsync(0) returns false immediately
-        // if already held, preventing duplicate concurrent loads.
         if (!await _loadingSemaphore.WaitAsync(0))
             return;
 
@@ -325,9 +303,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
 
             Settings = loadedSettings;
 
-            // Build new dictionaries and atomically swap references.
-            // Readers on other threads (OnSettingApplied) see either the old
-            // complete dictionary or the new complete one — never a partial build.
             var newSettingsById = new Dictionary<string, SettingItemViewModel>();
             var newChildrenByParentId = new Dictionary<string, List<SettingItemViewModel>>();
             foreach (var setting in Settings)
@@ -335,7 +310,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
                 if (!string.IsNullOrEmpty(setting.SettingId))
                     newSettingsById[setting.SettingId] = setting;
 
-                // Index children by their parent ID for fast lookup when parent changes
                 var parentId = setting.SettingDefinition?.ParentSettingId;
                 if (!string.IsNullOrEmpty(parentId))
                 {
@@ -350,7 +324,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
             _settingsById = newSettingsById;
             _childrenByParentId = newChildrenByParentId;
 
-            // Populate Children collections on parent ViewModels for SettingsExpander rendering
             foreach (var kvp in newChildrenByParentId)
             {
                 if (newSettingsById.TryGetValue(kvp.Key, out var parentVm))
@@ -433,7 +406,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
                 }
             });
 
-            // Publish tooltip updates from the already-read state data (no second registry read)
             foreach (var kvp in states)
             {
                 if (kvp.Value.TooltipData != null)
@@ -486,7 +458,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
 
         foreach (var setting in Settings)
         {
-            // Children render inside their parent's SettingsExpander, not in the flat list
             if (setting.IsSubSetting)
                 continue;
 
