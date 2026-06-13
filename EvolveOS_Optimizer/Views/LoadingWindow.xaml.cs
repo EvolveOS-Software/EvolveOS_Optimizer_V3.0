@@ -361,9 +361,7 @@ namespace EvolveOS_Optimizer.Views
                         () =>
                         {
                             ExecuteWithLogging(UninstallingPackages.CheckingForLocalAccount, nameof(UninstallingPackages.CheckingForLocalAccount));
-                            ExecuteWithLogging(SystemTweaks.ViewNetshState, nameof(SystemTweaks.ViewNetshState));
                             ExecuteWithLogging(BluetoothManager.Initialize, nameof(BluetoothManager.Initialize));
-                            ExecuteWithLogging(SystemTweaks.ViewConfigTick, nameof(SystemTweaks.ViewConfigTick));
                         }
                     );
 
@@ -386,26 +384,7 @@ namespace EvolveOS_Optimizer.Views
 
                     Report(100);
                     await Task.Delay(1000, token);
-
                     await Task.WhenAny(weatherTask, Task.Delay(1500, token));
-
-                    if (token.IsCancellationRequested) return;
-
-                    try
-                    {
-                        UpdateStatusDirect(ResourceString.GetString("status_saving_backup") ?? "Saving initial backup state...");
-
-                        var sys = new SystemTweaks(); sys.AnalyzeAndUpdate();
-                        var priv = new PrivacyTweaks(); priv.AnalyzeAndUpdate();
-                        var svc = new ServicesTweaks(); svc.AnalyzeAndUpdate();
-                        var intf = new InterfaceTweaks(); intf.AnalyzeAndUpdate();
-
-                        BackupManager.CreateInitialSnapshot();
-                    }
-                    catch (Exception ex)
-                    {
-                        ErrorLogging.LogWritingFile(ex, "Initial_Backup_Fail");
-                    }
 
                     if (token.IsCancellationRequested) return;
 
