@@ -77,6 +77,9 @@
     <BitmapImage x:Key="Img_WhatsApp" UriSource="ms-appx:///Assets/ImagePackages/WhatsApp.png"/>
     <BitmapImage x:Key="Img_Xbox" UriSource="ms-appx:///Assets/ImagePackages/Xbox.png"/>
     <BitmapImage x:Key="Img_YandexMusic" UriSource="ms-appx:///Assets/ImagePackages/YandexMusic.png"/>
+    <BitmapImage x:Key="Img_GetStarted" UriSource="ms-appx:///Assets/ImagePackages/GetStarted.png"/>
+    <BitmapImage x:Key="Img_FaxScan" UriSource="ms-appx:///Assets/ImagePackages/FaxScan.png"/>
+    <BitmapImage x:Key="Img_XPSViewer" UriSource="ms-appx:///Assets/ImagePackages/XPSViewer.png"/>
 
     <BitmapImage x:Key="WeatherMist" UriSource="ms-appx:///Assets/ImagePackages/mist.png"/>
     <BitmapImage x:Key="WeatherFog" UriSource="ms-appx:///Assets/ImagePackages/fog.png"/>

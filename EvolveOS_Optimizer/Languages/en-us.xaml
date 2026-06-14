@@ -5006,5 +5006,64 @@
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Show Sleep Option</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Display the Sleep option in the Start Menu power button menu</sys:String>
     <!-- endregion WinOptimize & WinCustomize -->
+    
+    <!-- region Win Builder Apps -->
+    <sys:String x:Key="AppDesc_3DViewer">View, create, and print 3D models.</sys:String>
+    <sys:String x:Key="AppDesc_Alarms">Manage alarms, timers, and stopwatches.</sys:String>
+    <sys:String x:Key="AppDesc_Calculator">Standard, scientific, and programmer calculator.</sys:String>
+    <sys:String x:Key="AppDesc_Camera">Take photos and videos with your webcam.</sys:String>
+    <sys:String x:Key="AppDesc_Clipchamp">Microsoft's cloud-based video editor.</sys:String>
+    <sys:String x:Key="AppDesc_Copilot">AI assistant integrated directly into Windows.</sys:String>
+    <sys:String x:Key="AppDesc_Cortana">Deprecated legacy digital assistant.</sys:String>
+    <sys:String x:Key="AppDesc_DevHome">Development environment dashboard and hub.</sys:String>
+    <sys:String x:Key="AppDesc_FeedbackHub">Submit bug reports and telemetry to Microsoft.</sys:String>
+    <sys:String x:Key="AppDesc_GetHelp">Windows troubleshooting and virtual support.</sys:String>
+    <sys:String x:Key="AppDesc_GetStarted">Tips and tricks for new Windows users.</sys:String>
+    <sys:String x:Key="AppDesc_Mail">Default email and scheduling client.</sys:String>
+    <sys:String x:Key="AppDesc_Maps">Navigation and location services.</sys:String>
+    <sys:String x:Key="AppDesc_Family">Parental controls and screen time tracking.</sys:String>
+    <sys:String x:Key="AppDesc_Store">Official app storefront for Windows.</sys:String>
+    <sys:String x:Key="AppDesc_MixedReality">VR/AR headset environment setup.</sys:String>
+    <sys:String x:Key="AppDesc_Notepad">Default plain text editor.</sys:String>
+    <sys:String x:Key="AppDesc_OfficeHub">Launcher for Microsoft 365 applications.</sys:String>
+    <sys:String x:Key="AppDesc_OneNote">Digital note-taking application.</sys:String>
+    <sys:String x:Key="AppDesc_Outlook">New web-based email client replacement.</sys:String>
+    <sys:String x:Key="AppDesc_Paint">Basic image editing and drawing app.</sys:String>
+    <sys:String x:Key="AppDesc_People">Contact management address book.</sys:String>
+    <sys:String x:Key="AppDesc_Photos">Image viewer and basic media editor.</sys:String>
+    <sys:String x:Key="AppDesc_PowerAutomate">Desktop task and workflow automation.</sys:String>
+    <sys:String x:Key="AppDesc_QuickAssist">Remote desktop tech support tool.</sys:String>
+    <sys:String x:Key="AppDesc_Skype">Video chat and voice calling app.</sys:String>
+    <sys:String x:Key="AppDesc_SnippingTool">Capture screenshots and screen recordings.</sys:String>
+    <sys:String x:Key="AppDesc_Solitaire">Classic card games collection.</sys:String>
+    <sys:String x:Key="AppDesc_SoundRecorder">Record audio from your microphone.</sys:String>
+    <sys:String x:Key="AppDesc_StickyNotes">Digital post-it notes for your desktop.</sys:String>
+    <sys:String x:Key="AppDesc_Teams">Chat, meeting, and collaboration app.</sys:String>
+    <sys:String x:Key="AppDesc_ToDo">Task management and checklists.</sys:String>
+    <sys:String x:Key="AppDesc_XboxApp">Legacy Xbox companion app.</sys:String>
+    <sys:String x:Key="AppDesc_XboxAppModern">Modern PC Game Pass and Xbox hub.</sys:String>
+    <sys:String x:Key="AppDesc_XboxGameBar">In-game overlay for capturing and performance.</sys:String>
+    <sys:String x:Key="AppDesc_XboxGameOverlay">Background gaming overlay service.</sys:String>
+    <sys:String x:Key="AppDesc_XboxIdentity">Xbox live login authentication service.</sys:String>
+    <sys:String x:Key="AppDesc_XboxTCUI">Xbox Live in-game UI framework.</sys:String>
+    <sys:String x:Key="AppDesc_XboxSpeech">In-game speech-to-text transcription.</sys:String>
+    <sys:String x:Key="AppDesc_PhoneLink">Sync texts and calls with your smartphone.</sys:String>
+    <sys:String x:Key="AppDesc_ZuneMusic">Legacy groove music player.</sys:String>
+    <sys:String x:Key="AppDesc_ZuneVideo">Legacy movies &amp; TV player.</sys:String>
+
+    <sys:String x:Key="AppDesc_BingNews">Sponsored news app.</sys:String>
+    <sys:String x:Key="AppDesc_BingSearch">Sponsored search integration.</sys:String>
+    <sys:String x:Key="AppDesc_BingWeather">Sponsored weather app.</sys:String>
+    <sys:String x:Key="AppDesc_Disney">Sponsored streaming shortcut.</sys:String>
+    <sys:String x:Key="AppDesc_Facebook">Sponsored social media app.</sys:String>
+    <sys:String x:Key="AppDesc_Instagram">Sponsored social media app.</sys:String>
+    <sys:String x:Key="AppDesc_LinkedInLegacy">Sponsored professional network app.</sys:String>
+    <sys:String x:Key="AppDesc_LinkedInModern">Sponsored professional network app.</sys:String>
+    <sys:String x:Key="AppDesc_Netflix">Sponsored streaming shortcut.</sys:String>
+    <sys:String x:Key="AppDesc_PrimeVideo">Sponsored streaming shortcut.</sys:String>
+    <sys:String x:Key="AppDesc_Spotify">Sponsored music streaming app.</sys:String>
+    <sys:String x:Key="AppDesc_TikTok">Sponsored social media app.</sys:String>
+    <sys:String x:Key="AppDesc_WhatsApp">Sponsored messaging app.</sys:String>
+    <!-- endregion Win Builder Apps -->
 
 </ResourceDictionary>

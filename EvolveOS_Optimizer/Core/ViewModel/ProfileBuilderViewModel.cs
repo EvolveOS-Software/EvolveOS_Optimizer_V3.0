@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,8 +11,9 @@ using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Model.Profiles;
 using EvolveOS_Optimizer.Utilities.Services;
+using EvolveOS_Optimizer.Utilities.WinBuilder;
 
-namespace EvolveOS_Optimizer.Core.ViewModel.Builder;
+namespace EvolveOS_Optimizer.Core.ViewModel;
 
 public partial class ProfileBuilderViewModel : ObservableObject
 {
@@ -28,23 +30,29 @@ public partial class ProfileBuilderViewModel : ObservableObject
     private readonly ILocalizationService _localizationService;
     private readonly OSCompressionService _osCompressionService;
 
-    private ObservableCollection<BuilderFeatureCategory> _categories;
-    private BuilderFeatureCategory? _selectedCategory;
-
     #endregion
 
     #region Properties
 
+    private ObservableCollection<BuilderFeatureCategory> _categories = new();
     public ObservableCollection<BuilderFeatureCategory> Categories
     {
         get => _categories;
         set => SetProperty(ref _categories, value);
     }
 
+    private BuilderFeatureCategory? _selectedCategory;
     public BuilderFeatureCategory? SelectedCategory
     {
         get => _selectedCategory;
         set => SetProperty(ref _selectedCategory, value);
+    }
+
+    private bool _canExport = false;
+    public bool CanExport
+    {
+        get => _canExport;
+        set => SetProperty(ref _canExport, value);
     }
 
     public IAsyncRelayCommand SeedFromCurrentSystemCommand { get; }
@@ -91,17 +99,17 @@ public partial class ProfileBuilderViewModel : ObservableObject
     {
         var featureDefinitions = new[]
         {
-        (Id: FeatureIds.Privacy, Name: "Privacy", Glyph: "\uE72E"),
-        (Id: FeatureIds.Power, Name: "Power", Glyph: "\uE7E6"),
-        (Id: FeatureIds.GamingPerformance, Name: "Gaming", Glyph: "\uE7FC"),
-        (Id: FeatureIds.Update, Name: "Update", Glyph: "\uE895"),
-        (Id: FeatureIds.Notifications, Name: "Notifications", Glyph: "\uEA8F"),
-        (Id: FeatureIds.Sound, Name: "Sound", Glyph: "\uE767"),
-        (Id: FeatureIds.WindowsTheme, Name: "Theme", Glyph: "\uE771"),
-        (Id: FeatureIds.StartMenu, Name: "Start Menu", Glyph: "\uE718"),
-        (Id: FeatureIds.Taskbar, Name: "Taskbar", Glyph: "\uE90E"),
-        (Id: FeatureIds.ExplorerCustomization, Name: "Explorer", Glyph: "\uEC50")
-    };
+            (Id: FeatureIds.Privacy, Name: "Privacy", Glyph: "\uE72E"),
+            (Id: FeatureIds.Power, Name: "Power", Glyph: "\uE7E6"),
+            (Id: FeatureIds.GamingPerformance, Name: "Gaming", Glyph: "\uE7FC"),
+            (Id: FeatureIds.Update, Name: "Update", Glyph: "\uE895"),
+            (Id: FeatureIds.Notifications, Name: "Notifications", Glyph: "\uEA8F"),
+            (Id: FeatureIds.Sound, Name: "Sound", Glyph: "\uE767"),
+            (Id: FeatureIds.WindowsTheme, Name: "Theme", Glyph: "\uE771"),
+            (Id: FeatureIds.StartMenu, Name: "Start Menu", Glyph: "\uE718"),
+            (Id: FeatureIds.Taskbar, Name: "Taskbar", Glyph: "\uE90E"),
+            (Id: FeatureIds.ExplorerCustomization, Name: "Explorer", Glyph: "\uEC50")
+        };
 
         foreach (var def in featureDefinitions)
         {
@@ -172,6 +180,14 @@ public partial class ProfileBuilderViewModel : ObservableObject
                     vm.MaxValue = setting.NumericRange.MaxValue;
                 }
 
+                vm.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(BuilderSettingViewModel.IsSelected))
+                    {
+                        EvaluateExportState();
+                    }
+                };
+
                 category.Settings.Add(vm);
             }
 
@@ -180,6 +196,115 @@ public partial class ProfileBuilderViewModel : ObservableObject
         }
 
         SelectedCategory = Categories.FirstOrDefault();
+    }
+
+    #endregion
+
+    #region Export & Wizard Helpers
+
+    public List<RegistryTweak> GetSelectedTweaks()
+    {
+        var tweaks = new List<RegistryTweak>();
+
+        foreach (var s in Categories.SelectMany(c => c.Settings).OfType<BuilderSettingViewModel>())
+        {
+            if (s.SettingDefinition == null) continue;
+
+            string group = s.GroupName ?? "General";
+            string desc = s.Name ?? "Unknown Tweak";
+
+            if (s.IsToggleType || s.IsCheckBoxType)
+            {
+                if (s.SettingDefinition.RegContents != null)
+                {
+                    foreach (var reg in s.SettingDefinition.RegContents)
+                    {
+                        string cmd = s.IsSelected ? (reg.EnabledContent ?? "") : (reg.DisabledContent ?? "");
+                        if (!string.IsNullOrWhiteSpace(cmd))
+                        {
+                            tweaks.Add(new RegistryTweak { Category = group, Description = desc, RegCommand = cmd });
+                        }
+                    }
+                }
+            }
+            else if (s.IsSelectionType && s.SelectedValue is int index)
+            {
+                if (s.SettingDefinition.ComboBox?.Options != null && index >= 0 && index < s.SettingDefinition.ComboBox.Options.Count)
+                {
+                    var opt = s.SettingDefinition.ComboBox.Options[index];
+                    string cmd = GetStringProp(opt, "RegContent") ?? GetStringProp(opt, "RegCommand") ?? "";
+                    if (!string.IsNullOrWhiteSpace(cmd))
+                    {
+                        tweaks.Add(new RegistryTweak { Category = group, Description = desc, RegCommand = cmd });
+                    }
+                }
+            }
+            else if (s.IsNumericType || s.IsSliderType)
+            {
+                if (s.SettingDefinition.RegContents != null)
+                {
+                    foreach (var reg in s.SettingDefinition.RegContents)
+                    {
+                        string cmd = reg.EnabledContent ?? "";
+                        if (cmd.Contains("{0}")) cmd = string.Format(cmd, s.NumericValue);
+                        else if (cmd.Contains("{value}", StringComparison.OrdinalIgnoreCase)) cmd = cmd.Replace("{value}", s.NumericValue.ToString(), StringComparison.OrdinalIgnoreCase);
+
+                        if (!string.IsNullOrWhiteSpace(cmd)) tweaks.Add(new RegistryTweak { Category = group, Description = desc, RegCommand = cmd });
+                    }
+                }
+            }
+
+            var regSettingsProp = s.SettingDefinition.GetType().GetProperty("RegistrySettings");
+            if (regSettingsProp != null && regSettingsProp.GetValue(s.SettingDefinition) is System.Collections.IEnumerable regSettings)
+            {
+                foreach (var rs in regSettings)
+                {
+                    string keyPath = GetStringProp(rs, "KeyPath") ?? GetStringProp(rs, "KeyName") ?? "";
+                    string valueName = GetStringProp(rs, "ValueName") ?? "";
+                    string valueType = GetStringProp(rs, "ValueType") ?? "REG_DWORD";
+
+                    string valueData = "";
+                    if (s.IsToggleType || s.IsCheckBoxType)
+                    {
+                        valueData = s.IsSelected ? (GetStringProp(rs, "EnabledValue") ?? "1") : (GetStringProp(rs, "DisabledValue") ?? "0");
+                    }
+                    else if (s.IsNumericType || s.IsSliderType)
+                    {
+                        valueData = s.NumericValue.ToString();
+                    }
+                    else if (s.IsSelectionType)
+                    {
+                        valueData = s.SelectedValue?.ToString() ?? "0";
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(keyPath) && !string.IsNullOrWhiteSpace(valueName))
+                    {
+                        if (!keyPath.StartsWith("HK", StringComparison.OrdinalIgnoreCase))
+                        {
+                            keyPath = "HKLM\\" + keyPath;
+                        }
+
+                        string cmd = $"reg.exe add \"{keyPath}\" /v \"{valueName}\" /t {valueType} /d {valueData} /f";
+                        tweaks.Add(new RegistryTweak { Category = group, Description = desc, RegCommand = cmd });
+                    }
+                }
+            }
+        }
+
+        System.Diagnostics.Debug.WriteLine($"[ProfileBuilder] Extraction Complete. Total Tweaks Gathered: {tweaks.Count}");
+        return tweaks;
+    }
+
+    private string? GetStringProp(object obj, string propName)
+    {
+        if (obj == null) return null;
+        var prop = obj.GetType().GetProperty(propName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase);
+        return prop?.GetValue(obj)?.ToString();
+    }
+
+    public void EvaluateExportState()
+    {
+        CanExport = GetSelectedTweaks().Any();
     }
 
     #endregion
@@ -210,6 +335,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
                 }
             }
         }
+        EvaluateExportState();
     }
 
     #region Search
@@ -280,6 +406,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
                 }
             }
         }
+        EvaluateExportState();
     }
 
     public void ApplyAllDefaults()
@@ -305,6 +432,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
                 }
             }
         }
+        EvaluateExportState();
     }
     #endregion
 
@@ -331,6 +459,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
                 }
             }
         }
+        EvaluateExportState();
     }
 
     public void SaveProfile(string filePath)
@@ -430,7 +559,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
                             }
                             else if (builderItem.IsNumericType || builderItem.IsSliderType)
                             {
-                                if (savedSetting.NumericValue.HasValue) builderItem.StagedNumericValue = (int)savedSetting.NumericValue.Value; // <-- ADDED (int)
+                                if (savedSetting.NumericValue.HasValue) builderItem.StagedNumericValue = (int)savedSetting.NumericValue.Value;
                             }
 
                             if (savedSetting.CustomValue != null)
@@ -438,12 +567,49 @@ public partial class ProfileBuilderViewModel : ObservableObject
                                 builderItem.StagedCustomValue = savedSetting.CustomValue;
                             }
 
-                            // Trigger the badge on the UI!
                             builderItem.IsStaged = true;
                         }
                     }
                 }
             }
+        }
+        EvaluateExportState();
+    }
+
+    #endregion
+
+    #region Temp State Handoff
+
+    public void SaveTempState()
+    {
+        try
+        {
+            string tempPath = Path.Combine(Path.GetTempPath(), "EvolveOS_TempBuilderState.json");
+            SaveProfile(tempPath);
+        }
+        catch (Exception ex) { Debug.WriteLine($"Failed to save temp state: {ex.Message}"); }
+    }
+
+    public void RestoreTempState()
+    {
+        string tempPath = Path.Combine(Path.GetTempPath(), "EvolveOS_TempBuilderState.json");
+        if (File.Exists(tempPath))
+        {
+            try
+            {
+                LoadProfile(tempPath, applyImmediately: true);
+                File.Delete(tempPath);
+            }
+            catch (Exception ex) { Debug.WriteLine($"Failed to restore temp state: {ex.Message}"); }
+        }
+    }
+
+    public void ClearTempState()
+    {
+        string tempPath = Path.Combine(Path.GetTempPath(), "EvolveOS_TempBuilderState.json");
+        if (File.Exists(tempPath))
+        {
+            try { File.Delete(tempPath); } catch { }
         }
     }
 

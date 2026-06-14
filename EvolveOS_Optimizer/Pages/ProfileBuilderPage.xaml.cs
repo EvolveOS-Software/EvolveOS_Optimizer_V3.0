@@ -4,7 +4,6 @@
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Core.ViewModel.Builder;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,7 @@ public sealed partial class ProfileBuilderPage : Page
 
     #endregion
 
-    #region Constructor
+    #region Constructor & Life Cycle
 
     public ProfileBuilderPage()
     {
@@ -35,6 +34,13 @@ public sealed partial class ProfileBuilderPage : Page
         }
 
         ViewModel = App.Services.GetRequiredService<ProfileBuilderViewModel>();
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+
+        ViewModel.RestoreTempState();
     }
 
     #endregion
@@ -92,6 +98,24 @@ public sealed partial class ProfileBuilderPage : Page
                 await errorDialog.ShowAsync();
             }
         }
+    }
+
+    private void ExportXml_Click(object sender, RoutedEventArgs e)
+    {
+        // Navigate to the Wizard in XML mode
+        ViewModel.SaveTempState();
+
+        var config = new WizardConfig { Mode = "XML", Tweaks = ViewModel.GetSelectedTweaks() };
+        Frame.Navigate(typeof(WinBuilderPage), config);
+    }
+
+    private void ExportIso_Click(object sender, RoutedEventArgs e)
+    {
+        // Navigate to the Wizard in ISO mode
+        ViewModel.SaveTempState();
+
+        var config = new WizardConfig { Mode = "ISO", Tweaks = ViewModel.GetSelectedTweaks() };
+        Frame.Navigate(typeof(WinBuilderPage), config);
     }
 
     private async void ImportProfile_Click(object sender, RoutedEventArgs e)

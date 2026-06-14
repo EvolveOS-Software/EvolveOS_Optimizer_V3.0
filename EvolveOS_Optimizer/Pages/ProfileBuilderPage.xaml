@@ -62,9 +62,32 @@
                 <AppBarButton Icon="OpenFile" Label="Import" 
                               Click="ImportProfile_Click"
                               ToolTipService.ToolTip="Load a saved JSON configuration profile."/>
-                <AppBarButton Icon="Save" Label="Export" 
-                              Click="ExportProfile_Click"
-                              ToolTipService.ToolTip="Save this configuration to a JSON file."/>
+
+                <AppBarButton Icon="Save" Label="Export"
+                              IsEnabled="{x:Bind ViewModel.CanExport, Mode=OneWay}"
+                              ToolTipService.ToolTip="Select an export format for your configuration.">
+                    <AppBarButton.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedRight">
+                            <MenuFlyoutItem Text="Export Config (.json)" Click="ExportProfile_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xE792;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+
+                            <MenuFlyoutItem Text="Save as Autounattend (.xml)" Click="ExportXml_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xE8A5;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+
+                            <MenuFlyoutItem Text="Build OS Media (.iso)" Click="ExportIso_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xE95B;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
 
                 <AppBarSeparator/>
 

@@ -298,17 +298,19 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                 sb.AppendLine(@"    if (Test-Path $odPath2) { Remove-Item -Path $odPath2 -Force -ErrorAction SilentlyContinue }");
             }
 
-            sb.AppendLine($"    Write-Output '{msgRemApps}'");
-            foreach (var app in options.AppsToRemove)
+            if (options.AppsToRemove != null && options.AppsToRemove.Any())
             {
-                sb.AppendLine($"    Get-AppxProvisionedPackage -Path $mountDir | Where-Object {{ $_.DisplayName -match '{app}' -or $_.PackageName -match '{app}' }} | ForEach-Object {{ Remove-AppxProvisionedPackage -Path $mountDir -PackageName $_.PackageName | Out-Null }}");
+                sb.AppendLine($"    Write-Output '{msgRemApps}'");
+                foreach (var app in options.AppsToRemove)
+                {
+                    sb.AppendLine($"    Get-AppxProvisionedPackage -Path $mountDir | Where-Object {{ $_.DisplayName -match '{app}' -or $_.PackageName -match '{app}' }} | ForEach-Object {{ Remove-AppxProvisionedPackage -Path $mountDir -PackageName $_.PackageName | Out-Null }}");
+                }
             }
 
-            var elementsToRemove = options.GetType().GetProperty("ElementsToRemove")?.GetValue(options, null) as System.Collections.Generic.IEnumerable<string>;
-            if (elementsToRemove != null && elementsToRemove.Any())
+            if (options.ElementsToRemove != null && options.ElementsToRemove.Any())
             {
                 sb.AppendLine($"    Write-Output '{msgStripFeat}'");
-                foreach (var pkg in elementsToRemove)
+                foreach (var pkg in options.ElementsToRemove)
                 {
                     sb.AppendLine("    try {");
                     if (pkg.Contains("~~~~"))
@@ -346,16 +348,18 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Policies\Microsoft\Windows\CloudContent"" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Policies\Microsoft\Windows\CloudContent"" /v DisableCloudOptimizedContent /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe add ""HKLM\OffSoft\Policies\Microsoft\Windows\CloudContent"" /v DisableConsumerAccountStateContent /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
-
             sb.AppendLine(@"    reg.exe add ""HKLM\OffDef\Software\Policies\Microsoft\Windows\CloudContent"" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe add ""HKLM\OffDef\Software\Policies\Microsoft\Windows\CloudContent"" /v DisableCloudOptimizedContent /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
             sb.AppendLine(@"    reg.exe add ""HKLM\OffDef\Software\Policies\Microsoft\Windows\CloudContent"" /v DisableConsumerAccountStateContent /t REG_DWORD /d 1 /f 2>&1 | Out-Null");
 
             sb.AppendLine($"    Write-Output '{msgApplySvc}'");
-            foreach (var tweak in options.ServiceTweaks)
+            if (options.ServiceTweaks != null)
             {
-                string startValue = tweak.StartupType.ToLower() switch { "disabled" => "4", "manual" => "3", "automatic" => "2", "automaticdelayedstart" => "2", _ => "3" };
-                sb.AppendLine($"    reg.exe add \"HKLM\\OffSys\\ControlSet001\\Services\\{tweak.ServiceName}\" /v Start /t REG_DWORD /d {startValue} /f 2>&1 | Out-Null");
+                foreach (var tweak in options.ServiceTweaks)
+                {
+                    string startValue = tweak.StartupType?.ToLower() switch { "disabled" => "4", "manual" => "3", "automatic" => "2", "automaticdelayedstart" => "2", _ => "3" };
+                    sb.AppendLine($"    reg.exe add \"HKLM\\OffSys\\ControlSet001\\Services\\{tweak.ServiceName}\" /v Start /t REG_DWORD /d {startValue} /f 2>&1 | Out-Null");
+                }
             }
 
             sb.AppendLine(@"    $perUserSvc = @('CDPUserSvc','OneSyncSvc','PimIndexMaintenanceSvc','UserDataSvc','UnistoreSvc','BcastDVRUserService','PrintWorkflowUserSvc','DevicePickerUserSvc','DevicesFlowUserSvc','ConsentUxUserSvc','CredentialEnrollmentManagerUserSvc','CaptureService','BluetoothUserService')");
@@ -374,17 +378,43 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             }
 
             sb.AppendLine($"    Write-Output '{msgApplyReg}'");
-            foreach (var tweak in options.RegistryTweaks)
-            {
-                string offlineCmd = tweak.RegCommand
-                    .Replace("HKLM\\SOFTWARE", "HKLM\\OffSoft", StringComparison.OrdinalIgnoreCase)
-                    .Replace("HKLM\\SYSTEM\\CurrentControlSet", "HKLM\\OffSys\\ControlSet001", StringComparison.OrdinalIgnoreCase)
-                    .Replace("HKCU", "HKLM\\OffDef", StringComparison.OrdinalIgnoreCase);
 
-                sb.AppendLine($"    {offlineCmd} 2>&1 | Out-Null");
+            if (options.RegistryTweaks != null)
+            {
+                int regCounter = 0;
+                foreach (var tweak in options.RegistryTweaks)
+                {
+                    if (string.IsNullOrWhiteSpace(tweak.RegCommand)) continue;
+
+                    string offlineCmd = tweak.RegCommand
+                        .Replace("HKLM\\SOFTWARE", "HKLM\\OffSoft", StringComparison.OrdinalIgnoreCase)
+                        .Replace("HKLM\\SYSTEM\\CurrentControlSet", "HKLM\\OffSys\\ControlSet001", StringComparison.OrdinalIgnoreCase)
+                        .Replace("HKCU", "HKLM\\OffDef", StringComparison.OrdinalIgnoreCase);
+
+                    string trimmedCmd = offlineCmd.TrimStart();
+
+                    if (trimmedCmd.StartsWith("Windows Registry Editor", StringComparison.OrdinalIgnoreCase) ||
+                        trimmedCmd.StartsWith("[") ||
+                        trimmedCmd.StartsWith("[-"))
+                    {
+                        regCounter++;
+                        sb.AppendLine($"    $regContent{regCounter} = @\"");
+                        if (!trimmedCmd.StartsWith("Windows Registry Editor"))
+                            sb.AppendLine("Windows Registry Editor Version 5.00\n");
+                        sb.AppendLine(offlineCmd);
+                        sb.AppendLine("    \"@");
+                        sb.AppendLine($"    Set-Content -Path \"$mountDir\\tweak{regCounter}.reg\" -Value $regContent{regCounter} -Encoding UTF8");
+                        sb.AppendLine($"    reg.exe import \"$mountDir\\tweak{regCounter}.reg\" 2>&1 | Out-Null");
+                        sb.AppendLine($"    Remove-Item \"$mountDir\\tweak{regCounter}.reg\" -Force -ErrorAction SilentlyContinue");
+                    }
+                    else
+                    {
+                        sb.AppendLine($"    {offlineCmd} 2>&1 | Out-Null");
+                    }
+                }
             }
 
-            if (options.AppsToRemove.Any())
+            if (options.AppsToRemove != null && options.AppsToRemove.Any())
             {
                 sb.AppendLine($"    Write-Output '{msgClearStart}'");
                 sb.AppendLine(@"    $layoutDir = ""$mountDir\Users\Default\AppData\Local\Microsoft\Windows\Shell""");
@@ -493,7 +523,6 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
             }
 
             sb.AppendLine("    Stop-Transcript");
-
             sb.AppendLine("}");
 
             string tempScriptPath = Path.Combine(Path.GetTempPath(), "evolveos_offline_service.ps1");

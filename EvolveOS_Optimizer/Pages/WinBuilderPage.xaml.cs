@@ -4,28 +4,38 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
-using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
+using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
-using Windows.Storage.Pickers;
 using Windows.System;
 
 namespace EvolveOS_Optimizer.Pages
 {
     public sealed partial class WinBuilderPage : Page, IPurgeable
     {
-        public ObservableCollection<RegistryTweak> AvailableTweaks { get; set; } = new();
+        #region Collections
         public ObservableCollection<RemovableApp> AvailableApps { get; set; } = new();
-        public ObservableCollection<ServiceTweak> AvailableServices { get; set; } = new();
         public ObservableCollection<RemovableElement> AvailableElements { get; set; } = new();
+        #endregion
 
+        #region State Fields
         private bool _isBuildInProgress = false;
         private bool _isDialogShowing = false;
         private CancellationTokenSource? _buildCts;
 
+        private int _currentStep = 0;
+        private const int MAX_STEPS = 5;
+
+        // Incoming Wizard State
+        private bool _isIsoMode = true;
+        private List<RegistryTweak> _incomingTweaks = new();
+        #endregion
+
+        #region Constructor
         public WinBuilderPage()
         {
             this.InitializeComponent();
@@ -43,7 +53,94 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Unloaded += WinBuilderPage_Unloaded;
         }
+        #endregion
 
+        #region Wizard Navigation
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            if (e.Parameter is WizardConfig config)
+            {
+                _incomingTweaks = config.Tweaks;
+                _isIsoMode = config.Mode == "ISO";
+
+                if (!_isIsoMode)
+                {
+                    // If XML mode, skip Step 1 (ISO Source)
+                    _currentStep = 1;
+
+                    // --- NEW: Hide ISO-only settings from Step 2 ---
+                    GridTargetEdition.Visibility = Visibility.Collapsed;
+                    GridImageFormat.Visibility = Visibility.Collapsed;
+                    SeparatorIsoSettings.Visibility = Visibility.Collapsed;
+                    GridRemoveWinRE.Visibility = Visibility.Collapsed;
+
+                    UpdateWizardUI();
+                }
+                else
+                {
+                    // Ensure they are visible if returning to ISO mode
+                    GridTargetEdition.Visibility = Visibility.Visible;
+                    GridImageFormat.Visibility = Visibility.Visible;
+                    SeparatorIsoSettings.Visibility = Visibility.Visible;
+                    GridRemoveWinRE.Visibility = Visibility.Visible;
+                }
+            }
+        }
+
+        private void Next_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentStep == MAX_STEPS - 1)
+            {
+                BuildIso_Click(sender, e);
+            }
+            else if (_currentStep < MAX_STEPS - 1)
+            {
+                _currentStep++;
+                UpdateWizardUI();
+            }
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentStep > 0)
+            {
+                if (!_isIsoMode && _currentStep == 2) _currentStep = 1;
+                else _currentStep--;
+
+                UpdateWizardUI();
+            }
+        }
+
+        private void UpdateWizardUI()
+        {
+            // Visibility Toggles
+            Step1_Source.Visibility = (_currentStep == 0) ? Visibility.Visible : Visibility.Collapsed;
+            Step2_Rules.Visibility = (_currentStep == 1) ? Visibility.Visible : Visibility.Collapsed;
+            Step3_Apps.Visibility = (_currentStep == 2) ? Visibility.Visible : Visibility.Collapsed;
+            Step4_Features.Visibility = (_currentStep == 3) ? Visibility.Visible : Visibility.Collapsed;
+            Step5_Execution.Visibility = (_currentStep == 4) ? Visibility.Visible : Visibility.Collapsed;
+
+            // Navigation Buttons
+            BtnBack.IsEnabled = (_currentStep > 0);
+            BtnNext.Content = (_currentStep == MAX_STEPS - 1) ? "Finish" : "Next";
+
+            // Step Indicator Update
+            if (TxtStepIndicator != null)
+            {
+                TxtStepIndicator.Text = $"Step {_currentStep + 1} of {MAX_STEPS}";
+            }
+
+            // Dynamic Button Text for Step 5
+            if (_currentStep == MAX_STEPS - 1)
+            {
+                BtnBuildIso.Content = _isIsoMode ? "Begin ISO Build" : "Generate XML File";
+            }
+        }
+        #endregion
+
+        #region Lifecycle & Catalog
         private void WinBuilderPage_Unloaded(object sender, RoutedEventArgs e)
         {
             _ = Purge();
@@ -51,31 +148,12 @@ namespace EvolveOS_Optimizer.Pages
 
         private void LoadCatalog()
         {
-            if (AvailableTweaks.Count > 0) return;
-
-            var tweaks = EvolveOSCatalog.GetAvailableTweaks();
-            foreach (var tweak in tweaks)
-            {
-                tweak.IsSelected = true;
-                AvailableTweaks.Add(tweak);
-            }
-            TweaksItemsControl.ItemsSource = AvailableTweaks;
-
             var apps = EvolveOSCatalog.GetAvailableApps();
             foreach (var app in apps)
             {
                 app.IsSelected = true;
                 AvailableApps.Add(app);
             }
-            AppsItemsControl.ItemsSource = AvailableApps;
-
-            var services = EvolveOSCatalog.GetAvailableServices();
-            foreach (var service in services)
-            {
-                service.IsSelected = true;
-                AvailableServices.Add(service);
-            }
-            ServicesItemsControl.ItemsSource = AvailableServices;
 
             var elements = EvolveOSCatalog.GetAvailableElements();
             foreach (var element in elements)
@@ -83,52 +161,63 @@ namespace EvolveOS_Optimizer.Pages
                 element.IsSelected = true;
                 AvailableElements.Add(element);
             }
-            ElementsItemsControl.ItemsSource = AvailableElements;
         }
+        #endregion
 
+        #region UI Handlers
         private async void DownloadWin11_Click(object sender, RoutedEventArgs e)
         {
             await Launcher.LaunchUriAsync(new Uri("https://www.microsoft.com/software-download/windows11"));
         }
 
-        private async void BrowseSource_Click(object sender, RoutedEventArgs e)
+        private void BrowseSource_Click(object sender, RoutedEventArgs e)
         {
-            var picker = new FileOpenPicker();
             var window = App.MainWindow;
-            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd);
+            if (window == null) return;
 
-            picker.ViewMode = PickerViewMode.List;
-            picker.SuggestedStartLocation = PickerLocationId.Downloads;
-            picker.FileTypeFilter.Add(".iso");
+            string title = "Select Source Windows ISO";
+            string filterName = "ISO Image (*.iso)";
+            string filterPattern = "*.iso";
 
-            var file = await picker.PickSingleFileAsync();
-            if (file != null)
+            string? filePath = Win32FileDialogHelper.ShowOpenFilePicker(
+                window,
+                title,
+                filterName,
+                filterPattern);
+
+            if (!string.IsNullOrEmpty(filePath))
             {
-                TxtSourceIso.Text = file.Path;
+                TxtSourceIso.Text = filePath;
             }
         }
 
-        private async void BrowseDestination_Click(object sender, RoutedEventArgs e)
+        private void BrowseDestination_Click(object sender, RoutedEventArgs e)
         {
-            var picker = new FileSavePicker();
             var window = App.MainWindow;
-            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd);
+            if (window == null) return;
 
-            picker.SuggestedStartLocation = PickerLocationId.Desktop;
-            picker.SuggestedFileName = ResourceString.GetString("winbuilder_default_iso_name") ?? "EvolveOS_Custom_Win11";
+            string title = _isIsoMode ? "Save Custom ISO" : "Save Autounattend File";
+            string filterName = _isIsoMode ? "ISO Image (*.iso)" : "XML File (*.xml)";
+            string filterPattern = _isIsoMode ? "*.iso" : "*.xml";
+            string defaultFileName = _isIsoMode ? "EvolveOS_Custom_Win11" : "autounattend";
+            string defaultExtension = _isIsoMode ? "iso" : "xml";
 
-            string filterName = ResourceString.GetString("winbuilder_iso_image_filter") ?? "ISO Image";
-            picker.FileTypeChoices.Add(filterName, new[] { ".iso" });
+            string? filePath = Win32FileDialogHelper.ShowSaveFilePicker(
+                window,
+                title,
+                filterName,
+                filterPattern,
+                defaultFileName,
+                defaultExtension);
 
-            var file = await picker.PickSaveFileAsync();
-            if (file != null)
+            if (!string.IsNullOrEmpty(filePath))
             {
-                TxtOutputIso.Text = file.Path;
+                TxtOutputIso.Text = filePath;
             }
         }
+        #endregion
 
+        #region Build Logic
         private async void BuildIso_Click(object sender, RoutedEventArgs e)
         {
             if (_isBuildInProgress)
@@ -139,16 +228,23 @@ namespace EvolveOS_Optimizer.Pages
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(TxtSourceIso.Text) || string.IsNullOrWhiteSpace(TxtOutputIso.Text))
+            if (_isIsoMode && string.IsNullOrWhiteSpace(TxtSourceIso.Text))
             {
-                TxtStatus.Text = ResourceString.GetString("winbuilder_err_select_paths") ?? "Please select a source ISO and a save destination first.";
+                TxtStatus.Text = "Please select a source ISO first.";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(TxtOutputIso.Text))
+            {
+                TxtStatus.Text = "Please select a save destination first.";
                 return;
             }
 
             var selectedApps = AvailableApps.Where(a => a.IsSelected).Select(a => a.PackageName).ToList();
-            var selectedTweaks = AvailableTweaks.Where(t => t.IsSelected).ToList();
-            var selectedServices = AvailableServices.Where(s => s.IsSelected).ToList();
             var selectedElements = AvailableElements.Where(el => el.IsSelected).Select(el => el.PackageName).ToList();
+
+            // Use the _incomingTweaks from the ProfileBuilder.
+            var selectedTweaks = _incomingTweaks;
 
             string targetEdition = (CmbTargetEdition.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Pro";
             string imageFormat = (CmbImageFormat.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "WIM";
@@ -158,25 +254,22 @@ namespace EvolveOS_Optimizer.Pages
                 SourceIsoPath = TxtSourceIso.Text,
                 OutputIsoPath = TxtOutputIso.Text,
                 WorkingDirectory = Path.Combine(Path.GetTempPath(), "EvolveOS_ISO_Builder"),
-
                 TargetEdition = targetEdition,
                 ImageFormat = imageFormat,
-
                 BypassWin11Requirements = ToggleBypassReqs.IsOn,
                 BypassMicrosoftAccount = ToggleBypassMSA.IsOn,
                 EnableNet35 = ToggleNet35.IsOn,
                 RemoveWindowsRecovery = ToggleRemoveWinRE.IsOn,
                 RemoveMicrosoftEdge = ChkRemoveEdge.IsChecked ?? false,
                 RemoveOneDrive = ChkRemoveOneDrive.IsChecked ?? false,
+                AppsToRemove = selectedApps ?? new(),
+                RegistryTweaks = selectedTweaks ?? new(),
+                ElementsToRemove = selectedElements ?? new(),
 
-                AppsToRemove = selectedApps,
-                RegistryTweaks = selectedTweaks,
-                ServiceTweaks = selectedServices,
-                ElementsToRemove = selectedElements
+                ServiceTweaks = new()
             };
 
-            BtnBuildIso.Content = ResourceString.GetString("winbuilder_btn_cancel_build") ?? "Cancel Build";
-
+            BtnBuildIso.Content = "Cancel Build";
             BuildProgress.IsIndeterminate = true;
             _isBuildInProgress = true;
             _buildCts = new CancellationTokenSource();
@@ -184,42 +277,51 @@ namespace EvolveOS_Optimizer.Pages
             EfficiencyModeHelper.IsUIWakeLockActive = true;
             EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
 
-            var progressReporter = new Progress<string>(status =>
-            {
-                if (TxtStatus != null) TxtStatus.Text = status;
-            });
-
-            var builderService = new IsoBuilderService();
+            IProgress<string> progressReporter = new Progress<string>(status => { if (TxtStatus != null) TxtStatus.Text = status; });
 
             try
             {
-                await builderService.BuildCustomIsoAsync(buildOptions, progressReporter, _buildCts.Token);
+                if (_isIsoMode)
+                {
+                    var builderService = new IsoBuilderService();
+                    await builderService.BuildCustomIsoAsync(buildOptions, progressReporter, _buildCts.Token);
+                    TxtStatus.Text = "Success! Custom EvolveOS ISO created.";
+                }
+                else
+                {
+                    progressReporter.Report("Generating Autounattend.xml...");
+                    var xmlService = new AutounattendBuilderService();
+                    await xmlService.GenerateAsync(buildOptions);
+                    TxtStatus.Text = "Success! Autounattend.xml saved.";
+                }
 
                 BuildProgress.IsIndeterminate = false;
                 BuildProgress.Value = 100;
-                TxtStatus.Text = ResourceString.GetString("winbuilder_msg_success") ?? "Success! Custom EvolveOS ISO created.";
+
+                BuildControlsGrid.Visibility = Visibility.Collapsed;
+                PostBuildPanel.Visibility = Visibility.Visible;
+                FooterGrid.Visibility = Visibility.Collapsed;
+                BtnBack.Visibility = Visibility.Collapsed;
+                BtnNext.Visibility = Visibility.Collapsed;
             }
             catch (OperationCanceledException)
             {
                 BuildProgress.IsIndeterminate = false;
                 BuildProgress.Value = 0;
-                TxtStatus.Text = ResourceString.GetString("winbuilder_msg_cancelled") ?? "Build was successfully cancelled.";
+                TxtStatus.Text = "Operation was cancelled.";
             }
             catch (Exception ex)
             {
                 BuildProgress.IsIndeterminate = false;
-                string errorPrefix = ResourceString.GetString("winbuilder_msg_error_prefix") ?? "Error:";
-                TxtStatus.Text = $"{errorPrefix} {ex.Message}";
+                TxtStatus.Text = $"Error: {ex.Message}";
             }
             finally
             {
                 _isBuildInProgress = false;
                 BtnBuildIso.IsEnabled = true;
-                BtnBuildIso.Content = ResourceString.GetString("winbuilder_btn_build") ?? "Build Custom ISO";
-
+                BtnBuildIso.Content = "Build";
                 _buildCts?.Dispose();
                 _buildCts = null;
-
                 EfficiencyModeHelper.IsUIWakeLockActive = false;
                 if (LocalMachineSettingsEngine.RunOnPriority == Core.Enums.Priority.Low)
                 {
@@ -227,82 +329,104 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
+        #endregion
 
+        #region Post-Build Navigation
+
+        private void ReturnToProfileBuilder()
+        {
+            try
+            {
+                if (App.MainWindow is MainWindow mainWindow)
+                {
+                    mainWindow.NavigateByTag("ProfileBuilder");
+                    return;
+                }
+
+                if (this.Frame != null)
+                {
+                    this.Frame.Navigate(typeof(ProfileBuilderPage));
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Navigation Error] Failed to return: {ex.Message}");
+            }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            ReturnToProfileBuilder();
+        }
+
+        private void ReturnKeep_Click(object sender, RoutedEventArgs e)
+        {
+            ReturnToProfileBuilder();
+        }
+
+        private void ReturnReset_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var profileVm = App.GetService<ProfileBuilderViewModel>();
+
+                profileVm?.ClearTempState();
+                profileVm?.PurgeProfile();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Purge Error]: {ex.Message}");
+            }
+            finally
+            {
+                ReturnToProfileBuilder();
+            }
+        }
+
+        #endregion
+
+        #region Navigation Handling
         protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (!_isBuildInProgress)
-            {
-                base.OnNavigatingFrom(e);
-                return;
-            }
-
+            if (!_isBuildInProgress) { base.OnNavigatingFrom(e); return; }
             e.Cancel = true;
-
             if (_isDialogShowing) return;
             _isDialogShowing = true;
 
-            var dialog = new ContentDialog
-            {
-                Title = ResourceString.GetString("winbuilder_dialog_title") ?? "Build in Progress",
-                Content = ResourceString.GetString("winbuilder_dialog_content") ?? "An ISO build is currently running. If you leave this page, the build will be permanently cancelled. What would you like to do?",
-                PrimaryButtonText = ResourceString.GetString("winbuilder_dialog_btn_leave") ?? "Cancel Build & Leave",
-                CloseButtonText = ResourceString.GetString("winbuilder_dialog_btn_wait") ?? "Wait",
-                DefaultButton = ContentDialogButton.Close,
-                XamlRoot = this.XamlRoot
-            };
-
-            var result = await dialog.ShowAsync();
-            _isDialogShowing = false;
-
-            if (result == ContentDialogResult.Primary)
+            var dialog = new ContentDialog { Title = "Build in Progress", Content = "Operation running. Leave?", PrimaryButtonText = "Cancel & Leave", CloseButtonText = "Wait", XamlRoot = this.XamlRoot };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 _buildCts?.Cancel();
                 _isBuildInProgress = false;
-
                 this.NavigationCacheMode = NavigationCacheMode.Disabled;
                 Frame.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
             }
+            _isDialogShowing = false;
         }
+        #endregion
 
         #region Purge Page
         public async Task Purge()
         {
             Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
-
-            if (_buildCts != null)
-            {
-                try { _buildCts.Cancel(); _buildCts.Dispose(); } catch (ObjectDisposedException) { }
-                _buildCts = null;
-            }
+            if (_buildCts != null) { try { _buildCts.Cancel(); _buildCts.Dispose(); } catch { } _buildCts = null; }
 
             if (!SettingsEngine.IsHighPerformanceModeEnabled)
             {
-                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Catalog Collections...");
-
-                AvailableTweaks?.Clear();
                 AvailableApps?.Clear();
-                AvailableServices?.Clear();
                 AvailableElements?.Clear();
-
                 this.Unloaded -= WinBuilderPage_Unloaded;
 
-                if (TweaksItemsControl != null) TweaksItemsControl.ItemsSource = null;
-                if (AppsItemsControl != null) AppsItemsControl.ItemsSource = null;
-                if (ServicesItemsControl != null) ServicesItemsControl.ItemsSource = null;
-                if (ElementsItemsControl != null) ElementsItemsControl.ItemsSource = null;
+                var appsControl = this.FindName("AppsItemsControl") as ItemsControl;
+                if (appsControl != null) appsControl.ItemsSource = null;
+
+                var elementsControl = this.FindName("ElementsItemsControl") as ItemsControl;
+                if (elementsControl != null) elementsControl.ItemsSource = null;
 
                 this.DataContext = null;
                 this.Content = null;
-                this.Bindings?.StopTracking();
 
-                _ = Task.Run(() =>
-                {
-                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
-                });
-            }
-            else
-            {
-                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+                _ = Task.Run(() => { DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup(); });
             }
         }
         #endregion
