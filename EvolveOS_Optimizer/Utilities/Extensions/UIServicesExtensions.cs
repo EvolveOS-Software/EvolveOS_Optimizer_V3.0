@@ -4,6 +4,8 @@
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Core.ViewModel.Builder;
+using EvolveOS_Optimizer.Pages;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +37,7 @@ public static class UIServicesExtensions
         #region Dispatcher & Dialog Services
         services.AddSingleton<IDispatcherService, DispatcherService>();
         services.AddSingleton<IDialogService, DialogService>();
+        services.AddSingleton<IMainWindowProvider, MainWindowProvider>();
         #endregion
 
         #region Startup Orchestrator
@@ -43,6 +46,11 @@ public static class UIServicesExtensions
 
         #region Regedit Launcher
         services.AddSingleton<IRegeditLauncher, RegeditLauncher>();
+        #endregion
+
+        #region Profile Builder Services
+        services.AddTransient<ProfileBuilderViewModel>();
+        services.AddTransient<ProfileBuilderPage>();
         #endregion
 
         #region Setting ViewModels & Infrastructure

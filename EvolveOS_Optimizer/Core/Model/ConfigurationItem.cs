@@ -38,6 +38,9 @@ public class ConfigurationItem
     public int? SelectedIndex { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? NumericValue { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, object>? CustomStateValues { get; set; }
     #endregion
 

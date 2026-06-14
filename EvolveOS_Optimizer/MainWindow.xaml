@@ -500,6 +500,15 @@
                             <SymbolIcon Symbol="Setting" />
                         </RadioButton>
 
+                        <RadioButton x:Name="BtnNavProfileBuilder"
+                                     Style="{StaticResource BtnNavigation}"
+                                     Command="{Binding ExecuteNavigateCommand}"
+                                     CommandParameter="ProfileBuilder"
+                                     IsTabStop="False"
+                                     Tag="{x:Bind GetText('Nav_ProfileBuilder'), Mode=OneWay}">
+                            <FontIcon Glyph="&#xE8A1;" FontSize="18"/>
+                        </RadioButton>
+
                         <RadioButton Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="UserAccounts"

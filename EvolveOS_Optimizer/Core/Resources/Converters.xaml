@@ -15,6 +15,11 @@
     <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 
+    <!-- Enum Converters -->
+    <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter"/>
+    
+    <converters:IntToDoubleConverter x:Key="IntToDoubleConverter"/>
+
     <!-- Null/Empty Converters -->
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
     <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>

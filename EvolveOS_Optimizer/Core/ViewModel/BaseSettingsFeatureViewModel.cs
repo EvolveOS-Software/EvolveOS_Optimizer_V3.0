@@ -28,7 +28,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
     private CancellationTokenSource? _searchDebounceTokenSource;
     private ISubscriptionToken? _settingAppliedSubscription;
     private ISubscriptionToken? _filterStateChangedSubscription;
-    private ISubscriptionToken? _reviewModeExitedSubscription;
     private volatile Dictionary<string, SettingItemViewModel> _settingsById = new();
     private volatile Dictionary<string, List<SettingItemViewModel>> _childrenByParentId = new();
 
@@ -488,9 +487,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
 
             _filterStateChangedSubscription?.Dispose();
             _filterStateChangedSubscription = null;
-
-            _reviewModeExitedSubscription?.Dispose();
-            _reviewModeExitedSubscription = null;
 
             _localizationService.LanguageChanged -= OnLanguageChanged;
 

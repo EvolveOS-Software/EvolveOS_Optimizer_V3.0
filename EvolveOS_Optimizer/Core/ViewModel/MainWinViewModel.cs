@@ -489,7 +489,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 tag == "SystemCleaner" ||
                 tag == "RegistryEditor" ||
                 tag == "Optimize" ||
-                tag == "Customize")
+                tag == "Customize" ||
+                tag == "ProfileBuilder")
             {
                 EfficiencyModeHelper.IsUIWakeLockActive = true;
                 EfficiencyModeHelper.SetCurrentProcessEfficiencyMode(false);
