@@ -641,7 +641,7 @@ namespace EvolveOS_Optimizer
             }
         }
 
-        public void SwitchPage(string tag, string requestedPane = "")
+        public async void SwitchPage(string tag, string requestedPane = "")
         {
             if (tag == "Diagnostics" && !string.IsNullOrEmpty(requestedPane))
             {
@@ -686,6 +686,7 @@ namespace EvolveOS_Optimizer
             else if (tag == "Software") BtnNavSoftware.IsChecked = true;
             else if (tag == "SystemCleaner") BtnNavSystemCleaner.IsChecked = true;
             else if (tag == "RegistryEditor") BtnNavRegEditor.IsChecked = true;
+            else if (tag == "ProfileBuilder" && BtnNavProfileBuilder != null) BtnNavProfileBuilder.IsChecked = true;
         }
 
         private void SidebarContainer_PointerEntered(object sender, PointerRoutedEventArgs e)

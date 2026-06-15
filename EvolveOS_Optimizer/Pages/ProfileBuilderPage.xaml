@@ -9,6 +9,7 @@
     xmlns:models="using:EvolveOS_Optimizer.Core.Model"
     xmlns:vm="using:EvolveOS_Optimizer.Core.ViewModel"
     xmlns:commonControls="using:EvolveOS_Optimizer.Core.Controls"
+    xmlns:fluentIcons="using:FluentIcons.WinUI"
     x:DefaultBindMode="OneWay">
 
     <Grid>
@@ -17,19 +18,32 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="0,0,12,16">
+        <Grid Grid.Row="0" Margin="0,0,12,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="Profile Builder" Style="{StaticResource TitleTextBlockStyle}" FontSize="24"/>
-                <TextBlock Text="Create a custom configuration profile without modifying your live system." 
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="13"/>
+            <StackPanel
+                Grid.Row="0"
+                Orientation="Horizontal"
+                Spacing="12"
+                Margin="0,12,0,0">
+                <Viewbox Width="48" Height="48" VerticalAlignment="Center">
+                    <fluentIcons:FluentIcon
+                        Icon="DocumentChevronDouble"
+                        IconVariant="Regular"
+                        IconSize="Resizable"
+                        Foreground="{ThemeResource MyDynamicAccentBrush}"
+                        VerticalAlignment="Center"/>
+                </Viewbox>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock helpers:Loc.Key="profile_builder_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="24" />
+                    <TextBlock helpers:Loc.Key="profile_builder_description" FontFamily="{ThemeResource Jura}" FontSize="13" Opacity="0.6"/>
+                </StackPanel>
             </StackPanel>
 
-            <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right">
+            <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right" Margin="0,12,10,0">
 
                 <AppBarButton x:Name="QuickActionsLabel" Label="Quick Actions">
                     <AppBarButton.Icon>
@@ -92,7 +106,7 @@
                 <AppBarSeparator/>
 
                 <AppBarElementContainer VerticalAlignment="Center" Margin="8,0,0,0">
-                    <AutoSuggestBox Width="220" VerticalAlignment="Center"
+                    <AutoSuggestBox Width="200" VerticalAlignment="Center"
                         PlaceholderText="Search settings..."
                         QueryIcon="Find"
                         TextMemberPath="SettingName" 
@@ -122,7 +136,7 @@
         </Grid>
 
         <Border Grid.Row="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6,0,0,6">
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6,0,0,6" Margin="0,0,0,10">
 
             <NavigationView x:Name="BuilderNav" 
                             PaneDisplayMode="Left" 

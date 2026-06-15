@@ -1,11 +1,14 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;
 
@@ -25,22 +28,19 @@ public partial class BuilderSettingViewModel : SettingItemViewModel
 
     #region Staged Import / Preview Mode
 
-    // Triggers the UI badge to appear
     [ObservableProperty]
     public partial bool IsStaged { get; set; }
 
-    // Holding variables for the proposed changes
     public bool? StagedIsSelected { get; set; }
     public int? StagedSelectedValue { get; set; }
     public int? StagedNumericValue { get; set; }
 
-    public object? CustomValue { get; set; } // The actual live value
+    public object? CustomValue { get; set; }
     public object? StagedCustomValue { get; set; }
 
     [RelayCommand]
     public void AcceptStaged()
     {
-        // Move the staged values into the live UI values
         if (StagedIsSelected.HasValue) IsSelected = StagedIsSelected.Value;
         if (StagedSelectedValue.HasValue) SelectedValue = StagedSelectedValue.Value;
         if (StagedNumericValue.HasValue) NumericValue = StagedNumericValue.Value;
@@ -52,7 +52,6 @@ public partial class BuilderSettingViewModel : SettingItemViewModel
     [RelayCommand]
     public void RejectStaged()
     {
-        // Discard the proposed changes
         ClearStaged();
     }
 
@@ -62,19 +61,54 @@ public partial class BuilderSettingViewModel : SettingItemViewModel
         StagedSelectedValue = null;
         StagedNumericValue = null;
         StagedCustomValue = null;
-        IsStaged = false; // Hides the UI badge
+        IsStaged = false;
     }
 
     #endregion
 
-    // OVERRIDE: We override the application logic so it doesn't touch the Registry
-    // When the user changes a setting, it now just updates the VM state without a system call
-    protected async Task HandleValueChangedAsync(object? value, bool resetToDefault = false)
+    #region TOTAL OFFLINE SANDBOX (OVERRIDES)
+    // By overriding all these methods, we guarantee that clicking anything in the Builder 
+    // ONLY updates the UI and Export button, without ever calling _settingApplicationService!
+
+    protected override async Task HandleValueChangedAsync(object? value, bool resetToDefault = false)
     {
-        // In the builder, we just update the local property. 
-        // We do NOT call _settingApplicationService.ApplySettingAsync()
         SelectedValue = value;
+        if (value is int intValue) NumericValue = intValue; // Sync numeric if applicable
+
         ComputeBadgeState();
+        App.Services.GetService<ProfileBuilderViewModel>()?.EvaluateExportState();
         await Task.CompletedTask;
     }
+
+    protected override async Task HandleToggleAsync(bool newValue, bool resetToDefault = false)
+    {
+        IsSelected = newValue;
+
+        ComputeBadgeState();
+        App.Services.GetService<ProfileBuilderViewModel>()?.EvaluateExportState();
+        await Task.CompletedTask;
+    }
+
+    protected override async Task HandleACDCSelectionChangedAsync(bool resetToDefault = false)
+    {
+        // AcValue and DcValue are already set by the UI event handlers before this is called
+        ComputeBadgeState();
+        App.Services.GetService<ProfileBuilderViewModel>()?.EvaluateExportState();
+        await Task.CompletedTask;
+    }
+
+    protected override async Task HandleACDCNumericChangedAsync(bool resetToDefault = false)
+    {
+        // AcNumericValue and DcNumericValue are already set by the UI event handlers
+        ComputeBadgeState();
+        App.Services.GetService<ProfileBuilderViewModel>()?.EvaluateExportState();
+        await Task.CompletedTask;
+    }
+
+    protected override async Task HandleActionAsync()
+    {
+        // Action buttons (like OS Compression) should do absolutely nothing in an offline builder profile
+        await Task.CompletedTask;
+    }
+    #endregion
 }

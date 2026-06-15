@@ -122,12 +122,14 @@
     <sys:String x:Key="Nav_RegistryEditor">Registry Editor</sys:String>
     <sys:String x:Key="Nav_Services">Service Tweaks</sys:String>
     <sys:String x:Key="Nav_System">System</sys:String>
-    <sys:String x:Key="Nav_Tweaks">Optimizations</sys:String>
+    <sys:String x:Key="Nav_Optimize">Optimizations</sys:String>
     <sys:String x:Key="Nav_Customize">Customizations</sys:String>
     <sys:String x:Key="Nav_CommandCenter">Command Center</sys:String>
     <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
     <sys:String x:Key="Nav_Settings">Settings</sys:String>
     <sys:String x:Key="Nav_Users">User Accounts</sys:String>
+
+    <sys:String x:Key="Nav_ProfileBuilder">Profile Builder</sys:String>
 
     <sys:String x:Key="Tab_WinIsoBuilder">Windows ISO Builder</sys:String>
     <sys:String x:Key="Tab_Advanced">Privacy &amp; Security</sys:String>
@@ -1503,7 +1505,7 @@
 
     <!-- region EvolveOS Iso Builder -->
     <sys:String x:Key="winbuilder_title">EvolveOS Custom ISO Builder</sys:String>
-    <sys:String x:Key="winbuilder_subtitle">Create your own debloated, customized, and unattended Windows 11 installation media.</sys:String>
+    <sys:String x:Key="winbuilder_description">Configure and build your optimized Windows installation media.</sys:String>
     <sys:String x:Key="winbuilder_section1_title">1. Windows 11 Source</sys:String>
     <sys:String x:Key="winbuilder_no_iso_title">Don't have a Windows 11 ISO?</sys:String>
     <sys:String x:Key="winbuilder_no_iso_desc">Download the latest official release directly from Microsoft.</sys:String>
@@ -5065,5 +5067,12 @@
     <sys:String x:Key="AppDesc_TikTok">Sponsored social media app.</sys:String>
     <sys:String x:Key="AppDesc_WhatsApp">Sponsored messaging app.</sys:String>
     <!-- endregion Win Builder Apps -->
+
+    <!-- region Profile Builder -->
+    <sys:String x:Key="profile_builder_title">Profile Builder</sys:String>
+    <sys:String x:Key="profile_builder_description">Create a custom configuration profile without modifying your live system.</sys:String>
+    <sys:String x:Key="autounattend_builder_title">Autounattend Builder</sys:String>
+    <sys:String x:Key="autounattend_builder_desc">Generate a custom unattended XML file for live Windows deployments.</sys:String>
+    <!-- endregion Profile Builder -->
 
 </ResourceDictionary>

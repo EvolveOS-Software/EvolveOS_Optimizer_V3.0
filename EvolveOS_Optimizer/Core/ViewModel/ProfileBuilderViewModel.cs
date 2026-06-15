@@ -12,6 +12,7 @@ using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Model.Profiles;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
+using FluentIcons.Common.Internals;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;
 
@@ -56,6 +57,8 @@ public partial class ProfileBuilderViewModel : ObservableObject
     }
 
     public IAsyncRelayCommand SeedFromCurrentSystemCommand { get; }
+
+    public bool IsDirty { get; set; } = false;
 
     #endregion
 
@@ -291,7 +294,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
             }
         }
 
-        System.Diagnostics.Debug.WriteLine($"[ProfileBuilder] Extraction Complete. Total Tweaks Gathered: {tweaks.Count}");
+        Debug.WriteLine($"[ProfileBuilder] Extraction Complete. Total Tweaks Gathered: {tweaks.Count}");
         return tweaks;
     }
 
@@ -304,7 +307,8 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
     public void EvaluateExportState()
     {
-        CanExport = GetSelectedTweaks().Any();
+        //CanExport = GetSelectedTweaks().Any();
+        CanExport = HasUnsavedChanges();
     }
 
     #endregion
@@ -406,6 +410,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
                 }
             }
         }
+        IsDirty = true;
         EvaluateExportState();
     }
 
@@ -432,6 +437,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
                 }
             }
         }
+        IsDirty = true;
         EvaluateExportState();
     }
     #endregion
@@ -459,6 +465,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
                 }
             }
         }
+        IsDirty = false;
         EvaluateExportState();
     }
 
@@ -573,12 +580,30 @@ public partial class ProfileBuilderViewModel : ObservableObject
                 }
             }
         }
+        IsDirty = true;
         EvaluateExportState();
     }
 
     #endregion
 
     #region Temp State Handoff
+
+    public bool HasUnsavedChanges()
+    {
+        if (IsDirty) return true;
+
+        foreach (var category in Categories)
+        {
+            foreach (var setting in category.Settings.OfType<BuilderSettingViewModel>())
+            {
+                if ((setting.IsToggleType || setting.IsCheckBoxType) && setting.IsSelected)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public void SaveTempState()
     {

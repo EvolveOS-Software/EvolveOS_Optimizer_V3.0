@@ -41,6 +41,7 @@ public sealed partial class ProfileBuilderPage : Page
         base.OnNavigatedTo(e);
 
         ViewModel.RestoreTempState();
+        ViewModel.EvaluateExportState();
     }
 
     #endregion
@@ -102,7 +103,6 @@ public sealed partial class ProfileBuilderPage : Page
 
     private void ExportXml_Click(object sender, RoutedEventArgs e)
     {
-        // Navigate to the Wizard in XML mode
         ViewModel.SaveTempState();
 
         var config = new WizardConfig { Mode = "XML", Tweaks = ViewModel.GetSelectedTweaks() };
@@ -111,7 +111,6 @@ public sealed partial class ProfileBuilderPage : Page
 
     private void ExportIso_Click(object sender, RoutedEventArgs e)
     {
-        // Navigate to the Wizard in ISO mode
         ViewModel.SaveTempState();
 
         var config = new WizardConfig { Mode = "ISO", Tweaks = ViewModel.GetSelectedTweaks() };
@@ -129,7 +128,6 @@ public sealed partial class ProfileBuilderPage : Page
         string filterName = "EvolveOS Profile (*.json)";
         string filterPattern = "*.json";
 
-        // 1. Pick the file
         string? filePath = Win32FileDialogHelper.ShowOpenFilePicker(
             window,
             title,
@@ -138,12 +136,11 @@ public sealed partial class ProfileBuilderPage : Page
 
         if (!string.IsNullOrEmpty(filePath))
         {
-            // 2. Build the custom dialog UI dynamically
             var applyImmediatelyCheckBox = new CheckBox
             {
                 Content = "Apply profile settings immediately (Skip preview)",
                 Margin = new Thickness(0, 12, 0, 0),
-                IsChecked = false // Default to Preview Mode (staged)
+                IsChecked = false
             };
 
             var dialogContent = new StackPanel();
@@ -164,7 +161,6 @@ public sealed partial class ProfileBuilderPage : Page
                 XamlRoot = this.XamlRoot
             };
 
-            // 3. Show the dialog and wait for the user's choice
             var result = await dialog.ShowAsync();
 
             if (result == ContentDialogResult.Primary)
@@ -173,7 +169,6 @@ public sealed partial class ProfileBuilderPage : Page
 
                 try
                 {
-                    // 4. Pass BOTH the file path and the user's choice to the ViewModel
                     ViewModel.LoadProfile(filePath, applyImmediately);
 
                     var successDialog = new ContentDialog
@@ -300,10 +295,76 @@ public sealed partial class ProfileBuilderPage : Page
 
     #region Page Lifecycle & Purge
 
+    private bool _isConfirmedNavigation = false;
+    private bool _isDialogShowing = false;
+
+    protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+    {
+        if (_isConfirmedNavigation || e.SourcePageType == typeof(WinBuilderPage))
+        {
+            base.OnNavigatingFrom(e);
+            return;
+        }
+
+        if (_isDialogShowing)
+        {
+            e.Cancel = true;
+            return;
+        }
+
+        if (!ViewModel.HasUnsavedChanges())
+        {
+            _isConfirmedNavigation = true;
+            base.OnNavigatingFrom(e);
+            return;
+        }
+
+        e.Cancel = true;
+        _ = HandleNavigationConfirmationAsync(e);
+    }
+
+    private async Task HandleNavigationConfirmationAsync(NavigatingCancelEventArgs e)
+    {
+        _isDialogShowing = true;
+
+        var dialog = new ContentDialog
+        {
+            Title = "Unsaved Configuration",
+            Content = "You have an active configuration. If you leave now, your current settings will be reset. Are you sure you want to leave?",
+            PrimaryButtonText = "Leave & Reset",
+            CloseButtonText = "Stay Here",
+            XamlRoot = this.XamlRoot,
+            RequestedTheme = this.ActualTheme
+        };
+
+        var result = await dialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary)
+        {
+            ViewModel.ClearTempState();
+            ViewModel.PurgeProfile();
+            ViewModel.IsDirty = false;
+
+            _isConfirmedNavigation = true;
+
+            if (e.NavigationMode == NavigationMode.Back) Frame.GoBack();
+            else Frame.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
+        }
+        else
+        {
+            _isConfirmedNavigation = false;
+
+            var windowProvider = App.Services.GetRequiredService<IMainWindowProvider>();
+            if (windowProvider.MainWindow is MainWindow mainWindow) mainWindow.SwitchPage("ProfileBuilder");
+        }
+
+        _isDialogShowing = false;
+    }
+
     protected override async void OnNavigatedFrom(NavigationEventArgs e)
     {
         base.OnNavigatedFrom(e);
-
+        _isConfirmedNavigation = false;
         await Purge();
     }
 
@@ -313,14 +374,7 @@ public sealed partial class ProfileBuilderPage : Page
 
         if (!SettingsEngine.IsHighPerformanceModeEnabled)
         {
-            await Task.Run(() =>
-            {
-                DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
-            });
-        }
-        else
-        {
-            Debug.WriteLine($"[{this.GetType().Name}] State preserved in RAM cache.");
+            await Task.Run(() => { DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup(); });
         }
     }
 

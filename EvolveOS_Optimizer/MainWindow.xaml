@@ -464,7 +464,7 @@
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Optimize"
                                      IsTabStop="False"
-                                     Tag="{x:Bind GetText('Nav_Tweaks'), Mode=OneWay}">
+                                     Tag="{x:Bind GetText('Nav_Optimize'), Mode=OneWay}">
                             <FontIcon Glyph="&#xE9E9;" FontSize="18"/>
                         </RadioButton>
 

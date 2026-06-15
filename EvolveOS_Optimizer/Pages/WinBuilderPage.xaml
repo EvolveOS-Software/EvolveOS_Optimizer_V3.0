@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:EvolveOS_Optimizer.Utilities.WinBuilder"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:fluentIcons="using:FluentIcons.WinUI"
     mc:Ignorable="d"
     Background="Transparent">
 
@@ -16,9 +17,23 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Spacing="8" Margin="10,0,0,24">
-            <TextBlock Text="{helpers:ResourceString Key=winbuilder_title}" FontFamily="{StaticResource Jura-SemiBold}" FontSize="28" />
-            <TextBlock Text="Configure and build your optimized Windows installation media." Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="14" />
+        <StackPanel
+            Grid.Row="0"
+            Orientation="Horizontal"
+            Spacing="12"
+            Margin="10,12,0,24">
+            <Viewbox Width="48" Height="48" VerticalAlignment="Center">
+                <fluentIcons:FluentIcon
+                    Icon="Box"
+                    IconVariant="Regular"
+                    IconSize="Resizable"
+                    Foreground="{ThemeResource MyDynamicAccentBrush}"
+                    VerticalAlignment="Center"/>
+            </Viewbox>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock x:Name="WinBuild_Title" helpers:Loc.Key="winbuilder_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="24" />
+                <TextBlock x:Name="WinBuild_Desc" helpers:Loc.Key="winbuilder_description" FontFamily="{ThemeResource Jura}" FontSize="13" Opacity="0.6"/>
+            </StackPanel>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" Padding="10,0,24,0" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto">
@@ -247,7 +262,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <Grid x:Name="FooterGrid" Grid.Row="2" Background="{ThemeResource LayerFillColorDefaultBrush}" Padding="20,16" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
+        <Grid x:Name="FooterGrid" Grid.Row="2" Background="{ThemeResource LayerFillColorDefaultBrush}" Padding="20,16" Margin="0,0,0,10" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />

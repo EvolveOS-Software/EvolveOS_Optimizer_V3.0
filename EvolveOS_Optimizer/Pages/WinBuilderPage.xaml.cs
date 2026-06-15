@@ -11,6 +11,7 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
+using Microsoft.Extensions.DependencyInjection;
 using Windows.System;
 
 namespace EvolveOS_Optimizer.Pages
@@ -24,13 +25,11 @@ namespace EvolveOS_Optimizer.Pages
 
         #region State Fields
         private bool _isBuildInProgress = false;
-        private bool _isDialogShowing = false;
         private CancellationTokenSource? _buildCts;
 
         private int _currentStep = 0;
         private const int MAX_STEPS = 5;
 
-        // Incoming Wizard State
         private bool _isIsoMode = true;
         private List<RegistryTweak> _incomingTweaks = new();
         #endregion
@@ -67,24 +66,27 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (!_isIsoMode)
                 {
-                    // If XML mode, skip Step 1 (ISO Source)
                     _currentStep = 1;
 
-                    // --- NEW: Hide ISO-only settings from Step 2 ---
                     GridTargetEdition.Visibility = Visibility.Collapsed;
                     GridImageFormat.Visibility = Visibility.Collapsed;
                     SeparatorIsoSettings.Visibility = Visibility.Collapsed;
                     GridRemoveWinRE.Visibility = Visibility.Collapsed;
 
+                    WinBuild_Title.Text = ResourceString.GetString("autounattend_builder_title") ?? "Autounattend Builder";
+                    WinBuild_Desc.Text = ResourceString.GetString("autounattend_builder_desc") ?? "Generate a custom unattended XML file for live Windows deployments.";
+
                     UpdateWizardUI();
                 }
                 else
                 {
-                    // Ensure they are visible if returning to ISO mode
                     GridTargetEdition.Visibility = Visibility.Visible;
                     GridImageFormat.Visibility = Visibility.Visible;
                     SeparatorIsoSettings.Visibility = Visibility.Visible;
                     GridRemoveWinRE.Visibility = Visibility.Visible;
+
+                    WinBuild_Title.Text = ResourceString.GetString("winbuilder_title") ?? "Windows ISO Builder";
+                    WinBuild_Desc.Text = ResourceString.GetString("winbuilder_description") ?? "Configure and build a custom Windows installation image.";
                 }
             }
         }
@@ -368,10 +370,11 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                var profileVm = App.GetService<ProfileBuilderViewModel>();
+                var profileVm = App.Services.GetRequiredService<ProfileBuilderViewModel>();
 
                 profileVm?.ClearTempState();
                 profileVm?.PurgeProfile();
+                profileVm?.IsDirty = false;
             }
             catch (Exception ex)
             {
@@ -386,30 +389,118 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Navigation Handling
-        protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
+
+        private bool _isConfirmedNavigation = false;
+        private bool _isDialogShowing = false;
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (!_isBuildInProgress) { base.OnNavigatingFrom(e); return; }
+            if (_isConfirmedNavigation)
+            {
+                base.OnNavigatingFrom(e);
+                return;
+            }
+
+            if (_isDialogShowing)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            if (e.SourcePageType == typeof(ProfileBuilderPage))
+            {
+                base.OnNavigatingFrom(e);
+                return;
+            }
+
+            if (PostBuildPanel.Visibility == Visibility.Visible)
+            {
+                _isConfirmedNavigation = true;
+                var profileVm = App.Services.GetRequiredService<ProfileBuilderViewModel>();
+                if (profileVm != null) { profileVm.ClearTempState(); profileVm.PurgeProfile(); profileVm.IsDirty = false; }
+                base.OnNavigatingFrom(e);
+                return;
+            }
+
+            var vm = App.Services.GetRequiredService<ProfileBuilderViewModel>();
+
+            bool hasProfileTweaks = vm != null && vm.HasUnsavedChanges();
+
+            bool hasWinBuilderInput = !string.IsNullOrWhiteSpace(TxtOutputIso.Text)
+                                   || !string.IsNullOrWhiteSpace(TxtSourceIso.Text)
+                                   || (_isIsoMode ? _currentStep > 0 : _currentStep > 1);
+
+            if (!_isBuildInProgress && !hasProfileTweaks && !hasWinBuilderInput)
+            {
+                _isConfirmedNavigation = true;
+                if (vm != null) { vm.ClearTempState(); vm.PurgeProfile(); vm.IsDirty = false; }
+                base.OnNavigatingFrom(e);
+                return;
+            }
+
             e.Cancel = true;
-            if (_isDialogShowing) return;
+            _ = HandleNavigationConfirmationAsync(e);
+        }
+
+        private async Task HandleNavigationConfirmationAsync(NavigatingCancelEventArgs e)
+        {
             _isDialogShowing = true;
 
-            var dialog = new ContentDialog { Title = "Build in Progress", Content = "Operation running. Leave?", PrimaryButtonText = "Cancel & Leave", CloseButtonText = "Wait", XamlRoot = this.XamlRoot };
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            string title = _isBuildInProgress ? "Build in Progress" : "Abort Build Setup?";
+            string content = _isBuildInProgress
+                ? "A deployment operation is currently running. Are you sure you want to cancel the build and leave?"
+                : "You are currently in the middle of the deployment setup. If you leave now, your settings will be reset. Are you sure you want to abort and leave?";
+            string primaryText = _isBuildInProgress ? "Cancel Build & Leave" : "Abort & Reset";
+
+            var dialog = new ContentDialog
             {
-                _buildCts?.Cancel();
+                Title = title,
+                Content = content,
+                PrimaryButtonText = primaryText,
+                CloseButtonText = "Stay Here",
+                XamlRoot = this.XamlRoot,
+                RequestedTheme = this.ActualTheme
+            };
+
+            var result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                if (_buildCts != null && !_buildCts.IsCancellationRequested) _buildCts.Cancel();
                 _isBuildInProgress = false;
+
+                var profileVm = App.Services.GetRequiredService<ProfileBuilderViewModel>();
+                if (profileVm != null) { profileVm.ClearTempState(); profileVm.PurgeProfile(); profileVm.IsDirty = false; }
+
                 this.NavigationCacheMode = NavigationCacheMode.Disabled;
-                Frame.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
+
+                _isConfirmedNavigation = true;
+
+                if (e.NavigationMode == NavigationMode.Back) Frame.GoBack();
+                else Frame.Navigate(e.SourcePageType, e.Parameter, e.NavigationTransitionInfo);
             }
-            _isDialogShowing = false;
+            else
+            {
+                _isConfirmedNavigation = false;
+
+                if (App.MainWindow is MainWindow mainWindow) mainWindow.SwitchPage("ProfileBuilder");
+            }
+
+            _isDialogShowing = false; // Unlock
         }
+
         #endregion
 
         #region Purge Page
         public async Task Purge()
         {
             Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
-            if (_buildCts != null) { try { _buildCts.Cancel(); _buildCts.Dispose(); } catch { } _buildCts = null; }
+
+            if (_buildCts != null)
+            {
+                try { _buildCts.Cancel(); _buildCts.Dispose(); } catch { }
+                _buildCts = null;
+            }
 
             if (!SettingsEngine.IsHighPerformanceModeEnabled)
             {
@@ -417,11 +508,11 @@ namespace EvolveOS_Optimizer.Pages
                 AvailableElements?.Clear();
                 this.Unloaded -= WinBuilderPage_Unloaded;
 
-                var appsControl = this.FindName("AppsItemsControl") as ItemsControl;
-                if (appsControl != null) appsControl.ItemsSource = null;
+                if (this.FindName("AppsItemsControl") is ItemsControl appsControl)
+                    appsControl.ItemsSource = null;
 
-                var elementsControl = this.FindName("ElementsItemsControl") as ItemsControl;
-                if (elementsControl != null) elementsControl.ItemsSource = null;
+                if (this.FindName("ElementsItemsControl") is ItemsControl elementsControl)
+                    elementsControl.ItemsSource = null;
 
                 this.DataContext = null;
                 this.Content = null;

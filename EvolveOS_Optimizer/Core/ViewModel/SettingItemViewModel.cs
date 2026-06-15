@@ -1136,7 +1136,7 @@ public partial class SettingItemViewModel : BaseViewModel
 
     #region Apply Logic
 
-    private async Task HandleToggleAsync(bool newValue, bool resetToDefault = false)
+    protected virtual async Task HandleToggleAsync(bool newValue, bool resetToDefault = false)
     {
         if (IsApplying || _isUpdatingFromEvent || SettingDefinition == null) return;
 
@@ -1180,7 +1180,7 @@ public partial class SettingItemViewModel : BaseViewModel
         }
     }
 
-    private async Task HandleValueChangedAsync(object? value, bool resetToDefault = false)
+    protected virtual async Task HandleValueChangedAsync(object? value, bool resetToDefault = false)
     {
         _logService.LogDebug($"[SettingItemViewModel] HandleValueChangedAsync called: value={value}, IsApplying={IsApplying}, SettingDefinition={(SettingDefinition == null ? "null" : "not null")}, SelectedValue={SelectedValue}");
 
@@ -1278,7 +1278,7 @@ public partial class SettingItemViewModel : BaseViewModel
         }
     }
 
-    private async Task HandleACDCSelectionChangedAsync(bool resetToDefault = false)
+    protected virtual async Task HandleACDCSelectionChangedAsync(bool resetToDefault = false)
     {
         if (IsApplying || _isUpdatingFromEvent || SettingDefinition == null) return;
 
@@ -1311,7 +1311,7 @@ public partial class SettingItemViewModel : BaseViewModel
         }
     }
 
-    private async Task HandleACDCNumericChangedAsync(bool resetToDefault = false)
+    protected virtual async Task HandleACDCNumericChangedAsync(bool resetToDefault = false)
     {
         if (IsApplying || _isUpdatingFromEvent || SettingDefinition == null) return;
 
@@ -1344,7 +1344,7 @@ public partial class SettingItemViewModel : BaseViewModel
         }
     }
 
-    private async Task HandleActionAsync()
+    protected virtual async Task HandleActionAsync()
     {
         if (IsApplying || SettingDefinition == null) return;
 
