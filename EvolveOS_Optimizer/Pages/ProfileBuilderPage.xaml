@@ -15,7 +15,7 @@
 
     <Page.Resources>
         <DataTemplate x:Key="NavHeaderTemplate" x:DataType="selectors:BuilderCategoryHeader">
-            <NavigationViewItemHeader Content="{x:Bind DisplayName}" />
+            <NavigationViewItemHeader Content="{x:Bind DisplayName, Mode=OneTime}" />
         </DataTemplate>
 
         <DataTemplate x:Key="NavItemTemplate" x:DataType="vm:BuilderFeatureCategory">

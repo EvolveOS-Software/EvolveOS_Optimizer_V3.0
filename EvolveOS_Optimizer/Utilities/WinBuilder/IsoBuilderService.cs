@@ -402,7 +402,7 @@ namespace EvolveOS_Optimizer.Utilities.WinBuilder
                         if (!trimmedCmd.StartsWith("Windows Registry Editor"))
                             sb.AppendLine("Windows Registry Editor Version 5.00\n");
                         sb.AppendLine(offlineCmd);
-                        sb.AppendLine("    \"@");
+                        sb.AppendLine("\"@");
                         sb.AppendLine($"    Set-Content -Path \"$mountDir\\tweak{regCounter}.reg\" -Value $regContent{regCounter} -Encoding UTF8");
                         sb.AppendLine($"    reg.exe import \"$mountDir\\tweak{regCounter}.reg\" 2>&1 | Out-Null");
                         sb.AppendLine($"    Remove-Item \"$mountDir\\tweak{regCounter}.reg\" -Force -ErrorAction SilentlyContinue");
