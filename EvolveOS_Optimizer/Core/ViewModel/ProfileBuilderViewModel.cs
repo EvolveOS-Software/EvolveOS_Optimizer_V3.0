@@ -10,10 +10,8 @@ using EvolveOS_Optimizer.Core.Constants;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Model.Profiles;
-using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
-using FluentIcons.Common.Internals;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;
 
@@ -43,11 +41,24 @@ public partial class ProfileBuilderViewModel : ObservableObject
         set => SetProperty(ref _categories, value);
     }
 
+    private BuilderFeatureCategory? _displayedCategory;
+    public BuilderFeatureCategory? DisplayedCategory
+    {
+        get => _displayedCategory;
+        set => SetProperty(ref _displayedCategory, value);
+    }
+
     private BuilderFeatureCategory? _selectedCategory;
     public BuilderFeatureCategory? SelectedCategory
     {
         get => _selectedCategory;
-        set => SetProperty(ref _selectedCategory, value);
+        set
+        {
+            if (SetProperty(ref _selectedCategory, value))
+            {
+                _ = LoadCategoryAsync(value);
+            }
+        }
     }
 
     private bool _canExport = false;
@@ -62,6 +73,13 @@ public partial class ProfileBuilderViewModel : ObservableObject
     {
         get => _isLoading;
         set => SetProperty(ref _isLoading, value);
+    }
+
+    private bool _isSeeding = false;
+    public bool IsSeeding
+    {
+        get => _isSeeding;
+        set => SetProperty(ref _isSeeding, value);
     }
 
     private bool _isPurging = false;
@@ -123,21 +141,21 @@ public partial class ProfileBuilderViewModel : ObservableObject
         {
             var featureDefinitions = new[]
             {
-            (Id: FeatureIds.Privacy, Name: "Privacy", Glyph: "\uE72E"),
-            (Id: FeatureIds.Power, Name: "Power", Glyph: "\uE7E6"),
-            (Id: FeatureIds.GamingPerformance, Name: "Gaming", Glyph: "\uE7FC"),
-            (Id: FeatureIds.Update, Name: "Update", Glyph: "\uE895"),
-            (Id: FeatureIds.Notifications, Name: "Notifications", Glyph: "\uEA8F"),
-            (Id: FeatureIds.Sound, Name: "Sound", Glyph: "\uE767"),
-            (Id: FeatureIds.WindowsTheme, Name: "Theme", Glyph: "\uE771"),
-            (Id: FeatureIds.StartMenu, Name: "Start Menu", Glyph: "\uE718"),
-            (Id: FeatureIds.Taskbar, Name: "Taskbar", Glyph: "\uE90E"),
-            (Id: FeatureIds.ExplorerCustomization, Name: "Explorer", Glyph: "\uEC50")
-        };
+                (Id: FeatureIds.Privacy, Name: "Privacy", IconKey: "PrivacyIconPath", IconPack: "Local"),
+                (Id: FeatureIds.Power, Name: "Power", IconKey: "PowerIconPath", IconPack: "Local"),
+                (Id: FeatureIds.GamingPerformance, Name: "Gaming & Performance", IconKey: "GamingIconPath", IconPack: "Local"),
+                (Id: FeatureIds.Update, Name: "Update", IconKey: "UpdateIconSymbol", IconPack: "Local"),
+                (Id: FeatureIds.Notifications, Name: "Notifications", IconKey: "NotificationIconPath", IconPack: "Local"),
+                (Id: FeatureIds.Sound, Name: "Sound", IconKey: "SoundIconSymbol", IconPack: "Local"),
+                (Id: FeatureIds.WindowsTheme, Name: "Theme", IconKey: "WindowsThemeIconGlyph", IconPack: "Local"),
+                (Id: FeatureIds.StartMenu, Name: "Start Menu", IconKey: "StartMenuIconGlyph", IconPack: "Local"),
+                (Id: FeatureIds.Taskbar, Name: "Taskbar", IconKey: "TaskbarIconGlyph", IconPack: "Local"),
+                (Id: FeatureIds.ExplorerCustomization, Name: "Explorer", IconKey: "ExplorerIconGlyph", IconPack: "Local")
+            };
 
             foreach (var def in featureDefinitions)
             {
-                var category = new BuilderFeatureCategory(def.Id, def.Name, def.Glyph);
+                var category = new BuilderFeatureCategory(def.Id, def.Name, def.IconKey);
                 var settings = _settingsRegistry.GetFilteredSettings(def.Id);
 
                 foreach (var setting in settings)
@@ -345,7 +363,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
     private async Task SeedFromCurrentSystemAsync()
     {
-        IsLoading = true;
+        IsSeeding = true;
 
         try
         {
@@ -376,7 +394,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
         }
         finally
         {
-            IsLoading = false;
+            IsSeeding = false;
         }
     }
 
@@ -673,6 +691,25 @@ public partial class ProfileBuilderViewModel : ObservableObject
         }
         IsDirty = true;
         EvaluateExportState();
+    }
+
+    private async Task LoadCategoryAsync(BuilderFeatureCategory? category)
+    {
+        IsLoading = true;
+        DisplayedCategory = null;
+
+        await Task.Delay(50);
+
+        try
+        {
+            DisplayedCategory = category;
+
+            await Task.Delay(50);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     #endregion

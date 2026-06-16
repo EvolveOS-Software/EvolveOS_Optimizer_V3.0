@@ -25,7 +25,7 @@ public sealed partial class IconConverter : IValueConverter
         else if (value != null)
         {
             var type = value.GetType();
-            var iconProperty = type.GetProperty("Icon");
+            var iconProperty = type.GetProperty("Icon") ?? type.GetProperty("IconKey");
             var iconPackProperty = type.GetProperty("IconPack");
 
             iconName = iconProperty?.GetValue(value)?.ToString();
@@ -41,6 +41,7 @@ public sealed partial class IconConverter : IValueConverter
         {
             "material" or "materialdesign" => CreateMaterialPathIcon(iconName),
             "fluent" => CreateFluentIcon(iconName),
+            "local" => CreateLocalResourceIcon(iconName),
             _ => CreateMaterialPathIcon(iconName)
         };
     }
@@ -83,6 +84,50 @@ public sealed partial class IconConverter : IValueConverter
                 Icon = symbol,
                 IconVariant = IconVariant.Regular
             };
+        }
+
+        return null;
+    }
+
+    private static IconElement? CreateLocalResourceIcon(string resourceKey)
+    {
+        if (!string.IsNullOrEmpty(resourceKey) && resourceKey.Length == 1)
+        {
+            return new FontIcon { Glyph = resourceKey };
+        }
+
+        if (Application.Current.Resources.TryGetValue(resourceKey, out var resource))
+        {
+            if (resource is Geometry geometry)
+            {
+                return new PathIcon { Data = geometry };
+            }
+
+            if (resource is string stringValue)
+            {
+                if (stringValue.Length > 5 && (stringValue.Contains('M') || stringValue.Contains('m')))
+                {
+                    try
+                    {
+                        var parsedGeometry = (Geometry)XamlBindingHelper.ConvertValue(
+                            typeof(Geometry), stringValue);
+
+                        if (parsedGeometry != null) return new PathIcon { Data = parsedGeometry };
+                    }
+                    catch { /* Fall through if parsing fails */ }
+                }
+
+                if (stringValue.Length > 1)
+                {
+                    var fluentIcon = CreateFluentIcon(stringValue);
+                    if (fluentIcon != null) return fluentIcon;
+
+                    var materialIcon = CreateMaterialPathIcon(stringValue);
+                    if (materialIcon != null) return materialIcon;
+                }
+
+                return new FontIcon { Glyph = stringValue };
+            }
         }
 
         return null;

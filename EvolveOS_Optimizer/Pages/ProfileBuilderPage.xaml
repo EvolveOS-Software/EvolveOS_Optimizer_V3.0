@@ -82,9 +82,9 @@
                               Command="{x:Bind ViewModel.SeedFromCurrentSystemCommand}"
                               ToolTipService.ToolTip="Reads your PC's current settings."/>
                 <AppBarElementContainer VerticalAlignment="Center"
-                                        Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}">
+                                        Visibility="{x:Bind ViewModel.IsSeeding, Mode=OneWay}">
 
-                    <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                    <ProgressRing IsActive="{x:Bind ViewModel.IsSeeding, Mode=OneWay}"
                                   Width="20" Height="20" Margin="5,0,5,0" />
 
                 </AppBarElementContainer>
@@ -92,7 +92,6 @@
                 <AppBarButton Icon="OpenFile" Label="Import" 
                               Click="ImportProfile_Click"
                               ToolTipService.ToolTip="Load a saved JSON configuration profile."/>
-
 
                 <AppBarButton Icon="Save" Label="Export"
                               IsEnabled="{x:Bind ViewModel.CanExport, Mode=OneWay}"
@@ -170,11 +169,10 @@
 
                 <NavigationView.MenuItemTemplate>
                     <DataTemplate x:DataType="vm:BuilderFeatureCategory">
-                        <NavigationViewItem Content="{x:Bind DisplayName}">
-                            <NavigationViewItem.Icon>
-                                <FontIcon Glyph="{x:Bind IconGlyph}"/>
-                            </NavigationViewItem.Icon>
-                        </NavigationViewItem>
+
+                        <NavigationViewItem Content="{x:Bind DisplayName}" 
+                            Icon="{x:Bind Mode=OneWay, Converter={StaticResource IconConverter}}" />
+
                     </DataTemplate>
                 </NavigationView.MenuItemTemplate>
 
@@ -184,7 +182,7 @@
                                    Style="{StaticResource SubtitleTextBlockStyle}"
                                    Margin="0,0,0,8"/>
 
-                        <ItemsControl ItemsSource="{x:Bind ViewModel.SelectedCategory.Settings}">
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.DisplayedCategory.Settings}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:BuilderSettingViewModel">
                                     <Grid Margin="0,0,0,8" Visibility="{x:Bind IsVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">

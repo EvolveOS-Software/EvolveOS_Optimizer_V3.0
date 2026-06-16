@@ -10,14 +10,15 @@ public partial class BuilderFeatureCategory : ObservableObject
 {
     public string FeatureId { get; }
     public string DisplayName { get; }
-    public string IconGlyph { get; }
+    public string IconKey { get; set; }
+    public string IconPack { get; set; } = "Local";
 
     public ObservableCollection<SettingItemViewModel> Settings { get; } = new();
 
-    public BuilderFeatureCategory(string featureId, string displayName, string iconGlyph)
+    public BuilderFeatureCategory(string featureId, string displayName, string iconKey)
     {
         FeatureId = featureId;
         DisplayName = displayName;
-        IconGlyph = iconGlyph;
+        IconKey = iconKey;
     }
 }
