@@ -70,12 +70,32 @@
                 <AppBarButton Icon="Delete" Label="Purge" 
                               Click="PurgeProfile_Click"
                               ToolTipService.ToolTip="Clear all customized settings."/>
+                <AppBarElementContainer VerticalAlignment="Center"
+                                        Visibility="{x:Bind ViewModel.IsPurging, Mode=OneWay}">
+
+                    <ProgressRing IsActive="{x:Bind ViewModel.IsPurging, Mode=OneWay}"
+                                  Width="20" Height="20" Margin="5,0,5,0" />
+
+                </AppBarElementContainer>
+
                 <AppBarButton Icon="Download" Label="Seed from PC" 
                               Command="{x:Bind ViewModel.SeedFromCurrentSystemCommand}"
                               ToolTipService.ToolTip="Reads your PC's current settings."/>
+                <AppBarElementContainer VerticalAlignment="Center"
+                                        Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}">
+
+                    <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                                  Width="20" Height="20" Margin="5,0,5,0" />
+
+                </AppBarElementContainer>
+
                 <AppBarButton Icon="OpenFile" Label="Import" 
                               Click="ImportProfile_Click"
                               ToolTipService.ToolTip="Load a saved JSON configuration profile."/>
+
+                <AppBarButton Icon="Play" Label="Apply to PC" Click="ApplyToPC_Click"
+                              IsEnabled="{x:Bind ViewModel.CanExport, Mode=OneWay}"
+                              ToolTipService.ToolTip="Applies this exact configuration to your current PC."/>
 
                 <AppBarButton Icon="Save" Label="Export"
                               IsEnabled="{x:Bind ViewModel.CanExport, Mode=OneWay}"

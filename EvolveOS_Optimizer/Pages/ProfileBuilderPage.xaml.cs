@@ -249,7 +249,47 @@ public sealed partial class ProfileBuilderPage : Page
 
         if (result == ContentDialogResult.Primary)
         {
-            ViewModel.PurgeProfile();
+            ViewModel.IsPurging = true;
+
+            await Task.Delay(50);
+
+            try
+            {
+                ViewModel.PurgeProfile();
+            }
+            finally
+            {
+                ViewModel.IsPurging = false;
+            }
+        }
+    }
+
+    private async void ApplyToPC_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new ContentDialog
+        {
+            Title = "Apply Configuration to Local PC?",
+            Content = "This will bypass the builder sandbox and immediately apply all configured settings, tweaks, and optimizations directly to this computer. Do you want to proceed?",
+            PrimaryButtonText = "Apply Now",
+            CloseButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = this.XamlRoot
+        };
+
+        var result = await dialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary)
+        {
+            await ViewModel.ApplyToLocalSystemCommand.ExecuteAsync(null);
+
+            var successDialog = new ContentDialog
+            {
+                Title = "Deployment Complete",
+                Content = "The profile configuration has been successfully applied to your local system.",
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+            await successDialog.ShowAsync();
         }
     }
 

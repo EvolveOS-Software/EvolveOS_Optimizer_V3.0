@@ -56,7 +56,22 @@ public partial class ProfileBuilderViewModel : ObservableObject
         set => SetProperty(ref _canExport, value);
     }
 
+    private bool _isLoading = false;
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set => SetProperty(ref _isLoading, value);
+    }
+
+    private bool _isPurging = false;
+    public bool IsPurging
+    {
+        get => _isPurging;
+        set => SetProperty(ref _isPurging, value);
+    }
+
     public IAsyncRelayCommand SeedFromCurrentSystemCommand { get; }
+    public IAsyncRelayCommand ApplyToLocalSystemCommand => new AsyncRelayCommand(ApplyToLocalSystemAsync);
 
     public bool IsDirty { get; set; } = false;
 
@@ -183,13 +198,13 @@ public partial class ProfileBuilderViewModel : ObservableObject
                     vm.MaxValue = setting.NumericRange.MaxValue;
                 }
 
-                vm.PropertyChanged += (s, e) =>
+                /*vm.PropertyChanged += (s, e) =>
                 {
                     if (e.PropertyName == nameof(BuilderSettingViewModel.IsSelected))
                     {
                         EvaluateExportState();
                     }
-                };
+                };*/
 
                 category.Settings.Add(vm);
             }
@@ -317,29 +332,90 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
     private async Task SeedFromCurrentSystemAsync()
     {
-        var allRegisteredSettings = _settingsRegistry.GetAllFilteredSettings()
+        IsLoading = true;
+
+        try
+        {
+            var allRegisteredSettings = _settingsRegistry.GetAllFilteredSettings()
             .SelectMany(kvp => kvp.Value)
             .ToDictionary(s => s.Id);
 
-        var settingsToDiscover = Categories
-            .SelectMany(c => c.Settings)
-            .Select(s => allRegisteredSettings.TryGetValue(s.SettingId, out var def) ? def : null)
-            .Where(s => s != null)
-            .ToList();
+            var settingsToDiscover = Categories
+                .SelectMany(c => c.Settings)
+                .Select(s => allRegisteredSettings.TryGetValue(s.SettingId, out var def) ? def : null)
+                .Where(s => s != null)
+                .ToList();
 
-        var systemStates = await _discoveryService.GetSettingStatesAsync(settingsToDiscover!);
+            var systemStates = await _discoveryService.GetSettingStatesAsync(settingsToDiscover!);
 
-        foreach (var category in Categories)
-        {
-            foreach (var builderItem in category.Settings.OfType<BuilderSettingViewModel>())
+            foreach (var category in Categories)
             {
-                if (systemStates.TryGetValue(builderItem.SettingId, out var state))
+                foreach (var builderItem in category.Settings.OfType<BuilderSettingViewModel>())
                 {
-                    builderItem.UpdateStateFromSystemState(state);
+                    if (systemStates.TryGetValue(builderItem.SettingId, out var state))
+                    {
+                        builderItem.UpdateStateFromSystemState(state);
+                    }
                 }
             }
+            EvaluateExportState();
+
         }
-        EvaluateExportState();
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task ApplyToLocalSystemAsync()
+    {
+        IsLoading = true;
+
+        try
+        {
+            foreach (var category in Categories)
+            {
+                foreach (var setting in category.Settings.OfType<BuilderSettingViewModel>())
+                {
+                    if (setting.IsToggleType || setting.IsCheckBoxType)
+                    {
+                        if (setting.IsSelected)
+                        {
+                            await _settingApplicationService.ApplySettingAsync(new ApplySettingRequest
+                            {
+                                SettingId = setting.SettingId,
+                                Enable = true
+                            });
+                        }
+                    }
+                    else if (setting.IsSelectionType && setting.SelectedValue != null)
+                    {
+                        await _settingApplicationService.ApplySettingAsync(new ApplySettingRequest
+                        {
+                            SettingId = setting.SettingId,
+                            Enable = true,
+                            Value = setting.SelectedValue
+                        });
+                    }
+                    else if (setting.IsNumericType || setting.IsSliderType)
+                    {
+                        await _settingApplicationService.ApplySettingAsync(new ApplySettingRequest
+                        {
+                            SettingId = setting.SettingId,
+                            Enable = true,
+                            Value = setting.NumericValue
+                        });
+                    }
+                }
+            }
+
+            IsDirty = false;
+            EvaluateExportState();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     #region Search
