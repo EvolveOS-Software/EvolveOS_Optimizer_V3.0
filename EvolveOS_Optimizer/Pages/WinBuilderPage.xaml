@@ -23,12 +23,7 @@
             Spacing="12"
             Margin="10,12,0,24">
             <Viewbox Width="48" Height="48" VerticalAlignment="Center">
-                <fluentIcons:FluentIcon
-                    Icon="Box"
-                    IconVariant="Regular"
-                    IconSize="Resizable"
-                    Foreground="{ThemeResource MyDynamicAccentBrush}"
-                    VerticalAlignment="Center"/>
+            <PathIcon x:Name="HeaderLogo" Data="{StaticResource WinBuilderIconPath}" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
             </Viewbox>
             <StackPanel VerticalAlignment="Center">
                 <TextBlock x:Name="WinBuild_Title" helpers:Loc.Key="winbuilder_title" FontFamily="{ThemeResource Jura-SemiBold}" FontSize="24" />

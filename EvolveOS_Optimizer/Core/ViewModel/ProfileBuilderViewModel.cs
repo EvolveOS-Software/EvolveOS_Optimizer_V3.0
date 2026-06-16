@@ -2,8 +2,13 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Constants;
@@ -12,6 +17,7 @@ using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Model.Profiles;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
+using EvolveOS_Optimizer.Core.TemplateSelectors;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;
 
@@ -34,8 +40,8 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
     #region Properties
 
-    private ObservableCollection<BuilderFeatureCategory> _categories = new();
-    public ObservableCollection<BuilderFeatureCategory> Categories
+    private ObservableCollection<object> _categories = new();
+    public ObservableCollection<object> Categories
     {
         get => _categories;
         set => SetProperty(ref _categories, value);
@@ -121,7 +127,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
         _osCompressionService = osCompressionService;
         _powerPlanService = powerPlanService;
 
-        _categories = new ObservableCollection<BuilderFeatureCategory>();
+        _categories = new ObservableCollection<object>();
 
         SeedFromCurrentSystemCommand = new AsyncRelayCommand(SeedFromCurrentSystemAsync);
 
@@ -141,103 +147,121 @@ public partial class ProfileBuilderViewModel : ObservableObject
         {
             var featureDefinitions = new[]
             {
-                (Id: FeatureIds.Privacy, Name: "Privacy", IconKey: "PrivacyIconPath", IconPack: "Local"),
-                (Id: FeatureIds.Power, Name: "Power", IconKey: "PowerIconPath", IconPack: "Local"),
-                (Id: FeatureIds.GamingPerformance, Name: "Gaming & Performance", IconKey: "GamingIconPath", IconPack: "Local"),
-                (Id: FeatureIds.Update, Name: "Update", IconKey: "UpdateIconSymbol", IconPack: "Local"),
-                (Id: FeatureIds.Notifications, Name: "Notifications", IconKey: "NotificationIconPath", IconPack: "Local"),
-                (Id: FeatureIds.Sound, Name: "Sound", IconKey: "SoundIconSymbol", IconPack: "Local"),
-                (Id: FeatureIds.WindowsTheme, Name: "Theme", IconKey: "WindowsThemeIconGlyph", IconPack: "Local"),
-                (Id: FeatureIds.StartMenu, Name: "Start Menu", IconKey: "StartMenuIconGlyph", IconPack: "Local"),
-                (Id: FeatureIds.Taskbar, Name: "Taskbar", IconKey: "TaskbarIconGlyph", IconPack: "Local"),
-                (Id: FeatureIds.ExplorerCustomization, Name: "Explorer", IconKey: "ExplorerIconGlyph", IconPack: "Local")
+                // WINOPTIMIZE GROUP
+                (Id: FeatureIds.Privacy, Name: "Privacy", IconKey: "PrivacyIconPath", IconPack: "Local", Group: "Optimizations"),
+                (Id: FeatureIds.Power, Name: "Power", IconKey: "PowerIconPath", IconPack: "Local", Group: "Optimizations"),
+                (Id: FeatureIds.GamingPerformance, Name: "Gaming & Performance", IconKey: "GamingIconPath", IconPack: "Local", Group: "Optimizations"),
+                (Id: FeatureIds.Update, Name: "Update", IconKey: "UpdateIconSymbol", IconPack: "Local", Group: "Optimizations"),
+                (Id: FeatureIds.Notifications, Name: "Notifications", IconKey: "NotificationIconPath", IconPack: "Local", Group: "Optimizations"),
+                (Id: FeatureIds.Sound, Name: "Sound", IconKey: "SoundIconSymbol", IconPack: "Local", Group: "Optimizations"),
+
+                // WINCUSTOMIZE GROUP
+                (Id: FeatureIds.WindowsTheme, Name: "Theme", IconKey: "WindowsThemeIconGlyph", IconPack: "Local", Group: "Customizations"),
+                (Id: FeatureIds.StartMenu, Name: "Start Menu", IconKey: "StartMenuIconGlyph", IconPack: "Local", Group: "Customizations"),
+                (Id: FeatureIds.Taskbar, Name: "Taskbar", IconKey: "TaskbarIconGlyph", IconPack: "Local", Group: "Customizations"),
+                (Id: FeatureIds.ExplorerCustomization, Name: "Explorer", IconKey: "ExplorerIconGlyph", IconPack: "Local", Group: "Customizations")
             };
 
-            foreach (var def in featureDefinitions)
+            var groupedFeatures = featureDefinitions.GroupBy(f => f.Group);
+
+            foreach (var group in groupedFeatures)
             {
-                var category = new BuilderFeatureCategory(def.Id, def.Name, def.IconKey);
-                var settings = _settingsRegistry.GetFilteredSettings(def.Id);
+                bool headerAdded = false;
 
-                foreach (var setting in settings)
+                foreach (var def in group)
                 {
-                    var config = new SettingItemViewModelConfig
+                    var category = new BuilderFeatureCategory(def.Id, def.Name, def.IconKey);
+                    var settings = _settingsRegistry.GetFilteredSettings(def.Id);
+
+                    foreach (var setting in settings)
                     {
-                        SettingDefinition = setting,
-                        SettingId = setting.Id,
-                        Name = setting.Name,
-                        Description = setting.Description ?? string.Empty,
-                        GroupName = setting.GroupName ?? "General",
-                        InputType = setting.InputType
-                    };
-
-                    var vm = new BuilderSettingViewModel(config, _settingApplicationService, _logService,
-                        _dispatcherService, _dialogService, _localizationService, _osCompressionService);
-
-                    vm.IsLocked = setting.RequiresAdvancedUnlock;
-
-                    if (setting.InputType == Enums.InputType.Selection)
-                    {
-                        if (setting.Recommendation?.LoadDynamicOptions == true)
+                        var config = new SettingItemViewModelConfig
                         {
-                            var result = await _powerPlanService.SetupPowerPlanComboBoxAsync(setting, null);
+                            SettingDefinition = setting,
+                            SettingId = setting.Id,
+                            Name = setting.Name,
+                            Description = setting.Description ?? string.Empty,
+                            GroupName = setting.GroupName ?? "General",
+                            InputType = setting.InputType
+                        };
 
-                            foreach (var opt in result.Options)
+                        var vm = new BuilderSettingViewModel(config, _settingApplicationService, _logService,
+                            _dispatcherService, _dialogService, _localizationService, _osCompressionService);
+
+                        vm.IsLocked = setting.RequiresAdvancedUnlock;
+
+                        if (setting.InputType == Enums.InputType.Selection)
+                        {
+                            if (setting.Recommendation?.LoadDynamicOptions == true)
                             {
-                                vm.ComboBoxOptions.Add(opt);
+                                var result = await _powerPlanService.SetupPowerPlanComboBoxAsync(setting, null);
+
+                                foreach (var opt in result.Options)
+                                {
+                                    vm.ComboBoxOptions.Add(opt);
+                                }
+
+                                if (result.SelectedValue != null)
+                                {
+                                    vm.SelectedValue = result.SelectedValue;
+                                }
                             }
-
-                            if (result.SelectedValue != null)
+                            else if (setting.ComboBox?.Options != null)
                             {
-                                vm.SelectedValue = result.SelectedValue;
+                                int index = 0;
+                                object? fallbackValue = null;
+
+                                foreach (var opt in setting.ComboBox.Options)
+                                {
+                                    string localizedText = _localizationService.GetString(opt.DisplayName);
+                                    if (string.IsNullOrEmpty(localizedText)) localizedText = opt.DisplayName;
+
+                                    fallbackValue ??= index;
+                                    vm.ComboBoxOptions.Add(new ComboBoxDisplayOption(localizedText, index));
+
+                                    if (opt.IsDefault) vm.SelectedValue = index;
+
+                                    index++;
+                                }
+
+                                if (vm.SelectedValue == null && fallbackValue != null)
+                                {
+                                    vm.SelectedValue = fallbackValue;
+                                }
                             }
                         }
-                        else if (setting.ComboBox?.Options != null)
+
+                        if (setting.InputType == Enums.InputType.NumericRange && setting.NumericRange != null)
                         {
-                            int index = 0;
-                            object? fallbackValue = null;
-
-                            foreach (var opt in setting.ComboBox.Options)
-                            {
-                                string localizedText = _localizationService.GetString(opt.DisplayName);
-                                if (string.IsNullOrEmpty(localizedText)) localizedText = opt.DisplayName;
-
-                                fallbackValue ??= index;
-                                vm.ComboBoxOptions.Add(new ComboBoxDisplayOption(localizedText, index));
-
-                                if (opt.IsDefault) vm.SelectedValue = index;
-
-                                index++;
-                            }
-
-                            if (vm.SelectedValue == null && fallbackValue != null)
-                            {
-                                vm.SelectedValue = fallbackValue;
-                            }
+                            vm.MinValue = setting.NumericRange.MinValue;
+                            vm.MaxValue = setting.NumericRange.MaxValue;
                         }
+
+                        /*vm.PropertyChanged += (s, e) =>
+                        {
+                            if (e.PropertyName == nameof(BuilderSettingViewModel.IsSelected))
+                            {
+                                EvaluateExportState();
+                            }
+                        };*/
+
+                        category.Settings.Add(vm);
                     }
 
-                    if (setting.InputType == Enums.InputType.NumericRange && setting.NumericRange != null)
+                    if (category.Settings.Count > 0)
                     {
-                        vm.MinValue = setting.NumericRange.MinValue;
-                        vm.MaxValue = setting.NumericRange.MaxValue;
-                    }
-
-                    /*vm.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName == nameof(BuilderSettingViewModel.IsSelected))
+                        if (!headerAdded)
                         {
-                            EvaluateExportState();
+                            Categories.Add(new BuilderCategoryHeader(group.Key));
+                            headerAdded = true;
                         }
-                    };*/
 
-                    category.Settings.Add(vm);
+                        Categories.Add(category);
+                    }
                 }
-
-                if (category.Settings.Count > 0)
-                    Categories.Add(category);
             }
 
-            SelectedCategory = Categories.FirstOrDefault();
+            SelectedCategory = Categories.OfType<BuilderFeatureCategory>().FirstOrDefault();
 
             await Task.Delay(50);
         }
@@ -255,7 +279,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
     {
         var tweaks = new List<RegistryTweak>();
 
-        foreach (var s in Categories.SelectMany(c => c.Settings).OfType<BuilderSettingViewModel>())
+        foreach (var s in Categories.OfType<BuilderFeatureCategory>().SelectMany(c => c.Settings).OfType<BuilderSettingViewModel>())
         {
             if (s.SettingDefinition == null) continue;
 
@@ -371,7 +395,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
             .SelectMany(kvp => kvp.Value)
             .ToDictionary(s => s.Id);
 
-            var settingsToDiscover = Categories
+            var settingsToDiscover = Categories.OfType<BuilderFeatureCategory>()
                 .SelectMany(c => c.Settings)
                 .Select(s => allRegisteredSettings.TryGetValue(s.SettingId, out var def) ? def : null)
                 .Where(s => s != null)
@@ -379,7 +403,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
             var systemStates = await _discoveryService.GetSettingStatesAsync(settingsToDiscover!);
 
-            foreach (var category in Categories)
+            foreach (var category in Categories.OfType<BuilderFeatureCategory>())
             {
                 foreach (var builderItem in category.Settings.OfType<BuilderSettingViewModel>())
                 {
@@ -404,7 +428,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
         try
         {
-            foreach (var category in Categories)
+            foreach (var category in Categories.OfType<BuilderFeatureCategory>())
             {
                 foreach (var setting in category.Settings.OfType<BuilderSettingViewModel>())
                 {
@@ -464,13 +488,13 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(query))
         {
-            foreach (var category in Categories)
+            foreach (var category in Categories.OfType<BuilderFeatureCategory>())
                 foreach (var setting in category.Settings)
                     setting.IsVisible = true;
             return;
         }
 
-        foreach (var category in Categories)
+        foreach (var category in Categories.OfType<BuilderFeatureCategory>())
         {
             foreach (var setting in category.Settings)
             {
@@ -496,7 +520,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
     #region Quick Actions
     public void ApplyAllRecommended()
     {
-        foreach (var category in Categories)
+        foreach (var category in Categories.OfType<BuilderFeatureCategory>())
         {
             foreach (var setting in category.Settings.OfType<BuilderSettingViewModel>())
             {
@@ -523,7 +547,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
     public void ApplyAllDefaults()
     {
-        foreach (var category in Categories)
+        foreach (var category in Categories.OfType<BuilderFeatureCategory>())
         {
             foreach (var setting in category.Settings.OfType<BuilderSettingViewModel>())
             {
@@ -551,7 +575,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
     public void PurgeProfile()
     {
-        foreach (var category in Categories)
+        foreach (var category in Categories.OfType<BuilderFeatureCategory>())
         {
             foreach (var setting in category.Settings.OfType<BuilderSettingViewModel>())
             {
@@ -582,7 +606,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
     {
         var profile = new EvolveOSProfile();
 
-        foreach (var category in Categories)
+        foreach (var category in Categories.OfType<BuilderFeatureCategory>())
         {
             var profileFeature = new ProfileFeature();
 
@@ -631,7 +655,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
             foreach (var kvp in profile.Customize.Features) allProfileFeatures[kvp.Key] = kvp.Value;
         }
 
-        foreach (var category in Categories)
+        foreach (var category in Categories.OfType<BuilderFeatureCategory>())
         {
             if (allProfileFeatures.TryGetValue(category.FeatureId, out var profileFeature))
             {
@@ -720,7 +744,7 @@ public partial class ProfileBuilderViewModel : ObservableObject
     {
         if (IsDirty) return true;
 
-        foreach (var category in Categories)
+        foreach (var category in Categories.OfType<BuilderFeatureCategory>())
         {
             foreach (var setting in category.Settings.OfType<BuilderSettingViewModel>())
             {

@@ -323,7 +323,8 @@ public sealed partial class ProfileBuilderPage : Page
 
     private void NavigateToSearchedSetting(SearchSuggestionItem suggestion)
     {
-        var targetCategory = ViewModel.Categories.FirstOrDefault(c => c.DisplayName == suggestion.SectionDisplayName);
+        var targetCategory = ViewModel.Categories.OfType<BuilderFeatureCategory>()
+                                         .FirstOrDefault(c => c.DisplayName == suggestion.SectionDisplayName);
 
         if (targetCategory != null)
         {

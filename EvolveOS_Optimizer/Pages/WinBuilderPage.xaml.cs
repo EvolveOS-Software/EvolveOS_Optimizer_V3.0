@@ -12,6 +12,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml.Markup;
 using Windows.System;
 
 namespace EvolveOS_Optimizer.Pages
@@ -76,6 +77,11 @@ namespace EvolveOS_Optimizer.Pages
                     WinBuild_Title.Text = ResourceString.GetString("autounattend_builder_title") ?? "Autounattend Builder";
                     WinBuild_Desc.Text = ResourceString.GetString("autounattend_builder_desc") ?? "Generate a custom unattended XML file for live Windows deployments.";
 
+                    if (Application.Current.Resources.TryGetValue("AutounattendXmlIconPath", out object xmlIcon) && xmlIcon is string xmlString)
+                    {
+                        HeaderLogo.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), xmlString);
+                    }
+
                     UpdateWizardUI();
                 }
                 else
@@ -87,6 +93,11 @@ namespace EvolveOS_Optimizer.Pages
 
                     WinBuild_Title.Text = ResourceString.GetString("winbuilder_title") ?? "Windows ISO Builder";
                     WinBuild_Desc.Text = ResourceString.GetString("winbuilder_description") ?? "Configure and build a custom Windows installation image.";
+
+                    if (Application.Current.Resources.TryGetValue("WinBuilderIconPath", out object isoIcon) && isoIcon is string isoString)
+                    {
+                        HeaderLogo.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), isoString);
+                    }
                 }
             }
         }

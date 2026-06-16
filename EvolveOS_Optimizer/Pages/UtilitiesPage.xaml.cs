@@ -50,7 +50,7 @@ namespace EvolveOS_Optimizer.Pages
                 Type pageType = tag switch
                 {
                     "AdvancedUtilsPage" => typeof(AdvancedUtilsPage),
-                    "WinBuilderPage" => typeof(WinBuilderPage),
+                    //"WinBuilderPage" => typeof(WinBuilderPage),
                     _ => typeof(AdvancedUtilsPage)
                 };
 
@@ -85,7 +85,7 @@ namespace EvolveOS_Optimizer.Pages
                 Type expectedType = tag switch
                 {
                     "AdvancedUtilsPage" => typeof(AdvancedUtilsPage),
-                    "WinBuilderPage" => typeof(WinBuilderPage),
+                    //"WinBuilderPage" => typeof(WinBuilderPage),
                     _ => typeof(AdvancedUtilsPage)
                 };
 
