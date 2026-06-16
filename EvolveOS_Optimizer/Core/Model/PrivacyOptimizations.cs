@@ -199,7 +199,7 @@ public static class PrivacyAndSecurityOptimizations
                 new SettingDefinition
                 {
                     Id = "security-app-compat-inventory",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Disable App Compat Inventory",
                     Description = "Prevents Windows from scanning and inventorying installed applications for compatibility analysis.",
@@ -438,7 +438,7 @@ public static class PrivacyAndSecurityOptimizations
                 new SettingDefinition
                 {
                     Id = "security-zone-information",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Save Zone Information (Mark of the Web)",
                     Description = "Preserves zone information on downloaded files, ensuring Windows warns you before running executables downloaded from the internet",
                     GroupName = "Security",
@@ -1100,7 +1100,7 @@ public static class PrivacyAndSecurityOptimizations
                 new SettingDefinition
                 {
                     Id = "privacy-sync-settings",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Sync your settings",
                     Description = "Synchronize passwords, language preferences, and Windows settings across your devices using your Microsoft account",
@@ -1512,7 +1512,7 @@ public static class PrivacyAndSecurityOptimizations
                 new SettingDefinition
                 {
                     Id = "privacy-diagnostic-hub-collector",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Disable Diagnostic Hub Standard Collector",
                     Description = "Disables the 'Diagnostic Hub Standard Collector' service to stop background data collection. Requires a system restart to take effect.",
@@ -1560,7 +1560,7 @@ public static class PrivacyAndSecurityOptimizations
                 new SettingDefinition
                 {
                     Id = "privacy-windows-experimentation",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Windows Experimentation",
                     Description = "Allows Microsoft to silently test experimental features, settings, and UI changes on your device in the background",
                     GroupName = "Diagnostics & Feedback",
@@ -1583,7 +1583,7 @@ public static class PrivacyAndSecurityOptimizations
                 new SettingDefinition
                 {
                     Id = "privacy-edge-telemetry",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Microsoft Edge Telemetry",
                     Description = "Allows Microsoft Edge to send usage statistics and crash reports to Microsoft",
                     GroupName = "Diagnostics & Feedback",
@@ -1607,7 +1607,7 @@ public static class PrivacyAndSecurityOptimizations
                 new SettingDefinition
                 {
                     Id = "privacy-chrome-telemetry",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Google Chrome Telemetry",
                     Description = "Allows Google Chrome to send usage statistics and crash reports to Google",
                     GroupName = "Diagnostics & Feedback",
@@ -1631,7 +1631,7 @@ public static class PrivacyAndSecurityOptimizations
                 new SettingDefinition
                 {
                     Id = "privacy-firefox-telemetry",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Mozilla Firefox Telemetry",
                     Description = "Allows Mozilla Firefox to send usage statistics and crash reports to Mozilla",
                     GroupName = "Diagnostics & Feedback",
@@ -1724,7 +1724,7 @@ public static class PrivacyAndSecurityOptimizations
                 new SettingDefinition
                 {
                     Id = "privacy-cross-device-clipboard",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Cross-Device Clipboard Sync",
                     Description = "Syncs your copied text and images to the cloud so you can paste them on your other Windows devices",
                     GroupName = "Activity History",

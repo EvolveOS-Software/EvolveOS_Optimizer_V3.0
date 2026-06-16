@@ -685,7 +685,6 @@ public static class UpdateOptimizations
                     GroupName = "Update Behavior",
                     Icon = "PackageVariantRemove",
                     InputType = InputType.Toggle,
-                    AddedInVersion = "25.04.08",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting

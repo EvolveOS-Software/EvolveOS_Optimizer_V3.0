@@ -123,7 +123,7 @@ public static class WindowsThemeCustomizations
                 new SettingDefinition
                 {
                     Id = "theme-logon-acrylic",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Acrylic background on sign-in screen",
                     Description = "Show a translucent acrylic blur effect on the Windows logon screen",
@@ -148,7 +148,7 @@ public static class WindowsThemeCustomizations
                 new SettingDefinition
                 {
                     Id = "theme-force-default-user-tile",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Force default user profile picture",
                     Description = "Forces all user accounts to use the default generic user silhouette image, preventing profile picture customization.",

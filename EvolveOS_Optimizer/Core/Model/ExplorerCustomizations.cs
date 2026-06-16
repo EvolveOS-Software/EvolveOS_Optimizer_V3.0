@@ -117,7 +117,7 @@ public static class ExplorerCustomizations
                 new SettingDefinition
                 {
                     Id = "explorer-customization-show-this-pc",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Show 'This PC' icon",
                     Description = "Display the 'This PC' icon on the desktop",
@@ -152,7 +152,7 @@ public static class ExplorerCustomizations
                 new SettingDefinition
                 {
                     Id = "explorer-customization-show-recycle-bin",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Show Recycle Bin icon",
                     Description = "Display the 'Recycle Bin' icon on the desktop",

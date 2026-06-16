@@ -178,7 +178,6 @@ public static class TaskbarCustomizations
                     InputType = InputType.Toggle,
                     Icon = "ArrowCollapseDown",
                     RestartProcess = "Explorer",
-                    AddedInVersion = "26.04.08",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -206,7 +205,6 @@ public static class TaskbarCustomizations
                     Icon = "DockBottom",
                     RequiresRestart = true,
                     RestartProcess = "Explorer",
-                    AddedInVersion = "26.04.03",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -266,7 +264,6 @@ public static class TaskbarCustomizations
                     GroupName = "Taskbar Behavior",
                     InputType = InputType.Toggle,
                     Icon = "Bell",
-                    AddedInVersion = "26.04.08",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -291,7 +288,6 @@ public static class TaskbarCustomizations
                     InputType = InputType.Toggle,
                     Icon = "FlashAlert",
                     IsWindows11Only = true,
-                    AddedInVersion = "26.04.08",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -316,7 +312,6 @@ public static class TaskbarCustomizations
                     InputType = InputType.Toggle,
                     Icon = "MonitorMultiple",
                     RestartProcess = "Explorer",
-                    AddedInVersion = "26.04.08",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -341,7 +336,6 @@ public static class TaskbarCustomizations
                     InputType = InputType.Selection,
                     Icon = "Monitor",
                     RestartProcess = "Explorer",
-                    AddedInVersion = "26.04.08",
                     ParentSettingId = "taskbar-multi-display",
                     RegistrySettings = new List<RegistrySetting>
                     {
@@ -388,7 +382,6 @@ public static class TaskbarCustomizations
                     InputType = InputType.Toggle,
                     Icon = "ShareVariant",
                     IsWindows11Only = true,
-                    AddedInVersion = "26.04.08",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -413,7 +406,6 @@ public static class TaskbarCustomizations
                     InputType = InputType.Toggle,
                     Icon = "DesktopClassic",
                     IsWindows11Only = true,
-                    AddedInVersion = "26.04.08",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -437,7 +429,6 @@ public static class TaskbarCustomizations
                     GroupName = "Taskbar Behavior",
                     InputType = InputType.Selection,
                     Icon = "Tab",
-                    AddedInVersion = "26.04.08",
                     RestartProcess = "Explorer",
                     RegistrySettings = new List<RegistrySetting>
                     {
@@ -483,7 +474,6 @@ public static class TaskbarCustomizations
                     GroupName = "Taskbar Behavior",
                     InputType = InputType.Selection,
                     Icon = "TabUnselected",
-                    AddedInVersion = "26.04.08",
                     RestartProcess = "Explorer",
                     ParentSettingId = "taskbar-multi-display",
                     RegistrySettings = new List<RegistrySetting>
@@ -532,8 +522,7 @@ public static class TaskbarCustomizations
                     Icon = "Resize",
                     IsWindows11Only = true,
                     MinimumBuildNumber = 26100,
-                    MinimumBuildRevision = 4484, // Introduced in 26100.4484 (KB5060829, June 2025)
-                    AddedInVersion = "26.04.08",
+                    MinimumBuildRevision = 4484,
                     RestartProcess = "Explorer",
                     RegistrySettings = new List<RegistrySetting>
                     {
@@ -652,7 +641,6 @@ public static class TaskbarCustomizations
                     InputType = InputType.Selection,
                     Icon = "TrayFull",
                     IsWindows11Only = true,
-                    AddedInVersion = "25.04.08",
                     DetectionType = DetectionType.SystemTrayIcons,
                     RestartProcess = "Explorer",
                     ComboBox = new ComboBoxMetadata
@@ -748,7 +736,6 @@ public static class TaskbarCustomizations
                     Name = "Copilot Companion Button",
                     Description = "Show or hide the newer Copilot companion button on the taskbar",
                     GroupName = "Taskbar Icons",
-                    AddedInVersion = "26.04.10",
                     Icon = "Robot",
                     InputType = InputType.Toggle,
                     IsWindows11Only = true,
@@ -773,7 +760,6 @@ public static class TaskbarCustomizations
                     Name = "Copilot PWA Pin",
                     Description = "Show or hide the Copilot PWA pin on the taskbar",
                     GroupName = "Taskbar Icons",
-                    AddedInVersion = "26.04.10",
                     Icon = "Pin",
                     InputType = InputType.Toggle,
                     IsWindows11Only = true,
@@ -798,7 +784,6 @@ public static class TaskbarCustomizations
                     Name = "Recall Pin",
                     Description = "Show or hide the Recall pin on the taskbar",
                     GroupName = "Taskbar Icons",
-                    AddedInVersion = "26.04.10",
                     Icon = "History",
                     InputType = InputType.Toggle,
                     IsWindows11Only = true,

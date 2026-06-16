@@ -70,7 +70,6 @@ public static class GamingAndPerformanceOptimizations
                     Description = "Control whether apps can run in the background via Group Policy. Force Deny removes per-app background settings from Windows Settings. Use User in Control if you need apps like Teams, Zoom, or WhatsApp",
                     Icon = "Apps",
                     InputType = InputType.Selection,
-                    AddedInVersion = "26.04.08",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -162,7 +161,6 @@ public static class GamingAndPerformanceOptimizations
                     ActionCommand = "gaming-performance-os-compression",
                     ActionText = "Manage",
                     RequiresConfirmation = false,
-                    AddedInVersion = "1.1.5.331"
                 },
                 new SettingDefinition
                 {
@@ -193,7 +191,6 @@ public static class GamingAndPerformanceOptimizations
                     IconPack = "Fluent",
                     Icon = "GlobeSearch",
                     InputType = InputType.Toggle,
-                    AddedInVersion = "26.04.03",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -322,7 +319,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-performance-mouse-sensitivity",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Mouse Sensitivity",
                     Description = "Adjust the global Windows mouse pointer sensitivity. 10 is the default center mark",
@@ -435,7 +432,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-performance-keyboard-delay",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Keyboard Repeat Delay",
                     Description = "Adjust how long you must hold down a key before it starts repeating. Lower is faster",
@@ -464,7 +461,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-performance-keyboard-speed",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     IsSubjectivePreference = true,
                     Name = "Keyboard Repeat Rate",
                     Description = "Adjust how fast a key repeats when held down. Higher is faster",
@@ -604,7 +601,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-dynamic-tick",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Dynamic Tick",
                     Description = "Allows the system clock to pause during idle periods to save power. Turning this off forces a constant tick rate, which can reduce DPC latency and fix micro-stutters in games.",
                     GroupName = "Processor",
@@ -637,7 +634,6 @@ public static class GamingAndPerformanceOptimizations
                     IconPack = "Fluent",
                     Icon = "BranchCompare",
                     InputType = InputType.Selection,
-                    AddedInVersion = "25.04.03",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -907,7 +903,6 @@ public static class GamingAndPerformanceOptimizations
                     InputType = InputType.Toggle,
                     IsWindows11Only = true,
                     RequiresRestart = true,
-                    AddedInVersion = "26.03.27",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -934,7 +929,6 @@ public static class GamingAndPerformanceOptimizations
                     Icon = "MonitorDashboard",
                     InputType = InputType.Toggle,
                     RequiresRestart = true,
-                    AddedInVersion = "26.04.03",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -960,7 +954,6 @@ public static class GamingAndPerformanceOptimizations
                     Icon = "MonitorDashboard",
                     InputType = InputType.Toggle,
                     RequiresRestart = true,
-                    AddedInVersion = "26.05.08",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -986,7 +979,6 @@ public static class GamingAndPerformanceOptimizations
                     Icon = "MonitorDashboard",
                     InputType = InputType.Toggle,
                     RequiresRestart = true,
-                    AddedInVersion = "26.04.03",
                     RegistrySettings = new List<RegistrySetting>
                     {
                         new RegistrySetting
@@ -1066,7 +1058,6 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-afd-fast-send",
-                    AddedInVersion = "1.1.5.331",
                     Name = "AFD Fast Send Datagram Threshold",
                     Description = "Optimizes the Ancillary Function Driver (AFD) for networking by adjusting the buffer size for UDP packets. Can improve network latency in fast-paced multiplayer games",
                     GroupName = "Network",
@@ -1097,7 +1088,6 @@ public static class GamingAndPerformanceOptimizations
                     Icon = "Dns",
                     InputType = InputType.Selection,
                     DetectionType = DetectionType.DnsServer,
-                    AddedInVersion = "26.04.08",
                     ComboBox = new ComboBoxMetadata
                     {
                         Options = new[]
@@ -1195,7 +1185,6 @@ public static class GamingAndPerformanceOptimizations
                     GroupName = "Security",
                     Icon = "ShieldLock",
                     InputType = InputType.Toggle,
-                    AddedInVersion = "26.04.01",
                     RequiresRestart = true,
                     RegistrySettings = new List<RegistrySetting>
                     {
@@ -1240,7 +1229,6 @@ public static class GamingAndPerformanceOptimizations
                     GroupName = "Security",
                     Icon = "MemoryArrowDown",
                     InputType = InputType.Toggle,
-                    AddedInVersion = "26.04.01",
                     RequiresRestart = true,
                     ParentSettingId = "gaming-virtualization-based-security",
                     Dependencies = new List<SettingDependency>
@@ -1626,7 +1614,6 @@ public static class GamingAndPerformanceOptimizations
                     Icon = "CellphoneLink",
                     InputType = InputType.Selection,
                     RequiresRestart = true,
-                    AddedInVersion = "26.03.27",
                     ComboBox = new ComboBoxMetadata
                     {
                         Options = new[]
@@ -2665,7 +2652,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-auto-end-tasks",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Auto End Tasks",
                     Description = "Automatically forces 'Not Responding' applications to close when you shut down or restart your computer, preventing shutdown hangs",
                     GroupName = "System Services",
@@ -2869,7 +2856,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-fast-shutdown-pagefile",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Clear Pagefile at Shutdown",
                     Description = "Securely erases the virtual memory pagefile when shutting down. Turning this off significantly speeds up your PC's shutdown and restart times.",
                     GroupName = "System Services",
@@ -2893,7 +2880,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-large-system-cache",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Large System Cache",
                     Description = "Prioritizes the Windows file system cache over application memory. Turning this off is recommended for gaming to ensure your games have maximum available RAM.",
                     GroupName = "System Services",
@@ -2923,7 +2910,6 @@ public static class GamingAndPerformanceOptimizations
                     GroupName = "System Services",
                     Icon = "KeyboardOutline",
                     InputType = InputType.Selection,
-                    AddedInVersion = "26.04.03",
                     ComboBox = new ComboBoxMetadata
                     {
                         Options = new[]
@@ -2988,7 +2974,6 @@ public static class GamingAndPerformanceOptimizations
                     GroupName = "System Services",
                     Icon = "PhoneClassic",
                     InputType = InputType.Selection,
-                    AddedInVersion = "26.05.18",
                     RequiresRestart = true,
                     ComboBox = new ComboBoxMetadata
                     {
@@ -3117,7 +3102,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-diagnostic-troubleshooting-services",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Diagnostic & Troubleshooting Services",
                     Description = "Runs background diagnostics and the Windows Troubleshooter infrastructure. Disabling prevents Windows from automatically detecting and fixing system issues, saving background resources",
                     GroupName = "System Services",
@@ -3160,7 +3145,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-hyper-v-guest-services",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Hyper-V Guest Services",
                     Description = "Integration services for when Windows is running inside a Hyper-V virtual machine. Safe to disable if this PC is a physical machine and not a VM",
                     GroupName = "System Services",
@@ -3198,7 +3183,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-enterprise-services",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Enterprise & App Management Services",
                     Description = "Manages Enterprise app deployment, Work Folders, and Assigned Access (Kiosk mode). Safe to disable on personal gaming PCs not connected to a corporate domain",
                     GroupName = "System Services",
@@ -3239,7 +3224,6 @@ public static class GamingAndPerformanceOptimizations
                     Name = "Windows AI Fabric Service",
                     Description = "Windows AI Fabric Service (WSAIFabricSvc) manages AI workloads. Disable if you don't use Windows AI features",
                     GroupName = "System Services",
-                    AddedInVersion = "26.04.10",
                     Icon = "Robot",
                     InputType = InputType.Selection,
                     IsWindows11Only = true,
@@ -3282,7 +3266,7 @@ public static class GamingAndPerformanceOptimizations
                 new SettingDefinition
                 {
                     Id = "gaming-network-discovery-services",
-                    AddedInVersion = "1.1.5.331",
+                    //AddedInVersion = "1.1.5.331",
                     Name = "Network Discovery & Sharing Services",
                     Description = "Manages file sharing and network computer discovery. If you don't share files or printers over your local network, disable this to reduce background broadcast activity",
                     GroupName = "System Services",
@@ -3618,7 +3602,6 @@ public static class GamingAndPerformanceOptimizations
                     Name = "Windows AI Tasks",
                     Description = "Windows AI scheduled tasks including Recall configuration. Disable to prevent AI features from running in the background",
                     GroupName = "Scheduled Tasks",
-                    AddedInVersion = "26.04.10",
                     Icon = "Robot",
                     InputType = InputType.Toggle,
                     IsWindows11Only = true,
@@ -3646,7 +3629,6 @@ public static class GamingAndPerformanceOptimizations
                     Name = "Office Actions Server Task",
                     Description = "Office AI Actions Server scheduled task. Disable to prevent Office AI from running in the background",
                     GroupName = "Scheduled Tasks",
-                    AddedInVersion = "26.04.10",
                     Icon = "CalendarClock",
                     InputType = InputType.Toggle,
                     ScheduledTaskSettings = new List<ScheduledTaskSetting>
@@ -4529,7 +4511,6 @@ public static class GamingAndPerformanceOptimizations
                     Description = "Allow Windows to automatically create restore points for the C: drive, making it possible to undo system changes if something goes wrong",
                     Icon = "History",
                     InputType = InputType.Toggle,
-                    AddedInVersion = "26.05.13",
                     DetectionType = DetectionType.SystemRestore,
                     PowerShellScripts = new List<PowerShellScriptSetting>
                     {
