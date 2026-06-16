@@ -3405,4 +3405,89 @@
     <sys:String x:Key="values_vm_loading_values">Waarden laden...</sys:String>
     <sys:String x:Key="values_vm_load_keys_failed">Laden van sleutels mislukt: {0}</sys:String>
     <!-- endregion Registry Editor -->
+
+    <!-- region Profile Builder -->
+    <sys:String x:Key="Global_OK">OK</sys:String>
+    <sys:String x:Key="Global_Cancel">Annuleren</sys:String>
+    <sys:String x:Key="Global_Import">Importeren</sys:String>
+    <sys:String x:Key="Global_Clear">Wissen</sys:String>
+
+    <sys:String x:Key="autounattend_builder_title">Autounattend Builder</sys:String>
+    <sys:String x:Key="autounattend_builder_desc">Genereer een aangepast unattended XML-bestand voor live Windows-implementaties.</sys:String>
+
+    <sys:String x:Key="profile_builder_title">Profielbouwer</sys:String>
+    <sys:String x:Key="profile_builder_description">Maak, pas aan en bewaar EvolveOS Optimizer configuratieprofielen.</sys:String>
+    <sys:String x:Key="ProfileBuilder_LoadingSettingsText">Instellingen laden...</sys:String>
+    <sys:String x:Key="ProfileBuilder_SearchPlaceholder">Instellingen zoeken...</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportedBadge">Geïmporteerd</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_QuickActions">Snelle acties</sys:String>
+    <sys:String x:Key="ProfileBuilder_LoadFromPC">Laden van pc</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportLabel">Exporteren</sys:String>
+    <sys:String x:Key="ProfileBuilder_ApplyNow">Toepassen op pc</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ExportConfigItem">Config exporteren (.json)</sys:String>
+    <sys:String x:Key="ProfileBuilder_SaveAsXmlItem">Opslaan als Autounattend (.xml)</sys:String>
+    <sys:String x:Key="ProfileBuilder_BuildIsoItem">OS-media bouwen (.iso)</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ClearAllTooltip">Wis alle aangepaste instellingen.</sys:String>
+    <sys:String x:Key="ProfileBuilder_LoadFromPCTooltip">Leest de huidige instellingen van uw pc.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportTooltip">Laad een opgeslagen JSON-configuratieprofiel.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportTooltip">Selecteer een exportformaat voor uw configuratie.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ApplyToPCTooltip">Past deze exacte configuratie toe op uw huidige pc.</sys:String>
+    <sys:String x:Key="ProfileBuilder_AcceptImportedTooltip">Geïmporteerde waarde accepteren</sys:String>
+    <sys:String x:Key="ProfileBuilder_KeepCurrentTooltip">Huidige waarde behouden</sys:String>
+    <sys:String x:Key="ai_explainer_tooltip">Meer informatie over deze instelling</sys:String>
+    <sys:String x:Key="ai_explainer_explanation">Uitleg van instelling</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_Category_Privacy">Privacy</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Power">Energie</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Gaming">Gaming &amp; Prestaties</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Update">Update</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Notifications">Meldingen</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Sound">Geluid</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Theme">Thema</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_StartMenu">Startmenu</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Taskbar">Taakbalk</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Explorer">Verkenner</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_Group_Optimizations">Optimalisaties</sys:String>
+    <sys:String x:Key="ProfileBuilder_Group_Customizations">Aanpassingen</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ExportTitle">EvolveOS-profiel exporteren</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportFilterName">EvolveOS-profiel (*.json)</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportSuccessTitle">Profiel geëxporteerd</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportSuccessContent">Uw configuratieprofiel is succesvol opgeslagen.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportFailedTitle">Export mislukt</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportFailedContent">Er is een fout opgetreden bij het opslaan van het profiel: {0}</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ImportTitle">EvolveOS-profiel importeren</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportFilterName">EvolveOS-profiel (*.json)</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportApplyImmediately">Profielinstellingen onmiddellijk toepassen (voorbeeld overslaan)</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportPromptContent">Hoe wilt u dit profiel laden?</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportSuccessAppliedTitle">Profiel toegepast</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportSuccessStagedTitle">Profiel klaargezet</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportSuccessAppliedContent">Uw configuratieprofiel is geladen en onmiddellijk toegepast op de bouwer.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportSuccessStagedContent">Uw configuratieprofiel is geladen in de voorbeeldmodus. U kunt nu de voorgestelde wijzigingen bekijken en accepteren.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportFailedTitle">Importeren mislukt</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportFailedContent">Er is een fout opgetreden bij het laden van het profiel: {0}&#x0a;Zorg ervoor dat het een geldig EvolveOS JSON-profiel is.</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ApplyRecommendedTitle">Aanbevolen toepassen</sys:String>
+    <sys:String x:Key="ProfileBuilder_ApplyRecommendedContent">Hiermee worden alle instellingen in de bouwer bijgewerkt naar de aanbevolen waarden van EvolveOS Optimizer. Doorgaan?</sys:String>
+    <sys:String x:Key="ProfileBuilder_ResetDefaultsTitle">Herstellen naar standaardwaarden</sys:String>
+    <sys:String x:Key="ProfileBuilder_ResetDefaultsContent">Hiermee worden alle instellingen in de bouwer bijgewerkt naar de standaard Windows-waarden. Doorgaan?</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_PurgeTitle">Profiel wissen?</sys:String>
+    <sys:String x:Key="ProfileBuilder_PurgeContent">Weet u zeker dat u alle instellingen wilt wissen? Hiermee wordt de bouwer teruggezet naar de standaardstatus en dit kan niet ongedaan worden gemaakt.</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ApplyPCTitle">Configuratie toepassen op lokale pc?</sys:String>
+    <sys:String x:Key="ProfileBuilder_ApplyPCContent">Hiermee omzeilt u de bouwer-sandbox en worden alle geconfigureerde instellingen, tweaks en optimalisaties onmiddellijk op deze computer toegepast. Wilt u doorgaan?</sys:String>
+    <sys:String x:Key="ProfileBuilder_DeploymentCompleteTitle">Implementatie voltooid</sys:String>
+    <sys:String x:Key="ProfileBuilder_DeploymentCompleteContent">De profielconfiguratie is succesvol toegepast op uw lokale systeem.</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_UnsavedTitle">Niet-opgeslagen configuratie</sys:String>
+    <sys:String x:Key="ProfileBuilder_UnsavedContent">U hebt een actieve configuratie. Als u nu weggaat, worden uw huidige instellingen gereset. Weet u zeker dat u wilt weggaan?</sys:String>
+    <sys:String x:Key="ProfileBuilder_LeaveReset">Verlaten &amp; resetten</sys:String>
+    <sys:String x:Key="ProfileBuilder_StayHere">Blijf hier</sys:String>
+    <!-- endregion Profile Builder -->
 </ResourceDictionary>

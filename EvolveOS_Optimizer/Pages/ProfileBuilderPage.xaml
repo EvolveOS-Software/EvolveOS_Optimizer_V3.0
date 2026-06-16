@@ -20,12 +20,12 @@
 
         <DataTemplate x:Key="NavItemTemplate" x:DataType="vm:BuilderFeatureCategory">
             <NavigationViewItem Content="{x:Bind DisplayName}" 
-                            Icon="{x:Bind Mode=OneWay, Converter={StaticResource IconConverter}}" />
+                                Icon="{x:Bind Mode=OneWay, Converter={StaticResource IconConverter}}" />
         </DataTemplate>
 
         <selectors:BuilderNavItemTemplateSelector x:Key="NavItemSelector"
-                                              HeaderTemplate="{StaticResource NavHeaderTemplate}"
-                                              ItemTemplate="{StaticResource NavItemTemplate}" />
+                                                  HeaderTemplate="{StaticResource NavHeaderTemplate}"
+                                                  ItemTemplate="{StaticResource NavItemTemplate}" />
     </Page.Resources>
 
     <Grid x:Name="RootGrid">
@@ -61,18 +61,18 @@
 
             <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right" Margin="0,12,10,0">
 
-                <AppBarButton x:Name="QuickActionsLabel" Label="Quick Actions">
+                <AppBarButton x:Name="QuickActionsLabel" Label="{helpers:ResourceString Key=ProfileBuilder_QuickActions}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE945;" FontSize="16"/>
                     </AppBarButton.Icon>
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="BottomEdgeAlignedRight">
-                            <MenuFlyoutItem x:Name="ApplyRecommendedItem" Text="Apply Recommended" Click="ApplyRecommended_Click">
+                            <MenuFlyoutItem x:Name="ApplyRecommendedItem" Text="{helpers:ResourceString Key=ProfileBuilder_ApplyRecommendedTitle}" Click="ApplyRecommended_Click">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon x:Name="ApplyRecommendedIcon" Glyph="&#xE735;" FontSize="14"/>
                                 </MenuFlyoutItem.Icon>
                             </MenuFlyoutItem>
-                            <MenuFlyoutItem x:Name="ResetDefaultsItem" Text="Reset to Defaults" Click="ResetDefaults_Click">
+                            <MenuFlyoutItem x:Name="ResetDefaultsItem" Text="{helpers:ResourceString Key=ProfileBuilder_ResetDefaultsTitle}" Click="ResetDefaults_Click">
                                 <MenuFlyoutItem.Icon>
                                     <PathIcon x:Name="ResetDefaultsIcon" Data="{StaticResource WindowsLogoIconPath}"/>
                                 </MenuFlyoutItem.Icon>
@@ -83,9 +83,9 @@
 
                 <AppBarSeparator/>
 
-                <AppBarButton Icon="Delete" Label="Clear All" 
+                <AppBarButton Icon="Delete" Label="{helpers:ResourceString Key=Global_Clear}" 
                               Click="PurgeProfile_Click"
-                              ToolTipService.ToolTip="Clear all customized settings."/>
+                              ToolTipService.ToolTip="{helpers:ResourceString Key=ProfileBuilder_ClearAllTooltip}"/>
                 <AppBarElementContainer VerticalAlignment="Center"
                                         Visibility="{x:Bind ViewModel.IsPurging, Mode=OneWay}">
 
@@ -94,9 +94,9 @@
 
                 </AppBarElementContainer>
 
-                <AppBarButton Icon="Download" Label="Load from PC" 
+                <AppBarButton Icon="Download" Label="{helpers:ResourceString Key=ProfileBuilder_LoadFromPC}" 
                               Command="{x:Bind ViewModel.SeedFromCurrentSystemCommand}"
-                              ToolTipService.ToolTip="Reads your PC's current settings."/>
+                              ToolTipService.ToolTip="{helpers:ResourceString Key=ProfileBuilder_LoadFromPCTooltip}"/>
                 <AppBarElementContainer VerticalAlignment="Center"
                                         Visibility="{x:Bind ViewModel.IsSeeding, Mode=OneWay}">
 
@@ -105,28 +105,28 @@
 
                 </AppBarElementContainer>
 
-                <AppBarButton Icon="OpenFile" Label="Import" 
+                <AppBarButton Icon="OpenFile" Label="{helpers:ResourceString Key=Global_Import}" 
                               Click="ImportProfile_Click"
-                              ToolTipService.ToolTip="Load a saved JSON configuration profile."/>
+                              ToolTipService.ToolTip="{helpers:ResourceString Key=ProfileBuilder_ImportTooltip}"/>
 
-                <AppBarButton Icon="Save" Label="Export"
+                <AppBarButton Icon="Save" Label="{helpers:ResourceString Key=ProfileBuilder_ExportLabel}"
                               IsEnabled="{x:Bind ViewModel.CanExport, Mode=OneWay}"
-                              ToolTipService.ToolTip="Select an export format for your configuration.">
+                              ToolTipService.ToolTip="{helpers:ResourceString Key=ProfileBuilder_ExportTooltip}">
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="BottomEdgeAlignedRight">
-                            <MenuFlyoutItem Text="Export Config (.json)" Click="ExportProfile_Click">
+                            <MenuFlyoutItem Text="{helpers:ResourceString Key=ProfileBuilder_ExportConfigItem}" Click="ExportProfile_Click">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon Glyph="&#xE792;" />
                                 </MenuFlyoutItem.Icon>
                             </MenuFlyoutItem>
 
-                            <MenuFlyoutItem Text="Save as Autounattend (.xml)" Click="ExportXml_Click">
+                            <MenuFlyoutItem Text="{helpers:ResourceString Key=ProfileBuilder_SaveAsXmlItem}" Click="ExportXml_Click">
                                 <MenuFlyoutItem.Icon>
                                     <PathIcon Data="{StaticResource AutounattendXmlIconPath}" />
                                 </MenuFlyoutItem.Icon>
                             </MenuFlyoutItem>
 
-                            <MenuFlyoutItem Text="Build OS Media (.iso)" Click="ExportIso_Click">
+                            <MenuFlyoutItem Text="{helpers:ResourceString Key=ProfileBuilder_BuildIsoItem}" Click="ExportIso_Click">
                                 <MenuFlyoutItem.Icon>
                                     <PathIcon Data="{StaticResource WinBuilderIconPath}" />
                                 </MenuFlyoutItem.Icon>
@@ -137,15 +137,15 @@
 
                 <AppBarSeparator/>
 
-                <AppBarButton Icon="Play" Label="Apply to PC" Click="ApplyToPC_Click"
+                <AppBarButton Icon="Play" Label="{helpers:ResourceString Key=ProfileBuilder_ApplyNow}" Click="ApplyToPC_Click"
                               IsEnabled="{x:Bind ViewModel.CanExport, Mode=OneWay}"
-                              ToolTipService.ToolTip="Applies this exact configuration to your current PC."/>
+                              ToolTipService.ToolTip="{helpers:ResourceString Key=ProfileBuilder_ApplyToPCTooltip}"/>
 
                 <AppBarSeparator/>
 
                 <AppBarElementContainer VerticalAlignment="Center" Margin="8,0,0,0">
                     <AutoSuggestBox Width="200" VerticalAlignment="Center"
-                        PlaceholderText="Search settings..."
+                        PlaceholderText="{helpers:ResourceString Key=ProfileBuilder_SearchPlaceholder}"
                         QueryIcon="Find"
                         TextMemberPath="SettingName" 
                         TextChanged="SearchBox_TextChanged"
@@ -222,17 +222,17 @@
                                                     <Border Style="{StaticResource BadgePreferenceStyle}">
                                                         <StackPanel Orientation="Horizontal">
                                                             <FontIcon Glyph="&#xE896;" FontSize="12" VerticalAlignment="Center" Margin="0,4,4,0" Foreground="{ThemeResource BadgePreferenceForeground}"/>
-                                                            <TextBlock Text="Imported" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgePreferenceForeground}"/>
+                                                            <TextBlock helpers:Loc.Key="ProfileBuilder_ImportedBadge" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgePreferenceForeground}"/>
                                                         </StackPanel>
                                                     </Border>
 
                                                     <Button Style="{StaticResource QuickSetButtonBase}"
-                                                            Command="{x:Bind AcceptStagedCommand}" ToolTipService.ToolTip="Accept Imported Value">
+                                                            Command="{x:Bind AcceptStagedCommand}" ToolTipService.ToolTip="{helpers:ResourceString Key=ProfileBuilder_AcceptImportedTooltip}">
                                                         <FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                                                     </Button>
 
                                                     <Button Style="{StaticResource QuickSetButtonBase}"
-                                                            Command="{x:Bind RejectStagedCommand}" ToolTipService.ToolTip="Keep Current Value">
+                                                            Command="{x:Bind RejectStagedCommand}" ToolTipService.ToolTip="{helpers:ResourceString Key=ProfileBuilder_KeepCurrentTooltip}">
                                                         <FontIcon Glyph="&#xE711;" FontSize="12" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
                                                     </Button>
                                                 </StackPanel>
@@ -315,7 +315,7 @@
 
                 <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="12" Margin="0,50,525,0">
                     <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Width="72" Height="72" />
-                    <TextBlock Text="Loading Settings..." 
+                    <TextBlock helpers:Loc.Key="ProfileBuilder_LoadingSettingsText" 
                                FontFamily="{ThemeResource Jura}"
                                HorizontalAlignment="Center" />
                 </StackPanel>

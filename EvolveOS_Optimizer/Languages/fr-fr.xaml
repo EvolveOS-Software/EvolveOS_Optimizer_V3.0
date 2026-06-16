@@ -3391,4 +3391,89 @@
     <sys:String x:Key="values_vm_loading_values">Chargement des valeurs...</sys:String>
     <sys:String x:Key="values_vm_load_keys_failed">Échec du chargement des clés : {0}</sys:String>
     <!-- endregion Registry Editor -->
+
+    <!-- region Profile Builder -->
+    <sys:String x:Key="Global_OK">OK</sys:String>
+    <sys:String x:Key="Global_Cancel">Annuler</sys:String>
+    <sys:String x:Key="Global_Import">Importer</sys:String>
+    <sys:String x:Key="Global_Clear">Effacer</sys:String>
+
+    <sys:String x:Key="autounattend_builder_title">Autounattend Builder</sys:String>
+    <sys:String x:Key="autounattend_builder_desc">Générez un fichier XML sans assistance personnalisé pour les déploiements Windows en direct.</sys:String>
+
+    <sys:String x:Key="profile_builder_title">Créateur de profil</sys:String>
+    <sys:String x:Key="profile_builder_description">Créez, personnalisez et enregistrez des profils de configuration EvolveOS Optimizer.</sys:String>
+    <sys:String x:Key="ProfileBuilder_LoadingSettingsText">Chargement des paramètres...</sys:String>
+    <sys:String x:Key="ProfileBuilder_SearchPlaceholder">Rechercher des paramètres...</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportedBadge">Importé</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_QuickActions">Actions rapides</sys:String>
+    <sys:String x:Key="ProfileBuilder_LoadFromPC">Charger depuis le PC</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportLabel">Exporter</sys:String>
+    <sys:String x:Key="ProfileBuilder_ApplyNow">Appliquer au PC</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ExportConfigItem">Exporter la configuration (.json)</sys:String>
+    <sys:String x:Key="ProfileBuilder_SaveAsXmlItem">Enregistrer sous Autounattend (.xml)</sys:String>
+    <sys:String x:Key="ProfileBuilder_BuildIsoItem">Créer le support OS (.iso)</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ClearAllTooltip">Effacer tous les paramètres personnalisés.</sys:String>
+    <sys:String x:Key="ProfileBuilder_LoadFromPCTooltip">Lit les paramètres actuels de votre PC.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportTooltip">Charger un profil de configuration JSON enregistré.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportTooltip">Sélectionnez un format d'exportation pour votre configuration.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ApplyToPCTooltip">Applique cette configuration exacte à votre PC actuel.</sys:String>
+    <sys:String x:Key="ProfileBuilder_AcceptImportedTooltip">Accepter la valeur importée</sys:String>
+    <sys:String x:Key="ProfileBuilder_KeepCurrentTooltip">Conserver la valeur actuelle</sys:String>
+    <sys:String x:Key="ai_explainer_tooltip">En savoir plus sur ce paramètre</sys:String>
+    <sys:String x:Key="ai_explainer_explanation">Explication du paramètre</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_Category_Privacy">Confidentialité</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Power">Alimentation</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Gaming">Jeu &amp; Performances</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Update">Mise à jour</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Notifications">Notifications</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Sound">Son</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Theme">Thème</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_StartMenu">Menu Démarrer</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Taskbar">Barre des tâches</sys:String>
+    <sys:String x:Key="ProfileBuilder_Category_Explorer">Explorateur</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_Group_Optimizations">Optimisations</sys:String>
+    <sys:String x:Key="ProfileBuilder_Group_Customizations">Personnalisations</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ExportTitle">Exporter le profil EvolveOS</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportFilterName">Profil EvolveOS (*.json)</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportSuccessTitle">Profil exporté</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportSuccessContent">Votre profil de configuration a été enregistré avec succès.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportFailedTitle">Échec de l'exportation</sys:String>
+    <sys:String x:Key="ProfileBuilder_ExportFailedContent">Une erreur s'est produite lors de l'enregistrement du profil : {0}</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ImportTitle">Importer le profil EvolveOS</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportFilterName">Profil EvolveOS (*.json)</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportApplyImmediately">Appliquer les paramètres du profil immédiatement (Ignorer l'aperçu)</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportPromptContent">Comment souhaitez-vous charger ce profil ?</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportSuccessAppliedTitle">Profil appliqué</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportSuccessStagedTitle">Profil préparé</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportSuccessAppliedContent">Votre profil de configuration a été chargé et immédiatement appliqué au créateur.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportSuccessStagedContent">Votre profil de configuration a été chargé en mode Aperçu. Vous pouvez maintenant examiner et accepter les modifications proposées.</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportFailedTitle">Échec de l'importation</sys:String>
+    <sys:String x:Key="ProfileBuilder_ImportFailedContent">Une erreur s'est produite lors du chargement du profil : {0}&#x0a;Assurez-vous qu'il s'agit d'un profil JSON EvolveOS valide.</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ApplyRecommendedTitle">Appliquer les recommandations</sys:String>
+    <sys:String x:Key="ProfileBuilder_ApplyRecommendedContent">Cela mettra à jour tous les paramètres du créateur vers les valeurs recommandées par EvolveOS Optimizer. Continuer ?</sys:String>
+    <sys:String x:Key="ProfileBuilder_ResetDefaultsTitle">Réinitialiser aux valeurs par défaut</sys:String>
+    <sys:String x:Key="ProfileBuilder_ResetDefaultsContent">Cela mettra à jour tous les paramètres du créateur vers les valeurs par défaut standard de Windows. Continuer ?</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_PurgeTitle">Effacer le profil ?</sys:String>
+    <sys:String x:Key="ProfileBuilder_PurgeContent">Êtes-vous sûr de vouloir effacer tous les paramètres ? Cela réinitialisera le créateur à son état par défaut et cette action est irréversible.</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_ApplyPCTitle">Appliquer la configuration au PC local ?</sys:String>
+    <sys:String x:Key="ProfileBuilder_ApplyPCContent">Cela contournera le bac à sable du créateur et appliquera immédiatement tous les paramètres, ajustements et optimisations configurés directement sur cet ordinateur. Voulez-vous continuer ?</sys:String>
+    <sys:String x:Key="ProfileBuilder_DeploymentCompleteTitle">Déploiement terminé</sys:String>
+    <sys:String x:Key="ProfileBuilder_DeploymentCompleteContent">La configuration du profil a été appliquée avec succès à votre système local.</sys:String>
+
+    <sys:String x:Key="ProfileBuilder_UnsavedTitle">Configuration non enregistrée</sys:String>
+    <sys:String x:Key="ProfileBuilder_UnsavedContent">Vous avez une configuration active. Si vous quittez maintenant, vos paramètres actuels seront réinitialisés. Êtes-vous sûr de vouloir quitter ?</sys:String>
+    <sys:String x:Key="ProfileBuilder_LeaveReset">Quitter &amp; réinitialiser</sys:String>
+    <sys:String x:Key="ProfileBuilder_StayHere">Rester ici</sys:String>
+    <!-- endregion Profile Builder -->
 </ResourceDictionary>

@@ -2,13 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Constants;
@@ -18,6 +13,7 @@ using EvolveOS_Optimizer.Core.Model.Profiles;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
 using EvolveOS_Optimizer.Core.TemplateSelectors;
+using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Core.ViewModel;
 
@@ -147,19 +143,17 @@ public partial class ProfileBuilderViewModel : ObservableObject
         {
             var featureDefinitions = new[]
             {
-                // WINOPTIMIZE GROUP
-                (Id: FeatureIds.Privacy, Name: "Privacy", IconKey: "PrivacyIconPath", IconPack: "Local", Group: "Optimizations"),
-                (Id: FeatureIds.Power, Name: "Power", IconKey: "PowerIconPath", IconPack: "Local", Group: "Optimizations"),
-                (Id: FeatureIds.GamingPerformance, Name: "Gaming & Performance", IconKey: "GamingIconPath", IconPack: "Local", Group: "Optimizations"),
-                (Id: FeatureIds.Update, Name: "Update", IconKey: "UpdateIconSymbol", IconPack: "Local", Group: "Optimizations"),
-                (Id: FeatureIds.Notifications, Name: "Notifications", IconKey: "NotificationIconPath", IconPack: "Local", Group: "Optimizations"),
-                (Id: FeatureIds.Sound, Name: "Sound", IconKey: "SoundIconSymbol", IconPack: "Local", Group: "Optimizations"),
+                (Id: FeatureIds.Privacy, Name: ResourceString.GetString("ProfileBuilder_Category_Privacy"), IconKey: "PrivacyIconPath", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Optimizations")),
+                (Id: FeatureIds.Power, Name: ResourceString.GetString("ProfileBuilder_Category_Power"), IconKey: "PowerIconPath", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Optimizations")),
+                (Id: FeatureIds.GamingPerformance, Name: ResourceString.GetString("ProfileBuilder_Category_Gaming"), IconKey: "GamingIconPath", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Optimizations")),
+                (Id: FeatureIds.Update, Name: ResourceString.GetString("ProfileBuilder_Category_Update"), IconKey: "UpdateIconSymbol", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Optimizations")),
+                (Id: FeatureIds.Notifications, Name: ResourceString.GetString("ProfileBuilder_Category_Notifications"), IconKey: "NotificationIconPath", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Optimizations")),
+                (Id: FeatureIds.Sound, Name: ResourceString.GetString("ProfileBuilder_Category_Sound"), IconKey: "SoundIconSymbol", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Optimizations")),
 
-                // WINCUSTOMIZE GROUP
-                (Id: FeatureIds.WindowsTheme, Name: "Theme", IconKey: "WindowsThemeIconGlyph", IconPack: "Local", Group: "Customizations"),
-                (Id: FeatureIds.StartMenu, Name: "Start Menu", IconKey: "StartMenuIconGlyph", IconPack: "Local", Group: "Customizations"),
-                (Id: FeatureIds.Taskbar, Name: "Taskbar", IconKey: "TaskbarIconGlyph", IconPack: "Local", Group: "Customizations"),
-                (Id: FeatureIds.ExplorerCustomization, Name: "Explorer", IconKey: "ExplorerIconGlyph", IconPack: "Local", Group: "Customizations")
+                (Id: FeatureIds.WindowsTheme, Name: ResourceString.GetString("ProfileBuilder_Category_Theme"), IconKey: "WindowsThemeIconGlyph", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Customizations")),
+                (Id: FeatureIds.StartMenu, Name: ResourceString.GetString("ProfileBuilder_Category_StartMenu"), IconKey: "StartMenuIconGlyph", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Customizations")),
+                (Id: FeatureIds.Taskbar, Name: ResourceString.GetString("ProfileBuilder_Category_Taskbar"), IconKey: "TaskbarIconGlyph", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Customizations")),
+                (Id: FeatureIds.ExplorerCustomization, Name: ResourceString.GetString("ProfileBuilder_Category_Explorer"), IconKey: "ExplorerIconGlyph", IconPack: "Local", Group: ResourceString.GetString("ProfileBuilder_Group_Customizations"))
             };
 
             var groupedFeatures = featureDefinitions.GroupBy(f => f.Group);

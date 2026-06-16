@@ -58,8 +58,8 @@ public sealed partial class ProfileBuilderPage : Page
             return;
         }
 
-        string title = "Export EvolveOS Profile";
-        string filterName = "EvolveOS Profile (*.json)";
+        string title = ResourceString.GetString("ProfileBuilder_ExportTitle");
+        string filterName = ResourceString.GetString("ProfileBuilder_ExportFilterName");
         string filterPattern = "*.json";
         string defaultFileName = $"EvolveOS_Profile_{DateTime.Now:yyyyMMdd}";
         string defaultExtension = "json";
@@ -80,9 +80,9 @@ public sealed partial class ProfileBuilderPage : Page
 
                 var dialog = new ContentDialog
                 {
-                    Title = "Profile Exported",
-                    Content = "Your configuration profile was saved successfully.",
-                    CloseButtonText = "OK",
+                    Title = ResourceString.GetString("ProfileBuilder_ExportSuccessTitle"),
+                    Content = ResourceString.GetString("ProfileBuilder_ExportSuccessContent"),
+                    CloseButtonText = ResourceString.GetString("Global_OK"),
                     XamlRoot = this.XamlRoot
                 };
                 await dialog.ShowAsync();
@@ -91,9 +91,9 @@ public sealed partial class ProfileBuilderPage : Page
             {
                 var errorDialog = new ContentDialog
                 {
-                    Title = "Export Failed",
-                    Content = $"An error occurred while saving the profile: {ex.Message}",
-                    CloseButtonText = "OK",
+                    Title = ResourceString.GetString("ProfileBuilder_ExportFailedTitle"),
+                    Content = ResourceString.GetString("ProfileBuilder_ExportFailedContent", ex.Message),
+                    CloseButtonText = ResourceString.GetString("Global_OK"),
                     XamlRoot = this.XamlRoot
                 };
                 await errorDialog.ShowAsync();
@@ -124,8 +124,8 @@ public sealed partial class ProfileBuilderPage : Page
 
         if (window == null) return;
 
-        string title = "Import EvolveOS Profile";
-        string filterName = "EvolveOS Profile (*.json)";
+        string title = ResourceString.GetString("ProfileBuilder_ImportTitle");
+        string filterName = ResourceString.GetString("ProfileBuilder_ImportFilterName");
         string filterPattern = "*.json";
 
         string? filePath = Win32FileDialogHelper.ShowOpenFilePicker(
@@ -138,7 +138,7 @@ public sealed partial class ProfileBuilderPage : Page
         {
             var applyImmediatelyCheckBox = new CheckBox
             {
-                Content = "Apply profile settings immediately (Skip preview)",
+                Content = ResourceString.GetString("ProfileBuilder_ImportApplyImmediately"),
                 Margin = new Thickness(0, 12, 0, 0),
                 IsChecked = false
             };
@@ -146,17 +146,17 @@ public sealed partial class ProfileBuilderPage : Page
             var dialogContent = new StackPanel();
             dialogContent.Children.Add(new TextBlock
             {
-                Text = "How would you like to load this profile?",
+                Text = ResourceString.GetString("ProfileBuilder_ImportPromptContent"),
                 TextWrapping = TextWrapping.Wrap
             });
             dialogContent.Children.Add(applyImmediatelyCheckBox);
 
             var dialog = new ContentDialog
             {
-                Title = "Import Profile",
+                Title = ResourceString.GetString("ProfileBuilder_ImportTitle"),
                 Content = dialogContent,
-                PrimaryButtonText = "Import",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = ResourceString.GetString("Global_Import"),
+                CloseButtonText = ResourceString.GetString("Global_Cancel"),
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = this.XamlRoot
             };
@@ -173,11 +173,11 @@ public sealed partial class ProfileBuilderPage : Page
 
                     var successDialog = new ContentDialog
                     {
-                        Title = applyImmediately ? "Profile Applied" : "Profile Staged",
+                        Title = applyImmediately ? ResourceString.GetString("ProfileBuilder_ImportSuccessAppliedTitle") : ResourceString.GetString("ProfileBuilder_ImportSuccessStagedTitle"),
                         Content = applyImmediately
-                            ? "Your configuration profile was loaded and immediately applied to the builder."
-                            : "Your configuration profile was loaded in Preview Mode. You can now review and accept the proposed changes.",
-                        CloseButtonText = "OK",
+                            ? ResourceString.GetString("ProfileBuilder_ImportSuccessAppliedContent")
+                            : ResourceString.GetString("ProfileBuilder_ImportSuccessStagedContent"),
+                        CloseButtonText = ResourceString.GetString("Global_OK"),
                         XamlRoot = this.XamlRoot
                     };
                     await successDialog.ShowAsync();
@@ -186,9 +186,9 @@ public sealed partial class ProfileBuilderPage : Page
                 {
                     var errorDialog = new ContentDialog
                     {
-                        Title = "Import Failed",
-                        Content = $"An error occurred while loading the profile: {ex.Message}\nMake sure it is a valid EvolveOS JSON profile.",
-                        CloseButtonText = "OK",
+                        Title = ResourceString.GetString("ProfileBuilder_ImportFailedTitle"),
+                        Content = ResourceString.GetString("ProfileBuilder_ImportFailedContent", ex.Message),
+                        CloseButtonText = ResourceString.GetString("Global_OK"),
                         XamlRoot = this.XamlRoot
                     };
                     await errorDialog.ShowAsync();
@@ -201,10 +201,10 @@ public sealed partial class ProfileBuilderPage : Page
     {
         var dialog = new ContentDialog
         {
-            Title = "Apply Recommended",
-            Content = "This will update all settings in the builder to their EvolveOS Optimizer Recommended values. Continue?",
-            PrimaryButtonText = "OK",
-            CloseButtonText = "Cancel",
+            Title = ResourceString.GetString("ProfileBuilder_ApplyRecommendedTitle"),
+            Content = ResourceString.GetString("ProfileBuilder_ApplyRecommendedContent"),
+            PrimaryButtonText = ResourceString.GetString("Global_OK"),
+            CloseButtonText = ResourceString.GetString("Global_Cancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = this.XamlRoot
         };
@@ -219,10 +219,10 @@ public sealed partial class ProfileBuilderPage : Page
     {
         var dialog = new ContentDialog
         {
-            Title = "Reset to Defaults",
-            Content = "This will update all settings in the builder to the standard Windows Default values. Continue?",
-            PrimaryButtonText = "OK",
-            CloseButtonText = "Cancel",
+            Title = ResourceString.GetString("ProfileBuilder_ResetDefaultsTitle"),
+            Content = ResourceString.GetString("ProfileBuilder_ResetDefaultsContent"),
+            PrimaryButtonText = ResourceString.GetString("Global_OK"),
+            CloseButtonText = ResourceString.GetString("Global_Cancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = this.XamlRoot
         };
@@ -237,10 +237,10 @@ public sealed partial class ProfileBuilderPage : Page
     {
         var dialog = new ContentDialog
         {
-            Title = "Clear Profile?",
-            Content = "Are you sure you want to clear all settings? This will reset the builder to its default state and cannot be undone.",
-            PrimaryButtonText = "Clear",
-            CloseButtonText = "Cancel",
+            Title = ResourceString.GetString("ProfileBuilder_PurgeTitle"),
+            Content = ResourceString.GetString("ProfileBuilder_PurgeContent"),
+            PrimaryButtonText = ResourceString.GetString("Global_Clear"),
+            CloseButtonText = ResourceString.GetString("Global_Cancel"),
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = this.XamlRoot
         };
@@ -268,10 +268,10 @@ public sealed partial class ProfileBuilderPage : Page
     {
         var dialog = new ContentDialog
         {
-            Title = "Apply Configuration to Local PC?",
-            Content = "This will bypass the builder sandbox and immediately apply all configured settings, tweaks, and optimizations directly to this computer. Do you want to proceed?",
-            PrimaryButtonText = "Apply Now",
-            CloseButtonText = "Cancel",
+            Title = ResourceString.GetString("ProfileBuilder_ApplyPCTitle"),
+            Content = ResourceString.GetString("ProfileBuilder_ApplyPCContent"),
+            PrimaryButtonText = ResourceString.GetString("ProfileBuilder_ApplyNow"),
+            CloseButtonText = ResourceString.GetString("Global_Cancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = this.XamlRoot
         };
@@ -284,9 +284,9 @@ public sealed partial class ProfileBuilderPage : Page
 
             var successDialog = new ContentDialog
             {
-                Title = "Deployment Complete",
-                Content = "The profile configuration has been successfully applied to your local system.",
-                CloseButtonText = "OK",
+                Title = ResourceString.GetString("ProfileBuilder_DeploymentCompleteTitle"),
+                Content = ResourceString.GetString("ProfileBuilder_DeploymentCompleteContent"),
+                CloseButtonText = ResourceString.GetString("Global_OK"),
                 XamlRoot = this.XamlRoot
             };
             await successDialog.ShowAsync();
@@ -370,10 +370,10 @@ public sealed partial class ProfileBuilderPage : Page
 
         var dialog = new ContentDialog
         {
-            Title = "Unsaved Configuration",
-            Content = "You have an active configuration. If you leave now, your current settings will be reset. Are you sure you want to leave?",
-            PrimaryButtonText = "Leave & Reset",
-            CloseButtonText = "Stay Here",
+            Title = ResourceString.GetString("ProfileBuilder_UnsavedTitle"),
+            Content = ResourceString.GetString("ProfileBuilder_UnsavedContent"),
+            PrimaryButtonText = ResourceString.GetString("ProfileBuilder_LeaveReset"),
+            CloseButtonText = ResourceString.GetString("ProfileBuilder_StayHere"),
             XamlRoot = this.XamlRoot,
             RequestedTheme = this.ActualTheme
         };
