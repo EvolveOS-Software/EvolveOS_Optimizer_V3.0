@@ -237,9 +237,9 @@ public sealed partial class ProfileBuilderPage : Page
     {
         var dialog = new ContentDialog
         {
-            Title = "Purge Profile?",
+            Title = "Clear Profile?",
             Content = "Are you sure you want to clear all settings? This will reset the builder to its default state and cannot be undone.",
-            PrimaryButtonText = "Purge",
+            PrimaryButtonText = "Clear",
             CloseButtonText = "Cancel",
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = this.XamlRoot

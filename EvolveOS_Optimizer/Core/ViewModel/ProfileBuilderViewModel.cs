@@ -10,6 +10,7 @@ using EvolveOS_Optimizer.Core.Constants;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Model.Profiles;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using EvolveOS_Optimizer.Utilities.WinBuilder;
 using FluentIcons.Common.Internals;
@@ -115,8 +116,13 @@ public partial class ProfileBuilderViewModel : ObservableObject
 
     private async Task InitializeCategoriesAsync()
     {
-        var featureDefinitions = new[]
+        IsLoading = true;
+        await Task.Delay(50);
+
+        try
         {
+            var featureDefinitions = new[]
+            {
             (Id: FeatureIds.Privacy, Name: "Privacy", Glyph: "\uE72E"),
             (Id: FeatureIds.Power, Name: "Power", Glyph: "\uE7E6"),
             (Id: FeatureIds.GamingPerformance, Name: "Gaming", Glyph: "\uE7FC"),
@@ -129,91 +135,98 @@ public partial class ProfileBuilderViewModel : ObservableObject
             (Id: FeatureIds.ExplorerCustomization, Name: "Explorer", Glyph: "\uEC50")
         };
 
-        foreach (var def in featureDefinitions)
-        {
-            var category = new BuilderFeatureCategory(def.Id, def.Name, def.Glyph);
-            var settings = _settingsRegistry.GetFilteredSettings(def.Id);
-
-            foreach (var setting in settings)
+            foreach (var def in featureDefinitions)
             {
-                var config = new SettingItemViewModelConfig
+                var category = new BuilderFeatureCategory(def.Id, def.Name, def.Glyph);
+                var settings = _settingsRegistry.GetFilteredSettings(def.Id);
+
+                foreach (var setting in settings)
                 {
-                    SettingDefinition = setting,
-                    SettingId = setting.Id,
-                    Name = setting.Name,
-                    Description = setting.Description ?? string.Empty,
-                    GroupName = setting.GroupName ?? "General",
-                    InputType = setting.InputType
-                };
-
-                var vm = new BuilderSettingViewModel(config, _settingApplicationService, _logService,
-                    _dispatcherService, _dialogService, _localizationService, _osCompressionService);
-
-                vm.IsLocked = setting.RequiresAdvancedUnlock;
-
-                if (setting.InputType == Enums.InputType.Selection)
-                {
-                    if (setting.Recommendation?.LoadDynamicOptions == true)
+                    var config = new SettingItemViewModelConfig
                     {
-                        var result = await _powerPlanService.SetupPowerPlanComboBoxAsync(setting, null);
+                        SettingDefinition = setting,
+                        SettingId = setting.Id,
+                        Name = setting.Name,
+                        Description = setting.Description ?? string.Empty,
+                        GroupName = setting.GroupName ?? "General",
+                        InputType = setting.InputType
+                    };
 
-                        foreach (var opt in result.Options)
+                    var vm = new BuilderSettingViewModel(config, _settingApplicationService, _logService,
+                        _dispatcherService, _dialogService, _localizationService, _osCompressionService);
+
+                    vm.IsLocked = setting.RequiresAdvancedUnlock;
+
+                    if (setting.InputType == Enums.InputType.Selection)
+                    {
+                        if (setting.Recommendation?.LoadDynamicOptions == true)
                         {
-                            vm.ComboBoxOptions.Add(opt);
+                            var result = await _powerPlanService.SetupPowerPlanComboBoxAsync(setting, null);
+
+                            foreach (var opt in result.Options)
+                            {
+                                vm.ComboBoxOptions.Add(opt);
+                            }
+
+                            if (result.SelectedValue != null)
+                            {
+                                vm.SelectedValue = result.SelectedValue;
+                            }
                         }
-
-                        if (result.SelectedValue != null)
+                        else if (setting.ComboBox?.Options != null)
                         {
-                            vm.SelectedValue = result.SelectedValue;
+                            int index = 0;
+                            object? fallbackValue = null;
+
+                            foreach (var opt in setting.ComboBox.Options)
+                            {
+                                string localizedText = _localizationService.GetString(opt.DisplayName);
+                                if (string.IsNullOrEmpty(localizedText)) localizedText = opt.DisplayName;
+
+                                fallbackValue ??= index;
+                                vm.ComboBoxOptions.Add(new ComboBoxDisplayOption(localizedText, index));
+
+                                if (opt.IsDefault) vm.SelectedValue = index;
+
+                                index++;
+                            }
+
+                            if (vm.SelectedValue == null && fallbackValue != null)
+                            {
+                                vm.SelectedValue = fallbackValue;
+                            }
                         }
                     }
-                    else if (setting.ComboBox?.Options != null)
+
+                    if (setting.InputType == Enums.InputType.NumericRange && setting.NumericRange != null)
                     {
-                        int index = 0;
-                        object? fallbackValue = null;
-
-                        foreach (var opt in setting.ComboBox.Options)
-                        {
-                            string localizedText = _localizationService.GetString(opt.DisplayName);
-                            if (string.IsNullOrEmpty(localizedText)) localizedText = opt.DisplayName;
-
-                            fallbackValue ??= index;
-                            vm.ComboBoxOptions.Add(new ComboBoxDisplayOption(localizedText, index));
-
-                            if (opt.IsDefault) vm.SelectedValue = index;
-
-                            index++;
-                        }
-
-                        if (vm.SelectedValue == null && fallbackValue != null)
-                        {
-                            vm.SelectedValue = fallbackValue;
-                        }
+                        vm.MinValue = setting.NumericRange.MinValue;
+                        vm.MaxValue = setting.NumericRange.MaxValue;
                     }
+
+                    /*vm.PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName == nameof(BuilderSettingViewModel.IsSelected))
+                        {
+                            EvaluateExportState();
+                        }
+                    };*/
+
+                    category.Settings.Add(vm);
                 }
 
-                if (setting.InputType == Enums.InputType.NumericRange && setting.NumericRange != null)
-                {
-                    vm.MinValue = setting.NumericRange.MinValue;
-                    vm.MaxValue = setting.NumericRange.MaxValue;
-                }
-
-                /*vm.PropertyChanged += (s, e) =>
-                {
-                    if (e.PropertyName == nameof(BuilderSettingViewModel.IsSelected))
-                    {
-                        EvaluateExportState();
-                    }
-                };*/
-
-                category.Settings.Add(vm);
+                if (category.Settings.Count > 0)
+                    Categories.Add(category);
             }
 
-            if (category.Settings.Count > 0)
-                Categories.Add(category);
-        }
+            SelectedCategory = Categories.FirstOrDefault();
 
-        SelectedCategory = Categories.FirstOrDefault();
+            await Task.Delay(50);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     #endregion
@@ -524,6 +537,8 @@ public partial class ProfileBuilderViewModel : ObservableObject
         {
             foreach (var setting in category.Settings.OfType<BuilderSettingViewModel>())
             {
+                setting.RejectStaged();
+
                 if (setting.IsToggleType || setting.IsCheckBoxType)
                 {
                     setting.IsSelected = false;

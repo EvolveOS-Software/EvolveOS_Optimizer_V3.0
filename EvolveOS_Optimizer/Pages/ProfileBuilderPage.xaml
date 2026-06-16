@@ -12,7 +12,7 @@
     xmlns:fluentIcons="using:FluentIcons.WinUI"
     x:DefaultBindMode="OneWay">
 
-    <Grid>
+    <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -67,7 +67,7 @@
 
                 <AppBarSeparator/>
 
-                <AppBarButton Icon="Delete" Label="Purge" 
+                <AppBarButton Icon="Delete" Label="Clear All" 
                               Click="PurgeProfile_Click"
                               ToolTipService.ToolTip="Clear all customized settings."/>
                 <AppBarElementContainer VerticalAlignment="Center"
@@ -78,7 +78,7 @@
 
                 </AppBarElementContainer>
 
-                <AppBarButton Icon="Download" Label="Seed from PC" 
+                <AppBarButton Icon="Download" Label="Load from PC" 
                               Command="{x:Bind ViewModel.SeedFromCurrentSystemCommand}"
                               ToolTipService.ToolTip="Reads your PC's current settings."/>
                 <AppBarElementContainer VerticalAlignment="Center"
@@ -93,9 +93,6 @@
                               Click="ImportProfile_Click"
                               ToolTipService.ToolTip="Load a saved JSON configuration profile."/>
 
-                <AppBarButton Icon="Play" Label="Apply to PC" Click="ApplyToPC_Click"
-                              IsEnabled="{x:Bind ViewModel.CanExport, Mode=OneWay}"
-                              ToolTipService.ToolTip="Applies this exact configuration to your current PC."/>
 
                 <AppBarButton Icon="Save" Label="Export"
                               IsEnabled="{x:Bind ViewModel.CanExport, Mode=OneWay}"
@@ -122,6 +119,12 @@
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
+
+                <AppBarSeparator/>
+
+                <AppBarButton Icon="Play" Label="Apply to PC" Click="ApplyToPC_Click"
+                              IsEnabled="{x:Bind ViewModel.CanExport, Mode=OneWay}"
+                              ToolTipService.ToolTip="Applies this exact configuration to your current PC."/>
 
                 <AppBarSeparator/>
 
@@ -175,7 +178,7 @@
                     </DataTemplate>
                 </NavigationView.MenuItemTemplate>
 
-                <ScrollView>
+                <ScrollView Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                     <StackPanel Padding="24" Spacing="16">
                         <TextBlock Text="{x:Bind ViewModel.SelectedCategory.DisplayName}"
                                    Style="{StaticResource SubtitleTextBlockStyle}"
@@ -294,5 +297,23 @@
                 </ScrollView>
             </NavigationView>
         </Border>
+
+        <Canvas Grid.RowSpan="2" 
+                Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+            <Grid Width="{Binding ActualWidth, ElementName=RootGrid}" 
+                  Height="{Binding ActualHeight, ElementName=RootGrid}"
+                  Background="Transparent"
+                  Opacity="0.8">
+
+                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="12" Margin="0,50,525,0">
+                    <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Width="72" Height="72" />
+                    <TextBlock Text="Loading Settings..." 
+                               FontFamily="{ThemeResource Jura}"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </Canvas>
     </Grid>
 </Page>
