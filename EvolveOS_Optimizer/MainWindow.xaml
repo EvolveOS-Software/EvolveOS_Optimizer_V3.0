@@ -10,7 +10,7 @@
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:vm="using:EvolveOS_Optimizer.Core.ViewModel"
     xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
-    xmlns:controls="using:FluentIcons.WinUI"
+    xmlns:fluentIcons="using:FluentIcons.WinUI"
     xmlns:tb="using:H.NotifyIcon"
     mc:Ignorable="d" 
     d:Height="870" 
@@ -406,7 +406,7 @@
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Home'), Mode=OneWay}"
                                      IsChecked="True">
-                            <FontIcon Glyph="&#xE80F;" FontSize="18"/>
+                            <FontIcon Glyph="&#xE80F;" FontSize="20"/>
                         </RadioButton>
 
                         <RadioButton x:Name="BtnNavDiagnostics" Style="{StaticResource BtnNavigation}"
@@ -414,7 +414,7 @@
                                      CommandParameter="Diagnostics"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_CommandCenter'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xF246;" FontSize="18"/>
+                            <FontIcon Glyph="&#xF246;" FontSize="20"/>
                         </RadioButton>
 
                         <RadioButton x:Name="BtnNavSystemManager"
@@ -423,7 +423,7 @@
                                      CommandParameter="SystemManager"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_System_Manager'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE9D9;" FontSize="18"/>
+                            <FontIcon Glyph="&#xE9D9;" FontSize="20"/>
                         </RadioButton>
 
                         <RadioButton x:Name="BtnNavSystemCleaner"
@@ -432,7 +432,7 @@
                                      CommandParameter="SystemCleaner"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_System_Cleaner'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xEA99;" FontSize="18"/>
+                            <FontIcon Glyph="&#xEA99;" FontSize="20"/>
                         </RadioButton>
 
                         <RadioButton x:Name="BtnNavSoftware"
@@ -441,7 +441,9 @@
                                      CommandParameter="Software"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Software_Center'), Mode=OneWay}">
-                            <controls:SymbolIcon Symbol="AppGeneric" />
+                            <Viewbox Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <fluentIcons:SymbolIcon Symbol="AppGeneric" />
+                            </Viewbox>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -449,7 +451,7 @@
                                      CommandParameter="GroupPolicy"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_GroupPolicy'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE9D5;" FontSize="18"/>
+                            <FontIcon Glyph="&#xE9D5;" FontSize="20"/>
                         </RadioButton>
 
                         <RadioButton x:Name="BtnNavRegEditor" Style="{StaticResource BtnNavigation}"
@@ -457,7 +459,7 @@
                                      CommandParameter="RegistryEditor"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_RegistryEditor'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE74C;" FontSize="18"/>
+                            <FontIcon Glyph="&#xE74C;" FontSize="20"/>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -465,7 +467,9 @@
                                      CommandParameter="Optimize"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Optimize'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE9E9;" FontSize="18"/>
+                            <Viewbox Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <PathIcon Data="{StaticResource OptimizeIconPath}"/>
+                            </Viewbox>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -473,7 +477,9 @@
                                      CommandParameter="Customize"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Customize'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE790;" FontSize="18"/>
+                            <Viewbox Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <PathIcon Data="{StaticResource CustomizeIconPath}"/>
+                            </Viewbox>
                         </RadioButton>
 
                         <RadioButton x:Name="BtnNavUtilities" Style="{StaticResource BtnNavigation}"
@@ -481,7 +487,7 @@
                                      CommandParameter="Utilities"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Utilities'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xEC7A;" FontSize="18"/>
+                            <FontIcon Glyph="&#xEC7A;" FontSize="20"/>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -489,7 +495,7 @@
                                      CommandParameter="Scripts"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Scripts'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xEA86;" FontSize="18"/>
+                            <FontIcon Glyph="&#xEA86;" FontSize="20"/>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -497,7 +503,9 @@
                                      CommandParameter="Settings"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_Settings'), Mode=OneWay}">
-                            <SymbolIcon Symbol="Setting" />
+                            <Viewbox Width="20" Height="20" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <SymbolIcon Symbol="Setting" />
+                            </Viewbox>
                         </RadioButton>
 
                         <RadioButton x:Name="BtnNavProfileBuilder"
@@ -506,7 +514,9 @@
                                      CommandParameter="ProfileBuilder"
                                      IsTabStop="False"
                                      Tag="{x:Bind GetText('Nav_ProfileBuilder'), Mode=OneWay}">
-                            <FontIcon Glyph="&#xE8A1;" FontSize="18"/>
+                            <Viewbox Width="24" Height="24" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <PathIcon Data="{StaticResource ProfileBuilderIconPath}"/>
+                            </Viewbox>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource BtnNavigation}"
@@ -515,7 +525,9 @@
                                      IsTabStop="False"
                                      Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}"
                                      Tag="{x:Bind GetText('Nav_Users'), Mode=OneWay}">
-                            <SymbolIcon Symbol="People" />
+                            <Viewbox Width="20" Height="20" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <SymbolIcon Symbol="People" />
+                            </Viewbox>
                         </RadioButton>
                     </StackPanel>
                 </ScrollViewer>

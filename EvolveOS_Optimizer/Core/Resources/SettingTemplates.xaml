@@ -412,15 +412,25 @@
 
             <Border Visibility="{x:Bind HasStatusBanner, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Margin="0,0,0,8">
-                <commonControls:QuietInfoBar
-                    IsOpen="{x:Bind HasStatusBanner, Mode=OneWay}"
-                    Severity="{x:Bind StatusBannerSeverity, Mode=OneWay}"
-                    Message="{x:Bind StatusBannerMessage, Mode=OneWay}"
-                    IsClosable="False"
-                    IsTabStop="True"
-                    UseSystemFocusVisuals="True"
-                    Margin="0,-1,0,0"
-                    CornerRadius="0,0,4,4"/>
+
+                <Grid>
+                    <commonControls:QuietInfoBar
+                        IsOpen="{x:Bind HasStatusBanner, Mode=OneWay}"
+                        Severity="{x:Bind StatusBannerSeverity, Mode=OneWay}"
+                        Message="{x:Bind StatusBannerMessage, Mode=OneWay}"
+                        IsClosable="False"
+                        IsTabStop="True"
+                        UseSystemFocusVisuals="True"
+                        Margin="0,-1,0,0"
+                        CornerRadius="0,0,4,4"/>
+
+                    <Button Content="{helpers:ResourceString Key=RestartRequired_PrimaryButton}"
+                            Click="RestartNow_Click"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,16,0"
+                            Visibility="{x:Bind IsRestartRequired, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </Grid>
             </Border>
         </StackPanel>
     </DataTemplate>
@@ -745,15 +755,25 @@
 
             <Border Visibility="{x:Bind HasStatusBanner, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Margin="0,0,0,8">
-                <commonControls:QuietInfoBar
-                    IsOpen="{x:Bind HasStatusBanner, Mode=OneWay}"
-                    Severity="{x:Bind StatusBannerSeverity, Mode=OneWay}"
-                    Message="{x:Bind StatusBannerMessage, Mode=OneWay}"
-                    IsClosable="False"
-                    IsTabStop="True"
-                    UseSystemFocusVisuals="True"
-                    Margin="0,-1,0,0"
-                    CornerRadius="0,0,4,4"/>
+
+                <Grid>
+                    <commonControls:QuietInfoBar
+                        IsOpen="{x:Bind HasStatusBanner, Mode=OneWay}"
+                        Severity="{x:Bind StatusBannerSeverity, Mode=OneWay}"
+                        Message="{x:Bind StatusBannerMessage, Mode=OneWay}"
+                        IsClosable="False"
+                        IsTabStop="True"
+                        UseSystemFocusVisuals="True"
+                        Margin="0,-1,0,0"
+                        CornerRadius="0,0,4,4"/>
+
+                    <Button Content="{helpers:ResourceString Key=RestartRequired_PrimaryButton}"
+                            Click="RestartNow_Click"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,16,0"
+                            Visibility="{x:Bind IsRestartRequired, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </Grid>
             </Border>
 
             <ItemsRepeater ItemsSource="{x:Bind Children}"
@@ -1033,15 +1053,25 @@
 
                             <Border Visibility="{x:Bind HasStatusBanner, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Margin="0,0,0,8">
-                                <commonControls:QuietInfoBar
-                                    IsOpen="{x:Bind HasStatusBanner, Mode=OneWay}"
-                                    Severity="{x:Bind StatusBannerSeverity, Mode=OneWay}"
-                                    Message="{x:Bind StatusBannerMessage, Mode=OneWay}"
-                                    IsClosable="False"
-                                    IsTabStop="True"
-                                    UseSystemFocusVisuals="True"
-                                    Margin="0,-1,0,0"
-                                    CornerRadius="0,0,4,4"/>
+
+                                <Grid>
+                                    <commonControls:QuietInfoBar
+                                        IsOpen="{x:Bind HasStatusBanner, Mode=OneWay}"
+                                        Severity="{x:Bind StatusBannerSeverity, Mode=OneWay}"
+                                        Message="{x:Bind StatusBannerMessage, Mode=OneWay}"
+                                        IsClosable="False"
+                                        IsTabStop="True"
+                                        UseSystemFocusVisuals="True"
+                                        Margin="0,-1,0,0"
+                                        CornerRadius="0,0,4,4"/>
+
+                                    <Button Content="{helpers:ResourceString Key=RestartRequired_PrimaryButton}"
+                                            Click="RestartNow_Click"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,16,0"
+                                            Visibility="{x:Bind IsRestartRequired, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </Grid>
                             </Border>
                         </StackPanel>
                     </DataTemplate>

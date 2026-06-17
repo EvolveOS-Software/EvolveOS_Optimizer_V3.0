@@ -5007,6 +5007,11 @@
     <sys:String x:Key="Setting_start-power-lock-option_Description">Display the Lock option in the Start Menu power button menu</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Show Sleep Option</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Display the Sleep option in the Start Menu power button menu</sys:String>
+
+    <sys:String x:Key="RestartRequired_DialogTitle">Restart Required</sys:String>
+    <sys:String x:Key="RestartRequired_DialogContent">Changes have been applied. A system restart is required for them to take effect. Would you like to restart now?</sys:String>
+    <sys:String x:Key="RestartRequired_PrimaryButton">Restart Now</sys:String>
+    <sys:String x:Key="RestartRequired_CloseButton">Not Now</sys:String>
     <!-- endregion WinOptimize & WinCustomize -->
     
     <!-- region Win Builder Apps -->

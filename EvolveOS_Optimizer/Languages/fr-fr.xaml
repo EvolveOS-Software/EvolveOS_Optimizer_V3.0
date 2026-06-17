@@ -4907,7 +4907,70 @@
     <sys:String x:Key="Setting_start-power-lock-option_Description">Affiche l'option « Verrouiller » dans le menu du bouton d'alimentation du menu Démarrer</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Afficher l'option Mettre en veille</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Affiche l'option « Mettre en veille » dans le menu du bouton d'alimentation du menu Démarrer</sys:String>
+
+    <sys:String x:Key="RestartRequired_DialogTitle">Redémarrage requis</sys:String>
+    <sys:String x:Key="RestartRequired_DialogContent">Les modifications ont été appliquées. Un redémarrage du système est nécessaire pour qu'elles soient prises en compte. Voulez-vous redémarrer maintenant ?</sys:String>
+    <sys:String x:Key="RestartRequired_PrimaryButton">Redémarrer maintenant</sys:String>
+    <sys:String x:Key="RestartRequired_CloseButton">Pas maintenant</sys:String>
     <!-- endregion WinOptimize & WinCustomize -->
+
+    <!-- region Win Builder Apps -->
+    <sys:String x:Key="AppDesc_3DViewer">Affichez, créez et imprimez des modèles 3D.</sys:String>
+    <sys:String x:Key="AppDesc_Alarms">Gérez les alarmes, les minuteurs et les chronomètres.</sys:String>
+    <sys:String x:Key="AppDesc_Calculator">Calculatrice standard, scientifique et pour programmeur.</sys:String>
+    <sys:String x:Key="AppDesc_Camera">Prenez des photos et des vidéos avec votre webcam.</sys:String>
+    <sys:String x:Key="AppDesc_Clipchamp">L'éditeur vidéo cloud de Microsoft.</sys:String>
+    <sys:String x:Key="AppDesc_Copilot">Assistant IA intégré directement dans Windows.</sys:String>
+    <sys:String x:Key="AppDesc_Cortana">Ancien assistant numérique obsolète.</sys:String>
+    <sys:String x:Key="AppDesc_DevHome">Tableau de bord et hub de l'environnement de développement.</sys:String>
+    <sys:String x:Key="AppDesc_FeedbackHub">Soumettez des rapports de bugs et des données de télémétrie à Microsoft.</sys:String>
+    <sys:String x:Key="AppDesc_GetHelp">Dépannage de Windows et support virtuel.</sys:String>
+    <sys:String x:Key="AppDesc_GetStarted">Conseils et astuces pour les nouveaux utilisateurs de Windows.</sys:String>
+    <sys:String x:Key="AppDesc_Mail">Client de messagerie et de planification par défaut.</sys:String>
+    <sys:String x:Key="AppDesc_Maps">Services de navigation et de localisation.</sys:String>
+    <sys:String x:Key="AppDesc_Family">Contrôle parental et suivi du temps d'écran.</sys:String>
+    <sys:String x:Key="AppDesc_Store">Boutique d'applications officielle pour Windows.</sys:String>
+    <sys:String x:Key="AppDesc_MixedReality">Configuration de l'environnement pour casques VR/AR.</sys:String>
+    <sys:String x:Key="AppDesc_Notepad">Éditeur de texte brut par défaut.</sys:String>
+    <sys:String x:Key="AppDesc_OfficeHub">Lanceur pour les applications Microsoft 365.</sys:String>
+    <sys:String x:Key="AppDesc_OneNote">Application de prise de notes numérique.</sys:String>
+    <sys:String x:Key="AppDesc_Outlook">Nouveau client de messagerie web de remplacement.</sys:String>
+    <sys:String x:Key="AppDesc_Paint">Application basique de dessin et de retouche d'image.</sys:String>
+    <sys:String x:Key="AppDesc_People">Carnet d'adresses pour la gestion des contacts.</sys:String>
+    <sys:String x:Key="AppDesc_Photos">Visionneuse d'images et éditeur multimédia basique.</sys:String>
+    <sys:String x:Key="AppDesc_PowerAutomate">Automatisation des tâches et workflows de bureau.</sys:String>
+    <sys:String x:Key="AppDesc_QuickAssist">Outil de support technique par bureau à distance.</sys:String>
+    <sys:String x:Key="AppDesc_Skype">Application d'appels vocaux et de chat vidéo.</sys:String>
+    <sys:String x:Key="AppDesc_SnippingTool">Capturez des captures d'écran et des enregistrements d'écran.</sys:String>
+    <sys:String x:Key="AppDesc_Solitaire">Collection de jeux de cartes classiques.</sys:String>
+    <sys:String x:Key="AppDesc_SoundRecorder">Enregistrez de l'audio depuis votre microphone.</sys:String>
+    <sys:String x:Key="AppDesc_StickyNotes">Pense-bêtes numériques pour votre bureau.</sys:String>
+    <sys:String x:Key="AppDesc_Teams">Application de chat, de réunion et de collaboration.</sys:String>
+    <sys:String x:Key="AppDesc_ToDo">Gestion des tâches et listes de contrôle.</sys:String>
+    <sys:String x:Key="AppDesc_XboxApp">Ancienne application compagnon Xbox.</sys:String>
+    <sys:String x:Key="AppDesc_XboxAppModern">Hub moderne pour le PC Game Pass et Xbox.</sys:String>
+    <sys:String x:Key="AppDesc_XboxGameBar">Superposition en jeu pour la capture et les performances.</sys:String>
+    <sys:String x:Key="AppDesc_XboxGameOverlay">Service de superposition de jeu en arrière-plan.</sys:String>
+    <sys:String x:Key="AppDesc_XboxIdentity">Service d'authentification de connexion Xbox Live.</sys:String>
+    <sys:String x:Key="AppDesc_XboxTCUI">Framework de l'interface utilisateur en jeu Xbox Live.</sys:String>
+    <sys:String x:Key="AppDesc_XboxSpeech">Transcription voix vers texte en jeu.</sys:String>
+    <sys:String x:Key="AppDesc_PhoneLink">Synchronisez les SMS et les appels avec votre smartphone.</sys:String>
+    <sys:String x:Key="AppDesc_ZuneMusic">Ancien lecteur Groove Musique.</sys:String>
+    <sys:String x:Key="AppDesc_ZuneVideo">Ancien lecteur Films &amp; TV.</sys:String>
+    <sys:String x:Key="AppDesc_BingNews">Application d'actualités sponsorisée.</sys:String>
+    <sys:String x:Key="AppDesc_BingSearch">Intégration de recherche sponsorisée.</sys:String>
+    <sys:String x:Key="AppDesc_BingWeather">Application météo sponsorisée.</sys:String>
+    <sys:String x:Key="AppDesc_Disney">Raccourci de streaming sponsorisé.</sys:String>
+    <sys:String x:Key="AppDesc_Facebook">Application de réseau social sponsorisée.</sys:String>
+    <sys:String x:Key="AppDesc_Instagram">Application de réseau social sponsorisée.</sys:String>
+    <sys:String x:Key="AppDesc_LinkedInLegacy">Application de réseau professionnel sponsorisée.</sys:String>
+    <sys:String x:Key="AppDesc_LinkedInModern">Application de réseau professionnel sponsorisée.</sys:String>
+    <sys:String x:Key="AppDesc_Netflix">Raccourci de streaming sponsorisé.</sys:String>
+    <sys:String x:Key="AppDesc_PrimeVideo">Raccourci de streaming sponsorisé.</sys:String>
+    <sys:String x:Key="AppDesc_Spotify">Application de streaming musical sponsorisée.</sys:String>
+    <sys:String x:Key="AppDesc_TikTok">Application de réseau social sponsorisée.</sys:String>
+    <sys:String x:Key="AppDesc_WhatsApp">Application de messagerie sponsorisée.</sys:String>
+    <!-- endregion Win Builder Apps -->
 
     <!-- region Profile Builder -->
     <sys:String x:Key="Global_OK">OK</sys:String>

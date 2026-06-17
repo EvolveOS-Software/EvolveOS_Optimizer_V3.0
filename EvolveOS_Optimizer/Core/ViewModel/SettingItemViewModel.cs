@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Base;
@@ -135,6 +136,15 @@ public partial class SettingItemViewModel : BaseViewModel
 
     [ObservableProperty]
     public partial bool ShowCustomBadge { get; set; }
+
+    private bool _isRestartRequired;
+    public bool IsRestartRequired
+    {
+        get => _isRestartRequired;
+        set => SetProperty(ref _isRestartRequired, value); // Assuming ViewModelBase has SetProperty
+    }
+
+
     #endregion
 
     #region Technical Details Properties
@@ -1476,13 +1486,14 @@ public partial class SettingItemViewModel : BaseViewModel
     private void ShowRestartBannerIfNeeded()
     {
         var banner = _statusBannerManager.GetRestartBanner(SettingDefinition, _hasChangedThisSession);
-        if (!banner.HasValue) return;
 
-        if (StatusBannerSeverity == InfoBarSeverity.Error && !string.IsNullOrEmpty(StatusBannerMessage))
+        if (!banner.HasValue)
         {
+            IsRestartRequired = false;
             return;
         }
 
+        IsRestartRequired = true;
         ApplyBanner(banner.Value);
     }
 
