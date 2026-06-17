@@ -18,7 +18,6 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Windows.System.Power;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System;
 
@@ -3594,6 +3593,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                 dispatcher?.TryEnqueue(() =>
                 {
+                    CurrentCpuLoadStr = $"{(int)cpuUsage}%";
+                    CurrentRamLoadStr = $"{(int)ramUsage}%";
+                    CurrentIoLoadStr = $"{(int)diskUsage}%";
+                    CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
+                    CurrentGpuLoadStr = $"{(int)gpuUsage}%";
+
+                    CurrentNetworkDownLoadStr = $"{downMbps:0.#} ▼";
+                    CurrentNetworkUpLoadStr = $"{upMbps:0.#} ▲";
+                    CurrentNetworkLoadStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲ Mbps";
+                    CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
+
+                    OnPropertyChanged(nameof(ActivePrimaryValueStr));
+                    OnPropertyChanged(nameof(HeroStandardVisibility));
+
                     if (!IsOptimizationRunning)
                     {
                         if (ramUsage > 85 && (DateTime.Now - _lastRamNotification).TotalMinutes > 15)
@@ -3631,20 +3644,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         _networkDownHistoryBuffer.RemoveAt(0);
                         _networkUpHistoryBuffer.RemoveAt(0);
                     }
-
-                    CurrentCpuLoadStr = $"{(int)cpuUsage}%";
-                    CurrentRamLoadStr = $"{(int)ramUsage}%";
-                    CurrentIoLoadStr = $"{(int)diskUsage}%";
-                    CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
-                    CurrentGpuLoadStr = $"{(int)gpuUsage}%";
-
-                    CurrentNetworkDownLoadStr = $"{downMbps:0.#} ▼";
-                    CurrentNetworkUpLoadStr = $"{upMbps:0.#} ▲";
-                    CurrentNetworkLoadStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲ Mbps";
-                    CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
-
-                    OnPropertyChanged(nameof(ActivePrimaryValueStr));
-                    OnPropertyChanged(nameof(HeroStandardVisibility));
 
                     //bool isAfk = IsUserAfk();
 
@@ -3718,6 +3717,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _telemetryTimer.Dispose();
                     _telemetryTimer = null;
                 }
+
+                try
+                {
+                    _diskCounter?.Dispose();
+                    _diskCounter = null;
+
+                    foreach (var counter in _gpuCounters.Values)
+                    {
+                        counter.Dispose();
+                    }
+                    _gpuCounters.Clear();
+                    _gpuCategory = null;
+                }
+                catch { /* Ignore cleanup errors */ }
 
                 var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                 dispatcher?.TryEnqueue(() =>
@@ -4061,50 +4074,73 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
+        #region Hardware Polling (PDH Performance Counters)
+        private System.Diagnostics.PerformanceCounter? _diskCounter;
+        private System.Diagnostics.PerformanceCounterCategory? _gpuCategory;
+        private readonly Dictionary<string, System.Diagnostics.PerformanceCounter> _gpuCounters = new();
+
         private float GetGpuUsage()
         {
             try
             {
-                long totalUsage = 0;
-                var scope = new ManagementScope(@"root\cimv2");
-                var query = new ObjectQuery("SELECT UtilizationPercentage FROM Win32_PerfFormattedData_GPUPerformanceCounters_GPUEngine WHERE Name LIKE '%engtype_3D'");
-                var options = new System.Management.EnumerationOptions { ReturnImmediately = true };
-
-                using var searcher = new ManagementObjectSearcher(scope, query, options);
-                using var results = searcher.Get();
-                foreach (ManagementObject obj in results)
+                if (_gpuCategory == null)
                 {
-                    using (obj)
+                    _gpuCategory = new System.Diagnostics.PerformanceCounterCategory("GPU Engine");
+                }
+
+                var currentInstances = _gpuCategory.GetInstanceNames()
+                                                   .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
+                                                   .ToHashSet();
+
+                var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
+                foreach (var key in toRemove)
+                {
+                    _gpuCounters[key].Dispose();
+                    _gpuCounters.Remove(key);
+                }
+
+                foreach (var instance in currentInstances)
+                {
+                    if (!_gpuCounters.ContainsKey(instance))
                     {
-                        totalUsage += Convert.ToInt64(obj["UtilizationPercentage"]);
+                        var counter = new System.Diagnostics.PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
+                        counter.NextValue();
+                        _gpuCounters[instance] = counter;
                     }
                 }
-                return Math.Clamp((float)totalUsage, 0f, 100f);
+
+                float totalUsage = 0;
+                foreach (var counter in _gpuCounters.Values)
+                {
+                    totalUsage += counter.NextValue();
+                }
+
+                return Math.Clamp(totalUsage, 0f, 100f);
             }
-            catch { return 0f; }
+            catch
+            {
+                return 0f;
+            }
         }
 
         private float GetDiskUsage()
         {
             try
             {
-                var scope = new ManagementScope(@"root\cimv2");
-                var query = new ObjectQuery("SELECT PercentDiskTime FROM Win32_PerfFormattedData_PerfDisk_PhysicalDisk WHERE Name='_Total'");
-                var options = new System.Management.EnumerationOptions { ReturnImmediately = true };
-
-                using var searcher = new ManagementObjectSearcher(scope, query, options);
-                using var results = searcher.Get();
-                foreach (ManagementObject obj in results)
+                if (_diskCounter == null)
                 {
-                    using (obj)
-                    {
-                        return Math.Clamp(Convert.ToSingle(obj["PercentDiskTime"]), 0f, 100f);
-                    }
+                    _diskCounter = new System.Diagnostics.PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total", true);
+                    _diskCounter.NextValue(); // Prime the counter
                 }
+
+                return Math.Clamp(_diskCounter.NextValue(), 0f, 100f);
+            }
+            catch
+            {
                 return 0f;
             }
-            catch { return 0f; }
         }
+        #endregion
 
         private (float downMbps, float upMbps) GetNetworkUsage()
         {
