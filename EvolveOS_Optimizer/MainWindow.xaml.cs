@@ -297,7 +297,7 @@ namespace EvolveOS_Optimizer
 
             if (args.WindowActivationState != WindowActivationState.Deactivated)
             {
-                ForceToForeground();
+                //ForceToForeground();
             }
         }
 
@@ -323,9 +323,6 @@ namespace EvolveOS_Optimizer
                 isMinimized = presenter.State == OverlappedPresenterState.Minimized;
             }
 
-            uint foregroundThreadId = Win32Helper.GetWindowThreadProcessId(Win32Helper.GetForegroundWindow(), IntPtr.Zero);
-            uint appThreadId = Win32Helper.GetCurrentThreadId();
-
             if (isMinimized)
             {
                 Win32Helper.ShowWindow(hwnd, 9);
@@ -335,16 +332,8 @@ namespace EvolveOS_Optimizer
                 Win32Helper.ShowWindow(hwnd, 5);
             }
 
-            if (foregroundThreadId != appThreadId)
-            {
-                Win32Helper.AttachThreadInput(appThreadId, foregroundThreadId, true);
-                Win32Helper.SetForegroundWindow(hwnd);
-                Win32Helper.AttachThreadInput(appThreadId, foregroundThreadId, false);
-            }
-            else
-            {
-                Win32Helper.SetForegroundWindow(hwnd);
-            }
+            this.Activate();
+            Win32Helper.SetForegroundWindow(hwnd);
         }
 
         public void RefreshTrayIconLanguage()

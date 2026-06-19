@@ -63,7 +63,6 @@ namespace EvolveOS_Optimizer
         public App()
         {
             InitializeComponent();
-            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
 
             UnhandledException += OnUnhandledException;
 
@@ -73,7 +72,7 @@ namespace EvolveOS_Optimizer
 
             AppDomain.CurrentDomain.ProcessExit += (s, ev) => HandleCleanup();
 
-            Utilities.Services.LocalizationService.Instance.LoadLanguage("en-us");
+            LocalizationService.Instance.LoadLanguage("en-us");
         }
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)

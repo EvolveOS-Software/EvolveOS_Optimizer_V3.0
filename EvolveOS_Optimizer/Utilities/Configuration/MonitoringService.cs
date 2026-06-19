@@ -204,19 +204,20 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             Task.Run(() =>
             {
-                var monitorTasks = new List<(string filter, DeviceType type, string? scope)>
+                SafeWmiAction(() =>
                 {
-                    ($"TargetInstance ISA {(SystemDiagnostics.isMsftAvailable ? "'MSFT_PhysicalDisk'" : "'Win32_DiskDrive'")}",
-                      DeviceType.Storage, SystemDiagnostics.isMsftAvailable ? @"root\microsoft\windows\storage" : null),
-                    ("TargetInstance ISA 'Win32_SoundDevice'", DeviceType.Audio, null),
-                    ("TargetInstance ISA 'Win32_NetworkAdapter' AND TargetInstance.NetConnectionStatus IS NOT NULL",
-                      DeviceType.Network, null)
-                };
+                    WqlEventQuery query = new("SELECT * FROM Win32_DeviceChangeEvent");
+                    ManagementEventWatcher watcher = new(new ManagementScope(@"root\cimv2"), query);
 
-                foreach (var param in monitorTasks)
-                {
-                    SubscribeToDeviceEvents(param.filter, param.type, param.scope);
-                }
+                    void handler(object s, EventArrivedEventArgs e)
+                    {
+                        HandleDevicesEvents?.Invoke(DeviceType.All);
+                    }
+
+                    watcher.EventArrived += handler;
+                    watcher.Start();
+                    lock (_watcherHandler) { _watcherHandler.Add((watcher, handler)); }
+                }, "GlobalPnPWatcher");
             });
         }
 
