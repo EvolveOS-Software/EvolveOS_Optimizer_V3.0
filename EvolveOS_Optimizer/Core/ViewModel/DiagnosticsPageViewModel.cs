@@ -3729,8 +3729,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                     _gpuCounters.Clear();
                     _gpuCategory = null;
-
-                    _cachedNetworkInterfaces = null;
                 }
                 catch { /* Ignore cleanup errors */ }
 
@@ -4077,13 +4075,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
 
         #region Hardware Polling (PDH Performance Counters)
-        private PerformanceCounter? _diskCounter;
-        private PerformanceCounterCategory? _gpuCategory;
-        private readonly Dictionary<string, PerformanceCounter> _gpuCounters = new();
-
-        private DateTime _lastGpuInstanceRefresh = DateTime.MinValue;
-        private NetworkInterface[]? _cachedNetworkInterfaces;
-        private DateTime _lastNetworkInterfaceRefresh = DateTime.MinValue;
+        private System.Diagnostics.PerformanceCounter? _diskCounter;
+        private System.Diagnostics.PerformanceCounterCategory? _gpuCategory;
+        private readonly Dictionary<string, System.Diagnostics.PerformanceCounter> _gpuCounters = new();
 
         private float GetGpuUsage()
         {
@@ -4091,33 +4085,28 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 if (_gpuCategory == null)
                 {
-                    _gpuCategory = new PerformanceCounterCategory("GPU Engine");
+                    _gpuCategory = new System.Diagnostics.PerformanceCounterCategory("GPU Engine");
                 }
 
-                if ((DateTime.Now - _lastGpuInstanceRefresh).TotalSeconds >= 10)
+                var currentInstances = _gpuCategory.GetInstanceNames()
+                                                   .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
+                                                   .ToHashSet();
+
+                var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
+                foreach (var key in toRemove)
                 {
-                    var currentInstances = _gpuCategory.GetInstanceNames()
-                                                       .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
-                                                       .ToHashSet();
+                    _gpuCounters[key].Dispose();
+                    _gpuCounters.Remove(key);
+                }
 
-                    var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
-                    foreach (var key in toRemove)
+                foreach (var instance in currentInstances)
+                {
+                    if (!_gpuCounters.ContainsKey(instance))
                     {
-                        _gpuCounters[key].Dispose();
-                        _gpuCounters.Remove(key);
+                        var counter = new System.Diagnostics.PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
+                        counter.NextValue();
+                        _gpuCounters[instance] = counter;
                     }
-
-                    foreach (var instance in currentInstances)
-                    {
-                        if (!_gpuCounters.ContainsKey(instance))
-                        {
-                            var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
-                            counter.NextValue();
-                            _gpuCounters[instance] = counter;
-                        }
-                    }
-
-                    _lastGpuInstanceRefresh = DateTime.Now;
                 }
 
                 float totalUsage = 0;
@@ -4140,8 +4129,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 if (_diskCounter == null)
                 {
-                    _diskCounter = new PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total", true);
-                    _diskCounter.NextValue();
+                    _diskCounter = new System.Diagnostics.PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total", true);
+                    _diskCounter.NextValue(); // Prime the counter
                 }
 
                 return Math.Clamp(_diskCounter.NextValue(), 0f, 100f);
@@ -4160,18 +4149,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 long currentDown = 0;
                 long currentUp = 0;
 
-                if (_cachedNetworkInterfaces == null || (DateTime.Now - _lastNetworkInterfaceRefresh).TotalSeconds >= 15)
-                {
-                    _cachedNetworkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
-                        .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
-                                     ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                                     ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
-                        .ToArray();
+                var interfaces = NetworkInterface.GetAllNetworkInterfaces()
+                    .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
+                                 ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                                 ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel);
 
-                    _lastNetworkInterfaceRefresh = DateTime.Now;
-                }
-
-                foreach (var ni in _cachedNetworkInterfaces)
+                foreach (var ni in interfaces)
                 {
                     try
                     {
