@@ -3981,6 +3981,8 @@
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Description">Zeigt Sekunden in der Uhr auf der Taskleiste an. Verbraucht geringfügig mehr Energie.</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Name">Num-Lock beim Systemstart aktivieren</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Die Num-Lock-Taste auf dem Windows-Anmeldebildschirm und dem Desktop automatisch aktivieren</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Name">Startseite der Einstellungen ausblenden</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Description">Entfernt die Startseite mit interaktiven Karten in der Windows 11-Einstellungs-App, sodass sie direkt im Bereich System geöffnet wird</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Spielmodus</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimieren Sie Ihren PC für Spiele, indem Sie Hintergrundaktivitäten abschalten</sys:String>

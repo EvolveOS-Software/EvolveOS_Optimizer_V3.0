@@ -4005,6 +4005,8 @@
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Description">Toont seconden in de klok in het systeemvak van de taakbalk. Gebruikt iets meer stroom.</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Name">Num Lock inschakelen bij opstarten</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Description">De Num Lock-toets automatisch inschakelen op het Windows-aanmeldscherm en het bureaublad</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Name">Startpagina van Instellingen verbergen</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Description">Verwijdert de startpagina met interactieve kaarten in de Windows 11 Instellingen-app, waardoor deze direct opent in de sectie Systeem</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Gamemodus</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimaliseer de pc voor gamen door achtergrondactiviteiten uit te schakelen</sys:String>

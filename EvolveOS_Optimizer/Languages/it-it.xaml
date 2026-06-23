@@ -4002,6 +4002,8 @@
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Description">Visualizza i secondi nell'orologio situato nella barra delle applicazioni. Questa impostazione richiederà un consumo energetico leggermente superiore.</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Name">Attiva Bloc Num all'avvio</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Attiva automaticamente il tasto Bloc Num nella schermata di accesso di Windows e sul desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Name">Nascondi la pagina iniziale delle Impostazioni</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Description">Rimuove la pagina iniziale con le schede interattive nell'app Impostazioni di Windows 11, in modo che si apra direttamente nella sezione Sistema</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Modalità Gioco</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Ottimizza il PC per il gioco riducendo le attività in background</sys:String>

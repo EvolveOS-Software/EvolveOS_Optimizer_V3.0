@@ -3991,6 +3991,8 @@
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Description">Affiche les secondes dans l'horloge située dans la zone de notification (systray). Consomme légèrement plus d'énergie.</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Name">Activer le verrouillage numérique au démarrage</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Activer automatiquement la touche de verrouillage numérique sur l'écran de connexion Windows et sur le bureau</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Name">Masquer la page d'accueil des paramètres</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Description">Supprime la page d'accueil avec les cartes interactives dans l'application Paramètres de Windows 11, ce qui permet de l'ouvrir directement dans la section Système</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Mode Jeu</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimisez votre PC pour le jeu en désactivant des éléments en arrière-plan</sys:String>

@@ -3430,6 +3430,31 @@ public static class ExplorerCustomizations
                         }
                     },
                 },
+                new SettingDefinition
+                {
+                    Id = "explorer-customization-hide-settings-home",
+                    AddedInVersion = "1.1.6.344",
+                    IsSubjectivePreference = true,
+                    Name = "Hide Settings Home Page",
+                    Description = "Removes the Home page with interactive cards in the Windows 11 Settings app, causing it to open directly to the System section",
+                    GroupName = "General",
+                    InputType = InputType.Toggle,
+                    Icon = "HomeMinus",
+                    IsWindows11Only = true,
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer",
+                            ValueName = "SettingsPageVisibility",
+                            RecommendedValue = "hide:home",
+                            EnabledValue = ["hide:home"],
+                            DisabledValue = [null, ""],
+                            DefaultValue = null,
+                            ValueType = RegistryValueKind.String,
+                        }
+                    },
+                },
             },
         };
     }

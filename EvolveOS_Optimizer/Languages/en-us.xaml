@@ -4091,6 +4091,8 @@
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Description">Displays seconds in the clock located in the system tray. Uses slightly more power.</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Name">Enable Num Lock on startup</sys:String>
     <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Automatically turn on the Num Lock key at the Windows sign-in screen and desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Name">Hide Settings Home Page</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Description">Removes the Home page with interactive cards in the Windows 11 Settings app, causing it to open directly to the System section</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Game Mode</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimize your PC for play by turning things off in the background</sys:String>
