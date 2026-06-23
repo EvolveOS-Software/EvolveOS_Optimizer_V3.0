@@ -4079,6 +4079,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private System.Diagnostics.PerformanceCounterCategory? _gpuCategory;
         private readonly Dictionary<string, System.Diagnostics.PerformanceCounter> _gpuCounters = new();
 
+        private DateTime _lastGpuInstanceRefresh = DateTime.MinValue;
+        private NetworkInterface[]? _cachedNetworkInterfaces;
+        private DateTime _lastNetworkInterfaceRefresh = DateTime.MinValue;
+
         private float GetGpuUsage()
         {
             try
@@ -4088,25 +4092,30 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _gpuCategory = new System.Diagnostics.PerformanceCounterCategory("GPU Engine");
                 }
 
-                var currentInstances = _gpuCategory.GetInstanceNames()
-                                                   .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
-                                                   .ToHashSet();
-
-                var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
-                foreach (var key in toRemove)
+                if ((DateTime.Now - _lastGpuInstanceRefresh).TotalSeconds >= 10)
                 {
-                    _gpuCounters[key].Dispose();
-                    _gpuCounters.Remove(key);
-                }
+                    var currentInstances = _gpuCategory.GetInstanceNames()
+                        .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
+                        .ToHashSet();
 
-                foreach (var instance in currentInstances)
-                {
-                    if (!_gpuCounters.ContainsKey(instance))
+                    var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
+                    foreach (var key in toRemove)
                     {
-                        var counter = new System.Diagnostics.PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
-                        counter.NextValue();
-                        _gpuCounters[instance] = counter;
+                        _gpuCounters[key].Dispose();
+                        _gpuCounters.Remove(key);
                     }
+
+                    foreach (var instance in currentInstances)
+                    {
+                        if (!_gpuCounters.ContainsKey(instance))
+                        {
+                            var counter = new System.Diagnostics.PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
+                            counter.NextValue();
+                            _gpuCounters[instance] = counter;
+                        }
+                    }
+
+                    _lastGpuInstanceRefresh = DateTime.Now;
                 }
 
                 float totalUsage = 0;
@@ -4149,12 +4158,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 long currentDown = 0;
                 long currentUp = 0;
 
-                var interfaces = NetworkInterface.GetAllNetworkInterfaces()
-                    .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
-                                 ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                                 ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel);
+                if (_cachedNetworkInterfaces == null || (DateTime.Now - _lastNetworkInterfaceRefresh).TotalSeconds >= 15)
+                {
+                    _cachedNetworkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
+                        .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
+                                     ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                                     ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                        .ToArray();
 
-                foreach (var ni in interfaces)
+                    _lastNetworkInterfaceRefresh = DateTime.Now;
+                }
+
+                foreach (var ni in _cachedNetworkInterfaces)
                 {
                     try
                     {
@@ -4192,6 +4207,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 return (0f, 0f);
             }
         }
+
+
 
         private string FormatPerformanceCounterInstanceName(string description)
         {

@@ -204,35 +204,25 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             Task.Run(() =>
             {
-                var monitorTasks = new List<(string filter, DeviceType type, string? scope)>
+                SafeWmiAction(() =>
                 {
-                    ($"TargetInstance ISA {(SystemDiagnostics.isMsftAvailable ? "'MSFT_PhysicalDisk'" : "'Win32_DiskDrive'")}",
-                      DeviceType.Storage, SystemDiagnostics.isMsftAvailable ? @"root\microsoft\windows\storage" : null),
-                    ("TargetInstance ISA 'Win32_SoundDevice'", DeviceType.Audio, null),
-                    ("TargetInstance ISA 'Win32_NetworkAdapter' AND TargetInstance.NetConnectionStatus IS NOT NULL",
-                      DeviceType.Network, null)
-                };
+                    WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_DeviceChangeEvent");
+                    ManagementEventWatcher watcher = new ManagementEventWatcher(new ManagementScope(@"root\cimv2"), query);
 
-                foreach (var param in monitorTasks)
-                {
-                    SubscribeToDeviceEvents(param.filter, param.type, param.scope);
-                }
+                    void handler(object s, EventArrivedEventArgs e)
+                    {
+                        HandleDevicesEvents?.Invoke(DeviceType.All);
+                    }
+
+                    watcher.EventArrived += handler;
+                    watcher.Start();
+
+                    lock (_watcherHandler)
+                    {
+                        _watcherHandler.Add((watcher, handler));
+                    }
+                }, "GlobalPnPWatcher");
             });
-        }
-
-        private void SubscribeToDeviceEvents(string filter, DeviceType type, string? scope)
-        {
-            SafeWmiAction(() =>
-            {
-                WqlEventQuery query = new("__InstanceOperationEvent", TimeSpan.FromSeconds(1), filter);
-                ManagementEventWatcher watcher = new(new ManagementScope(scope ?? @"root\cimv2"), query);
-
-                void handler(object s, EventArrivedEventArgs e) => HandleDevicesEvents?.Invoke(type);
-
-                watcher.EventArrived += handler;
-                watcher.Start();
-                lock (_watcherHandler) { _watcherHandler.Add((watcher, handler)); }
-            }, $"DeviceWatcher ({type})");
         }
 
         internal void StopDeviceMonitoring()
