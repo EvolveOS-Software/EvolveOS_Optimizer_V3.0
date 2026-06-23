@@ -4000,6 +4000,8 @@
     <sys:String x:Key="Setting_explorer-customization-snapbar_Description">Mostra il pannello a discesa per i layout di affiancamento (snapbar) nella parte superiore dello schermo mentre si sta trascinando una finestra</sys:String>
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Name">Mostra i secondi nell'orologio di sistema (nella barra delle applicazioni)</sys:String>
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Description">Visualizza i secondi nell'orologio situato nella barra delle applicazioni. Questa impostazione richiederà un consumo energetico leggermente superiore.</sys:String>
+    <sys:String x:Key="Setting_devices-keyboard-numlock_Name">Attiva Bloc Num all'avvio</sys:String>
+    <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Attiva automaticamente il tasto Bloc Num nella schermata di accesso di Windows e sul desktop</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Modalità Gioco</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Ottimizza il PC per il gioco riducendo le attività in background</sys:String>

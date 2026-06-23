@@ -4089,6 +4089,8 @@
     <sys:String x:Key="Setting_explorer-customization-snapbar_Description">Show the snap layouts dropdown banner at the top of the screen when dragging a window</sys:String>
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Name">Show seconds in system tray clock</sys:String>
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Description">Displays seconds in the clock located in the system tray. Uses slightly more power.</sys:String>
+    <sys:String x:Key="Setting_devices-keyboard-numlock_Name">Enable Num Lock on startup</sys:String>
+    <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Automatically turn on the Num Lock key at the Windows sign-in screen and desktop</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Game Mode</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimize your PC for play by turning things off in the background</sys:String>

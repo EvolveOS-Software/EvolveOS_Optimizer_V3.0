@@ -3362,10 +3362,10 @@ public static class ExplorerCustomizations
                         {
                             KeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
                             ValueName = "EnableSnapAssistFlyout",
-                            RecommendedValue = 1,
-                            EnabledValue = [1],
+                            RecommendedValue = null,
+                            EnabledValue = [1, null],
                             DisabledValue = [0],
-                            DefaultValue = 1,
+                            DefaultValue = null,
                             ValueType = RegistryValueKind.DWord,
                         },
                     },
@@ -3387,12 +3387,47 @@ public static class ExplorerCustomizations
                         {
                             KeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
                             ValueName = "EnableSnapBar",
-                            RecommendedValue = 1,
-                            EnabledValue = [1],
+                            RecommendedValue = null,
+                            EnabledValue = [1, null],
                             DisabledValue = [0],
-                            DefaultValue = 1,
+                            DefaultValue = null,
                             ValueType = RegistryValueKind.DWord,
                         },
+                    },
+                },
+                new SettingDefinition
+                {
+                    Id = "devices-keyboard-numlock",
+                    AddedInVersion = "1.1.6.344",
+                    IsSubjectivePreference = true,
+                    RecommendedToggleState = true,
+                    Name = "Enable Num Lock on startup",
+                    Description = "Automatically turn on the Num Lock key at the Windows sign-in screen and desktop",
+                    GroupName = "Devices and Peripherals",
+                    InputType = InputType.Toggle,
+                    Icon = "Numeric",
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_CURRENT_USER\Control Panel\Keyboard",
+                            ValueName = "InitialKeyboardIndicators",
+                            RecommendedValue = "2",
+                            EnabledValue = ["2", "2147483650"],
+                            DisabledValue = ["0", "2147483648"],
+                            DefaultValue = "2",
+                            ValueType = RegistryValueKind.String,
+                        },
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_USERS\.DEFAULT\Control Panel\Keyboard",
+                            ValueName = "InitialKeyboardIndicators",
+                            RecommendedValue = "2147483650",
+                            EnabledValue = ["2", "2147483650"],
+                            DisabledValue = ["0", "2147483648"],
+                            DefaultValue = "2147483648",
+                            ValueType = RegistryValueKind.String,
+                        }
                     },
                 },
             },

@@ -3979,6 +3979,8 @@
     <sys:String x:Key="Setting_explorer-customization-snapbar_Description">Zeigt beim Ziehen eines Fensters die Dropdown-Leiste für Andocklayouts am oberen Bildschirmrand an</sys:String>
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Name">Sekunden auf der Taskleistenuhr anzeigen</sys:String>
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Description">Zeigt Sekunden in der Uhr auf der Taskleiste an. Verbraucht geringfügig mehr Energie.</sys:String>
+    <sys:String x:Key="Setting_devices-keyboard-numlock_Name">Num-Lock beim Systemstart aktivieren</sys:String>
+    <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Die Num-Lock-Taste auf dem Windows-Anmeldebildschirm und dem Desktop automatisch aktivieren</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Spielmodus</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimieren Sie Ihren PC für Spiele, indem Sie Hintergrundaktivitäten abschalten</sys:String>

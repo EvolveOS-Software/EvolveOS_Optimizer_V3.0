@@ -4003,6 +4003,8 @@
     <sys:String x:Key="Setting_explorer-customization-snapbar_Description">Toon de balk voor ankerlay-outs bovenaan het scherm tijdens het slepen van een venster</sys:String>
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Name">Seconden in systeemvakklok weergeven</sys:String>
     <sys:String x:Key="Setting_explorer-taskbar-show-seconds_Description">Toont seconden in de klok in het systeemvak van de taakbalk. Gebruikt iets meer stroom.</sys:String>
+    <sys:String x:Key="Setting_devices-keyboard-numlock_Name">Num Lock inschakelen bij opstarten</sys:String>
+    <sys:String x:Key="Setting_devices-keyboard-numlock_Description">De Num Lock-toets automatisch inschakelen op het Windows-aanmeldscherm en het bureaublad</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Gamemodus</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimaliseer de pc voor gamen door achtergrondactiviteiten uit te schakelen</sys:String>
