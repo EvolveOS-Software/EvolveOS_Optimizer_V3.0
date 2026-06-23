@@ -4004,6 +4004,12 @@
     <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Attiva automaticamente il tasto Bloc Num nella schermata di accesso di Windows e sul desktop</sys:String>
     <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Name">Nascondi la pagina iniziale delle Impostazioni</sys:String>
     <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Description">Rimuove la pagina iniziale con le schede interattive nell'app Impostazioni di Windows 11, in modo che si apra direttamente nella sezione Sistema</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-users-files_Name">Mostra i file dell'utente sul desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-users-files_Description">Mostra l'icona della cartella del profilo dell'utente corrente sul desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-control-panel_Name">Mostra Pannello di controllo sul desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-control-panel_Description">Mostra l'icona del Pannello di controllo sul desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-network_Name">Mostra Rete sul desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-network_Description">Mostra l'icona di Rete sul desktop</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Modalità Gioco</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Ottimizza il PC per il gioco riducendo le attività in background</sys:String>

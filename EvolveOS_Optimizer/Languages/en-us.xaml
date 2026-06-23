@@ -4093,6 +4093,12 @@
     <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Automatically turn on the Num Lock key at the Windows sign-in screen and desktop</sys:String>
     <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Name">Hide Settings Home Page</sys:String>
     <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Description">Removes the Home page with interactive cards in the Windows 11 Settings app, causing it to open directly to the System section</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-users-files_Name">Show User's Files on desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-users-files_Description">Displays the current user's profile folder icon on the desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-control-panel_Name">Show Control Panel on desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-control-panel_Description">Displays the Control Panel icon on the desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-network_Name">Show Network on desktop</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-network_Description">Displays the Network icon on the desktop</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Game Mode</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimize your PC for play by turning things off in the background</sys:String>

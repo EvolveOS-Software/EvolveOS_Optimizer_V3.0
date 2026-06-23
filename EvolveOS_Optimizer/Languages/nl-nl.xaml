@@ -4007,6 +4007,12 @@
     <sys:String x:Key="Setting_devices-keyboard-numlock_Description">De Num Lock-toets automatisch inschakelen op het Windows-aanmeldscherm en het bureaublad</sys:String>
     <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Name">Startpagina van Instellingen verbergen</sys:String>
     <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Description">Verwijdert de startpagina met interactieve kaarten in de Windows 11 Instellingen-app, waardoor deze direct opent in de sectie Systeem</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-users-files_Name">Bestanden van gebruiker weergeven op bureaublad</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-users-files_Description">Geeft het profielmappictogram van de huidige gebruiker weer op het bureaublad</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-control-panel_Name">Configuratiescherm weergeven op bureaublad</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-control-panel_Description">Geeft het Configuratiescherm-pictogram weer op het bureaublad</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-network_Name">Netwerk weergeven op bureaublad</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-network_Description">Geeft het Netwerk-pictogram weer op het bureaublad</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Gamemodus</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimaliseer de pc voor gamen door achtergrondactiviteiten uit te schakelen</sys:String>

@@ -3983,6 +3983,12 @@
     <sys:String x:Key="Setting_devices-keyboard-numlock_Description">Die Num-Lock-Taste auf dem Windows-Anmeldebildschirm und dem Desktop automatisch aktivieren</sys:String>
     <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Name">Startseite der Einstellungen ausblenden</sys:String>
     <sys:String x:Key="Setting_explorer-customization-hide-settings-home_Description">Entfernt die Startseite mit interaktiven Karten in der Windows 11-Einstellungs-App, sodass sie direkt im Bereich System geöffnet wird</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-users-files_Name">Benutzerdateien auf dem Desktop anzeigen</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-users-files_Description">Zeigt das Profilordnersymbol des aktuellen Benutzers auf dem Desktop an</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-control-panel_Name">Systemsteuerung auf dem Desktop anzeigen</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-control-panel_Description">Zeigt das Symbol für die Systemsteuerung auf dem Desktop an</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-network_Name">Netzwerk auf dem Desktop anzeigen</sys:String>
+    <sys:String x:Key="Setting_explorer-customization-desktop-icon-network_Description">Zeigt das Netzwerksymbol auf dem Desktop an</sys:String>
 
     <sys:String x:Key="Setting_gaming-game-mode_Name">Spielmodus</sys:String>
     <sys:String x:Key="Setting_gaming-game-mode_Description">Optimieren Sie Ihren PC für Spiele, indem Sie Hintergrundaktivitäten abschalten</sys:String>
