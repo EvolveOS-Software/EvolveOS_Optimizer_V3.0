@@ -26,6 +26,8 @@ public class PowerService(
     private volatile IEnumerable<SettingDefinition>? _cachedSettings;
     private readonly object _cacheLock = new object();
 
+    public const string EvolveOSPlanName = "EvolveOS Ultimate";
+
     public async Task<bool> TryApplySpecialSettingAsync(SettingDefinition setting, object value, bool additionalContext = false, ISettingApplicationService? settingApplicationService = null)
     {
         if (setting.Id == SettingIds.PowerPlanSelection)
@@ -70,6 +72,7 @@ public class PowerService(
         if (powerPlanSetting != null)
         {
             await CleanupCorruptEvolveOSPlanAsync().ConfigureAwait(false);
+            await CleanupGhostPlansAsync().ConfigureAwait(false);
 
             var activePlan = await GetActivePowerPlanAsync().ConfigureAwait(false);
             var rawValues = new Dictionary<string, object?>
@@ -94,7 +97,7 @@ public class PowerService(
                 string.Equals(p.Guid, evolveosGuid, StringComparison.OrdinalIgnoreCase));
 
             if (matchingPlan != null &&
-                !string.Equals(matchingPlan.Name?.Trim(), "EvolveOS Optimizer Power Plan", StringComparison.OrdinalIgnoreCase))
+                !string.Equals(matchingPlan.Name?.Trim(), EvolveOSPlanName, StringComparison.OrdinalIgnoreCase))
             {
                 logService.Log(LogLevel.Warning, $"[PowerService] Detected corrupt EvolveOS plan (name: '{matchingPlan.Name}'), cleaning up");
 
@@ -123,6 +126,45 @@ public class PowerService(
         catch (Exception ex)
         {
             logService.Log(LogLevel.Warning, $"[PowerService] Error during EvolveOS plan cleanup: {ex.Message}");
+        }
+    }
+
+    private async Task CleanupGhostPlansAsync()
+    {
+        try
+        {
+            var systemPlans = await powerSettingsQueryService.GetAvailablePowerPlansAsync().ConfigureAwait(false);
+
+            var groupedPlans = systemPlans.GroupBy(p => p.Name?.Trim());
+
+            foreach (var group in groupedPlans)
+            {
+                if (string.Equals(group.Key, "Ultimate Performance", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(group.Key, "Balanced", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(group.Key, "High Performance", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(group.Key, EvolveOSPlanName, StringComparison.OrdinalIgnoreCase))
+                {
+                    var plansList = group.ToList();
+
+                    if (plansList.Count > 1)
+                    {
+                        plansList = plansList.OrderByDescending(p => p.IsActive).ToList();
+
+                        for (int i = 1; i < plansList.Count; i++)
+                        {
+                            var ghostGuid = Guid.Parse(plansList[i].Guid);
+                            logService.Log(LogLevel.Info, $"[PowerService] Cleaning up ghost duplicate plan: {plansList[i].Name} ({ghostGuid})");
+                            powerSchemeOperations.DeleteScheme(ghostGuid);
+                        }
+                    }
+                }
+            }
+
+            powerSettingsQueryService.InvalidateCache();
+        }
+        catch (Exception ex)
+        {
+            logService.Log(LogLevel.Warning, $"[PowerService] Error during ghost plan cleanup: {ex.Message}");
         }
     }
 
@@ -184,7 +226,6 @@ public class PowerService(
             return Enumerable.Empty<object>();
         }
     }
-
 
     private async Task<bool> SetActivePowerPlanAsync(string powerPlanGuid)
     {
@@ -267,9 +308,9 @@ public class PowerService(
         var planExists = existingSystemPlan != null;
 
         if (planExists && IsEvolveOSPowerPlan(powerPlanGuid) &&
-            !string.Equals(existingSystemPlan!.Name?.Trim(), "EvolveOS Optimizer Power Plan", StringComparison.OrdinalIgnoreCase))
+            !string.Equals(existingSystemPlan!.Name?.Trim(), EvolveOSPlanName, StringComparison.OrdinalIgnoreCase))
         {
-            logService.Log(LogLevel.Warning, $"[PowerService] Found corrupt EvolveOS Optimizer plan (name: '{existingSystemPlan.Name}'), deleting and recreating");
+            logService.Log(LogLevel.Warning, $"[PowerService] Found corrupt EvolveOS Ultimate plan (name: '{existingSystemPlan.Name}'), deleting and recreating");
             var corruptGuid = Guid.Parse(powerPlanGuid);
             powerSchemeOperations.DeleteScheme(corruptGuid);
             powerSettingsQueryService.InvalidateCache();
@@ -332,8 +373,38 @@ public class PowerService(
             }
             else
             {
-                logService.Log(LogLevel.Error, $"[PowerService] Unknown power plan GUID: {powerPlanGuid}");
-                return false;
+                logService.Log(LogLevel.Info, $"[PowerService] Custom power plan '{planName}' - creating by duplicating Balanced");
+
+                var targetGuid = Guid.Parse(powerPlanGuid);
+                var cleanupResult = powerSchemeOperations.DeleteScheme(targetGuid);
+                if (cleanupResult == PowerProf.ERROR_SUCCESS)
+                {
+                    logService.Log(LogLevel.Info, $"[PowerService] Cleaned up ghost plan entry with GUID {powerPlanGuid}");
+                }
+
+                var (dupSuccess, dupOutput) = await RunPowercfgAsync($"/duplicatescheme 381b4222-f694-41f0-9685-ff5bb260df2e {powerPlanGuid}").ConfigureAwait(false);
+
+                if (dupSuccess)
+                {
+                    var actualGuid = ParseGuidFromPowercfgOutput(dupOutput) ?? powerPlanGuid;
+                    if (!string.Equals(actualGuid, powerPlanGuid, StringComparison.OrdinalIgnoreCase))
+                    {
+                        logService.Log(LogLevel.Warning, $"[PowerService] powercfg assigned GUID {actualGuid} instead of requested {powerPlanGuid}");
+                    }
+
+                    SetPowerPlanName(Guid.Parse(actualGuid), planName);
+
+                    powerSettingsQueryService.InvalidateCache();
+                    logService.Log(LogLevel.Info, $"[PowerService] Successfully created custom plan '{planName}' with GUID {actualGuid}");
+
+                    powerPlanGuid = actualGuid;
+                    success = await SetActivePowerPlanAsync(powerPlanGuid).ConfigureAwait(false);
+                }
+                else
+                {
+                    logService.Log(LogLevel.Error, $"[PowerService] Failed to create custom plan '{planName}' with GUID {powerPlanGuid}");
+                    return false;
+                }
             }
         }
         else
@@ -475,7 +546,7 @@ public class PowerService(
     {
         try
         {
-            if (predefinedPlan.Name == "EvolveOS Optimizer Power Plan")
+            if (string.Equals(predefinedPlan.Guid, "57696e68-616e-6365-506f-776572000000", StringComparison.OrdinalIgnoreCase))
             {
                 return await CreateEvolveOSPowerPlanAsync(predefinedPlan).ConfigureAwait(false);
             }
@@ -584,8 +655,6 @@ public class PowerService(
         }
     }
 
-
-
     private async Task BackupCustomPlansAsync(string backupFolder)
     {
         fileSystemService.CreateDirectory(backupFolder);
@@ -662,9 +731,9 @@ public class PowerService(
                 string.Equals(p.Guid, predefinedPlan.Guid, StringComparison.OrdinalIgnoreCase));
 
             if (existingPlan != null &&
-                string.Equals(existingPlan.Name?.Trim(), "EvolveOS Optimizer Power Plan", StringComparison.OrdinalIgnoreCase))
+                string.Equals(existingPlan.Name?.Trim(), EvolveOSPlanName, StringComparison.OrdinalIgnoreCase))
             {
-                logService.Log(LogLevel.Info, $"EvolveOS Optimizer Power Plan already exists with GUID: {existingPlan.Guid}");
+                logService.Log(LogLevel.Info, $"EvolveOS Ultimate Power Plan already exists with GUID: {existingPlan.Guid}");
                 return new PowerPlanImportResult(true, existingPlan.Guid);
             }
 
@@ -673,18 +742,18 @@ public class PowerService(
             if (cleanupResult == PowerProf.ERROR_SUCCESS)
             {
                 logService.Log(LogLevel.Info, existingPlan != null
-                    ? $"[PowerService] Deleted corrupt EvolveOS Optimizer Plan (name was: '{existingPlan.Name}')"
-                    : "[PowerService] Cleaned up ghost EvolveOS Optimizer Power Plan entry");
+                    ? $"[PowerService] Deleted corrupt EvolveOS Ultimate Plan (name was: '{existingPlan.Name}')"
+                    : "[PowerService] Cleaned up ghost EvolveOS Ultimate Power Plan entry");
                 powerSettingsQueryService.InvalidateCache();
             }
 
-            logService.Log(LogLevel.Info, "Creating EvolveOS Optimizer Power Plan from Ultimate Performance");
+            logService.Log(LogLevel.Info, "Creating EvolveOS Ultimate Power Plan from Ultimate Performance");
 
             var (dupSuccess, dupOutput) = await RunPowercfgAsync($"/duplicatescheme {ultimatePerformancePlan.Guid} {predefinedPlan.Guid}").ConfigureAwait(false);
 
             if (!dupSuccess)
             {
-                logService.Log(LogLevel.Error, "Failed to duplicate plan for EvolveOS Optimizer Power Plan");
+                logService.Log(LogLevel.Error, "Failed to duplicate plan for EvolveOS Ultimate Power Plan");
                 return new PowerPlanImportResult(false, "", "Failed to create plan");
             }
 
@@ -694,18 +763,18 @@ public class PowerService(
                 logService.Log(LogLevel.Warning, $"[PowerService] powercfg assigned GUID {actualGuid} instead of requested {predefinedPlan.Guid}");
             }
 
-            SetPowerPlanNameAndDescription(Guid.Parse(actualGuid), predefinedPlan.Name, predefinedPlan.Description);
+            SetPowerPlanNameAndDescription(Guid.Parse(actualGuid), EvolveOSPlanName, predefinedPlan.Description);
 
             await ApplyRecommendedSettingsToPlanAsync(actualGuid).ConfigureAwait(false);
 
             powerSettingsQueryService.InvalidateCache();
 
-            logService.Log(LogLevel.Info, $"Successfully created EvolveOS Optimizer Power Plan: {actualGuid}");
+            logService.Log(LogLevel.Info, $"Successfully created EvolveOS Ultimate Power Plan: {actualGuid}");
             return new PowerPlanImportResult(true, actualGuid);
         }
         catch (Exception ex)
         {
-            logService.Log(LogLevel.Error, $"Error creating EvolveOS Optimizer Power Plan: {ex.Message}");
+            logService.Log(LogLevel.Error, $"Error creating EvolveOS Ultimate Power Plan: {ex.Message}");
             return new PowerPlanImportResult(false, "", ex.Message);
         }
     }
@@ -802,7 +871,7 @@ public class PowerService(
                 }
             }
 
-            logService.Log(LogLevel.Info, $"Applied {appliedCount} PowerCfg settings to EvolveOS Optimizer Power Plan");
+            logService.Log(LogLevel.Info, $"Applied {appliedCount} PowerCfg settings to EvolveOS Ultimate Power Plan");
         }
         catch (Exception ex)
         {
@@ -815,7 +884,7 @@ public class PowerService(
 
     private static bool IsEvolveOSPowerPlan(string guid, string? name) =>
         string.Equals(guid, "57696e68-616e-6365-506f-776572000000", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(name?.Trim(), "EvolveOS Optimizer Power Plan", StringComparison.OrdinalIgnoreCase);
+        string.Equals(name?.Trim(), EvolveOSPlanName, StringComparison.OrdinalIgnoreCase);
 
     private async Task ApplyEvolveOSRecommendedSettingsAsync(ISettingApplicationService? settingApplicationService)
     {
@@ -825,7 +894,7 @@ public class PowerService(
                 throw new InvalidOperationException("settingApplicationService is required for applying recommended settings");
             logService.Log(LogLevel.Info, "[PowerService] Applying recommended settings for EvolveOS Optimizer Power Plan");
             await settingApplicationService.ApplyRecommendedSettingsForFeatureAsync(SettingIds.PowerPlanSelection).ConfigureAwait(false);
-            logService.Log(LogLevel.Info, "[PowerService] Successfully applied recommended settings for EvolveOS Optimizer Power Plan");
+            logService.Log(LogLevel.Info, "[PowerService] Successfully applied recommended settings for EvolveOS Ultimate Power Plan");
         }
         catch (Exception ex)
         {
@@ -883,5 +952,4 @@ public class PowerService(
             return (false, string.Empty);
         }
     }
-
 }

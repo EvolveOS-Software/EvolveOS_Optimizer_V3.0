@@ -4825,7 +4825,7 @@
     <sys:String x:Key="PowerPlan_HighPerformance_Description">Indirizza un assetto ove al vertice v'è l'ausilio alla forza bruta, spesa però, ignorandone le ripercussioni sulla caduta delle batterie con consumi gravosi associati.</sys:String>
     <sys:String x:Key="PowerPlan_UltimatePerformance_Name">Vetta Eccelsa Operativa (Ultra Performance)</sys:String>
     <sys:String x:Key="PowerPlan_UltimatePerformance_Description">Prevede ed aziona una propensione d'azione estrema ma è raccomandabile d'uso per Hardware che godano di specifiche notevoli per massimizzarne la produttività (High-End).</sys:String>
-    <sys:String x:Key="PowerPlan_EvolveOSPowerPlan_Name">Estremo Valore Per EvolveX</sys:String>
+    <sys:String x:Key="PowerPlan_EvolveOSPowerPlan_Name">Estremo Valore Per EvolveOS</sys:String>
     <sys:String x:Key="PowerPlan_EvolveOSPowerPlan_Description">Evoluzione a livello prestante e suprema avvalendosi in dotazione dei dettami per una cura eccelsa dei vari reparti, assicurata dal tocco d'ottimizzazione garantito del profilo creato in seno all'ecosistema di EvolveOS e della sua applicazione.</sys:String>
     <sys:String x:Key="PowerPlan_Active_Badge">[Stato Funzionale Attuale]</sys:String>
     <sys:String x:Key="PowerPlan_Status_Exists">Inserito / Operativo nella Macchina</sys:String>

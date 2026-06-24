@@ -4814,7 +4814,7 @@
     <sys:String x:Key="PowerPlan_HighPerformance_Description">Fournit des performances maximales au prix d'une consommation d'énergie plus élevée.</sys:String>
     <sys:String x:Key="PowerPlan_UltimatePerformance_Name">Performances optimales</sys:String>
     <sys:String x:Key="PowerPlan_UltimatePerformance_Description">Fournit des performances ultimes sur les PC haut de gamme.</sys:String>
-    <sys:String x:Key="PowerPlan_EvolveOSPowerPlan_Name">EvolveX Ultimate</sys:String>
+    <sys:String x:Key="PowerPlan_EvolveOSPowerPlan_Name">EvolveOS Ultimate</sys:String>
     <sys:String x:Key="PowerPlan_EvolveOSPowerPlan_Description">Performances ultimes avec des paramètres optimisés par EvolveOS Optimizer pour des performances maximales.</sys:String>
     <sys:String x:Key="PowerPlan_Active_Badge">[Actif]</sys:String>
     <sys:String x:Key="PowerPlan_Status_Exists">Installé sur le système</sys:String>
