@@ -3590,69 +3590,67 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float downPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((downMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
                 float upPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((upMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
 
-                var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
-                dispatcher?.TryEnqueue(() =>
+                _cpuHistoryBuffer.Add(100 - cpuUsage);
+                _ramHistoryBuffer.Add(100 - ramUsage);
+                _diskHistoryBuffer.Add(100 - diskUsage);
+                _pageHistoryBuffer.Add(100 - pagefileUsage);
+                _gpuHistoryBuffer.Add(100 - gpuUsage);
+                _networkDownHistoryBuffer.Add(100 - downPct);
+                _networkUpHistoryBuffer.Add(100 - upPct);
+
+                if (_cpuHistoryBuffer.Count > MaxHistoryCapacity)
                 {
-                    CurrentCpuLoadStr = $"{(int)cpuUsage}%";
-                    CurrentRamLoadStr = $"{(int)ramUsage}%";
-                    CurrentIoLoadStr = $"{(int)diskUsage}%";
-                    CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
-                    CurrentGpuLoadStr = $"{(int)gpuUsage}%";
+                    _cpuHistoryBuffer.RemoveAt(0);
+                    _ramHistoryBuffer.RemoveAt(0);
+                    _diskHistoryBuffer.RemoveAt(0);
+                    _pageHistoryBuffer.RemoveAt(0);
+                    _gpuHistoryBuffer.RemoveAt(0);
+                    _networkDownHistoryBuffer.RemoveAt(0);
+                    _networkUpHistoryBuffer.RemoveAt(0);
+                }
 
-                    CurrentNetworkDownLoadStr = $"{downMbps:0.#} ▼";
-                    CurrentNetworkUpLoadStr = $"{upMbps:0.#} ▲";
-                    CurrentNetworkLoadStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲ Mbps";
-                    CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
-
-                    OnPropertyChanged(nameof(ActivePrimaryValueStr));
-                    OnPropertyChanged(nameof(HeroStandardVisibility));
-
-                    if (!IsOptimizationRunning)
+                if (!IsOptimizationRunning)
+                {
+                    if (ramUsage > 85 && (DateTime.Now - _lastRamNotification).TotalMinutes > 15)
                     {
-                        if (ramUsage > 85 && (DateTime.Now - _lastRamNotification).TotalMinutes > 15)
-                        {
-                            _lastRamNotification = DateTime.Now;
-                            SendSystemNotification(2,
-                                ResourceString.GetString("diag_ram_exhaustion_title") ?? "Memory Warning",
-                                string.Format(ResourceString.GetString("diag_ram_exhaustion_msg") ?? "Usage at {0}%.", Math.Round(ramUsage)));
-                        }
-
-                        if (pagefileUsage > 80 && (DateTime.Now - _lastPagefileNotification).TotalMinutes > 15)
-                        {
-                            _lastPagefileNotification = DateTime.Now;
-                            SendSystemNotification(2,
-                                ResourceString.GetString("diag_pf_saturation_title") ?? "Pagefile Warning",
-                                string.Format(ResourceString.GetString("diag_pf_saturation_msg") ?? "Usage at {0}%.", Math.Round(pagefileUsage)));
-                        }
+                        _lastRamNotification = DateTime.Now;
+                        SendSystemNotification(2,
+                            ResourceString.GetString("diag_ram_exhaustion_title") ?? "Memory Warning",
+                            string.Format(ResourceString.GetString("diag_ram_exhaustion_msg") ?? "Usage at {0}%.", Math.Round(ramUsage)));
                     }
 
-                    _cpuHistoryBuffer.Add(100 - cpuUsage);
-                    _ramHistoryBuffer.Add(100 - ramUsage);
-                    _diskHistoryBuffer.Add(100 - diskUsage);
-                    _pageHistoryBuffer.Add(100 - pagefileUsage);
-                    _gpuHistoryBuffer.Add(100 - gpuUsage);
-                    _networkDownHistoryBuffer.Add(100 - downPct);
-                    _networkUpHistoryBuffer.Add(100 - upPct);
-
-                    if (_cpuHistoryBuffer.Count > MaxHistoryCapacity)
+                    if (pagefileUsage > 80 && (DateTime.Now - _lastPagefileNotification).TotalMinutes > 15)
                     {
-                        _cpuHistoryBuffer.RemoveAt(0);
-                        _ramHistoryBuffer.RemoveAt(0);
-                        _diskHistoryBuffer.RemoveAt(0);
-                        _pageHistoryBuffer.RemoveAt(0);
-                        _gpuHistoryBuffer.RemoveAt(0);
-                        _networkDownHistoryBuffer.RemoveAt(0);
-                        _networkUpHistoryBuffer.RemoveAt(0);
+                        _lastPagefileNotification = DateTime.Now;
+                        SendSystemNotification(2,
+                            ResourceString.GetString("diag_pf_saturation_title") ?? "Pagefile Warning",
+                            string.Format(ResourceString.GetString("diag_pf_saturation_msg") ?? "Usage at {0}%.", Math.Round(pagefileUsage)));
                     }
+                }
 
-                    //bool isAfk = IsUserAfk();
+                if (_isUiActive && !IsAfk)
+                {
+                    var cpuSnapshot = _cpuHistoryBuffer.ToList();
+                    var ramSnapshot = _ramHistoryBuffer.ToList();
+                    var gpuSnapshot = _gpuHistoryBuffer.ToList();
+                    var diskSnapshot = _diskHistoryBuffer.ToList();
 
-                    if (_isUiActive && !IsAfk)
+                    var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
+                    dispatcher?.TryEnqueue(() =>
                     {
-                        var cpuSnapshot = _cpuHistoryBuffer.ToList();
-                        var ramSnapshot = _ramHistoryBuffer.ToList();
-                        var gpuSnapshot = _gpuHistoryBuffer.ToList();
-                        var diskSnapshot = _diskHistoryBuffer.ToList();
+                        CurrentCpuLoadStr = $"{(int)cpuUsage}%";
+                        CurrentRamLoadStr = $"{(int)ramUsage}%";
+                        CurrentIoLoadStr = $"{(int)diskUsage}%";
+                        CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
+                        CurrentGpuLoadStr = $"{(int)gpuUsage}%";
+
+                        CurrentNetworkDownLoadStr = $"{downMbps:0.#} ▼";
+                        CurrentNetworkUpLoadStr = $"{upMbps:0.#} ▲";
+                        CurrentNetworkLoadStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲ Mbps";
+                        CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
+
+                        OnPropertyChanged(nameof(ActivePrimaryValueStr));
+                        OnPropertyChanged(nameof(HeroStandardVisibility));
 
                         int sparklinePoints = 20;
                         double stepX = 3.0;
@@ -3680,8 +3678,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         }
 
                         RebuildGraphFromHistory();
-                    }
-                });
+                    });
+                }
             }
             catch { }
         }
@@ -3886,18 +3884,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public void RebuildVisualPoints()
         {
-            Debug.WriteLine("[DiagnosticsVM] Rebuilding all 8 visual point collections from history...");
-
-            var newGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-            var newAreaPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-            var newGraphPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
-            var newAreaPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
-
-            var newCpuTray = new Microsoft.UI.Xaml.Media.PointCollection();
-            var newRamTray = new Microsoft.UI.Xaml.Media.PointCollection();
-            var newGpuTray = new Microsoft.UI.Xaml.Media.PointCollection();
-            var newDiskTray = new Microsoft.UI.Xaml.Media.PointCollection();
-
             var targetBuffer = ActiveGraphMetric switch
             {
                 TelemetryMetric.RAM => _ramHistoryBuffer,
@@ -3907,6 +3893,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 TelemetryMetric.Network => _networkDownHistoryBuffer,
                 _ => _cpuHistoryBuffer
             };
+
+            // 1. REUSE COLLECTIONS: Clear existing ones instead of allocating new memory
+            PerformanceGraphPoints.Clear();
+            PerformanceAreaPoints.Clear();
+            PerformanceGraphPointsAlt.Clear();
+            PerformanceAreaPointsAlt.Clear();
 
             if (targetBuffer.Count > 0)
             {
@@ -3918,16 +3910,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 foreach (var yVal in visibleHistory)
                 {
-                    var p = new Point(currentX, yVal);
-                    newGraphPoints.Add(p);
+                    PerformanceGraphPoints.Add(new Point(currentX, yVal));
                     currentX += pixelsPerSecond;
                 }
 
-                if (newGraphPoints.Count > 0)
+                if (PerformanceGraphPoints.Count > 0)
                 {
-                    newAreaPoints.Add(new Point(newGraphPoints.First().X, 100));
-                    foreach (var p in newGraphPoints) newAreaPoints.Add(p);
-                    newAreaPoints.Add(new Point(newGraphPoints.Last().X, 100));
+                    PerformanceAreaPoints.Add(new Point(PerformanceGraphPoints.First().X, 100));
+                    foreach (var p in PerformanceGraphPoints) PerformanceAreaPoints.Add(p);
+                    PerformanceAreaPoints.Add(new Point(PerformanceGraphPoints.Last().X, 100));
                 }
 
                 if (ActiveGraphMetric == TelemetryMetric.Network && _networkUpHistoryBuffer.Count > 0)
@@ -3937,33 +3928,39 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     foreach (var yVal in visibleAltHistory)
                     {
-                        newGraphPointsAlt.Add(new Point(currentAltX, yVal));
+                        PerformanceGraphPointsAlt.Add(new Point(currentAltX, yVal));
                         currentAltX += pixelsPerSecond;
                     }
 
-                    if (newGraphPointsAlt.Count > 0)
+                    if (PerformanceGraphPointsAlt.Count > 0)
                     {
-                        newAreaPointsAlt.Add(new Point(newGraphPointsAlt.First().X, 100));
-                        foreach (var p in newGraphPointsAlt) newAreaPointsAlt.Add(p);
-                        newAreaPointsAlt.Add(new Point(newGraphPointsAlt.Last().X, 100));
+                        PerformanceAreaPointsAlt.Add(new Point(PerformanceGraphPointsAlt.First().X, 100));
+                        foreach (var p in PerformanceGraphPointsAlt) PerformanceAreaPointsAlt.Add(p);
+                        PerformanceAreaPointsAlt.Add(new Point(PerformanceGraphPointsAlt.Last().X, 100));
                     }
                 }
             }
 
-            newCpuTray = GenerateTrayPoints(_cpuHistoryBuffer, 20, 3.0, 15.0);
-            newRamTray = GenerateTrayPoints(_ramHistoryBuffer, 20, 3.0, 15.0);
-            newGpuTray = GenerateTrayPoints(_gpuHistoryBuffer, 20, 3.0, 15.0);
-            newDiskTray = GenerateTrayPoints(_diskHistoryBuffer, 20, 3.0, 15.0);
+            if (CpuTrayPoints != null) { CpuTrayPoints.Clear(); GenerateTrayPointsInPlace(_cpuHistoryBuffer, CpuTrayPoints, 20, 3.0, 15.0); }
+            if (RamTrayPoints != null) { RamTrayPoints.Clear(); GenerateTrayPointsInPlace(_ramHistoryBuffer, RamTrayPoints, 20, 3.0, 15.0); }
+            if (GpuTrayPoints != null) { GpuTrayPoints.Clear(); GenerateTrayPointsInPlace(_gpuHistoryBuffer, GpuTrayPoints, 20, 3.0, 15.0); }
+            if (DiskTrayPoints != null) { DiskTrayPoints.Clear(); GenerateTrayPointsInPlace(_diskHistoryBuffer, DiskTrayPoints, 20, 3.0, 15.0); }
+        }
 
-            this.PerformanceGraphPoints = newGraphPoints;
-            this.PerformanceAreaPoints = newAreaPoints;
-            this.PerformanceGraphPointsAlt = newGraphPointsAlt;
-            this.PerformanceAreaPointsAlt = newAreaPointsAlt;
+        private void GenerateTrayPointsInPlace(
+            IEnumerable<double> buffer,
+            PointCollection targetCollection,
+            int pointsToTake, double stepX, double height)
+        {
+            var data = buffer.Reverse().Take(pointsToTake).Reverse().ToList();
+            if (data.Count == 0) return;
 
-            this.CpuTrayPoints = newCpuTray;
-            this.RamTrayPoints = newRamTray;
-            this.GpuTrayPoints = newGpuTray;
-            this.DiskTrayPoints = newDiskTray;
+            double startX = 60 - ((data.Count - 1) * stepX);
+            for (int i = 0; i < data.Count; i++)
+            {
+                double y = (data[i] / 100.0) * height;
+                targetCollection.Add(new Point(startX + (i * stepX), y));
+            }
         }
 
         internal void CalculateStabilityTrend(IEnumerable<SystemEventItem> events)
@@ -4158,7 +4155,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 long currentDown = 0;
                 long currentUp = 0;
 
-                if (_cachedNetworkInterfaces == null || (DateTime.Now - _lastNetworkInterfaceRefresh).TotalSeconds >= 15)
+                if (_cachedNetworkInterfaces == null || (DateTime.Now - _lastNetworkInterfaceRefresh).TotalSeconds >= 60)
                 {
                     _cachedNetworkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
                         .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
@@ -4231,13 +4228,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _computerService.RefreshMemory();
                     var currentMemory = _computerService.Memory;
 
-                    _dispatcherQueue?.TryEnqueue(() =>
+                    if (_isUiActive && !IsAfk)
                     {
-                        if (Computer != null && _isUiActive)
+                        _dispatcherQueue?.TryEnqueue(() =>
                         {
-                            Computer.Memory = currentMemory;
-                        }
-                    });
+                            if (Computer != null)
+                            {
+                                Computer.Memory = currentMemory;
+                            }
+                        });
+                    }
 
                     try
                     {
@@ -4249,18 +4249,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                 }
             }
-            catch (OperationCanceledException)
-            {
-                /* Clean exit */
-            }
-            catch (ObjectDisposedException)
-            {
-                /* Clean exit if the CancellationTokenSource was disposed from the Cleanup() method */
-            }
-            catch (Exception e)
-            {
-                ErrorLogging.LogDebug(e);
-            }
+            catch (OperationCanceledException) { }
+            catch (ObjectDisposedException) { }
+            catch (Exception e) { ErrorLogging.LogDebug(e); }
         }
 
         private void MonitorApp()
@@ -4317,10 +4308,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             var cts = _cancellationTokenSource;
             if (cts == null) return;
-
             CancellationToken token = cts.Token;
-
             App.SetPriority(LocalMachineSettingsEngine.RunOnPriority);
+
+            int dnsCheckCounter = 0;
 
             while (!token.IsCancellationRequested)
             {
@@ -4340,7 +4331,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         {
                             Computer.Memory = mem;
 
-                            await UpdateSystemDnsDisplayAsync();
+                            if (dnsCheckCounter >= 12)
+                            {
+                                await UpdateSystemDnsDisplayAsync();
+                                dnsCheckCounter = 0;
+                            }
+                            dnsCheckCounter++;
                         }
                     });
 
