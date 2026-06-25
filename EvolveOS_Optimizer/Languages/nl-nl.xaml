@@ -3530,6 +3530,8 @@
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Title">Waarschuwing geavanceerde instelling</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Message">Deze instelling is normaal gesproken niet zichtbaar in Windows Energiebeheer en vereist registerwijzigingen.&#x0a;&#x0a;Een onjuiste wijziging kan leiden tot:&#x0a;• Systeeminstabiliteit of onverwacht gedrag&#x0a;• Prestatievermindering&#x0a;• Thermische problemen&#x0a;• Instellingen werken mogelijk niet op alle CPU-types (moderne HWP vs legacy)&#x0a;&#x0a;Wijzig dit alleen als je begrijpt hoe processor-energiebeheer werkt.&#x0a;&#x0a;Weet je zeker dat je deze instelling wilt wijzigen?</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_DontShowAgain">Deze waarschuwing niet meer weergeven voor geavanceerde energie-instellingen</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Title">Herstelpunt verwijderen</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Message">Weet u zeker dat u dit systeemherstelpunt permanent wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt en zal schijfruimte vrijmaken.</sys:String>
 
     <sys:String x:Key="Category_Configuration">Configuratie</sys:String>
     <sys:String x:Key="Category_General">Algemeen</sys:String>
@@ -4781,6 +4783,36 @@
     <sys:String x:Key="Setting_updates-driver-coinstallers_Description">Geeft hardwareleveranciers de mogelijkheid om naast de stuurprogramma's ook begeleidende software te installeren. Als u dit uitschakelt, voorkomt u dat bloatware zoals Razer Synapse, printerhulpprogramma's en andere software van leveranciers automatisch wordt geïnstalleerd wanneer u apparaten aansluit. Uw hardware werkt nog steeds normaal met standaard stuurprogramma's.</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Name">Microsoft Store Apps automatisch bijwerken</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Description">Download en installeer automatisch updates voor apps uit de Microsoft Store</sys:String>
+
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Name">Point-in-Time Herstel</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Description">Schakel Volume Shadow Copy-beveiliging in voor systeem- en gebruikersbestanden. Hiermee kun je wijzigingen terugdraaien na een kritieke updatefout.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Name">Frequentie Herstelpunten</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">Hoe vaak Windows automatische snapshot-back-ups maakt (alleen Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Name">Snapshot-retentie</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Hoe lang Windows automatische snapshots bewaart voordat ze worden verwijderd om ruimte te besparen (alleen Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Name">Maximale opslaglimiet (%)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Description">Het maximale percentage van uw schijfruimte dat Systeembeveiliging mag verbruiken voordat oude back-ups worden verwijderd.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_0">Elke 4 uur</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_1">Elke 6 uur</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_2">Elke 12 uur</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_3">Elke 16 uur</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_4">Elke 24 uur (Standaard)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_Custom">Aangepaste frequentie</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_0">4 uur</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_1">6 uur</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_2">12 uur</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_3">16 uur</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_4">24 uur</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_5">72 uur (Standaard)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_Custom">Aangepaste retentie</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Name">Huidige herstelpunten</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Description">Bekijk beschikbare systeem-snapshots</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_DisplayText">Gemaakt op {0} • OS-build {1}</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Name">Instellingen vergrendelen</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Description">Voorkomt dat Windows-updates of andere apps uw herstelvoorkeuren wijzigen.</sys:String>
+
+    <sys:String x:Key="Notification_PITR_Protected_Title">Instellingen Beveiligd</sys:String>
+    <sys:String x:Key="Notification_PITR_Protected_Message">Windows probeerde uw Point-in-Time Herstel-voorkeuren te wijzigen.\nEvolveOS heeft de wijziging met succes geblokkeerd.</sys:String>
 
     <sys:String x:Key="Setting_windows-pushnotifications_Name">Meldingen weergeven</sys:String>
     <sys:String x:Key="Setting_windows-pushnotifications_Description">Krijg meldingen van apps en andere afzenders in Windows</sys:String>

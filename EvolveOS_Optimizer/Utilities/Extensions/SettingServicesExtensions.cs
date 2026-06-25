@@ -49,6 +49,8 @@ public static class SettingServicesExtensions
                 ["gaming-performance-mouse-sensitivity"] = sp.GetRequiredService<InputDeviceService>(),
                 ["gaming-performance-keyboard-delay"] = sp.GetRequiredService<InputDeviceService>(),
                 ["gaming-performance-keyboard-speed"] = sp.GetRequiredService<InputDeviceService>(),
+
+                ["PointInTimeRestore_MaxStorage"] = sp.GetRequiredService<PointInTimeStorageService>(),
             }));
 
         services.AddSingleton<IActionCommandRegistry>(sp =>
@@ -68,6 +70,7 @@ public static class SettingServicesExtensions
             {
                 sp.GetRequiredService<PowerService>(),
                 sp.GetRequiredService<UpdateService>(),
+                sp.GetRequiredService<PointInTimeStorageService>(),
             }));
         #endregion
 
@@ -121,6 +124,8 @@ public static class SettingServicesExtensions
         #region Windows Update Services
         services.AddSingleton<UpdateService>();
         #endregion
+
+        services.AddSingleton<PointInTimeStorageService>();
 
         return services;
     }

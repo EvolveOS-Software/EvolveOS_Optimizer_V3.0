@@ -3506,6 +3506,8 @@
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Title">Warnung zu erweiterten Einstellungen</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Message">Diese Einstellung ist normalerweise nicht in den Windows-Energieoptionen sichtbar und erfordert Änderungen in der Registrierung.&#x0a;&#x0a;Eine unsachgemäße Änderung kann zu Folgendem führen:&#x0a;• Systeminstabilität oder unerwartetes Verhalten&#x0a;• Leistungseinbußen&#x0a;• Thermische Probleme&#x0a;• Einstellungen funktionieren möglicherweise nicht auf allen CPU-Typen (Modernes HWP vs. Legacy)&#x0a;&#x0a;Ändern Sie dies nur, wenn Sie die Energieverwaltung von Prozessoren verstehen.&#x0a;&#x0a;Sind Sie sicher, dass Sie diese Einstellung ändern möchten?</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_DontShowAgain">Diese Warnung für erweiterte Energieeinstellungen nicht mehr anzeigen</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Title">Wiederherstellungspunkt löschen</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Message">Sind Sie sicher, dass Sie diesen Systemwiederherstellungspunkt dauerhaft löschen möchten? Dieser Vorgang kann nicht rückgängig gemacht werden und wird Speicherplatz freigeben.</sys:String>
 
     <sys:String x:Key="Category_Configuration">Konfiguration</sys:String>
     <sys:String x:Key="Category_General">Allgemein</sys:String>
@@ -4757,6 +4759,36 @@
     <sys:String x:Key="Setting_updates-driver-coinstallers_Description">Ermöglicht Hardwareherstellern, Begleitsoftware zusammen mit den Gerätetreibern zu installieren. Durch das Deaktivieren dieser Funktion wird verhindert, dass Bloatware wie Razer Synapse, Drucker-Dienstprogramme und andere Herstellersoftware automatisch installiert wird, wenn Sie Geräte anschließen. Ihre Hardware funktioniert weiterhin normal mit den Standardtreibern.</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Name">Microsoft Store-Apps automatisch aktualisieren</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Description">Updates für Apps aus dem Microsoft Store automatisch herunterladen und installieren</sys:String>
+
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Name">Point-in-Time Wiederherstellung</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Description">Aktivieren Sie den Volumeschattenkopie-Schutz für System- und Benutzerdateien. Dies ermöglicht es, Änderungen nach einem kritischen Update-Fehler rückgängig zu machen.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Name">Wiederherstellungspunkt-Frequenz</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">Wie oft Windows automatische Snapshot-Backups erstellt (nur Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Name">Snapshot-Aufbewahrung</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Wie lange Windows automatische Snapshots behält, bevor sie zur Platzersparnis gelöscht werden (nur Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Name">Maximale Speicherbegrenzung (%)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Description">Der maximale Prozentsatz Ihres Festplattenspeichers, den die Systemwiederherstellung belegen darf, bevor alte Sicherungen gelöscht werden.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_0">Alle 4 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_1">Alle 6 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_2">Alle 12 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_3">Alle 16 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_4">Alle 24 Stunden (Standard)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_Custom">Benutzerdefinierte Frequenz</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_0">4 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_1">6 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_2">12 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_3">16 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_4">24 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_5">72 Stunden (Standard)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_Custom">Benutzerdefinierte Aufbewahrung</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Name">Aktuelle Wiederherstellungspunkte</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Description">Verfügbare System-Snapshots anzeigen</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_DisplayText">Erstellt am {0} • OS-Build {1}</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Name">Einstellungen sperren</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Description">Verhindert, dass Windows-Updates oder andere Apps Ihre Wiederherstellungseinstellungen ändern.</sys:String>
+
+    <sys:String x:Key="Notification_PITR_Protected_Title">Einstellungen geschützt</sys:String>
+    <sys:String x:Key="Notification_PITR_Protected_Message">Windows hat versucht, Ihre Einstellungen für die Point-in-Time Wiederherstellung zu ändern.\nEvolveOS hat die Änderung erfolgreich blockiert.</sys:String>
 
     <sys:String x:Key="Setting_windows-pushnotifications_Name">Benachrichtigungen anzeigen</sys:String>
     <sys:String x:Key="Setting_windows-pushnotifications_Description">Erhalten Sie Benachrichtigungen von Apps und anderen Absendern in Windows</sys:String>

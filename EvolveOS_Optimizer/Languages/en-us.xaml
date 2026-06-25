@@ -3616,6 +3616,8 @@
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Title">Advanced Setting Warning</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Message">This setting is not normally exposed in Windows Power Options and requires registry modifications to access.&#x0a;&#x0a;Modifying it incorrectly may cause:&#x0a;• System instability or unexpected behavior&#x0a;• Performance degradation&#x0a;• Thermal management problems&#x0a;• Settings may not work on all CPU types (modern HWP vs legacy)&#x0a;&#x0a;Only change this if you understand processor power management.&#x0a;&#x0a;Are you sure you want to modify this setting?</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_DontShowAgain">Don't show this warning again for advanced power settings</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Title">Delete Restore Point</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Message">Are you sure you want to permanently delete this system restore point? This action cannot be undone and will free up disk space.</sys:String>
 
     <sys:String x:Key="Category_Configuration">Configuration</sys:String>
     <sys:String x:Key="Category_General">General</sys:String>
@@ -3734,6 +3736,7 @@
     <sys:String x:Key="SettingGroup_InputDevices">Input Devices</sys:String>
     <sys:String x:Key="SettingGroup_Personalization">Personalization</sys:String>
     <sys:String x:Key="SettingGroup_ThisPCFolders">This PC Folders</sys:String>
+    <sys:String x:Key="SettingGroup_SystemProtection">System Protection</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Open in Registry Editor</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Technical Details: On</sys:String>
@@ -4867,6 +4870,36 @@
     <sys:String x:Key="Setting_updates-driver-coinstallers_Description">Allows hardware vendors to install companion software alongside device drivers. Disabling this prevents bloatware like Razer Synapse, printer utilities, and other vendor software from being automatically installed when you plug in devices. Your hardware will still work normally with standard drivers.</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Name">Auto Update Microsoft Store Apps</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Description">Automatically download and install updates for apps from the Microsoft Store</sys:String>
+
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Name">Point-in-Time Restore</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Description">Enable Volume Shadow Copy protection for system and user files. This allows you to roll back changes after a critical update failure.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Name">Restore Point Frequency</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">How often Windows creates automatic snapshot backups (Enterprise/Education only).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Name">Snapshot Retention</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">How long Windows will keep automatic snapshots before deleting them to save space (Enterprise/Education only).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Name">Max Storage Limit (%)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Description">The maximum percentage of your disk space that System Protection is allowed to consume before deleting old backups.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_0">Every 4 Hours</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_1">Every 6 Hours</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_2">Every 12 Hours</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_3">Every 16 Hours</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_4">Every 24 Hours (Default)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_Custom">Custom Frequency</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_0">4 Hours</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_1">6 Hours</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_2">12 Hours</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_3">16 Hours</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_4">24 Hours</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_5">72 Hours (Default)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_Custom">Custom Retention</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Name">Current restore points</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Description">View available system snapshots</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_DisplayText">Created on {0} • OS Build {1}</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Name">Lock Settings</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Description">Prevents Windows updates or other apps from changing your restore preferences.</sys:String>
+
+    <sys:String x:Key="Notification_PITR_Protected_Title">Settings Protected</sys:String>
+    <sys:String x:Key="Notification_PITR_Protected_Message">Windows attempted to modify your Point-in-Time Restore preferences.\nEvolveOS has successfully blocked the change.</sys:String>
 
     <sys:String x:Key="Setting_windows-pushnotifications_Name">Show Notifications</sys:String>
     <sys:String x:Key="Setting_windows-pushnotifications_Description">Get notifications from apps and other senders in Windows</sys:String>

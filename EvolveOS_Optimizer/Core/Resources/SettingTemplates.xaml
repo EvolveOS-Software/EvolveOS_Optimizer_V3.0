@@ -19,7 +19,9 @@
 
     <converters:BoolToDimOpacityConverter x:Key="BoolToDimOpacityConverter"/>
     <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <converters:GbTooltipConverter x:Key="GbTooltipConverter"/>
     <converters:BadgePillTemplateSelector x:Key="BadgePillTemplateSelector">
+        
 
         <converters:BadgePillTemplateSelector.RecommendedTemplate>
             <DataTemplate x:DataType="coreModels:BadgePillState">
@@ -115,110 +117,73 @@
     <DataTemplate x:Key="SettingItemTemplate" x:DataType="viewModels:SettingItemViewModel">
         <StackPanel Visibility="{x:Bind IsVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Margin="0,0,0,2">
-            <Grid>
-                <controls:SettingsCard
-                    IsTabStop="False"
-                    AutomationProperties.LocalizedControlType="setting"
-                    HeaderIcon="{x:Bind Converter={StaticResource IconConverter}}"
-                    Padding="16,12,16,12"
-                    HorizontalAlignment="Stretch">
-                    <controls:SettingsCard.Description>
-                        <commonControls:SettingDescriptionWithBadges
-                            DescriptionText="{x:Bind Description}"
-                            BadgeRow="{x:Bind BadgeRow, Mode=OneWay}"
-                            ShowBadges="{x:Bind ShowInfoBadge, Mode=OneWay}"/>
-                    </controls:SettingsCard.Description>
-                    <controls:SettingsCard.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="{x:Bind Name}" VerticalAlignment="Center"/>
-                            <Border
-                                Visibility="{x:Bind ShowNewBadge, Mode=OneWay}"
-                                Style="{StaticResource NewBadgeBorderStyle}">
-                                <TextBlock
-                                    Text="{x:Bind NewBadgeText}"
-                                    Style="{StaticResource NewBadgeTextStyle}"/>
-                            </Border>
-                        </StackPanel>
-                    </controls:SettingsCard.Header>
 
-                    <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                        <Button
-                            Background="Transparent" 
-                            BorderThickness="0"
-                            ToolTipService.ToolTip="{helpers:ResourceString Key=ai_explainer_tooltip}"
-                            Command="{x:Bind FetchAiExplanationCommand, Mode=OneWay}"
-                            Visibility="{x:Bind IsAiReady, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Width="32" Height="32" Padding="0" CornerRadius="4"
-                            Margin="0,0,0,0" VerticalAlignment="Center">
-
-                            <FontIcon Glyph="&#xED15;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" />
-
-                            <Button.Flyout>
-                                <Flyout Placement="LeftEdgeAlignedTop">
-                                    <Flyout.FlyoutPresenterStyle>
-                                        <Style TargetType="FlyoutPresenter">
-                                            <Setter Property="MaxWidth" Value="350"/>
-                                            <Setter Property="CornerRadius" Value="8"/>
-                                            <Setter Property="Padding" Value="16"/>
-                                        </Style>
-                                    </Flyout.FlyoutPresenterStyle>
-
-                                    <StackPanel Width="320" Spacing="8" MinHeight="80">
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <FontIcon Glyph="&#xED15;" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" />
-                                            <TextBlock Text="{helpers:ResourceString Key=ai_explainer_explanation}" FontWeight="SemiBold" />
+            <Grid Visibility="{x:Bind IsCustomCard, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <Grid>
+                    <controls:SettingsCard
+                        IsTabStop="False"
+                        AutomationProperties.LocalizedControlType="setting"
+                        HeaderIcon="{x:Bind Converter={StaticResource IconConverter}}"
+                        Padding="16,12,16,12"
+                        HorizontalAlignment="Stretch">
+                        <controls:SettingsCard.Description>
+                            <commonControls:SettingDescriptionWithBadges
+                                DescriptionText="{x:Bind Description}"
+                                BadgeRow="{x:Bind BadgeRow, Mode=OneWay}"
+                                ShowBadges="{x:Bind ShowInfoBadge, Mode=OneWay}"/>
+                        </controls:SettingsCard.Description>
+                        <controls:SettingsCard.Header>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="{x:Bind Name}" VerticalAlignment="Center"/>
+                                <Border Visibility="{x:Bind ShowNewBadge, Mode=OneWay}" Style="{StaticResource NewBadgeBorderStyle}">
+                                    <TextBlock Text="{x:Bind NewBadgeText}" Style="{StaticResource NewBadgeTextStyle}"/>
+                                </Border>
+                            </StackPanel>
+                        </controls:SettingsCard.Header>
+                        <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                            <Button Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="{helpers:ResourceString Key=ai_explainer_tooltip}" Command="{x:Bind FetchAiExplanationCommand, Mode=OneWay}" Visibility="{x:Bind IsAiReady, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Width="32" Height="32" Padding="0" CornerRadius="4" Margin="0,0,0,0" VerticalAlignment="Center">
+                                <FontIcon Glyph="&#xED15;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" />
+                                <Button.Flyout>
+                                    <Flyout Placement="LeftEdgeAlignedTop">
+                                        <Flyout.FlyoutPresenterStyle>
+                                            <Style TargetType="FlyoutPresenter">
+                                                <Setter Property="MaxWidth" Value="350"/>
+                                                <Setter Property="CornerRadius" Value="8"/>
+                                                <Setter Property="Padding" Value="16"/>
+                                            </Style>
+                                        </Flyout.FlyoutPresenterStyle>
+                                        <StackPanel Width="320" Spacing="8" MinHeight="80">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <FontIcon Glyph="&#xED15;" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" />
+                                                <TextBlock Text="{helpers:ResourceString Key=ai_explainer_explanation}" FontWeight="SemiBold" />
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind AiExplanation, Mode=OneWay}" TextWrapping="WrapWholeWords" FontSize="12" Opacity="0.9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" LineHeight="20"/>
                                         </StackPanel>
-
-                                        <TextBlock Text="{x:Bind AiExplanation, Mode=OneWay}"
-                                                   TextWrapping="WrapWholeWords"
-                                                   FontSize="12" Opacity="0.9"
-                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                   LineHeight="20"/>
-                                    </StackPanel>
-                                </Flyout>
-                            </Button.Flyout>
-                        </Button>
-
-                        <commonControls:SettingsCardItem Setting="{x:Bind}" VerticalAlignment="Center"
-                            IsEnabled="{x:Bind EffectiveIsEnabled, Mode=OneWay}"
-                            AutomationProperties.HelpText="{x:Bind StatusBannerMessage, Mode=OneWay}"/>
-                    </StackPanel>
-                </controls:SettingsCard>
-
-                <Border
-                    Visibility="{x:Bind IsApplying, Mode=OneWay}"
-                    Background="{ThemeResource SmokeFillColorDefaultBrush}"
-                    CornerRadius="4">
-                    <ProgressRing IsActive="{x:Bind IsApplying, Mode=OneWay}" Width="24" Height="24"/>
-                </Border>
-
-                <Grid Visibility="{x:Bind IsLocked, Mode=OneWay}">
-                    <Grid.Transitions>
-                        <TransitionCollection>
-                            <AddDeleteThemeTransition/>
-                        </TransitionCollection>
-                    </Grid.Transitions>
-                    <Border
-                        Background="{ThemeResource SmokeFillColorDefaultBrush}"
-                        CornerRadius="4"/>
-                    <Button
-                        Command="{x:Bind UnlockCommand}"
-                        AutomationProperties.Name="{x:Bind ClickToUnlockText}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Padding="12,8">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Viewbox Width="16" Height="16">
-                                <Path
-                                    Data="{StaticResource PrivacyIconPath}"
-                                    Fill="#FFA500"
-                                    Stretch="Uniform"/>
-                            </Viewbox>
-                            <TextBlock
-                                Text="{x:Bind ClickToUnlockText}"
-                                VerticalAlignment="Center"/>
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+                            <commonControls:SettingsCardItem Setting="{x:Bind}" VerticalAlignment="Center" IsEnabled="{x:Bind EffectiveIsEnabled, Mode=OneWay}" AutomationProperties.HelpText="{x:Bind StatusBannerMessage, Mode=OneWay}"/>
                         </StackPanel>
-                    </Button>
+                    </controls:SettingsCard>
+                    <Border Visibility="{x:Bind IsApplying, Mode=OneWay}" Background="{ThemeResource SmokeFillColorDefaultBrush}" CornerRadius="4">
+                        <ProgressRing IsActive="{x:Bind IsApplying, Mode=OneWay}" Width="24" Height="24"/>
+                    </Border>
+                    <Grid Visibility="{x:Bind IsLocked, Mode=OneWay}">
+                        <Grid.Transitions>
+                            <TransitionCollection>
+                                <AddDeleteThemeTransition/>
+                            </TransitionCollection>
+                        </Grid.Transitions>
+                        <Border Background="{ThemeResource SmokeFillColorDefaultBrush}" CornerRadius="4"/>
+                        <Button Command="{x:Bind UnlockCommand}" AutomationProperties.Name="{x:Bind ClickToUnlockText}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="12,8">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Viewbox Width="16" Height="16">
+                                    <Path Data="{StaticResource PrivacyIconPath}" Fill="#FFA500" Stretch="Uniform"/>
+                                </Viewbox>
+                                <TextBlock Text="{x:Bind ClickToUnlockText}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </Grid>
             </Grid>
 
@@ -784,7 +749,8 @@
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate x:DataType="viewModels:SettingItemViewModel">
                         <StackPanel Visibility="{x:Bind IsVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Grid>
+
+                            <Grid Visibility="{x:Bind IsCustomCard, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                 <controls:SettingsCard
                                     IsTabStop="False"
                                     AutomationProperties.LocalizedControlType="setting"
@@ -801,7 +767,9 @@
                                     </controls:SettingsCard.Description>
                                     <controls:SettingsCard.Header>
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <TextBlock Text="{x:Bind Name}" VerticalAlignment="Center"/>
+                                            <TextBlock
+                                                Text="{x:Bind Name}"
+                                                VerticalAlignment="Center"/>
                                             <Border
                                                 Visibility="{x:Bind ShowNewBadge, Mode=OneWay}"
                                                 Style="{StaticResource NewBadgeBorderStyle}">
@@ -817,13 +785,17 @@
                                             Background="Transparent"
                                             BorderThickness="0"
                                             ToolTipService.ToolTip="{helpers:ResourceString Key=ai_explainer_tooltip}"
-                                            Command="{x:Bind FetchAiExplanationCommand, Mode=OneWay}"
-                                            Visibility="{x:Bind IsAiReady, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                            Width="32" Height="32" Padding="0" CornerRadius="4"
-                                            Margin="0,0,0,0" VerticalAlignment="Center">
-
-                                            <FontIcon Glyph="&#xED15;" FontSize="16" Foreground="{ThemeResource MyDynamicAccentBrush}" />
-
+                                            Command="{x:Bind FetchAiExplanationCommand, Mode=OneWay}" Visibility="{x:Bind IsAiReady, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            Width="32"
+                                            Height="32"
+                                            Padding="0"
+                                            CornerRadius="4"
+                                            Margin="0,0,0,0"
+                                            VerticalAlignment="Center">
+                                            <FontIcon
+                                                Glyph="&#xED15;"
+                                                FontSize="16"
+                                                Foreground="{ThemeResource MyDynamicAccentBrush}" />
                                             <Button.Flyout>
                                                 <Flyout Placement="LeftEdgeAlignedTop">
                                                     <Flyout.FlyoutPresenterStyle>
@@ -833,35 +805,265 @@
                                                             <Setter Property="Padding" Value="16"/>
                                                         </Style>
                                                     </Flyout.FlyoutPresenterStyle>
-
                                                     <StackPanel Width="320" Spacing="8" MinHeight="80">
                                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                                            <FontIcon Glyph="&#xED15;" FontSize="14" Foreground="{ThemeResource MyDynamicAccentBrush}" />
-                                                            <TextBlock Text="AI Explanation" FontWeight="SemiBold" />
+                                                            <FontIcon
+                                                                Glyph="&#xED15;"
+                                                                FontSize="14"
+                                                                Foreground="{ThemeResource MyDynamicAccentBrush}" />
+                                                            <TextBlock
+                                                                Text="{helpers:ResourceString Key=ai_explainer_explanation}"
+                                                                FontWeight="SemiBold" />
                                                         </StackPanel>
-
-                                                        <TextBlock Text="{x:Bind AiExplanation, Mode=OneWay}"
-                                                                   TextWrapping="WrapWholeWords"
-                                                                   FontSize="12" Opacity="0.9"
-                                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                                   LineHeight="20"/>
+                                                        <TextBlock
+                                                            Text="{x:Bind AiExplanation, Mode=OneWay}"
+                                                            TextWrapping="WrapWholeWords"
+                                                            FontSize="12"
+                                                            Opacity="0.9"
+                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                            LineHeight="20"/>
                                                     </StackPanel>
                                                 </Flyout>
                                             </Button.Flyout>
                                         </Button>
-                                        <commonControls:SettingsCardItem Setting="{x:Bind}" VerticalAlignment="Center"
+                                        <commonControls:SettingsCardItem
+                                            Setting="{x:Bind}"
+                                            VerticalAlignment="Center"
                                             IsEnabled="{x:Bind EffectiveIsEnabled, Mode=OneWay}"
                                             AutomationProperties.HelpText="{x:Bind StatusBannerMessage, Mode=OneWay}"/>
                                     </StackPanel>
                                 </controls:SettingsCard>
 
-                                <Border
-                                    Visibility="{x:Bind IsApplying, Mode=OneWay}"
-                                    Background="{ThemeResource SmokeFillColorDefaultBrush}"
+                                <Border 
+                                    Visibility="{x:Bind IsApplying, Mode=OneWay}" 
+                                    Background="{ThemeResource SmokeFillColorDefaultBrush}" 
                                     CornerRadius="4">
-                                    <ProgressRing IsActive="{x:Bind IsApplying, Mode=OneWay}" Width="24" Height="24"/>
+                                    <ProgressRing 
+                                        IsActive="{x:Bind IsApplying, Mode=OneWay}" 
+                                        Width="24" 
+                                        Height="24"/>
                                 </Border>
+                                <Grid Visibility="{x:Bind IsLocked, Mode=OneWay}">
+                                    <Grid.Transitions>
+                                        <TransitionCollection>
+                                            <AddDeleteThemeTransition/>
+                                        </TransitionCollection>
+                                    </Grid.Transitions>
+                                    <Border Background="{ThemeResource SmokeFillColorDefaultBrush}" CornerRadius="4"/>
+                                    <Button 
+                                        Command="{x:Bind UnlockCommand}" 
+                                        AutomationProperties.Name="{x:Bind ClickToUnlockText}" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center" 
+                                        Padding="12,8">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Viewbox Width="16" Height="16">
+                                                <Path Data="{StaticResource PrivacyIconPath}" Fill="#FFA500" Stretch="Uniform"/>
+                                            </Viewbox>
+                                            <TextBlock Text="{x:Bind ClickToUnlockText}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
                             </Grid>
+
+                            <controls:SettingsCard 
+                                Visibility="{x:Bind IsPointInTimeDiskUsage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                HeaderIcon="{x:Bind Converter={StaticResource IconConverter}}"
+                                CornerRadius="{x:Bind ChildCornerRadius, Mode=OneWay}" 
+                                BorderThickness="1,0,1,1" 
+                                Padding="54,12,52,12" 
+                                HorizontalAlignment="Stretch"
+                                IsEnabled="{x:Bind EffectiveIsEnabled, Mode=OneWay}">
+
+                                <controls:SettingsCard.Description>
+                                    <commonControls:SettingDescriptionWithBadges
+                                        DescriptionText="{x:Bind Description}"
+                                        BadgeRow="{x:Bind BadgeRow, Mode=OneWay}"
+                                        ShowBadges="{x:Bind ShowInfoBadge, Mode=OneWay}"/>
+                                </controls:SettingsCard.Description>
+
+                                <controls:SettingsCard.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock
+                                           Text="{x:Bind Name}"
+                                            VerticalAlignment="Center"/>
+                                        <Border
+                                            Visibility="{x:Bind ShowNewBadge, Mode=OneWay}"
+                                            Style="{StaticResource NewBadgeBorderStyle}">
+                                            <TextBlock
+                                                Text="{x:Bind NewBadgeText}"
+                                                Style="{StaticResource NewBadgeTextStyle}"/>
+                                        </Border>
+                                    </StackPanel>
+                                </controls:SettingsCard.Header>
+
+                                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <Button
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        ToolTipService.ToolTip="{helpers:ResourceString Key=ai_explainer_tooltip}"
+                                        Command="{x:Bind FetchAiExplanationCommand, Mode=OneWay}"
+                                        Visibility="{x:Bind IsAiReady, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Width="32"
+                                        Height="32"
+                                        Padding="0"
+                                        CornerRadius="4"
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <FontIcon
+                                            Glyph="&#xED15;"
+                                            FontSize="16"
+                                            Foreground="{ThemeResource MyDynamicAccentBrush}" />
+                                        <Button.Flyout>
+                                            <Flyout Placement="LeftEdgeAlignedTop">
+                                                <Flyout.FlyoutPresenterStyle>
+                                                    <Style TargetType="FlyoutPresenter">
+                                                        <Setter Property="MaxWidth" Value="350"/>
+                                                        <Setter Property="CornerRadius" Value="8"/>
+                                                        <Setter Property="Padding" Value="16"/>
+                                                    </Style>
+                                                </Flyout.FlyoutPresenterStyle>
+                                                <StackPanel Width="320" Spacing="8" MinHeight="80">
+                                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                                        <FontIcon
+                                                            Glyph="&#xED15;"
+                                                            FontSize="14"
+                                                            Foreground="{ThemeResource MyDynamicAccentBrush}" />
+                                                        <TextBlock
+                                                            Text="{helpers:ResourceString Key=ai_explainer_explanation}"
+                                                            FontWeight="SemiBold" />
+                                                    </StackPanel>
+                                                    <TextBlock
+                                                        Text="{x:Bind AiExplanation, Mode=OneWay}"
+                                                        TextWrapping="WrapWholeWords"
+                                                        FontSize="12"
+                                                        Opacity="0.9"
+                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                        LineHeight="20"/>
+                                                </StackPanel>
+                                            </Flyout>
+                                        </Button.Flyout>
+                                    </Button>
+
+                                    <StackPanel
+                                        Orientation="Horizontal"
+                                        Spacing="2"
+                                        VerticalAlignment="Center"
+                                        Visibility="{x:Bind ShowNumericQuickSetButtons, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Button
+                                            Style="{StaticResource QuickSetRecommendedButtonStyle}"
+                                            Command="{x:Bind SetNumericToRecommendedCommand}"
+                                            ToolTipService.ToolTip="{x:Bind RecommendedValueTooltip, Mode=OneWay}"
+                                            AutomationProperties.Name="{x:Bind RecommendedValueTooltip, Mode=OneWay}">
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                Glyph="&#xE735;"
+                                                FontSize="14"
+                                                Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                        </Button>
+                                        <Button
+                                            Style="{StaticResource QuickSetDefaultButtonStyle}"
+                                            Command="{x:Bind SetNumericToDefaultCommand}"
+                                            ToolTipService.ToolTip="{x:Bind DefaultValueTooltip, Mode=OneWay}"
+                                            AutomationProperties.Name="{x:Bind DefaultValueTooltip, Mode=OneWay}">
+                                            <PathIcon
+                                                Data="{StaticResource BadgeDefaultIconPath}"
+                                                Height="12"
+                                                Width="12"
+                                                Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                        </Button>
+                                    </StackPanel>
+
+                                    <StackPanel
+                                        VerticalAlignment="Center"
+                                        Spacing="4"
+                                        MinWidth="220"
+                                        MaxWidth="300">
+                                        <TextBlock
+                                            Text="{x:Bind DynamicWmiText, Mode=OneWay}"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            FontWeight="SemiBold"
+                                            HorizontalAlignment="Right"/>
+                                        <Slider
+                                            Value="{x:Bind NumericValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            ValueChanged="{x:Bind OnSliderValueChanged}"
+                                            Minimum="{x:Bind MinValue}"
+                                            Maximum="{x:Bind MaxValue}"
+                                            TickFrequency="1"
+                                            StepFrequency="1"
+                                            ThumbToolTipValueConverter="{StaticResource GbTooltipConverter}"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Stretch"/>
+                                        <TextBlock
+                                            Text="{x:Bind DynamicWmiPercentageText, Mode=OneWay}"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </controls:SettingsCard>
+
+                            <controls:SettingsExpander
+                                Visibility="{x:Bind IsPointInTimeSnapshots, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Header="{x:Bind Name}"
+                                Description="{x:Bind Description}"
+                                HeaderIcon="{x:Bind Converter={StaticResource IconConverter}}"
+                                CornerRadius="{x:Bind ChildCornerRadius, Mode=OneWay}"
+                                BorderThickness="1,0,1,1"
+                                IsExpanded="False"
+                                Padding="54,12,52,12"
+                                HorizontalAlignment="Stretch"
+                                IsEnabled="{x:Bind EffectiveIsEnabled, Mode=OneWay}">
+
+                                <controls:SettingsExpander.Items>
+                                    <StackPanel HorizontalAlignment="Stretch">
+
+                                        <TextBlock Visibility="{x:Bind HasNoSnapshots, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                   Text="No snapshots available."
+                                                   FontStyle="Italic"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                   HorizontalAlignment="Left"
+                                                   Margin="0,8"/>
+
+                                        <ListView Visibility="{x:Bind HasSnapshots, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                  ItemsSource="{x:Bind DynamicWmiList, Mode=OneWay}"
+                                                  SelectionMode="None"
+                                                  MaxHeight="350"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                  HorizontalAlignment="Stretch">
+
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="Padding" Value="0,4"/>
+                                                    <Setter Property="Margin" Value="0"/>
+                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate x:DataType="viewModels:SnapshotItemViewModel">
+
+                                                    <controls:SettingsCard Header="{x:Bind DisplayText}" 
+                                                               HorizontalAlignment="Stretch" 
+                                                               Padding="16,12"
+                                                               IsClickEnabled="False">
+
+                                                        <Button Command="{x:Bind DeleteCommand}"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                ToolTipService.ToolTip="Delete this restore point"
+                                                                CornerRadius="4"
+                                                                Padding="8">
+                                                            <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                                                        </Button>
+
+                                                    </controls:SettingsCard>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </StackPanel>
+                                </controls:SettingsExpander.Items>
+                            </controls:SettingsExpander>
 
                             <Border Visibility="{x:Bind ShowTechnicalDetailsBar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}"

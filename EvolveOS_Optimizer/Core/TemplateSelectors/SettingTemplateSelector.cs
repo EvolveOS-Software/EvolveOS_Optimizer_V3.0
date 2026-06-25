@@ -21,10 +21,23 @@ public partial class SettingTemplateSelector : DataTemplateSelector
     public DataTemplate? DualNumericTemplate { get; set; }
     public DataTemplate? SingleACNumericTemplate { get; set; }
 
+    public DataTemplate? PitrDiskUsageTemplate { get; set; }
+    public DataTemplate? PitrSnapshotsTemplate { get; set; }
+
     protected override DataTemplate? SelectTemplateCore(object item)
     {
         if (item is SettingItemViewModel vm)
         {
+            if (vm.SettingId == "PointInTimeRestore_MaxStorage" && PitrDiskUsageTemplate != null)
+            {
+                return PitrDiskUsageTemplate;
+            }
+
+            if (vm.SettingId == "PointInTimeRestore_Snapshots" && PitrSnapshotsTemplate != null)
+            {
+                return PitrSnapshotsTemplate;
+            }
+
             if (vm.SettingId == "gaming-performance-os-compression" && ActionWithStatusTemplate != null)
             {
                 return ActionWithStatusTemplate;

@@ -277,6 +277,7 @@ namespace EvolveOS_Optimizer.Views
             if (!_isShutdownMode)
             {
                 ScheduledCleanService.Instance.Start();
+                RegistryMonitorService.Instance.StartMonitoring();
 
                 await StartProcessingAsync();
             }

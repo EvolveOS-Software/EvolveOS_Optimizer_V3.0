@@ -3527,6 +3527,8 @@
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Title">Avviso Impostazioni Avanzate</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Message">Questa impostazione non è normalmente visibile nelle Opzioni risparmio energia di Windows e richiede modifiche al registro per l'accesso.&#x0a;&#x0a;Una configurazione errata potrebbe causare:&#x0a;• Instabilità di sistema o comportamenti anomali&#x0a;• Peggioramento delle prestazioni&#x0a;• Problemi di gestione termica&#x0a;• Incompatibilità con alcuni processori (HWP moderni vs legacy)&#x0a;&#x0a;Modificala solo se comprendi la gestione dell'energia del processore.&#x0a;&#x0a;Sei sicuro di voler modificare questa impostazione?</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_DontShowAgain">Non mostrare più questo avviso per le impostazioni avanzate di alimentazione</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Title">Elimina punto di ripristino</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Message">Sei sicuro di voler eliminare definitivamente questo punto di ripristino del sistema? Questa operazione non può essere annullata e libererà spazio su disco.</sys:String>
 
     <sys:String x:Key="Category_Configuration">Configurazione</sys:String>
     <sys:String x:Key="Category_General">Generale</sys:String>
@@ -4778,6 +4780,36 @@
     <sys:String x:Key="Setting_updates-driver-coinstallers_Description">Si fa riferimento a questo sistema, come l'onere in capo alle associazioni Brand dei fornitori dei vostri Strumenti (Tastiere o Periferiche), come fattore innescante software extra rispetto le librerie Drivers e il corredo elementare necessario, non appena attivate gli Inserti su Porta. Eliminandolo s'abbatterà l'invadenza di App pesanti quali Razer, i centri della Stampante, ma assicurandone contemporaneamente l'esecuzione del Hardware a prescindere col driver base</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Name">Automazioni In Store per Up-Dates e Manutenzione</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Description">Pone le basi logiche affinché Microsoft garantisca, via lo store, installazione d'aggiornamenti non avvalendosi del supporto di terzi in quanto interviene e supplisce le scadenze e premette in maniera automatizzata scaricando ed implementando in modo univoco ed in autonomia.</sys:String>
+
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Name">Point-in-Time Wiederherstellung</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Description">Aktivieren Sie den Volumeschattenkopie-Schutz für System- und Benutzerdateien. Dies ermöglicht es, Änderungen nach einem kritischen Update-Fehler rückgängig zu machen.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Name">Wiederherstellungspunkt-Frequenz</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">Wie oft Windows automatische Snapshot-Backups erstellt (nur Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Name">Snapshot-Aufbewahrung</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Wie lange Windows automatische Snapshots behält, bevor sie zur Platzersparnis gelöscht werden (nur Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Name">Maximale Speicherbegrenzung (%)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Description">Der maximale Prozentsatz Ihres Festplattenspeichers, den die Systemwiederherstellung belegen darf, bevor alte Sicherungen gelöscht werden.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_0">Alle 4 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_1">Alle 6 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_2">Alle 12 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_3">Alle 16 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_4">Alle 24 Stunden (Standard)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_Custom">Benutzerdefinierte Frequenz</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_0">4 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_1">6 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_2">12 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_3">16 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_4">24 Stunden</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_5">72 Stunden (Standard)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_Custom">Benutzerdefinierte Aufbewahrung</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Name">Aktuelle Wiederherstellungspunkte</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Description">Verfügbare System-Snapshots anzeigen</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_DisplayText">Erstellt am {0} • OS-Build {1}</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Name">Blocca impostazioni</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Description">Impedisce agli aggiornamenti di Windows o ad altre app di modificare le preferenze di ripristino.</sys:String>
+
+    <sys:String x:Key="Notification_PITR_Protected_Title">Impostazioni protette</sys:String>
+    <sys:String x:Key="Notification_PITR_Protected_Message">Windows ha tentato di modificare le preferenze di ripristino Point-in-Time.\nEvolveOS ha bloccato con successo la modifica.</sys:String>
 
     <sys:String x:Key="Setting_windows-pushnotifications_Name">Sviluppa e Diffondi Segnalazioni delle Operatività</sys:String>
     <sys:String x:Key="Setting_windows-pushnotifications_Description">Soggetti Terzi da applicativo od altri derivanti come avvisi della macchina riceveranno visibilità in via della loro propensione al palesarsi all'interno del Sistema</sys:String>

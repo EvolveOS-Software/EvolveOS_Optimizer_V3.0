@@ -733,6 +733,176 @@ public static class UpdateOptimizations
                         },
                     },
                 },
+                new SettingDefinition
+                {
+                    Id = "PointInTimeRestore_State",
+                    AddedInVersion = "1.1.6.344",
+                    Name = "Point-in-Time Restore",
+                    Description = "Enable Volume Shadow Copy protection for system and user files. This allows you to roll back changes after a critical update failure.",
+                    GroupName = "System Protection",
+                    Icon = "History",
+                    InputType = InputType.Toggle,
+                    IsWindows11Only = true,
+                    MinimumBuildNumber = 26200,
+                    MinimumBuildRevision = 8737,
+                    RecommendedToggleState = true,
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Recovery\PITR\Settings",
+                            ValueName = "Active_UX",
+                            RecommendedValue = 1,
+                            EnabledValue = [1],
+                            DisabledValue = [0],
+                            DefaultValue = 0,
+                            ValueType = RegistryValueKind.DWord
+                        }
+                    }
+                },
+                new SettingDefinition
+                {
+                    Id = "PointInTimeRestore_Frequency",
+                    ParentSettingId = "PointInTimeRestore_State",
+                    Name = "Restore Point Frequency",
+                    Description = "How often Windows creates automatic snapshot backups (Enterprise/Education only).",
+                    GroupName = "System Protection",
+                    Icon = "Timer",
+                    InputType = InputType.Selection,
+                    IsWindows11Only = true,
+                    MinimumBuildNumber = 26200,
+                    MinimumBuildRevision = 8737,
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Recovery\PITR\Settings",
+                            ValueName = "SnapshotInterval_UX",
+                            RecommendedValue = 1440,
+                            DefaultValue = 1440,
+                            ValueType = RegistryValueKind.DWord
+                        }
+                    },
+                    ComboBox = new ComboBoxMetadata
+                    {
+                        Options = new[]
+                        {
+                            new ComboBoxOption { DisplayName = "Every 4 Hours", ValueMappings = new Dictionary<string, object?> { ["SnapshotInterval_UX"] = 240 } },
+                            new ComboBoxOption { DisplayName = "Every 6 Hours", ValueMappings = new Dictionary<string, object?> { ["SnapshotInterval_UX"] = 360 } },
+                            new ComboBoxOption { DisplayName = "Every 12 Hours", ValueMappings = new Dictionary<string, object?> { ["SnapshotInterval_UX"] = 720 } },
+                            new ComboBoxOption { DisplayName = "Every 16 Hours", ValueMappings = new Dictionary<string, object?> { ["SnapshotInterval_UX"] = 960 } },
+                            new ComboBoxOption { DisplayName = "Every 24 Hours (Default)", ValueMappings = new Dictionary<string, object?> { ["SnapshotInterval_UX"] = 1440 }, IsDefault = true, IsRecommended = true }
+                        }
+                    }
+                },
+                new SettingDefinition
+                {
+                    Id = "PointInTimeRestore_Retention",
+                    ParentSettingId = "PointInTimeRestore_State",
+                    Name = "Snapshot Retention",
+                    Description = "How long Windows will keep automatic snapshots before deleting them to save space (Enterprise/Education only).",
+                    GroupName = "System Protection",
+                    Icon = "CalendarClock",
+                    InputType = InputType.Selection,
+                    IsWindows11Only = true,
+                    MinimumBuildNumber = 26200,
+                    MinimumBuildRevision = 8737,
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Recovery\PITR\Settings",
+                            ValueName = "MaxTimespan_UX",
+                            RecommendedValue = 4320,
+                            DefaultValue = 4320,
+                            ValueType = RegistryValueKind.DWord
+                        }
+                    },
+                    ComboBox = new ComboBoxMetadata
+                    {
+                        Options = new[]
+                        {
+                            new ComboBoxOption { DisplayName = "4 Hours", ValueMappings = new Dictionary<string, object?> { ["MaxTimespan_UX"] = 240 } },
+                            new ComboBoxOption { DisplayName = "6 Hours", ValueMappings = new Dictionary<string, object?> { ["MaxTimespan_UX"] = 360 } },
+                            new ComboBoxOption { DisplayName = "12 Hours", ValueMappings = new Dictionary<string, object?> { ["MaxTimespan_UX"] = 720 } },
+                            new ComboBoxOption { DisplayName = "16 Hours", ValueMappings = new Dictionary<string, object?> { ["MaxTimespan_UX"] = 960 } },
+                            new ComboBoxOption { DisplayName = "24 Hours", ValueMappings = new Dictionary<string, object?> { ["MaxTimespan_UX"] = 1440 } },
+                            new ComboBoxOption { DisplayName = "72 Hours (Default)", ValueMappings = new Dictionary<string, object?> { ["MaxTimespan_UX"] = 4320 }, IsDefault = true, IsRecommended = true }
+                        }
+                    }
+                },
+                new SettingDefinition
+                {
+                    Id = "PointInTimeRestore_MaxStorage",
+                    ParentSettingId = "PointInTimeRestore_State",
+                    Name = "Max Storage Limit (GB)",
+                    Description = "The maximum gigabytes of disk space System Protection is allowed to consume before deleting old backups.",
+                    GroupName = "System Protection",
+                    Icon = "DatabaseCog",
+                    InputType = InputType.NumericRange,
+                    IsWindows11Only = true,
+                    MinimumBuildNumber = 26200,
+                    MinimumBuildRevision = 8737,
+                    NumericRange = new NumericRangeMetadata
+                    {
+                        MinValue = 2,
+                        MaxValue = 50,
+                        Increment = 1,
+                        UseSlider = true
+                    },
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\EvolveOS_Optimizer\Dummy",
+                            ValueName = "DummyLimit",
+                            RecommendedValue = 20,
+                            DefaultValue = 10,
+                            ValueType = Microsoft.Win32.RegistryValueKind.DWord
+                        }
+                    }
+                },
+                new SettingDefinition
+                {
+                    Id = "PointInTimeRestore_HardLock",
+                    ParentSettingId = "PointInTimeRestore_State",
+                    Name = "Lock Settings",
+                    Description = "Prevents Windows updates or other apps from changing your restore preferences.",
+                    GroupName = "System Protection",
+                    Icon = "Lock",
+                    InputType = InputType.Toggle,
+                    IsWindows11Only = true,
+                    MinimumBuildNumber = 26200,
+                    MinimumBuildRevision = 8737,
+                    RecommendedToggleState = true,
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\EvolveOS_Optimizer\Settings",
+                            ValueName = "PITR_HardLock",
+                            RecommendedValue = 1,
+                            EnabledValue = [1],
+                            DisabledValue = [0],
+                            DefaultValue = 1,
+                            ValueType = RegistryValueKind.DWord
+                        }
+                    }
+                },
+                new SettingDefinition
+                {
+                    Id = "PointInTimeRestore_Snapshots",
+                    ParentSettingId = "PointInTimeRestore_State",
+                    Name = "Current restore points",
+                    Description = "View available system snapshots",
+                    GroupName = "System Protection",
+                    Icon = "History",
+                    InputType = InputType.Toggle,
+                    IsWindows11Only = true,
+                    MinimumBuildNumber = 26200,
+                    MinimumBuildRevision = 8737,
+                    IsSubjectivePreference = true
+                },
             },
         };
     }

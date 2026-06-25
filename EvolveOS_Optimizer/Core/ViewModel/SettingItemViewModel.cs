@@ -140,9 +140,35 @@ public partial class SettingItemViewModel : BaseViewModel
     public bool IsRestartRequired
     {
         get => _isRestartRequired;
-        set => SetProperty(ref _isRestartRequired, value); // Assuming ViewModelBase has SetProperty
+        set => SetProperty(ref _isRestartRequired, value);
+    }
+    #endregion
+
+    #region Point In Time Restore Properties
+
+    public bool IsPointInTimeDiskUsage => SettingId == "PointInTimeRestore_MaxStorage";
+    public bool IsPointInTimeSnapshots => SettingId == "PointInTimeRestore_Snapshots";
+    public bool IsCustomCard => IsPointInTimeDiskUsage || IsPointInTimeSnapshots;
+
+    private string _dynamicWmiText = "Current usage: 0 bytes";
+    public string DynamicWmiText
+    {
+        get => _dynamicWmiText;
+        set => SetProperty(ref _dynamicWmiText, value);
     }
 
+    public System.Collections.ObjectModel.ObservableCollection<SnapshotItemViewModel> DynamicWmiList { get; } = new();
+    public bool HasSnapshots => DynamicWmiList.Count > 0;
+    public bool HasNoSnapshots => DynamicWmiList.Count == 0;
+
+    private double _systemDriveTotalGb = 200.0;
+
+    private string _dynamicWmiPercentageText = "";
+    public string DynamicWmiPercentageText
+    {
+        get => _dynamicWmiPercentageText;
+        set => SetProperty(ref _dynamicWmiPercentageText, value);
+    }
 
     #endregion
 
@@ -879,6 +905,8 @@ public partial class SettingItemViewModel : BaseViewModel
         ComputeBadgeState();
 
         _ = RefreshCompressionStatusDetailsAsync();
+
+        LoadWmiData();
     }
     #endregion
 
@@ -1173,6 +1201,16 @@ public partial class SettingItemViewModel : BaseViewModel
             }
 
             IsSelected = newValue;
+
+            if (SettingId == "PointInTimeRestore_HardLock")
+            {
+                RegistryMonitorService.Instance.UpdateLockState(IsSelected);
+            }
+            else if (SettingId == "PointInTimeRestore_State")
+            {
+                RegistryMonitorService.Instance.UpdateDesiredValue("Active_UX", IsSelected ? 1 : 0);
+            }
+
             _hasChangedThisSession = true;
             ComputeBadgeState();
             ShowRestartBannerIfNeeded();
@@ -1240,6 +1278,22 @@ public partial class SettingItemViewModel : BaseViewModel
             }
 
             SelectedValue = value;
+
+            if (SettingId == "PointInTimeRestore_Frequency" || SettingId == "PointInTimeRestore_Retention")
+            {
+                var rawOptions = SettingDefinition?.ComboBox?.Options;
+
+                if (value is int index && rawOptions != null && index >= 0 && index < rawOptions.Count)
+                {
+                    var selectedOption = rawOptions[index];
+                    string targetKey = SettingId == "PointInTimeRestore_Frequency" ? "SnapshotInterval_UX" : "MaxTimespan_UX";
+
+                    if (selectedOption.ValueMappings != null && selectedOption.ValueMappings.TryGetValue(targetKey, out var rawVal))
+                    {
+                        RegistryMonitorService.Instance.UpdateDesiredValue(targetKey, Convert.ToInt32(rawVal));
+                    }
+                }
+            }
 
             if (value is int intValue)
             {
@@ -2050,6 +2104,137 @@ public partial class SettingItemViewModel : BaseViewModel
             _technicalDetailsManager.Dispose();
         }
         base.Dispose(disposing);
+    }
+
+    #endregion
+
+    #region Point In Time Restore
+
+    public void LoadWmiData()
+    {
+        if (!IsCustomCard) return;
+
+        var dispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+        Task.Run(() =>
+        {
+            var vss = new EvolveOS_Optimizer.Utilities.Services.VssQueryService();
+
+            if (IsPointInTimeDiskUsage)
+            {
+                var text = vss.GetCurrentDiskUsage();
+
+                try
+                {
+                    var osDrive = System.IO.Path.GetPathRoot(System.Environment.SystemDirectory) ?? "C:\\";
+                    var driveInfo = new System.IO.DriveInfo(osDrive);
+                    _systemDriveTotalGb = driveInfo.TotalSize / 1073741824.0;
+                }
+                catch
+                {
+                    _systemDriveTotalGb = 200.0;
+                }
+
+                int existingGbLimit = 2; // Default
+                try
+                {
+                    const string path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Recovery\PITR\Settings";
+                    using var baseKey = Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, Microsoft.Win32.RegistryView.Registry64);
+                    using var regKey = baseKey.OpenSubKey(path, false);
+
+                    if (regKey?.GetValue("MaxGlobalSize_UX") is int mbValue)
+                    {
+                        existingGbLimit = mbValue / 1024;
+                    }
+                }
+                catch { }
+
+                dispatcher?.TryEnqueue(() =>
+                {
+                    DynamicWmiText = text;
+                    NumericValue = Math.Clamp(existingGbLimit, MinValue > 0 ? MinValue : 2, MaxValue > 0 ? MaxValue : 50);
+                    UpdateDiskPercentageText(NumericValue);
+                });
+            }
+            else if (IsPointInTimeSnapshots)
+            {
+                var snaps = vss.GetCurrentSnapshots();
+                dispatcher?.TryEnqueue(() =>
+                {
+                    DynamicWmiList.Clear();
+                    foreach (var s in snaps)
+                    {
+                        DynamicWmiList.Add(new SnapshotItemViewModel(s.Id, s.DisplayText, async (item) => await DeleteSnapshotAsync(item)));
+                    }
+                    OnPropertyChanged(nameof(HasSnapshots));
+                    OnPropertyChanged(nameof(HasNoSnapshots));
+                });
+            }
+        });
+    }
+
+    private async Task DeleteSnapshotAsync(SnapshotItemViewModel item)
+    {
+        var title = _localizationService?.GetString("Dialog_DeleteSnapshot_Title") ?? "Delete Restore Point";
+        var message = _localizationService?.GetString("Dialog_DeleteSnapshot_Message") ?? "Are you sure you want to permanently delete this system restore point? This action cannot be undone and will free up disk space.";
+        var deleteText = _localizationService?.GetString("Button_Delete") ?? "Delete";
+        var cancelText = _localizationService?.GetString("Button_Cancel") ?? "Cancel";
+
+        var (confirmed, _) = await _dialogService.ShowConfirmationWithCheckboxAsync(message, "", title, deleteText, cancelText);
+        if (!confirmed) return;
+
+        IsApplying = true;
+
+        await Task.Run(() =>
+        {
+            var vss = new VssQueryService();
+            vss.DeleteSnapshot(item.Id);
+        });
+
+        IsApplying = false;
+
+        LoadWmiData();
+    }
+
+    partial void OnNumericValueChanged(int value)
+    {
+        if (IsPointInTimeDiskUsage)
+        {
+            UpdateDiskPercentageText(value);
+            SaveStorageLimitToRegistry(value);
+        }
+    }
+
+    private void UpdateDiskPercentageText(int gbValue)
+    {
+        if (_systemDriveTotalGb <= 0) return;
+
+        double percentage = (gbValue / _systemDriveTotalGb) * 100.0;
+        DynamicWmiPercentageText = $"{percentage:F1}% of the disk ({gbValue} GB)";
+    }
+
+    private void SaveStorageLimitToRegistry(int gigabytes)
+    {
+        try
+        {
+            int megabytes = gigabytes * 1024;
+            const string path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Recovery\PITR\Settings";
+
+            using var baseKey = Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, Microsoft.Win32.RegistryView.Registry64);
+            using var regKey = baseKey.CreateSubKey(path, true);
+
+            regKey?.SetValue("MaxGlobalSize_UX", megabytes, Microsoft.Win32.RegistryValueKind.DWord);
+
+            _logService?.Log(LogLevel.Info, $"[PointInTimeRestore] Saved MaxGlobalSize_UX to {megabytes} MB.");
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _logService?.Log(LogLevel.Warning, "[PointInTimeRestore] Slider access Denied. App requires elevation.");
+        }
+        catch (Exception ex)
+        {
+            _logService?.Log(LogLevel.Error, $"[PointInTimeRestore] Slider save failed: {ex.Message}");
+        }
     }
 
     #endregion

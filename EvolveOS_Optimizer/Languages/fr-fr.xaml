@@ -3516,6 +3516,8 @@
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Title">Avertissement concernant les paramètres avancés</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_Message">Ce paramètre n'est normalement pas visible dans les Options d'alimentation de Windows et nécessite des modifications du registre pour y accéder.&#x0a;&#x0a;Une modification incorrecte peut entraîner :&#x0a;• Une instabilité du système ou un comportement inattendu&#x0a;• Une dégradation des performances&#x0a;• Des problèmes de gestion thermique&#x0a;• Les paramètres peuvent ne pas fonctionner sur tous les types de processeurs (HWP moderne vs hérité)&#x0a;&#x0a;Ne modifiez cette option que si vous comprenez la gestion de l'alimentation du processeur.&#x0a;&#x0a;Êtes-vous sûr de vouloir modifier ce paramètre ?</sys:String>
     <sys:String x:Key="Dialog_AdvancedPowerWarning_DontShowAgain">Ne plus afficher cet avertissement pour les paramètres d'alimentation avancés</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Title">Supprimer le point de restauration</sys:String>
+    <sys:String x:Key="Dialog_DeleteSnapshot_Message">Êtes-vous sûr de vouloir supprimer définitivement ce point de restauration système ? Cette action est irréversible et libérera de l'espace disque.</sys:String>
 
     <sys:String x:Key="Category_Configuration">Configuration</sys:String>
     <sys:String x:Key="Category_General">Général</sys:String>
@@ -4767,6 +4769,36 @@
     <sys:String x:Key="Setting_updates-driver-coinstallers_Description">Permet aux fournisseurs de matériel d'installer des logiciels d'accompagnement en même temps que les pilotes de périphériques. Si vous désactivez cette fonction, les logiciels indésirables (bloatwares) tels que Razer Synapse, les utilitaires d'impression et d'autres logiciels de fournisseurs ne seront pas installés automatiquement lorsque vous brancherez des périphériques. Votre matériel fonctionnera toujours normalement avec les pilotes standard.</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Name">Mise à jour auto. des apps du Microsoft Store</sys:String>
     <sys:String x:Key="Setting_updates-store-auto-download_Description">Télécharger et installer automatiquement les mises à jour des applications à partir du Microsoft Store</sys:String>
+
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Name">Restauration ponctuelle</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_State_Description">Activez la protection par clichés instantanés de volume pour les fichiers système et utilisateur. Cela vous permet d'annuler les modifications après une erreur de mise à jour critique.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Name">Fréquence des points de restauration</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">À quelle fréquence Windows crée des sauvegardes instantanées automatiques (Enterprise/Education uniquement).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Name">Rétention des snapshots</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Durée pendant laquelle Windows conserve les snapshots automatiques avant de les supprimer pour économiser de l'espace (Enterprise/Education uniquement).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Name">Limite de stockage maximale (%)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Description">Pourcentage maximal de l'espace disque que la protection du système est autorisée à consommer avant de supprimer les anciennes sauvegardes.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_0">Toutes les 4 heures</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_1">Toutes les 6 heures</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_2">Toutes les 12 heures</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_3">Toutes les 16 heures</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_4">Toutes les 24 heures (Par défaut)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_Custom">Fréquence personnalisée</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_0">4 heures</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_1">6 heures</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_2">12 heures</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_3">16 heures</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_4">24 heures</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_5">72 heures (Par défaut)</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_Custom">Rétention personnalisée</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Name">Points de restauration actuels</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Description">Afficher les snapshots système disponibles</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_DisplayText">Créé le {0} • Build OS {1}</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Name">Verrouiller les paramètres</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Description">Empêche les mises à jour de Windows ou d'autres applications de modifier vos préférences de restauration.</sys:String>
+
+    <sys:String x:Key="Notification_PITR_Protected_Title">Paramètres protégés</sys:String>
+    <sys:String x:Key="Notification_PITR_Protected_Message">Windows a tenté de modifier vos préférences de restauration ponctuelle.\nEvolveOS a bloqué la modification avec succès.</sys:String>
 
     <sys:String x:Key="Setting_windows-pushnotifications_Name">Afficher les notifications</sys:String>
     <sys:String x:Key="Setting_windows-pushnotifications_Description">Obtenez des notifications des applications et d'autres expéditeurs dans Windows</sys:String>
