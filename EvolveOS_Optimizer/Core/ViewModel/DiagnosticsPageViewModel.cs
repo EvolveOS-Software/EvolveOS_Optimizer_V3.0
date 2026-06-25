@@ -1181,7 +1181,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     LocalMachineSettingsEngine.ShowHardwarePanelInTray = value;
                     OnPropertyChanged(nameof(ShowHardwarePanelInTray));
 
-                    _dispatcherQueue?.TryEnqueue(() => {
+                    _dispatcherQueue?.TryEnqueue(() =>
+                    {
                         OnPropertyChanged(nameof(ShowHardwarePanelInTray));
                     });
                 }
@@ -3239,7 +3240,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             // A method to test
             //LocalMachineSettingsEngine.DismissedEventsList.Remove("9120|NetworkAuditor|SECURE");
 
-            await Task.Run(async () => {
+            await Task.Run(async () =>
+            {
                 DnsManager dnsManager = new DnsManager();
                 string v4 = dnsManager.GetCurrentIpv4Primary();
                 string v6 = dnsManager.GetCurrentIpv6Primary();
@@ -3275,7 +3277,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
                 catch { isDnsEncrypted = false; }
 
-                _dispatcherQueue.TryEnqueue(() => {
+                _dispatcherQueue.TryEnqueue(() =>
+                {
                     CurrentDnsIpv4 = string.IsNullOrEmpty(v4) || v4 == "0.0.0.0" ? "Automatic (ISP)" : v4;
                     CurrentDnsIpv6 = string.IsNullOrEmpty(v6) || v6 == "::" ? "Automatic (ISP)" : v6;
 
@@ -3404,7 +3407,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public async Task ApplyDnsPresetAsync(DnsPreset preset)
         {
             if (preset == null) return;
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 DnsManager dm = new DnsManager();
                 dm.SetIpv4Dns(preset.Ipv4Primary!, preset.Ipv4Secondary ?? "");
                 if (!string.IsNullOrEmpty(preset.Ipv6Primary) && preset.Ipv6Primary != "::")

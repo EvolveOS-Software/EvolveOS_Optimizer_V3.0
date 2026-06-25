@@ -5,11 +5,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Security;
 using System.Security.Cryptography;
-using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
-using Microsoft.UI.Xaml.Navigation;
 using Windows.Storage.Pickers;
 
 namespace EvolveOS_Optimizer.Pages

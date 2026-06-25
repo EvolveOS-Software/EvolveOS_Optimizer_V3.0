@@ -27,9 +27,9 @@ public sealed partial class BadgePillTemplateSelector : DataTemplateSelector
         => kind switch
         {
             SettingBadgeKind.Recommended => recommended,
-            SettingBadgeKind.Default     => @default,
-            SettingBadgeKind.Custom      => custom,
-            SettingBadgeKind.Preference  => preference,
-            _                            => null,
+            SettingBadgeKind.Default => @default,
+            SettingBadgeKind.Custom => custom,
+            SettingBadgeKind.Preference => preference,
+            _ => null,
         };
 }

@@ -82,8 +82,8 @@ public class TechnicalDetailRow
     public bool IsScheduledTask => RowType == DetailRowType.ScheduledTask;
     public bool IsPowerConfig => RowType == DetailRowType.PowerConfig;
     public bool IsPowerShellScript => RowType == DetailRowType.PowerShellScript;
-    public bool IsRegContent       => RowType == DetailRowType.RegContent;
-    public bool IsDependency       => RowType == DetailRowType.Dependency;
+    public bool IsRegContent => RowType == DetailRowType.RegContent;
+    public bool IsDependency => RowType == DetailRowType.Dependency;
     #endregion
 
     #region Command and icon set from parent ViewModel
@@ -102,8 +102,8 @@ public class TechnicalDetailRow
         DetailRowType.PowerConfig =>
             $"Power Config. Subgroup: {SubgroupAlias} ({SubgroupGuid}), Setting: {SettingAlias} ({SettingGuid}), AC: {RecommendedAC}, DC: {RecommendedDC}, {PowerUnits}",
         DetailRowType.PowerShellScript => $"PowerShell script {ScriptLabel}: {ScriptBody}",
-        DetailRowType.RegContent       => $"Registry content {ContentLabel}: {ContentBody}",
-        DetailRowType.Dependency       => $"Depends on {DependencyLabel} {DependencyRelation}",
+        DetailRowType.RegContent => $"Registry content {ContentLabel}: {ContentBody}",
+        DetailRowType.Dependency => $"Depends on {DependencyLabel} {DependencyRelation}",
         _ => string.Empty
     };
     #endregion

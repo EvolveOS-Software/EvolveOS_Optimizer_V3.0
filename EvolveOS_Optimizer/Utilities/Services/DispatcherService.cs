@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Threading;
-using Microsoft.UI.Dispatching;
 using EvolveOS_Optimizer.Core.Interfaces;
+using Microsoft.UI.Dispatching;
 
 namespace EvolveOS_Optimizer.Utilities.Services;
 

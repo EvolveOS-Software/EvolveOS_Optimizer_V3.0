@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Runtime.CompilerServices;
-using Vanara.PInvoke;
 using Microsoft.Win32.SafeHandles;
+using Vanara.PInvoke;
 using static Vanara.PInvoke.AdvApi32;
 
 namespace EvolveOS_Optimizer.Utilities.Services

@@ -9,11 +9,11 @@ using System.Runtime.Versioning;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
-using Microsoft.Win32;
-using Microsoft.Win32.SafeHandles;
 using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Native;
+using Microsoft.Win32;
+using Microsoft.Win32.SafeHandles;
 
 namespace EvolveOS_Optimizer.Utilities.Services;
 

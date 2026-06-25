@@ -5,10 +5,10 @@ using System.Management;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
-using Microsoft.Win32;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Native;
+using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Services;
 

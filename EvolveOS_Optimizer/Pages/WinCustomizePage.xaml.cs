@@ -2,13 +2,13 @@
 // Licensed under the MIT License.
 
 using System.ComponentModel;
-using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Core.Constants;
 using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Events;
-using EvolveOS_Optimizer.Core.WinOptimize.Helpers;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Core.WinOptimize.Helpers;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Extensions.DependencyInjection;

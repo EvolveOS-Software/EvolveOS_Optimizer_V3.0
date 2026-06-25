@@ -530,7 +530,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             int matchCount = 0;
 
-            App.MainWindow?.DispatcherQueue?.TryEnqueue(() => {
+            App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+            {
                 StatusBarMessage = string.Format(ResourceString.GetString("values_vm_searching_registry"), options.Query);
             });
 
@@ -556,7 +557,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         RecursiveGridSearch(hive, pathTarget, options, token, ref matchCount);
                     }
 
-                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() => {
+                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                    {
                         StatusBarMessage = token.IsCancellationRequested
                             ? string.Format(ResourceString.GetString("values_vm_search_cancelled"), matchCount)
                             : string.Format(ResourceString.GetString("values_vm_search_finished"), matchCount);
@@ -565,7 +567,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() => {
+                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                    {
                         StatusBarMessage = string.Format(ResourceString.GetString("values_vm_search_aborted"), ex.Message);
                         IsSearchRunning = false;
                     });

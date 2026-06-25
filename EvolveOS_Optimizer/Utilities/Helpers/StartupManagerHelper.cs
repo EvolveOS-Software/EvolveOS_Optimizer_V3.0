@@ -4,10 +4,10 @@
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Win32;
-using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -78,9 +78,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                             // Suppress SYSLIB0057 because .NET 10's X509CertificateLoader 
                             // does NOT support extracting Authenticode signatures from .exe files.
-                            #pragma warning disable SYSLIB0057
+#pragma warning disable SYSLIB0057
                             var cert = new X509Certificate2(cleanPath);
-                            #pragma warning restore SYSLIB0057
+#pragma warning restore SYSLIB0057
 
                             publisher = cert.GetNameInfo(X509NameType.SimpleName, false) ?? "Unknown Verified Publisher";
                             isVerified = true;

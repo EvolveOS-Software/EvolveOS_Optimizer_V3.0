@@ -15,28 +15,28 @@ public record TechnicalDetailLabels
     public string Off { get; init; } = "Off";
 
     #region Section headers
-    public string SectionRegistry       { get; init; } = "Registry Changes";
+    public string SectionRegistry { get; init; } = "Registry Changes";
     public string SectionScheduledTasks { get; init; } = "Scheduled Tasks";
-    public string SectionPowerSettings  { get; init; } = "Power Settings";
-    public string SectionScripts        { get; init; } = "PowerShell Scripts";
-    public string SectionRegContent     { get; init; } = "Registry Content";
-    public string SectionDependencies   { get; init; } = "Depends On";
+    public string SectionPowerSettings { get; init; } = "Power Settings";
+    public string SectionScripts { get; init; } = "PowerShell Scripts";
+    public string SectionRegContent { get; init; } = "Registry Content";
+    public string SectionDependencies { get; init; } = "Depends On";
     #endregion
 
     #region Script / RegContent labels
-    public string ScriptOnEnable        { get; init; } = "On Enable";
-    public string ScriptOnDisable       { get; init; } = "On Disable";
-    public string RegContentOnEnable    { get; init; } = "On Enable";
-    public string RegContentOnDisable   { get; init; } = "On Disable";
+    public string ScriptOnEnable { get; init; } = "On Enable";
+    public string ScriptOnDisable { get; init; } = "On Disable";
+    public string RegContentOnEnable { get; init; } = "On Enable";
+    public string RegContentOnDisable { get; init; } = "On Disable";
     #endregion
 
     #region Dependency relation
-    public string DependencyEquals      { get; init; } = "=";
-    public string DependencyNotEquals   { get; init; } = "≠";
+    public string DependencyEquals { get; init; } = "=";
+    public string DependencyNotEquals { get; init; } = "≠";
     #endregion
 
     #region PowerConfig labels
     public string PowerCfgSubgroup { get; init; } = "Subgroup";
-    public string PowerCfgSetting  { get; init; } = "Setting";
+    public string PowerCfgSetting { get; init; } = "Setting";
     #endregion
 }

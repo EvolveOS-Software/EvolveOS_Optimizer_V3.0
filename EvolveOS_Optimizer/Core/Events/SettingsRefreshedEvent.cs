@@ -1,8 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System;
-
 namespace EvolveOS_Optimizer.Core.Events;
 
 public class SettingsRefreshedEvent : IDomainEvent

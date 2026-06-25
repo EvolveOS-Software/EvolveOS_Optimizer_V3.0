@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EvolveOS_Optimizer.Core.Base;
@@ -1907,7 +1906,7 @@ public partial class SettingItemViewModel : BaseViewModel
         {
             SettingBadgeKind.Recommended => (
                 _localizationService?.GetString("InfoBadge_Recommended") ?? "Recommended",
-                _localizationService?.GetString("InfoBadge_Recommended_Tooltip") ?? "Winhance's recommended value"),
+                _localizationService?.GetString("InfoBadge_Recommended_Tooltip") ?? "EvolveOS recommended value"),
             SettingBadgeKind.Default => (
                 _localizationService?.GetString("InfoBadge_Default") ?? "Default",
                 _localizationService?.GetString("InfoBadge_Default_Tooltip") ?? "Windows factory value"),

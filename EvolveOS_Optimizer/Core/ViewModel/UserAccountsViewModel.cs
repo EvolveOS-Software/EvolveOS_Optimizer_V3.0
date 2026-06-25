@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using System.Windows.Input;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Data.SqlClient;
 using WinRT.Interop;

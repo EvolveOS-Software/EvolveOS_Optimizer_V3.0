@@ -4,7 +4,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Threading;
-using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Helpers;

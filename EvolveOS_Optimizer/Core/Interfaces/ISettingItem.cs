@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System.Collections.Generic;
 using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Model;
 

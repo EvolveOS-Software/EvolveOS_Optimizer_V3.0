@@ -5,7 +5,6 @@ using System.IO;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using EvolveOS_Optimizer.Assets.UserControl;
-using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;

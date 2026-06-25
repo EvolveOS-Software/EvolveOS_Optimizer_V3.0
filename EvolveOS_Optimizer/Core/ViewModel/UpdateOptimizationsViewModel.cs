@@ -1,9 +1,9 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Constants;
 using EvolveOS_Optimizer.Core.Events;
+using EvolveOS_Optimizer.Core.Interfaces;
 namespace EvolveOS_Optimizer.Core.ViewModel;
 
 public partial class UpdateOptimizationsViewModel : BaseSettingsFeatureViewModel, IOptimizationFeatureViewModel

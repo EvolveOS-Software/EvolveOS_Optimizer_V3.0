@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Core.Localization;
 
 namespace EvolveOS_Optimizer.Core.Model;
 

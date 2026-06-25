@@ -4,10 +4,10 @@
 using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using Microsoft.Win32;
 using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Services;
 

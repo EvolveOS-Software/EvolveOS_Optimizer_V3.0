@@ -7,7 +7,6 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
-using EvolveOS_Optimizer.Core;
 using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers

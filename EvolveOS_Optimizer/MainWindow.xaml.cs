@@ -8,9 +8,10 @@ using System.Net.Http;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Security.Principal;
+using EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Pages;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -26,7 +27,6 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using WinRT.Interop;
-using EvolveOS_Optimizer.Core.Enums;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace EvolveOS_Optimizer

@@ -1,11 +1,11 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml.Documents;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Documents;
 
 namespace EvolveOS_Optimizer.Dialogs;
 

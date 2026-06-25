@@ -7,15 +7,13 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
-using EvolveOS_Optimizer.Core.Enums;
-using static EvolveOS_Optimizer.Core.Structs.Windows;
 
 namespace EvolveOS_Optimizer.Pages;
 

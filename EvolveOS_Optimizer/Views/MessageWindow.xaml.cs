@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Text.RegularExpressions;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
@@ -12,7 +13,6 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Input;
 using WinRT;
 using WinRT.Interop;
-using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Views
 {

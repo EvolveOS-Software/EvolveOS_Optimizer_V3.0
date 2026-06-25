@@ -1,14 +1,13 @@
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
-using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 using Windows.System;
-using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Utilities.Controls
 {

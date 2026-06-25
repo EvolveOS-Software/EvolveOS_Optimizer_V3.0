@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using CommunityToolkit.Mvvm.Messaging;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Dialogs;
@@ -17,9 +18,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Input;
 using Vanara.PInvoke;
 using WinRT.Interop;
-using EvolveOS_Optimizer.Core.Enums;
 using static Vanara.PInvoke.AdvApi32;
-using Microsoft.UI;
 
 namespace EvolveOS_Optimizer.Pages
 {

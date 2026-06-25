@@ -8,7 +8,6 @@ using System.Security.Principal;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Win32.SafeHandles;
 using Vanara.PInvoke;
 using static Vanara.PInvoke.AdvApi32;

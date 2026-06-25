@@ -33,7 +33,7 @@ public class ComboBoxResolver(
     public async Task<object?> ResolveCurrentValueAsync(SettingDefinition setting, Dictionary<string, object?>? existingRawValues = null)
     {
         var rawValues = await GetRawValues(setting, existingRawValues).ConfigureAwait(false);
-        
+
         if (setting.InputType == InputType.Selection && setting.ComboBox?.Options != null)
         {
             return ResolveRawValuesToIndex(setting, rawValues);

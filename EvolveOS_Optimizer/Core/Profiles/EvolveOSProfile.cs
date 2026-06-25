@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace EvolveOS_Optimizer.Core.Model.Profiles;

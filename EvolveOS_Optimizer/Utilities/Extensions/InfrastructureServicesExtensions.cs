@@ -1,12 +1,12 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using EvolveOS_Optimizer.Core.EventHandlers;
 using EvolveOS_Optimizer.Core.Events;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Utilities.Services;
-using EvolveOS_Optimizer.Core.EventHandlers;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace EvolveOS_Optimizer.Utilities.Extensions;
 

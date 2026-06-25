@@ -1,14 +1,14 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml.Input;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Data;
-using EvolveOS_Optimizer.Utilities.Helpers;
+using Microsoft.UI.Xaml.Input;
 
 namespace EvolveOS_Optimizer.Core.Controls;
 

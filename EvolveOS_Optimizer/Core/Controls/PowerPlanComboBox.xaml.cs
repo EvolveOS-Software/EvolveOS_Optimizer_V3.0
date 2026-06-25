@@ -3,11 +3,11 @@
 
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using EvolveOS_Optimizer.Core.Model;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Shapes;
-using EvolveOS_Optimizer.Core.Model;
 using ComboBoxDisplayOption = EvolveOS_Optimizer.Core.Interfaces.ComboBoxDisplayOption;
 
 namespace EvolveOS_Optimizer.Core.Controls;

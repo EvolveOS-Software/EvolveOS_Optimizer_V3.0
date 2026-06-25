@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {

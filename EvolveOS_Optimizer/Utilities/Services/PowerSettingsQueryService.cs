@@ -1,12 +1,11 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System.Runtime.InteropServices;
 using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Native;
-using EvolveOS_Optimizer.Utilities.Controls;
-using System.Runtime.InteropServices;
 
 namespace EvolveOS_Optimizer.Utilities.Services;
 

@@ -10,7 +10,6 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Input;
-using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages
 {

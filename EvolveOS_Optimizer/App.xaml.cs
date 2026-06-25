@@ -2,11 +2,10 @@ using System.IO;
 using System.Security.Principal;
 using System.Threading;
 using CommunityToolkit.Mvvm.Messaging;
-using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Core.Constants;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -19,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Dispatching;
 using Microsoft.Windows.AppNotifications;
-using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer
 {

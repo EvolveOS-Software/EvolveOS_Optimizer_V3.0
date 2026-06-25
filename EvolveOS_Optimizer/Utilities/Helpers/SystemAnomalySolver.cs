@@ -92,7 +92,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         if (!Win32Helper.EmptyWorkingSet(hProcess))
                         {
                             int error = Marshal.GetLastWin32Error();
-                            if (error != 5 && error != 6) 
+                            if (error != 5 && error != 6)
                             {
                                 Debug.WriteLine($"{pName}: Win32 Error {error} during working set trim.");
                             }

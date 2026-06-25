@@ -2,21 +2,21 @@
 // Licensed under the MIT License.
 
 using System.ComponentModel;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml.Automation;
 using EvolveOS_Optimizer.Core.Constants;
 using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Events;
 using EvolveOS_Optimizer.Core.Interfaces;
-using EvolveOS_Optimizer.Utilities.Helpers;
-using ILocalizationService = EvolveOS_Optimizer.Core.Interfaces.ILocalizationService;
-using IUserPreferencesService = EvolveOS_Optimizer.Core.Interfaces.IUserPreferencesService;
-using IBulkSettingsActionService = EvolveOS_Optimizer.Core.Interfaces.IBulkSettingsActionService;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Core.WinOptimize.Helpers;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Media.Animation;
+using IBulkSettingsActionService = EvolveOS_Optimizer.Core.Interfaces.IBulkSettingsActionService;
+using ILocalizationService = EvolveOS_Optimizer.Core.Interfaces.ILocalizationService;
+using IUserPreferencesService = EvolveOS_Optimizer.Core.Interfaces.IUserPreferencesService;
 
 namespace EvolveOS_Optimizer.Pages;
 

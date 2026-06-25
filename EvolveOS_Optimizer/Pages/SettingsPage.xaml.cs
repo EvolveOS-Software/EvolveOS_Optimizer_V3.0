@@ -10,6 +10,7 @@ using System.Management;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
@@ -23,7 +24,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Storage;
 using WinRT.Interop;
-using EvolveOS_Optimizer.Core.Enums;
 using static EvolveOS_Optimizer.Utilities.Controls.PathLocator;
 using static EvolveOS_Optimizer.Utilities.Managers.NotificationManager;
 

@@ -1,8 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Core.ViewModel;
-
 namespace EvolveOS_Optimizer.Core.TemplateSelectors;
 
 public class BuilderCategoryHeader

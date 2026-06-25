@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using EvolveOS_Optimizer.Core;
+using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.Settings;
@@ -16,7 +17,6 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -83,7 +83,8 @@ namespace EvolveOS_Optimizer.Pages
             {
                 if (e.Contains("ApiKey") || e == "ActiveAiProvider")
                 {
-                    this.DispatcherQueue.TryEnqueue(() => {
+                    this.DispatcherQueue.TryEnqueue(() =>
+                    {
                         RefreshAiStatus();
                     });
                 }

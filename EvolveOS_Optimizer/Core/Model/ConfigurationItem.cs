@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Text.Json.Serialization;
-using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Converters;
+using EvolveOS_Optimizer.Core.Enums;
 
 namespace EvolveOS_Optimizer.Core.Model;
 
