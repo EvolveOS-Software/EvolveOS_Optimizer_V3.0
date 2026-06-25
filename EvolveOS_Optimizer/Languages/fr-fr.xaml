@@ -4773,9 +4773,9 @@
     <sys:String x:Key="Setting_PointInTimeRestore_State_Name">Restauration ponctuelle</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_State_Description">Activez la protection par clichés instantanés de volume pour les fichiers système et utilisateur. Cela vous permet d'annuler les modifications après une erreur de mise à jour critique.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Name">Fréquence des points de restauration</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">À quelle fréquence Windows crée des sauvegardes instantanées automatiques (Enterprise/Education uniquement).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">À quelle fréquence Windows crée des sauvegardes instantanées automatiques.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Retention_Name">Rétention des snapshots</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Durée pendant laquelle Windows conserve les snapshots automatiques avant de les supprimer pour économiser de l'espace (Enterprise/Education uniquement).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Durée pendant laquelle Windows conserve les snapshots automatiques avant de les supprimer pour économiser de l'espace.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Name">Limite de stockage maximale (%)</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Description">Pourcentage maximal de l'espace disque que la protection du système est autorisée à consommer avant de supprimer les anciennes sauvegardes.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_0">Toutes les 4 heures</sys:String>

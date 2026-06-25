@@ -4874,9 +4874,9 @@
     <sys:String x:Key="Setting_PointInTimeRestore_State_Name">Point-in-Time Restore</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_State_Description">Enable Volume Shadow Copy protection for system and user files. This allows you to roll back changes after a critical update failure.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Name">Restore Point Frequency</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">How often Windows creates automatic snapshot backups (Enterprise/Education only).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">How often Windows creates automatic snapshot backups.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Retention_Name">Snapshot Retention</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">How long Windows will keep automatic snapshots before deleting them to save space (Enterprise/Education only).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">How long Windows will keep automatic snapshots before deleting them to save space.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Name">Max Storage Limit (%)</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Description">The maximum percentage of your disk space that System Protection is allowed to consume before deleting old backups.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_0">Every 4 Hours</sys:String>

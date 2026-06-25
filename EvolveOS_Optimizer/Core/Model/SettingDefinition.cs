@@ -37,6 +37,9 @@ public sealed record SettingDefinition : BaseDefinition, ISettingItem
     #region State Configuration
     public bool RequiresAdvancedUnlock { get; init; } = false;
     public bool IsSubjectivePreference { get; init; } = false;
+
+    public bool ExcludeFromProfiles { get; init; } = false;
+
     public bool? RecommendedToggleState { get; init; }
     public bool? DefaultToggleState { get; init; }
     public string? LocalizationId { get; init; }

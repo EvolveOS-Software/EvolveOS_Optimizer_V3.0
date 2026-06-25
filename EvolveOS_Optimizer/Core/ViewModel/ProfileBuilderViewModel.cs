@@ -165,7 +165,8 @@ public partial class ProfileBuilderViewModel : ObservableObject
                 foreach (var def in group)
                 {
                     var category = new BuilderFeatureCategory(def.Id, def.Name, def.IconKey);
-                    var settings = _settingsRegistry.GetFilteredSettings(def.Id);
+                    var settings = _settingsRegistry.GetFilteredSettings(def.Id)
+                                .Where(s => !s.ExcludeFromProfiles);
 
                     foreach (var setting in settings)
                     {

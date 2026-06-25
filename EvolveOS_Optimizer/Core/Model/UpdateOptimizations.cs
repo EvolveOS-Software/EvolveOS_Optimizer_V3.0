@@ -901,6 +901,7 @@ public static class UpdateOptimizations
                     IsWindows11Only = true,
                     MinimumBuildNumber = 26200,
                     MinimumBuildRevision = 8737,
+                    ExcludeFromProfiles = true,
                     IsSubjectivePreference = true
                 },
             },

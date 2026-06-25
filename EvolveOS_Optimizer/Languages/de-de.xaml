@@ -4763,9 +4763,9 @@
     <sys:String x:Key="Setting_PointInTimeRestore_State_Name">Point-in-Time Wiederherstellung</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_State_Description">Aktivieren Sie den Volumeschattenkopie-Schutz für System- und Benutzerdateien. Dies ermöglicht es, Änderungen nach einem kritischen Update-Fehler rückgängig zu machen.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Name">Wiederherstellungspunkt-Frequenz</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">Wie oft Windows automatische Snapshot-Backups erstellt (nur Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">Wie oft Windows automatische Snapshot-Backups erstellt.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Retention_Name">Snapshot-Aufbewahrung</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Wie lange Windows automatische Snapshots behält, bevor sie zur Platzersparnis gelöscht werden (nur Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Wie lange Windows automatische Snapshots behält, bevor sie zur Platzersparnis gelöscht werden.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Name">Maximale Speicherbegrenzung (%)</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Description">Der maximale Prozentsatz Ihres Festplattenspeichers, den die Systemwiederherstellung belegen darf, bevor alte Sicherungen gelöscht werden.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_0">Alle 4 Stunden</sys:String>

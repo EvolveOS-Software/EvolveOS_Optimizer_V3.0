@@ -4787,9 +4787,9 @@
     <sys:String x:Key="Setting_PointInTimeRestore_State_Name">Point-in-Time Herstel</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_State_Description">Schakel Volume Shadow Copy-beveiliging in voor systeem- en gebruikersbestanden. Hiermee kun je wijzigingen terugdraaien na een kritieke updatefout.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Name">Frequentie Herstelpunten</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">Hoe vaak Windows automatische snapshot-back-ups maakt (alleen Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Description">Hoe vaak Windows automatische snapshot-back-ups maakt.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Retention_Name">Snapshot-retentie</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Hoe lang Windows automatische snapshots bewaart voordat ze worden verwijderd om ruimte te besparen (alleen Enterprise/Education).</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Retention_Description">Hoe lang Windows automatische snapshots bewaart voordat ze worden verwijderd om ruimte te besparen.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Name">Maximale opslaglimiet (%)</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_MaxStorage_Description">Het maximale percentage van uw schijfruimte dat Systeembeveiliging mag verbruiken voordat oude back-ups worden verwijderd.</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Frequency_Option_0">Elke 4 uur</sys:String>
