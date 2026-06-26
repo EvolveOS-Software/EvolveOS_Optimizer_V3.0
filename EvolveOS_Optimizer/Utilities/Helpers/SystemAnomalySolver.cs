@@ -438,12 +438,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
-        private void ExecuteNuclearKill(int targetPid)
+        private async void ExecuteNuclearKill(int targetPid)
         {
             try
             {
-                TrustedInstaller.StartTrustedInstallerService();
-                Thread.Sleep(500);
+                await TrustedInstaller.StartTrustedInstallerServiceAsync();
 
                 int tiPid = CommandExecutor.PID;
                 if (tiPid > 0)

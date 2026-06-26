@@ -1,12 +1,15 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using EvolveOS_Optimizer.Core.Enums;
-using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     internal sealed class TrustedInstaller
     {
+        #region P/Invoke Definitions
+
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool CloseHandle(IntPtr hObject);
 
@@ -49,8 +52,14 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool InitializeProcThreadAttributeList(IntPtr lpAttributeList, int dwAttributeCount, int dwFlags, ref IntPtr lpSize);
 
-        private const uint MAXIMUM_ALLOWED = 0x02000000;
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern void DeleteProcThreadAttributeList(IntPtr lpAttributeList);
 
+        #endregion
+
+        #region Constants & Structs
+
+        private const uint MAXIMUM_ALLOWED = 0x02000000;
         private const uint SC_MANAGER_CONNECT = 0x0001;
         private const uint SC_MANAGER_ENUMERATE_SERVICE = 0x0004;
         private const uint SC_MANAGER_QUERY_LOCK_STATUS = 0x0010;
@@ -61,7 +70,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         private const int PROC_THREAD_ATTRIBUTE_PARENT_PROCESS = 0x00020000;
         private const uint EXTENDED_STARTUPINFO_PRESENT = 0x00080000;
-        private const uint CREATE_NO_WINDOW = 0x08000000;
 
         [StructLayout(LayoutKind.Sequential)]
         private struct SECURITY_ATTRIBUTES
@@ -150,48 +158,44 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             Synchronize = 0x00100000
         }
 
+        #endregion
+
+        #region Core Methods
+
         private static bool ImpersonateSystem()
         {
             IntPtr tokenHandle = IntPtr.Zero;
-            Process[] processlist = Process.GetProcesses();
+            Process[]? winlogonList = null;
 
             try
             {
-                foreach (Process theProcess in processlist)
-                {
-                    try
-                    {
-                        if (theProcess.ProcessName.Equals("winlogon", StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (OpenProcessToken(theProcess.Handle, MAXIMUM_ALLOWED, out tokenHandle))
-                            {
-                                bool success = ImpersonateLoggedOnUser(tokenHandle);
-                                CloseHandle(tokenHandle);
-                                return success;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Error accessing process {theProcess.ProcessName}: {ex.Message}");
-                    }
-                    finally
-                    {
-                        theProcess.Dispose();
-                    }
-                }
+                winlogonList = Process.GetProcessesByName("winlogon");
+                if (winlogonList.Length == 0) return false;
+
+                Process winlogon = winlogonList[0];
+
+                if (!OpenProcessToken(winlogon.Handle, MAXIMUM_ALLOWED, out tokenHandle))
+                    return false;
+
+                return ImpersonateLoggedOnUser(tokenHandle);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error impersonating system: {ex.Message}");
+                return false;
             }
             finally
             {
-                foreach (Process p in processlist)
+                if (winlogonList != null)
                 {
-                    p.Dispose();
+                    foreach (Process p in winlogonList) p.Dispose();
                 }
+
+                if (tokenHandle != IntPtr.Zero) CloseHandle(tokenHandle);
             }
-            return false;
         }
 
-        internal static async void StartTrustedInstallerService()
+        internal static async System.Threading.Tasks.Task StartTrustedInstallerServiceAsync()
         {
             try
             {
@@ -199,9 +203,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 IntPtr hSCManager = OpenSCManager(null, ServicesActiveDatabase, SC_MANAGER_CONNECT | SC_MANAGER_ENUMERATE_SERVICE | SC_MANAGER_QUERY_LOCK_STATUS);
                 if (hSCManager == IntPtr.Zero)
-                {
                     throw new Win32Exception("OpenSCManager failed: " + Marshal.GetLastWin32Error());
-                }
 
                 IntPtr hService = OpenService(hSCManager, "TrustedInstaller", SERVICE_QUERY_STATUS | SERVICE_START);
                 if (hService == IntPtr.Zero)
@@ -216,18 +218,17 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 while (QueryServiceStatusEx(hService, SC_STATUS_PROCESS_INFO, ref statusBuffer, (uint)Marshal.SizeOf(statusBuffer), out _))
                 {
-                    if (statusBuffer.dwCurrentState == (uint)ServiceState.Running)
+                    if (statusBuffer.dwCurrentState == (uint)System.ServiceProcess.ServiceControllerStatus.Running)
                     {
                         CommandExecutor.PID = (int)statusBuffer.dwProcessId;
                         break;
                     }
 
-                    if (statusBuffer.dwCurrentState == (uint)ServiceState.Stopped)
+                    if (statusBuffer.dwCurrentState == (uint)System.ServiceProcess.ServiceControllerStatus.Stopped)
                     {
                         if (!StartService(hService, 0, IntPtr.Zero))
                         {
                             int err = Marshal.GetLastWin32Error();
-
                             if (err != 1056)
                             {
                                 CloseServiceHandle(hService);
@@ -239,21 +240,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                     if (watch.ElapsedMilliseconds > 20000)
                     {
-                        break;
+                        throw new TimeoutException("TrustedInstaller service failed to start within 20 seconds.");
                     }
 
                     int waitTime = (int)statusBuffer.dwWaitHint / 10;
-                    if (waitTime < 500)
-                    {
-                        waitTime = 500;
-                    }
-
-                    if (waitTime > 5000)
-                    {
-                        waitTime = 5000;
-                    }
-
-                    System.Threading.Thread.Sleep(waitTime);
+                    waitTime = Math.Clamp(waitTime, 500, 5000);
+                    await System.Threading.Tasks.Task.Delay(waitTime);
                 }
 
                 CloseServiceHandle(hService);
@@ -261,16 +253,14 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
             catch (Exception ex)
             {
-                ErrorLogging.LogDebug(ex);
+                Debug.WriteLine(ex.ToString());
+                throw;
             }
         }
 
         internal static int CreateProcessAsTrustedInstaller(int parentProcessId, string binaryPath, bool showWindow = false)
         {
-            if (!ImpersonateSystem())
-            {
-                return 0;
-            }
+            if (!ImpersonateSystem()) return 0;
 
             var siEx = new STARTUPINFOEX();
             siEx.StartupInfo.cb = Marshal.SizeOf(typeof(STARTUPINFOEX));
@@ -281,16 +271,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             try
             {
-                if (!InitializeProcThreadAttributeList(siEx.lpAttributeList, 1, 0, ref lpSize))
-                {
-                    return 0;
-                }
+                if (!InitializeProcThreadAttributeList(siEx.lpAttributeList, 1, 0, ref lpSize)) return 0;
 
                 IntPtr parentHandle = OpenProcess(ProcessAccessFlags.All, false, parentProcessId);
-                if (parentHandle == IntPtr.Zero)
-                {
-                    return 0;
-                }
+                if (parentHandle == IntPtr.Zero) return 0;
 
                 try
                 {
@@ -312,15 +296,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         ps.nLength = Marshal.SizeOf(ps);
                         ts.nLength = Marshal.SizeOf(ts);
 
-                        STARTUPINFO startInfo = new STARTUPINFO
-                        {
-                            cb = Marshal.SizeOf(typeof(STARTUPINFO)),
-                            dwFlags = 0x00000001,
-                            wShowWindow = showWindow ? (short)5 : (short)0
-                        };
-
-                        siEx.StartupInfo = startInfo;
-                        siEx.StartupInfo.cb = Marshal.SizeOf(typeof(STARTUPINFOEX));
+                        siEx.StartupInfo.dwFlags = 0x00000001;
+                        siEx.StartupInfo.wShowWindow = showWindow ? (short)5 : (short)0;
 
                         if (CreateProcess(
                             null,
@@ -336,15 +313,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         {
                             int childPid = (int)pInfo.dwProcessId;
 
-                            if (pInfo.hProcess != IntPtr.Zero)
-                            {
-                                CloseHandle(pInfo.hProcess);
-                            }
-
-                            if (pInfo.hThread != IntPtr.Zero)
-                            {
-                                CloseHandle(pInfo.hThread);
-                            }
+                            if (pInfo.hProcess != IntPtr.Zero) CloseHandle(pInfo.hProcess);
+                            if (pInfo.hThread != IntPtr.Zero) CloseHandle(pInfo.hThread);
 
                             return childPid;
                         }
@@ -356,26 +326,25 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 }
                 finally
                 {
-                    if (parentHandle != IntPtr.Zero)
-                    {
-                        CloseHandle(parentHandle);
-                    }
+                    if (parentHandle != IntPtr.Zero) CloseHandle(parentHandle);
                 }
             }
             catch (Exception ex)
             {
-                ErrorLogging.LogDebug(ex);
+                Debug.WriteLine(ex.ToString());
             }
             finally
             {
                 if (siEx.lpAttributeList != IntPtr.Zero)
                 {
-                    Win32Helper.DeleteProcThreadAttributeList(siEx.lpAttributeList);
+                    DeleteProcThreadAttributeList(siEx.lpAttributeList);
                     Marshal.FreeHGlobal(siEx.lpAttributeList);
                 }
             }
 
             return 0;
         }
+
+        #endregion
     }
 }
