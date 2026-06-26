@@ -11,7 +11,6 @@ using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
-using EvolveOS_Optimizer.Utilities.Tweaks.DefenderManager;
 using EvolveOS_Optimizer.Views;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
@@ -149,23 +148,6 @@ namespace EvolveOS_Optimizer
             {
                 ElevateToAdmin();
                 return;
-            }
-
-            if (CheckIfSafebootIsActive())
-            {
-                string title = ResourceString.GetString("title_recovery");
-                string message = ResourceString.GetString("msg_safemode_detected");
-
-                if (string.IsNullOrEmpty(title)) title = "Recovery Mode";
-                if (string.IsNullOrEmpty(message)) message = "Safe Mode detected! Would you like to attempt a recovery?";
-
-                int result = Win32Helper.MessageBox(IntPtr.Zero, message, title, Win32Helper.MB_YESNO | Win32Helper.MB_ICONWARNING | Win32Helper.MB_DEFBUTTON1);
-
-                if (result == Win32Helper.IDYES)
-                {
-                    _ = WindowsDefender.Recovery();
-                    return;
-                }
             }
 
             SetPriority(LocalMachineSettingsEngine.RunOnPriority);

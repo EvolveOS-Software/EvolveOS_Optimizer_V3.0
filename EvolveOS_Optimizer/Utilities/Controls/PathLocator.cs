@@ -125,10 +125,6 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             internal static readonly string SystemDrive = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)) ?? @"C:\";
 
-            internal static readonly string DefenderBackup = Path.Combine(Environment.SystemDirectory ?? "", "Config", "WDBackup_EvolveOS_Optimizer");
-
-            internal static readonly string WindowsDefender = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) ?? "", "Windows Defender");
-
             internal static readonly string WindowsOld = Path.Combine(SystemDrive, "Windows.old");
 
             internal static readonly string Tasks = Path.Combine(Environment.SystemDirectory ?? "", "Tasks");
@@ -360,43 +356,6 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 return string.Empty;
             }
 
-            internal static (string Normal, string Block) FindWindowsUpdateExe(string normalName, string blockName)
-            {
-                static string TryFind(string name)
-                {
-                    if (!string.IsNullOrWhiteSpace(name))
-                    {
-                        try
-                        {
-                            string path = Path.Combine(Folders.SystemDrive, "Windows", "UUS", "amd64", name);
-
-                            if (File.Exists(path)) return path;
-
-                            path = Path.Combine(Environment.SystemDirectory ?? "", name);
-                            return File.Exists(path) ? path : string.Empty;
-                        }
-                        catch { return string.Empty; }
-                    }
-                    return string.Empty;
-                }
-
-                string normalPath = TryFind(normalName);
-                if (!string.IsNullOrEmpty(normalPath))
-                {
-                    string? dir = Path.GetDirectoryName(normalPath);
-                    return (normalPath, Path.Combine(dir ?? "", blockName));
-                }
-
-                string blockPath = TryFind(blockName);
-                if (!string.IsNullOrEmpty(blockPath))
-                {
-                    string? dir = Path.GetDirectoryName(blockPath);
-                    return (Path.Combine(dir ?? "", normalName), blockPath);
-                }
-
-                return (string.Empty, string.Empty);
-            }
-
             internal static readonly string CommandShell = FindExecutablePath("cmd.exe");
 
             internal static readonly string PowerShell = FindExecutablePath("pwsh.exe", "powershell.exe");
@@ -409,29 +368,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             internal static readonly string OneDrive = FindExecutablePath("onedrivesetup.exe");
 
-            internal static readonly string PsExec = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PsExec.exe");
-
-            internal static (string Normal, string Block) UsoClient =>
-            (
-                Path.Combine(Environment.SystemDirectory, "usoclient.exe"),
-                Path.Combine(Environment.SystemDirectory, "BlockUOrchestrator-EvolveOS_Optimizer.exe")
-            );
-
             internal static readonly string GoogleChrome = FindExecutablePath("chrome.exe");
-
-            internal static (string Normal, string Block) WorkerCore => FindWindowsUpdateExe("MoUsoCoreWorker.exe", "BlockUpdate-EvolveOS_Optimizer.exe");
-
-            internal static (string Normal, string Block) WuauClient => FindWindowsUpdateExe("wuaucltcore.exe", "BlockUpdateCore-EvolveOS_Optimizer.exe");
-
-            internal static (string Normal, string Block) WaaSMedic => FindWindowsUpdateExe("WaaSMedicAgent.exe", "BlockUpdateAgent-EvolveOS_Optimizer.exe");
-
-            internal static (string Normal, string Block) MoNotificationUx => FindWindowsUpdateExe("MoNotificationUx.exe", "BlockUpdateNotify-EvolveOS_Optimizer.exe");
-
-            internal static readonly string MpCmdRun = Path.Combine(Folders.SystemDrive, "Program Files", "Windows Defender", "MpCmdRun.exe");
-
-            internal static readonly string NSudo = Path.Combine(Folders.DefenderBackup, "NSudoLC.exe");
-
-            internal static readonly string DisablingWD = Path.Combine(Folders.DefenderBackup, "DisablingWD.exe");
         }
         #endregion
 
@@ -455,10 +392,6 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             internal static readonly string BlankIcon = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows) ?? "", "Blank.ico");
 
             internal static readonly string ErrorLog = Path.Combine(BaseDir, "EvolveOS_Optimizer_Error.log");
-
-            internal static readonly string BackupJsonWD = Path.Combine(Folders.DefenderBackup, "BackupData.json");
-
-            internal static readonly string BackupAclWD = Path.Combine(Folders.DefenderBackup, "AclBackup.acl");
 
             internal static readonly string Winapp2Ini = Path.Combine(BaseDir, "Assets", "Winapp2.ini");
         }
