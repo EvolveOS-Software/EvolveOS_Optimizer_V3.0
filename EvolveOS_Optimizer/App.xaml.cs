@@ -157,8 +157,6 @@ namespace EvolveOS_Optimizer
             СheckingGlobalParameters.Initialize();
             App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
 
-            _ = DiagnosticsPageViewModel.Current;
-
             SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
 
             if (IsStartedHidden)

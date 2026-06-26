@@ -93,26 +93,28 @@ namespace EvolveOS_Optimizer.Views
         #region Startup Checks
         private void CheckSystemUptime()
         {
-            try
+            Task.Run(() =>
             {
-                double totalUptimeMinutes = TimeSpan.FromMilliseconds(Environment.TickCount & Int32.MaxValue).TotalMinutes;
-                _isFreshBoot = totalUptimeMinutes < 5;
-                bool isNewSession = false;
-
-                var shellProcess = Process.GetProcessesByName("explorer").FirstOrDefault();
-                if (shellProcess != null)
+                try
                 {
-                    isNewSession = (DateTime.Now - shellProcess.StartTime).TotalMinutes < 2;
+                    double totalUptimeMinutes = TimeSpan.FromMilliseconds(Environment.TickCount & Int32.MaxValue).TotalMinutes;
+                    _isFreshBoot = totalUptimeMinutes < 5;
+                    bool isNewSession = false;
+
+                    var shellProcess = Process.GetProcessesByName("explorer").FirstOrDefault();
+                    if (shellProcess != null)
+                    {
+                        isNewSession = (DateTime.Now - shellProcess.StartTime).TotalMinutes < 2;
+                    }
+
+                    _isSystemBusy = _isFreshBoot || isNewSession;
+                    Debug.WriteLine($"[Startup] Boot={_isFreshBoot}, Session={isNewSession}, Busy={_isSystemBusy}");
                 }
-
-                _isSystemBusy = _isFreshBoot || isNewSession;
-
-                Debug.WriteLine($"[Startup] Boot={_isFreshBoot}, Session={isNewSession}, Busy={_isSystemBusy}");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[Startup] Uptime Check Failed: {ex.Message}");
-            }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Startup] Uptime Check Failed: {ex.Message}");
+                }
+            });
         }
         #endregion
 
@@ -324,20 +326,17 @@ namespace EvolveOS_Optimizer.Views
                 await Task.Delay(5000, token);
             }
 
-            bool isEngineInstalled = await EnsureDatabaseEngineInstalledAsync(token);
-            if (!isEngineInstalled)
+            Task<bool> dbTask = Task.Run(async () =>
             {
-                return;
-            }
+                bool isEngineInstalled = await EnsureDatabaseEngineInstalledAsync(token);
+                if (!isEngineInstalled) return false;
 
-            bool dbBootSuccessful = await PerformDatabaseBootSequenceAsync(token);
+                return await PerformDatabaseBootSequenceAsync(token);
+            }, token);
 
-            if (!dbBootSuccessful)
-            {
-                return;
-            }
+            var diagnosticsInstance = DiagnosticsPageViewModel.Current;
 
-            await Task.Run(async () =>
+            Task telemetryTask = Task.Run(async () =>
             {
                 try
                 {
@@ -348,7 +347,6 @@ namespace EvolveOS_Optimizer.Views
 
                     UpdateStatusDirect(ResourceString.GetString("status_hardware_gather") ?? "Interrogating hardware and telemetry...");
 
-                    var diagnosticsInstance = DiagnosticsPageViewModel.Current;
                     Task diagnosticsScanTask = diagnosticsInstance.ExecuteFullScanAsync();
 
                     Report(20);
@@ -382,87 +380,104 @@ namespace EvolveOS_Optimizer.Views
                     Report(90);
                     await _systemDiagnostics.GetTotalProcessorUsage();
                     await _systemDiagnostics.GetPhysicalAvailableMemory();
-
-                    Report(100);
-                    await Task.Delay(1000, token);
-                    await Task.WhenAny(weatherTask, Task.Delay(1500, token));
-
-                    if (token.IsCancellationRequested) return;
-
-                    string? sessionUser = string.Empty;
-                    bool isSessionValid = AuthSessionManager.IsSessionValid(out sessionUser, out _);
-
-                    if (_isAutoLoginSuccessful || isSessionValid)
-                    {
-                        string? targetUser = !string.IsNullOrEmpty(UserSession.Username)
-                            ? UserSession.Username!
-                            : sessionUser;
-
-                        if (string.IsNullOrEmpty(targetUser))
-                        {
-                            targetUser = "DefaultUser";
-                        }
-
-                        UserSession.Username = targetUser;
-
-                        try
-                        {
-                            var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
-
-                            var loginData = await userDataAccess.GetPasswordAndImageAsync(targetUser);
-
-                            if (loginData.ProfileImageBytes != null && loginData.ProfileImageBytes.Length > 0)
-                            {
-                                var tcs = new TaskCompletionSource<bool>();
-                                _dispatcherQueue.TryEnqueue(async () =>
-                                {
-                                    try
-                                    {
-                                        UserSession.ProfileImage = await ImageHelper.LoadFromBytesAsync(loginData.ProfileImageBytes);
-                                    }
-                                    catch { }
-                                    finally
-                                    {
-                                        tcs.SetResult(true);
-                                    }
-                                });
-                                await tcs.Task;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"[AutoLogin] Failed to load profile image: {ex.Message}");
-                        }
-                    }
-
-                    _dispatcherQueue.TryEnqueue(() =>
-                    {
-                        if (GlobalDiagnosticsVM == null)
-                        {
-                            GlobalDiagnosticsVM = DiagnosticsPageViewModel.Current;
-                        }
-
-                        FinalizeTransition();
-
-                        if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
-                        {
-                            if (Application.Current is App && App.MainWindow is MainWindow mainWin)
-                            {
-                                mainWin.DispatcherQueue.TryEnqueue(async () =>
-                                {
-                                    await Task.Delay(500);
-                                    mainWin.AnimateUpdateBanner(true);
-                                });
-                            }
-                        }
-                    });
                 }
                 catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
-                    ErrorLogging.LogWritingFile(ex, "LoadingProcessing_Fail");
+                    ErrorLogging.LogWritingFile(ex, "TelemetryGathering_Fail");
                 }
             }, token);
+
+            await Task.WhenAll(dbTask, telemetryTask);
+
+            if (!await dbTask)
+            {
+                return;
+            }
+
+            if (token.IsCancellationRequested) return;
+
+            try
+            {
+                Report(100);
+                await Task.Delay(500, token);
+                await Task.WhenAny(weatherTask, Task.Delay(1500, token));
+
+                if (token.IsCancellationRequested) return;
+
+                string? sessionUser = string.Empty;
+                bool isSessionValid = AuthSessionManager.IsSessionValid(out sessionUser, out _);
+
+                if (_isAutoLoginSuccessful || isSessionValid)
+                {
+                    string? targetUser = !string.IsNullOrEmpty(UserSession.Username)
+                        ? UserSession.Username!
+                        : sessionUser;
+
+                    if (string.IsNullOrEmpty(targetUser))
+                    {
+                        targetUser = "DefaultUser";
+                    }
+
+                    UserSession.Username = targetUser;
+
+                    try
+                    {
+                        var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
+
+                        var loginData = await userDataAccess.GetPasswordAndImageAsync(targetUser);
+
+                        if (loginData.ProfileImageBytes != null && loginData.ProfileImageBytes.Length > 0)
+                        {
+                            var tcs = new TaskCompletionSource<bool>();
+                            _dispatcherQueue.TryEnqueue(async () =>
+                            {
+                                try
+                                {
+                                    UserSession.ProfileImage = await ImageHelper.LoadFromBytesAsync(loginData.ProfileImageBytes);
+                                }
+                                catch { }
+                                finally
+                                {
+                                    tcs.SetResult(true);
+                                }
+                            });
+                            await tcs.Task;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[AutoLogin] Failed to load profile image: {ex.Message}");
+                    }
+                }
+
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    if (GlobalDiagnosticsVM == null)
+                    {
+                        GlobalDiagnosticsVM = DiagnosticsPageViewModel.Current;
+                    }
+
+                    FinalizeTransition();
+
+                    if (SystemDiagnostics.IsNeedUpdate && SettingsEngine.IsUpdateCheckRequired)
+                    {
+                        if (Application.Current is App && App.MainWindow is MainWindow mainWin)
+                        {
+                            mainWin.DispatcherQueue.TryEnqueue(async () =>
+                            {
+                                await Task.Delay(500);
+                                mainWin.AnimateUpdateBanner(true);
+                            });
+                        }
+                    }
+                });
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogWritingFile(ex, "LoadingProcessing_Transition_Fail");
+            }
         }
         #endregion
 
