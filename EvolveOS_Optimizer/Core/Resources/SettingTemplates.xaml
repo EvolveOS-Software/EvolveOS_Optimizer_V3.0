@@ -114,6 +114,22 @@
         </Style.Setters>
     </Style>
 
+    <DataTemplate x:Key="SnapshotItemTemplate" x:DataType="viewModels:SnapshotItemViewModel">
+        <controls:SettingsCard Header="{x:Bind DisplayText}" 
+                               HorizontalAlignment="Stretch" 
+                               Padding="16,12"
+                               IsClickEnabled="False">
+            <Button Command="{x:Bind DeleteCommand}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ToolTipService.ToolTip="Delete this restore point"
+                    CornerRadius="4"
+                    Padding="8">
+                <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+            </Button>
+        </controls:SettingsCard>
+    </DataTemplate>
+
     <DataTemplate x:Key="SettingItemTemplate" x:DataType="viewModels:SettingItemViewModel">
         <StackPanel Visibility="{x:Bind IsVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Margin="0,0,0,2">
@@ -1016,55 +1032,43 @@
                                 IsEnabled="{x:Bind EffectiveIsEnabled, Mode=OneWay}">
 
                                 <controls:SettingsExpander.Items>
-                                    <StackPanel HorizontalAlignment="Stretch">
 
-                                        <TextBlock Visibility="{x:Bind HasNoSnapshots, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                   Text="No snapshots available."
-                                                   FontStyle="Italic"
-                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                   HorizontalAlignment="Left"
-                                                   Margin="0,8"/>
+                                    <controls:SettingsCard Padding="0" Margin="0" BorderThickness="0" Background="Transparent" IsClickEnabled="False">
 
-                                        <ListView Visibility="{x:Bind HasSnapshots, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                  ItemsSource="{x:Bind DynamicWmiList, Mode=OneWay}"
-                                                  SelectionMode="None"
-                                                  MaxHeight="350"
-                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                  HorizontalAlignment="Stretch">
+                                        <controls:SettingsCard.Template>
+                                            <ControlTemplate TargetType="controls:SettingsCard">
+                                                <ContentPresenter Content="{TemplateBinding Content}"
+                                                                  HorizontalAlignment="Stretch"
+                                                                  VerticalAlignment="Stretch"/>
+                                            </ControlTemplate>
+                                        </controls:SettingsCard.Template>
 
-                                            <ListView.ItemContainerStyle>
-                                                <Style TargetType="ListViewItem">
-                                                    <Setter Property="Padding" Value="0,4"/>
-                                                    <Setter Property="Margin" Value="0"/>
-                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                                </Style>
-                                            </ListView.ItemContainerStyle>
+                                        <StackPanel HorizontalAlignment="Stretch" Padding="0,0,0,12">
 
-                                            <ListView.ItemTemplate>
-                                                <DataTemplate x:DataType="viewModels:SnapshotItemViewModel">
+                                            <TextBlock Visibility="{x:Bind HasNoSnapshots, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                       Text="No snapshots available."
+                                                       FontStyle="Italic"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="16,8"/>
 
-                                                    <controls:SettingsCard Header="{x:Bind DisplayText}" 
-                                                               HorizontalAlignment="Stretch" 
-                                                               Padding="16,12"
-                                                               IsClickEnabled="False">
+                                            <ListView Visibility="{x:Bind HasSnapshots, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                      ItemsSource="{x:Bind DynamicWmiList, Mode=OneWay}"
+                                                      ItemTemplate="{StaticResource SnapshotItemTemplate}"
+                                                      SelectionMode="None"
+                                                      MaxHeight="350"
+                                                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                      HorizontalAlignment="Stretch"
+                                                      ItemContainerStyle="{StaticResource SettingsListViewItemContainerStyle}">
+                                            </ListView>
 
-                                                        <Button Command="{x:Bind DeleteCommand}"
-                                                                Background="Transparent"
-                                                                BorderThickness="0"
-                                                                ToolTipService.ToolTip="Delete this restore point"
-                                                                CornerRadius="4"
-                                                                Padding="8">
-                                                            <FontIcon Glyph="&#xE74D;" FontSize="16" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
-                                                        </Button>
+                                        </StackPanel>
 
-                                                    </controls:SettingsCard>
-                                                </DataTemplate>
-                                            </ListView.ItemTemplate>
-                                        </ListView>
-                                    </StackPanel>
+                                    </controls:SettingsCard>
+
                                 </controls:SettingsExpander.Items>
                             </controls:SettingsExpander>
-
+                            
                             <Border Visibility="{x:Bind ShowTechnicalDetailsBar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"

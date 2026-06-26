@@ -4807,12 +4807,12 @@
     <sys:String x:Key="Setting_PointInTimeRestore_Retention_Option_Custom">Aangepaste retentie</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Name">Huidige herstelpunten</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_Description">Bekijk beschikbare systeem-snapshots</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_DisplayText">Gemaakt op {0} • OS-build {1}</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_Snapshots_DisplayText">Gemaakt op {0} • OS Build {1}</sys:String>
     <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Name">Instellingen vergrendelen</sys:String>
-    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Description">Voorkomt dat Windows-updates of andere apps uw herstelvoorkeuren wijzigen.</sys:String>
+    <sys:String x:Key="Setting_PointInTimeRestore_HardLock_Description">Voorkomt dat Windows updates of andere apps uw herstelvoorkeuren wijzigen.</sys:String>
 
     <sys:String x:Key="Notification_PITR_Protected_Title">Instellingen Beveiligd</sys:String>
-    <sys:String x:Key="Notification_PITR_Protected_Message">Windows probeerde uw Point-in-Time Herstel-voorkeuren te wijzigen.\nEvolveOS heeft de wijziging met succes geblokkeerd.</sys:String>
+    <sys:String x:Key="Notification_PITR_Protected_Message">Windows probeerde uw Point-in-Time Herstel voorkeuren te wijzigen.\nEvolveOS heeft de wijziging met succes geblokkeerd.</sys:String>
 
     <sys:String x:Key="Setting_windows-pushnotifications_Name">Meldingen weergeven</sys:String>
     <sys:String x:Key="Setting_windows-pushnotifications_Description">Krijg meldingen van apps en andere afzenders in Windows</sys:String>
