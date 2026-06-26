@@ -8,14 +8,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:fluentIcons="using:FluentIcons.WinUI"
     mc:Ignorable="d" Background="Transparent">
 
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Page.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,20,0,0" Padding="4,0,28,40">
-        <StackPanel Spacing="24" Margin="4,0,0,40">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,0" Padding="4,0,20,10">
+        <StackPanel Spacing="24" Margin="0,-10,0,0">
 
             <InfoBar x:Name="DonationBanner"
                      IsOpen="True"
@@ -41,8 +42,28 @@
                 </InfoBar.Content>
             </InfoBar>
 
-            <TextBlock Text="{x:Bind GetText('Settings_Title'), Mode=OneWay, FallbackValue='Settings'}"
-                       Style="{StaticResource TitleTextBlockStyle}" FontSize="28" FontWeight="Bold" Margin="0,0,0,12"/>
+            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,0">
+                <Viewbox Width="48" Height="48" VerticalAlignment="Center">
+                    <fluentIcons:FluentIcon
+                        Icon="Settings"
+                        IconVariant="Regular"
+                        IconSize="Resizable"
+                        Foreground="{ThemeResource MyDynamicAccentBrush}"
+                        VerticalAlignment="Center"/>
+                </Viewbox>
+
+                <StackPanel VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="{x:Bind GetText('Settings_Title'), Mode=OneWay, FallbackValue='Settings'}"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               FontFamily="{ThemeResource Jura-SemiBold}"
+                               FontSize="28"/>
+
+                    <TextBlock Text="{x:Bind GetText('Settings_Description'), Mode=OneWay, FallbackValue='Manage your application preferences, behavior, and personalization.'}"
+                               FontFamily="{ThemeResource Jura}"
+                               FontSize="13"
+                               Opacity="0.6"/>
+                </StackPanel>
+            </StackPanel>
 
             <StackPanel Spacing="12">
                 <TextBlock Text="{x:Bind GetText('Settings_Appearance_Title'), Mode=OneWay}"

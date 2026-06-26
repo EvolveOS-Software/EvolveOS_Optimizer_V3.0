@@ -137,6 +137,7 @@
 
     <!-- region Settings -->
     <sys:String x:Key="Settings_Title">Settings</sys:String>
+    <sys:String x:Key="Settings_Description">Manage your application preferences, behavior, and personalization.</sys:String>
     <sys:String x:Key="Settings_Appearance_Title">Appearance</sys:String>
 
     <sys:String x:Key="Settings_Backdrop_Title">System Backdrop</sys:String>
@@ -362,7 +363,7 @@
     <sys:String x:Key="Settings_AI_SectionTitle">AI Integration</sys:String>
     <sys:String x:Key="Settings_AI_Title">AI Explanations</sys:String>
     <sys:String x:Key="Settings_AI_BadgeOptIn">opt-in</sys:String>
-    <sys:String x:Key="Settings_AI_DescPart1">Click the (···) button on any entry in the System Cleaner →</sys:String>
+    <sys:String x:Key="Settings_AI_DescPart1">Look for the explainer icon or click (···) next to any setting and select →</sys:String>
     <sys:String x:Key="Settings_AI_DescPart2">✨ Explain.</sys:String>
     <sys:String x:Key="Settings_AI_DescPart3">Powered by AI. Nothing is sent without your explicit action. Requires your own API key.</sys:String>
     <sys:String x:Key="Settings_AI_ProviderLabel">Active AI Provider</sys:String>

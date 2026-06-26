@@ -110,33 +110,34 @@
     <!-- endregion App Updates -->
 
     <!-- region Main Window -->
-    <sys:String x:Key="Nav_Home">Home</sys:String>
-    <sys:String x:Key="Nav_Security">Security</sys:String>
-    <sys:String x:Key="Nav_Utilities">Utilities</sys:String>
-    <sys:String x:Key="Nav_Privacy">Privacy</sys:String>
+    <sys:String x:Key="Nav_Home">Accueil</sys:String>
+    <sys:String x:Key="Nav_Security">Sécurité</sys:String>
+    <sys:String x:Key="Nav_Utilities">Utilitaires</sys:String>
+    <sys:String x:Key="Nav_Privacy">Confidentialité</sys:String>
     <sys:String x:Key="Nav_Interface">Interface</sys:String>
-    <sys:String x:Key="Nav_Software_Center">Software Center</sys:String>
-    <sys:String x:Key="Nav_System_Cleaner">System Cleaner</sys:String>
-    <sys:String x:Key="Nav_System_Manager">System Manager</sys:String>
-    <sys:String x:Key="Nav_GroupPolicy">Policies</sys:String>
-    <sys:String x:Key="Nav_RegistryEditor">Registry Editor</sys:String>
-    <sys:String x:Key="Nav_Services">Service Tweaks</sys:String>
-    <sys:String x:Key="Nav_System">System</sys:String>
-    <sys:String x:Key="Nav_Optimize">Optimizations</sys:String>
-    <sys:String x:Key="Nav_Customize">Customizations</sys:String>
-    <sys:String x:Key="Nav_CommandCenter">Command Center</sys:String>
+    <sys:String x:Key="Nav_Software_Center">Centre de logiciels</sys:String>
+    <sys:String x:Key="Nav_System_Cleaner">Nettoyeur système</sys:String>
+    <sys:String x:Key="Nav_System_Manager">Gestionnaire système</sys:String>
+    <sys:String x:Key="Nav_GroupPolicy">Stratégies</sys:String>
+    <sys:String x:Key="Nav_RegistryEditor">Éditeur du Registre</sys:String>
+    <sys:String x:Key="Nav_Services">Ajustements des services</sys:String>
+    <sys:String x:Key="Nav_System">Système</sys:String>
+    <sys:String x:Key="Nav_Optimize">Optimisations</sys:String>
+    <sys:String x:Key="Nav_Customize">Personnalisations</sys:String>
+    <sys:String x:Key="Nav_CommandCenter">Centre de commande</sys:String>
     <sys:String x:Key="Nav_Scripts">Scripts</sys:String>
-    <sys:String x:Key="Nav_Settings">Settings</sys:String>
-    <sys:String x:Key="Nav_Users">User Accounts</sys:String>
+    <sys:String x:Key="Nav_Settings">Paramètres</sys:String>
+    <sys:String x:Key="Nav_Users">Comptes d'utilisateurs</sys:String>
 
-    <sys:String x:Key="Nav_ProfileBuilder">Profile Builder</sys:String>
+    <sys:String x:Key="Nav_ProfileBuilder">Créateur de profil</sys:String>
 
-    <sys:String x:Key="Tab_WinIsoBuilder">Windows ISO Builder</sys:String>
+    <sys:String x:Key="Tab_WinIsoBuilder">Créateur d'ISO Windows</sys:String>
     <sys:String x:Key="Tab_Advanced">Confidentialité &amp; Sécurité</sys:String>
     <!-- endregion Main Window -->
 
     <!-- region Settings -->
     <sys:String x:Key="Settings_Title">Paramètres</sys:String>
+    <sys:String x:Key="Settings_Description">Gérez les préférences, le comportement et la personnalisation de votre application.</sys:String>
     <sys:String x:Key="Settings_Appearance_Title">Apparence</sys:String>
 
     <sys:String x:Key="Settings_Backdrop_Title">Arrière-plan du système</sys:String>
