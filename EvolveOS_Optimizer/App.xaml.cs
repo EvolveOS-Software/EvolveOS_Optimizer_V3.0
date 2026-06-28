@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.IO;
 using System.Security.Principal;
 using System.Threading;
@@ -1049,19 +1052,17 @@ namespace EvolveOS_Optimizer
             {
                 Debug.WriteLine("[App] Shutting down...");
 
+                var shutdownWindow = new Views.LoadingWindow(false, isShutdownMode: true);
+                shutdownWindow.SetHeaderTitle(displayTitle);
+                shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_prep_close") ?? "Preparing to close...");
+
+                shutdownWindow.Activate();
+
                 if (MainWindow != null)
                 {
                     IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
                     Win32Helper.ShowWindow(hwnd, 0);
                 }
-
-                var shutdownWindow = new Views.LoadingWindow(false, isShutdownMode: true);
-
-                shutdownWindow.SetHeaderTitle(displayTitle);
-
-                shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_prep_close") ?? "Preparing to close...");
-
-                shutdownWindow.Activate();
 
                 if (shutdownWindow.Content is FrameworkElement rootElement)
                 {
