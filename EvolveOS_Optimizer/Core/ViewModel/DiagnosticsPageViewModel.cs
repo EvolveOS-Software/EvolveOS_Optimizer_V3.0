@@ -4444,6 +4444,48 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             return size;
         }
 
+        private async Task NukeWindowsOldAsync()
+        {
+            string? root = Path.GetPathRoot(Environment.SystemDirectory);
+            if (string.IsNullOrEmpty(root)) return;
+
+            string winOldPath = Path.Combine(root, "Windows.old");
+            if (!Directory.Exists(winOldPath)) return;
+
+            try
+            {
+                UnlockHandleHelper.UnlockDirectory(winOldPath);
+
+                await TrustedInstaller.StartTrustedInstallerServiceAsync();
+
+                int tiPid = CommandExecutor.PID;
+                if (tiPid == 0) return;
+
+                string deletionCmd = $"cmd.exe /c rd /s /q \"{winOldPath}\"";
+                int childPid = TrustedInstaller.CreateProcessAsTrustedInstaller(tiPid, deletionCmd, showWindow: false);
+
+                if (childPid != 0)
+                {
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            using var proc = Process.GetProcessById(childPid);
+                            proc.WaitForExit(30000);
+                        }
+                        catch
+                        {
+                            ErrorLogging.LogDebug("Ignored as the process exits before it could grab the handle");
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogDebug(ex);
+            }
+        }
+
         private void OnOptimizeProgressUpdate(byte value, string step)
         {
             if (_dispatcherQueue == null) return;
@@ -4544,6 +4586,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 OnOptimizeProgressUpdate(++currentStep, ResourceString.GetString("txt_progress_optimizing") ?? "Optimizing...");
 
                 await _computerService.Optimize(reason, LocalMachineSettingsEngine.MemoryAreas);
+
+                if ((LocalMachineSettingsEngine.MemoryAreas & Enums.Memory.Areas.WindowsOld) != 0)
+                {
+                    OnOptimizeProgressUpdate(++currentStep, ResourceString.GetString("optimizations_step_windows_old") ?? "Removing Windows.old (This may take a minute)...");
+                    await NukeWindowsOldAsync();
+                }
 
                 _computerService.RefreshMemory();
 
