@@ -86,6 +86,7 @@
         <PackageReference Include="DnsClient" Version="1.8.0" />
         <PackageReference Include="FluentIcons.WinUI" Version="2.2.330" />
         <PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
+        <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6" />
         <PackageReference Include="Material.Icons.WinUI3" Version="3.0.2" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />

@@ -20,6 +20,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Windows.System.Power;
 using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI.Xaml.Media;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -87,6 +88,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly List<double> _gpuHistoryBuffer = new List<double>();
         private readonly List<double> _networkUpHistoryBuffer = new List<double>();
         private readonly List<double> _networkDownHistoryBuffer = new List<double>();
+        private readonly List<double> _cpuTempHistoryBuffer = new List<double>();
+        private readonly List<double> _gpuTempHistoryBuffer = new List<double>();
+        private readonly List<double> _ramTempHistoryBuffer = new List<double>();
+        private readonly List<double> _moboTempHistoryBuffer = new List<double>();
         private const int MaxHistoryCapacity = 900;
 
         private readonly HashSet<string> _dismissedEventHashes = new();
@@ -361,23 +366,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _scannerEngine = new DiagnosticScannerEngine(this);
 
             // Notification logic for testing purpose
-            _memoryGuardian = new MemoryGuardian(/*(beforeBytes, afterBytes) =>
-            {
-                ulong freedMb = beforeBytes > afterBytes ? (beforeBytes - afterBytes) / 1024 / 1024 : 0;
-
-                if (freedMb > 0)
-                {
-                    SendSystemNotification(1,
-                        ResourceString.GetString("MemoryGuardian_Title") ?? "Memory Guardian",
-                        string.Format(ResourceString.GetString("MemoryGuardian_Msg") ?? "Deep memory cleanup complete. Recovered {0} MB of background RAM.", freedMb));
-                }
-            }*/);
+            _memoryGuardian = new MemoryGuardian();
 
             LocalMachineSettingsEngine.SettingChanged += OnGlobalSettingChanged;
 
             LocalMachineSettingsEngine.LoadDismissedEventsList();
 
             PerformanceGraphPoints.Add(new Point(400, 100));
+            TemperatureGraphPoints.Add(new Point(400, 100));
 
             if (LocalMachineSettingsEngine.EnableLiveDiagnostics)
             {
@@ -600,29 +596,29 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        private Microsoft.UI.Xaml.Media.PointCollection _cpuTrayPoints = new();
-        public Microsoft.UI.Xaml.Media.PointCollection CpuTrayPoints
+        private PointCollection _cpuTrayPoints = new();
+        public PointCollection CpuTrayPoints
         {
             get => _cpuTrayPoints;
             set => SetProperty(ref _cpuTrayPoints, value);
         }
 
-        private Microsoft.UI.Xaml.Media.PointCollection _ramTrayPoints = new();
-        public Microsoft.UI.Xaml.Media.PointCollection RamTrayPoints
+        private PointCollection _ramTrayPoints = new();
+        public PointCollection RamTrayPoints
         {
             get => _ramTrayPoints;
             set => SetProperty(ref _ramTrayPoints, value);
         }
 
-        private Microsoft.UI.Xaml.Media.PointCollection _gpuTrayPoints = new();
-        public Microsoft.UI.Xaml.Media.PointCollection GpuTrayPoints
+        private PointCollection _gpuTrayPoints = new();
+        public PointCollection GpuTrayPoints
         {
             get => _gpuTrayPoints;
             set => SetProperty(ref _gpuTrayPoints, value);
         }
 
-        private Microsoft.UI.Xaml.Media.PointCollection _diskTrayPoints = new();
-        public Microsoft.UI.Xaml.Media.PointCollection DiskTrayPoints
+        private PointCollection _diskTrayPoints = new();
+        public PointCollection DiskTrayPoints
         {
             get => _diskTrayPoints;
             set => SetProperty(ref _diskTrayPoints, value);
@@ -693,7 +689,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Advanced Features Bridge (Diagnostics)
 
-        public enum TelemetryMetric { CPU, RAM, Disk, Pagefile, GPU, Network }
+        public enum TelemetryMetric { CPU, RAM, Disk, Pagefile, GPU, Network, Motherboard }
 
         private TelemetryMetric _activeGraphMetric = TelemetryMetric.CPU;
         public TelemetryMetric ActiveGraphMetric
@@ -708,23 +704,36 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         IsStorageInfoSelected = false;
                     }
 
+                    if (value == TelemetryMetric.Motherboard)
+                    {
+                        IsGraphingTemperature = true;
+                    }
+                    else
+                    {
+                        IsGraphingTemperature = false;
+                    }
+
                     OnPropertyChanged(nameof(IsCpuSelected));
                     OnPropertyChanged(nameof(IsRamSelected));
                     OnPropertyChanged(nameof(IsDiskSelected));
                     OnPropertyChanged(nameof(IsPageSelected));
                     OnPropertyChanged(nameof(IsGpuSelected));
                     OnPropertyChanged(nameof(IsNetworkSelected));
+                    OnPropertyChanged(nameof(IsMoboSelected));
 
                     OnPropertyChanged(nameof(CpuSecondaryVisibility));
                     OnPropertyChanged(nameof(RamSecondaryVisibility));
                     OnPropertyChanged(nameof(DiskSecondaryVisibility));
                     OnPropertyChanged(nameof(PageSecondaryVisibility));
                     OnPropertyChanged(nameof(GpuSecondaryVisibility));
-                    OnPropertyChanged(nameof(HeroStandardVisibility));
                     OnPropertyChanged(nameof(NetworkSecondaryVisibility));
+                    OnPropertyChanged(nameof(MoboSecondaryVisibility));
+                    OnPropertyChanged(nameof(HeroStandardVisibility));
 
                     OnPropertyChanged(nameof(ActivePrimaryLabel));
                     OnPropertyChanged(nameof(ActivePrimaryValueStr));
+                    OnPropertyChanged(nameof(ActiveTemperatureStr));
+                    OnPropertyChanged(nameof(ActiveTemperatureVisibility));
 
                     RebuildGraphFromHistory();
                 }
@@ -764,12 +773,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             set { if (value) ActiveGraphMetric = TelemetryMetric.Network; }
         }
 
+        public bool IsMoboSelected
+        {
+            get => ActiveGraphMetric == TelemetryMetric.Motherboard;
+            set { if (value) ActiveGraphMetric = TelemetryMetric.Motherboard; }
+        }
+
         public Visibility CpuSecondaryVisibility => IsCpuSelected ? Visibility.Collapsed : Visibility.Visible;
         public Visibility RamSecondaryVisibility => IsRamSelected ? Visibility.Collapsed : Visibility.Visible;
         public Visibility DiskSecondaryVisibility => IsDiskSelected ? Visibility.Collapsed : Visibility.Visible;
         public Visibility PageSecondaryVisibility => IsPageSelected ? Visibility.Collapsed : Visibility.Visible;
         public Visibility GpuSecondaryVisibility => IsGpuSelected ? Visibility.Collapsed : Visibility.Visible;
         public Visibility NetworkSecondaryVisibility => IsNetworkSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility MoboSecondaryVisibility => IsMoboSelected ? Visibility.Collapsed : Visibility.Visible;
         public Visibility HeroStandardVisibility => IsNetworkSelected ? Visibility.Collapsed : Visibility.Visible;
 
         public string ActivePrimaryLabel => ActiveGraphMetric switch
@@ -779,6 +795,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             TelemetryMetric.Pagefile => ResourceString.GetString("diag_pagefile_load") ?? "PAGEFILE",
             TelemetryMetric.GPU => ResourceString.GetString("diag_gpu_load") ?? "GPU LOAD",
             TelemetryMetric.Network => ResourceString.GetString("diag_network_load") ?? "NETWORK SPEED",
+            TelemetryMetric.Motherboard => "SYSTEM TEMP",
             _ => ResourceString.GetString("diag_cpu_load") ?? "CPU LOAD"
         };
 
@@ -789,8 +806,57 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             TelemetryMetric.Pagefile => CurrentPagefileLoadStr,
             TelemetryMetric.GPU => CurrentGpuLoadStr,
             TelemetryMetric.Network => CurrentNetworkLoadStr,
+            TelemetryMetric.Motherboard => MoboTempStr,
             _ => CurrentCpuLoadStr
         };
+
+        public string ActiveTemperatureStr => ActiveGraphMetric switch
+        {
+            TelemetryMetric.RAM => RamTempStr,
+            TelemetryMetric.GPU => GpuTempStr,
+            TelemetryMetric.Motherboard => MoboTempStr,
+            TelemetryMetric.CPU => CpuTempStr,
+            _ => ""
+        };
+
+        public Visibility ActiveTemperatureVisibility
+        {
+            get
+            {
+                if (ActiveGraphMetric == TelemetryMetric.Disk ||
+                    ActiveGraphMetric == TelemetryMetric.Pagefile ||
+                    ActiveGraphMetric == TelemetryMetric.Network ||
+                    ActiveGraphMetric == TelemetryMetric.Motherboard)
+                {
+                    return Visibility.Collapsed;
+                }
+
+                float currentTemp = ActiveGraphMetric switch
+                {
+                    TelemetryMetric.RAM => _cachedMemTemp,
+                    TelemetryMetric.GPU => _cachedGpuTemp,
+                    TelemetryMetric.CPU => _cachedCpuTemp,
+                    _ => -1f
+                };
+
+                return currentTemp > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private bool _isGraphingTemperature = false;
+        public bool IsGraphingTemperature
+        {
+            get => _isGraphingTemperature;
+            set
+            {
+                if (SetProperty(ref _isGraphingTemperature, value))
+                {
+                    OnPropertyChanged(nameof(IsGraphingLoad));
+                    RebuildGraphFromHistory();
+                }
+            }
+        }
+        public bool IsGraphingLoad => !IsGraphingTemperature;
 
         public class GraphScaleOption
         {
@@ -895,6 +961,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             set => SetProperty(ref _performanceGraphPoints, value);
         }
 
+        private PointCollection _temperatureGraphPoints = new();
+        public PointCollection TemperatureGraphPoints
+        {
+            get => _temperatureGraphPoints;
+            set => SetProperty(ref _temperatureGraphPoints, value);
+        }
+
+        private PointCollection _temperatureAreaPoints = new();
+        public PointCollection TemperatureAreaPoints
+        {
+            get => _temperatureAreaPoints;
+            set { _temperatureAreaPoints = value; OnPropertyChanged(); }
+        }
+
         private List<double> _cpuHistory = new();
         private PointCollection _performanceAreaPoints = new();
         public PointCollection PerformanceAreaPoints
@@ -981,6 +1061,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             set => SetProperty(ref _currentNetworkLoadSecondaryStr, value);
         }
 
+        private string _cpuTempStr = "--°C";
+        public string CpuTempStr { get => _cpuTempStr; set => SetProperty(ref _cpuTempStr, value); }
+
+        private string _gpuTempStr = "--°C";
+        public string GpuTempStr { get => _gpuTempStr; set => SetProperty(ref _gpuTempStr, value); }
+
+        private string _ramTempStr = "--°C";
+        public string RamTempStr { get => _ramTempStr; set => SetProperty(ref _ramTempStr, value); }
+
+        private string _moboTempStr = "--°C";
+        public string MoboTempStr { get => _moboTempStr; set => SetProperty(ref _moboTempStr, value); }
+
         public ObservableCollection<HourlyMetric> StabilityTrendData { get; } = new();
         public ObservableCollection<HardwareIssue> DetectedHardwareIssues { get; } = new();
         public ObservableCollection<SystemEventItem> MinedSystemEvents { get; } = new();
@@ -1014,7 +1106,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Settings & Configuration Properties (Maintenance)
         public List<VirtualKey> KeyboardKeys => _hotKeyService.Keys;
-        //public Dictionary<VirtualKeyModifiers, string> KeyboardModifiers => _hotKeyService.Modifiers;
         private List<ModifierOption>? _keyboardModifiers;
         public List<ModifierOption> KeyboardModifiers
         {
@@ -2459,7 +2550,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             await _scannerEngine.ExecuteFullScanAsync();
         }
 
-        // Test Method (Optimize telemetry rendering)
         private void RebuildGraphFromHistory()
         {
             double logicalWidth = 400.0;
@@ -2469,6 +2559,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             var newPointsAlt = new PointCollection();
             var areaPointsAlt = new PointCollection();
+
+            var newTempPoints = new PointCollection();
+            var newTempAreaPoints = new PointCollection();
 
             var targetBuffer = ActiveGraphMetric switch
             {
@@ -2489,26 +2582,46 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 newPointsAlt.Add(new Point(logicalWidth, 100));
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
+
+                newTempPoints.Add(new Point(logicalWidth, 100));
+                TemperatureGraphPoints = newTempPoints;
+                TemperatureAreaPoints = newTempAreaPoints;
                 return;
             }
 
             int pointsToShow = Math.Min(targetBuffer.Count, MaxGraphSeconds + 1);
             var visibleHistory = targetBuffer.Skip(targetBuffer.Count - pointsToShow).ToList();
 
-            int maxVisualPoints = 60;
+            List<double>? targetTempBuffer = ActiveGraphMetric switch
+            {
+                TelemetryMetric.GPU => _gpuTempHistoryBuffer,
+                TelemetryMetric.RAM => _ramTempHistoryBuffer,
+                TelemetryMetric.Motherboard => _moboTempHistoryBuffer,
+                TelemetryMetric.CPU => _cpuTempHistoryBuffer,
+                _ => null
+            };
+
+            var tempPointsToProcess = new List<double>();
+            if (targetTempBuffer != null && targetTempBuffer.Count > 0)
+            {
+                tempPointsToProcess = targetTempBuffer.Skip(Math.Max(0, targetTempBuffer.Count - pointsToShow)).ToList();
+            }
+
             var pointsToProcess = visibleHistory;
             var altPointsToProcess = new List<double>();
 
             bool useAlt = ActiveGraphMetric == TelemetryMetric.Network && _networkUpHistoryBuffer.Count > 0;
             if (useAlt)
             {
-                altPointsToProcess = _networkUpHistoryBuffer.Skip(_networkUpHistoryBuffer.Count - pointsToShow).ToList();
+                altPointsToProcess = _networkUpHistoryBuffer.Skip(Math.Max(0, _networkUpHistoryBuffer.Count - pointsToShow)).ToList();
             }
 
+            int maxVisualPoints = 60;
             if (pointsToProcess.Count > maxVisualPoints)
             {
                 var downsampled = new List<double>();
                 var downsampledAlt = new List<double>();
+                var downsampledTemp = new List<double>();
 
                 double step = (double)(pointsToProcess.Count - 1) / (maxVisualPoints - 1);
 
@@ -2517,30 +2630,64 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     int index = (int)Math.Min(Math.Round(i * step), pointsToProcess.Count - 1);
                     downsampled.Add(pointsToProcess[index]);
 
-                    if (useAlt) downsampledAlt.Add(altPointsToProcess[index]);
+                    if (useAlt && index < altPointsToProcess.Count)
+                        downsampledAlt.Add(altPointsToProcess[index]);
+
+                    if (index < tempPointsToProcess.Count)
+                        downsampledTemp.Add(tempPointsToProcess[index]);
                 }
 
                 pointsToProcess = downsampled;
                 if (useAlt) altPointsToProcess = downsampledAlt;
+                tempPointsToProcess = downsampledTemp;
             }
 
             double pixelsPerStep = pointsToProcess.Count > 1 ? logicalWidth / (pointsToProcess.Count - 1) : 0;
-            double currentX = 0;
 
-            foreach (var yVal in pointsToProcess)
+            if (!IsGraphingTemperature)
             {
-                newPoints.Add(new Point(currentX, yVal));
-                currentX += pixelsPerStep;
+                double currentX = 0;
+                foreach (var yVal in pointsToProcess)
+                {
+                    newPoints.Add(new Point(currentX, yVal));
+                    currentX += pixelsPerStep;
+                }
+
+                if (newPoints.Count > 0)
+                {
+                    areaPoints.Add(new Point(newPoints.First().X, 100));
+                    foreach (var p in newPoints) areaPoints.Add(p);
+                    areaPoints.Add(new Point(newPoints.Last().X, 100));
+                }
+            }
+            else
+            {
+                double currentTempX = 0;
+                foreach (var tVal in tempPointsToProcess)
+                {
+                    if (tVal > 0)
+                    {
+                        double yValTemp = Math.Clamp(100 - tVal, 0, 100);
+                        newTempPoints.Add(new Point(currentTempX, yValTemp));
+                    }
+                    else
+                    {
+                        newTempPoints.Add(new Point(currentTempX, 100));
+                    }
+                    currentTempX += pixelsPerStep;
+                }
+
+                if (newTempPoints.Count > 0)
+                {
+                    newTempAreaPoints.Add(new Point(newTempPoints.First().X, 100));
+                    foreach (var p in newTempPoints) newTempAreaPoints.Add(p);
+                    newTempAreaPoints.Add(new Point(newTempPoints.Last().X, 100));
+                }
             }
 
+            TemperatureGraphPoints = newTempPoints;
+            TemperatureAreaPoints = newTempAreaPoints;
             PerformanceGraphPoints = newPoints;
-
-            if (newPoints.Count > 0)
-            {
-                areaPoints.Add(new Point(newPoints.First().X, 100));
-                foreach (var p in newPoints) areaPoints.Add(p);
-                areaPoints.Add(new Point(newPoints.Last().X, 100));
-            }
             PerformanceAreaPoints = areaPoints;
 
             if (useAlt)
@@ -2552,14 +2699,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     currentAltX += pixelsPerStep;
                 }
 
-                PerformanceGraphPointsAlt = newPointsAlt;
-
                 if (newPointsAlt.Count > 0)
                 {
                     areaPointsAlt.Add(new Point(newPointsAlt.First().X, 100));
                     foreach (var p in newPointsAlt) areaPointsAlt.Add(p);
                     areaPointsAlt.Add(new Point(newPointsAlt.Last().X, 100));
                 }
+                PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
             }
             else
@@ -2569,90 +2715,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 PerformanceAreaPointsAlt = areaPointsAlt;
             }
         }
-
-        /*private void RebuildGraphFromHistory()
-        {
-            double logicalWidth = 400.0;
-            double pixelsPerSecond = logicalWidth / MaxGraphSeconds;
-
-            var newPoints = new PointCollection();
-            var areaPoints = new PointCollection();
-
-            var newPointsAlt = new PointCollection();
-            var areaPointsAlt = new PointCollection();
-
-            var targetBuffer = ActiveGraphMetric switch
-            {
-                TelemetryMetric.RAM => _ramHistoryBuffer,
-                TelemetryMetric.Disk => _diskHistoryBuffer,
-                TelemetryMetric.Pagefile => _pageHistoryBuffer,
-                TelemetryMetric.GPU => _gpuHistoryBuffer,
-                TelemetryMetric.Network => _networkDownHistoryBuffer,
-                _ => _cpuHistoryBuffer
-            };
-
-            if (targetBuffer.Count == 0)
-            {
-                newPoints.Add(new Point(logicalWidth, 100));
-                PerformanceGraphPoints = newPoints;
-                PerformanceAreaPoints = areaPoints;
-
-                newPointsAlt.Add(new Point(logicalWidth, 100));
-                PerformanceGraphPointsAlt = newPointsAlt;
-                PerformanceAreaPointsAlt = areaPointsAlt;
-                return;
-            }
-
-            int maxPointsNeeded = MaxGraphSeconds + 1;
-            int pointsToShow = Math.Min(targetBuffer.Count, maxPointsNeeded);
-
-            var visibleHistory = targetBuffer.Skip(targetBuffer.Count - pointsToShow).ToList();
-            double currentX = logicalWidth - ((pointsToShow - 1) * pixelsPerSecond);
-
-            foreach (var yVal in visibleHistory)
-            {
-                newPoints.Add(new Point(currentX, yVal));
-                currentX += pixelsPerSecond;
-            }
-
-            PerformanceGraphPoints = newPoints;
-
-            if (newPoints.Count > 0)
-            {
-                areaPoints.Add(new Point(newPoints.First().X, 100));
-                foreach (var p in newPoints) areaPoints.Add(p);
-                areaPoints.Add(new Point(newPoints.Last().X, 100));
-            }
-            PerformanceAreaPoints = areaPoints;
-
-            if (ActiveGraphMetric == TelemetryMetric.Network)
-            {
-                var visibleAltHistory = _networkUpHistoryBuffer.Skip(_networkUpHistoryBuffer.Count - pointsToShow).ToList();
-                double currentAltX = logicalWidth - ((pointsToShow - 1) * pixelsPerSecond);
-
-                foreach (var yVal in visibleAltHistory)
-                {
-                    newPointsAlt.Add(new Point(currentAltX, yVal));
-                    currentAltX += pixelsPerSecond;
-                }
-
-                PerformanceGraphPointsAlt = newPointsAlt;
-
-                if (newPointsAlt.Count > 0)
-                {
-                    areaPointsAlt.Add(new Point(newPointsAlt.First().X, 100));
-                    foreach (var p in newPointsAlt) areaPointsAlt.Add(p);
-                    areaPointsAlt.Add(new Point(newPointsAlt.Last().X, 100));
-                }
-                PerformanceAreaPointsAlt = areaPointsAlt;
-            }
-            else
-            {
-                newPointsAlt.Add(new Point(logicalWidth, 100));
-                PerformanceGraphPointsAlt = newPointsAlt;
-                PerformanceAreaPointsAlt = areaPointsAlt;
-            }
-        }*/
 
         [RelayCommand]
         public async Task ScanNetworkPortsAsync()
@@ -3500,6 +3562,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _lastNetworkCheckTime = DateTime.MinValue;
 
+            HardwareTemperatureService.Instance.UpdateSensors();
+            float cpuTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
+            float gpuTemp = HardwareTemperatureService.Instance.GetGpuTemperature();
+            float memTemp = HardwareTemperatureService.Instance.GetMemoryTemperature();
+            float moboTemp = HardwareTemperatureService.Instance.GetMotherboardTemperature();
+
+            CpuTempStr = cpuTemp > 0 ? $"{(int)cpuTemp}°C" : "--°C";
+            GpuTempStr = gpuTemp > 0 ? $"{(int)gpuTemp}°C" : "--°C";
+            RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
+            MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
+
             _telemetryTimer = new System.Threading.Timer(UpdateTelemetryGraph, null, 0, 1000);
         }
 
@@ -3530,10 +3603,59 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }*/
         #endregion
 
+        private bool _isRefreshingTemperatures = false;
+        private float _cachedCpuTemp = -1f;
+        private float _cachedGpuTemp = -1f;
+        private float _cachedMemTemp = -1f;
+        private float _cachedMoboTemp = -1f;
+
         private void UpdateTelemetryGraph(object? state)
         {
             try
             {
+                if (!_isRefreshingTemperatures)
+                {
+                    _isRefreshingTemperatures = true;
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            HardwareTemperatureService.Instance.UpdateSensors();
+
+                            _cachedCpuTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
+                            _cachedGpuTemp = HardwareTemperatureService.Instance.GetGpuTemperature();
+                            _cachedMemTemp = HardwareTemperatureService.Instance.GetMemoryTemperature();
+                            _cachedMoboTemp = HardwareTemperatureService.Instance.GetMotherboardTemperature();
+                        }
+                        catch { }
+                        finally { _isRefreshingTemperatures = false; }
+                    });
+                }
+
+                float cpuTemp = _cachedCpuTemp;
+                float gpuTemp = _cachedGpuTemp;
+                float memTemp = _cachedMemTemp;
+                float moboTemp = _cachedMoboTemp;
+
+                if (_isUiActive && !IsAfk)
+                {
+                    var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
+                    dispatcher?.TryEnqueue(() =>
+                    {
+                        CpuTempStr = cpuTemp > 0 ? $"{(int)cpuTemp}°C" : "--°C";
+                        GpuTempStr = gpuTemp > 0 ? $"{(int)gpuTemp}°C" : "--°C";
+                        RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
+                        MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
+                    });
+                }
+
+                _cpuTempHistoryBuffer.Add(cpuTemp <= 0f ? -1 : cpuTemp);
+                _gpuTempHistoryBuffer.Add(gpuTemp <= 0f ? -1 : gpuTemp);
+                _ramTempHistoryBuffer.Add(memTemp <= 0f ? -1 : memTemp);
+                _moboTempHistoryBuffer.Add(moboTemp <= 0f ? -1 : moboTemp);
+
+                Debug.WriteLine($"CPU: {cpuTemp}°C | GPU: {gpuTemp}°C | RAM: {memTemp}°C | MOBO: {moboTemp}°C");
+
                 float cpuUsage = 0;
                 if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
                 {
@@ -3611,6 +3733,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _gpuHistoryBuffer.RemoveAt(0);
                     _networkDownHistoryBuffer.RemoveAt(0);
                     _networkUpHistoryBuffer.RemoveAt(0);
+                    _cpuTempHistoryBuffer.RemoveAt(0);
+                    _gpuTempHistoryBuffer.RemoveAt(0);
+                    _ramTempHistoryBuffer.RemoveAt(0);
+                    _moboTempHistoryBuffer.RemoveAt(0);
                 }
 
                 if (!IsOptimizationRunning)
@@ -3654,7 +3780,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
 
                         OnPropertyChanged(nameof(ActivePrimaryValueStr));
+                        OnPropertyChanged(nameof(ActiveTemperatureStr));
                         OnPropertyChanged(nameof(HeroStandardVisibility));
+                        OnPropertyChanged(nameof(ActiveTemperatureVisibility));
+
+                        if (IsGraphingTemperature && ActiveTemperatureVisibility == Visibility.Collapsed && ActiveGraphMetric != TelemetryMetric.Motherboard)
+                        {
+                            IsGraphingTemperature = false;
+                        }
 
                         int sparklinePoints = 20;
                         double stepX = 3.0;
@@ -3688,13 +3821,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             catch { }
         }
 
-        private Microsoft.UI.Xaml.Media.PointCollection GenerateTrayPoints(
-            System.Collections.Generic.IEnumerable<double> buffer,
+        private PointCollection GenerateTrayPoints(
+            IEnumerable<double> buffer,
             int pointsToTake,
             double stepX,
             double height)
         {
-            var newPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+            var newPoints = new PointCollection();
             var data = buffer.Reverse().Take(pointsToTake).Reverse().ToList();
 
             if (data.Count == 0) return newPoints;
@@ -3746,13 +3879,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         _gpuHistoryBuffer.Clear();
                         _networkUpHistoryBuffer.Clear();
                         _networkDownHistoryBuffer.Clear();
+                        _cpuTempHistoryBuffer.Clear();
+                        _gpuTempHistoryBuffer.Clear();
+                        _ramTempHistoryBuffer.Clear();
+                        _moboTempHistoryBuffer.Clear();
 
-                        PerformanceGraphPoints.Clear();
-                        PerformanceGraphPoints.Add(new Point(400, 100));
-                        PerformanceAreaPoints.Clear();
-
-                        PerformanceGraphPointsAlt.Clear();
-                        PerformanceAreaPointsAlt.Clear();
+                        PerformanceGraphPoints = new PointCollection();
+                        PerformanceAreaPoints = new PointCollection();
+                        TemperatureGraphPoints = new PointCollection();
+                        TemperatureAreaPoints = new PointCollection();
+                        PerformanceGraphPointsAlt = new PointCollection();
+                        PerformanceAreaPointsAlt = new PointCollection();
 
                         CurrentCpuLoadStr = "0%";
                         CurrentRamLoadStr = "0%";
@@ -3888,67 +4025,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public void RebuildVisualPoints()
         {
-            var targetBuffer = ActiveGraphMetric switch
+            var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
+            dispatcher?.TryEnqueue(() =>
             {
-                TelemetryMetric.RAM => _ramHistoryBuffer,
-                TelemetryMetric.Disk => _diskHistoryBuffer,
-                TelemetryMetric.Pagefile => _pageHistoryBuffer,
-                TelemetryMetric.GPU => _gpuHistoryBuffer,
-                TelemetryMetric.Network => _networkDownHistoryBuffer,
-                _ => _cpuHistoryBuffer
-            };
+                if (!_isUiActive) return;
 
-            // 1. REUSE COLLECTIONS: Clear existing ones instead of allocating new memory
-            PerformanceGraphPoints.Clear();
-            PerformanceAreaPoints.Clear();
-            PerformanceGraphPointsAlt.Clear();
-            PerformanceAreaPointsAlt.Clear();
-
-            if (targetBuffer.Count > 0)
-            {
-                double logicalWidth = 400.0;
-                double pixelsPerSecond = logicalWidth / MaxGraphSeconds;
-                int pointsToShow = Math.Min(targetBuffer.Count, MaxGraphSeconds + 1);
-                var visibleHistory = targetBuffer.Skip(targetBuffer.Count - pointsToShow).ToList();
-                double currentX = logicalWidth - ((pointsToShow - 1) * pixelsPerSecond);
-
-                foreach (var yVal in visibleHistory)
-                {
-                    PerformanceGraphPoints.Add(new Point(currentX, yVal));
-                    currentX += pixelsPerSecond;
-                }
-
-                if (PerformanceGraphPoints.Count > 0)
-                {
-                    PerformanceAreaPoints.Add(new Point(PerformanceGraphPoints.First().X, 100));
-                    foreach (var p in PerformanceGraphPoints) PerformanceAreaPoints.Add(p);
-                    PerformanceAreaPoints.Add(new Point(PerformanceGraphPoints.Last().X, 100));
-                }
-
-                if (ActiveGraphMetric == TelemetryMetric.Network && _networkUpHistoryBuffer.Count > 0)
-                {
-                    var visibleAltHistory = _networkUpHistoryBuffer.Skip(_networkUpHistoryBuffer.Count - pointsToShow).ToList();
-                    double currentAltX = logicalWidth - ((pointsToShow - 1) * pixelsPerSecond);
-
-                    foreach (var yVal in visibleAltHistory)
-                    {
-                        PerformanceGraphPointsAlt.Add(new Point(currentAltX, yVal));
-                        currentAltX += pixelsPerSecond;
-                    }
-
-                    if (PerformanceGraphPointsAlt.Count > 0)
-                    {
-                        PerformanceAreaPointsAlt.Add(new Point(PerformanceGraphPointsAlt.First().X, 100));
-                        foreach (var p in PerformanceGraphPointsAlt) PerformanceAreaPointsAlt.Add(p);
-                        PerformanceAreaPointsAlt.Add(new Point(PerformanceGraphPointsAlt.Last().X, 100));
-                    }
-                }
-            }
-
-            if (CpuTrayPoints != null) { CpuTrayPoints.Clear(); GenerateTrayPointsInPlace(_cpuHistoryBuffer, CpuTrayPoints, 20, 3.0, 15.0); }
-            if (RamTrayPoints != null) { RamTrayPoints.Clear(); GenerateTrayPointsInPlace(_ramHistoryBuffer, RamTrayPoints, 20, 3.0, 15.0); }
-            if (GpuTrayPoints != null) { GpuTrayPoints.Clear(); GenerateTrayPointsInPlace(_gpuHistoryBuffer, GpuTrayPoints, 20, 3.0, 15.0); }
-            if (DiskTrayPoints != null) { DiskTrayPoints.Clear(); GenerateTrayPointsInPlace(_diskHistoryBuffer, DiskTrayPoints, 20, 3.0, 15.0); }
+                RebuildGraphFromHistory();
+            });
         }
 
         private void GenerateTrayPointsInPlace(
@@ -4140,7 +4223,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (_diskCounter == null)
                 {
                     _diskCounter = new System.Diagnostics.PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total", true);
-                    _diskCounter.NextValue(); // Prime the counter
+                    _diskCounter.NextValue();
                 }
 
                 return Math.Clamp(_diskCounter.NextValue(), 0f, 100f);
@@ -4208,8 +4291,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 return (0f, 0f);
             }
         }
-
-
 
         private string FormatPerformanceCounterInstanceName(string description)
         {

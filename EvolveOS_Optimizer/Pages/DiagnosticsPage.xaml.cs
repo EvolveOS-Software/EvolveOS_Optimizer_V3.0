@@ -258,6 +258,27 @@ namespace EvolveOS_Optimizer.Pages
                 await ScrollToElementHelper.ScrollToElementAsync(this, _pendingScrollTarget);
                 _pendingScrollTarget = null;
             }
+
+            try
+            {
+                bool wasInstalled = HardwareDriverHelper.IsPawnIoInstalled();
+
+                bool isInstalledNow = await HardwareDriverHelper.EnsurePawnIoInstalledAsync(this.XamlRoot);
+
+                if (!wasInstalled && isInstalledNow)
+                {
+                    ViewModel?.PauseUiUpdates();
+                    HardwareTemperatureService.Instance.Close();
+                    HardwareTemperatureService.Instance.Initialize();
+                    ViewModel?.ResumeUiUpdates();
+                }
+
+                UpdateDriverButtonStates();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[DiagnosticsPage] PawnIO Initialization Error: {ex.Message}");
+            }
         }
 
         private void DiagnosticsPage_Unloaded(object sender, RoutedEventArgs e)
@@ -399,7 +420,7 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Navigation & Lifecycle
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
@@ -1023,6 +1044,49 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel?.ApplyDnsPresetCommand.Execute(preset);
             }
         }
+
+        private async void InstallAdvancedSensorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            bool installed = await HardwareDriverHelper.EnsurePawnIoInstalledAsync(this.XamlRoot, forcePrompt: true);
+
+            if (installed)
+            {
+                HardwareTemperatureService.Instance.Close();
+                HardwareTemperatureService.Instance.Initialize();
+
+                DiagnosticsPageViewModel.Current.SendSystemNotification(1,
+                    "Sensors Active",
+                    "PawnIO installed successfully. Advanced thermal monitoring is now online.");
+            }
+
+            UpdateDriverButtonStates();
+        }
+
+        private async void UninstallAdvancedSensorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            HardwareTemperatureService.Instance.Close();
+
+            bool uninstalled = await HardwareDriverHelper.UninstallPawnIoAsync();
+
+            if (uninstalled)
+            {
+                HardwareTemperatureService.Instance.Initialize();
+
+                DiagnosticsPageViewModel.Current.SendSystemNotification(4,
+                    "Sensors Removed",
+                    "PawnIO was uninstalled successfully. Advanced thermal monitoring is now disabled.");
+            }
+            else
+            {
+                HardwareTemperatureService.Instance.Initialize();
+
+                DiagnosticsPageViewModel.Current.SendSystemNotification(3,
+                    "Uninstall Failed",
+                    "Could not completely remove PawnIO. The driver binary may currently be locked by another process.");
+            }
+
+            UpdateDriverButtonStates();
+        }
         #endregion
 
         #region AI Event Log Explainer
@@ -1449,6 +1513,17 @@ namespace EvolveOS_Optimizer.Pages
                 control.Focus(FocusState.Programmatic);
             }
         }
+
+        private void UpdateDriverButtonStates()
+        {
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                bool isInstalled = HardwareDriverHelper.IsPawnIoInstalled();
+
+                if (BtnInstallDriver != null) BtnInstallDriver.IsEnabled = !isInstalled;
+                if (BtnUninstallDriver != null) BtnUninstallDriver.IsEnabled = isInstalled;
+            });
+        }
         #endregion
 
         #region Health Status Calculator
@@ -1538,37 +1613,6 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
-        #region Purge Page (old cache mode)
-        /*public async void Purge()
-        {
-            _isCurrentPageActive = false;
-            _navGeneration++;
-
-            try
-            {
-                Debug.WriteLine("[DiagnosticsPage] Safe Sleep Purge Initiated...");
-
-                await StopCurrentOperationAsync();
-
-                if (_cancellationTokenSource != null)
-                {
-                    try { _cancellationTokenSource.Cancel(); _cancellationTokenSource.Dispose(); } catch { }
-                    _cancellationTokenSource = null;
-                }
-
-                DiagnosticsPage_Unloaded(this, new RoutedEventArgs());
-
-                _ = Task.Run(() => GC.Collect(2, GCCollectionMode.Optimized, false, false));
-
-                Debug.WriteLine("[DiagnosticsPage] Tasks cleaned. UI state preserved in RAM cache.");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[DiagnosticsPage] Error during purge: {ex.Message}");
-            }
-        }*/
-        #endregion
-
         #region Purge Page
         public async Task Purge()
         {
@@ -1599,6 +1643,7 @@ namespace EvolveOS_Optimizer.Pages
                         ViewModel.PerformanceAreaPoints = new Microsoft.UI.Xaml.Media.PointCollection();
                         ViewModel.PerformanceGraphPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
                         ViewModel.PerformanceAreaPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
+                        ViewModel.TemperatureGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
 
                         Debug.WriteLine("[DiagnosticsPage] Severed main window PointCollections. Tray collections preserved.");
                     }

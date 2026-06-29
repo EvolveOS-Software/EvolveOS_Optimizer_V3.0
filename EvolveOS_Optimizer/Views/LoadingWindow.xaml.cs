@@ -361,7 +361,9 @@ namespace EvolveOS_Optimizer.Views
                         {
                             ExecuteWithLogging(UninstallingPackages.CheckingForLocalAccount, nameof(UninstallingPackages.CheckingForLocalAccount));
                             ExecuteWithLogging(BluetoothManager.Initialize, nameof(BluetoothManager.Initialize));
-                        }
+                        },
+
+                        () => ExecuteWithLogging(HardwareTemperatureService.Instance.Initialize, nameof(HardwareTemperatureService.Initialize))
                     );
 
                     for (int p = 30; p <= 70; p += 10)

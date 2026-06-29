@@ -542,7 +542,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableFindHotkey"] = false,
             ["FindHotkeyModifier"] = (int)(VirtualKeyModifiers.Control),
             ["FindHotkeyKey"] = (int)VirtualKey.F,
-            ["HideRegistryWarning"] = false
+            ["HideRegistryWarning"] = false,
+            ["HidePawnIoPrompt"] = false
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -596,6 +597,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static int FindHotkeyModifier { get => (int)_cachedSettings["FindHotkeyModifier"]; set => ChangingParameters("FindHotkeyModifier", value); }
         internal static int FindHotkeyKey { get => (int)_cachedSettings["FindHotkeyKey"]; set => ChangingParameters("FindHotkeyKey", value); }
         internal static bool HideRegistryWarning { get => (bool)_cachedSettings["HideRegistryWarning"]; set => ChangingParameters("HideRegistryWarning", value); }
+        internal static bool HidePawnIoPrompt { get => (bool)_cachedSettings["HidePawnIoPrompt"]; set => ChangingParameters("HidePawnIoPrompt", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)

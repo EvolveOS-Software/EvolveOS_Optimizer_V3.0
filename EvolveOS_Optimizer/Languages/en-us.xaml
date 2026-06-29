@@ -1916,6 +1916,7 @@
     <sys:String x:Key="diag_btn_cpu">CPU</sys:String>
     <sys:String x:Key="diag_btn_gpu">GPU</sys:String>
     <sys:String x:Key="diag_btn_ram">RAM</sys:String>
+    <sys:String x:Key="diag_btn_sys">SYS</sys:String>
     <sys:String x:Key="diag_btn_network">NET</sys:String>
     <sys:String x:Key="diag_btn_disk">DISK</sys:String>
     <sys:String x:Key="diag_btn_page">PAGE</sys:String>
