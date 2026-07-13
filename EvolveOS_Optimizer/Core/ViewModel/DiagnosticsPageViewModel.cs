@@ -3637,24 +3637,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float memTemp = _cachedMemTemp;
                 float moboTemp = _cachedMoboTemp;
 
-                if (_isUiActive && !IsAfk)
-                {
-                    var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
-                    dispatcher?.TryEnqueue(() =>
-                    {
-                        CpuTempStr = cpuTemp > 0 ? $"{(int)cpuTemp}°C" : "--°C";
-                        GpuTempStr = gpuTemp > 0 ? $"{(int)gpuTemp}°C" : "--°C";
-                        RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
-                        MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
-                    });
-                }
-
                 _cpuTempHistoryBuffer.Add(cpuTemp <= 0f ? -1 : cpuTemp);
                 _gpuTempHistoryBuffer.Add(gpuTemp <= 0f ? -1 : gpuTemp);
                 _ramTempHistoryBuffer.Add(memTemp <= 0f ? -1 : memTemp);
                 _moboTempHistoryBuffer.Add(moboTemp <= 0f ? -1 : moboTemp);
-
-                Debug.WriteLine($"CPU: {cpuTemp}°C | GPU: {gpuTemp}°C | RAM: {memTemp}°C | MOBO: {moboTemp}°C");
 
                 float cpuUsage = 0;
                 if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
@@ -3758,7 +3744,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                 }
 
-                if (_isUiActive && !IsAfk)
+                bool needsTrayUpdates = ShowCpuInTray || ShowRamInTray || ShowGpuInTray || ShowDiskInTray;
+
+                if ((_isUiActive || needsTrayUpdates) && !IsAfk)
                 {
                     var cpuSnapshot = _cpuHistoryBuffer.ToList();
                     var ramSnapshot = _ramHistoryBuffer.ToList();
@@ -3768,27 +3756,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                     dispatcher?.TryEnqueue(() =>
                     {
-                        CurrentCpuLoadStr = $"{(int)cpuUsage}%";
-                        CurrentRamLoadStr = $"{(int)ramUsage}%";
-                        CurrentIoLoadStr = $"{(int)diskUsage}%";
-                        CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
-                        CurrentGpuLoadStr = $"{(int)gpuUsage}%";
-
-                        CurrentNetworkDownLoadStr = $"{downMbps:0.#} ▼";
-                        CurrentNetworkUpLoadStr = $"{upMbps:0.#} ▲";
-                        CurrentNetworkLoadStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲ Mbps";
-                        CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
-
-                        OnPropertyChanged(nameof(ActivePrimaryValueStr));
-                        OnPropertyChanged(nameof(ActiveTemperatureStr));
-                        OnPropertyChanged(nameof(HeroStandardVisibility));
-                        OnPropertyChanged(nameof(ActiveTemperatureVisibility));
-
-                        if (IsGraphingTemperature && ActiveTemperatureVisibility == Visibility.Collapsed && ActiveGraphMetric != TelemetryMetric.Motherboard)
-                        {
-                            IsGraphingTemperature = false;
-                        }
-
                         int sparklinePoints = 20;
                         double stepX = 3.0;
                         double chartHeight = 15.0;
@@ -3812,6 +3779,32 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         {
                             DiskTrayPoints = GenerateTrayPoints(diskSnapshot, sparklinePoints, stepX, chartHeight);
                             OnPropertyChanged(nameof(DiskTrayPoints));
+                        }
+
+                        CpuTempStr = cpuTemp > 0 ? $"{(int)cpuTemp}°C" : "--°C";
+                        GpuTempStr = gpuTemp > 0 ? $"{(int)gpuTemp}°C" : "--°C";
+                        RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
+                        MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
+
+                        CurrentCpuLoadStr = $"{(int)cpuUsage}%";
+                        CurrentRamLoadStr = $"{(int)ramUsage}%";
+                        CurrentIoLoadStr = $"{(int)diskUsage}%";
+                        CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
+                        CurrentGpuLoadStr = $"{(int)gpuUsage}%";
+
+                        CurrentNetworkDownLoadStr = $"{downMbps:0.#} ▼";
+                        CurrentNetworkUpLoadStr = $"{upMbps:0.#} ▲";
+                        CurrentNetworkLoadStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲ Mbps";
+                        CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
+
+                        OnPropertyChanged(nameof(ActivePrimaryValueStr));
+                        OnPropertyChanged(nameof(ActiveTemperatureStr));
+                        OnPropertyChanged(nameof(HeroStandardVisibility));
+                        OnPropertyChanged(nameof(ActiveTemperatureVisibility));
+
+                        if (IsGraphingTemperature && ActiveTemperatureVisibility == Visibility.Collapsed && ActiveGraphMetric != TelemetryMetric.Motherboard)
+                        {
+                            IsGraphingTemperature = false;
                         }
 
                         RebuildGraphFromHistory();
