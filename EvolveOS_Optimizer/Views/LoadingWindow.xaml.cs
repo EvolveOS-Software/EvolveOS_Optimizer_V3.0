@@ -147,15 +147,19 @@ namespace EvolveOS_Optimizer.Views
                 if (_cts.Token.IsCancellationRequested) return;
 
                 string? avatarPath = _systemDiagnostics.GetProfileAvatarPath();
-                if (!string.IsNullOrEmpty(avatarPath))
+
+                if (string.IsNullOrEmpty(avatarPath) || !File.Exists(avatarPath))
                 {
-                    _dispatcherQueue.TryEnqueue(() =>
-                    {
-                        if (_cts.Token.IsCancellationRequested) return;
-                        try { DisplayProfileAvatar.Source = new BitmapImage(new Uri(avatarPath)); }
-                        catch { }
-                    });
+                    avatarPath = Path.Combine(AppContext.BaseDirectory, "Resources", "EvolveOSLogo.png");
                 }
+
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    if (_cts.Token.IsCancellationRequested) return;
+                    try { DisplayProfileAvatar.Source = new BitmapImage(new Uri(avatarPath)); }
+                    catch { }
+                });
+
             }, _cts.Token);
 
             string? validUser = string.Empty;
