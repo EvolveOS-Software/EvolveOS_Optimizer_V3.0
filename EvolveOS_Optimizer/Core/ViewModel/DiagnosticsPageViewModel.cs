@@ -2642,11 +2642,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 tempPointsToProcess = downsampledTemp;
             }
 
-            double pixelsPerStep = pointsToProcess.Count > 1 ? logicalWidth / (pointsToProcess.Count - 1) : 0;
+            int intervals = Math.Max(0, pointsToShow - 1);
+            double occupiedWidth = MaxGraphSeconds > 0 ? logicalWidth * ((double)intervals / MaxGraphSeconds) : logicalWidth;
+            double startX = logicalWidth - occupiedWidth;
+
+            double pixelsPerStep = pointsToProcess.Count > 1 ? occupiedWidth / (pointsToProcess.Count - 1) : 0;
 
             if (!IsGraphingTemperature)
             {
-                double currentX = 0;
+                double currentX = startX;
                 foreach (var yVal in pointsToProcess)
                 {
                     newPoints.Add(new Point(currentX, yVal));
@@ -2662,7 +2666,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             else
             {
-                double currentTempX = 0;
+                double currentTempX = startX;
                 foreach (var tVal in tempPointsToProcess)
                 {
                     if (tVal > 0)
@@ -2692,7 +2696,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (useAlt)
             {
-                double currentAltX = 0;
+                double currentAltX = startX;
                 foreach (var yVal in altPointsToProcess)
                 {
                     newPointsAlt.Add(new Point(currentAltX, yVal));
