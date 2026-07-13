@@ -162,6 +162,19 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         #region Core Methods
 
+        private static bool IsProcessRunning(int processId)
+        {
+            try
+            {
+                using Process process = Process.GetProcessById(processId);
+                return !process.HasExited;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
         private static bool ImpersonateSystem()
         {
             IntPtr tokenHandle = IntPtr.Zero;
@@ -195,7 +208,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
-        internal static async System.Threading.Tasks.Task StartTrustedInstallerServiceAsync()
+        internal static async Task StartTrustedInstallerServiceAsync()
         {
             try
             {
@@ -245,7 +258,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                     int waitTime = (int)statusBuffer.dwWaitHint / 10;
                     waitTime = Math.Clamp(waitTime, 500, 5000);
-                    await System.Threading.Tasks.Task.Delay(waitTime);
+                    await Task.Delay(waitTime);
                 }
 
                 CloseServiceHandle(hService);
@@ -260,6 +273,13 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         internal static int CreateProcessAsTrustedInstaller(int parentProcessId, string binaryPath, bool showWindow = false)
         {
+            if (!IsProcessRunning(parentProcessId))
+            {
+                Task.Run(async () => await StartTrustedInstallerServiceAsync()).GetAwaiter().GetResult();
+
+                parentProcessId = CommandExecutor.PID;
+            }
+
             if (!ImpersonateSystem()) return 0;
 
             var siEx = new STARTUPINFOEX();
