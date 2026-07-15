@@ -1488,11 +1488,11 @@
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_cpu}" IsChecked="{x:Bind ViewModel.IsCpuSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_gpu}" IsChecked="{x:Bind ViewModel.IsGpuSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_ram}" IsChecked="{x:Bind ViewModel.IsRamSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
-                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_sys}" IsChecked="{x:Bind ViewModel.IsMoboSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
+                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_sys}" IsChecked="{x:Bind ViewModel.IsMoboSelected, Mode=TwoWay}" Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
                                                             </StackPanel>
 
                                                             <StackPanel Orientation="Horizontal" Margin="36,0,0,0" Spacing="8">
-                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_network}" IsChecked="{x:Bind ViewModel.IsNetworkSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="65" FontSize="11" FontWeight="SemiBold"/>
+                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_network}" IsChecked="{x:Bind ViewModel.IsNetworkSelected, Mode=TwoWay}"  Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}" CornerRadius="4" MinWidth="65" FontSize="11" FontWeight="SemiBold"/>
                                                                 <Button x:Name="DnsToolkitButton"
                                                                         Click="DnsToolkitButton_Click"
                                                                         Visibility="{x:Bind ViewModel.IsNetworkSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
@@ -1502,17 +1502,32 @@
                                                                         <TextBlock Text="DNS OPTIMIZER" FontSize="11" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                     </StackPanel>
                                                                 </Button>
-                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_disk}" IsChecked="{x:Bind ViewModel.IsDiskSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
+                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_disk}" IsChecked="{x:Bind ViewModel.IsDiskSelected, Mode=TwoWay}"  Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
                                                                 <ToggleButton x:Name="DiskDetailsToggle" Content="Storage Info" IsChecked="{x:Bind ViewModel.IsStorageInfoSelected, Mode=TwoWay}"
                                                                       Visibility="{x:Bind ViewModel.IsDiskSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
                                                                       CornerRadius="4" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemAccentColor}"/>
-                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_page}" IsChecked="{x:Bind ViewModel.IsPageSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
+                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_page}" IsChecked="{x:Bind ViewModel.IsPageSelected, Mode=TwoWay}"  Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
 
                                                             </StackPanel>
 
                                                         </toolkit:WrapPanel>
 
-                                                        <ComboBox Grid.Column="1" ItemsSource="{x:Bind ViewModel.TimeScaleOptions}" DisplayMemberPath="Title" SelectedValuePath="Seconds" SelectedValue="{x:Bind ViewModel.MaxGraphSeconds, Mode=TwoWay}" Width="120" Height="28" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#11FFFFFF" BorderBrush="#33FFFFFF" Margin="15,0,0,0" />
+                                                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Spacing="10" Margin="15,0,0,0">
+                                                            <ToggleSwitch IsOn="{x:Bind ViewModel.IsGraphingTemperature, Mode=TwoWay}"
+                                                                          OffContent="LOAD" OnContent="TEMP" MinWidth="0"
+                                                                          FontSize="10" FontFamily="{ThemeResource Jura}"
+                                                                          VerticalAlignment="Center" Margin="0,0,0,0"/>
+
+                                                            <ComboBox ItemsSource="{x:Bind ViewModel.TimeScaleOptions}"
+                                                                      DisplayMemberPath="Title" SelectedValuePath="Seconds"
+                                                                      SelectedValue="{x:Bind ViewModel.MaxGraphSeconds, Mode=TwoWay}"
+                                                                      Width="120"
+                                                                      Height="28"
+                                                                      FontSize="11"
+                                                                      Background="#11FFFFFF"
+                                                                      BorderBrush="#33FFFFFF"
+                                                                      VerticalAlignment="Center"/>
+                                                        </StackPanel>
                                                     </Grid>
                                                     <Grid Grid.Row="1">
 
@@ -1546,16 +1561,16 @@
                                                                     <Canvas Width="400" Height="100">
                                                                         <Polygon Points="{x:Bind ViewModel.PerformanceAreaPoints, Mode=OneWay}" Fill="{StaticResource Brush_GraphGradientFill}"
                                                                                  Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                                                        <Polyline Points="{x:Bind ViewModel.PerformanceGraphPoints, Mode=OneWay}" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="2"
+                                                                        <Polyline Points="{x:Bind ViewModel.PerformanceGraphPoints, Mode=OneWay}" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1"
                                                                                   Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                                                                         <Polygon Points="{x:Bind ViewModel.TemperatureAreaPoints, Mode=OneWay}" Fill="{StaticResource Brush_TempGraphGradientFill}"
                                                                                  Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                                                        <Polyline Points="{x:Bind ViewModel.TemperatureGraphPoints, Mode=OneWay}" Stroke="#FFFF9900" StrokeThickness="2"
+                                                                        <Polyline Points="{x:Bind ViewModel.TemperatureGraphPoints, Mode=OneWay}" Stroke="#FFFF9900" StrokeThickness="1"
                                                                                   Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
                                                                     </Canvas>
                                                                 </Viewbox>
-                                                                <Viewbox HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,35" Canvas.ZIndex="10" Stretch="Uniform" StretchDirection="DownOnly">
+                                                                <Viewbox HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,20" Canvas.ZIndex="10" Stretch="Uniform" StretchDirection="DownOnly">
                                                                     <Border Padding="10,8" Background="{ThemeResource Brush_Overlay_Dim}" BorderBrush="{ThemeResource MyDynamicAccentBrush}" BorderThickness="1" CornerRadius="4" UseLayoutRounding="True">
                                                                         <Grid ColumnSpacing="15">
                                                                             <Grid.ColumnDefinitions>
@@ -1585,11 +1600,6 @@
                                                                                    Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="10"
                                                                                    FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
 
-                                                                                <ToggleSwitch IsOn="{x:Bind ViewModel.IsGraphingTemperature, Mode=TwoWay}"
-                                                                                              Visibility="{x:Bind ViewModel.ActiveTemperatureVisibility, Mode=OneWay}"
-                                                                                              OffContent="LOAD" OnContent="TEMP" MinWidth="0"
-                                                                                              FontSize="10" FontFamily="{ThemeResource Jura}"
-                                                                                              Margin="0,15,0,-5" HorizontalAlignment="Center"/>
                                                                             </StackPanel>
 
                                                                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="8">
@@ -1632,6 +1642,9 @@
 
                                                                                 <!-- MOBO (System): Temp Only -->
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.MoboSecondaryVisibility, Mode=OneWay}">
+                                                                                    <StackPanel Orientation="Vertical" Spacing="0" Margin="0,0,35,0">
+                                                                                        <TextBlock Text="SYS:" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
+                                                                                    </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
                                                                                         <TextBlock Text="TEMP" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
                                                                                         <TextBlock Text="{x:Bind ViewModel.MoboTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="11" FontWeight="Bold"/>
