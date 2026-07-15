@@ -27,6 +27,10 @@ namespace EvolveOS_Optimizer.Pages
         #region Fields
         private GridViewItem? _draggedWrapper;
         private GridViewItem? _targetWrapper;
+        private GridViewItem? _activeDraggedItem = null;
+        private GridViewItem? _hoveredTargetItem = null;
+        private bool _isTrackingDrag = false;
+        private Windows.Foundation.Point _dragStartPoint;
 
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
         private readonly DispatcherQueue _dispatcherQueue;
@@ -105,6 +109,7 @@ namespace EvolveOS_Optimizer.Pages
                 LoadWeather();
                 LoadDashboardLayout();
                 DashboardDragCursor();
+                AttachDragHandlers();
                 UpdateDnsCardUI();
 
                 _ = CalculateSystemHealthAsync();
@@ -1157,45 +1162,40 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void DashboardGridView_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+        private void AttachDragHandlers()
         {
-            if (e.Items.Count > 0)
+            foreach (var item in DashboardGridView.Items)
             {
-                _draggedWrapper = DashboardGridView.ContainerFromItem(e.Items[0]) as GridViewItem;
-
-                if (_draggedWrapper == null && e.Items[0] is GridViewItem gvi)
+                if (item is GridViewItem gvi && gvi.Content is Border border)
                 {
-                    _draggedWrapper = gvi;
-                }
+                    border.DragStarting -= Card_DragStarting;
+                    border.Drop -= Card_Drop;
 
-                if (_draggedWrapper == null && e.Items[0] is FrameworkElement fe)
-                {
-                    _draggedWrapper = DashboardGridView.Items.OfType<GridViewItem>()
-                        .FirstOrDefault(i => (i.Content as FrameworkElement) == fe || i == fe);
+                    border.DragStarting += Card_DragStarting;
+                    border.Drop += Card_Drop;
                 }
-
-                if (_draggedWrapper != null)
-                {
-                    e.Data.SetText("Swap");
-                    e.Data.RequestedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move;
-                    Debug.WriteLine($"[Drag] SUCCESS: Started dragging {(_draggedWrapper.Content as FrameworkElement)?.Name}");
-                }
-                else
-                {
-                    Debug.WriteLine("[Drag] ERROR: Could not identify the dragged wrapper.");
-                }
-            }
-
-            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
-            {
-                panel.IsDragInProgress = true;
             }
         }
 
-        private void DashboardGridView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        private void Card_DragStarting(UIElement sender, DragStartingEventArgs args)
         {
-            Debug.WriteLine($"[Drag] Final Check - Dragged: {_draggedWrapper != null}, Target: {_targetWrapper != null}");
+            if (sender is FrameworkElement fe)
+            {
+                _draggedWrapper = DashboardGridView.Items.OfType<GridViewItem>()
+                    .FirstOrDefault(i => (i.Content as FrameworkElement) == fe);
 
+                args.Data.SetText("Swap");
+                args.Data.RequestedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move;
+
+                if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+                {
+                    panel.IsDragInProgress = true;
+                }
+            }
+        }
+
+        private void Card_Drop(object sender, DragEventArgs e)
+        {
             if (_draggedWrapper != null && _targetWrapper != null && _draggedWrapper != _targetWrapper)
             {
                 int oldIndex = DashboardGridView.Items.IndexOf(_draggedWrapper);
@@ -1203,8 +1203,6 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (oldIndex != -1 && newIndex != -1)
                 {
-                    Debug.WriteLine($"[Drag] EXECUTING TRUE SWAP: {oldIndex} <-> {newIndex}");
-
                     int firstIndex = Math.Min(oldIndex, newIndex);
                     int secondIndex = Math.Max(oldIndex, newIndex);
 
@@ -1229,6 +1227,8 @@ namespace EvolveOS_Optimizer.Pages
                 panel.IsDragInProgress = false;
                 panel.InvalidateMeasure();
             }
+
+            e.Handled = true;
         }
 
         private void Card_DragOver(object sender, DragEventArgs e)
@@ -1378,15 +1378,6 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void DashCard_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            if (sender is Border card)
-            {
-                card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorSecondaryBrush"];
-                FactoryAnimation.AnimateCardScale(card, 1.01);
-            }
-        }
-
         private void DashCard_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (sender is Border card)
@@ -1395,12 +1386,104 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     card.Background = (Brush)tertiaryBrush;
                 }
-                else if (Application.Current.Resources.TryGetValue("CardBackgroundFillColorSecondaryBrush", out object secondaryBrush))
-                {
-                    card.Background = (Brush)secondaryBrush;
-                }
 
-                FactoryAnimation.AnimateCardScale(card, 0.98);
+                var container = DashboardGridView.Items.OfType<GridViewItem>()
+                    .FirstOrDefault(i => (i.Content as Border) == card);
+
+                if (container != null)
+                {
+                    _activeDraggedItem = container;
+                    _hoveredTargetItem = null;
+                    _isTrackingDrag = false;
+                    _dragStartPoint = e.GetCurrentPoint(DashboardGridView).Position;
+                    card.CapturePointer(e.Pointer);
+                }
+            }
+        }
+
+        private void DashCard_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (_activeDraggedItem == null || sender is not Border card) return;
+
+            var currentPoint = e.GetCurrentPoint(DashboardGridView).Position;
+            double deltaX = Math.Abs(currentPoint.X - _dragStartPoint.X);
+            double deltaY = Math.Abs(currentPoint.Y - _dragStartPoint.Y);
+
+            if (!_isTrackingDrag && (deltaX > 4 || deltaY > 4))
+            {
+                _isTrackingDrag = true;
+                if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+                {
+                    panel.IsDragInProgress = true;
+                }
+            }
+
+            if (_isTrackingDrag)
+            {
+                _hoveredTargetItem = null;
+
+                foreach (var item in DashboardGridView.Items.OfType<GridViewItem>())
+                {
+                    if (item == _activeDraggedItem) continue;
+
+                    var transform = item.TransformToVisual(DashboardGridView);
+                    var bounds = transform.TransformBounds(new Windows.Foundation.Rect(0, 0, item.ActualWidth, item.ActualHeight));
+
+                    if (bounds.Contains(currentPoint))
+                    {
+                        _hoveredTargetItem = item;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void DashCard_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Border card)
+            {
+                card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"];
+                card.ReleasePointerCapture(e.Pointer);
+            }
+
+            if (_isTrackingDrag && _activeDraggedItem != null && _hoveredTargetItem != null)
+            {
+                int oldIndex = DashboardGridView.Items.IndexOf(_activeDraggedItem);
+                int newIndex = DashboardGridView.Items.IndexOf(_hoveredTargetItem);
+
+                if (oldIndex != -1 && newIndex != -1)
+                {
+                    var item1 = DashboardGridView.Items[oldIndex];
+                    var item2 = DashboardGridView.Items[newIndex];
+
+                    if (oldIndex < newIndex)
+                    {
+                        DashboardGridView.Items.RemoveAt(newIndex);
+                        DashboardGridView.Items.RemoveAt(oldIndex);
+                        DashboardGridView.Items.Insert(oldIndex, item2);
+                        DashboardGridView.Items.Insert(newIndex, item1);
+                    }
+                    else
+                    {
+                        DashboardGridView.Items.RemoveAt(oldIndex);
+                        DashboardGridView.Items.RemoveAt(newIndex);
+                        DashboardGridView.Items.Insert(newIndex, item1);
+                        DashboardGridView.Items.Insert(oldIndex, item2);
+                    }
+
+                    SaveDashboardLayout();
+                }
+            }
+
+            _activeDraggedItem = null;
+            _hoveredTargetItem = null;
+            _isTrackingDrag = false;
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.IsDragInProgress = false;
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
             }
         }
         #endregion

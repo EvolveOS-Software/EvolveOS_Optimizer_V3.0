@@ -32,7 +32,6 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="IsHitTestVisible" Value="True"/>
             <Setter Property="IsSelected" Value="False"/>
-            <Setter Property="AllowDrop" Value="True"/>
             <Setter Property="Margin" Value="0"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Template">
@@ -40,10 +39,10 @@
                     <ControlTemplate TargetType="GridViewItem">
                         <Grid Background="Transparent" AllowDrop="True">
                             <ContentPresenter x:Name="ContentPresenter"
-                                              ContentTransitions="{TemplateBinding ContentTransitions}"
-                                              Content="{TemplateBinding Content}"
-                                              HorizontalAlignment="Stretch"
-                                              VerticalAlignment="Stretch" />
+                                      ContentTransitions="{TemplateBinding ContentTransitions}"
+                                      Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch" />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -229,18 +228,13 @@
         </Grid>
 
         <GridView x:Name="DashboardGridView"
-                  Grid.Row="1"
-                  Margin="0,0,0,-20"
-                  Padding="0,0,0,0"
-                  SelectionMode="None"
-                  CanReorderItems="False"
-                  CanDragItems="True"
-                  AllowDrop="True"
-                  DragItemsStarting="DashboardGridView_DragItemsStarting"
-                  DragItemsCompleted="DashboardGridView_DragItemsCompleted"
-                  ItemContainerStyle="{StaticResource CleanGridViewItemStyle}"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch">
+          Grid.Row="1"
+          Margin="0,0,0,-20"
+          Padding="0"
+          SelectionMode="None"
+          ItemContainerStyle="{StaticResource CleanGridViewItemStyle}"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
 
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -249,8 +243,8 @@
             </GridView.ItemsPanel>
 
             <GridViewItem>
-                <Border x:Name="CardWeather" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardWeather" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -345,8 +339,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardGamingMode" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardGamingMode" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
                     <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
                         <Grid Grid.Row="0" Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
@@ -401,8 +395,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardNetwork" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardNetwork" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -459,8 +453,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardRam" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Height="220" Padding="15" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardRam" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Height="220" Padding="15" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -480,8 +474,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardCpu" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardCpu" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
                     <StackPanel Spacing="12">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <FontIcon Glyph="&#xE950;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
@@ -495,8 +489,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardGpu" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardGpu" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
                     <StackPanel Spacing="12">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <FontIcon Glyph="&#xEC06;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
@@ -517,10 +511,11 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardDisk" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter"
+                <Border x:Name="CardDisk" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter"
                         Style="{StaticResource DashCard}"
                         Padding="15"
                         Margin="0"
+                        PointerMoved="DashCard_PointerMoved"
                         PointerEntered="DashCard_PointerEntered"
                         PointerExited="DashCard_PointerExited"
                         PointerPressed="DashCard_PointerPressed"
@@ -590,8 +585,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardDns" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardDns" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
                     <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
                         <Grid Grid.Row="0" Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
@@ -624,8 +619,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardMaintenance" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardMaintenance" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
                     <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
                         <Grid Grid.Row="0" Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
@@ -664,8 +659,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardSecurity" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardSecurity" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
                     <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
 
                         <Grid Grid.Row="0" Margin="0,0,0,10">
@@ -740,8 +735,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardCpuGraph" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardCpuGraph" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
 
                     <Grid>
                         <Grid.RowDefinitions>
@@ -845,8 +840,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardRamGraph" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardRamGraph" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
 
                     <Grid>
                         <Grid.RowDefinitions>
@@ -948,8 +943,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardNetworkGraph" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardNetworkGraph" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
 
                     <Grid>
                         <Grid.RowDefinitions>
@@ -1079,8 +1074,8 @@
             </GridViewItem>
 
             <GridViewItem>
-                <Border x:Name="CardGpuGraph" AllowDrop="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
-                        PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
+                <Border x:Name="CardGpuGraph" AllowDrop="True" CanDrag="True" DragOver="Card_DragOver" DragEnter="Card_DragEnter" Style="{StaticResource DashCard}" Padding="15" Margin="0"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerReleased">
 
                     <Grid>
                         <Grid.RowDefinitions>
