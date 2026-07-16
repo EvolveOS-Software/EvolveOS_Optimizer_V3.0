@@ -101,6 +101,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private DateTime _lastRamNotification = DateTime.MinValue;
         private DateTime _lastPagefileNotification = DateTime.MinValue;
         private DateTime _lastEventNotification = DateTime.MinValue;
+
+        private DateTime _lastWarningTime = DateTime.MinValue;
         #endregion
 
         #region Fields (Maintenance)
@@ -3643,6 +3645,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float memTemp = _cachedMemTemp;
                 float moboTemp = _cachedMoboTemp;
 
+                EvaluateThermalLimits((int)cpuTemp, (int)gpuTemp, (int)memTemp, (int)moboTemp);
+
                 _cpuTempHistoryBuffer.Add(cpuTemp <= 0f ? -1 : cpuTemp);
                 _gpuTempHistoryBuffer.Add(gpuTemp <= 0f ? -1 : gpuTemp);
                 _ramTempHistoryBuffer.Add(memTemp <= 0f ? -1 : memTemp);
@@ -3818,6 +3822,47 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             }
             catch { }
+        }
+
+        private void EvaluateThermalLimits(int cpuTemp, int gpuTemp, int ramTemp, int moboTemp)
+        {
+            if (LocalMachineSettingsEngine.EnableThermalShutdown)
+            {
+                bool triggerShutdown = false;
+                string shutdownReason = "";
+
+                if (cpuTemp >= LocalMachineSettingsEngine.CpuMaxTemp) { triggerShutdown = true; shutdownReason = $"CPU ({cpuTemp}°C)"; }
+                else if (gpuTemp >= LocalMachineSettingsEngine.GpuMaxTemp) { triggerShutdown = true; shutdownReason = $"GPU ({gpuTemp}°C)"; }
+                else if (ramTemp >= LocalMachineSettingsEngine.RamMaxTemp) { triggerShutdown = true; shutdownReason = $"RAM ({ramTemp}°C)"; }
+                else if (moboTemp >= LocalMachineSettingsEngine.MoboMaxTemp) { triggerShutdown = true; shutdownReason = $"System ({moboTemp}°C)"; }
+
+                if (triggerShutdown)
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("shutdown", $"/s /t 0 /c \"EvolveOS Emergency Thermal Protection: {shutdownReason} exceeded maximum limit.\"")
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = true
+                    });
+                    return;
+                }
+            }
+
+            if (LocalMachineSettingsEngine.EnableThermalWarnings)
+            {
+                if ((DateTime.Now - _lastWarningTime).TotalMinutes < 5) return;
+
+                bool warningSent = false;
+
+                if (cpuTemp >= LocalMachineSettingsEngine.CpuWarningTemp) { SendSystemNotification(2, "Thermal Warning", $"CPU is running hot at {cpuTemp}°C."); warningSent = true; }
+                if (gpuTemp >= LocalMachineSettingsEngine.GpuWarningTemp) { SendSystemNotification(2, "Thermal Warning", $"GPU is running hot at {gpuTemp}°C."); warningSent = true; }
+                if (ramTemp >= LocalMachineSettingsEngine.RamWarningTemp) { SendSystemNotification(2, "Thermal Warning", $"RAM is running hot at {ramTemp}°C."); warningSent = true; }
+                if (moboTemp >= LocalMachineSettingsEngine.MoboWarningTemp) { SendSystemNotification(2, "Thermal Warning", $"System temperature is elevated at {moboTemp}°C."); warningSent = true; }
+
+                if (warningSent)
+                {
+                    _lastWarningTime = DateTime.Now;
+                }
+            }
         }
 
         private PointCollection GenerateTrayPoints(

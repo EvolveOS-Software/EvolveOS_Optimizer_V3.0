@@ -1,0 +1,49 @@
+<ContentDialog
+    x:Class="EvolveOS_Optimizer.Dialogs.ThermalSettingsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    Title="Thermal Protection Settings"
+    PrimaryButtonText="Save"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary"
+    Style="{StaticResource DefaultContentDialogStyle}"
+    PrimaryButtonClick="ThermalSettingsDialog_PrimaryButtonClick"
+    mc:Ignorable="d">
+
+    <StackPanel Spacing="16" MinWidth="350" Margin="0,8,0,0">
+
+        <TextBlock Text="Configure alerts and emergency shutdowns to protect your hardware." TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+        <Grid ColumnDefinitions="*,*">
+            <ToggleSwitch x:Name="ToggleWarnings" Header="Enable Notifications" />
+            <ToggleSwitch x:Name="ToggleShutdown" Grid.Column="1" Header="Enable Auto-Shutdown" />
+        </Grid>
+
+        <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="100, *, *">
+                <TextBlock Text="CPU" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <NumberBox x:Name="NumCpuWarn" Grid.Column="1" Header="Warning (°C)" Margin="0,0,10,0" SpinButtonPlacementMode="Compact"/>
+                <NumberBox x:Name="NumCpuMax" Grid.Column="2" Header="Shutdown (°C)" SpinButtonPlacementMode="Compact"/>
+            </Grid>
+            <Grid ColumnDefinitions="100, *, *">
+                <TextBlock Text="GPU" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <NumberBox x:Name="NumGpuWarn" Grid.Column="1" Margin="0,0,10,0" SpinButtonPlacementMode="Compact"/>
+                <NumberBox x:Name="NumGpuMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
+            </Grid>
+            <Grid ColumnDefinitions="100, *, *">
+                <TextBlock Text="RAM" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <NumberBox x:Name="NumRamWarn" Grid.Column="1" Margin="0,0,10,0" SpinButtonPlacementMode="Compact"/>
+                <NumberBox x:Name="NumRamMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
+            </Grid>
+            <Grid ColumnDefinitions="100, *, *">
+                <TextBlock Text="System" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <NumberBox x:Name="NumMoboWarn" Grid.Column="1" Margin="0,0,10,0" SpinButtonPlacementMode="Compact"/>
+                <NumberBox x:Name="NumMoboMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
+            </Grid>
+        </StackPanel>
+
+    </StackPanel>
+</ContentDialog>

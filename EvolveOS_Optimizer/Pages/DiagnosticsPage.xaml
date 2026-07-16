@@ -1518,6 +1518,16 @@
                                                                           FontSize="10" FontFamily="{ThemeResource Jura}"
                                                                           VerticalAlignment="Center" Margin="0,0,0,0"/>
 
+                                                            <Button x:Name="BtnThermalSettings"
+                                                                    Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                                    Click="BtnThermalSettings_Click"
+                                                                    Background="Transparent"
+                                                                    BorderThickness="0"
+                                                                    VerticalAlignment="Center"
+                                                                    ToolTipService.ToolTip="Thermal Limits &amp; Protection">
+                                                                <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                            </Button>
+
                                                             <ComboBox ItemsSource="{x:Bind ViewModel.TimeScaleOptions}"
                                                                       DisplayMemberPath="Title" SelectedValuePath="Seconds"
                                                                       SelectedValue="{x:Bind ViewModel.MaxGraphSeconds, Mode=TwoWay}"

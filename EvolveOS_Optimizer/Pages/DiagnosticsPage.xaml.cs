@@ -1087,6 +1087,16 @@ namespace EvolveOS_Optimizer.Pages
 
             UpdateDriverButtonStates();
         }
+
+        private async void BtnThermalSettings_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Dialogs.ThermalSettingsDialog
+            {
+                XamlRoot = this.XamlRoot
+            };
+
+            await dialog.ShowAsync();
+        }
         #endregion
 
         #region AI Event Log Explainer

@@ -543,7 +543,18 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["FindHotkeyModifier"] = (int)(VirtualKeyModifiers.Control),
             ["FindHotkeyKey"] = (int)VirtualKey.F,
             ["HideRegistryWarning"] = false,
-            ["HidePawnIoPrompt"] = false
+            ["HidePawnIoPrompt"] = false,
+
+            ["EnableThermalWarnings"] = false,
+            ["EnableThermalShutdown"] = false,
+            ["CpuWarningTemp"] = 80,
+            ["CpuMaxTemp"] = 95,
+            ["GpuWarningTemp"] = 80,
+            ["GpuMaxTemp"] = 95,
+            ["RamWarningTemp"] = 65,
+            ["RamMaxTemp"] = 80,
+            ["MoboWarningTemp"] = 60,
+            ["MoboMaxTemp"] = 80
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -598,6 +609,17 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static int FindHotkeyKey { get => (int)_cachedSettings["FindHotkeyKey"]; set => ChangingParameters("FindHotkeyKey", value); }
         internal static bool HideRegistryWarning { get => (bool)_cachedSettings["HideRegistryWarning"]; set => ChangingParameters("HideRegistryWarning", value); }
         internal static bool HidePawnIoPrompt { get => (bool)_cachedSettings["HidePawnIoPrompt"]; set => ChangingParameters("HidePawnIoPrompt", value); }
+
+        internal static bool EnableThermalWarnings { get => (bool)_cachedSettings["EnableThermalWarnings"]; set => ChangingParameters("EnableThermalWarnings", value); }
+        internal static bool EnableThermalShutdown { get => (bool)_cachedSettings["EnableThermalShutdown"]; set => ChangingParameters("EnableThermalShutdown", value); }
+        internal static int CpuWarningTemp { get => (int)_cachedSettings["CpuWarningTemp"]; set => ChangingParameters("CpuWarningTemp", value); }
+        internal static int CpuMaxTemp { get => (int)_cachedSettings["CpuMaxTemp"]; set => ChangingParameters("CpuMaxTemp", value); }
+        internal static int GpuWarningTemp { get => (int)_cachedSettings["GpuWarningTemp"]; set => ChangingParameters("GpuWarningTemp", value); }
+        internal static int GpuMaxTemp { get => (int)_cachedSettings["GpuMaxTemp"]; set => ChangingParameters("GpuMaxTemp", value); }
+        internal static int RamWarningTemp { get => (int)_cachedSettings["RamWarningTemp"]; set => ChangingParameters("RamWarningTemp", value); }
+        internal static int RamMaxTemp { get => (int)_cachedSettings["RamMaxTemp"]; set => ChangingParameters("RamMaxTemp", value); }
+        internal static int MoboWarningTemp { get => (int)_cachedSettings["MoboWarningTemp"]; set => ChangingParameters("MoboWarningTemp", value); }
+        internal static int MoboMaxTemp { get => (int)_cachedSettings["MoboMaxTemp"]; set => ChangingParameters("MoboMaxTemp", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)
