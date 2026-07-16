@@ -3831,14 +3831,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 bool triggerShutdown = false;
                 string shutdownReason = "";
 
-                if (cpuTemp >= LocalMachineSettingsEngine.CpuMaxTemp) { triggerShutdown = true; shutdownReason = $"CPU ({cpuTemp}°C)"; }
-                else if (gpuTemp >= LocalMachineSettingsEngine.GpuMaxTemp) { triggerShutdown = true; shutdownReason = $"GPU ({gpuTemp}°C)"; }
-                else if (ramTemp >= LocalMachineSettingsEngine.RamMaxTemp) { triggerShutdown = true; shutdownReason = $"RAM ({ramTemp}°C)"; }
-                else if (moboTemp >= LocalMachineSettingsEngine.MoboMaxTemp) { triggerShutdown = true; shutdownReason = $"System ({moboTemp}°C)"; }
+                if (cpuTemp >= LocalMachineSettingsEngine.CpuMaxTemp) { triggerShutdown = true; shutdownReason = $"{ResourceString.GetString("thermal_dialog_lbl_cpu") ?? "CPU"} ({cpuTemp}°C)"; }
+                else if (gpuTemp >= LocalMachineSettingsEngine.GpuMaxTemp) { triggerShutdown = true; shutdownReason = $"{ResourceString.GetString("thermal_dialog_lbl_gpu") ?? "GPU"} ({gpuTemp}°C)"; }
+                else if (ramTemp >= LocalMachineSettingsEngine.RamMaxTemp) { triggerShutdown = true; shutdownReason = $"{ResourceString.GetString("thermal_dialog_lbl_ram") ?? "RAM"} ({ramTemp}°C)"; }
+                else if (moboTemp >= LocalMachineSettingsEngine.MoboMaxTemp) { triggerShutdown = true; shutdownReason = $"{ResourceString.GetString("thermal_dialog_lbl_system") ?? "System"} ({moboTemp}°C)"; }
 
                 if (triggerShutdown)
                 {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("shutdown", $"/s /t 0 /c \"EvolveOS Emergency Thermal Protection: {shutdownReason} exceeded maximum limit.\"")
+                    string shutdownFormat = ResourceString.GetString("diag_thermal_emergency_shutdown")
+                        ?? "EvolveOS Emergency Thermal Protection: {0} exceeded maximum limit.";
+
+                    Process.Start(new ProcessStartInfo("shutdown", $"/s /t 0 /c \"{string.Format(shutdownFormat, shutdownReason)}\"")
                     {
                         CreateNoWindow = true,
                         UseShellExecute = true
@@ -3852,11 +3855,32 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if ((DateTime.Now - _lastWarningTime).TotalMinutes < 5) return;
 
                 bool warningSent = false;
+                string warningTitle = ResourceString.GetString("diag_thermal_warning_title") ?? "Thermal Warning";
 
-                if (cpuTemp >= LocalMachineSettingsEngine.CpuWarningTemp) { SendSystemNotification(2, "Thermal Warning", $"CPU is running hot at {cpuTemp}°C."); warningSent = true; }
-                if (gpuTemp >= LocalMachineSettingsEngine.GpuWarningTemp) { SendSystemNotification(2, "Thermal Warning", $"GPU is running hot at {gpuTemp}°C."); warningSent = true; }
-                if (ramTemp >= LocalMachineSettingsEngine.RamWarningTemp) { SendSystemNotification(2, "Thermal Warning", $"RAM is running hot at {ramTemp}°C."); warningSent = true; }
-                if (moboTemp >= LocalMachineSettingsEngine.MoboWarningTemp) { SendSystemNotification(2, "Thermal Warning", $"System temperature is elevated at {moboTemp}°C."); warningSent = true; }
+                if (cpuTemp >= LocalMachineSettingsEngine.CpuWarningTemp)
+                {
+                    string msgFormat = ResourceString.GetString("diag_thermal_warning_cpu") ?? "CPU is running hot at {0}°C.";
+                    SendSystemNotification(2, warningTitle, string.Format(msgFormat, cpuTemp));
+                    warningSent = true;
+                }
+                if (gpuTemp >= LocalMachineSettingsEngine.GpuWarningTemp)
+                {
+                    string msgFormat = ResourceString.GetString("diag_thermal_warning_gpu") ?? "GPU is running hot at {0}°C.";
+                    SendSystemNotification(2, warningTitle, string.Format(msgFormat, gpuTemp));
+                    warningSent = true;
+                }
+                if (ramTemp >= LocalMachineSettingsEngine.RamWarningTemp)
+                {
+                    string msgFormat = ResourceString.GetString("diag_thermal_warning_ram") ?? "RAM is running hot at {0}°C.";
+                    SendSystemNotification(2, warningTitle, string.Format(msgFormat, ramTemp));
+                    warningSent = true;
+                }
+                if (moboTemp >= LocalMachineSettingsEngine.MoboWarningTemp)
+                {
+                    string msgFormat = ResourceString.GetString("diag_thermal_warning_mobo") ?? "System temperature is elevated at {0}°C.";
+                    SendSystemNotification(2, warningTitle, string.Format(msgFormat, moboTemp));
+                    warningSent = true;
+                }
 
                 if (warningSent)
                 {

@@ -55,7 +55,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             var checkBox = new CheckBox
             {
-                Content = "Do not show this message again",
+                Content = ResourceString.GetString("dialog_pawnio_dont_show_again") ?? "Do not show this message again",
                 Margin = new Thickness(0, 15, 0, 0),
                 FontFamily = (Microsoft.UI.Xaml.Media.FontFamily)Application.Current.Resources["Jura"] ?? new Microsoft.UI.Xaml.Media.FontFamily("Segoe UI")
             };
@@ -63,7 +63,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             var stackPanel = new StackPanel();
             stackPanel.Children.Add(new TextBlock
             {
-                Text = "To read accurate, live temperatures for your CPU, Motherboard, and RAM, EvolveOS Optimizer requires the PawnIO hardware driver.\n\nThis is a secure, open-source driver that bypasses standard Windows kernel blocks to read your motherboard's thermal sensors directly. Would you like to install it now?",
+                Text = ResourceString.GetString("dialog_pawnio_message") ?? "To read accurate, live temperatures for your CPU, Motherboard, and RAM, EvolveOS Optimizer requires the PawnIO hardware driver.\n\nThis is a secure, open-source driver that bypasses standard Windows kernel blocks to read your motherboard's thermal sensors directly. Would you like to install it now?",
                 TextWrapping = TextWrapping.Wrap
             });
             stackPanel.Children.Add(checkBox);
@@ -71,10 +71,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             ContentDialog dialog = new ContentDialog
             {
                 XamlRoot = xamlRoot,
-                Title = "Advanced Hardware Monitoring",
+                Title = ResourceString.GetString("dialog_pawnio_title") ?? "Advanced Hardware Monitoring",
                 Content = stackPanel,
-                PrimaryButtonText = "Install Driver",
-                CloseButtonText = "Not Now",
+                PrimaryButtonText = ResourceString.GetString("dialog_pawnio_install_btn") ?? "Install Driver",
+                CloseButtonText = ResourceString.GetString("dialog_pawnio_cancel_btn") ?? "Not Now",
                 DefaultButton = ContentDialogButton.Primary
             };
 

@@ -5113,4 +5113,41 @@
     <sys:String x:Key="ProfileBuilder_LeaveReset">Verlaten &amp; resetten</sys:String>
     <sys:String x:Key="ProfileBuilder_StayHere">Blijf hier</sys:String>
     <!-- endregion Profile Builder -->
+
+    <!-- region Diagnostics Hardware Thermal Settings -->
+    <sys:String x:Key="pawnio_card_title">Geavanceerde Sensoren Stuurprogramma</sys:String>
+    <sys:String x:Key="pawnio_card_description">Beheer het PawnIO kernelstuurprogramma. Vereist voor diepgaande thermische tracking van CPU, RAM en moederbord.</sys:String>
+    <sys:String x:Key="pawnio_card_btn_install">Installeren</sys:String>
+    <sys:String x:Key="pawnio_card_btn_uninstall">Verwijderen</sys:String>
+    <sys:String x:Key="pawnio_card_tooltip_install">PawnIO stuurprogramma installeren</sys:String>
+    <sys:String x:Key="pawnio_card_tooltip_uninstall">PawnIO stuurprogramma verwijderen</sys:String>
+
+    <sys:String x:Key="dialog_pawnio_title">Geavanceerde hardwarebewaking</sys:String>
+    <sys:String x:Key="dialog_pawnio_message">Om nauwkeurige, live temperaturen voor uw CPU, moederbord en RAM te lezen, vereist EvolveOS Optimizer het PawnIO-hardwarestuurprogramma.&#x0a;&#x0a;Dit is een veilig, open-source stuurprogramma dat standaard Windows-kernelblokkades omzeilt om de thermische sensoren van uw moederbord rechtstreeks uit te lezen. Wilt u het nu installeren?</sys:String>
+    <sys:String x:Key="dialog_pawnio_dont_show_again">Dit bericht niet meer weergeven</sys:String>
+    <sys:String x:Key="dialog_pawnio_install_btn">Stuurprogramma installeren</sys:String>
+    <sys:String x:Key="dialog_pawnio_cancel_btn">Niet nu</sys:String>
+
+    <sys:String x:Key="thermal_dialog_title">Instellingen thermische beveiliging</sys:String>
+    <sys:String x:Key="thermal_dialog_primary_btn">Opslaan</sys:String>
+    <sys:String x:Key="thermal_dialog_close_btn">Annuleren</sys:String>
+    <sys:String x:Key="thermal_dialog_description">Configureer waarschuwingen en noodstops om uw hardware te beschermen.</sys:String>
+    <sys:String x:Key="thermal_dialog_header_notifications">Meldingen inschakelen</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown">Automatisch afsluiten inschakelen</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_cpu">CPU</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_gpu">GPU</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_ram">RAM</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_system">Systeem</sys:String>
+    <sys:String x:Key="thermal_dialog_header_warning">Waarschuwing (°C)</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Afsluiten (°C)</sys:String>
+
+    <sys:String x:Key="diag_tooltip_thermal_settings">Thermische limieten &amp; beveiliging</sys:String>
+
+    <sys:String x:Key="diag_thermal_warning_title">Thermische waarschuwing</sys:String>
+    <sys:String x:Key="diag_thermal_warning_cpu">CPU wordt heet: {0}°C.</sys:String>
+    <sys:String x:Key="diag_thermal_warning_gpu">GPU wordt heet: {0}°C.</sys:String>
+    <sys:String x:Key="diag_thermal_warning_ram">RAM wordt heet: {0}°C.</sys:String>
+    <sys:String x:Key="diag_thermal_warning_mobo">Systeemtemperatuur is verhoogd: {0}°C.</sys:String>
+    <sys:String x:Key="diag_thermal_emergency_shutdown">EvolveOS Thermische Noodbeveiliging: {0} heeft de maximumlimiet overschreden.</sys:String>
+    <!-- endregion Diagnostics Hardware Thermal Settings -->
 </ResourceDictionary>

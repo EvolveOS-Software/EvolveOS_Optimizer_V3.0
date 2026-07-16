@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
-    Title="Thermal Protection Settings"
-    PrimaryButtonText="Save"
-    CloseButtonText="Cancel"
+    Title="{helpers:ResourceString Key=thermal_dialog_title}"
+    PrimaryButtonText="{helpers:ResourceString Key=thermal_dialog_primary_btn}"
+    CloseButtonText="{helpers:ResourceString Key=thermal_dialog_close_btn}"
     DefaultButton="Primary"
     Style="{StaticResource DefaultContentDialogStyle}"
     PrimaryButtonClick="ThermalSettingsDialog_PrimaryButtonClick"
@@ -15,31 +15,31 @@
 
     <StackPanel Spacing="16" MinWidth="350" Margin="0,8,0,0">
 
-        <TextBlock Text="Configure alerts and emergency shutdowns to protect your hardware." TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+        <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_description}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
         <Grid ColumnDefinitions="*,*">
-            <ToggleSwitch x:Name="ToggleWarnings" Header="Enable Notifications" />
-            <ToggleSwitch x:Name="ToggleShutdown" Grid.Column="1" Header="Enable Auto-Shutdown" />
+            <ToggleSwitch x:Name="ToggleWarnings" Header="{helpers:ResourceString Key=thermal_dialog_header_notifications}" />
+            <ToggleSwitch x:Name="ToggleShutdown" Grid.Column="1" Header="{helpers:ResourceString Key=thermal_dialog_header_shutdown}" />
         </Grid>
 
         <StackPanel Spacing="10">
             <Grid ColumnDefinitions="100, *, *">
-                <TextBlock Text="CPU" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                <NumberBox x:Name="NumCpuWarn" Grid.Column="1" Header="Warning (°C)" Margin="0,0,10,0" SpinButtonPlacementMode="Compact"/>
-                <NumberBox x:Name="NumCpuMax" Grid.Column="2" Header="Shutdown (°C)" SpinButtonPlacementMode="Compact"/>
+                <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_cpu}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <NumberBox x:Name="NumCpuWarn" Grid.Column="1" Header="{helpers:ResourceString Key=thermal_dialog_header_warning}" Margin="0,0,10,0" SpinButtonPlacementMode="Compact"/>
+                <NumberBox x:Name="NumCpuMax" Grid.Column="2" Header="{helpers:ResourceString Key=thermal_dialog_header_shutdown_limit}" SpinButtonPlacementMode="Compact"/>
             </Grid>
             <Grid ColumnDefinitions="100, *, *">
-                <TextBlock Text="GPU" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_gpu}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                 <NumberBox x:Name="NumGpuWarn" Grid.Column="1" Margin="0,0,10,0" SpinButtonPlacementMode="Compact"/>
                 <NumberBox x:Name="NumGpuMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
             </Grid>
             <Grid ColumnDefinitions="100, *, *">
-                <TextBlock Text="RAM" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_ram}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                 <NumberBox x:Name="NumRamWarn" Grid.Column="1" Margin="0,0,10,0" SpinButtonPlacementMode="Compact"/>
                 <NumberBox x:Name="NumRamMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
             </Grid>
             <Grid ColumnDefinitions="100, *, *">
-                <TextBlock Text="System" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_system}" VerticalAlignment="Center" FontWeight="SemiBold"/>
                 <NumberBox x:Name="NumMoboWarn" Grid.Column="1" Margin="0,0,10,0" SpinButtonPlacementMode="Compact"/>
                 <NumberBox x:Name="NumMoboMax" Grid.Column="2" SpinButtonPlacementMode="Compact"/>
             </Grid>

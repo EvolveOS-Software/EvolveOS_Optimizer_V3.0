@@ -1053,7 +1053,7 @@
                                                                           FontFamily="{StaticResource Jura}" FontSize="12"/>
                                                             </Grid>
 
-                                                            <Border Background="#1A000000" BorderThickness="0,1,0,0" BorderBrush="#1AFFFFFF" Margin="-12,15,-12,0" Padding="12,15,12,5">
+                                                            <Border Background="Transparent" BorderThickness="0,1,0,0" BorderBrush="#1AFFFFFF" Margin="-12,15,-12,0" Padding="12,15,12,5">
                                                                 <Grid ColumnSpacing="15">
                                                                     <Grid.ColumnDefinitions>
                                                                         <ColumnDefinition Width="*"/>
@@ -1065,26 +1065,39 @@
                                                                             <RowDefinition Height="Auto"/>
                                                                             <RowDefinition Height="Auto"/>
                                                                         </Grid.RowDefinitions>
-                                                                        <TextBlock Grid.Row="0" Text="Advanced Sensors Driver" FontFamily="{StaticResource Jura}" FontWeight="SemiBold" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="13"/>
-                                                                        <TextBlock Grid.Row="1" Text="Manage the PawnIO kernel driver. Required for deep CPU, RAM, and Motherboard thermal tracking." FontSize="11" Opacity="0.7" TextWrapping="Wrap" Margin="0,2,0,0" MaxWidth="240" HorizontalAlignment="Left"/>
+                                                                        <TextBlock Grid.Row="0"
+                                                                                   Text="{helpers:ResourceString Key=pawnio_card_title}"
+                                                                                   FontFamily="{StaticResource Jura}"
+                                                                                   FontWeight="SemiBold"
+                                                                                   Foreground="{ThemeResource MyDynamicAccentBrush}"
+                                                                                   FontSize="13"
+                                                                                   TextWrapping="Wrap"/>
+
+                                                                        <TextBlock Grid.Row="1"
+                                                                                   Text="{helpers:ResourceString Key=pawnio_card_description}"
+                                                                                   FontSize="11"
+                                                                                   Opacity="0.7"
+                                                                                   TextWrapping="Wrap"
+                                                                                   Margin="0,2,0,0"
+                                                                                   HorizontalAlignment="Left"/>
                                                                     </Grid>
 
                                                                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Right">
 
                                                                         <Button x:Name="BtnInstallDriver"
-                                                                                Content="Install"
+                                                                                Content="{helpers:ResourceString Key=pawnio_card_btn_install}"
                                                                                 Click="InstallAdvancedSensorsButton_Click"
                                                                                 FontFamily="{StaticResource Jura}"
                                                                                 FontSize="11"
                                                                                 Padding="10,6"
                                                                                 Style="{StaticResource AccentButtonStyle}">
                                                                             <ToolTipService.ToolTip>
-                                                                                <TextBlock Text="Install PawnIO Driver" FontFamily="{StaticResource Jura}" />
+                                                                                <TextBlock Text="{helpers:ResourceString Key=pawnio_card_tooltip_install}" FontFamily="{StaticResource Jura}" />
                                                                             </ToolTipService.ToolTip>
                                                                         </Button>
 
                                                                         <Button x:Name="BtnUninstallDriver"
-                                                                                Content="Uninstall"
+                                                                                Content="{helpers:ResourceString Key=pawnio_card_btn_uninstall}"
                                                                                 Click="UninstallAdvancedSensorsButton_Click"
                                                                                 FontFamily="{StaticResource Jura}"
                                                                                 FontSize="11"
@@ -1094,10 +1107,10 @@
                                                                                 BorderBrush="#44FF3333"
                                                                                 Foreground="#FFFF6666">
                                                                             <ToolTipService.ToolTip>
-                                                                                <TextBlock Text="Remove PawnIO Driver" FontFamily="{StaticResource Jura}" />
+                                                                                <TextBlock Text="{helpers:ResourceString Key=pawnio_card_tooltip_uninstall}" FontFamily="{StaticResource Jura}" />
                                                                             </ToolTipService.ToolTip>
                                                                         </Button>
-                                                                        
+
                                                                     </StackPanel>
                                                                 </Grid>
                                                             </Border>
@@ -1524,7 +1537,7 @@
                                                                     Background="Transparent"
                                                                     BorderThickness="0"
                                                                     VerticalAlignment="Center"
-                                                                    ToolTipService.ToolTip="Thermal Limits &amp; Protection">
+                                                                    ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_thermal_settings}">
                                                                 <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                             </Button>
 

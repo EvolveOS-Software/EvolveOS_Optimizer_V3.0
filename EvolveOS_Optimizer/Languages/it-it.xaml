@@ -5110,4 +5110,41 @@
     <sys:String x:Key="ProfileBuilder_LeaveReset">Esci &amp; ripristina</sys:String>
     <sys:String x:Key="ProfileBuilder_StayHere">Resta qui</sys:String>
     <!-- endregion Profile Builder -->
+
+    <!-- region Diagnostics Hardware Thermal Settings -->
+    <sys:String x:Key="pawnio_card_title">Driver Sensori Avanzati</sys:String>
+    <sys:String x:Key="pawnio_card_description">Gestisci il driver del kernel PawnIO. Necessario per il monitoraggio termico approfondito di CPU, RAM e scheda madre.</sys:String>
+    <sys:String x:Key="pawnio_card_btn_install">Installa</sys:String>
+    <sys:String x:Key="pawnio_card_btn_uninstall">Disinstalla</sys:String>
+    <sys:String x:Key="pawnio_card_tooltip_install">Installa driver PawnIO</sys:String>
+    <sys:String x:Key="pawnio_card_tooltip_uninstall">Rimuovi driver PawnIO</sys:String>
+
+    <sys:String x:Key="dialog_pawnio_title">Monitoraggio Hardware Avanzato</sys:String>
+    <sys:String x:Key="dialog_pawnio_message">Per leggere le temperature precise e in tempo reale di CPU, scheda madre e RAM, EvolveOS Optimizer richiede il driver hardware PawnIO.&#x0a;&#x0a;Si tratta di un driver open source sicuro che aggira i blocchi standard del kernel di Windows per leggere direttamente i sensori termici della scheda madre. Vuoi installarlo ora?</sys:String>
+    <sys:String x:Key="dialog_pawnio_dont_show_again">Non mostrare più questo messaggio</sys:String>
+    <sys:String x:Key="dialog_pawnio_install_btn">Installa driver</sys:String>
+    <sys:String x:Key="dialog_pawnio_cancel_btn">Non ora</sys:String>
+
+    <sys:String x:Key="thermal_dialog_title">Impostazioni di Protezione Termica</sys:String>
+    <sys:String x:Key="thermal_dialog_primary_btn">Salva</sys:String>
+    <sys:String x:Key="thermal_dialog_close_btn">Annulla</sys:String>
+    <sys:String x:Key="thermal_dialog_description">Configura avvisi e spegnimenti di emergenza per proteggere il tuo hardware.</sys:String>
+    <sys:String x:Key="thermal_dialog_header_notifications">Abilita notifiche</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown">Abilita spegnimento automatico</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_cpu">CPU</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_gpu">GPU</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_ram">RAM</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_system">Sistema</sys:String>
+    <sys:String x:Key="thermal_dialog_header_warning">Avviso (°C)</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Spegnimento (°C)</sys:String>
+
+    <sys:String x:Key="diag_tooltip_thermal_settings">Limiti Termici &amp; Protezione</sys:String>
+
+    <sys:String x:Key="diag_thermal_warning_title">Avviso Termico</sys:String>
+    <sys:String x:Key="diag_thermal_warning_cpu">La CPU è calda a {0}°C.</sys:String>
+    <sys:String x:Key="diag_thermal_warning_gpu">La GPU è calda a {0}°C.</sys:String>
+    <sys:String x:Key="diag_thermal_warning_ram">La RAM è calda a {0}°C.</sys:String>
+    <sys:String x:Key="diag_thermal_warning_mobo">La temperatura del sistema è elevata a {0}°C.</sys:String>
+    <sys:String x:Key="diag_thermal_emergency_shutdown">Protezione Termica di Emergenza EvolveOS: {0} ha superato il limite massimo.</sys:String>
+    <!-- endregion Diagnostics Hardware Thermal Settings -->
 </ResourceDictionary>
