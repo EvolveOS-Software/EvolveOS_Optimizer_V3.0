@@ -708,7 +708,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     {
                         IsGraphingTemperature = true;
                     }
-                    else
+                    else if (value == TelemetryMetric.Disk ||
+                             value == TelemetryMetric.Pagefile ||
+                             value == TelemetryMetric.Network)
                     {
                         IsGraphingTemperature = false;
                     }
