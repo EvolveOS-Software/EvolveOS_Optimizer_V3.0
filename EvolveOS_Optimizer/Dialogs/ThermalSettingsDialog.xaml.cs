@@ -21,6 +21,7 @@ namespace EvolveOS_Optimizer.Dialogs
             ToggleWarnings.IsOn = LocalMachineSettingsEngine.EnableThermalWarnings;
             ToggleShutdown.IsOn = LocalMachineSettingsEngine.EnableThermalShutdown;
             ToggleAlarms.IsOn = LocalMachineSettingsEngine.EnableAudibleAlarms;
+            ToggleLogging.IsOn = LocalMachineSettingsEngine.EnableThermalLogging;
 
             NumCooldown.Value = LocalMachineSettingsEngine.WarningCooldownMinutes > 0 ? LocalMachineSettingsEngine.WarningCooldownMinutes : 5;
             ComboEmergencyAction.SelectedIndex = LocalMachineSettingsEngine.EmergencyAction >= 0 ? LocalMachineSettingsEngine.EmergencyAction : 0;
@@ -45,6 +46,7 @@ namespace EvolveOS_Optimizer.Dialogs
             LocalMachineSettingsEngine.EnableThermalWarnings = ToggleWarnings.IsOn;
             LocalMachineSettingsEngine.EnableThermalShutdown = ToggleShutdown.IsOn;
             LocalMachineSettingsEngine.EnableAudibleAlarms = ToggleAlarms.IsOn;
+            LocalMachineSettingsEngine.EnableThermalLogging = ToggleLogging.IsOn;
 
             LocalMachineSettingsEngine.WarningCooldownMinutes = double.IsNaN(NumCooldown.Value) ? 5 : (int)NumCooldown.Value;
             LocalMachineSettingsEngine.EmergencyAction = ComboEmergencyAction.SelectedIndex;
@@ -82,6 +84,7 @@ namespace EvolveOS_Optimizer.Dialogs
             ToggleWarnings.IsOn = true;
             ToggleShutdown.IsOn = false;
             ToggleAlarms.IsOn = false;
+            ToggleLogging.IsOn = false;
 
             NumCooldown.Value = 5;
             ComboEmergencyAction.SelectedIndex = 0;

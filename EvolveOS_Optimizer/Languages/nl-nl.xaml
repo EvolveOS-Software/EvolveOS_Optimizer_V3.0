@@ -5141,6 +5141,19 @@
     <sys:String x:Key="thermal_dialog_header_warning">Waarschuwing (°C)</sys:String>
     <sys:String x:Key="thermal_dialog_header_shutdown_limit">Afsluiten (°C)</sys:String>
 
+    <sys:String x:Key="thermal_dialog_secondary_btn">Standaardinstellingen herstellen</sys:String>
+    <sys:String x:Key="thermal_dialog_header_alarm">Hoorbaar alarm (piep)</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_cooldown">Waarschuwingsfrequentie (minuten)</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_action">Noodactie</sys:String>
+    <sys:String x:Key="thermal_dialog_action_shutdown">Afsluiten</sys:String>
+    <sys:String x:Key="thermal_dialog_action_hibernate">Sluimerstand</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_delay">Actievertraging (seconden)</sys:String>
+
+    <sys:String x:Key="thermal_dialog_header_logging">Thermische gebeurtenissen loggen</sys:String>
+    <sys:String x:Key="thermal_dialog_action_sniper">Zware taak beëindigen</sys:String>
+    <sys:String x:Key="post_mortem_title">Thermische noodsituatie hersteld</sys:String>
+    <sys:String x:Key="post_mortem_message">EvolveOS heeft uw systeem beschermd door een noodactie uit te voeren op {0} omdat uw {1} oververhit raakte.</sys:String>
+
     <sys:String x:Key="diag_tooltip_thermal_settings">Thermische limieten &amp; beveiliging</sys:String>
 
     <sys:String x:Key="diag_thermal_warning_title">Thermische waarschuwing</sys:String>

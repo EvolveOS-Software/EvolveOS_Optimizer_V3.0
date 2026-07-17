@@ -36,6 +36,7 @@
                 <ComboBox x:Name="ComboEmergencyAction" HorizontalAlignment="Stretch">
                     <ComboBoxItem Content="{helpers:ResourceString Key=thermal_dialog_action_shutdown}" Tag="0"/>
                     <ComboBoxItem Content="{helpers:ResourceString Key=thermal_dialog_action_hibernate}" Tag="1"/>
+                    <ComboBoxItem Content="{helpers:ResourceString Key=thermal_dialog_action_sniper}" Tag="2"/>
                 </ComboBox>
             </StackPanel>
         </Grid>
@@ -48,6 +49,8 @@
                 <NumberBox x:Name="NumEmergencyDelay" SpinButtonPlacementMode="Compact" Minimum="1" Maximum="120"/>
             </StackPanel>
         </Grid>
+
+        <ToggleSwitch x:Name="ToggleLogging" Header="{helpers:ResourceString Key=thermal_dialog_header_logging}" Margin="0,5,0,0"/>
 
         <StackPanel Spacing="10">
 

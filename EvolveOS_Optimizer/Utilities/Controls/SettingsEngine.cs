@@ -549,6 +549,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableThermalShutdown"] = false,
             ["EmergencyThresholdSeconds"] = 5,
             ["EnableAudibleAlarms"] = false,
+            ["EnableThermalLogging"] = false,
+            ["LastThermalShutdownEvent"] = "",
             ["EmergencyAction"] = 0,
             ["WarningCooldownMinutes"] = 5,
             ["CpuWarningTemp"] = 80,
@@ -618,6 +620,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool EnableThermalShutdown { get => (bool)_cachedSettings["EnableThermalShutdown"]; set => ChangingParameters("EnableThermalShutdown", value); }
         internal static int EmergencyThresholdSeconds { get => (int)_cachedSettings["EmergencyThresholdSeconds"]; set => ChangingParameters("EmergencyThresholdSeconds", value); }
         internal static bool EnableAudibleAlarms { get => (bool)_cachedSettings["EnableAudibleAlarms"]; set => ChangingParameters("EnableAudibleAlarms", value); }
+        internal static bool EnableThermalLogging { get => (bool)_cachedSettings["EnableThermalLogging"]; set => ChangingParameters("EnableThermalLogging", value); }
+        internal static string LastThermalShutdownEvent { get => (string)_cachedSettings["LastThermalShutdownEvent"]; set => ChangingParameters("LastThermalShutdownEvent", value); }
         internal static int EmergencyAction { get => (int)_cachedSettings["EmergencyAction"]; set => ChangingParameters("EmergencyAction", value); }
         internal static int WarningCooldownMinutes { get => (int)_cachedSettings["WarningCooldownMinutes"]; set => ChangingParameters("WarningCooldownMinutes", value); }
         internal static int CpuWarningTemp { get => (int)_cachedSettings["CpuWarningTemp"]; set => ChangingParameters("CpuWarningTemp", value); }

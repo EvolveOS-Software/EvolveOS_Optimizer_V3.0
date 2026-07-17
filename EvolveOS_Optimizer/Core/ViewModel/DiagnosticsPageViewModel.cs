@@ -104,6 +104,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private DateTime _lastWarningTime = DateTime.MinValue;
         private static DateTime? _emergencyThresholdMetTime = null;
+        private static bool _sniperModeAttempted = false;
         #endregion
 
         #region Fields (Maintenance)
@@ -3911,6 +3912,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                         if ((DateTime.Now - _emergencyThresholdMetTime.Value).TotalSeconds >= safeDelaySeconds)
                         {
+                            if (LocalMachineSettingsEngine.EmergencyAction == 2 && !_sniperModeAttempted)
+                            {
+                                ThermalActionHelper.LogThermalEvent($"EMERGENCY TRIGGERED: {shutdownReason}. Action: Sniper Mode.");
+                                ThermalActionHelper.ExecuteSniperMode();
+
+                                _sniperModeAttempted = true;
+                                _emergencyThresholdMetTime = null;
+                                return;
+                            }
+
+                            ThermalActionHelper.LogThermalEvent(LocalMachineSettingsEngine.EmergencyAction == 2
+                                ? $"ESCALATION: Sniper Mode failed to reduce heat. Forcing system shutdown."
+                                : $"EMERGENCY TRIGGERED: {shutdownReason}. Action: {LocalMachineSettingsEngine.EmergencyAction}.");
+
+                            LocalMachineSettingsEngine.LastThermalShutdownEvent = $"{DateTime.Now:g}|{shutdownReason}";
+
                             string shutdownFormat = ResourceString.GetString("diag_thermal_emergency_shutdown")
                                 ?? "EvolveOS Emergency Thermal Protection: {0} exceeded maximum limit.";
 
@@ -3945,6 +3962,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 else
                 {
                     _emergencyThresholdMetTime = null;
+                    _sniperModeAttempted = false;
                 }
             }
 
@@ -3964,6 +3982,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (warningSent)
                 {
                     _lastWarningTime = DateTime.Now;
+
+                    ThermalActionHelper.LogThermalEvent($"WARNING: Hardware running hot. {cpuTemp}C CPU | {gpuTemp}C GPU");
 
                     if (LocalMachineSettingsEngine.EnableAudibleAlarms)
                     {

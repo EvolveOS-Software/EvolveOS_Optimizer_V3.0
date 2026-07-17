@@ -5117,6 +5117,19 @@
     <sys:String x:Key="thermal_dialog_header_warning">Warnung (°C)</sys:String>
     <sys:String x:Key="thermal_dialog_header_shutdown_limit">Herunterfahren (°C)</sys:String>
 
+    <sys:String x:Key="thermal_dialog_secondary_btn">Standardeinstellungen wiederherstellen</sys:String>
+    <sys:String x:Key="thermal_dialog_header_alarm">Akustischer Alarm (Piepton)</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_cooldown">Warnhäufigkeit (Minuten)</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_action">Notfallmaßnahme</sys:String>
+    <sys:String x:Key="thermal_dialog_action_shutdown">Herunterfahren</sys:String>
+    <sys:String x:Key="thermal_dialog_action_hibernate">Ruhezustand</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_delay">Aktionsverzögerung (Sekunden)</sys:String>
+
+    <sys:String x:Key="thermal_dialog_header_logging">Thermische Ereignisse protokollieren</sys:String>
+    <sys:String x:Key="thermal_dialog_action_sniper">Anspruchsvolle Aufgabe beenden</sys:String>
+    <sys:String x:Key="post_mortem_title">Thermischer Notfall behoben</sys:String>
+    <sys:String x:Key="post_mortem_message">EvolveOS hat Ihr System geschützt, indem es am {0} eine Notfallmaßnahme durchgeführt hat, da Ihr {1} überhitzt war.</sys:String>
+
     <sys:String x:Key="diag_tooltip_thermal_settings">Thermische Grenzwerte &amp; Schutz</sys:String>
 
     <sys:String x:Key="diag_thermal_warning_title">Thermische Warnung</sys:String>

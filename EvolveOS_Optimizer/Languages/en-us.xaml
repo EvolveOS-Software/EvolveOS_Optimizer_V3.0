@@ -5238,6 +5238,11 @@
     <sys:String x:Key="thermal_dialog_action_hibernate">Hibernate</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_delay">Action Delay (Seconds)</sys:String>
 
+    <sys:String x:Key="thermal_dialog_header_logging">Log Thermal Events</sys:String>
+    <sys:String x:Key="thermal_dialog_action_sniper">Kill Demanding Task</sys:String>
+    <sys:String x:Key="post_mortem_title">Thermal Emergency Recovered</sys:String>
+    <sys:String x:Key="post_mortem_message">EvolveOS protected your system by performing an emergency action on {0} because your {1} overheated.</sys:String>
+
     <sys:String x:Key="diag_tooltip_thermal_settings">Thermal Limits &amp; Protection</sys:String>
 
     <sys:String x:Key="diag_thermal_warning_title">Thermal Warning</sys:String>

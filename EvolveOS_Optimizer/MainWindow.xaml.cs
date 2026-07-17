@@ -424,6 +424,33 @@ namespace EvolveOS_Optimizer
                     await ShowRestorePointDialogAsync();
                 });
             }
+
+            string lastEvent = LocalMachineSettingsEngine.LastThermalShutdownEvent;
+            if (!string.IsNullOrWhiteSpace(lastEvent))
+            {
+                var parts = lastEvent.Split('|');
+                if (parts.Length == 2)
+                {
+                    string eventTime = parts[0];
+                    string reason = parts[1];
+
+                    string title = ResourceString.GetString("post_mortem_title") ?? "Thermal Emergency Recovered";
+                    string messageFormat = ResourceString.GetString("post_mortem_message") ?? "EvolveOS protected your system by performing an emergency action on {0} because your {1} overheated.";
+
+                    var dialog = new ContentDialog
+                    {
+                        XamlRoot = this.Content.XamlRoot,
+                        Title = title,
+                        Content = string.Format(messageFormat, eventTime, reason),
+                        CloseButtonText = "Understood",
+                        DefaultButton = ContentDialogButton.Close
+                    };
+
+                    _ = dialog.ShowAsync();
+                }
+
+                LocalMachineSettingsEngine.LastThermalShutdownEvent = "";
+            }
         }
 
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)

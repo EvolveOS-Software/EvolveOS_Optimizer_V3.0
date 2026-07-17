@@ -5127,6 +5127,19 @@
     <sys:String x:Key="thermal_dialog_header_warning">Avertissement (°C)</sys:String>
     <sys:String x:Key="thermal_dialog_header_shutdown_limit">Arrêt (°C)</sys:String>
 
+    <sys:String x:Key="thermal_dialog_secondary_btn">Restaurer les paramètres par défaut</sys:String>
+    <sys:String x:Key="thermal_dialog_header_alarm">Alarme sonore (Bip)</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_cooldown">Fréquence des avertissements (Minutes)</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_action">Action d'urgence</sys:String>
+    <sys:String x:Key="thermal_dialog_action_shutdown">Arrêter</sys:String>
+    <sys:String x:Key="thermal_dialog_action_hibernate">Mettre en veille prolongée</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_delay">Délai d'action (Secondes)</sys:String>
+
+    <sys:String x:Key="thermal_dialog_header_logging">Enregistrer les événements thermiques</sys:String>
+    <sys:String x:Key="thermal_dialog_action_sniper">Arrêter la tâche exigeante</sys:String>
+    <sys:String x:Key="post_mortem_title">Urgence thermique résolue</sys:String>
+    <sys:String x:Key="post_mortem_message">EvolveOS a protégé votre système en effectuant une action d'urgence le {0} car votre {1} a surchauffé.</sys:String>
+
     <sys:String x:Key="diag_tooltip_thermal_settings">Limites thermiques &amp; protection</sys:String>
 
     <sys:String x:Key="diag_thermal_warning_title">Avertissement thermique</sys:String>
