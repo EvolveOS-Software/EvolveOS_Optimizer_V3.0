@@ -35,10 +35,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly DispatcherQueue _dispatcherQueue;
         private bool _isShowingTemperatures = false;
         private bool _needsRebuild = false;
+        private bool _isLoading = true;
 
         #endregion
 
         #region Properties
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                if (SetProperty(ref _isLoading, value))
+                {
+                    OnPropertyChanged(nameof(IsNotLoading));
+                }
+            }
+        }
+        public bool IsNotLoading => !IsLoading;
 
         public bool IsShowingTemperatures
         {
@@ -68,7 +82,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 if (SetProperty(ref _selectedTimeOption, value) && value != null)
                 {
-                    // Update all graph axes instantly when ComboBox changes
                     foreach (var group in GroupedCores)
                     {
                         foreach (var core in group)
@@ -89,11 +102,33 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public CpuCoreTemperaturesViewModel()
         {
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-
-            // Set 60s as default before initializing the cores
             _selectedTimeOption = TimeOptions[0];
+        }
 
-            InitializeCores();
+        #endregion
+
+        #region Initialization
+
+        public async Task InitializeAsync()
+        {
+            IsLoading = true;
+
+            var initialData = await Task.Run(() =>
+            {
+                HardwareTemperatureService.Instance.UpdateSensors();
+
+                var data = _isShowingTemperatures
+                    ? HardwareTemperatureService.Instance.GetCpuCoreTemperatures()
+                    : HardwareTemperatureService.Instance.GetCpuCoreLoads();
+
+                return data ?? new Dictionary<string, float>();
+            });
+
+            BuildGroupedCores(initialData);
+
+            IsLoading = false;
+
+            StartPolling();
         }
 
         #endregion
@@ -149,17 +184,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Data Processing & UI Sync
-
-        private void InitializeCores()
-        {
-            HardwareTemperatureService.Instance.UpdateSensors();
-
-            var initialData = _isShowingTemperatures
-                ? HardwareTemperatureService.Instance.GetCpuCoreTemperatures()
-                : HardwareTemperatureService.Instance.GetCpuCoreLoads();
-
-            BuildGroupedCores(initialData);
-        }
 
         private void UpdateCoreUI(Dictionary<string, float> currentData)
         {

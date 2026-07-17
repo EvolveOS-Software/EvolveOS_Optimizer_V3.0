@@ -36,13 +36,20 @@ namespace EvolveOS_Optimizer.Dialogs
             this.InitializeComponent();
 
             ViewModel = new CpuCoreTemperaturesViewModel();
-            ViewModel.StartPolling();
 
             UIHelper.SetOverlay(true, true);
-
             ConfigureWindow();
-
             UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
+
+            if (this.Content is FrameworkElement rootElement)
+            {
+                rootElement.Loaded += RootElement_Loaded;
+            }
+        }
+
+        private async void RootElement_Loaded(object sender, RoutedEventArgs e)
+        {
+            await ViewModel.InitializeAsync();
         }
 
         private void ConfigureWindow()

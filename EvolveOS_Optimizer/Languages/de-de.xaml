@@ -5144,6 +5144,7 @@
     <sys:String x:Key="diag_close">Schließen</sys:String>
     <sys:String x:Key="diag_cpu_core_load">Auslastung (%)</sys:String>
     <sys:String x:Key="diag_cpu_core_temp">Temperatur (°C)</sys:String>
+    <sys:String x:Key="diag_querying_cpu_sensors">CPU Sensoren abfragen...</sys:String>
     
     <sys:String x:Key="key_performance_cores">Leistungskerne</sys:String>
     <sys:String x:Key="key_efficiency_cores">Effizienzkerne</sys:String>

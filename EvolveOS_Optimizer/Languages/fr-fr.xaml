@@ -5154,6 +5154,7 @@
     <sys:String x:Key="diag_close">Fermer</sys:String>
     <sys:String x:Key="diag_cpu_core_load">Charge (%)</sys:String>
     <sys:String x:Key="diag_cpu_core_temp">Température (°C)</sys:String>
+    <sys:String x:Key="diag_querying_cpu_sensors">Interrogation des capteurs CPU...</sys:String>
     
     <sys:String x:Key="key_performance_cores">Cœurs de performance</sys:String>
     <sys:String x:Key="key_efficiency_cores">Cœurs d'efficacité</sys:String>
