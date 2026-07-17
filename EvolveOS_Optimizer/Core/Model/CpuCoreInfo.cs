@@ -130,7 +130,7 @@ namespace EvolveOS_Optimizer.Core.Model
 
             SensorHistory.Add(new ObservablePoint(0, val));
 
-            while (SensorHistory.Count > 0 && SensorHistory[0].X < -_historyDuration)
+            while (SensorHistory.Count > 0 && SensorHistory[0].X < -900)
             {
                 SensorHistory.RemoveAt(0);
             }
