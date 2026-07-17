@@ -5133,13 +5133,13 @@
     <sys:String x:Key="thermal_dialog_close_btn">Annuleren</sys:String>
     <sys:String x:Key="thermal_dialog_description">Configureer waarschuwingen en noodstops om uw hardware te beschermen.</sys:String>
     <sys:String x:Key="thermal_dialog_header_notifications">Meldingen inschakelen</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown">Automatisch afsluiten inschakelen</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown">Noodbeveiliging inschakelen</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_cpu">CPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_gpu">GPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_ram">RAM</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_system">Systeem</sys:String>
     <sys:String x:Key="thermal_dialog_header_warning">Waarschuwing (°C)</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Afsluiten (°C)</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Kritieke limiet (°C)</sys:String>
 
     <sys:String x:Key="thermal_dialog_secondary_btn">Standaardinstellingen herstellen</sys:String>
     <sys:String x:Key="thermal_dialog_header_alarm">Hoorbaar alarm (piep)</sys:String>

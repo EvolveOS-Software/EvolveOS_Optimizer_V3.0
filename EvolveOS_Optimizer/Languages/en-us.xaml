@@ -5222,13 +5222,13 @@
     <sys:String x:Key="thermal_dialog_close_btn">Cancel</sys:String>
     <sys:String x:Key="thermal_dialog_description">Configure alerts and emergency shutdowns to protect your hardware.</sys:String>
     <sys:String x:Key="thermal_dialog_header_notifications">Enable Notifications</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown">Enable Auto-Shutdown</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown">Enable Emergency Failsafe</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_cpu">CPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_gpu">GPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_ram">RAM</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_system">System</sys:String>
     <sys:String x:Key="thermal_dialog_header_warning">Warning (°C)</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Shutdown (°C)</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Critical Limit (°C)</sys:String>
 
     <sys:String x:Key="thermal_dialog_secondary_btn">Restore Defaults</sys:String>
     <sys:String x:Key="thermal_dialog_header_alarm">Audible Alarm (Beep)</sys:String>

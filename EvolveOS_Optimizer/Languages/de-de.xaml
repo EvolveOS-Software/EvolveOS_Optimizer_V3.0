@@ -5109,13 +5109,13 @@
     <sys:String x:Key="thermal_dialog_close_btn">Abbrechen</sys:String>
     <sys:String x:Key="thermal_dialog_description">Konfigurieren Sie Warnungen und Notabschaltungen, um Ihre Hardware zu schützen.</sys:String>
     <sys:String x:Key="thermal_dialog_header_notifications">Benachrichtigungen aktivieren</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown">Automatisches Herunterfahren aktivieren</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown">Notfallschutz aktivieren</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_cpu">CPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_gpu">GPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_ram">RAM</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_system">System</sys:String>
     <sys:String x:Key="thermal_dialog_header_warning">Warnung (°C)</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Herunterfahren (°C)</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Kritisches Limit (°C)</sys:String>
 
     <sys:String x:Key="thermal_dialog_secondary_btn">Standardeinstellungen wiederherstellen</sys:String>
     <sys:String x:Key="thermal_dialog_header_alarm">Akustischer Alarm (Piepton)</sys:String>

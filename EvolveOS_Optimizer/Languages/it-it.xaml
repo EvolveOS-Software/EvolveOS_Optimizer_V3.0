@@ -5130,13 +5130,13 @@
     <sys:String x:Key="thermal_dialog_close_btn">Annulla</sys:String>
     <sys:String x:Key="thermal_dialog_description">Configura avvisi e spegnimenti di emergenza per proteggere il tuo hardware.</sys:String>
     <sys:String x:Key="thermal_dialog_header_notifications">Abilita notifiche</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown">Abilita spegnimento automatico</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown">Abilita protezione di emergenza</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_cpu">CPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_gpu">GPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_ram">RAM</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_system">Sistema</sys:String>
     <sys:String x:Key="thermal_dialog_header_warning">Avviso (°C)</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Spegnimento (°C)</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Limite critico (°C)</sys:String>
 
     <sys:String x:Key="thermal_dialog_secondary_btn">Ripristina predefinite</sys:String>
     <sys:String x:Key="thermal_dialog_header_alarm">Allarme acustico (Beep)</sys:String>

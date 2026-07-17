@@ -19,19 +19,26 @@
 
         <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_description}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
-        <Grid ColumnDefinitions="*,*">
-            <ToggleSwitch x:Name="ToggleWarnings" Header="{helpers:ResourceString Key=thermal_dialog_header_notifications}" VerticalAlignment="Bottom"/>
+        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto, Auto" RowSpacing="16" ColumnSpacing="16">
 
-            <StackPanel Grid.Column="1" Spacing="4">
+            <ToggleSwitch x:Name="ToggleWarnings" Grid.Row="0" Grid.Column="0" Header="{helpers:ResourceString Key=thermal_dialog_header_notifications}" VerticalAlignment="Bottom"/>
+            <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
                 <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_cooldown}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                 <NumberBox x:Name="NumCooldown" SpinButtonPlacementMode="Compact" Minimum="1" Maximum="60"/>
             </StackPanel>
+
+            <ToggleSwitch x:Name="ToggleAlarms" Grid.Row="1" Grid.Column="0" Header="{helpers:ResourceString Key=thermal_dialog_header_alarm}" VerticalAlignment="Top"/>
+            <ToggleSwitch x:Name="ToggleLogging" Grid.Row="1" Grid.Column="1" Header="{helpers:ResourceString Key=thermal_dialog_header_logging}" VerticalAlignment="Top"/>
+
         </Grid>
 
-        <Grid ColumnDefinitions="*,*">
-            <ToggleSwitch x:Name="ToggleAlarms" Header="{helpers:ResourceString Key=thermal_dialog_header_alarm}" VerticalAlignment="Bottom"/>
+        <Border Height="1" Background="{ThemeResource SurfaceStrokeColorDefaultBrush}" Margin="0,4"/>
 
-            <StackPanel Grid.Column="1" Spacing="4">
+        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto, Auto" RowSpacing="12" ColumnSpacing="16">
+
+            <ToggleSwitch x:Name="ToggleShutdown" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Header="{helpers:ResourceString Key=thermal_dialog_header_shutdown}" VerticalAlignment="Center"/>
+
+            <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
                 <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_action}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                 <ComboBox x:Name="ComboEmergencyAction" HorizontalAlignment="Stretch">
                     <ComboBoxItem Content="{helpers:ResourceString Key=thermal_dialog_action_shutdown}" Tag="0"/>
@@ -39,18 +46,15 @@
                     <ComboBoxItem Content="{helpers:ResourceString Key=thermal_dialog_action_sniper}" Tag="2"/>
                 </ComboBox>
             </StackPanel>
-        </Grid>
 
-        <Grid ColumnDefinitions="*,*">
-            <ToggleSwitch x:Name="ToggleShutdown" Header="{helpers:ResourceString Key=thermal_dialog_header_shutdown}" VerticalAlignment="Bottom"/>
-
-            <StackPanel Grid.Column="1" Spacing="4">
+            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
                 <TextBlock Text="{helpers:ResourceString Key=thermal_dialog_lbl_delay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
                 <NumberBox x:Name="NumEmergencyDelay" SpinButtonPlacementMode="Compact" Minimum="1" Maximum="120"/>
             </StackPanel>
+
         </Grid>
 
-        <ToggleSwitch x:Name="ToggleLogging" Header="{helpers:ResourceString Key=thermal_dialog_header_logging}" Margin="0,5,0,0"/>
+        <Border Height="1" Background="{ThemeResource SurfaceStrokeColorDefaultBrush}" Margin="0,4"/>
 
         <StackPanel Spacing="10">
 

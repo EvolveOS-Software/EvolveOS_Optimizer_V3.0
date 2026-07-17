@@ -5119,13 +5119,13 @@
     <sys:String x:Key="thermal_dialog_close_btn">Annuler</sys:String>
     <sys:String x:Key="thermal_dialog_description">Configurez les alertes et les arrêts d'urgence pour protéger votre matériel.</sys:String>
     <sys:String x:Key="thermal_dialog_header_notifications">Activer les notifications</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown">Activer l'arrêt automatique</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown">Activer la sécurité d'urgence</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_cpu">CPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_gpu">GPU</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_ram">RAM</sys:String>
     <sys:String x:Key="thermal_dialog_lbl_system">Système</sys:String>
     <sys:String x:Key="thermal_dialog_header_warning">Avertissement (°C)</sys:String>
-    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Arrêt (°C)</sys:String>
+    <sys:String x:Key="thermal_dialog_header_shutdown_limit">Limite critique (°C)</sys:String>
 
     <sys:String x:Key="thermal_dialog_secondary_btn">Restaurer les paramètres par défaut</sys:String>
     <sys:String x:Key="thermal_dialog_header_alarm">Alarme sonore (Bip)</sys:String>
