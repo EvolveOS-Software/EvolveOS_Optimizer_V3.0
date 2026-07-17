@@ -356,6 +356,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetCursorPos(out InteropPoint lpPoint);
 
+        [DllImport("user32.dll")]
+        public static extern bool MessageBeep(uint uType);
+
         #endregion
 
         #region Delegates & Private Fields

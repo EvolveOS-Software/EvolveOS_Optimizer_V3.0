@@ -5230,6 +5230,14 @@
     <sys:String x:Key="thermal_dialog_header_warning">Warning (°C)</sys:String>
     <sys:String x:Key="thermal_dialog_header_shutdown_limit">Shutdown (°C)</sys:String>
 
+    <sys:String x:Key="thermal_dialog_secondary_btn">Restore Defaults</sys:String>
+    <sys:String x:Key="thermal_dialog_header_alarm">Audible Alarm (Beep)</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_cooldown">Warning Frequency (Minutes)</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_action">Emergency Action</sys:String>
+    <sys:String x:Key="thermal_dialog_action_shutdown">Shut Down</sys:String>
+    <sys:String x:Key="thermal_dialog_action_hibernate">Hibernate</sys:String>
+    <sys:String x:Key="thermal_dialog_lbl_delay">Action Delay (Seconds)</sys:String>
+
     <sys:String x:Key="diag_tooltip_thermal_settings">Thermal Limits &amp; Protection</sys:String>
 
     <sys:String x:Key="diag_thermal_warning_title">Thermal Warning</sys:String>

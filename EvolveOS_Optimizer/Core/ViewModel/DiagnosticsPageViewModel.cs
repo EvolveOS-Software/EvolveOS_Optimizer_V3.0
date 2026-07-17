@@ -103,6 +103,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private DateTime _lastEventNotification = DateTime.MinValue;
 
         private DateTime _lastWarningTime = DateTime.MinValue;
+        private static DateTime? _emergencyThresholdMetTime = null;
         #endregion
 
         #region Fields (Maintenance)
@@ -3885,6 +3886,89 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (warningSent)
                 {
                     _lastWarningTime = DateTime.Now;
+                }
+            }
+
+            if (LocalMachineSettingsEngine.EnableThermalShutdown)
+            {
+                bool isCurrentlyOverheating = false;
+                string shutdownReason = "";
+
+                if (cpuTemp >= LocalMachineSettingsEngine.CpuMaxTemp) { isCurrentlyOverheating = true; shutdownReason = $"{ResourceString.GetString("thermal_dialog_lbl_cpu") ?? "CPU"} ({cpuTemp}°C)"; }
+                else if (gpuTemp >= LocalMachineSettingsEngine.GpuMaxTemp) { isCurrentlyOverheating = true; shutdownReason = $"{ResourceString.GetString("thermal_dialog_lbl_gpu") ?? "GPU"} ({gpuTemp}°C)"; }
+                else if (ramTemp >= LocalMachineSettingsEngine.RamMaxTemp) { isCurrentlyOverheating = true; shutdownReason = $"{ResourceString.GetString("thermal_dialog_lbl_ram") ?? "RAM"} ({ramTemp}°C)"; }
+                else if (moboTemp >= LocalMachineSettingsEngine.MoboMaxTemp) { isCurrentlyOverheating = true; shutdownReason = $"{ResourceString.GetString("thermal_dialog_lbl_system") ?? "System"} ({moboTemp}°C)"; }
+
+                if (isCurrentlyOverheating)
+                {
+                    if (_emergencyThresholdMetTime == null)
+                    {
+                        _emergencyThresholdMetTime = DateTime.Now;
+                    }
+                    else
+                    {
+                        int safeDelaySeconds = LocalMachineSettingsEngine.EmergencyThresholdSeconds > 0 ? LocalMachineSettingsEngine.EmergencyThresholdSeconds : 5;
+
+                        if ((DateTime.Now - _emergencyThresholdMetTime.Value).TotalSeconds >= safeDelaySeconds)
+                        {
+                            string shutdownFormat = ResourceString.GetString("diag_thermal_emergency_shutdown")
+                                ?? "EvolveOS Emergency Thermal Protection: {0} exceeded maximum limit.";
+
+                            bool isHibernateSupported = false;
+                            try
+                            {
+                                using (var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Power"))
+                                {
+                                    if (key != null)
+                                    {
+                                        object? val = key.GetValue("HibernateEnabled");
+                                        isHibernateSupported = (val != null && (int)val != 0);
+                                    }
+                                }
+                            }
+                            catch { }
+
+                            string cmdArgs = (LocalMachineSettingsEngine.EmergencyAction == 1 && isHibernateSupported)
+                                ? "/h"
+                                : $"/s /t 0 /c \"{string.Format(shutdownFormat, shutdownReason)}\"";
+
+                            Process.Start(new ProcessStartInfo("shutdown", cmdArgs)
+                            {
+                                CreateNoWindow = true,
+                                UseShellExecute = true
+                            });
+
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    _emergencyThresholdMetTime = null;
+                }
+            }
+
+            if (LocalMachineSettingsEngine.EnableThermalWarnings)
+            {
+                double cooldownMinutes = LocalMachineSettingsEngine.WarningCooldownMinutes > 0 ? LocalMachineSettingsEngine.WarningCooldownMinutes : 5;
+                if ((DateTime.Now - _lastWarningTime).TotalMinutes < cooldownMinutes) return;
+
+                bool warningSent = false;
+                string warningTitle = ResourceString.GetString("diag_thermal_warning_title") ?? "Thermal Warning";
+
+                if (cpuTemp >= LocalMachineSettingsEngine.CpuWarningTemp) { SendSystemNotification(2, warningTitle, string.Format(ResourceString.GetString("diag_thermal_warning_cpu") ?? "CPU is running hot at {0}°C.", cpuTemp)); warningSent = true; }
+                if (gpuTemp >= LocalMachineSettingsEngine.GpuWarningTemp) { SendSystemNotification(2, warningTitle, string.Format(ResourceString.GetString("diag_thermal_warning_gpu") ?? "GPU is running hot at {0}°C.", gpuTemp)); warningSent = true; }
+                if (ramTemp >= LocalMachineSettingsEngine.RamWarningTemp) { SendSystemNotification(2, warningTitle, string.Format(ResourceString.GetString("diag_thermal_warning_ram") ?? "RAM is running hot at {0}°C.", ramTemp)); warningSent = true; }
+                if (moboTemp >= LocalMachineSettingsEngine.MoboWarningTemp) { SendSystemNotification(2, warningTitle, string.Format(ResourceString.GetString("diag_thermal_warning_mobo") ?? "System temperature is elevated at {0}°C.", moboTemp)); warningSent = true; }
+
+                if (warningSent)
+                {
+                    _lastWarningTime = DateTime.Now;
+
+                    if (LocalMachineSettingsEngine.EnableAudibleAlarms)
+                    {
+                        Win32Helper.MessageBeep(0x30);
+                    }
                 }
             }
         }
