@@ -5166,8 +5166,8 @@
     <sys:String x:Key="diag_tooltip_cpu_metrics">CPU statistieken bekijken</sys:String>
     <sys:String x:Key="diag_cpu_metrics_title">CPU kernstatistieken</sys:String>
     <sys:String x:Key="diag_close">Sluiten</sys:String>
-    <sys:String x:Key="diag_cpu_load">Belasting (%)</sys:String>
-    <sys:String x:Key="diag_cpu_temp">Temperatuur (°C)</sys:String>
+    <sys:String x:Key="diag_cpu_core_load">Belasting (%)</sys:String>
+    <sys:String x:Key="diag_cpu_core_temp">Temperatuur (°C)</sys:String>
     
     <sys:String x:Key="key_performance_cores">Prestatiekernen</sys:String>
     <sys:String x:Key="key_efficiency_cores">Efficiëntiekernen</sys:String>

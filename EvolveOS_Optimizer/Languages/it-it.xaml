@@ -5163,8 +5163,8 @@
     <sys:String x:Key="diag_tooltip_cpu_metrics">Visualizza metriche CPU</sys:String>
     <sys:String x:Key="diag_cpu_metrics_title">Metriche dei core CPU</sys:String>
     <sys:String x:Key="diag_close">Chiudi</sys:String>
-    <sys:String x:Key="diag_cpu_load">Carico (%)</sys:String>
-    <sys:String x:Key="diag_cpu_temp">Temperatura (°C)</sys:String>
+    <sys:String x:Key="diag_cpu_core_load">Carico (%)</sys:String>
+    <sys:String x:Key="diag_cpu_core_temp">Temperatura (°C)</sys:String>
     
     <sys:String x:Key="key_performance_cores">Core di prestazioni</sys:String>
     <sys:String x:Key="key_efficiency_cores">Core di efficienza</sys:String>

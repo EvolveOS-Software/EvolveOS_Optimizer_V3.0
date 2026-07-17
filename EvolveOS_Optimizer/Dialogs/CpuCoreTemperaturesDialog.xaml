@@ -58,8 +58,8 @@
                               Header="History Duration"/>
 
                     <ToggleSwitch Grid.Column="1"
-                                  OffContent="{helpers:ResourceString Key=diag_cpu_load}"
-                                  OnContent="{helpers:ResourceString Key=diag_cpu_temp}"
+                                  OffContent="{helpers:ResourceString Key=diag_cpu_core_load}"
+                                  OnContent="{helpers:ResourceString Key=diag_cpu_core_temp}"
                                   IsOn="{x:Bind ViewModel.IsShowingTemperatures, Mode=TwoWay}"
                                   VerticalAlignment="Bottom"/>
                 </Grid>
