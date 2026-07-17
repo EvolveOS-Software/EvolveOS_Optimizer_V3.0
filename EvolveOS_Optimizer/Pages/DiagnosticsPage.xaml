@@ -1499,6 +1499,14 @@
                                                             <StackPanel Orientation="Horizontal" Spacing="8">
                                                                 <FontIcon Glyph="&#xE9D9;" FontSize="24" Foreground="{ThemeResource MyDynamicAccentBrush}" Margin="0,0,5,0" VerticalAlignment="Center" />
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_cpu}" IsChecked="{x:Bind ViewModel.IsCpuSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
+                                                                <Button x:Name="BtnCoreTemperatures"
+                                                                        Visibility="{x:Bind ViewModel.IsCpuSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                                        Command="{x:Bind ViewModel.ShowCoreTemperaturesCommand}"
+                                                                        CornerRadius="4"
+                                                                        VerticalAlignment="Center"
+                                                                        ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_cpu_metrics}">
+                                                                    <FontIcon Glyph="&#xE9A1;" FontSize="15" Foreground="White"/>
+                                                                </Button>
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_gpu}" IsChecked="{x:Bind ViewModel.IsGpuSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_ram}" IsChecked="{x:Bind ViewModel.IsRamSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_sys}" IsChecked="{x:Bind ViewModel.IsMoboSelected, Mode=TwoWay}" Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>

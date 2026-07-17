@@ -5251,6 +5251,15 @@
     <sys:String x:Key="diag_thermal_warning_ram">RAM is running hot at {0}°C.</sys:String>
     <sys:String x:Key="diag_thermal_warning_mobo">System temperature is elevated at {0}°C.</sys:String>
     <sys:String x:Key="diag_thermal_emergency_shutdown">EvolveOS Emergency Thermal Protection: {0} exceeded maximum limit.</sys:String>
+
+    <sys:String x:Key="diag_tooltip_cpu_metrics">View CPU Metrics</sys:String>
+    <sys:String x:Key="diag_cpu_metrics_title">CPU Core Metrics</sys:String>
+    <sys:String x:Key="diag_close">Close</sys:String>
+    <sys:String x:Key="diag_cpu_load">Load (%)</sys:String>
+    <sys:String x:Key="diag_cpu_temp">Temperature (°C)</sys:String>
+    
+    <sys:String x:Key="key_performance_cores">Performance Cores</sys:String>
+    <sys:String x:Key="key_efficiency_cores">Efficiency Cores</sys:String>
     <!-- endregion Diagnostics Hardware Thermal Settings -->
 
 </ResourceDictionary>

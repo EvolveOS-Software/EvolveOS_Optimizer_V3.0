@@ -2172,6 +2172,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 LocalMachineSettingsEngine.SaveDismissedEventsList();
             }
         }
+
+        [RelayCommand]
+        public void ShowCoreTemperatures()
+        {
+            var cpuWindow = new Dialogs.CpuCoreTemperaturesWindow();
+            cpuWindow.Activate();
+        }
         #endregion
 
         #region Security Action Commands (Security)

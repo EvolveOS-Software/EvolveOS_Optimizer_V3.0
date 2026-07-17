@@ -5138,5 +5138,14 @@
     <sys:String x:Key="diag_thermal_warning_ram">RAM läuft heiß bei {0}°C.</sys:String>
     <sys:String x:Key="diag_thermal_warning_mobo">Die Systemtemperatur ist auf {0}°C erhöht.</sys:String>
     <sys:String x:Key="diag_thermal_emergency_shutdown">EvolveOS Thermischer Notschutz: {0} hat das maximale Limit überschritten.</sys:String>
+
+    <sys:String x:Key="diag_tooltip_cpu_metrics">CPU Metriken anzeigen</sys:String>
+    <sys:String x:Key="diag_cpu_metrics_title">CPU Kernmetriken</sys:String>
+    <sys:String x:Key="diag_close">Schließen</sys:String>
+    <sys:String x:Key="diag_cpu_load">Auslastung (%)</sys:String>
+    <sys:String x:Key="diag_cpu_temp">Temperatur (°C)</sys:String>
+    
+    <sys:String x:Key="key_performance_cores">Leistungskerne</sys:String>
+    <sys:String x:Key="key_efficiency_cores">Effizienzkerne</sys:String>
     <!-- endregion Diagnostics Hardware Thermal Settings -->
 </ResourceDictionary>

@@ -135,6 +135,68 @@ namespace EvolveOS_Optimizer.Utilities.Services
             return 0f;
         }
 
+        public Dictionary<string, float> GetCpuCoreTemperatures()
+        {
+            var coreTemps = new Dictionary<string, float>();
+            if (_computer == null) return coreTemps;
+
+            foreach (var hardware in _computer.Hardware)
+            {
+                if (hardware.HardwareType == HardwareType.Cpu)
+                {
+                    var allSensors = new List<ISensor>();
+                    CollectSensors(hardware, allSensors);
+
+                    var coreSensors = allSensors
+                        .Where(s => s.SensorType == SensorType.Temperature
+                                    && s.Value.HasValue
+                                    && s.Name.Contains("Core", StringComparison.OrdinalIgnoreCase)
+                                    && !s.Name.Contains("Max", StringComparison.OrdinalIgnoreCase)
+                                    && !s.Name.Contains("Average", StringComparison.OrdinalIgnoreCase)
+                                    && !s.Name.Contains("Package", StringComparison.OrdinalIgnoreCase))
+                        .OrderBy(s => s.Name);
+
+                    foreach (var sensor in coreSensors)
+                    {
+                        coreTemps[sensor.Name] = sensor.Value.GetValueOrDefault();
+                    }
+                }
+            }
+
+            return coreTemps;
+        }
+
+        public Dictionary<string, float> GetCpuCoreLoads()
+        {
+            var coreLoads = new Dictionary<string, float>();
+            if (_computer == null) return coreLoads;
+
+            foreach (var hardware in _computer.Hardware)
+            {
+                if (hardware.HardwareType == HardwareType.Cpu)
+                {
+                    var allSensors = new List<ISensor>();
+                    CollectSensors(hardware, allSensors);
+
+                    var coreSensors = allSensors
+                        .Where(s => s.SensorType == SensorType.Load
+                                    && s.Value.HasValue
+                                    && s.Name.Contains("Core", StringComparison.OrdinalIgnoreCase)
+                                    && !s.Name.Contains("Total", StringComparison.OrdinalIgnoreCase)
+                                    && !s.Name.Contains("Max", StringComparison.OrdinalIgnoreCase)
+                                    && !s.Name.Contains("Average", StringComparison.OrdinalIgnoreCase))
+                        .OrderBy(s => s.Name);
+
+                    foreach (var sensor in coreSensors)
+                    {
+                        coreLoads[sensor.Name] = sensor.Value.GetValueOrDefault();
+                    }
+                }
+            }
+
+            return coreLoads;
+        }
+
         private void CollectSensors(IHardware hardware, List<ISensor> sensors)
         {
             sensors.AddRange(hardware.Sensors);
