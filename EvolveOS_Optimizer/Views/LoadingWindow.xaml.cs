@@ -35,8 +35,9 @@ namespace EvolveOS_Optimizer.Views
         private const string PlainLdf = "EvolveOS_OptimizerDb_log.ldf";
         private const string SecureLdf = "EvolveOS_OptimizerDb_log.dat";
 
-        private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
-        private readonly UninstallingPackages _uninstallingPakages = new UninstallingPackages();
+        private SystemDiagnostics _systemDiagnostics = null!;
+        private UninstallingPackages _uninstallingPakages = null!;
+
         private readonly bool _isAutoLoginSuccessful;
         private readonly DispatcherQueue _dispatcherQueue;
         private readonly CancellationTokenSource _cts = new();
@@ -74,47 +75,12 @@ namespace EvolveOS_Optimizer.Views
             {
                 DisplayProfileAvatar.Visibility = Visibility.Collapsed;
                 AvatarGradientOverlay.Visibility = Visibility.Collapsed;
-
                 if (AutoLoginBadge != null) AutoLoginBadge.Visibility = Visibility.Collapsed;
-
                 ShutdownProgressRing.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                CheckSystemUptime();
-                LoadUserDisplayData();
             }
 
             this.Activated += LoadingWindow_Activated;
             this.Closed += LoadingWindow_Closed;
-        }
-        #endregion
-
-        #region Startup Checks
-        private void CheckSystemUptime()
-        {
-            Task.Run(() =>
-            {
-                try
-                {
-                    double totalUptimeMinutes = TimeSpan.FromMilliseconds(Environment.TickCount & Int32.MaxValue).TotalMinutes;
-                    _isFreshBoot = totalUptimeMinutes < 5;
-                    bool isNewSession = false;
-
-                    var shellProcess = Process.GetProcessesByName("explorer").FirstOrDefault();
-                    if (shellProcess != null)
-                    {
-                        isNewSession = (DateTime.Now - shellProcess.StartTime).TotalMinutes < 2;
-                    }
-
-                    _isSystemBusy = _isFreshBoot || isNewSession;
-                    Debug.WriteLine($"[Startup] Boot={_isFreshBoot}, Session={isNewSession}, Busy={_isSystemBusy}");
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[Startup] Uptime Check Failed: {ex.Message}");
-                }
-            });
         }
         #endregion
 
@@ -139,31 +105,94 @@ namespace EvolveOS_Optimizer.Views
         }
         #endregion
 
-        #region User Display Data
-        private void LoadUserDisplayData()
+        #region Iinitial Activation (FIXED STARTUP SEQUENCE)
+        private async void LoadingWindow_Activated(object sender, WindowActivatedEventArgs e)
         {
-            Task.Run(() =>
+            this.Activated -= LoadingWindow_Activated;
+
+            if (RootGrid.Resources.TryGetValue("DotAnimation", out object? da) && da is Storyboard s1) s1.Begin();
+            if (RootGrid.Resources.TryGetValue("LoadingEllipses", out object? la) && la is Storyboard s2) s2.Begin();
+
+            Storyboard fadeIn = new Storyboard();
+            DoubleAnimation anim = new DoubleAnimation { To = 1.0, Duration = TimeSpan.FromMilliseconds(400) };
+            Storyboard.SetTarget(anim, RootGrid);
+            Storyboard.SetTargetProperty(anim, "Opacity");
+            fadeIn.Children.Add(anim);
+            fadeIn.Begin();
+
+            if (!_isShutdownMode)
+            {
+                await Task.Run(() =>
+                {
+                    _systemDiagnostics = new SystemDiagnostics();
+                    _uninstallingPakages = new UninstallingPackages();
+                    CheckSystemUptimeBackground();
+                });
+
+                await LoadUserDisplayDataAsync();
+
+                ScheduledCleanService.Instance.Start();
+                RegistryMonitorService.Instance.StartMonitoring();
+
+                await StartProcessingAsync();
+            }
+        }
+
+        public void UpdateShutdownText(string text)
+        {
+            UpdateStatusDirect(text);
+        }
+        #endregion
+
+        #region Background Startup Checks
+        private void CheckSystemUptimeBackground()
+        {
+            try
+            {
+                double totalUptimeMinutes = TimeSpan.FromMilliseconds(Environment.TickCount & Int32.MaxValue).TotalMinutes;
+                _isFreshBoot = totalUptimeMinutes < 5;
+                bool isNewSession = false;
+
+                var shellProcess = Process.GetProcessesByName("explorer").FirstOrDefault();
+                if (shellProcess != null)
+                {
+                    isNewSession = (DateTime.Now - shellProcess.StartTime).TotalMinutes < 2;
+                }
+
+                _isSystemBusy = _isFreshBoot || isNewSession;
+                Debug.WriteLine($"[Startup] Boot={_isFreshBoot}, Session={isNewSession}, Busy={_isSystemBusy}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Startup] Uptime Check Failed: {ex.Message}");
+            }
+        }
+        #endregion
+
+        #region User Display Data
+        private async Task LoadUserDisplayDataAsync()
+        {
+            string avatarPath = string.Empty;
+            bool isSessionValid = false;
+            string? validUser = string.Empty;
+
+            await Task.Run(() =>
             {
                 if (_cts.Token.IsCancellationRequested) return;
 
-                string? avatarPath = _systemDiagnostics.GetProfileAvatarPath();
-
+                avatarPath = _systemDiagnostics.GetProfileAvatarPath() ?? string.Empty;
                 if (string.IsNullOrEmpty(avatarPath) || !File.Exists(avatarPath))
                 {
                     avatarPath = Path.Combine(AppContext.BaseDirectory, "Resources", "EvolveOSLogo.png");
                 }
 
-                _dispatcherQueue.TryEnqueue(() =>
-                {
-                    if (_cts.Token.IsCancellationRequested) return;
-                    try { DisplayProfileAvatar.Source = new BitmapImage(new Uri(avatarPath)); }
-                    catch { }
-                });
-
+                isSessionValid = AuthSessionManager.IsSessionValid(out validUser, out _);
             }, _cts.Token);
 
-            string? validUser = string.Empty;
-            bool isSessionValid = AuthSessionManager.IsSessionValid(out validUser, out _);
+            if (_cts.Token.IsCancellationRequested) return;
+
+            try { DisplayProfileAvatar.Source = new BitmapImage(new Uri(avatarPath)); }
+            catch { }
 
             if (_isAutoLoginSuccessful || isSessionValid)
             {
@@ -174,13 +203,9 @@ namespace EvolveOS_Optimizer.Views
                     ? UserSession.Username
                     : (!string.IsNullOrEmpty(validUser) ? validUser : "Authorized User");
 
-                _dispatcherQueue.TryEnqueue(() =>
-                {
-                    RunUsername.Text = targetName;
-
-                    RunUsername.UpdateLayout();
-                    AutoLoginBadge.UpdateLayout();
-                });
+                RunUsername.Text = targetName;
+                RunUsername.UpdateLayout();
+                AutoLoginBadge.UpdateLayout();
             }
         }
         #endregion
@@ -262,36 +287,6 @@ namespace EvolveOS_Optimizer.Views
                     }
                 }
             }
-        }
-        #endregion
-
-        #region Iinitial Activation
-        private async void LoadingWindow_Activated(object sender, WindowActivatedEventArgs e)
-        {
-            this.Activated -= LoadingWindow_Activated;
-
-            if (RootGrid.Resources.TryGetValue("DotAnimation", out object? da) && da is Storyboard s1) s1.Begin();
-            if (RootGrid.Resources.TryGetValue("LoadingEllipses", out object? la) && la is Storyboard s2) s2.Begin();
-
-            Storyboard fadeIn = new Storyboard();
-            DoubleAnimation anim = new DoubleAnimation { To = 1.0, Duration = TimeSpan.FromMilliseconds(400) };
-            Storyboard.SetTarget(anim, RootGrid);
-            Storyboard.SetTargetProperty(anim, "Opacity");
-            fadeIn.Children.Add(anim);
-            fadeIn.Begin();
-
-            if (!_isShutdownMode)
-            {
-                ScheduledCleanService.Instance.Start();
-                RegistryMonitorService.Instance.StartMonitoring();
-
-                await StartProcessingAsync();
-            }
-        }
-
-        public void UpdateShutdownText(string text)
-        {
-            UpdateStatusDirect(text);
         }
         #endregion
 
@@ -488,7 +483,6 @@ namespace EvolveOS_Optimizer.Views
         #endregion
 
         #region LocalDB Dependency Check
-
         private string GetSqlLocalDbAbsolutePath()
         {
             try
