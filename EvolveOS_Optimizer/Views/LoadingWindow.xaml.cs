@@ -129,12 +129,12 @@ namespace EvolveOS_Optimizer.Views
                     CheckSystemUptimeBackground();
                 });
 
-                await LoadUserDisplayDataAsync();
+                _ = LoadUserDisplayDataAsync();
 
                 ScheduledCleanService.Instance.Start();
                 RegistryMonitorService.Instance.StartMonitoring();
 
-                await StartProcessingAsync();
+                _ = StartProcessingAsync();
             }
         }
 

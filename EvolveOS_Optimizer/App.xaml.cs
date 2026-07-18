@@ -182,9 +182,6 @@ namespace EvolveOS_Optimizer
 
             MainWindow.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
             {
-                await Task.Delay(500);
-                UIHelper.ApplyBackdrop(MainWindow, SettingsEngine.Backdrop);
-
                 await NotifyHotkeySettingsChanged();
 
                 _ = StartBackgroundServices();
