@@ -148,12 +148,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     HardwareTemperatureService.Instance.UpdateSensors();
 
+                    bool fetchedAsTemp = _isShowingTemperatures;
+
                     var currentData = _isShowingTemperatures
                         ? HardwareTemperatureService.Instance.GetCpuCoreTemperatures()
                         : HardwareTemperatureService.Instance.GetCpuCoreLoads();
 
                     _dispatcherQueue.TryEnqueue(() =>
                     {
+                        if (fetchedAsTemp != _isShowingTemperatures)
+                        {
+                            return;
+                        }
+
                         if (_needsRebuild)
                         {
                             HandleToggleRebuild(currentData);
@@ -165,13 +172,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         }
                     });
 
-                    var elapsedMilliseconds = (DateTime.UtcNow - startTime).TotalMilliseconds;
-                    var timeToWait = 1000 - (int)elapsedMilliseconds;
+                    // Keep but disabled previous logic
+                    /* var elapsedMilliseconds = (DateTime.UtcNow - startTime).TotalMilliseconds;
+ 
+                    // 250 = 4 updates per second (Set for smooth animations)
+                    // 333 = 3 updates per second
+                    // 500 = 2 updates per second
+                    // 1000 = 1 update per second (Default)
+
+                    var timeToWait = 250 - (int)elapsedMilliseconds;
 
                     if (timeToWait > 0)
                     {
                         await Task.Delay(timeToWait);
-                    }
+                    }*/
+
+                    await Task.Delay(150);
                 }
             });
         }

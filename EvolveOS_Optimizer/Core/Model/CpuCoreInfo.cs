@@ -89,7 +89,12 @@ namespace EvolveOS_Optimizer.Core.Model
                     Stroke = new SolidColorPaint(SKColors.OrangeRed) { StrokeThickness = 2 },
                     GeometrySize = 0,
                     LineSmoothness = 0.5,
-                    AnimationsSpeed = TimeSpan.Zero
+                    EasingFunction = t => t, 
+                    
+                    // Keep but disabled previous logic
+                    // Match this to the polling loop delay in the CpuCoreTemperaturesViewModel (e.g., 250ms or 333ms)
+                    // AnimationsSpeed = TimeSpan.FromMilliseconds(250)
+                    AnimationsSpeed = TimeSpan.FromMilliseconds(150)
                 }
             };
         }
