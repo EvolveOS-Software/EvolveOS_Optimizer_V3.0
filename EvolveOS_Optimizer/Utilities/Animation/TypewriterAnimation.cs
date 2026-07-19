@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -40,33 +43,40 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             storyboard.Children.Add(opacityAnim);
             storyboard.Begin();
 
-            _ = RunTypewriterAsync(textToAnimate, textBlock, duration, cts.Token);
+            _ = RunTypewriterAsync(textToAnimate, textBlock, duration, cts);
         }
 
-        private static async Task RunTypewriterAsync(string text, TextBlock target, TimeSpan totalDuration, CancellationToken token)
+        private static async Task RunTypewriterAsync(string text, TextBlock target, TimeSpan totalDuration, CancellationTokenSource cts)
         {
+            var token = cts.Token;
             if (token.IsCancellationRequested || target == null) return;
 
             var dispatcher = target.DispatcherQueue;
             if (dispatcher == null) return;
 
             int charCount = text.Length;
-            if (charCount == 0) return;
+            if (charCount == 0)
+            {
+                dispatcher.TryEnqueue(() => { if (!token.IsCancellationRequested && target.IsLoaded) target.Text = ""; });
+                return;
+            }
 
             double totalMs = totalDuration.TotalMilliseconds;
             int intervalMs = 15;
-            double charsPerMs = charCount / totalMs;
+            double charsPerMs = totalMs > 0 ? charCount / totalMs : 1;
             int charsToAppend = (int)Math.Max(1, Math.Round(charsPerMs * intervalMs));
 
             StringBuilder sb = new StringBuilder();
 
             try
             {
+                dispatcher.TryEnqueue(() => { if (!token.IsCancellationRequested && target.IsLoaded) target.Text = ""; });
+
                 for (int i = 0; i < charCount; i += charsToAppend)
                 {
-                    if (token.IsCancellationRequested) return;
-
+                    token.ThrowIfCancellationRequested();
                     await Task.Delay(intervalMs, token);
+                    token.ThrowIfCancellationRequested();
 
                     int remaining = charCount - i;
                     int currentChunkSize = Math.Min(charsToAppend, remaining);
@@ -91,7 +101,7 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             }
             catch (OperationCanceledException)
             {
-
+                // Animation was safely interrupted.
             }
             catch (Exception ex)
             {
@@ -99,7 +109,11 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             }
             finally
             {
-                ActiveCancellations.Remove(target);
+                if (ActiveCancellations.TryGetValue(target, out var existingCts) && existingCts == cts)
+                {
+                    ActiveCancellations.Remove(target);
+                    cts.Dispose();
+                }
             }
         }
     }

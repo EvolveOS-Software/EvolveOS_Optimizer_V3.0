@@ -1,7 +1,5 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.IO;
 using System.Threading;
@@ -66,9 +64,6 @@ namespace EvolveOS_Optimizer.Views
 
             ApplyUserAccentColor();
 
-            // FIX: Removed RootGrid.Opacity = 0; The window will now be fully visible instantly.
-
-            // FIX: Instantly populate the UI so it never looks blank while the DB loads!
             try
             {
                 string fallbackPath = Path.Combine(AppContext.BaseDirectory, "Resources", "EvolveOSLogo.png");
@@ -77,10 +72,9 @@ namespace EvolveOS_Optimizer.Views
                     DisplayProfileAvatar.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(fallbackPath));
                 }
 
-                // Set the initial text immediately without waiting for the Typewriter animation
                 if (StatusLoading != null)
                 {
-                    StatusLoading.Text = ResourceString.GetString("step1_load") ?? "Initializing...";
+                    StatusLoading.Text = "";
                 }
             }
             catch { }
@@ -130,9 +124,6 @@ namespace EvolveOS_Optimizer.Views
             if (RootGrid.Resources.TryGetValue("DotAnimation", out object? da) && da is Storyboard s1) s1.Begin();
             if (RootGrid.Resources.TryGetValue("LoadingEllipses", out object? la) && la is Storyboard s2) s2.Begin();
 
-            // FIX: Removed the 400ms Opacity Storyboard. 
-            // The user will no longer watch a slow fade-in from black.
-
             if (!_isShutdownMode)
             {
                 await Task.Run(() =>
@@ -142,7 +133,6 @@ namespace EvolveOS_Optimizer.Views
                     CheckSystemUptimeBackground();
                 });
 
-                // This will overwrite the fallback avatar with the real one smoothly in the background
                 _ = LoadUserDisplayDataAsync();
 
                 ScheduledCleanService.Instance.Start();
@@ -334,6 +324,8 @@ namespace EvolveOS_Optimizer.Views
             });
 
             await App.HostInitializationSource.Task;
+
+            await Task.Delay(750, token);
 
             var diagnosticsInstance = DiagnosticsPageViewModel.Current;
 
@@ -792,7 +784,9 @@ namespace EvolveOS_Optimizer.Views
             _dispatcherQueue.TryEnqueue(() =>
             {
                 if (_cts.Token.IsCancellationRequested || StatusLoading == null) return;
-                TypewriterAnimation.Create(text, StatusLoading, TimeSpan.FromMilliseconds(20));
+
+                var duration = TimeSpan.FromMilliseconds(text.Length * 20);
+                TypewriterAnimation.Create(text, StatusLoading, duration);
             });
         }
 
@@ -923,7 +917,8 @@ namespace EvolveOS_Optimizer.Views
 
                 if (!string.IsNullOrEmpty(message))
                 {
-                    TypewriterAnimation.Create(message, StatusLoading, TimeSpan.FromMilliseconds(50));
+                    var duration = TimeSpan.FromMilliseconds(message.Length * 20);
+                    TypewriterAnimation.Create(message, StatusLoading, duration);
                 }
             });
         }
