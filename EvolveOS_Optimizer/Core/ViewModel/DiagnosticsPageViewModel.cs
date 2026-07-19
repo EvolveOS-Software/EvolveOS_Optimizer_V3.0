@@ -20,7 +20,6 @@ using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.Windows.System.Power;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Media;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -38,6 +37,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Fields (Diagnostics)
         private readonly MemoryGuardian? _memoryGuardian;
         private LiveEventWatcherHelper? _liveWatcher;
+
+        private readonly System.Collections.Concurrent.ConcurrentQueue<SystemEventItem> _eventQueue = new();
+        private readonly Microsoft.UI.Xaml.DispatcherTimer? _uiBatchTimer;
+
         private readonly Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
         private CancellationTokenSource? _scanCts;
         private readonly DiagnosticScannerEngine _scannerEngine;
@@ -368,6 +371,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _instance = this;
 
             _scannerEngine = new DiagnosticScannerEngine(this);
+
+            _uiBatchTimer = new Microsoft.UI.Xaml.DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            _uiBatchTimer.Tick += ProcessEventQueue;
+            _uiBatchTimer.Start();
 
             // Notification logic for testing purpose
             _memoryGuardian = new MemoryGuardian();
@@ -2948,7 +2955,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (_hasSecurityInitialized) return;
             _hasSecurityInitialized = true;
 
-            _securityRefreshTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
+            _securityRefreshTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(5) };
             _securityRefreshTimer.Tick += async (s, e) =>
             {
                 if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
@@ -4114,28 +4121,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     if (physicallyEnrolled) return;
                 }
 
-                _dispatcherQueue.TryEnqueue(async () =>
-                {
-                    MinedSystemEvents.Insert(0, newEvent);
-                    if (MinedSystemEvents.Count > 150) MinedSystemEvents.RemoveAt(MinedSystemEvents.Count - 1);
-
-                    CalculateStabilityTrend(MinedSystemEvents);
-
-                    AiSummary = string.Format(ResourceString.GetString("diag_live_intercept_msg") ?? "LIVE INTERCEPT: {0} reported a Level {1} event. Stability updated.", newEvent.SourceName, newEvent.Level);
-
-                    if (newEvent.Level <= 2 && (DateTime.Now - _lastEventNotification).TotalMinutes > 5)
-                    {
-                        _lastEventNotification = DateTime.Now;
-                        SendSystemNotification(3,
-                            ResourceString.GetString("diag_critical_error_title") ?? "Critical System Error Detected",
-                            string.Format(ResourceString.GetString("diag_critical_error_msg") ?? "Event ID {0} logged by {1}.", newEvent.EventId, newEvent.SourceName));
-                    }
-
-                    if (newEvent.IsFixable)
-                    {
-                        await FixEventInternalAsync(newEvent.EventId, isAutomated: true);
-                    }
-                });
+                _eventQueue.Enqueue(newEvent);
             });
 
             _liveWatcher.Start();
@@ -4179,6 +4165,48 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine($"[LiveMonitoring] Failed to bind to PnP bus: {ex.Message}");
+            }
+        }
+
+        private async void ProcessEventQueue(object? sender, object e)
+        {
+            if (_eventQueue.IsEmpty) return;
+
+            bool itemsAdded = false;
+            SystemEventItem? lastEvent = null;
+
+            while (_eventQueue.TryDequeue(out var newEvent))
+            {
+                MinedSystemEvents.Insert(0, newEvent);
+
+                if (MinedSystemEvents.Count > 500) // Max limit set from 150 to 500
+                    MinedSystemEvents.RemoveAt(MinedSystemEvents.Count - 1);
+
+                lastEvent = newEvent;
+                itemsAdded = true;
+            }
+
+            if (itemsAdded)
+            {
+                CalculateStabilityTrend(MinedSystemEvents);
+
+                if (lastEvent != null)
+                {
+                    AiSummary = string.Format(ResourceString.GetString("diag_live_intercept_msg") ?? "LIVE INTERCEPT: {0} reported a Level {1} event. Stability updated.", lastEvent.SourceName, lastEvent.Level);
+
+                    if (lastEvent.Level <= 2 && (DateTime.Now - _lastEventNotification).TotalMinutes > 5)
+                    {
+                        _lastEventNotification = DateTime.Now;
+                        SendSystemNotification(3,
+                            ResourceString.GetString("diag_critical_error_title") ?? "Critical System Error Detected",
+                            string.Format(ResourceString.GetString("diag_critical_error_msg") ?? "Event ID {0} logged by {1}.", lastEvent.EventId, lastEvent.SourceName));
+                    }
+
+                    if (lastEvent.IsFixable)
+                    {
+                        await FixEventInternalAsync(lastEvent.EventId, isAutomated: true);
+                    }
+                }
             }
         }
 

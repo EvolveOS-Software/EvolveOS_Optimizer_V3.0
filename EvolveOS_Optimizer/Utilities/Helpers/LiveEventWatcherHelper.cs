@@ -3,6 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics.Eventing.Reader;
+using System.Threading;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 
@@ -14,9 +15,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         private readonly Action<SystemEventItem> _onEventDetected;
 
         private readonly ConcurrentDictionary<string, DateTime> _eventDebouncer = new();
-        private readonly int _debounceSeconds = 5;
+        private const int _debounceSeconds = 5;
 
-        private readonly HashSet<int> _fixableEventIds = new()
+        private int _debounceCounter = 0;
+
+        private static readonly HashSet<int> _fixableEventIds = new()
         {
             1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
             31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44, 45, 47, 49, 50, 51, 52, 54, 55, 56, 57, 58, 59, 60, 63, 65, 69,
@@ -170,7 +173,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             9118, 9119, 9120
         };
 
-        private readonly string[] _ignoredSources = {
+        private static readonly string[] _ignoredSources = {
             "MSBuild",
             "DistributedCOM",
             "Security-SPP",
@@ -257,8 +260,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 try
                 {
-                    var dismissedArray = LocalMachineSettingsEngine.DismissedEventsList.ToArray();
-                    if (dismissedArray.Contains(eventFingerprint))
+                    if (LocalMachineSettingsEngine.DismissedEventsList.Contains(eventFingerprint))
                     {
                         return;
                     }
@@ -270,9 +272,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 string eventHash = $"{eventId}|{source}";
 
-                if (_eventDebouncer.Count > 1000)
+                if (Interlocked.Increment(ref _debounceCounter) > 1000)
                 {
                     _eventDebouncer.Clear();
+                    Interlocked.Exchange(ref _debounceCounter, 0);
                 }
 
                 if (_eventDebouncer.TryGetValue(eventHash, out DateTime lastSeen))
@@ -330,6 +333,18 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             string clean = rawMessage.Replace("\r", "").Replace("\n", " ").Trim();
             return clean.Length > 150 ? clean.Substring(0, 147) + "..." : clean;
+        }
+
+        public void Stop()
+        {
+            foreach (var watcher in _watchers)
+            {
+                try
+                {
+                    watcher.Enabled = false;
+                }
+                catch { /* Suppress */ }
+            }
         }
 
         public void Dispose()
