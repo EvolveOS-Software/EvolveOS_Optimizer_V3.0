@@ -55,6 +55,8 @@ namespace EvolveOS_Optimizer
 
         public static new App Current => (App)Application.Current;
 
+        public static TaskCompletionSource<bool> HostInitializationSource { get; } = new TaskCompletionSource<bool>();
+
         public static IServiceProvider Services => (Current as App)?._host?.Services
             ?? throw new InvalidOperationException("Host not initialized");
 
@@ -63,8 +65,6 @@ namespace EvolveOS_Optimizer
         public App()
         {
             InitializeComponent();
-
-            //Trace.Listeners.Clear();
 
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
 
@@ -76,7 +76,7 @@ namespace EvolveOS_Optimizer
 
             AppDomain.CurrentDomain.ProcessExit += (s, ev) => HandleCleanup();
 
-            Utilities.Services.LocalizationService.Instance.LoadLanguage("en-us");
+            LocalizationService.Instance.LoadLanguage("en-us");
         }
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
@@ -86,46 +86,12 @@ namespace EvolveOS_Optimizer
 
             UIThreadDispatcher = DispatcherQueue.GetForCurrentThread();
 
-            try
-            {
-                var dummy = Windows.ApplicationModel.Package.Current.Id;
-            }
-            catch (InvalidOperationException)
-            {
-                AppNotificationManager.Default.Register();
-            }
-
-            EnsureShortcutWithAumid();
-
-            _host = CompositionRoot.CreateEvolveOSHost().Build();
-            _logService = Services.GetService<ILogService>();
-            InitializeLocalization();
-
-            var interactiveUserService = Services.GetService<IInteractiveUserService>();
-            if (_logService is LogService concreteLogService)
-            {
-                if (interactiveUserService != null)
-                {
-                    concreteLogService.SetInteractiveUserService(interactiveUserService);
-                }
-                var systemInfoProvider = Services.GetService<ISystemInfoProvider>();
-                if (systemInfoProvider != null)
-                {
-                    concreteLogService.SetSystemInfoProvider(systemInfoProvider);
-                }
-            }
-            _logService?.StartLog();
-            var logPath = _logService?.GetLogPath();
-            _logService?.LogInformation("EvolveOS_Optimizer application starting...");
-
             _mutex = new Mutex(true, "EvolveOS_Optimizer_SingleInstance", out bool isNewInstance);
-
             IsPrimaryInstance = isNewInstance;
 
             if (!isNewInstance)
             {
                 string windowTitle = "EvolveOS_Optimizer";
-
                 IntPtr hwnd = Win32Helper.FindWindow("WinUIDesktopWin32WindowClass", windowTitle);
                 if (hwnd == IntPtr.Zero) hwnd = Win32Helper.FindWindow(null!, windowTitle);
 
@@ -134,7 +100,6 @@ namespace EvolveOS_Optimizer
                     Win32Helper.ShowWindow(hwnd, 5);
                     Win32Helper.ShowWindow(hwnd, 9);
                     Win32Helper.SetForegroundWindow(hwnd);
-
                     Environment.Exit(0);
                 }
                 else
@@ -142,12 +107,10 @@ namespace EvolveOS_Optimizer
                     MainWindow = new MessageWindow(MessageWindowState.AlreadyRunning);
                     MainWindow.Activate();
                 }
-
                 return;
             }
 
             bool startHidden = Environment.CommandLine.Contains("-hidden", StringComparison.OrdinalIgnoreCase);
-
             IsStartedHidden = startHidden;
 
             if (!IsRunningAsAdmin())
@@ -156,48 +119,68 @@ namespace EvolveOS_Optimizer
                 return;
             }
 
-            SetPriority(LocalMachineSettingsEngine.RunOnPriority);
-
-            _hotkeyService = new EvolveOS_Optimizer.Utilities.Services.HotkeyService();
-
             СheckingGlobalParameters.Initialize();
             App.Current.UpdateGlobalAccentColor(SettingsEngine.AccentColor);
-
             SettingsEngine.UpdateTheme(SettingsEngine.AppTheme);
+
+            MainWindow = new LoadingWindow();
 
             if (IsStartedHidden)
             {
-                MainWindow = new LoadingWindow();
-
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
                 Win32Helper.ShowWindow(hwnd, 0);
-
-                MainWindow.Activate();
-            }
-            else
-            {
-                MainWindow = new LoadingWindow();
-                MainWindow.Activate();
             }
 
-            MainWindow.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+            MainWindow.Activate();
+
+            Task.Run(() =>
             {
-                await NotifyHotkeySettingsChanged();
+                try { var dummy = Windows.ApplicationModel.Package.Current.Id; }
+                catch (InvalidOperationException) { AppNotificationManager.Default.Register(); }
 
-                _ = StartBackgroundServices();
+                EnsureShortcutWithAumid();
 
-                if (LocalMachineSettingsEngine.EnableStartupMonitor)
+                _host = CompositionRoot.CreateEvolveOSHost().Build();
+
+                HostInitializationSource.SetResult(true);
+
+                UIThreadDispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () =>
                 {
-                    StartupChangeMonitor.StartWatching();
-                }
+                    _logService = Services.GetService<ILogService>();
+                    InitializeLocalization();
 
-                MemoryGuardian = new MemoryGuardian((before, after) =>
-                {
-                    long diff = (long)before - (long)after;
-                    if (diff > 5 * 1024 * 1024)
+                    var interactiveUserService = Services.GetService<IInteractiveUserService>();
+                    if (_logService is LogService concreteLogService)
                     {
-                        Debug.WriteLine($"[Global] GC Trimmed: {diff / 1024 / 1024}MB");
+                        if (interactiveUserService != null) concreteLogService.SetInteractiveUserService(interactiveUserService);
+                        var systemInfoProvider = Services.GetService<ISystemInfoProvider>();
+                        if (systemInfoProvider != null) concreteLogService.SetSystemInfoProvider(systemInfoProvider);
                     }
+                    _logService?.StartLog();
+                    _logService?.LogInformation("EvolveOS_Optimizer application starting...");
+
+                    SetPriority(LocalMachineSettingsEngine.RunOnPriority);
+                    _hotkeyService = new EvolveOS_Optimizer.Utilities.Services.HotkeyService();
+
+                    UIThreadDispatcher.TryEnqueue(DispatcherQueuePriority.Low, async () =>
+                    {
+                        await NotifyHotkeySettingsChanged();
+                        _ = StartBackgroundServices();
+
+                        if (LocalMachineSettingsEngine.EnableStartupMonitor)
+                        {
+                            StartupChangeMonitor.StartWatching();
+                        }
+
+                        MemoryGuardian = new MemoryGuardian((before, after) =>
+                        {
+                            long diff = (long)before - (long)after;
+                            if (diff > 5 * 1024 * 1024)
+                            {
+                                Debug.WriteLine($"[Global] GC Trimmed: {diff / 1024 / 1024}MB");
+                            }
+                        });
+                    });
                 });
             });
         }

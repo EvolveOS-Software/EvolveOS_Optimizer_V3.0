@@ -66,7 +66,24 @@ namespace EvolveOS_Optimizer.Views
 
             ApplyUserAccentColor();
 
-            if (RootGrid != null) RootGrid.Opacity = 0;
+            // FIX: Removed RootGrid.Opacity = 0; The window will now be fully visible instantly.
+
+            // FIX: Instantly populate the UI so it never looks blank while the DB loads!
+            try
+            {
+                string fallbackPath = Path.Combine(AppContext.BaseDirectory, "Resources", "EvolveOSLogo.png");
+                if (File.Exists(fallbackPath))
+                {
+                    DisplayProfileAvatar.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(fallbackPath));
+                }
+
+                // Set the initial text immediately without waiting for the Typewriter animation
+                if (StatusLoading != null)
+                {
+                    StatusLoading.Text = ResourceString.GetString("step1_load") ?? "Initializing...";
+                }
+            }
+            catch { }
 
             UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
             ConfigureWindow();
@@ -113,12 +130,8 @@ namespace EvolveOS_Optimizer.Views
             if (RootGrid.Resources.TryGetValue("DotAnimation", out object? da) && da is Storyboard s1) s1.Begin();
             if (RootGrid.Resources.TryGetValue("LoadingEllipses", out object? la) && la is Storyboard s2) s2.Begin();
 
-            Storyboard fadeIn = new Storyboard();
-            DoubleAnimation anim = new DoubleAnimation { To = 1.0, Duration = TimeSpan.FromMilliseconds(400) };
-            Storyboard.SetTarget(anim, RootGrid);
-            Storyboard.SetTargetProperty(anim, "Opacity");
-            fadeIn.Children.Add(anim);
-            fadeIn.Begin();
+            // FIX: Removed the 400ms Opacity Storyboard. 
+            // The user will no longer watch a slow fade-in from black.
 
             if (!_isShutdownMode)
             {
@@ -129,6 +142,7 @@ namespace EvolveOS_Optimizer.Views
                     CheckSystemUptimeBackground();
                 });
 
+                // This will overwrite the fallback avatar with the real one smoothly in the background
                 _ = LoadUserDisplayDataAsync();
 
                 ScheduledCleanService.Instance.Start();
@@ -319,6 +333,10 @@ namespace EvolveOS_Optimizer.Views
                 }
             });
 
+            await App.HostInitializationSource.Task;
+
+            var diagnosticsInstance = DiagnosticsPageViewModel.Current;
+
             if (_isSystemBusy)
             {
                 UpdateStatusDirect(ResourceString.GetString("status_waiting_system") ?? "Waiting for system to initialize...");
@@ -332,8 +350,6 @@ namespace EvolveOS_Optimizer.Views
 
                 return await PerformDatabaseBootSequenceAsync(token);
             }, token);
-
-            var diagnosticsInstance = DiagnosticsPageViewModel.Current;
 
             Task telemetryTask = Task.Run(async () =>
             {
@@ -361,7 +377,6 @@ namespace EvolveOS_Optimizer.Views
                             ExecuteWithLogging(UninstallingPackages.CheckingForLocalAccount, nameof(UninstallingPackages.CheckingForLocalAccount));
                             ExecuteWithLogging(BluetoothManager.Initialize, nameof(BluetoothManager.Initialize));
                         },
-
                         () => ExecuteWithLogging(HardwareTemperatureService.Instance.Initialize, nameof(HardwareTemperatureService.Initialize))
                     );
 
@@ -425,7 +440,6 @@ namespace EvolveOS_Optimizer.Views
                     try
                     {
                         var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
-
                         var loginData = await userDataAccess.GetPasswordAndImageAsync(targetUser);
 
                         if (loginData.ProfileImageBytes != null && loginData.ProfileImageBytes.Length > 0)
