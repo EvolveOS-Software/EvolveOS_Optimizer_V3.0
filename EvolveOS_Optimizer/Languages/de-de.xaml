@@ -3529,6 +3529,7 @@
     <sys:String x:Key="Feature_StartMenu_Name">Startmenü</sys:String>
     <sys:String x:Key="Feature_Taskbar_Name">Taskleiste</sys:String>
     <sys:String x:Key="Feature_WindowsTheme_Name">Windows-Design</sys:String>
+    <sys:String x:Key="Feature_Advanced_Name">Erweitert</sys:String>
 
     <sys:String x:Key="QuickActions_Menu">Schnellaktionen</sys:String>
     <sys:String x:Key="QuickActions_ApplyRecommended">Empfohlene Einstellungen anwenden</sys:String>
@@ -3627,6 +3628,8 @@
     <sys:String x:Key="SettingGroup_InputDevices">Eingabegeräte</sys:String>
     <sys:String x:Key="SettingGroup_Personalization">Personalisierung</sys:String>
     <sys:String x:Key="SettingGroup_ThisPCFolders">Ordner unter 'Dieser PC'</sys:String>
+    <sys:String x:Key="SettingGroup_SystemProtection">Systemschutz</sys:String>
+    <sys:String x:Key="SettingGroup_EssentialTweaks">Wichtige Optimierungen</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Im Registrierungs-Editor öffnen</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Technische Details: Ein</sys:String>
@@ -4940,6 +4943,11 @@
     <sys:String x:Key="Setting_start-power-lock-option_Description">Zeigt die Option 'Sperren' im Ein/Aus-Menü des Startmenüs an</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Option „Energie sparen“ anzeigen</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Zeigt die Option 'Energie sparen' im Ein/Aus-Menü des Startmenüs an</sys:String>
+
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Begleit-Apps für Geräte verhindern</sys:String>
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Verhindert die Installation zusätzlicher Software beim Anschließen von Geräten (z. B. Werbung beim Anschließen eines Monitors). Stellt ein potenzielles Sicherheitsrisiko dar.</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Windows Platform Binary Table (WPBT) deaktivieren</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Description">Wenn aktiviert, ermöglicht WPBT Ihrem Computerhersteller, Programme beim Start auszuführen, z. B. Anti-Diebstahl-Software, Treiber sowie die erzwungene Installation von Software ohne Zustimmung des Benutzers. Stellt ein potenzielles Sicherheitsrisiko dar.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Neustart erforderlich</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Die Änderungen wurden angewendet. Ein Systemneustart ist erforderlich, damit sie wirksam werden. Möchten Sie jetzt neu starten?</sys:String>

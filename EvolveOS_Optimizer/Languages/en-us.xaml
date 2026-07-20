@@ -3640,6 +3640,7 @@
     <sys:String x:Key="Feature_StartMenu_Name">Start Menu</sys:String>
     <sys:String x:Key="Feature_Taskbar_Name">Taskbar</sys:String>
     <sys:String x:Key="Feature_WindowsTheme_Name">Windows Theme</sys:String>
+    <sys:String x:Key="Feature_Advanced_Name">Advanced</sys:String>
 
     <sys:String x:Key="QuickActions_Menu">Quick Actions</sys:String>
     <sys:String x:Key="QuickActions_ApplyRecommended">Apply Recommended Settings</sys:String>
@@ -3739,6 +3740,7 @@
     <sys:String x:Key="SettingGroup_Personalization">Personalization</sys:String>
     <sys:String x:Key="SettingGroup_ThisPCFolders">This PC Folders</sys:String>
     <sys:String x:Key="SettingGroup_SystemProtection">System Protection</sys:String>
+    <sys:String x:Key="SettingGroup_EssentialTweaks">Essential Tweaks</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Open in Registry Editor</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Technical Details: On</sys:String>
@@ -5052,6 +5054,11 @@
     <sys:String x:Key="Setting_start-power-lock-option_Description">Display the Lock option in the Start Menu power button menu</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Show Sleep Option</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Display the Sleep option in the Start Menu power button menu</sys:String>
+
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Prevent Device Companion Apps</sys:String>
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Prevents additional software from being installed when plugging in devices (e.g. Ads when plugging in a monitor). Poses potential security risk.</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Disable Windows Platform Binary Table (WPBT)</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Description">If enabled, WPBT allows your computer vendor to execute programs at boot time, such as anti-theft software, software drivers, as well as force install software without user consent. Poses potential security risk.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Restart Required</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Changes have been applied. A system restart is required for them to take effect. Would you like to restart now?</sys:String>

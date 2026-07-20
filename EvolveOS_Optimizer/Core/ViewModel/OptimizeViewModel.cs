@@ -24,6 +24,7 @@ public partial class OptimizeViewModel : SectionPageViewModel<OptimizeSectionInf
         new("Update", "UpdateIconSymbol", "Updates", FeatureIds.Update),
         new("Notification", "NotificationIconPath", "Notifications", FeatureIds.Notifications),
         new("Sound", "SoundIconSymbol", "Sound", FeatureIds.Sound),
+        new("Advanced", "WrenchIconSymbol", "Advanced", FeatureIds.Advanced),
     };
 
     public ISettingsFeatureViewModel SoundViewModel { get; }
@@ -32,6 +33,7 @@ public partial class OptimizeViewModel : SectionPageViewModel<OptimizeSectionInf
     public ISettingsFeatureViewModel PrivacyViewModel { get; }
     public ISettingsFeatureViewModel PowerViewModel { get; }
     public ISettingsFeatureViewModel GamingViewModel { get; }
+    public ISettingsFeatureViewModel AdvancedViewModel { get; }
 
     public OptimizeViewModel(
         ILogService logService,
@@ -47,5 +49,6 @@ public partial class OptimizeViewModel : SectionPageViewModel<OptimizeSectionInf
         PrivacyViewModel = GetFeatureByModuleId(FeatureIds.Privacy);
         PowerViewModel = GetFeatureByModuleId(FeatureIds.Power);
         GamingViewModel = GetFeatureByModuleId(FeatureIds.GamingPerformance);
+        AdvancedViewModel = GetFeatureByModuleId(FeatureIds.Advanced);
     }
 }

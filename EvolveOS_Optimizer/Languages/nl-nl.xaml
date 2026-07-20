@@ -3552,7 +3552,8 @@
     <sys:String x:Key="Feature_Explorer_Name">Verkenner</sys:String>
     <sys:String x:Key="Feature_StartMenu_Name">Startmenu</sys:String>
     <sys:String x:Key="Feature_Taskbar_Name">Taakbalk</sys:String>
-    <sys:String x:Key="Feature_WindowsTheme_Name">Windows-thema</sys:String>
+    <sys:String x:Key="Feature_WindowsTheme_Name">Windows thema</sys:String>
+    <sys:String x:Key="Feature_Advanced_Name">Geavanceerd</sys:String>
 
     <sys:String x:Key="QuickActions_Menu">Snelle acties</sys:String>
     <sys:String x:Key="QuickActions_ApplyRecommended">Aanbevolen instellingen toepassen</sys:String>
@@ -3651,6 +3652,8 @@
     <sys:String x:Key="SettingGroup_InputDevices">Invoerapparaten</sys:String>
     <sys:String x:Key="SettingGroup_Personalization">Persoonlijke instellingen</sys:String>
     <sys:String x:Key="SettingGroup_ThisPCFolders">Mappen in Deze pc</sys:String>
+    <sys:String x:Key="SettingGroup_SystemProtection">Systeembescherming</sys:String>
+    <sys:String x:Key="SettingGroup_EssentialTweaks">Essentiële aanpassingen</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Openen in Register-editor</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Technische details: Aan</sys:String>
@@ -4964,6 +4967,11 @@
     <sys:String x:Key="Setting_start-power-lock-option_Description">De optie 'Vergrendelen' zichtbaar maken binnen de stroomknop (Aan/Uit) van uw Startmenu</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Optie Slaapstand weergeven</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">De optie 'Slaapstand' zichtbaar maken binnen de stroomknop (Aan/Uit) van uw Startmenu</sys:String>
+
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Voorkom begeleidende apparaat-apps</sys:String>
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Voorkomt dat er extra software wordt geïnstalleerd bij het aansluiten van apparaten (bijv. advertenties bij het aansluiten van een monitor). Vormt een potentieel beveiligingsrisico.</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Windows Platform Binary Table (WPBT) uitschakelen</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Description">Indien ingeschakeld, stelt WPBT uw computerleverancier in staat om programma's uit te voeren tijdens het opstarten, zoals antidiefstalsoftware, stuurprogramma's, en om software te forceren te installeren zonder toestemming van de gebruiker. Vormt een potentieel beveiligingsrisico.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Opnieuw opstarten vereist</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">De wijzigingen zijn toegepast. Een herstart van het systeem is vereist om deze van kracht te laten worden. Wilt u nu opnieuw opstarten?</sys:String>

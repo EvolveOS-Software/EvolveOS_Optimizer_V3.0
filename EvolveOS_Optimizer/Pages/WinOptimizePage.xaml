@@ -151,6 +151,12 @@
                                             <TextBlock x:Name="FlyoutTextSound" Grid.Column="1" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Button>
+                                    <Button x:Name="FlyoutButtonAdvanced" Click="NavigateAdvanced_Click" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="8,6">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <fluentIcons:FluentIcon Grid.Column="0" Icon="Wrench" IconVariant="Regular" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="FlyoutTextAdvanced" Grid.Column="1" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Button>
                                 </StackPanel>
                             </Flyout>
                         </DropDownButton.Flyout>
@@ -506,6 +512,50 @@
                                             <Border x:Name="SoundCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <TextBlock x:Name="SoundCustomText" Style="{StaticResource BadgeTextStyle}"
+                                                           Foreground="{ThemeResource BadgeCustomForeground}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </controls:SettingsCard>
+
+                                <controls:SettingsCard
+                                Description="{x:Bind ViewModel.AdvancedViewModel.GroupDescriptionText}"
+                                IsClickEnabled="True"
+                                Click="AdvancedCard_Click">
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{x:Bind ViewModel.AdvancedViewModel.DisplayName}" VerticalAlignment="Center"/>
+                                            <Border x:Name="AdvancedNewBadge" Visibility="Collapsed"
+                                                Style="{StaticResource NewBadgeBorderStyle}">
+                                                <TextBlock x:Name="AdvancedNewText" Style="{StaticResource NewBadgeTextStyle}"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                    <controls:SettingsCard.HeaderIcon>
+                                        <fluentIcons:FluentIcon Icon="Wrench" IconVariant="Regular"/>
+                                    </controls:SettingsCard.HeaderIcon>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <StackPanel x:Name="AdvancedOverviewBadges" Orientation="Horizontal" Spacing="4" Visibility="Collapsed">
+                                            <Border x:Name="AdvancedRecommendedPill" Style="{StaticResource BadgeRecommendedStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <FontIcon Glyph="&#xE735;" FontSize="12" VerticalAlignment="Center" Margin="0,1,0,0"
+                                                          Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                                    <TextBlock x:Name="AdvancedRecommendedText" Style="{StaticResource BadgeTextStyle}"
+                                                           Foreground="{ThemeResource BadgeRecommendedForeground}"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="AdvancedDefaultPill" Style="{StaticResource BadgeDefaultStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <PathIcon Data="{StaticResource BadgeDefaultIconPath}" Height="12" Width="12"
+                                                          VerticalAlignment="Center" Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                                    <TextBlock x:Name="AdvancedDefaultText" Style="{StaticResource BadgeTextStyle}"
+                                                           Foreground="{ThemeResource BadgeDefaultForeground}"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <Border x:Name="AdvancedCustomPill" Style="{StaticResource BadgeCustomStyle}" Visibility="Collapsed">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock x:Name="AdvancedCustomText" Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 </StackPanel>
                                             </Border>

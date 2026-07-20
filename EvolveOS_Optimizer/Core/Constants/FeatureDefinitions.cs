@@ -16,6 +16,7 @@ public static class FeatureDefinitions
         new(FeatureIds.ExplorerCustomization, "Explorer", "Customize"),
 
         // Optimize
+        new(FeatureIds.Advanced, "Advanced", "Optimize"),
         new(FeatureIds.Privacy, "Privacy & Security", "Optimize"),
         new(FeatureIds.Power, "Power", "Optimize"),
         new(FeatureIds.GamingPerformance, "Gaming & Performance", "Optimize"),

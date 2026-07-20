@@ -5,6 +5,7 @@ namespace EvolveOS_Optimizer.Core.Constants;
 
 public static class FeatureIds
 {
+    public const string Advanced = "Advanced";
     public const string GamingPerformance = "GamingPerformance";
     public const string Notifications = "Notifications";
     public const string Power = "Power";

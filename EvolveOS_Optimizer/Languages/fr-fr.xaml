@@ -3539,6 +3539,7 @@
     <sys:String x:Key="Feature_StartMenu_Name">Menu Démarrer</sys:String>
     <sys:String x:Key="Feature_Taskbar_Name">Barre des tâches</sys:String>
     <sys:String x:Key="Feature_WindowsTheme_Name">Thème Windows</sys:String>
+    <sys:String x:Key="Feature_Advanced_Name">Avancé</sys:String>
 
     <sys:String x:Key="QuickActions_Menu">Actions rapides</sys:String>
     <sys:String x:Key="QuickActions_ApplyRecommended">Appliquer les paramètres recommandés</sys:String>
@@ -3637,6 +3638,8 @@
     <sys:String x:Key="SettingGroup_InputDevices">Périphériques d'entrée</sys:String>
     <sys:String x:Key="SettingGroup_Personalization">Personnalisation</sys:String>
     <sys:String x:Key="SettingGroup_ThisPCFolders">Dossiers de Ce PC</sys:String>
+    <sys:String x:Key="SettingGroup_SystemProtection">Protection du système</sys:String>
+    <sys:String x:Key="SettingGroup_EssentialTweaks">Ajustements essentiels</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Ouvrir dans l'Éditeur du Registre</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Détails techniques : Activé</sys:String>
@@ -4950,6 +4953,11 @@
     <sys:String x:Key="Setting_start-power-lock-option_Description">Affiche l'option « Verrouiller » dans le menu du bouton d'alimentation du menu Démarrer</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Afficher l'option Mettre en veille</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Affiche l'option « Mettre en veille » dans le menu du bouton d'alimentation du menu Démarrer</sys:String>
+
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Empêcher les applications complémentaires pour les appareils</sys:String>
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Empêche l'installation de logiciels supplémentaires lors du branchement d'appareils (par ex. des publicités lors du branchement d'un moniteur). Présente un risque potentiel pour la sécurité.</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Désactiver Windows Platform Binary Table (WPBT)</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Description">Si activé, le WPBT permet au fabricant de votre ordinateur d'exécuter des programmes au démarrage, tels que des logiciels antivol, des pilotes, ainsi que de forcer l'installation de logiciels sans le consentement de l'utilisateur. Présente un risque potentiel pour la sécurité.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Redémarrage requis</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Les modifications ont été appliquées. Un redémarrage du système est nécessaire pour qu'elles soient prises en compte. Voulez-vous redémarrer maintenant ?</sys:String>

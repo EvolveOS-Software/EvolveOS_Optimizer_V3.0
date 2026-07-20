@@ -30,7 +30,8 @@ public sealed partial class WinOptimizePage : Page
         { "Gaming", "GamingIconPath" },
         { "Update", "UpdateIconSymbol" },
         { "Notification", "NotificationIconPath" },
-        { "Sound", "SoundIconSymbol" }
+        { "Sound", "SoundIconSymbol" },
+        { "Advanced", "WrenchIconSymbol" }
     };
 
     private static readonly Dictionary<string, string> SectionFeatureIds = new()
@@ -40,7 +41,8 @@ public sealed partial class WinOptimizePage : Page
         { "Gaming", FeatureIds.GamingPerformance },
         { "Update", FeatureIds.Update },
         { "Notification", FeatureIds.Notifications },
-        { "Sound", FeatureIds.Sound }
+        { "Sound", FeatureIds.Sound },
+        { "Advanced", FeatureIds.Advanced }
     };
 
     private IUserPreferencesService? _userPreferencesService;
@@ -100,6 +102,7 @@ public sealed partial class WinOptimizePage : Page
         SetFlyoutButtonText(FlyoutTextPrivacy, FlyoutButtonPrivacy, "Privacy");
         SetFlyoutButtonText(FlyoutTextPower, FlyoutButtonPower, "Power");
         SetFlyoutButtonText(FlyoutTextGaming, FlyoutButtonGaming, "Gaming");
+        SetFlyoutButtonText(FlyoutTextAdvanced, FlyoutButtonAdvanced, "Advanced");
     }
 
     private void SetFlyoutButtonText(TextBlock textBlock, Button button, string sectionKey)
@@ -180,6 +183,7 @@ public sealed partial class WinOptimizePage : Page
             "Privacy" => typeof(PrivacyOptimizePage),
             "Power" => typeof(PowerOptimizePage),
             "Gaming" => typeof(GamingOptimizePage),
+            "Advanced" => typeof(AdvancedOptimizePage),
             _ => null
         };
 
@@ -243,6 +247,7 @@ public sealed partial class WinOptimizePage : Page
             nameof(PrivacyOptimizePage) => "Privacy",
             nameof(PowerOptimizePage) => "Power",
             nameof(GamingOptimizePage) => "Gaming",
+            nameof(AdvancedOptimizePage) => "Advanced",
             _ => "Overview"
         };
     }
@@ -320,6 +325,11 @@ public sealed partial class WinOptimizePage : Page
         NavigateToSection("Gaming");
     }
 
+    private void AdvancedCard_Click(object sender, RoutedEventArgs e)
+    {
+        NavigateToSection("Advanced");
+    }
+
     private void BreadcrumbOverview_Click(object sender, RoutedEventArgs e)
     {
         NavigateToOverview();
@@ -359,6 +369,12 @@ public sealed partial class WinOptimizePage : Page
     {
         BreadcrumbFlyout.Hide();
         NavigateToSection("Gaming");
+    }
+
+    private void NavigateAdvanced_Click(object sender, RoutedEventArgs e)
+    {
+        BreadcrumbFlyout.Hide();
+        NavigateToSection("Advanced");
     }
     #endregion
 
@@ -401,6 +417,12 @@ public sealed partial class WinOptimizePage : Page
             SoundRecommendedPill, SoundRecommendedText,
             SoundDefaultPill, SoundDefaultText,
             SoundCustomPill, SoundCustomText);
+        UpdateFeatureOverviewPills(
+            ViewModel.AdvancedViewModel,
+            AdvancedOverviewBadges,
+            AdvancedRecommendedPill, AdvancedRecommendedText,
+            AdvancedDefaultPill, AdvancedDefaultText,
+            AdvancedCustomPill, AdvancedCustomText);
     }
 
     private void UpdateOverviewNewBadges()
@@ -411,6 +433,7 @@ public sealed partial class WinOptimizePage : Page
         UpdateFeatureNewBadge(ViewModel.UpdateViewModel, UpdateNewBadge, UpdateNewText);
         UpdateFeatureNewBadge(ViewModel.NotificationViewModel, NotificationNewBadge, NotificationNewText);
         UpdateFeatureNewBadge(ViewModel.SoundViewModel, SoundNewBadge, SoundNewText);
+        UpdateFeatureNewBadge(ViewModel.AdvancedViewModel, AdvancedNewBadge, AdvancedNewText);
     }
 
     private void UpdateFeatureNewBadge(

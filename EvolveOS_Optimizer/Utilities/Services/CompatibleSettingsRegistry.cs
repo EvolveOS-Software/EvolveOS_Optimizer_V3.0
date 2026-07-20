@@ -246,6 +246,7 @@ public class CompatibleSettingsRegistry : ICompatibleSettingsRegistry
             [FeatureIds.Privacy] = () => PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations().Settings,
             [FeatureIds.Sound] = () => SoundOptimizations.GetSoundOptimizations().Settings,
             [FeatureIds.Update] = () => UpdateOptimizations.GetUpdateOptimizations().Settings,
+            [FeatureIds.Advanced] = () => AdvancedOptimizations.GetAdvancedOptimizations().Settings,
         };
     }
     #endregion

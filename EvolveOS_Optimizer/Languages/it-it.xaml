@@ -3550,6 +3550,7 @@
     <sys:String x:Key="Feature_StartMenu_Name">Menu Start</sys:String>
     <sys:String x:Key="Feature_Taskbar_Name">Barra delle applicazioni</sys:String>
     <sys:String x:Key="Feature_WindowsTheme_Name">Tema Windows</sys:String>
+    <sys:String x:Key="Feature_Advanced_Name">Avanzate</sys:String>
 
     <sys:String x:Key="QuickActions_Menu">Azioni Rapide</sys:String>
     <sys:String x:Key="QuickActions_ApplyRecommended">Applica Impostazioni Consigliate</sys:String>
@@ -3648,6 +3649,8 @@
     <sys:String x:Key="SettingGroup_InputDevices">Dispositivi di input</sys:String>
     <sys:String x:Key="SettingGroup_Personalization">Personalizzazione</sys:String>
     <sys:String x:Key="SettingGroup_ThisPCFolders">Cartelle di Questo PC</sys:String>
+    <sys:String x:Key="SettingGroup_SystemProtection">Protezione del sistema</sys:String>
+    <sys:String x:Key="SettingGroup_EssentialTweaks">Ottimizzazioni essenziali</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Apri nell'Editor del Registro di sistema</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Dettagli tecnici: On</sys:String>
@@ -4961,6 +4964,11 @@
     <sys:String x:Key="Setting_start-power-lock-option_Description">Assegna Il Permesso O La Mostra, Apponendola Al Menú A Tendina O Pop-up Inerente Le Scelte E Le Casistiche Affidate All'Uso Col Bottone A Segno E Spegnimento / Energia Base Al Menu E Rilievo Di Pannello Start, L'Apparizione Della Prerogativa Od Voce Chiamata "Blocca" Che Ne Induce Immediatamente Una Cessa Alle Esposizioni Mettendo Il Dispositivo o Schermo All'Erogato Pannello Della Mostra o In Autentiche Di Sbarramento (Password o Pin In Rientro / Come in Win+L), Impedendone, Qualora Pigiato, A Chiunque Di Intravedere o Curiosare i Piani Di Lavoro Sú Senza Concessa Di Codici E Chiavi Avendo Lasciato In Precedenza Gli Affari O Moduli Accesamente Oltre e Celeri Al Richiamo Non Appena Si Ritorni E Si Scavalchi Lo Schermo Ed Avamposto Di Sicurezza.</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Rilievo O Presenza Messa A Palesamento D'Opzione Nominativa Al Destinarsi Alla "Sospensione E Cessazione (Sonno / Sleep Mitezza AI Consumi)" Negl'Appigli e Tasti Attestati Sull'Oneri Ed Al Governo Energetico Nel Contenitore E Menú Afferente Start</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Apponi In Visuale, Dispiega E Rendi Asservito E Toccabile O Cliccabile Al Sotto Menú, In Cima O Base Ai Simboli Da Interruttore Start Al Centro Operativo (Pannello Base Windows), La Parola Od IL Simbolo E Voce Denominati Ed Accorpanti "Sospendi". Al Qual Tocco Asservisce A Calare Nel Sopore (O Mero Disimpegno Energetico Forte A Riposo Con Pieni Lavori Salvi in RAM E Celeri AI Risvegli Subitanei In Movimento Mousse O Simili), Il PC Ed O.S, Evitandone I Lassi Di Chiusura Totali Ed Arresti Od Assoluti Decadimenti (Garantisci All'Uso Veloce Od Offuscalo E Celandone Ai Piú Per Usare Solo Spegnimenti Esecutivi Duri / In Mostra Al Pannello Di Governo e Spegni)</sys:String>
+
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Prevenire le app complementari per i dispositivi</sys:String>
+    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Impedisce l'installazione di software aggiuntivo quando si collegano dispositivi (es. annunci pubblicitari quando si collega un monitor). Rappresenta un potenziale rischio per la sicurezza.</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Disabilita Windows Platform Binary Table (WPBT)</sys:String>
+    <sys:String x:Key="Setting_disable-wpbt-execution_Description">Se abilitato, WPBT consente al fornitore del computer di eseguire programmi all'avvio, come software antifurto, driver e di forzare l'installazione di software senza il consenso dell'utente. Rappresenta un potenziale rischio per la sicurezza.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Riavvio richiesto</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Le modifiche sono state applicate. È necessario un riavvio del sistema affinché abbiano effetto. Vuoi riavviare ora?</sys:String>

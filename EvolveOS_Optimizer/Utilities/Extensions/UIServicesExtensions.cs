@@ -69,6 +69,7 @@ public static class UIServicesExtensions
         services.AddSingleton<IOptimizationFeatureViewModel, PrivacyOptimizationsViewModel>();
         services.AddSingleton<IOptimizationFeatureViewModel, PowerOptimizationsViewModel>();
         services.AddSingleton<IOptimizationFeatureViewModel, GamingOptimizationsViewModel>();
+        services.AddSingleton<IOptimizationFeatureViewModel, AdvancedOptimizationsViewModel>();
         #endregion
 
         #region Customize ViewModels
