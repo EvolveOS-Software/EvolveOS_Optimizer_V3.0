@@ -790,6 +790,8 @@ namespace EvolveOS_Optimizer
 
             try
             {
+                FanControlEngine.Instance.Shutdown();
+
                 MemoryGuardian?.Dispose();
                 _hotkeyService?.Dispose();
             }

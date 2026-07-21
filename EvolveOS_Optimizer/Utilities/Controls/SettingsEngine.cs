@@ -836,6 +836,35 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             set => ChangingParameters("LastCachePurgeTime", value.ToString("o"));
         }
 
+        internal static object GetDynamicSetting(string key, object defaultValue)
+        {
+            if (_cachedSettings.TryGetValue(key, out object? val))
+                return val;
+
+            try
+            {
+                using var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                using var regKey = baseKey.OpenSubKey(Win32Helper.Registry.Key.Settings);
+                if (regKey != null)
+                {
+                    object? regVal = regKey.GetValue(key);
+                    if (regVal != null)
+                    {
+                        _cachedSettings[key] = regVal;
+                        return regVal;
+                    }
+                }
+            }
+            catch (Exception e) { ErrorLogging.LogDebug(e); }
+
+            return defaultValue;
+        }
+
+        internal static void SetDynamicSetting(string key, object value)
+        {
+            ChangingParameters(key, value);
+        }
+
     #endregion
     }
 }

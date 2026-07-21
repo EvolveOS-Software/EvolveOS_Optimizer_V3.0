@@ -1854,7 +1854,7 @@
 
     <!-- region Diagnostics Page -->
     <sys:String x:Key="diag_header_subtitle">PROAKTIVE SYSTEMGESUNDHEITSDIAGNOSE</sys:String>
-    <sys:String x:Key="diag_header_title">COMMAND CENTER v1.0</sys:String>
+    <sys:String x:Key="diag_header_title">COMMAND CENTER v2.0</sys:String>
     <sys:String x:Key="diag_btn_start_scan">Vollständigen Scan starten</sys:String>
 
     <sys:String x:Key="diag_sys_status">SYSTEMSTATUS</sys:String>
@@ -5178,4 +5178,101 @@
     <sys:String x:Key="key_performance_cores">Leistungskerne</sys:String>
     <sys:String x:Key="key_efficiency_cores">Effizienzkerne</sys:String>
     <!-- endregion Diagnostics Hardware Thermal Settings -->
+
+    <!-- region Diagnostics Fan Control -->
+
+    <!-- Titles & Main Buttons -->
+    <sys:String x:Key="fan_title_system_fan_control">Systemlüftersteuerung</sys:String>
+    <sys:String x:Key="fan_btn_thermal_settings">Thermische Einstellungen</sys:String>
+    <sys:String x:Key="thermal_dialog_header_thresholds">Komponentenschwellenwerte</sys:String>
+
+    <!-- Warning Banner -->
+    <sys:String x:Key="fan_warning_thermal_throttling">Warnung: Wenn die Lüftergeschwindigkeiten unter hoher Last zu niedrig eingestellt werden, kann dies zu thermischer Drosselung führen. EvolveOS behält Ihre benutzerdefinierte Kurve im Hintergrund bei, es sei denn, ein kritisches BIOS-Sicherheitslimit wird ausgelöst.</sys:String>
+
+    <!-- Global Presets -->
+    <sys:String x:Key="fan_lbl_global_presets">Globale Voreinstellungen:</sys:String>
+    <sys:String x:Key="fan_btn_silent">Leise</sys:String>
+    <sys:String x:Key="fan_tooltip_silent">Alle Lüfter für minimales Rauschen optimieren</sys:String>
+    <sys:String x:Key="fan_btn_balanced">Ausgeglichen</sys:String>
+    <sys:String x:Key="fan_tooltip_balanced">Eine perfekte Mischung aus Kühlung und Geräuschentwicklung</sys:String>
+    <sys:String x:Key="fan_btn_performance">Leistung</sys:String>
+    <sys:String x:Key="fan_tooltip_performance">Aggressive Kühlung für schwere Lasten</sys:String>
+
+    <!-- Category Headers -->
+    <sys:String x:Key="fan_lbl_cpu_fans">CPU-Lüfter</sys:String>
+    <sys:String x:Key="fan_lbl_water_pumps">Wasserpumpen (AIO)</sys:String>
+    <sys:String x:Key="fan_lbl_chassis_fans">Gehäuselüfter</sys:String>
+    <sys:String x:Key="fan_lbl_gpu_fans">Grafikkarten (GPU)</sys:String>
+
+    <!-- Fan Card Readouts -->
+    <sys:String x:Key="fan_tooltip_edit_sensor">Sensorname &amp; Kategorie bearbeiten</sys:String>
+    <sys:String x:Key="fan_lbl_speed">Geschwindigkeit:</sys:String>
+    <sys:String x:Key="fan_lbl_rpm">U/min</sys:String>
+    <sys:String x:Key="fan_tooltip_calibrate">Die absolut niedrigste Geschwindigkeit finden, mit der dieser Lüfter laufen kann</sys:String>
+    <sys:String x:Key="fan_btn_default_bios">Standard-BIOS</sys:String>
+    <sys:String x:Key="fan_tooltip_default_bios">EvolveOS benutzerdefinierte Kurve deaktivieren und zur Motherboard-Steuerung zurückkehren</sys:String>
+
+    <!-- Thermal Sources Flyout -->
+    <sys:String x:Key="fan_lbl_sources">Quelle(n):</sys:String>
+    <sys:String x:Key="fan_tooltip_sources">Wählen Sie aus, auf welche Sensoren dieser Lüfter reagiert</sys:String>
+    <sys:String x:Key="fan_lbl_monitor_temps">Temperaturen überwachen</sys:String>
+    <sys:String x:Key="fan_chk_cpu">CPU-Gehäuse (Package)</sys:String>
+    <sys:String x:Key="fan_chk_gpu">Grafikkarte (GPU)</sys:String>
+    <sys:String x:Key="fan_chk_mb">Motherboard / Chipsatz</sys:String>
+    <sys:String x:Key="fan_chk_ram">Arbeitsspeicher / VRAM</sys:String>
+    <sys:String x:Key="fan_desc_highest_temp">Die Lüftergeschwindigkeit passt sich der höchsten Temperatur unter den ausgewählten Quellen an.</sys:String>
+
+    <!-- Hysteresis Sliders -->
+    <sys:String x:Key="fan_lbl_ramp_up">Anlaufzeit:</sys:String>
+    <sys:String x:Key="fan_tooltip_ramp_up">Benötigte Zeit zum Beschleunigen bei Hitzespitzen</sys:String>
+    <sys:String x:Key="fan_lbl_ramp_down">Auslaufzeit:</sys:String>
+    <sys:String x:Key="fan_tooltip_ramp_down">Benötigte Zeit zum Verlangsamen (verhindert lästige Jo-Jo-Effekte)</sys:String>
+    <sys:String x:Key="fan_lbl_seconds">s</sys:String>
+
+    <!-- Graph Components -->
+    <sys:String x:Key="fan_lbl_cpu">CPU</sys:String>
+    <sys:String x:Key="fan_lbl_gpu">GPU</sys:String>
+    <sys:String x:Key="fan_lbl_mb">MB</sys:String>
+    <sys:String x:Key="fan_lbl_ram">RAM</sys:String>
+    <sys:String x:Key="fan_tooltip_drag_point">Zum Anpassen ziehen. Rechtsklick zum Entfernen.</sys:String>
+    <sys:String x:Key="fan_tooltip_add_point">Neuen Kontrollpunkt hinzufügen (Max 8)</sys:String>
+    <sys:String x:Key="fan_tooltip_reset_curve">Kurve auf Standard zurücksetzen</sys:String>
+
+    <!-- Top View Toggle (Code-Behind Swaps) -->
+    <sys:String x:Key="fan_btn_fan_controls">Lüftersteuerungen</sys:String>
+    <sys:String x:Key="fan_title_thermal_safeguards">Thermische Einstellungen &amp; Schutzmaßnahmen</sys:String>
+
+    <!-- Edit Sensor ContentDialog -->
+    <sys:String x:Key="fan_dialog_edit_title">Sensor bearbeiten</sys:String>
+    <sys:String x:Key="fan_dialog_save">Speichern</sys:String>
+    <sys:String x:Key="fan_dialog_cancel">Abbrechen</sys:String>
+    <sys:String x:Key="fan_dialog_sensor_name">Sensorname</sys:String>
+    <sys:String x:Key="fan_dialog_category">Kategorie</sys:String>
+
+    <sys:String x:Key="fan_cat_cpu">CPU-Kühler</sys:String>
+    <sys:String x:Key="fan_cat_pump">Wasserpumpe (AIO)</sys:String>
+    <sys:String x:Key="fan_cat_chassis">Gehäuselüfter</sys:String>
+    <sys:String x:Key="fan_cat_gpu">Grafikkarte (GPU)</sys:String>
+
+    <!-- Fan Curve Graph Dot Tooltips -->
+    <sys:String x:Key="fan_dot_tooltip_cpu">CPU: {0:F1}°C</sys:String>
+    <sys:String x:Key="fan_dot_tooltip_gpu">GPU: {0:F1}°C</sys:String>
+    <sys:String x:Key="fan_dot_tooltip_mb">Motherboard: {0:F1}°C</sys:String>
+    <sys:String x:Key="fan_dot_tooltip_ram">Arbeitsspeicher: {0:F1}°C</sys:String>
+
+    <!-- Selected Sources List -->
+    <sys:String x:Key="fan_src_cpu">CPU</sys:String>
+    <sys:String x:Key="fan_src_gpu">GPU</sys:String>
+    <sys:String x:Key="fan_src_mb">MB</sys:String>
+    <sys:String x:Key="fan_src_ram">RAM</sys:String>
+    <sys:String x:Key="fan_src_none">Nichts ausgewählt</sys:String>
+
+    <!-- Fan Calibration Statuses -->
+    <sys:String x:Key="fan_calib_default">Kalibrieren</sys:String>
+    <sys:String x:Key="fan_calib_testing_zero">Teste 0%...</sys:String>
+    <sys:String x:Key="fan_calib_testing_val">Teste {0}%...</sys:String>
+    <sys:String x:Key="fan_calib_starts_at">Startet bei {0}%</sys:String>
+    <sys:String x:Key="fan_calib_failed">Fehlgeschlagen</sys:String>
+    
+    <!-- endregion Diagnostics Fan Control -->
 </ResourceDictionary>

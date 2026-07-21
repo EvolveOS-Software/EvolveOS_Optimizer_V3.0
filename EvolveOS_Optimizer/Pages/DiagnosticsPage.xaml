@@ -13,6 +13,7 @@
     xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:panels="using:EvolveOS_Optimizer.Assets.Panels"
+    xmlns:fluentIcons="using:FluentIcons.WinUI"
     mc:Ignorable="d"
     Background="Transparent">
 
@@ -223,6 +224,16 @@
                         </ToolTipService.ToolTip>
                         <FontIcon Glyph="&#xE90F;" FontSize="16"/>
                     </ToggleButton>
+
+                    <Button x:Name="FanControlButton"
+                            Command="{x:Bind ViewModel.ShowFanControlCommand}"
+                            Padding="12,6"
+                            CornerRadius="4">
+                        <ToolTipService.ToolTip>
+                            <TextBlock helpers:Loc.Key="diag_btn_thermal_management" FontFamily="{StaticResource Jura}" />
+                        </ToolTipService.ToolTip>
+                        <fluentIcons:SymbolIcon Symbol="Temperature" FontSize="16"/>
+                    </Button>
 
                 </StackPanel>
             </Grid>
@@ -1538,16 +1549,6 @@
                                                                           OffContent="LOAD" OnContent="TEMP" MinWidth="0"
                                                                           FontSize="10" FontFamily="{ThemeResource Jura}"
                                                                           VerticalAlignment="Center" Margin="0,0,0,0"/>
-
-                                                            <Button x:Name="BtnThermalSettings"
-                                                                    Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                                    Click="BtnThermalSettings_Click"
-                                                                    Background="Transparent"
-                                                                    BorderThickness="0"
-                                                                    VerticalAlignment="Center"
-                                                                    ToolTipService.ToolTip="{helpers:ResourceString Key=diag_tooltip_thermal_settings}">
-                                                                <FontIcon Glyph="&#xE713;" FontSize="16" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                            </Button>
 
                                                             <ComboBox ItemsSource="{x:Bind ViewModel.TimeScaleOptions}"
                                                                       DisplayMemberPath="Title" SelectedValuePath="Seconds"

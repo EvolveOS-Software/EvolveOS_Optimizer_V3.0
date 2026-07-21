@@ -409,6 +409,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             App.HotkeySettingsChanged += OnHotkeySettingsChanged;
 
+            FanControlEngine.Instance.Initialize();
+
             Thread monitorThread = new Thread(MonitorLoop) { IsBackground = true };
             monitorThread.Start();
 
@@ -2185,6 +2187,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             var cpuWindow = new Dialogs.CpuCoreTemperaturesWindow();
             cpuWindow.Activate();
+        }
+
+        [RelayCommand]
+        public void ShowFanControl()
+        {
+            var fanWindow = new Dialogs.FanControlWindow();
+            fanWindow.Activate();
         }
         #endregion
 
