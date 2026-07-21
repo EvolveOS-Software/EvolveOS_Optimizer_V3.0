@@ -3741,6 +3741,7 @@
     <sys:String x:Key="SettingGroup_ThisPCFolders">This PC Folders</sys:String>
     <sys:String x:Key="SettingGroup_SystemProtection">System Protection</sys:String>
     <sys:String x:Key="SettingGroup_EssentialTweaks">Essential Tweaks</sys:String>
+    <sys:String x:Key="SettingGroup_WindowsDefender(Security)">Windows Defender (Security)</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Open in Registry Editor</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Technical Details: On</sys:String>
@@ -5055,11 +5056,31 @@
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Show Sleep Option</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Display the Sleep option in the Start Menu power button menu</sys:String>
 
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Prevent Device Companion Apps</sys:String>
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Prevents additional software from being installed when plugging in devices (e.g. Ads when plugging in a monitor). Poses potential security risk.</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Disable Windows Platform Binary Table (WPBT)</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Description">If enabled, WPBT allows your computer vendor to execute programs at boot time, such as anti-theft software, software drivers, as well as force install software without user consent. Poses potential security risk.</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Name">Device Companion Apps</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Description">When enabled, allows additional software to be installed when plugging in devices (e.g. Ads when plugging in a monitor). Disabling this prevents potential security risks.</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Name">Windows Platform Binary Table (WPBT)</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Description">When enabled, WPBT allows your computer vendor to execute programs at boot time, such as anti-theft software and drivers, sometimes without user consent. Disabling this removes a potential security risk.</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Name">Razer Software Auto-Install</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Description">When enabled, Windows will automatically download and install Razer bloatware when a Razer device is connected. Disabling this blocks the installation while keeping hardware fully functional.</sys:String>
+    <sys:String x:Key="Setting_llmnr_Name">Link-Local Multicast Name Resolution (LLMNR)</sys:String>
+    <sys:String x:Key="Setting_llmnr_Description">When enabled, Windows broadcasts unencrypted DNS requests to the local network as a fallback. Disabling this is highly recommended to block common local network credential theft attacks (e.g., Responder).</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Name">Windows Copilot</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Description">When enabled, the Windows Copilot AI assistant is active on the taskbar and runs background processes. Disabling this completely removes the feature for better privacy and performance.</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Name">Windows Error Reporting (WER)</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Description">When enabled, Windows generates memory dumps and sends crash telemetry to Microsoft when an application crashes. Disabling this saves disk space and improves privacy.</sys:String>
+    <sys:String x:Key="Setting_autorun_Name">AutoPlay / AutoRun</sys:String>
+    <sys:String x:Key="Setting_autorun_Description">When enabled, removable drives, CDs, and mounted ISOs can automatically execute files upon connection. Disabling this provides a critical defense against malicious USB drives.</sys:String>
+    <sys:String x:Key="Setting_activity-history_Name">Activity History</sys:String>
+    <sys:String x:Key="Setting_activity-history_Description">When enabled, Windows tracks the files, apps, and websites you open to sync them across your Microsoft account. Disabling this improves local privacy.</sys:String>
 
+    <sys:String x:Key="Setting_defender-cpu-limit_Name">Defender Background Scan CPU Limit (10%)</sys:String>
+    <sys:String x:Key="Setting_defender-cpu-limit_Description">When enabled, this tweak caps Windows Defender's background scan CPU usage to 10% (default is 50%) to prevent random system slowdowns and stuttering during gameplay.</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Name">Defender Cloud Protection &amp; Sample Submission</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Description">When enabled, Windows Defender constantly sends file samples and telemetry to Microsoft's cloud. Disabling this reduces network I/O and improves privacy.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Name">Real-Time Protection</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Description">When enabled, Defender actively scans files for threats. Disabling this provides extreme performance gains.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Warning">WARNING: You MUST manually turn off 'Tamper Protection' in Windows Security first, or Windows will block this change.</sys:String>
+    
     <sys:String x:Key="RestartRequired_DialogTitle">Restart Required</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Changes have been applied. A system restart is required for them to take effect. Would you like to restart now?</sys:String>
     <sys:String x:Key="RestartRequired_PrimaryButton">Restart Now</sys:String>

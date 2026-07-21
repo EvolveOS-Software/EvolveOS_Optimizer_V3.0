@@ -3651,6 +3651,7 @@
     <sys:String x:Key="SettingGroup_ThisPCFolders">Cartelle di Questo PC</sys:String>
     <sys:String x:Key="SettingGroup_SystemProtection">Protezione del sistema</sys:String>
     <sys:String x:Key="SettingGroup_EssentialTweaks">Ottimizzazioni essenziali</sys:String>
+    <sys:String x:Key="SettingGroup_WindowsDefender(Security)">Windows Defender (Sicurezza)</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Apri nell'Editor del Registro di sistema</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Dettagli tecnici: On</sys:String>
@@ -4965,10 +4966,30 @@
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Rilievo O Presenza Messa A Palesamento D'Opzione Nominativa Al Destinarsi Alla "Sospensione E Cessazione (Sonno / Sleep Mitezza AI Consumi)" Negl'Appigli e Tasti Attestati Sull'Oneri Ed Al Governo Energetico Nel Contenitore E Menú Afferente Start</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Apponi In Visuale, Dispiega E Rendi Asservito E Toccabile O Cliccabile Al Sotto Menú, In Cima O Base Ai Simboli Da Interruttore Start Al Centro Operativo (Pannello Base Windows), La Parola Od IL Simbolo E Voce Denominati Ed Accorpanti "Sospendi". Al Qual Tocco Asservisce A Calare Nel Sopore (O Mero Disimpegno Energetico Forte A Riposo Con Pieni Lavori Salvi in RAM E Celeri AI Risvegli Subitanei In Movimento Mousse O Simili), Il PC Ed O.S, Evitandone I Lassi Di Chiusura Totali Ed Arresti Od Assoluti Decadimenti (Garantisci All'Uso Veloce Od Offuscalo E Celandone Ai Piú Per Usare Solo Spegnimenti Esecutivi Duri / In Mostra Al Pannello Di Governo e Spegni)</sys:String>
 
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Prevenire le app complementari per i dispositivi</sys:String>
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Impedisce l'installazione di software aggiuntivo quando si collegano dispositivi (es. annunci pubblicitari quando si collega un monitor). Rappresenta un potenziale rischio per la sicurezza.</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Disabilita Windows Platform Binary Table (WPBT)</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Description">Se abilitato, WPBT consente al fornitore del computer di eseguire programmi all'avvio, come software antifurto, driver e di forzare l'installazione di software senza il consenso dell'utente. Rappresenta un potenziale rischio per la sicurezza.</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Name">App complementari per dispositivi</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Description">Se abilitata, consente l'installazione di software aggiuntivo quando si collegano dispositivi (ad es. pubblicità al collegamento di un monitor). La disabilitazione previene potenziali rischi per la sicurezza.</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Name">Windows Platform Binary Table (WPBT)</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Description">Se abilitata, WPBT consente al produttore del computer di eseguire programmi all'avvio, come software antifurto e driver, a volte senza il consenso dell'utente. La disabilitazione rimuove un potenziale rischio per la sicurezza.</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Name">Installazione automatica software Razer</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Description">Se abilitata, Windows scaricherà e installerà automaticamente bloatware Razer quando viene collegato un dispositivo Razer. La disabilitazione blocca l'installazione mantenendo l'hardware perfettamente funzionante.</sys:String>
+    <sys:String x:Key="Setting_llmnr_Name">Link-Local Multicast Name Resolution (LLMNR)</sys:String>
+    <sys:String x:Key="Setting_llmnr_Description">Se abilitata, Windows trasmette richieste DNS non crittografate alla rete locale come ripiego. La disabilitazione è vivamente consigliata per bloccare i comuni attacchi di furto di credenziali sulla rete locale (es. Responder).</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Name">Windows Copilot</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Description">Se abilitata, l'assistente IA Windows Copilot è attivo sulla barra delle applicazioni ed esegue processi in background. La disabilitazione rimuove completamente la funzionalità migliorando privacy e prestazioni.</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Name">Segnalazione errori di Windows (WER)</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Description">Se abilitata, Windows genera dump della memoria e invia dati di telemetria sugli arresti anomali a Microsoft quando un'applicazione si blocca. La disabilitazione risparmia spazio su disco e migliora la privacy.</sys:String>
+    <sys:String x:Key="Setting_autorun_Name">AutoPlay / AutoRun</sys:String>
+    <sys:String x:Key="Setting_autorun_Description">Se abilitata, le unità rimovibili, i CD e le ISO montate possono eseguire automaticamente i file alla connessione. La disabilitazione fornisce una difesa fondamentale contro le unità USB dannose.</sys:String>
+    <sys:String x:Key="Setting_activity-history_Name">Cronologia delle attività</sys:String>
+    <sys:String x:Key="Setting_activity-history_Description">Se abilitata, Windows tiene traccia dei file, delle app e dei siti web aperti per sincronizzarli con l'account Microsoft. La disabilitazione migliora la privacy locale.</sys:String>
+
+    <sys:String x:Key="Setting_defender-cpu-limit_Name">Limite CPU scansione in background Defender (10%)</sys:String>
+    <sys:String x:Key="Setting_defender-cpu-limit_Description">Se abilitata, questa ottimizzazione limita l'utilizzo della CPU da parte delle scansioni in background di Windows Defender al 10% (il valore predefinito è 50%) per prevenire rallentamenti di sistema casuali e stuttering durante il gioco.</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Name">Protezione basata sul cloud Defender &amp; Invio automatico di file di esempio</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Description">Se abilitata, Windows Defender invia costantemente file di esempio e telemetria al cloud di Microsoft. La disabilitazione riduce l'I/O di rete e migliora la privacy.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Name">Protezione in tempo reale</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Description">Se abilitata, Defender analizza attivamente i file alla ricerca di minacce. La disabilitazione offre vantaggi prestazionali estremi.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Warning">AVVERTENZA: DEVI prima disattivare manualmente la "Protezione antimanomissione" in Sicurezza di Windows, altrimenti Windows bloccherà questa modifica.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Riavvio richiesto</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Le modifiche sono state applicate. È necessario un riavvio del sistema affinché abbiano effetto. Vuoi riavviare ora?</sys:String>

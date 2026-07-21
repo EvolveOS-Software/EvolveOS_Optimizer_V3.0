@@ -3654,6 +3654,7 @@
     <sys:String x:Key="SettingGroup_ThisPCFolders">Mappen in Deze pc</sys:String>
     <sys:String x:Key="SettingGroup_SystemProtection">Systeembescherming</sys:String>
     <sys:String x:Key="SettingGroup_EssentialTweaks">Essentiële aanpassingen</sys:String>
+    <sys:String x:Key="SettingGroup_WindowsDefender(Security)">Windows Defender (Beveiliging)</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Openen in Register-editor</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Technische details: Aan</sys:String>
@@ -4968,10 +4969,30 @@
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Optie Slaapstand weergeven</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">De optie 'Slaapstand' zichtbaar maken binnen de stroomknop (Aan/Uit) van uw Startmenu</sys:String>
 
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Voorkom begeleidende apparaat-apps</sys:String>
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Voorkomt dat er extra software wordt geïnstalleerd bij het aansluiten van apparaten (bijv. advertenties bij het aansluiten van een monitor). Vormt een potentieel beveiligingsrisico.</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Windows Platform Binary Table (WPBT) uitschakelen</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Description">Indien ingeschakeld, stelt WPBT uw computerleverancier in staat om programma's uit te voeren tijdens het opstarten, zoals antidiefstalsoftware, stuurprogramma's, en om software te forceren te installeren zonder toestemming van de gebruiker. Vormt een potentieel beveiligingsrisico.</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Name">Apparaatbegeleidende apps</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Description">Indien ingeschakeld, kan er extra software worden geïnstalleerd bij het aansluiten van apparaten (bijv. advertenties bij het aansluiten van een monitor). Het uitschakelen hiervan voorkomt potentiële beveiligingsrisico's.</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Name">Windows Platform Binary Table (WPBT)</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Description">Indien ingeschakeld, staat WPBT de leverancier van uw computer toe om tijdens het opstarten programma's uit te voeren, zoals antidiefstalsoftware en stuurprogramma's, soms zonder toestemming van de gebruiker. Het uitschakelen hiervan neemt een potentieel beveiligingsrisico weg.</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Name">Automatische installatie van Razer-software</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Description">Indien ingeschakeld, zal Windows automatisch Razer-bloatware downloaden en installeren wanneer er een Razer-apparaat wordt aangesloten. Het uitschakelen hiervan blokkeert de installatie terwijl de hardware volledig functioneel blijft.</sys:String>
+    <sys:String x:Key="Setting_llmnr_Name">Link Local Multicast Name Resolution (LLMNR)</sys:String>
+    <sys:String x:Key="Setting_llmnr_Description">Indien ingeschakeld, zendt Windows onversleutelde DNS-verzoeken uit naar het lokale netwerk als terugvaloptie. Het uitschakelen hiervan wordt ten zeerste aanbevolen om veelvoorkomende aanvallen op het lokale netwerk (zoals Responder) te blokkeren.</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Name">Windows Copilot</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Description">Indien ingeschakeld, is de Windows Copilot AI-assistent actief op de taakbalk en worden er achtergrondprocessen uitgevoerd. Het uitschakelen hiervan verwijdert de functie volledig voor betere privacy en prestaties.</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Name">Windows Error Reporting (WER)</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Description">Indien ingeschakeld, genereert Windows geheugendumps en verzendt het crash-telemetrie naar Microsoft wanneer een toepassing crasht. Het uitschakelen hiervan bespaart schijfruimte en verbetert de privacy.</sys:String>
+    <sys:String x:Key="Setting_autorun_Name">Automatisch afspelen / AutoRun</sys:String>
+    <sys:String x:Key="Setting_autorun_Description">Indien ingeschakeld, kunnen verwisselbare schijven, cd's en gekoppelde ISO's automatisch bestanden uitvoeren bij aansluiting. Het uitschakelen hiervan biedt een cruciale verdediging tegen kwaadaardige USB drives.</sys:String>
+    <sys:String x:Key="Setting_activity-history_Name">Activiteitengeschiedenis</sys:String>
+    <sys:String x:Key="Setting_activity-history_Description">Indien ingeschakeld, volgt Windows de bestanden, apps en websites die u opent om deze te synchroniseren met uw Microsoft-account. Het uitschakelen hiervan verbetert de lokale privacy.</sys:String>
+
+    <sys:String x:Key="Setting_defender-cpu-limit_Name">CPU limiet voor Defender achtergrondscans (10%)</sys:String>
+    <sys:String x:Key="Setting_defender-cpu-limit_Description">Indien ingeschakeld, beperkt deze aanpassing het CPU gebruik van Windows Defender voor achtergrondscans tot 10% (standaard is 50%) om willekeurige systeemvertragingen en stotteren tijdens het gamen te voorkomen.</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Name">Defender Cloudbeveiliging &amp; Sample Submission</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Description">Indien ingeschakeld, verzendt Windows Defender voortdurend bestandsvoorbeelden en telemetrie naar de cloud van Microsoft. Het uitschakelen hiervan vermindert netwerk I/O en verbetert de privacy.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Name">Realtime beveiliging</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Description">Indien ingeschakeld, scant Defender actief bestanden op bedreigingen. Het uitschakelen hiervan levert extreme prestatiewinst op.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Warning">WAARSCHUWING: U MOET eerst handmatig 'Bescherming tegen manipulatie' uitschakelen in Windows beveiliging, anders zal Windows deze wijziging blokkeren.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Opnieuw opstarten vereist</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">De wijzigingen zijn toegepast. Een herstart van het systeem is vereist om deze van kracht te laten worden. Wilt u nu opnieuw opstarten?</sys:String>

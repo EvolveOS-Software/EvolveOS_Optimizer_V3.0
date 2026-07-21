@@ -7,6 +7,10 @@ namespace EvolveOS_Optimizer.Core.Model;
 
 public sealed record SettingDefinition : BaseDefinition, ISettingItem
 {
+    #region Basic Metadata
+    public string? Warning { get; init; }
+    #endregion
+
     #region Action & Automation
     public bool RequiresConfirmation { get; init; } = false;
     public string? ActionCommand { get; init; }

@@ -3640,6 +3640,7 @@
     <sys:String x:Key="SettingGroup_ThisPCFolders">Dossiers de Ce PC</sys:String>
     <sys:String x:Key="SettingGroup_SystemProtection">Protection du système</sys:String>
     <sys:String x:Key="SettingGroup_EssentialTweaks">Ajustements essentiels</sys:String>
+    <sys:String x:Key="SettingGroup_WindowsDefender(Security)">Windows Defender (Sécurité)</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Ouvrir dans l'Éditeur du Registre</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Détails techniques : Activé</sys:String>
@@ -4954,10 +4955,30 @@
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Afficher l'option Mettre en veille</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Affiche l'option « Mettre en veille » dans le menu du bouton d'alimentation du menu Démarrer</sys:String>
 
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Empêcher les applications complémentaires pour les appareils</sys:String>
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Empêche l'installation de logiciels supplémentaires lors du branchement d'appareils (par ex. des publicités lors du branchement d'un moniteur). Présente un risque potentiel pour la sécurité.</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Désactiver Windows Platform Binary Table (WPBT)</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Description">Si activé, le WPBT permet au fabricant de votre ordinateur d'exécuter des programmes au démarrage, tels que des logiciels antivol, des pilotes, ainsi que de forcer l'installation de logiciels sans le consentement de l'utilisateur. Présente un risque potentiel pour la sécurité.</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Name">Applications complémentaires d'appareils</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Description">Si activé, permet l'installation de logiciels supplémentaires lors du branchement d'appareils (par ex. des publicités lors du branchement d'un moniteur). La désactivation prévient les risques potentiels de sécurité.</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Name">Windows Platform Binary Table (WPBT)</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Description">Si activé, WPBT permet au fournisseur de votre ordinateur d'exécuter des programmes au démarrage, tels que des logiciels antivol et des pilotes, parfois sans le consentement de l'utilisateur. La désactivation élimine un risque potentiel de sécurité.</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Name">Installation automatique du logiciel Razer</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Description">Si activé, Windows téléchargera et installera automatiquement les bloatwares Razer lorsqu'un appareil Razer est connecté. La désactivation bloque l'installation tout en gardant le matériel entièrement fonctionnel.</sys:String>
+    <sys:String x:Key="Setting_llmnr_Name">Link-Local Multicast Name Resolution (LLMNR)</sys:String>
+    <sys:String x:Key="Setting_llmnr_Description">Si activé, Windows diffuse des requêtes DNS non chiffrées sur le réseau local comme solution de repli. La désactivation est fortement recommandée pour bloquer les attaques courantes de vol d'identifiants sur le réseau local (par ex. Responder).</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Name">Windows Copilot</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Description">Si activé, l'assistant IA Windows Copilot est actif sur la barre des tâches et exécute des processus en arrière-plan. La désactivation supprime complètement la fonctionnalité pour une meilleure confidentialité et de meilleures performances.</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Name">Windows Error Reporting (WER)</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Description">Si activé, Windows génère des vidages mémoire et envoie des données de télémétrie de plantage à Microsoft lorsqu'une application plante. La désactivation économise de l'espace disque et améliore la confidentialité.</sys:String>
+    <sys:String x:Key="Setting_autorun_Name">Exécution automatique / AutoRun</sys:String>
+    <sys:String x:Key="Setting_autorun_Description">Si activé, les disques amovibles, les CD et les ISO montés peuvent exécuter automatiquement des fichiers lors de la connexion. La désactivation offre une défense cruciale contre les clés USB malveillantes.</sys:String>
+    <sys:String x:Key="Setting_activity-history_Name">Historique des activités</sys:String>
+    <sys:String x:Key="Setting_activity-history_Description">Si activé, Windows suit les fichiers, applications et sites Web que vous ouvrez pour les synchroniser avec votre compte Microsoft. La désactivation améliore la confidentialité locale.</sys:String>
+
+    <sys:String x:Key="Setting_defender-cpu-limit_Name">Limite CPU de l'analyse en arrière-plan de Defender (10 %)</sys:String>
+    <sys:String x:Key="Setting_defender-cpu-limit_Description">Si activé, cette optimisation limite l'utilisation du processeur par les analyses en arrière-plan de Windows Defender à 10 % (50 % par défaut) pour éviter les ralentissements et les saccades aléatoires du système pendant les jeux.</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Name">Protection dans le cloud Defender &amp; Soumission d'échantillons</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Description">Si activé, Windows Defender envoie constamment des échantillons de fichiers et des données de télémétrie vers le cloud de Microsoft. La désactivation réduit les entrées/sorties réseau et améliore la confidentialité.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Name">Protection en temps réel</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Description">Si activé, Defender analyse activement les fichiers à la recherche de menaces. La désactivation offre des gains de performances extrêmes.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Warning">AVERTISSEMENT : Vous DEVEZ d'abord désactiver manuellement la « Protection contre les falsifications » dans Sécurité Windows, sinon Windows bloquera cette modification.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Redémarrage requis</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Les modifications ont été appliquées. Un redémarrage du système est nécessaire pour qu'elles soient prises en compte. Voulez-vous redémarrer maintenant ?</sys:String>

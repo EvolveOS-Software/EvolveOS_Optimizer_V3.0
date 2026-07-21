@@ -54,6 +54,12 @@ public partial class SettingItemViewModel : BaseViewModel
     public partial string Description { get; set; }
 
     [ObservableProperty]
+    public partial bool HasToggleWarning { get; set; }
+
+    [ObservableProperty]
+    public partial string? ToggleWarningMessage { get; set; }
+
+    [ObservableProperty]
     public partial string GroupName { get; set; }
 
     [ObservableProperty]
@@ -838,6 +844,8 @@ public partial class SettingItemViewModel : BaseViewModel
         SettingId = config.SettingId;
         Name = config.Name;
         Description = config.Description;
+        ToggleWarningMessage = config.SettingDefinition?.Warning;
+        HasToggleWarning = !string.IsNullOrWhiteSpace(ToggleWarningMessage);
         GroupName = config.GroupName;
         Icon = config.Icon;
         IconPack = config.IconPack;

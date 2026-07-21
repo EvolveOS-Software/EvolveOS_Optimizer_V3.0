@@ -3630,6 +3630,7 @@
     <sys:String x:Key="SettingGroup_ThisPCFolders">Ordner unter 'Dieser PC'</sys:String>
     <sys:String x:Key="SettingGroup_SystemProtection">Systemschutz</sys:String>
     <sys:String x:Key="SettingGroup_EssentialTweaks">Wichtige Optimierungen</sys:String>
+    <sys:String x:Key="SettingGroup_WindowsDefender(Security)">Windows Defender (Sicherheit)</sys:String>
 
     <sys:String x:Key="TechnicalDetails_OpenRegedit">Im Registrierungs-Editor öffnen</sys:String>
     <sys:String x:Key="TechnicalDetails_On">Technische Details: Ein</sys:String>
@@ -4944,10 +4945,30 @@
     <sys:String x:Key="Setting_start-power-sleep-option_Name">Option „Energie sparen“ anzeigen</sys:String>
     <sys:String x:Key="Setting_start-power-sleep-option_Description">Zeigt die Option 'Energie sparen' im Ein/Aus-Menü des Startmenüs an</sys:String>
 
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Name">Begleit-Apps für Geräte verhindern</sys:String>
-    <sys:String x:Key="Setting_prevent-device-companion-apps_Description">Verhindert die Installation zusätzlicher Software beim Anschließen von Geräten (z. B. Werbung beim Anschließen eines Monitors). Stellt ein potenzielles Sicherheitsrisiko dar.</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Name">Windows Platform Binary Table (WPBT) deaktivieren</sys:String>
-    <sys:String x:Key="Setting_disable-wpbt-execution_Description">Wenn aktiviert, ermöglicht WPBT Ihrem Computerhersteller, Programme beim Start auszuführen, z. B. Anti-Diebstahl-Software, Treiber sowie die erzwungene Installation von Software ohne Zustimmung des Benutzers. Stellt ein potenzielles Sicherheitsrisiko dar.</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Name">Geräte Begleit Apps</sys:String>
+    <sys:String x:Key="Setting_device-companion-apps_Description">Wenn aktiviert, können beim Anschließen von Geräten zusätzliche Programme installiert werden (z. B. Werbung beim Anschließen eines Monitors). Die Deaktivierung verhindert potenzielle Sicherheitsrisiken.</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Name">Windows Platform Binary Table (WPBT)</sys:String>
+    <sys:String x:Key="Setting_wpbt-execution_Description">Wenn aktiviert, erlaubt WPBT dem Computerhersteller, beim Start Programme wie Anti-Diebstahl-Software und Treiber auszuführen, oft ohne Zustimmung des Benutzers. Die Deaktivierung beseitigt ein potenzielles Sicherheitsrisiko.</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Name">Automatische Razer Software Installation</sys:String>
+    <sys:String x:Key="Setting_razer-auto-install_Description">Wenn aktiviert, lädt Windows automatisch Razer-Bloatware herunter und installiert sie, sobald ein Razer Gerät angeschlossen wird. Die Deaktivierung blockiert die Installation, während die Hardware voll funktionsfähig bleibt.</sys:String>
+    <sys:String x:Key="Setting_llmnr_Name">Link Local Multicast Name Resolution (LLMNR)</sys:String>
+    <sys:String x:Key="Setting_llmnr_Description">Wenn aktiviert, sendet Windows unverschlüsselte DNS-Anfragen als Fallback ins lokale Netzwerk. Die Deaktivierung wird dringend empfohlen, um häufige Angriffe auf Anmeldeinformationen im lokalen Netzwerk (z. B. Responder) zu blockieren.</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Name">Windows Copilot</sys:String>
+    <sys:String x:Key="Setting_windows-copilot_Description">Wenn aktiviert, ist der KI-Assistent Windows Copilot in der Taskleiste aktiv und führt Hintergrundprozesse aus. Die Deaktivierung entfernt die Funktion vollständig und sorgt für besseren Datenschutz und mehr Leistung.</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Name">Windows Error Reporting (WER)</sys:String>
+    <sys:String x:Key="Setting_windows-error-reporting_Description">Wenn aktiviert, erstellt Windows bei einem Programmabsturz Speicherabbilder und sendet Absturz Telemetriedaten an Microsoft. Die Deaktivierung spart Speicherplatz und verbessert den Datenschutz.</sys:String>
+    <sys:String x:Key="Setting_autorun_Name">Automatische Wiedergabe / AutoRun</sys:String>
+    <sys:String x:Key="Setting_autorun_Description">Wenn aktiviert, können Wechseldatenträger, CDs und gemountete ISOs beim Anschließen automatisch Dateien ausführen. Die Deaktivierung bietet einen entscheidenden Schutz vor schädlichen USB Laufwerken.</sys:String>
+    <sys:String x:Key="Setting_activity-history_Name">Aktivitätsverlauf</sys:String>
+    <sys:String x:Key="Setting_activity-history_Description">Wenn aktiviert, protokolliert Windows die von Ihnen geöffneten Dateien, Apps und Websites, um sie mit Ihrem Microsoft-Konto zu synchronisieren. Die Deaktivierung verbessert die lokale Privatsphäre.</sys:String>
+
+    <sys:String x:Key="Setting_defender-cpu-limit_Name">Defender-Hintergrundscan-CPU-Limit (10%)</sys:String>
+    <sys:String x:Key="Setting_defender-cpu-limit_Description">Wenn aktiviert, begrenzt dieser Tweak die CPU-Auslastung für Windows Defender-Hintergrundscans auf 10 % (Standard ist 50 %), um zufällige Systemverlangsamungen und Ruckler beim Spielen zu verhindern.</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Name">Defender Cloud Schutz &amp; Übermittlung von Beispielen</sys:String>
+    <sys:String x:Key="Setting_defender-cloud-sample_Description">Wenn aktiviert, sendet Windows Defender kontinuierlich Dateibeispiele und Telemetriedaten an die Microsoft-Cloud. Die Deaktivierung reduziert die Netzwerk E/A und verbessert den Datenschutz.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Name">Echtzeitschutz</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Description">Wenn aktiviert, scannt Defender Dateien aktiv auf Bedrohungen. Die Deaktivierung sorgt für extreme Leistungssteigerungen.</sys:String>
+    <sys:String x:Key="Setting_defender-realtime-protection_Warning">WARNUNG: Sie MÜSSEN zuerst den „Manipulationsschutz“ in der Windows Sicherheit manuell deaktivieren, da Windows diese Änderung sonst blockiert.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Neustart erforderlich</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Die Änderungen wurden angewendet. Ein Systemneustart ist erforderlich, damit sie wirksam werden. Möchten Sie jetzt neu starten?</sys:String>

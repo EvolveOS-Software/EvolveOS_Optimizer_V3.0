@@ -203,6 +203,16 @@
                 </Grid>
             </Grid>
 
+            <commonControls:QuietInfoBar
+                IsOpen="{x:Bind HasToggleWarning, Mode=OneWay}"
+                Severity="Error"
+                Message="{x:Bind ToggleWarningMessage, Mode=OneWay}"
+                IsClosable="False"
+                IsTabStop="True"
+                UseSystemFocusVisuals="True"
+                Margin="0,-1,0,0"
+                CornerRadius="0,0,4,4"/>
+
             <Border Visibility="{x:Bind ShowTechnicalDetailsBar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
@@ -545,6 +555,16 @@
                     </Button>
                 </Grid>
             </Grid>
+
+            <commonControls:QuietInfoBar
+                IsOpen="{x:Bind HasToggleWarning, Mode=OneWay}"
+                Severity="Error"
+                Message="{x:Bind ToggleWarningMessage, Mode=OneWay}"
+                IsClosable="False"
+                IsTabStop="True"
+                UseSystemFocusVisuals="True"
+                Margin="0,-1,0,0"
+                CornerRadius="0,0,4,4"/>
 
             <Border Visibility="{x:Bind ShowTechnicalDetailsBar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}"
@@ -1068,7 +1088,17 @@
 
                                 </controls:SettingsExpander.Items>
                             </controls:SettingsExpander>
-                            
+
+                            <commonControls:QuietInfoBar
+                                IsOpen="{x:Bind HasToggleWarning, Mode=OneWay}"
+                                Severity="Error"
+                                Message="{x:Bind ToggleWarningMessage, Mode=OneWay}"
+                                IsClosable="False"
+                                IsTabStop="True"
+                                UseSystemFocusVisuals="True"
+                                Margin="0,-1,0,0"
+                                CornerRadius="0,0,4,4"/>
+
                             <Border Visibility="{x:Bind ShowTechnicalDetailsBar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
