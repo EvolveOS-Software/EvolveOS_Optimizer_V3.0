@@ -39,6 +39,19 @@ namespace EvolveOS_Optimizer.Utilities.Services
             _computer?.Accept(_updateVisitor);
         }
 
+        public void UpdateCpuSensors()
+        {
+            if (_computer == null) return;
+
+            foreach (var hardware in _computer.Hardware)
+            {
+                if (hardware.HardwareType == HardwareType.Cpu)
+                {
+                    hardware.Update();
+                }
+            }
+        }
+
         public float GetCpuTemperature() => GetHardwareTemp(HardwareType.Cpu);
         public float GetMemoryTemperature() => GetHardwareTemp(HardwareType.Memory);
         public float GetMotherboardTemperature() => GetHardwareTemp(HardwareType.Motherboard);

@@ -115,7 +115,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             var initialData = await Task.Run(() =>
             {
-                HardwareTemperatureService.Instance.UpdateSensors();
+                HardwareTemperatureService.Instance.UpdateCpuSensors();
 
                 var data = _isShowingTemperatures
                     ? HardwareTemperatureService.Instance.GetCpuCoreTemperatures()
@@ -146,7 +146,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     var startTime = DateTime.UtcNow;
 
-                    HardwareTemperatureService.Instance.UpdateSensors();
+                    HardwareTemperatureService.Instance.UpdateCpuSensors();
 
                     bool fetchedAsTemp = _isShowingTemperatures;
 
