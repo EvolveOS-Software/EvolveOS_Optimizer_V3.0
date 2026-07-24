@@ -22,7 +22,7 @@
     <!-- endregion Safe Mode -->
 
     <!-- region Loading/Closing Window -->
-    <sys:String x:Key="loading_message">Initialisation des données matérielles et des protocoles de sécurité</sys:String>
+    <sys:String x:Key="loading_message">Initialisation des données matérielles &amp; des protocoles de sécurité</sys:String>
     <sys:String x:Key="status_waiting_system">En attente de l'initialisation du système...</sys:String>
     <sys:String x:Key="status_extracting_resources">Extraction des ressources...</sys:String>
     <sys:String x:Key="status_installing_engine">Installation du moteur de base de données requis...</sys:String>

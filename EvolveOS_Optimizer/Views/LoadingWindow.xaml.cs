@@ -267,13 +267,13 @@ namespace EvolveOS_Optimizer.Views
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
             if (appWindow != null)
             {
-                appWindow.Resize(new WinSize(350, 150));
+                appWindow.Resize(new WinSize(400, 160));
 
                 var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
                 if (displayArea != null)
                 {
-                    var centeredX = (displayArea.WorkArea.Width - 350) / 2;
-                    var centeredY = (displayArea.WorkArea.Height - 150) / 2;
+                    var centeredX = (displayArea.WorkArea.Width - 400) / 2;
+                    var centeredY = (displayArea.WorkArea.Height - 160) / 2;
                     appWindow.Move(new WinPoint(centeredX, centeredY));
                 }
 
@@ -324,18 +324,17 @@ namespace EvolveOS_Optimizer.Views
             });
 
             await App.HostInitializationSource.Task;
-
-            await Task.Delay(750, token);
+            await Task.Delay(1000, token);
 
             var diagnosticsInstance = DiagnosticsPageViewModel.Current;
 
             if (_isSystemBusy)
             {
                 UpdateStatusDirect(ResourceString.GetString("status_waiting_system") ?? "Waiting for system to initialize...");
-                await Task.Delay(5000, token);
+                await Task.Delay(3500, token);
             }
 
-            Task<bool> dbTask = Task.Run(async () =>
+            bool isDbReady = await Task.Run(async () =>
             {
                 bool isEngineInstalled = await EnsureDatabaseEngineInstalledAsync(token);
                 if (!isEngineInstalled) return false;
@@ -343,49 +342,48 @@ namespace EvolveOS_Optimizer.Views
                 return await PerformDatabaseBootSequenceAsync(token);
             }, token);
 
-            Task telemetryTask = Task.Run(async () =>
+            if (!isDbReady || token.IsCancellationRequested) return;
+
+            await Task.Run(async () =>
             {
                 try
                 {
                     if (token.IsCancellationRequested) return;
 
                     Report(10);
-                    await Task.Delay(400, token);
+                    await Task.Delay(1200, token);
 
                     UpdateStatusDirect(ResourceString.GetString("status_hardware_gather") ?? "Interrogating hardware and telemetry...");
+                    await Task.Delay(1200, token);
 
                     Task diagnosticsScanTask = diagnosticsInstance.ExecuteFullScanAsync();
 
                     Report(20);
+                    await Task.Delay(800, token);
 
-                    Parallel.Invoke(
-                        () => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus)),
-                        () => ExecuteWithLogging(_systemDiagnostics.GetHardwareData, nameof(_systemDiagnostics.GetHardwareData)),
-                        () => ExecuteAsyncWithLogging(() => SystemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(SystemDiagnostics.ValidateVersionUpdatesAsync)),
-                        () => ExecuteWithLogging(_uninstallingPakages.GetInstalledPackages, nameof(_uninstallingPakages.GetInstalledPackages)),
-                        () => ExecuteAsyncWithLogging(RunGuard.CheckingDefenderExclusions, nameof(RunGuard.CheckingDefenderExclusions)),
-                        () =>
+                    await Task.WhenAll(
+                        Task.Run(() => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus))),
+                        Task.Run(() => ExecuteWithLogging(_systemDiagnostics.GetHardwareData, nameof(_systemDiagnostics.GetHardwareData))),
+                        ExecuteAsyncWithLogging(() => SystemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(SystemDiagnostics.ValidateVersionUpdatesAsync)),
+                        Task.Run(() => ExecuteWithLogging(_uninstallingPakages.GetInstalledPackages, nameof(_uninstallingPakages.GetInstalledPackages))),
+                        ExecuteAsyncWithLogging(RunGuard.CheckingDefenderExclusions, nameof(RunGuard.CheckingDefenderExclusions)),
+                        Task.Run(() =>
                         {
                             ExecuteWithLogging(UninstallingPackages.CheckingForLocalAccount, nameof(UninstallingPackages.CheckingForLocalAccount));
                             ExecuteWithLogging(BluetoothManager.Initialize, nameof(BluetoothManager.Initialize));
-                        },
-                        () => ExecuteWithLogging(HardwareTemperatureService.Instance.Initialize, nameof(HardwareTemperatureService.Initialize))
+                        }),
+                        Task.Run(() => ExecuteWithLogging(HardwareTemperatureService.Instance.Initialize, nameof(HardwareTemperatureService.Initialize)))
                     );
 
-                    for (int p = 30; p <= 70; p += 10)
-                    {
-                        if (token.IsCancellationRequested) return;
-                        Report(p);
-                        await Task.Delay(350, token);
-                    }
-
-                    if (token.IsCancellationRequested) return;
-
                     Report(80);
+                    await Task.Delay(1000, token); // Let Step 8 type out smoothly
+
                     HardwareData.RunningProcessesCount = await _systemDiagnostics.GetProcessCount();
                     HardwareData.RunningServicesCount = await _systemDiagnostics.GetServicesCount();
 
                     Report(90);
+                    await Task.Delay(1000, token);
+
                     await _systemDiagnostics.GetTotalProcessorUsage();
                     await _systemDiagnostics.GetPhysicalAvailableMemory();
                 }
@@ -396,19 +394,12 @@ namespace EvolveOS_Optimizer.Views
                 }
             }, token);
 
-            await Task.WhenAll(dbTask, telemetryTask);
-
-            if (!await dbTask)
-            {
-                return;
-            }
-
             if (token.IsCancellationRequested) return;
 
             try
             {
                 Report(100);
-                await Task.Delay(500, token);
+                await Task.Delay(800, token);
                 await Task.WhenAny(weatherTask, Task.Delay(1500, token));
 
                 if (token.IsCancellationRequested) return;
@@ -648,87 +639,83 @@ namespace EvolveOS_Optimizer.Views
                 if (!hasSecure && !hasPlain)
                 {
                     UpdateStatusDirect(ResourceString.GetString("status_extracting_resources") ?? "Extracting resources...");
+                    await Task.Delay(800, token);
                     await Task.Run(() => DatabaseSecurityService.RestoreDatabase(mdfPath, ldfPath), token);
                     hasPlain = true;
                 }
 
-                if (!File.Exists(securePath))
+                if (hasSecure)
                 {
-                    UpdateStatusDirect(ResourceString.GetString("status_initializing_db") ?? "Initializing database...");
-                }
+                    UpdateStatusDirect(ResourceString.GetString("status_decrypting_db") ?? "Decrypting database...");
+                    await Task.Delay(800, token);
 
-                UpdateStatusDirect(ResourceString.GetString("status_checking_db") ?? "Checking database availability...");
+                    bool decryptionSuccessful = false;
+                    int retryCount = 0;
+                    int maxRetries = 3;
 
-                await WaitForFileReadyAsync(securePath, _isSystemBusy ? 15000 : 5000, token);
-
-                UpdateStatusDirect(ResourceString.GetString("status_decrypting_db") ?? "Decrypting database...");
-
-                bool decryptionSuccessful = false;
-                int retryCount = 0;
-                int maxRetries = 3;
-
-                while (!decryptionSuccessful && retryCount < maxRetries)
-                {
-                    decryptionSuccessful = await Task.Run(() =>
+                    while (!decryptionSuccessful && retryCount < maxRetries)
                     {
-                        try
+                        decryptionSuccessful = await Task.Run(() =>
                         {
-                            UnlockHandleHelper.UnlockDirectory(baseDir, "sqlservr");
-                            DatabaseSecurityService.DecryptDatabase(securePath, mdfPath);
-
-                            if (File.Exists(secureLdfPath))
+                            try
                             {
-                                try { DatabaseSecurityService.DecryptDatabase(secureLdfPath, ldfPath); }
-                                catch { }
+                                UnlockHandleHelper.UnlockDirectory(baseDir, "sqlservr");
+                                DatabaseSecurityService.DecryptDatabase(securePath, mdfPath);
+
+                                if (File.Exists(secureLdfPath))
+                                {
+                                    try { DatabaseSecurityService.DecryptDatabase(secureLdfPath, ldfPath); }
+                                    catch { }
+                                }
+                                return true;
                             }
-                            return true;
-                        }
-                        catch (Exception decryptEx)
+                            catch (Exception decryptEx)
+                            {
+                                Debug.WriteLine($"[Database] Decryption attempt {retryCount + 1} failed: {decryptEx.Message}");
+                                return false;
+                            }
+                        }, token);
+
+                        if (!decryptionSuccessful)
                         {
-                            Debug.WriteLine($"[Database] Decryption attempt {retryCount + 1} failed: {decryptEx.Message}");
-                            return false;
+                            retryCount++;
+                            if (retryCount < maxRetries)
+                            {
+                                await Task.Delay(1000, token);
+                            }
                         }
-                    }, token);
+                    }
 
                     if (!decryptionSuccessful)
                     {
-                        retryCount++;
-                        if (retryCount < maxRetries)
+                        _dispatcherQueue.TryEnqueue(() =>
                         {
-                            await Task.Delay(1000, token);
-                        }
+                            NativeToastHelper.SendNativeToast("Critical Error", "Database is busy or corrupted. Please wait a moment and try again.");
+                            App.ExitApp();
+                        });
+                        return false;
                     }
                 }
 
-                if (!decryptionSuccessful)
+                if (!CanOpenFile(mdfPath))
                 {
-                    _dispatcherQueue.TryEnqueue(() =>
+                    UpdateStatusDirect(ResourceString.GetString("status_starting_sql") ?? "Starting SQL engine...");
+                    await Task.Delay(800, token);
+
+                    string sqlExePath = GetSqlLocalDbAbsolutePath();
+                    await Task.Run(() =>
                     {
-                        NativeToastHelper.SendNativeToast("Critical Error", "Database is busy or corrupted. Please wait a moment and try again.");
-                        App.ExitApp();
-                    });
-                    return false;
+                        CommandExecutor.ExecuteCommand(sqlExePath, "stop MSSQLLocalDB -i");
+                        CommandExecutor.ExecuteCommand(sqlExePath, "start MSSQLLocalDB");
+                    }, token);
+
+                    await WaitForFileReadyAsync(mdfPath, 10000, token);
                 }
-
-                UpdateStatusDirect(ResourceString.GetString("status_starting_sql") ?? "Starting SQL engine...");
-
-                string sqlExePath = GetSqlLocalDbAbsolutePath();
-                await Task.Run(() =>
-                {
-                    CommandExecutor.ExecuteCommand(sqlExePath, "stop MSSQLLocalDB -i");
-                    CommandExecutor.ExecuteCommand(sqlExePath, "start MSSQLLocalDB");
-                }, token);
-
-                UpdateStatusDirect(ResourceString.GetString("status_finalizing_access") ?? "Finalizing access...");
-                await WaitForFileReadyAsync(mdfPath, 10000, token);
 
                 if (!File.Exists(mdfPath) || !CanOpenFile(mdfPath))
                 {
                     throw new Exception("Database files remain locked or missing.");
                 }
-
-                UpdateStatusDirect(ResourceString.GetString("status_db_ready") ?? "Database Ready");
-                await Task.Delay(500, token);
 
                 return true;
             }
@@ -785,7 +772,7 @@ namespace EvolveOS_Optimizer.Views
             {
                 if (_cts.Token.IsCancellationRequested || StatusLoading == null) return;
 
-                var duration = TimeSpan.FromMilliseconds(text.Length * 20);
+                var duration = TimeSpan.FromMilliseconds(text.Length * 30);
                 TypewriterAnimation.Create(text, StatusLoading, duration);
             });
         }
@@ -917,7 +904,7 @@ namespace EvolveOS_Optimizer.Views
 
                 if (!string.IsNullOrEmpty(message))
                 {
-                    var duration = TimeSpan.FromMilliseconds(message.Length * 20);
+                    var duration = TimeSpan.FromMilliseconds(message.Length * 30);
                     TypewriterAnimation.Create(message, StatusLoading, duration);
                 }
             });
@@ -929,13 +916,16 @@ namespace EvolveOS_Optimizer.Views
             catch (Exception ex) { ErrorLogging.LogWritingFile(ex, member); }
         }
 
-        private void ExecuteAsyncWithLogging(Func<Task> action, string member)
+        private async Task ExecuteAsyncWithLogging(Func<Task> action, string member)
         {
             try
             {
-                Task.Run(async () => await action()).GetAwaiter().GetResult();
+                await action();
             }
-            catch (Exception ex) { ErrorLogging.LogWritingFile(ex, member); }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogWritingFile(ex, member);
+            }
         }
         #endregion
     }

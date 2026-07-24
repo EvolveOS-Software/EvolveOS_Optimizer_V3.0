@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Title="EvolveOS_Optimizer" xmlns:ui="using:Windows.UI">
 
-    <Grid x:Name="RootGrid" Width="350" Height="150" Background="Transparent">
+    <Grid x:Name="RootGrid" Width="400" Height="160" Background="Transparent">
 
 
         <Grid.Resources>
@@ -98,16 +98,16 @@
                 <Ellipse x:Name="Indicator3" Fill="{ThemeResource Brush_Accent}"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="0" VerticalAlignment="Bottom">
-                <TextBlock Foreground="{ThemeResource Brush_Inactive}" FontFamily="{StaticResource Jura-Bold}" TextWrapping="Wrap" FontSize="12">
+            <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Margin="0,0,0,-8">
+                <TextBlock Foreground="{ThemeResource Brush_Inactive}" FontFamily="{StaticResource Jura}" TextWrapping="Wrap" FontSize="14">
                     <Run x:Name="LoadingTextRun" Text="{helpers:ResourceString Key=loading_message}" />
                     <Run x:Name="DotRun" Text="..." />
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,5,0,0">
+            <StackPanel Grid.Row="1" VerticalAlignment="Top" Margin="0,13,0,0">
                 <TextBlock x:Name="StatusLoading"
-                           FontFamily="{StaticResource Jura-Regular}"
+                           FontFamily="{StaticResource Jura}"
                            FontSize="12" 
                            Foreground="{ThemeResource Brush_TextBlock_Inactivity}" 
                            TextWrapping="Wrap"
