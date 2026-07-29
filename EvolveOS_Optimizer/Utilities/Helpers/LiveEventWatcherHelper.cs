@@ -237,6 +237,13 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 string source = record.ProviderName ?? "Unknown";
                 byte level = (byte)(record.Level ?? 2);
 
+                if (eventId == 13 &&
+                   (source.Contains("ACPI", StringComparison.OrdinalIgnoreCase) == true ||
+                    record.FormatDescription()?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    return;
+                }
+
                 bool isNoisy = _ignoredSources.Any(s => source.Contains(s, StringComparison.OrdinalIgnoreCase));
                 if (isNoisy && level > 1)
                 {

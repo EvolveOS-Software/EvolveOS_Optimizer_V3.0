@@ -4118,6 +4118,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _liveWatcher = new LiveEventWatcherHelper(async newEvent =>
             {
+                if (newEvent.EventId == 13 &&
+                   (newEvent.SourceName?.Contains("ACPI", StringComparison.OrdinalIgnoreCase) == true ||
+                    newEvent.Message?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true ||
+                    newEvent.FullMessage?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true))
+                {
+                    return;
+                }
                 if (newEvent.EventId == 1801)
                 {
                     bool physicallyEnrolled = false;

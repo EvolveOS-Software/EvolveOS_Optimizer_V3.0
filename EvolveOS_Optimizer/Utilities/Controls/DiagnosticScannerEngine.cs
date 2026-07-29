@@ -466,6 +466,14 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                     foreach (var ev in systemEvents)
                     {
+                        if (ev.EventId == 13 &&
+                           (ev.SourceName?.Contains("ACPI", StringComparison.OrdinalIgnoreCase) == true ||
+                            ev.Message?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true ||
+                            ev.FullMessage?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true))
+                        {
+                            continue;
+                        }
+
                         if (ev.EventId == 9111 ||
                             (ev.SourceName != null && ev.SourceName.Contains("RpcSs", StringComparison.OrdinalIgnoreCase)) ||
                             (ev.Message != null && ev.Message.Contains("Remote Procedure Call", StringComparison.OrdinalIgnoreCase)))
