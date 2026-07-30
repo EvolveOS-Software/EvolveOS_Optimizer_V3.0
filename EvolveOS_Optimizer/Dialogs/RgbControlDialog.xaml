@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="EvolveOS_Optimizer.Dialogs.RgbControlWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:converters="using:EvolveOS_Optimizer.Core.Converters"
+    Closed="Window_Closed">
+
+    <Grid Background="Transparent" x:Name="RootGrid">
+        <Grid.Resources>
+            <converters:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+
+            <Storyboard x:Name="SlideToSettingsAnimation">
+                <DoubleAnimation Storyboard.TargetName="ZonesTransform" Storyboard.TargetProperty="X" To="-850" Duration="0:0:0.35">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="5"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetName="SettingsTransform" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.35">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="5"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
+            <Storyboard x:Name="SlideToZonesAnimation">
+                <DoubleAnimation Storyboard.TargetName="ZonesTransform" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.35">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="5"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetName="SettingsTransform" Storyboard.TargetProperty="X" To="850" Duration="0:0:0.35">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="5"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
+            <DataTemplate x:Key="RgbZoneCardTemplate">
+                <Grid Width="700" Padding="16" Margin="0,6,0,12"
+                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                      CornerRadius="8"
+                      BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                      BorderThickness="1">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                            <FontIcon Glyph="{Binding IconGlyph}" FontSize="20" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="16" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                                <TextBlock Text="{Binding DeviceType}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <ToggleSwitch Grid.Column="1" IsOn="{Binding IsEnabled, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,0,-8"/>
+                    </Grid>
+
+                    <!-- Controls -->
+                    <Grid Grid.Row="1" Margin="0,24,0,4" Visibility="{Binding IsEnabled, Converter={StaticResource BoolToVisConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Color Preview & Picker -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16">
+                            <TextBlock Text="Color" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <ColorPicker Color="{Binding SelectedColor, Mode=TwoWay}" IsColorChannelTextInputVisible="False" IsHexInputVisible="True" IsAlphaEnabled="False" Width="250"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </DataTemplate>
+        </Grid.Resources>
+
+        <Grid Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Margin="42,24,42,16">
+                <TextBlock x:Name="HeaderTitle" Text="System Lighting Control" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+
+                <Button x:Name="ToggleViewBtn" Click="ToggleView_Click" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" BorderThickness="1" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" Padding="12,6">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE713;" FontSize="14"/>
+                        <TextBlock x:Name="ToggleViewText" Text="Lighting Settings"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <!-- ZONES LIST -->
+                <Grid x:Name="ZonesGrid">
+                    <Grid.RenderTransform>
+                        <TranslateTransform x:Name="ZonesTransform" X="0" />
+                    </Grid.RenderTransform>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12" Margin="42,0,0,16" Width="700" HorizontalAlignment="Left">
+                        <TextBlock Text="Global Presets" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        <Button Content="Stealth (Off)" Click="PresetOff_Click" Style="{ThemeResource DefaultButtonStyle}" Padding="16,4"/>
+                        <Button Content="Static Theme" Click="PresetStatic_Click" Style="{ThemeResource DefaultButtonStyle}" Padding="16,4"/>
+                        <Button Content="Sync All" Click="PresetSync_Click" Style="{ThemeResource DefaultButtonStyle}" Padding="16,4"/>
+                    </StackPanel>
+
+                    <ScrollViewer Grid.Row="1" Padding="42,0,42,0" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="Motherboard &amp; Components" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <ItemsControl ItemsSource="{Binding MotherboardZones}" ItemTemplate="{StaticResource RgbZoneCardTemplate}" />
+
+                            <TextBlock Text="Connected Fans &amp; Controllers" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,8,0,0" />
+                            <ItemsControl ItemsSource="{Binding FanZones}" ItemTemplate="{StaticResource RgbZoneCardTemplate}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- GLOBAL RGB SETTINGS -->
+                <Grid x:Name="SettingsGrid">
+                    <Grid.RenderTransform>
+                        <TranslateTransform x:Name="SettingsTransform" X="850" />
+                    </Grid.RenderTransform>
+
+                    <ScrollViewer Padding="42,0,42,0" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Spacing="16" Width="700" HorizontalAlignment="Left" Margin="0,0,0,24">
+                            <TextBlock Text="Configure how EvolveOS manages RGB software conflicts and hardware takeovers." TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" Padding="20">
+                                <StackPanel Spacing="16">
+                                    <ToggleSwitch x:Name="ToggleStartWithWindows" Header="Apply lighting profile on system boot" Toggled="ToggleStartWithWindows_Toggled"/>
+                                    <ToggleSwitch x:Name="ToggleOverrideOem" Header="Override OEM Software (Armoury Crate, L-Connect)" Toggled="ToggleOverrideOem_Toggled"/>
+                                    <ToggleSwitch x:Name="ToggleTurnOffWithScreen" Header="Turn off all lighting when displays go to sleep" Toggled="ToggleTurnOffWithScreen_Toggled"/>
+
+                                    <!-- Divider -->
+                                    <Line Stroke="{ThemeResource SurfaceStrokeColorDefaultBrush}" Stretch="Fill" X2="1" Margin="0,8,0,8" />
+
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <TextBlock Text="Lights turning off when minimized?" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <Button Content="Allow Background Lighting" Click="AllowBackgroundLighting_Click" Style="{ThemeResource AccentButtonStyle}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="2" Width="700" Margin="42,16,0,24" HorizontalAlignment="Left">
+                <Button Content="{helpers:ResourceString Key=diag_close}" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

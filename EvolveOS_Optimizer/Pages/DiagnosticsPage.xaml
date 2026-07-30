@@ -235,6 +235,16 @@
                         <fluentIcons:SymbolIcon Symbol="Temperature" FontSize="16"/>
                     </Button>
 
+                    <Button x:Name="LedControlButton"
+                            Command="{x:Bind ViewModel.ShowLedControlCommand}"
+                            Padding="12,6"
+                            CornerRadius="4">
+                        <ToolTipService.ToolTip>
+                            <TextBlock helpers:Loc.Key="diag_btn_lighting_management" FontFamily="{StaticResource Jura}" />
+                        </ToolTipService.ToolTip>
+                        <fluentIcons:SymbolIcon Symbol="Color" FontSize="16"/>
+                    </Button>
+
                 </StackPanel>
             </Grid>
         </Border>

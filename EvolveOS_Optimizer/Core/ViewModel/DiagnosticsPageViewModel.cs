@@ -2195,6 +2195,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             var fanWindow = new Dialogs.FanControlWindow();
             fanWindow.Activate();
         }
+
+        [RelayCommand]
+        private void ShowLedControl()
+        {
+            var rgbWindow = new Dialogs.RgbControlWindow();
+            rgbWindow.Activate();
+        }
         #endregion
 
         #region Security Action Commands (Security)

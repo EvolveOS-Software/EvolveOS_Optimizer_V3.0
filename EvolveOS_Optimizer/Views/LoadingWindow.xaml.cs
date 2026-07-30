@@ -323,6 +323,20 @@ namespace EvolveOS_Optimizer.Views
                 }
             });
 
+            Task rgbTask = Task.Run(async () =>
+            {
+                try
+                {
+                    Debug.WriteLine("[LoadingWindow] Warming up RGB Engine...");
+                    await RgbControlEngine.Instance.InitializeAsync();
+                    Debug.WriteLine("[LoadingWindow] RGB Engine ready.");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[LoadingWindow] RGB Engine warm-up skipped/failed: {ex.Message}");
+                }
+            });
+
             await App.HostInitializationSource.Task;
             await Task.Delay(1000, token);
 

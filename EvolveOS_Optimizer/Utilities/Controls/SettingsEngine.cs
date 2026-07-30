@@ -560,7 +560,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["RamWarningTemp"] = 65,
             ["RamMaxTemp"] = 80,
             ["MoboWarningTemp"] = 60,
-            ["MoboMaxTemp"] = 80
+            ["MoboMaxTemp"] = 80,
+
+            ["RgbStartWithWindows"] = false,
+            ["RgbOverrideOem"] = false,
+            ["RgbTurnOffWithScreen"] = true,
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -632,6 +636,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static int RamMaxTemp { get => (int)_cachedSettings["RamMaxTemp"]; set => ChangingParameters("RamMaxTemp", value); }
         internal static int MoboWarningTemp { get => (int)_cachedSettings["MoboWarningTemp"]; set => ChangingParameters("MoboWarningTemp", value); }
         internal static int MoboMaxTemp { get => (int)_cachedSettings["MoboMaxTemp"]; set => ChangingParameters("MoboMaxTemp", value); }
+
+        internal static bool RgbStartWithWindows { get => (bool)_cachedSettings["RgbStartWithWindows"]; set => ChangingParameters("RgbStartWithWindows", value); }
+        internal static bool RgbOverrideOem { get => (bool)_cachedSettings["RgbOverrideOem"]; set => ChangingParameters("RgbOverrideOem", value); }
+        internal static bool RgbTurnOffWithScreen { get => (bool)_cachedSettings["RgbTurnOffWithScreen"]; set => ChangingParameters("RgbTurnOffWithScreen", value); }
         #endregion
 
         private static void ChangingParameters(string key, object? value)

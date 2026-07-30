@@ -38,5 +38,24 @@ namespace EvolveOS_Optimizer.Utilities.Managers
                 return ba;
             }
         }
+
+        internal static void ExtractRawResource(string path, byte[] resource)
+        {
+            if (resource == null || resource.Length == 0) return;
+
+            string? folderDir = Path.GetDirectoryName(path);
+
+            if (string.IsNullOrEmpty(folderDir))
+            {
+                folderDir = AppContext.BaseDirectory;
+            }
+
+            if (!Directory.Exists(folderDir))
+            {
+                Directory.CreateDirectory(folderDir);
+            }
+
+            File.WriteAllBytes(path, resource);
+        }
     }
 }
