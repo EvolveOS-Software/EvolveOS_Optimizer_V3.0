@@ -314,6 +314,12 @@ public sealed partial class WinCustomizePage : Page
         BreadcrumbFlyout.Hide();
         NavigateToSection("WindowsTheme");
     }
+
+    private void ContextMenuEditorCard_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        var editorWindow = new Dialogs.ContextMenuEditorWindow();
+        editorWindow.Activate();
+    }
     #endregion
 
     #region Badge Management
