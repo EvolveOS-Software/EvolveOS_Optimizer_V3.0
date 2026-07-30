@@ -524,7 +524,7 @@ namespace EvolveOS_Optimizer
         {
             try
             {
-                await RunGuard.CheckingDefenderExclusions();
+                //await RunGuard.CheckingDefenderExclusions();
 
                 Debug.WriteLine("[App] Background services completed successfully.");
             }

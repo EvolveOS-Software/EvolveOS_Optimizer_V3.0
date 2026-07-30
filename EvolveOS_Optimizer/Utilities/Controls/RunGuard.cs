@@ -1,5 +1,7 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Runtime.InteropServices;
-using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Utilities.Controls
 {
@@ -51,7 +53,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             }
         }
 
-        internal static async Task CheckingDefenderExclusions()
+        /*internal static async Task CheckingDefenderExclusions()
         {
             string currentLocation = AppContext.BaseDirectory.TrimEnd('\\');
 
@@ -83,7 +85,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                     Debug.WriteLine($"[RunGuard] Defender Error: {ex.Message}");
                 }
             });
-        }
+        }*/
 
         // Helper for showing errors before the XAML engine is fully ready
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
