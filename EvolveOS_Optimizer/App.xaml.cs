@@ -81,8 +81,8 @@ namespace EvolveOS_Optimizer
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            string aumid = "EvolveOS.Optimizer.App";
-            SetCurrentProcessAppId(aumid);
+            //string aumid = "EvolveOS.Optimizer.App";
+            //SetCurrentProcessAppId(aumid);
 
             UIThreadDispatcher = DispatcherQueue.GetForCurrentThread();
 
@@ -133,10 +133,12 @@ namespace EvolveOS_Optimizer
 
             MainWindow.Activate();
 
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 try { var dummy = Windows.ApplicationModel.Package.Current.Id; }
                 catch (InvalidOperationException) { AppNotificationManager.Default.Register(); }
+
+                await IdentityHelper.EnsureAppIdentityAsync();
 
                 EnsureShortcutWithAumid();
 

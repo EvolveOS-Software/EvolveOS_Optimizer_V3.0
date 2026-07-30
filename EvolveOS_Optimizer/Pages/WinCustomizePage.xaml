@@ -413,6 +413,20 @@
                                     </StackPanel>
                                 </controls:SettingsCard>
 
+                                <!-- 🚀 ADD THE CONTEXT MENU EDITOR CARD HERE -->
+                                <controls:SettingsCard
+                                    Header="Context Menu Editor"
+                                    Description="Add or remove custom apps from your classic and modern right-click menus"
+                                    IsClickEnabled="True"
+                                    Click="ContextMenuEditorCard_Click">
+                                    <controls:SettingsCard.HeaderIcon>
+                                        <FontIcon Glyph="&#xE8A5;" />
+                                    </controls:SettingsCard.HeaderIcon>
+                                    <controls:SettingsCard.ActionIcon>
+                                        <FontIcon Glyph="&#xE8A7;" FontSize="14" ToolTipService.ToolTip="Open Editor" />
+                                    </controls:SettingsCard.ActionIcon>
+                                </controls:SettingsCard>
+
                             </StackPanel>
                         </Grid>
                     </ScrollView>
