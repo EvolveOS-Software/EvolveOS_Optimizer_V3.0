@@ -196,7 +196,7 @@ namespace EvolveOS_Optimizer.Pages
             if (_monitoringTimer == null)
             {
                 _monitoringTimer = new DispatcherTimer();
-                _monitoringTimer.Interval = TimeSpan.FromSeconds(2);
+                _monitoringTimer.Interval = TimeSpan.FromSeconds(1);
                 _monitoringTimer.Tick += OnMonitoringTick;
             }
 
@@ -344,7 +344,7 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region GPU Graph Logic
-        private int _maxGpuDataPoints = 30;
+        private int _maxGpuDataPoints = 60;
 
         private void UpdateGpuAxisLabels(int totalSeconds)
         {
@@ -430,7 +430,7 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Network Graph Logic
-        private int _maxNetDataPoints = 30;
+        private int _maxNetDataPoints = 60;
 
         private void UpdateNetAxisLabels(int totalSeconds)
         {
@@ -560,7 +560,7 @@ namespace EvolveOS_Optimizer.Pages
 
         #region RAM Graph Logic
 
-        private int _maxRamDataPoints = 30;
+        private int _maxRamDataPoints = 60;
 
         private void UpdateRamAxisLabels(int totalSeconds)
         {
@@ -647,7 +647,7 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region CPU Graph Logic
-        private int _maxCpuDataPoints = 30;
+        private int _maxCpuDataPoints = 60;
 
         private void UpdateAxisLabels(int totalSeconds)
         {
@@ -757,10 +757,10 @@ namespace EvolveOS_Optimizer.Pages
                 case 2: totalSeconds = 900; break;
             }
 
-            _maxCpuDataPoints = totalSeconds / 2;
-            _maxRamDataPoints = totalSeconds / 2;
-            _maxNetDataPoints = totalSeconds / 2;
-            _maxGpuDataPoints = totalSeconds / 2;
+            _maxCpuDataPoints = totalSeconds;
+            _maxRamDataPoints = totalSeconds;
+            _maxNetDataPoints = totalSeconds;
+            _maxGpuDataPoints = totalSeconds;
 
             UpdateAxisLabels(totalSeconds);    // CPU
             UpdateRamAxisLabels(totalSeconds); // RAM
