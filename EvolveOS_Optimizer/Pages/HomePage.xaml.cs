@@ -1624,6 +1624,12 @@ namespace EvolveOS_Optimizer.Pages
                 BtnStartService.IsEnabled = false;
                 BtnDebug.IsEnabled = false;
                 statusLabel.Text = "DNSCrypt is not installed.";
+
+                IconServiceStopped.Visibility = Visibility.Visible;
+                ImgServiceRunning.Visibility = Visibility.Collapsed;
+                TxtServicesRunning.Visibility = Visibility.Collapsed;
+                ProgressRingRunServices.Visibility = Visibility.Collapsed;
+
                 return;
             }
 
