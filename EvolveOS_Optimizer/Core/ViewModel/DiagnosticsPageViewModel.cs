@@ -490,29 +490,29 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public ObservableCollection<DismissedEventCard> HistoryCards { get; } = new();
 
         public Visibility EventEmptyStateVisibility =>
-            !IsScanning && MinedSystemEvents.Count <= 5 && !ShowMinorEvents ? Visibility.Visible : Visibility.Collapsed;
+            MinedSystemEvents.Count <= 5 && !ShowMinorEvents ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility MinorEventsButtonVisibility =>
-            !IsScanning && MinedSystemEvents.Count > 0 && MinedSystemEvents.Count <= 5 ? Visibility.Visible : Visibility.Collapsed;
+            MinedSystemEvents.Count > 0 && MinedSystemEvents.Count <= 5 ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility MinorEventsTextVisibility =>
-            !IsScanning && MinedSystemEvents.Count > 0 && MinedSystemEvents.Count <= 5 && !ShowMinorEvents ? Visibility.Visible : Visibility.Collapsed;
+            MinedSystemEvents.Count > 0 && MinedSystemEvents.Count <= 5 && !ShowMinorEvents ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility EventListVisibility =>
-            !IsScanning && (MinedSystemEvents.Count > 5 || (MinedSystemEvents.Count > 0 && ShowMinorEvents))
+            MinedSystemEvents.Count > 5 || (MinedSystemEvents.Count > 0 && ShowMinorEvents)
                 ? Visibility.Visible : Visibility.Collapsed;
 
-        public Visibility Dot1Visibility => !IsScanning && MinedSystemEvents.Count >= 1 ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility Dot2Visibility => !IsScanning && MinedSystemEvents.Count >= 2 ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility Dot3Visibility => !IsScanning && MinedSystemEvents.Count >= 3 ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility Dot4Visibility => !IsScanning && MinedSystemEvents.Count >= 4 ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility Dot5Visibility => !IsScanning && MinedSystemEvents.Count >= 5 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Dot1Visibility => MinedSystemEvents.Count >= 1 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Dot2Visibility => MinedSystemEvents.Count >= 2 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Dot3Visibility => MinedSystemEvents.Count >= 3 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Dot4Visibility => MinedSystemEvents.Count >= 4 ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility Dot5Visibility => MinedSystemEvents.Count >= 5 ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility HardwareScannerVisibility =>
             IsScanning || DetectedHardwareIssues.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility HardwareListVisibility =>
-            !IsScanning && DetectedHardwareIssues.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            DetectedHardwareIssues.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
         public string HardwareScannerText => IsScanning
             ? ResourceString.GetString("diag_hw_interrogating") ?? "INTERROGATING BUS..."

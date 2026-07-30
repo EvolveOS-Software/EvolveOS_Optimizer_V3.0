@@ -27,8 +27,6 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         {
             if (_vm.IsScanning) return;
 
-            _dispatcherQueue.TryEnqueue(() => _vm.MinedSystemEvents.Clear());
-
             _scanCts = new CancellationTokenSource();
             var token = _scanCts.Token;
 
@@ -38,10 +36,6 @@ namespace EvolveOS_Optimizer.Utilities.Controls
                 _vm.ScanStatus = ResourceString.GetString("diag_scan_running") ?? "Running deep system and hardware analysis...";
                 _vm.AiSummary = ResourceString.GetString("diag_ai_analyzing") ?? "Neural engine analyzing telemetry data...";
                 _vm.ScannerText = ResourceString.GetString("diag_scan_interrogating_hw") ?? "INTERROGATING HARDWARE...";
-
-                _vm.DetectedHardwareIssues.Clear();
-                _vm.MinedSystemEvents.Clear();
-                _vm.StabilityTrendData.Clear();
             });
 
             await Task.Delay(600, token);
@@ -168,6 +162,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                 _dispatcherQueue.TryEnqueue(() =>
                 {
+                    _vm.DetectedHardwareIssues.Clear();
+                    _vm.MinedSystemEvents.Clear();
+                    _vm.StabilityTrendData.Clear();
+
                     int baselineHardware = 85;
                     _vm.ActiveHardwareCount = (baselineHardware - hardwareIssues.Count).ToString();
 
