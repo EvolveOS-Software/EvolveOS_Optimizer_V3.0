@@ -1,13 +1,9 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using Windows.Management.Deployment;
 using EvolveOS_Optimizer.Utilities.Managers;
 
@@ -22,13 +18,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             try
             {
-                // 1. Check if we already have the perfect identity
                 var package = Windows.ApplicationModel.Package.Current;
                 return;
             }
             catch
             {
-                // 2. We don't have identity. Time to bootstrap!
                 try
                 {
                     string? exePath = Environment.ProcessPath;
@@ -38,28 +32,27 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     }
 
                     string exeDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
-                    string msixPath = Path.Combine(exeDir, "EvolveOS_Lighting.msix");
+
+                    string assetsDir = Path.Combine(exeDir, "Assets");
+                    Directory.CreateDirectory(assetsDir);
+
+                    ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_Package.msix"), "EvolveOS_Package.msix");
+                    ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_MenuProxy.dll"), "EvolveOS_MenuProxy.dll");
+                    ExtractResourceToDisk(Path.Combine(exeDir, "AppxManifest.xml"), "AppxManifest.xml");
+                    ExtractResourceToDisk(Path.Combine(assetsDir, "EvolveOS_Optimizer-Logo.png"), "EvolveOS_Optimizer-Logo.png");
+
                     var packageManager = new PackageManager();
+                    var packages = packageManager.FindPackagesForUser(string.Empty).Where(p => p.Id.Name == "EvolveOS.Optimizer").ToList();
 
-                    var packages = packageManager.FindPackagesForUser(string.Empty, "EvolveOS.Optimizer").ToList();
-
-                    // If it's NOT installed, install it now
                     if (packages.Count == 0)
                     {
                         InstallTrustedCertificate();
 
+                        string msixPath = Path.Combine(exeDir, "EvolveOS_Package.msix");
                         if (!File.Exists(msixPath))
                         {
-                            byte[] msixBytes = ArchiveManager.GetResourceBytes("EvolveOS_Lighting.msix");
-                            if (msixBytes.Length > 0)
-                            {
-                                ArchiveManager.ExtractRawResource(msixPath, msixBytes);
-                            }
-                            else
-                            {
-                                MessageBox(IntPtr.Zero, "Failed to extract .msix! Is the Build Action set to Embedded Resource?", "Extraction Error", 0x10);
-                                return;
-                            }
+                            MessageBox(IntPtr.Zero, "Failed to locate EvolveOS_Package.msix!", "Extraction Error", 0x10);
+                            return;
                         }
 
                         var options = new AddPackageOptions
@@ -75,27 +68,32 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                             MessageBox(IntPtr.Zero, $"MSIX Install Failed!\n\nReason: {deploymentResult.ErrorText}\n\nCode: {deploymentResult.ExtendedErrorCode}", "Registration Error", 0x10);
                             return;
                         }
-
-                        packages = packageManager.FindPackagesForUser(string.Empty, "EvolveOS.Optimizer").ToList();
-                    }
-
-                    // 3. RESTART WITH IDENTITY VIA EXPLORER
-                    // (Because your app.manifest has requireAdministrator, Windows will automatically pop UAC here!)
-                    if (packages.Count > 0)
-                    {
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = exePath,
-                            UseShellExecute = true
-                        });
-
-                        Environment.Exit(0);
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox(IntPtr.Zero, $"Critical Crash in Bootstrapper:\n\n{ex.Message}", "Fatal Error", 0x10);
                 }
+            }
+        }
+
+        private static void ExtractResourceToDisk(string targetPath, string resourceName)
+        {
+            try
+            {
+                byte[] bytes = ArchiveManager.GetResourceBytes(resourceName);
+                if (bytes.Length > 0)
+                {
+                    File.WriteAllBytes(targetPath, bytes);
+                }
+            }
+            catch (IOException)
+            {
+                Debug.WriteLine($"[IdentityHelper] Skipping extraction of {resourceName}, file is currently in use by Explorer.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[IdentityHelper] Failed to extract {resourceName}: {ex.Message}");
             }
         }
 
