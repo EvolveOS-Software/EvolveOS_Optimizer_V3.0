@@ -237,9 +237,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 string source = record.ProviderName ?? "Unknown";
                 byte level = (byte)(record.Level ?? 2);
 
-                if (eventId == 13 &&
-                   (source.Contains("ACPI", StringComparison.OrdinalIgnoreCase) == true ||
-                    record.FormatDescription()?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true))
+                if (source.Contains("ACPI", StringComparison.OrdinalIgnoreCase))
                 {
                     return;
                 }
@@ -304,6 +302,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 catch
                 {
                     rawDescription = "Live Interception: The event description could not be parsed from the system publisher.";
+                }
+
+                if (rawDescription.Contains("embedded controller", StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
                 }
 
                 if ((eventId == 1026 || eventId == 1000) &&

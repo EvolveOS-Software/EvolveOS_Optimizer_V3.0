@@ -464,10 +464,9 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                     foreach (var ev in systemEvents)
                     {
-                        if (ev.EventId == 13 &&
-                           (ev.SourceName?.Contains("ACPI", StringComparison.OrdinalIgnoreCase) == true ||
+                        if (ev.SourceName?.Contains("ACPI", StringComparison.OrdinalIgnoreCase) == true ||
                             ev.Message?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true ||
-                            ev.FullMessage?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true))
+                            ev.FullMessage?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true)
                         {
                             continue;
                         }
