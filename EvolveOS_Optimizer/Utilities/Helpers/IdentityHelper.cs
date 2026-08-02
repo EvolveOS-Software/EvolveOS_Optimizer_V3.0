@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using Windows.Management.Deployment;
@@ -41,25 +40,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_MenuProxy.dll"), "EvolveOS_MenuProxy.dll");
                     ExtractResourceToDisk(Path.Combine(exeDir, "AppxManifest.xml"), "AppxManifest.xml");
                     ExtractResourceToDisk(Path.Combine(assetsDir, "EvolveOS_Optimizer-Logo.png"), "EvolveOS_Optimizer-Logo.png");
-
-                    ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_LightingProxy.dll"), "EvolveOS_LightingProxy.dll");
-                    string zipPath = Path.Combine(exeDir, "OpenRGB_Server.zip");
-                    string openRgbFolder = Path.Combine(exeDir, "OpenRGB_Server");
-
-                    ExtractResourceToDisk(zipPath, "OpenRGB_Server.zip");
-
-                    if (!Directory.Exists(openRgbFolder) && File.Exists(zipPath))
-                    {
-                        try
-                        {
-                            ZipFile.ExtractToDirectory(zipPath, openRgbFolder);
-                            File.Delete(zipPath);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"[IdentityHelper] Failed to unzip OpenRGB: {ex.Message}");
-                        }
-                    }
 
                     var packageManager = new PackageManager();
                     var packages = packageManager.FindPackagesForUser(string.Empty).Where(p => p.Id.Name == "EvolveOS.Optimizer").ToList();
