@@ -2,19 +2,23 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
-using System.Runtime.InteropServices;
-using Microsoft.UI.Windowing;
-using Windows.Storage.Pickers;
 using System.IO;
+using System.Runtime.InteropServices;
+using EvolveOS_Optimizer.Core.Constants;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
-using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
+using Microsoft.UI.Windowing;
 using WinRT.Interop;
 
 namespace EvolveOS_Optimizer.Dialogs
 {
     public sealed partial class ContextMenuEditorWindow : Window
     {
+        #region Win32 Interop
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public struct OPENFILENAME
         {
@@ -62,8 +66,20 @@ namespace EvolveOS_Optimizer.Dialogs
                 return SetWindowLong32(hWnd, nIndex, dwNewLong);
         }
 
+        #endregion
+
+        #region Fields & Properties
+
         private ObservableCollection<ModernContextMenuItem> _modernItems = new();
         private ObservableCollection<ClassicContextMenuItem> _classicItems = new();
+        private bool _isInitialized = false;
+
+        private List<PresetDisplayItem> _contextMenuPresets = new();
+        private bool _isUpdatingPresetToggle = false;
+
+        #endregion
+
+        #region Initialization & Window Setup
 
         public ContextMenuEditorWindow()
         {
@@ -76,12 +92,29 @@ namespace EvolveOS_Optimizer.Dialogs
 
             RootGrid.Loaded += RootElement_Loaded;
 
+            if (Environment.OSVersion.Version.Build < 22000)
+            {
+                if (ClassicMenuToggleContainer != null)
+                {
+                    ClassicMenuToggleContainer.Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                if (ClassicMenuToggle != null)
+                {
+                    ClassicMenuToggle.IsOn = ContextMenuEngine.IsClassicMenuEnabled();
+                    ClassicMenuToggle.Toggled += ClassicMenuToggle_Toggled;
+                }
+            }
+
             LoadData();
+
+            _isInitialized = true;
         }
 
         private void RootElement_Loaded(object sender, RoutedEventArgs e)
         {
-            // Apply the user's global backdrop setting
             UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
         }
 
@@ -121,22 +154,121 @@ namespace EvolveOS_Optimizer.Dialogs
             }
         }
 
-        private void LoadData()
+        #endregion
+
+        #region Data Loading & Binding
+
+        private async void LoadData()
         {
             // Load Modern JSON
             var config = ContextMenuEngine.LoadModernItems();
             _modernItems = new ObservableCollection<ModernContextMenuItem>(config.Items);
 
-            // 🚀 NEW: Scan the Registry for Classic Items
+            // Scan the Registry for Classic Items
             var classicItemsList = ContextMenuEngine.GetClassicItems();
             _classicItems = new ObservableCollection<ClassicContextMenuItem>(classicItemsList);
 
             UpdateListBinding();
+
+            // Load presets asynchronously
+            await LoadPresetsAsync();
+        }
+
+        private async Task LoadPresetsAsync()
+        {
+            try
+            {
+                Debug.WriteLine("[Presets] Starting LoadPresetsAsync...");
+
+                ISettingsLoadingService? settingsService = null;
+
+                try
+                {
+                    var servicesProp = typeof(App).GetProperty("Services", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                    if (servicesProp != null)
+                    {
+                        var provider = servicesProp.GetValue(null) as IServiceProvider;
+                        settingsService = provider?.GetService(typeof(ISettingsLoadingService)) as ISettingsLoadingService;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Presets] Failed to get via App.Services property: {ex.Message}");
+                }
+
+                if (settingsService == null)
+                {
+                    try
+                    {
+                        settingsService = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetService<ISettingsLoadingService>();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[Presets] Failed to get via Community Toolkit IOC: {ex.Message}");
+                    }
+                }
+
+                if (settingsService == null)
+                {
+                    Debug.WriteLine("[Presets] ERROR: Could not resolve ISettingsLoadingService from any container!");
+                    return;
+                }
+
+                Debug.WriteLine("[Presets] Found ISettingsLoadingService successfully. Calling LoadConfiguredSettingsAsync...");
+
+                var allExplorerSettings = await settingsService.LoadConfiguredSettingsAsync(
+                    FeatureIds.ExplorerCustomization,
+                    "Loading presets...",
+                    null
+                );
+
+                if (allExplorerSettings != null)
+                {
+                    Debug.WriteLine($"[Presets] Loaded {allExplorerSettings.Count} total Explorer settings.");
+
+                    var rawPresets = allExplorerSettings
+                        .Where(s => s.GroupName == "Context Menu" && s.SettingId != "explorer-customization-context-menu")
+                        .ToList();
+
+                    _contextMenuPresets = rawPresets
+                        .Select(s => new PresetDisplayItem(s))
+                        .ToList();
+
+                    Debug.WriteLine($"[Presets] Filtered and wrapped into {_contextMenuPresets.Count} context menu presets.");
+
+                    if (PresetsComboBox != null)
+                    {
+                        PresetsComboBox.ItemsSource = _contextMenuPresets;
+
+                        if (_contextMenuPresets.Count > 0)
+                        {
+                            PresetsComboBox.SelectedIndex = 0;
+                        }
+                        Debug.WriteLine("[Presets] Presets successfully bound to PresetsComboBox!");
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine("[Presets] LoadConfiguredSettingsAsync returned null!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Presets] EXCEPTION in LoadPresetsAsync: {ex}");
+            }
         }
 
         private void MenuTypeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UpdateListBinding();
+
+            // Show Presets ONLY if Classic (Index 1) is selected
+            if (PresetsContainer != null)
+            {
+                PresetsContainer.Visibility = MenuTypeSelector.SelectedIndex == 1
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
         }
 
         private void UpdateListBinding()
@@ -153,31 +285,86 @@ namespace EvolveOS_Optimizer.Dialogs
             }
         }
 
+        #endregion
+
+        #region UI Event Handlers
+
+        private void PresetsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PresetsComboBox.SelectedItem is PresetDisplayItem wrapper && wrapper.Model is SettingItemViewModel selectedPreset)
+            {
+                _isUpdatingPresetToggle = true;
+
+                if (PresetDescriptionText != null)
+                {
+                    PresetDescriptionText.Text = selectedPreset.SettingDefinition?.Description ?? string.Empty;
+                }
+
+                if (PresetToggleSwitch != null)
+                {
+                    PresetToggleSwitch.IsEnabled = true;
+                    PresetToggleSwitch.IsOn = selectedPreset.IsSelected;
+                }
+
+                _isUpdatingPresetToggle = false;
+            }
+            else
+            {
+                if (PresetToggleSwitch != null)
+                    PresetToggleSwitch.IsEnabled = false;
+
+                if (PresetDescriptionText != null)
+                    PresetDescriptionText.Text = string.Empty;
+            }
+        }
+
+        private async void PresetToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isInitialized || _isUpdatingPresetToggle) return;
+
+            if (PresetsComboBox.SelectedItem is PresetDisplayItem wrapper && wrapper.Model is SettingItemViewModel selectedPreset)
+            {
+                bool enable = PresetToggleSwitch.IsOn;
+                selectedPreset.IsSelected = enable;
+
+                if (selectedPreset.SettingDefinition?.RestartProcess == "Explorer")
+                {
+                    await ContextMenuEngine.RestartExplorerAsync();
+                }
+            }
+        }
+
+        private async void ClassicMenuToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isInitialized) return;
+
+            bool enableClassic = ClassicMenuToggle.IsOn;
+
+            ContextMenuEngine.ToggleClassicMenu(enableClassic);
+
+            await ContextMenuEngine.RestartExplorerAsync();
+        }
+
         private void BrowseExe_Click(object sender, RoutedEventArgs e)
         {
-            // Allocate a safe memory block for the unmanaged Win32 API to write the file path into
             IntPtr pFile = Marshal.AllocHGlobal(260 * Marshal.SystemDefaultCharSize);
 
             try
             {
-                // Null-terminate the empty buffer
                 Marshal.WriteInt16(pFile, 0);
 
                 var ofn = new OPENFILENAME();
                 ofn.lStructSize = Marshal.SizeOf(typeof(OPENFILENAME));
                 ofn.hwndOwner = WinRT.Interop.WindowNative.GetWindowHandle(this);
 
-                // Define the file filters
                 ofn.lpstrFilter = "Executables (*.exe;*.bat;*.cmd)\0*.exe;*.bat;*.cmd\0All Files (*.*)\0*.*\0";
 
                 ofn.lpstrFile = pFile;
                 ofn.nMaxFile = 260;
                 ofn.lpstrTitle = "Select Executable";
 
-                // Flags: OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR
                 ofn.Flags = 0x00080000 | 0x00001000 | 0x00000008;
 
-                // Launch the classic Win32 dialog
                 if (GetOpenFileName(ref ofn))
                 {
                     ExePathInput.Text = Marshal.PtrToStringAuto(ofn.lpstrFile);
@@ -185,7 +372,6 @@ namespace EvolveOS_Optimizer.Dialogs
             }
             finally
             {
-                // Prevent memory leaks
                 Marshal.FreeHGlobal(pFile);
             }
         }
@@ -204,7 +390,7 @@ namespace EvolveOS_Optimizer.Dialogs
                     Title = TitleInput.Text,
                     ExePath = ExePathInput.Text,
                     Arguments = ArgsInput.Text,
-                    Icon = ExePathInput.Text, // 🚀 FIX: Assign the EXE path as the Icon
+                    Icon = ExePathInput.Text,
                     Target = targetStr
                 };
 
@@ -230,7 +416,7 @@ namespace EvolveOS_Optimizer.Dialogs
                     Title = TitleInput.Text,
                     ExecutablePath = ExePathInput.Text,
                     Arguments = ArgsInput.Text,
-                    IconPath = ExePathInput.Text, // 🚀 FIX: Assign the EXE path as the Icon
+                    IconPath = ExePathInput.Text,
                     Target = targetEnum
                 };
 
@@ -238,10 +424,9 @@ namespace EvolveOS_Optimizer.Dialogs
                 ContextMenuEngine.AddClassicItem(newItem);
             }
 
-            // Clear inputs
             TitleInput.Text = string.Empty;
             ExePathInput.Text = string.Empty;
-            ArgsInput.Text = "\"%1\"";
+            ArgsInput.Text = string.Empty;
         }
 
         private void RemoveItem_Click(object sender, RoutedEventArgs e)
@@ -256,7 +441,6 @@ namespace EvolveOS_Optimizer.Dialogs
                 else if (MenuTypeSelector.SelectedIndex == 1 && btn.Tag is ClassicContextMenuItem classicItem)
                 {
                     _classicItems.Remove(classicItem);
-                    // 🚀 Update to pass the whole item so we have the exact KeyName
                     ContextMenuEngine.RemoveClassicItem(classicItem);
                 }
             }
@@ -269,8 +453,30 @@ namespace EvolveOS_Optimizer.Dialogs
 
         private void Window_Closed(object sender, WindowEventArgs args)
         {
-            // Drop the background dimming overlay when window exits
             UIHelper.SetOverlay(false);
         }
+
+        #endregion
     }
+
+    #region Helper Class
+
+    public class PresetDisplayItem
+    {
+        public SettingItemViewModel Model { get; }
+        public string Name { get; }
+
+        public PresetDisplayItem(SettingItemViewModel model)
+        {
+            Model = model;
+
+            string cleaned = model.Name ?? string.Empty;
+            cleaned = cleaned.Replace("to Context Menu", "", StringComparison.OrdinalIgnoreCase);
+            cleaned = cleaned.Replace("Context Menu", "", StringComparison.OrdinalIgnoreCase);
+
+            Name = cleaned.Trim();
+        }
+    }
+
+    #endregion
 }

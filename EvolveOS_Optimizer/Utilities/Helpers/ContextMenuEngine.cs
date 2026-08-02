@@ -5,6 +5,8 @@ using System.IO;
 using System.Text.Json;
 using Microsoft.Win32;
 using EvolveOS_Optimizer.Core.Model;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -39,13 +41,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             {
                 if (enableClassic)
                 {
-                    // Create the key and set Default value to empty string to block the Modern Menu COM object
                     using var key = Registry.CurrentUser.CreateSubKey($@"{Win11ClassicMenuKey}\InprocServer32");
                     key?.SetValue("", "");
                 }
                 else
                 {
-                    // Delete the key to restore the default Windows 11 Modern Menu
                     Registry.CurrentUser.DeleteSubKeyTree(Win11ClassicMenuKey, false);
                 }
 
@@ -67,7 +67,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     process.Kill();
                 }
 
-                // Wait briefly to ensure it was killed, Windows usually auto-starts it.
                 await Task.Delay(1000);
 
                 if (Process.GetProcessesByName("explorer").Length == 0)
@@ -85,22 +84,18 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         #region Classic Menu Item Manager
 
-        // 🚀 NEW: Import the Windows API to translate @shell32.dll,-1234 strings into real text
-        [System.Runtime.InteropServices.DllImport("shlwapi.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, ExactSpelling = true)]
-        private static extern int SHLoadIndirectString(string pszSource, System.Text.StringBuilder pszOutBuf, uint cchOutBuf, IntPtr ppvReserved);
+        [DllImport("shlwapi.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+        private static extern int SHLoadIndirectString(string pszSource, StringBuilder pszOutBuf, uint cchOutBuf, IntPtr ppvReserved);
 
-        // 🚀 NEW: Helper to resolve the string
         private static string ResolveMuiString(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return input;
 
-            // If it doesn't start with '@', it's already plain text
             if (!input.StartsWith("@")) return input;
 
-            var outBuf = new System.Text.StringBuilder(1024);
+            var outBuf = new StringBuilder(1024);
             int result = SHLoadIndirectString(input, outBuf, (uint)outBuf.Capacity, IntPtr.Zero);
 
-            // If success (S_OK = 0), return the translated text. Otherwise, return the raw input.
             return result == 0 ? outBuf.ToString() : input;
         }
 
@@ -133,13 +128,18 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                         if (commandKey == null) continue;
 
-                        // 🚀 CHANGED: Check MUIVerb first, then Default value, then fallback to Key name
                         string rawTitle = itemKey?.GetValue("MUIVerb")?.ToString()
                                           ?? itemKey?.GetValue("")?.ToString()
                                           ?? subKeyName;
 
-                        // Translate it using our new helper!
                         string title = ResolveMuiString(rawTitle);
+
+                        if (!string.IsNullOrEmpty(title))
+                        {
+                            title = title.Replace("&&", "\0") // Temporarily hide double ampersands
+                                         .Replace("&", "")    // Delete the accelerator symbols
+                                         .Replace("\0", "&"); // Bring back the real ampersands
+                        }
 
                         string commandStr = commandKey.GetValue("")?.ToString() ?? "";
                         string iconPath = itemKey?.GetValue("Icon")?.ToString() ?? "";
@@ -278,7 +278,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     return new ModernContextMenuConfig();
                 }
 
-                string json = File.ReadAllText(configPath, System.Text.Encoding.UTF8);
+                string json = File.ReadAllText(configPath, Encoding.UTF8);
                 return JsonSerializer.Deserialize<ModernContextMenuConfig>(json) ?? new ModernContextMenuConfig();
             }
             catch (Exception ex)
@@ -302,20 +302,20 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 var rootObject = new { items = items };
 
-                string jsonContent = System.Text.Json.JsonSerializer.Serialize(rootObject,
-                    new System.Text.Json.JsonSerializerOptions
+                string jsonContent = JsonSerializer.Serialize(rootObject,
+                    new JsonSerializerOptions
                     {
                         WriteIndented = true,
-                        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                     });
 
-                File.WriteAllText(jsonPath, jsonContent, System.Text.Encoding.UTF8);
+                File.WriteAllText(jsonPath, jsonContent, Encoding.UTF8);
 
-                System.Diagnostics.Debug.WriteLine($"[ContextMenuEngine] JSON successfully written to: {jsonPath}");
+                Debug.WriteLine($"[ContextMenuEngine] JSON successfully written to: {jsonPath}");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ContextMenuEngine] CRASH saving JSON: {ex.Message}");
+                Debug.WriteLine($"[ContextMenuEngine] CRASH saving JSON: {ex.Message}");
             }
         }
 

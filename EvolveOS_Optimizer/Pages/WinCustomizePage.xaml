@@ -413,7 +413,6 @@
                                     </StackPanel>
                                 </controls:SettingsCard>
 
-                                <!-- 🚀 ADD THE CONTEXT MENU EDITOR CARD HERE -->
                                 <controls:SettingsCard
                                     Header="Context Menu Editor"
                                     Description="Add or remove custom apps from your classic and modern right-click menus"

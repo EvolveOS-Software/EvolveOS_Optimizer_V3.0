@@ -23,57 +23,59 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
             catch
             {
-                try
+                await Task.Run(async () =>
                 {
-                    string? exePath = Environment.ProcessPath;
-                    if (string.IsNullOrEmpty(exePath))
+                    try
                     {
-                        exePath = Process.GetCurrentProcess().MainModule?.FileName;
-                    }
-
-                    string exeDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
-
-                    string assetsDir = Path.Combine(exeDir, "Assets");
-                    Directory.CreateDirectory(assetsDir);
-
-                    ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_Package.msix"), "EvolveOS_Package.msix");
-                    ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_MenuProxy.dll"), "EvolveOS_MenuProxy.dll");
-                    ExtractResourceToDisk(Path.Combine(exeDir, "AppxManifest.xml"), "AppxManifest.xml");
-                    ExtractResourceToDisk(Path.Combine(assetsDir, "EvolveOS_Optimizer-Logo.png"), "EvolveOS_Optimizer-Logo.png");
-
-                    var packageManager = new PackageManager();
-                    var packages = packageManager.FindPackagesForUser(string.Empty).Where(p => p.Id.Name == "EvolveOS.Optimizer").ToList();
-
-                    if (packages.Count == 0)
-                    {
-                        InstallTrustedCertificate();
-
-                        string msixPath = Path.Combine(exeDir, "EvolveOS_Package.msix");
-                        if (!File.Exists(msixPath))
+                        string? exePath = Environment.ProcessPath;
+                        if (string.IsNullOrEmpty(exePath))
                         {
-                            MessageBox(IntPtr.Zero, "Failed to locate EvolveOS_Package.msix!", "Extraction Error", 0x10);
-                            return;
+                            exePath = Process.GetCurrentProcess().MainModule?.FileName;
                         }
 
-                        var options = new AddPackageOptions
-                        {
-                            ExternalLocationUri = new Uri(exeDir),
-                            AllowUnsigned = true
-                        };
+                        string exeDir = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory;
+                        string assetsDir = Path.Combine(exeDir, "Assets");
+                        Directory.CreateDirectory(assetsDir);
 
-                        var deploymentResult = await packageManager.AddPackageByUriAsync(new Uri(msixPath), options);
+                        ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_Package.msix"), "EvolveOS_Package.msix");
+                        ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_MenuProxy.dll"), "EvolveOS_MenuProxy.dll");
+                        ExtractResourceToDisk(Path.Combine(exeDir, "AppxManifest.xml"), "AppxManifest.xml");
+                        ExtractResourceToDisk(Path.Combine(assetsDir, "EvolveOS_Optimizer-Logo.png"), "EvolveOS_Optimizer-Logo.png");
 
-                        if (!deploymentResult.IsRegistered)
+                        var packageManager = new PackageManager();
+                        var packages = packageManager.FindPackagesForUser(string.Empty).Where(p => p.Id.Name == "EvolveOS.Optimizer").ToList();
+
+                        if (packages.Count == 0)
                         {
-                            MessageBox(IntPtr.Zero, $"MSIX Install Failed!\n\nReason: {deploymentResult.ErrorText}\n\nCode: {deploymentResult.ExtendedErrorCode}", "Registration Error", 0x10);
-                            return;
+                            InstallTrustedCertificate();
+
+                            string msixPath = Path.Combine(exeDir, "EvolveOS_Package.msix");
+                            if (!File.Exists(msixPath))
+                            {
+                                MessageBox(IntPtr.Zero, "Failed to locate EvolveOS_Package.msix!", "Extraction Error", 0x10);
+                                return;
+                            }
+
+                            var options = new AddPackageOptions
+                            {
+                                ExternalLocationUri = new Uri(exeDir),
+                                AllowUnsigned = true
+                            };
+
+                            var deploymentResult = await packageManager.AddPackageByUriAsync(new Uri(msixPath), options);
+
+                            if (!deploymentResult.IsRegistered)
+                            {
+                                MessageBox(IntPtr.Zero, $"MSIX Install Failed!\n\nReason: {deploymentResult.ErrorText}\n\nCode: {deploymentResult.ExtendedErrorCode}", "Registration Error", 0x10);
+                                return;
+                            }
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox(IntPtr.Zero, $"Critical Crash in Bootstrapper:\n\n{ex.Message}", "Fatal Error", 0x10);
-                }
+                    catch (Exception ex)
+                    {
+                        MessageBox(IntPtr.Zero, $"Critical Crash in Bootstrapper:\n\n{ex.Message}", "Fatal Error", 0x10);
+                    }
+                });
             }
         }
 

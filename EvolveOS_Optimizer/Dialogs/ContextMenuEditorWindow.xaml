@@ -26,23 +26,42 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Engine Selector -->
-                <Border Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12" Margin="0,0,0,16">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Target Engine" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                            <TextBlock Text="Select which right-click menu you want to customize" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                        </StackPanel>
-                        <ComboBox x:Name="MenuTypeSelector" Grid.Column="1" SelectedIndex="0" Width="220" VerticalAlignment="Center" SelectionChanged="MenuTypeSelector_SelectionChanged">
-                            <ComboBoxItem Content="Modern (Windows 11)"/>
-                            <ComboBoxItem Content="Classic (Windows 10)"/>
-                        </ComboBox>
-                    </Grid>
-                </Border>
+                <StackPanel Grid.Row="0" Spacing="12" Margin="0,0,0,16">
+
+                    <!-- 1. Windows 11 Classic Menu Override -->
+                    <Border x:Name="ClassicMenuToggleContainer" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Use Classic Context Menu" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                <TextBlock Text="Use the Windows 10-style right-click menu with all options visible instead of the simplified Windows 11 menu" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <ToggleSwitch x:Name="ClassicMenuToggle" Grid.Column="1" VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+
+                    <!-- 2. Engine Selector -->
+                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Target Engine" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                <TextBlock Text="Select which right-click menu you want to customize" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </StackPanel>
+                            <ComboBox x:Name="MenuTypeSelector" Grid.Column="1" SelectedIndex="0" Width="220" VerticalAlignment="Center" SelectionChanged="MenuTypeSelector_SelectionChanged">
+                                <ComboBoxItem Content="Modern (Windows 11)"/>
+                                <ComboBoxItem Content="Classic (Windows 10)"/>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+
+                </StackPanel>
 
                 <Grid Grid.Row="1" ColumnSpacing="16">
                     <Grid.ColumnDefinitions>
@@ -70,10 +89,22 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
+
                                             <StackPanel VerticalAlignment="Center">
+                                                <!-- 1. The Title -->
                                                 <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                                <TextBlock Text="{Binding ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+
+                                                <!-- 2. The Target Badge -->
+                                                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0">
+                                                    <TextBlock Text="Applies to:" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                    <TextBlock Text="{Binding Target}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                                </StackPanel>
+
+                                                <!-- 3. The Executable Path -->
+                                                <TextBlock Text="{Binding ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
                                             </StackPanel>
+
+                                            <!-- Delete Button -->
                                             <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="8" ToolTipService.ToolTip="Remove item" Click="RemoveItem_Click" Tag="{Binding}" VerticalAlignment="Center">
                                                 <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
                                             </Button>
@@ -85,31 +116,57 @@
                     </Border>
 
                     <!-- Right Column: Add New Item Form -->
-                    <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
-                        <StackPanel Spacing="16">
-                            <TextBlock Text="Add New Action" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="0">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                            <StackPanel Spacing="16">
+                                <TextBlock Text="Add New Action" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
-                            <TextBox x:Name="TitleInput" Header="Display Name" PlaceholderText="e.g., Edit in VS Code"/>
+                                <TextBox x:Name="TitleInput" Header="Display Name" PlaceholderText="e.g., Edit in VS Code"/>
 
-                            <Grid ColumnSpacing="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBox x:Name="ExePathInput" Header="Executable Path" PlaceholderText="C:\App.exe"/>
-                                <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseExe_Click" ToolTipService.ToolTip="Browse..."/>
-                            </Grid>
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="ExePathInput" Header="Executable Path" PlaceholderText="C:\App.exe"/>
+                                    <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseExe_Click" ToolTipService.ToolTip="Browse..."/>
+                                </Grid>
 
-                            <TextBox x:Name="ArgsInput" Header="Arguments" Text="&quot;%1&quot;"/>
+                                <TextBox x:Name="ArgsInput" Header="Arguments" Text="" PlaceholderText="e.g. &quot;%1&quot; or -silent" />
 
-                            <ComboBox x:Name="TargetInput" Header="Target Menu" SelectedIndex="0" HorizontalAlignment="Stretch">
-                                <ComboBoxItem Content="Files"/>
-                                <ComboBoxItem Content="Folders"/>
-                                <ComboBoxItem Content="Background"/>
-                            </ComboBox>
+                                <ComboBox x:Name="TargetInput" Header="Target Menu" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                    <ComboBoxItem Content="Files"/>
+                                    <ComboBoxItem Content="Folders"/>
+                                    <ComboBoxItem Content="Background"/>
+                                </ComboBox>
 
-                            <Button Content="Add to Menu" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Margin="0,8,0,0" Click="AddItem_Click"/>
-                        </StackPanel>
+                                <Button Content="Add to Menu" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Margin="0,8,0,0" Click="AddItem_Click"/>
+
+                                <StackPanel x:Name="PresetsContainer" Spacing="12" Margin="0,16,0,0" Visibility="Collapsed">
+                                    <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Margin="0,0,0,8" />
+
+                                    <TextBlock Text="Built-in Presets" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                                    <ComboBox x:Name="PresetsComboBox"
+                                              Header="Select a predefined action"
+                                              PlaceholderText="Choose a preset..."
+                                              HorizontalAlignment="Stretch"
+                                              DisplayMemberPath="Name"
+                                              SelectionChanged="PresetsComboBox_SelectionChanged"/>
+
+                                    <ToggleSwitch x:Name="PresetToggleSwitch"
+                                                  OffContent="Disabled" OnContent="Enabled"
+                                                  IsEnabled="False"
+                                                  Toggled="PresetToggleSwitch_Toggled"/>
+
+                                    <TextBlock x:Name="PresetDescriptionText"
+                                               TextWrapping="Wrap"
+                                               FontSize="12"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </ScrollViewer>
                     </Border>
                 </Grid>
             </Grid>

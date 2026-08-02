@@ -16,6 +16,9 @@ namespace EvolveOS_Optimizer.Core.Model
     {
         public string Title { get; set; } = string.Empty;
         public string ExecutablePath { get; set; } = string.Empty;
+
+        public string ExePath => ExecutablePath;
+
         public string Arguments { get; set; } = string.Empty;
         public string IconPath { get; set; } = string.Empty;
         public ContextMenuTarget Target { get; set; } = ContextMenuTarget.Files;
