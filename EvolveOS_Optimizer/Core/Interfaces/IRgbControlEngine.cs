@@ -25,7 +25,6 @@ namespace EvolveOS_Optimizer.Core.Interfaces
         Task SetDeviceColorAsync(string deviceId, Color color);
         Task SetAllColorsAsync(Color color);
 
-        // 🚀 NEW: Method to retrieve the saved color
         Color GetSavedColor(string deviceId);
     }
 }
