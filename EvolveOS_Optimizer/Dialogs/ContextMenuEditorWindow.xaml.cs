@@ -74,8 +74,12 @@ namespace EvolveOS_Optimizer.Dialogs
         private ObservableCollection<ClassicContextMenuItem> _classicItems = new();
         private bool _isInitialized = false;
 
+        // ORIGINAL: Advanced Settings Engine Items
         private List<PresetDisplayItem> _contextMenuPresets = new();
         private bool _isUpdatingPresetToggle = false;
+
+        // NEW: Quick Templates
+        private List<ContextMenuTemplate> _quickTemplates = new();
 
         #endregion
 
@@ -170,8 +174,68 @@ namespace EvolveOS_Optimizer.Dialogs
 
             UpdateListBinding();
 
-            // Load presets asynchronously
+            // Load Quick Templates
+            LoadQuickTemplates();
+
+            // Load Advanced Presets
             await LoadPresetsAsync();
+        }
+
+        private void LoadQuickTemplates()
+        {
+            _quickTemplates = new List<ContextMenuTemplate>
+            {
+                #region ORIGINAL PRESETS
+
+                new ContextMenuTemplate { Title = "Take Ownership", Description = "Grants full administrator permissions to the selected file", ExePath = "cmd.exe", Arguments = "/c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Open Command Prompt Here", Description = "Opens a standard command prompt in the selected directory", ExePath = "cmd.exe", Arguments = "/s /k pushd \"%V\"", TargetIndex = 1 },
+                new ContextMenuTemplate { Title = "Restart Windows Explorer", Description = "Force restarts the explorer.exe process from the desktop", ExePath = "cmd.exe", Arguments = "/c taskkill /f /im explorer.exe & start explorer.exe", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = "Copy File Path to Clipboard", Description = "Copies the full path of the selected file", ExePath = "cmd.exe", Arguments = "/c echo \"%1\" | clip", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Permanently Delete", Description = "Bypasses the Recycle Bin to permanently delete the file", ExePath = "cmd.exe", Arguments = "/c del /f /q \"%1\"", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Lock PC", Description = "Instantly locks your Windows session", ExePath = "rundll32.exe", Arguments = "user32.dll,LockWorkStation", TargetIndex = 2 },
+
+                #endregion
+
+                #region FILE OPERATIONS (TargetIndex = 0)
+
+                new ContextMenuTemplate { Title = "Open with Notepad", Description = "Forces any unknown file to open in Notepad", ExePath = "notepad.exe", Arguments = "\"%1\"", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Run PowerShell Script", Description = "Executes the script while bypassing execution policies", ExePath = "powershell.exe", Arguments = "-ExecutionPolicy Bypass -NoExit -File \"%1\"", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Block Executable in Firewall", Description = "Creates an outbound Windows Firewall rule to block the app", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/c netsh advfirewall firewall add rule name=\\\"Block %1\\\" dir=out program=\\\"%1\\\" action=block' -Verb RunAs", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Register DLL / OCX", Description = "Registers the library using regsvr32", ExePath = "regsvr32.exe", Arguments = "\"%1\"", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Unregister DLL / OCX", Description = "Unregisters the library using regsvr32", ExePath = "regsvr32.exe", Arguments = "/u \"%1\"", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Get SHA256 Hash", Description = "Calculates the SHA256 checksum for verification", ExePath = "powershell.exe", Arguments = "-NoExit -Command Get-FileHash -Algorithm SHA256 -Path '%1' | Format-List", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Get MD5 Hash", Description = "Calculates the MD5 checksum for verification", ExePath = "powershell.exe", Arguments = "-NoExit -Command Get-FileHash -Algorithm MD5 -Path '%1' | Format-List", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = "Extract Archive Here (Tar/Zip)", Description = "Extracts the archive contents using built-in Windows Tar", ExePath = "tar.exe", Arguments = "-xf \"%1\"", TargetIndex = 0 },
+
+                #endregion
+
+                #region FOLDER OPERATIONS (TargetIndex = 1)
+
+                new ContextMenuTemplate { Title = "Open PowerShell Here", Description = "Opens a PowerShell window in the selected directory", ExePath = "powershell.exe", Arguments = "-NoExit -Command Set-Location -LiteralPath '%V'", TargetIndex = 1 },
+                new ContextMenuTemplate { Title = "Open CMD Here (Admin)", Description = "Opens an elevated command prompt in the selected directory", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/s /k pushd \\\"%V\\\"' -Verb RunAs", TargetIndex = 1 },
+                new ContextMenuTemplate { Title = "Open PowerShell Here (Admin)", Description = "Opens an elevated PowerShell window in the selected directory", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process powershell -ArgumentList '-NoExit -Command Set-Location -LiteralPath \\\"%V\\\"' -Verb RunAs", TargetIndex = 1 },
+                new ContextMenuTemplate { Title = "Copy Folder Path to Clipboard", Description = "Copies the full path of the selected folder", ExePath = "cmd.exe", Arguments = "/c echo \"%V\" | clip", TargetIndex = 1 },
+
+                #endregion
+
+                #region SYSTEM / BACKGROUND TOOLS (TargetIndex = 2)
+
+                new ContextMenuTemplate { Title = "Open Task Manager", Description = "Launches the Windows Task Manager", ExePath = "taskmgr.exe", Arguments = "", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = "Open Registry Editor", Description = "Launches the Windows Registry Editor", ExePath = "regedit.exe", Arguments = "", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = "Open Control Panel", Description = "Launches the legacy Control Panel", ExePath = "control.exe", Arguments = "", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = "Open System Properties", Description = "Opens advanced system settings", ExePath = "control.exe", Arguments = "sysdm.cpl", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = "Open Services", Description = "Opens the Windows Services management console", ExePath = "mmc.exe", Arguments = "services.msc", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = "Access God Mode", Description = "Opens the master Control Panel view", ExePath = "explorer.exe", Arguments = "shell:::{ED7BA470-8E54-465E-825C-99712043E01C}", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = "Flush DNS", Description = "Clears the DNS resolver cache", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/c ipconfig /flushdns & pause' -Verb RunAs", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = "Advanced Startup Options", Description = "Restarts the PC into the Advanced Recovery environment", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process shutdown -ArgumentList '/r /o /f /t 0' -Verb RunAs", TargetIndex = 2 }
+
+                #endregion
+            };
+
+            if (QuickTemplatesComboBox != null)
+            {
+                QuickTemplatesComboBox.ItemsSource = _quickTemplates;
+            }
         }
 
         private async Task LoadPresetsAsync()
@@ -179,7 +243,6 @@ namespace EvolveOS_Optimizer.Dialogs
             try
             {
                 Debug.WriteLine("[Presets] Starting LoadPresetsAsync...");
-
                 ISettingsLoadingService? settingsService = null;
 
                 try
@@ -214,8 +277,6 @@ namespace EvolveOS_Optimizer.Dialogs
                     return;
                 }
 
-                Debug.WriteLine("[Presets] Found ISettingsLoadingService successfully. Calling LoadConfiguredSettingsAsync...");
-
                 var allExplorerSettings = await settingsService.LoadConfiguredSettingsAsync(
                     FeatureIds.ExplorerCustomization,
                     "Loading presets...",
@@ -224,8 +285,6 @@ namespace EvolveOS_Optimizer.Dialogs
 
                 if (allExplorerSettings != null)
                 {
-                    Debug.WriteLine($"[Presets] Loaded {allExplorerSettings.Count} total Explorer settings.");
-
                     var rawPresets = allExplorerSettings
                         .Where(s => s.GroupName == "Context Menu" && s.SettingId != "explorer-customization-context-menu")
                         .ToList();
@@ -234,22 +293,11 @@ namespace EvolveOS_Optimizer.Dialogs
                         .Select(s => new PresetDisplayItem(s))
                         .ToList();
 
-                    Debug.WriteLine($"[Presets] Filtered and wrapped into {_contextMenuPresets.Count} context menu presets.");
-
                     if (PresetsComboBox != null)
                     {
                         PresetsComboBox.ItemsSource = _contextMenuPresets;
-
-                        if (_contextMenuPresets.Count > 0)
-                        {
-                            PresetsComboBox.SelectedIndex = 0;
-                        }
                         Debug.WriteLine("[Presets] Presets successfully bound to PresetsComboBox!");
                     }
-                }
-                else
-                {
-                    Debug.WriteLine("[Presets] LoadConfiguredSettingsAsync returned null!");
                 }
             }
             catch (Exception ex)
@@ -262,10 +310,10 @@ namespace EvolveOS_Optimizer.Dialogs
         {
             UpdateListBinding();
 
-            // Show Presets ONLY if Classic (Index 1) is selected
-            if (PresetsContainer != null)
+            // Show Advanced Presets ONLY if Classic (Index 1) is selected
+            if (AdvancedPresetsContainer != null)
             {
-                PresetsContainer.Visibility = MenuTypeSelector.SelectedIndex == 1
+                AdvancedPresetsContainer.Visibility = MenuTypeSelector.SelectedIndex == 1
                     ? Visibility.Visible
                     : Visibility.Collapsed;
             }
@@ -288,6 +336,19 @@ namespace EvolveOS_Optimizer.Dialogs
         #endregion
 
         #region UI Event Handlers
+
+        private void QuickTemplatesComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (QuickTemplatesComboBox.SelectedItem is ContextMenuTemplate template)
+            {
+                TitleInput.Text = template.Title;
+                ExePathInput.Text = template.ExePath;
+                ArgsInput.Text = template.Arguments;
+                TargetInput.SelectedIndex = template.TargetIndex;
+
+                QuickTemplatesComboBox.SelectedIndex = -1;
+            }
+        }
 
         private void PresetsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -459,7 +520,7 @@ namespace EvolveOS_Optimizer.Dialogs
         #endregion
     }
 
-    #region Helper Class
+    #region Helper Classes
 
     public class PresetDisplayItem
     {
@@ -471,11 +532,29 @@ namespace EvolveOS_Optimizer.Dialogs
             Model = model;
 
             string cleaned = model.Name ?? string.Empty;
+            cleaned = cleaned.Replace("in Context Menu", "", StringComparison.OrdinalIgnoreCase);
             cleaned = cleaned.Replace("to Context Menu", "", StringComparison.OrdinalIgnoreCase);
             cleaned = cleaned.Replace("Context Menu", "", StringComparison.OrdinalIgnoreCase);
 
             Name = cleaned.Trim();
         }
+    }
+
+    public class ContextMenuTemplate
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string ExePath { get; set; } = string.Empty;
+        public string Arguments { get; set; } = string.Empty;
+        public int TargetIndex { get; set; }
+
+        public string TargetName => TargetIndex switch
+        {
+            0 => "Files",
+            1 => "Folders",
+            2 => "Background",
+            _ => "Unknown"
+        };
     }
 
     #endregion

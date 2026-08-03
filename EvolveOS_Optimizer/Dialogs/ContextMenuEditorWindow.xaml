@@ -121,6 +121,32 @@
                             <StackPanel Spacing="16">
                                 <TextBlock Text="Add New Action" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
+                                <ComboBox x:Name="QuickTemplatesComboBox"
+                                          Header="Quick Templates (Auto-fill)"
+                                          PlaceholderText="Choose a quick template..."
+                                          HorizontalAlignment="Stretch"
+                                          SelectionChanged="QuickTemplatesComboBox_SelectionChanged">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="0,6,0,6" Spacing="2">
+                                                <!-- 1. Title -->
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
+
+                                                <!-- 2. Target Badge -->
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock Text="Applies to:" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                    <TextBlock Text="{Binding TargetName}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                                </StackPanel>
+
+                                                <!-- 3. Description -->
+                                                <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+
+                                <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Margin="0,-4,0,-4" />
+
                                 <TextBox x:Name="TitleInput" Header="Display Name" PlaceholderText="e.g., Edit in VS Code"/>
 
                                 <Grid ColumnSpacing="8">
@@ -142,10 +168,11 @@
 
                                 <Button Content="Add to Menu" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Margin="0,8,0,0" Click="AddItem_Click"/>
 
-                                <StackPanel x:Name="PresetsContainer" Spacing="12" Margin="0,16,0,0" Visibility="Collapsed">
+                                <!-- Advanced Settings Engine Presets (Classic Only) -->
+                                <StackPanel x:Name="AdvancedPresetsContainer" Spacing="12" Margin="0,16,0,0" Visibility="Collapsed">
                                     <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Margin="0,0,0,8" />
 
-                                    <TextBlock Text="Built-in Presets" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock Text="Advanced Built-in Presets" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
                                     <ComboBox x:Name="PresetsComboBox"
                                               Header="Select a predefined action"
