@@ -2,11 +2,11 @@
 // Licensed under the MIT License.
 
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Json;
 using Microsoft.Win32;
 using EvolveOS_Optimizer.Core.Model;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -99,15 +99,26 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             return result == 0 ? outBuf.ToString() : input;
         }
 
-        private static string GetRegistryBasePath(ContextMenuTarget target)
+        private static string[] GetRegistryBasePaths(ClassicContextMenuItem item)
         {
-            return target switch
+            if (!string.IsNullOrWhiteSpace(item.SpecificExtension) && item.SpecificExtension != "*")
+            {
+                return item.SpecificExtension.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                           .Select(ext => ext.Trim())
+                           .Select(ext => ext.StartsWith(".") ? ext : "." + ext)
+                           .Select(ext => $@"{ext}\shell")
+                           .ToArray();
+            }
+
+            string defaultPath = item.Target switch
             {
                 ContextMenuTarget.Files => @"*\shell",
                 ContextMenuTarget.Folders => @"Directory\shell",
                 ContextMenuTarget.Background => @"Directory\Background\shell",
                 _ => @"*\shell"
             };
+
+            return new[] { defaultPath };
         }
 
         public static List<ClassicContextMenuItem> GetClassicItems()
@@ -126,8 +137,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         using var itemKey = baseKey.OpenSubKey(subKeyName);
                         using var commandKey = itemKey?.OpenSubKey("command");
 
-                        if (commandKey == null) continue;
-
                         string rawTitle = itemKey?.GetValue("MUIVerb")?.ToString()
                                           ?? itemKey?.GetValue("")?.ToString()
                                           ?? subKeyName;
@@ -141,37 +150,93 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                                          .Replace("\0", "&"); // Bring back the real ampersands
                         }
 
-                        string commandStr = commandKey.GetValue("")?.ToString() ?? "";
                         string iconPath = itemKey?.GetValue("Icon")?.ToString() ?? "";
 
-                        string exePath = commandStr;
+                        bool isExtended = itemKey?.GetValue("Extended") != null;
+                        string position = itemKey?.GetValue("Position")?.ToString() ?? "Default";
+
+                        bool isSubMenu = itemKey?.OpenSubKey("shell") != null || itemKey?.GetValue("SubCommands") != null;
+
+                        string exePath = "";
                         string args = "";
 
-                        if (commandStr.StartsWith("\""))
+                        if (commandKey != null)
                         {
-                            int endQuoteIndex = commandStr.IndexOf("\"", 1);
-                            if (endQuoteIndex > 0)
+                            string commandStr = commandKey.GetValue("")?.ToString() ?? "";
+
+                            if (commandStr.StartsWith("\""))
                             {
-                                exePath = commandStr.Substring(1, endQuoteIndex - 1);
-                                args = commandStr.Substring(endQuoteIndex + 1).Trim();
+                                int endQuoteIndex = commandStr.IndexOf("\"", 1);
+                                if (endQuoteIndex > 0)
+                                {
+                                    exePath = commandStr.Substring(1, endQuoteIndex - 1);
+                                    args = commandStr.Substring(endQuoteIndex + 1).Trim();
+                                }
+                            }
+                            else
+                            {
+                                var parts = commandStr.Split(' ', 2);
+                                exePath = parts[0];
+                                if (parts.Length > 1) args = parts[1];
                             }
                         }
-                        else
-                        {
-                            var parts = commandStr.Split(' ', 2);
-                            exePath = parts[0];
-                            if (parts.Length > 1) args = parts[1];
-                        }
 
-                        items.Add(new ClassicContextMenuItem
+                        var classicItem = new ClassicContextMenuItem
                         {
                             Title = title,
                             ExecutablePath = exePath,
                             Arguments = args,
                             IconPath = iconPath,
                             Target = target,
-                            KeyName = subKeyName
-                        });
+                            KeyName = subKeyName,
+                            Extended = isExtended,
+                            Position = position,
+                            SpecificExtension = target == ContextMenuTarget.Files ? "*" : "",
+                            IsSubMenu = isSubMenu
+                        };
+
+                        if (isSubMenu && itemKey != null)
+                        {
+                            using var shellKey = itemKey.OpenSubKey("shell");
+                            if (shellKey != null)
+                            {
+                                foreach (var childSubKeyName in shellKey.GetSubKeyNames())
+                                {
+                                    using var childItemKey = shellKey.OpenSubKey(childSubKeyName);
+                                    using var childCommandKey = childItemKey?.OpenSubKey("command");
+
+                                    if (childCommandKey == null) continue;
+
+                                    string childTitle = ResolveMuiString(childItemKey?.GetValue("")?.ToString() ?? childSubKeyName);
+                                    string childCommandStr = childCommandKey.GetValue("")?.ToString() ?? "";
+                                    string childIcon = childItemKey?.GetValue("Icon")?.ToString() ?? "";
+
+                                    string childExe = childCommandStr;
+                                    string childArgs = "";
+                                    if (childCommandStr.StartsWith("\""))
+                                    {
+                                        int endQ = childCommandStr.IndexOf("\"", 1);
+                                        if (endQ > 0)
+                                        {
+                                            childExe = childCommandStr.Substring(1, endQ - 1);
+                                            childArgs = childCommandStr.Substring(endQ + 1).Trim();
+                                        }
+                                    }
+
+                                    classicItem.SubItems.Add(new ClassicContextMenuItem
+                                    {
+                                        Title = childTitle,
+                                        ExecutablePath = childExe,
+                                        Arguments = childArgs,
+                                        IconPath = childIcon,
+                                        Target = target,
+                                        KeyName = childSubKeyName
+                                    });
+                                }
+                            }
+                        }
+
+                        items.Add(classicItem);
                     }
                 }
                 catch { }
@@ -186,31 +251,69 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         public static void AddClassicItem(ClassicContextMenuItem item)
         {
-            if (string.IsNullOrWhiteSpace(item.Title) || string.IsNullOrWhiteSpace(item.ExecutablePath)) return;
+            if (string.IsNullOrWhiteSpace(item.Title)) return;
+
+            if (!item.IsSubMenu && string.IsNullOrWhiteSpace(item.ExecutablePath)) return;
 
             item.KeyName = new string(item.Title.Where(char.IsLetterOrDigit).ToArray());
 
-            string basePath = GetRegistryBasePath(item.Target);
-            string itemPath = $@"{basePath}\{item.KeyName}";
+            var basePaths = GetRegistryBasePaths(item);
 
-            try
+            foreach (var basePath in basePaths)
             {
-                using var itemKey = Registry.ClassesRoot.CreateSubKey(itemPath);
-                if (itemKey == null) return;
+                string itemPath = $@"{basePath}\{item.KeyName}";
 
-                itemKey.SetValue("", item.Title);
+                try
+                {
+                    using var itemKey = Registry.ClassesRoot.CreateSubKey(itemPath);
+                    if (itemKey == null) continue;
 
-                if (!string.IsNullOrWhiteSpace(item.IconPath))
-                    itemKey.SetValue("Icon", item.IconPath);
+                    itemKey.SetValue("", item.Title);
 
-                using var commandKey = itemKey.CreateSubKey("command");
+                    if (!string.IsNullOrWhiteSpace(item.IconPath))
+                        itemKey.SetValue("Icon", item.IconPath);
 
-                string args = string.IsNullOrWhiteSpace(item.Arguments) ? "" : $" {item.Arguments}";
-                commandKey?.SetValue("", $"\"{item.ExecutablePath}\"{args}");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[ContextMenuEngine] Failed to add classic item: {ex.Message}");
+                    if (item.Extended)
+                        itemKey.SetValue("Extended", string.Empty, RegistryValueKind.String);
+
+                    if (!string.IsNullOrWhiteSpace(item.Position) && item.Position != "Default")
+                        itemKey.SetValue("Position", item.Position, RegistryValueKind.String);
+
+                    if (item.IsSubMenu)
+                    {
+                        itemKey.SetValue("SubCommands", string.Empty, RegistryValueKind.String);
+
+                        using var shellKey = itemKey.CreateSubKey("shell");
+                        if (shellKey != null)
+                        {
+                            foreach (var subItem in item.SubItems)
+                            {
+                                string subKeyName = new string(subItem.Title.Where(char.IsLetterOrDigit).ToArray());
+                                using var subItemKey = shellKey.CreateSubKey(subKeyName);
+                                if (subItemKey != null)
+                                {
+                                    subItemKey.SetValue("", subItem.Title);
+                                    if (!string.IsNullOrWhiteSpace(subItem.IconPath))
+                                        subItemKey.SetValue("Icon", subItem.IconPath);
+
+                                    using var subCmdKey = subItemKey.CreateSubKey("command");
+                                    string args = string.IsNullOrWhiteSpace(subItem.Arguments) ? "" : $" {subItem.Arguments}";
+                                    subCmdKey?.SetValue("", $"\"{subItem.ExecutablePath}\"{args}");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using var commandKey = itemKey.CreateSubKey("command");
+                        string args = string.IsNullOrWhiteSpace(item.Arguments) ? "" : $" {item.Arguments}";
+                        commandKey?.SetValue("", $"\"{item.ExecutablePath}\"{args}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[ContextMenuEngine] Failed to add classic item to {itemPath}: {ex.Message}");
+                }
             }
         }
 
@@ -218,14 +321,18 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         {
             if (string.IsNullOrEmpty(item.KeyName)) return;
 
-            string basePath = GetRegistryBasePath(item.Target);
-            try
+            var basePaths = GetRegistryBasePaths(item);
+
+            foreach (var basePath in basePaths)
             {
-                Registry.ClassesRoot.DeleteSubKeyTree($@"{basePath}\{item.KeyName}", false);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[ContextMenuEngine] Failed to remove classic item: {ex.Message}");
+                try
+                {
+                    Registry.ClassesRoot.DeleteSubKeyTree($@"{basePath}\{item.KeyName}", false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[ContextMenuEngine] Failed to remove classic item from {basePath}: {ex.Message}");
+                }
             }
         }
 

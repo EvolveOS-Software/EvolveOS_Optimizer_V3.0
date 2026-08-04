@@ -14,13 +14,23 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Header -->
+            <!-- Header with View Switcher -->
             <Grid Grid.Row="0" Margin="42,24,42,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
                 <TextBlock Text="Context Menu Editor" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+
+                <!-- View Switcher -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="6" Padding="4">
+                    <ToggleButton x:Name="EditorViewButton" Content="Menu Editor" IsChecked="True" Checked="ViewMode_Checked" Width="130"/>
+                    <ToggleButton x:Name="CleanerViewButton" Content="Menu Cleaner" Checked="ViewMode_Checked" Width="130"/>
+                </StackPanel>
             </Grid>
 
-            <!-- Content -->
-            <Grid Grid.Row="1" Width="716" HorizontalAlignment="Center">
+            <!-- VIEW 1: CONTEXT MENU EDITOR -->
+            <Grid x:Name="EditorViewContainer" Grid.Row="1" Width="816" HorizontalAlignment="Center" Visibility="Visible">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -66,54 +76,74 @@
                 <Grid Grid.Row="1" ColumnSpacing="16">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="320"/>
+                        <ColumnDefinition Width="360"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Left Column: Existing Items List -->
-                    <Border Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
+                    <!-- Left Column: Existing Items Tree & Portability -->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                            <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,0,0,1" Padding="16,12">
-                                <TextBlock Text="Active Custom Items" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            </Border>
+                        <Border Grid.Row="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
 
-                            <ListView x:Name="ItemsListView" Grid.Row="1" Padding="0,8" SelectionMode="None">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="12,4" Padding="12" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
+                                <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,0,0,1" Padding="16,12">
+                                    <TextBlock Text="Active Custom Items" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                </Border>
 
-                                            <StackPanel VerticalAlignment="Center">
-                                                <!-- 1. The Title -->
-                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                <!-- Hierarchical TreeView -->
+                                <TreeView x:Name="ItemsTreeView" Grid.Row="1" Padding="0,8" SelectionMode="Single">
+                                    <TreeView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,4,16,4" Padding="12" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6" MinWidth="220">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
 
-                                                <!-- 2. The Target Badge -->
-                                                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0">
-                                                    <TextBlock Text="Applies to:" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                    <TextBlock Text="{Binding Target}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <!-- 1. The Title -->
+                                                    <TextBlock Text="{Binding Content.Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+
+                                                    <!-- 2. The Target Badge -->
+                                                    <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0">
+                                                        <TextBlock Text="Applies to:" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <TextBlock Text="{Binding Content.Target}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                                    </StackPanel>
+
+                                                    <!-- 3. The Executable Path -->
+                                                    <TextBlock Text="{Binding Content.ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
                                                 </StackPanel>
 
-                                                <!-- 3. The Executable Path -->
-                                                <TextBlock Text="{Binding ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
-                                            </StackPanel>
+                                                <!-- Delete Button -->
+                                                <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="8" ToolTipService.ToolTip="Remove item" Click="RemoveItem_Click" Tag="{Binding Content}" VerticalAlignment="Center">
+                                                    <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+                            </Grid>
+                        </Border>
 
-                                            <!-- Delete Button -->
-                                            <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="8" ToolTipService.ToolTip="Remove item" Click="RemoveItem_Click" Tag="{Binding}" VerticalAlignment="Center">
-                                                <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
-                                            </Button>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Grid>
-                    </Border>
+                        <!-- Portability Actions -->
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+                            <Button Content="Export Config" Click="ExportConfig_Click">
+                                <Button.ContentTransitions>
+                                    <TransitionCollection>
+                                        <ContentThemeTransition/>
+                                    </TransitionCollection>
+                                </Button.ContentTransitions>
+                            </Button>
+                            <Button Content="Import Config" Click="ImportConfig_Click"/>
+                        </StackPanel>
+                    </Grid>
 
                     <!-- Right Column: Add New Item Form -->
                     <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="0">
@@ -129,16 +159,11 @@
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Margin="0,6,0,6" Spacing="2">
-                                                <!-- 1. Title -->
                                                 <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
-
-                                                <!-- 2. Target Badge -->
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                                     <TextBlock Text="Applies to:" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                     <TextBlock Text="{Binding TargetName}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
                                                 </StackPanel>
-
-                                                <!-- 3. Description -->
                                                 <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,2,0,0"/>
                                             </StackPanel>
                                         </DataTemplate>
@@ -147,24 +172,73 @@
 
                                 <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Margin="0,-4,0,-4" />
 
-                                <TextBox x:Name="TitleInput" Header="Display Name" PlaceholderText="e.g., Edit in VS Code"/>
-
-                                <Grid ColumnSpacing="8">
+                                <!-- Cascading Menu Options -->
+                                <Grid ColumnSpacing="16">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="ExePathInput" Header="Executable Path" PlaceholderText="C:\App.exe"/>
-                                    <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseExe_Click" ToolTipService.ToolTip="Browse..."/>
+                                    <ToggleSwitch x:Name="IsSubMenuToggle" Header="Item Type" OffContent="Action" OnContent="Folder (Sub-Menu)"/>
+
+                                    <ComboBox x:Name="ParentMenuComboBox" Grid.Column="1" Header="Place Inside Folder" PlaceholderText="None (Root)" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Title}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
                                 </Grid>
 
-                                <TextBox x:Name="ArgsInput" Header="Arguments" Text="" PlaceholderText="e.g. &quot;%1&quot; or -silent" />
+                                <TextBox x:Name="TitleInput" Header="Display Name" PlaceholderText="e.g., Edit in VS Code"/>
+
+                                <!-- Grouped Executable Properties to easily collapse them when "Folder" is checked -->
+                                <StackPanel x:Name="CommandInputsContainer" Spacing="16">
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="ExePathInput" Header="Executable Path" PlaceholderText="C:\App.exe"/>
+                                        <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseExe_Click" ToolTipService.ToolTip="Browse..."/>
+                                    </Grid>
+
+                                    <TextBox x:Name="ArgsInput" Header="Arguments" Text="" PlaceholderText="e.g. &quot;%1&quot; or -silent" />
+                                </StackPanel>
 
                                 <ComboBox x:Name="TargetInput" Header="Target Menu" SelectedIndex="0" HorizontalAlignment="Stretch">
                                     <ComboBoxItem Content="Files"/>
                                     <ComboBoxItem Content="Folders"/>
                                     <ComboBoxItem Content="Background"/>
                                 </ComboBox>
+
+                                <!-- Visual Settings -->
+                                <Expander Header="Visual Appearance" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <StackPanel Spacing="12" Padding="0,4,0,0">
+                                        <Grid ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox x:Name="IconPathInput" Header="Custom Icon Path (.ico, .dll)" PlaceholderText="Defaults to executable"/>
+                                            <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseIcon_Click" ToolTipService.ToolTip="Browse Icon..."/>
+                                        </Grid>
+                                        <ComboBox x:Name="PositionInput" Header="Menu Position" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                            <ComboBoxItem Content="Default"/>
+                                            <ComboBoxItem Content="Top"/>
+                                            <ComboBoxItem Content="Bottom"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Expander>
+
+                                <!-- Advanced Settings -->
+                                <Expander Header="Advanced &amp; Targeting" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <StackPanel Spacing="12" Padding="0,4,0,0">
+                                        <TextBox x:Name="SpecificExtInput" Header="Specific Extensions" PlaceholderText="* or .png, .jpg, .txt"/>
+                                        <ToggleSwitch x:Name="ExtendedToggle" Header="Hide behind Shift + Right-Click"/>
+                                        <ToggleSwitch x:Name="RunAsAdminToggle" Header="Run as Administrator (UAC)"/>
+                                        <ToggleSwitch x:Name="HiddenWindowToggle" Header="Run in Hidden Window"/>
+                                    </StackPanel>
+                                </Expander>
 
                                 <Button Content="Add to Menu" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Margin="0,8,0,0" Click="AddItem_Click"/>
 
@@ -198,8 +272,43 @@
                 </Grid>
             </Grid>
 
+            <!-- VIEW 2: CONTEXT MENU CLEANER -->
+            <Grid x:Name="CleanerViewContainer" Grid.Row="1" Width="816" HorizontalAlignment="Center" Visibility="Collapsed">
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Padding="20,16" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,0,0,1">
+                            <TextBlock Text="Third-Party Shell Extensions" FontWeight="SemiBold" FontSize="16"/>
+                            <TextBlock Text="Disable bloated entries added by apps like WinRAR, Adobe, or NVIDIA." FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <ListView x:Name="CleanerListView" Grid.Row="1" Padding="0,8" SelectionMode="None">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="16,4" Padding="16,12" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding TargetPath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsOn="{Binding IsEnabled, Mode=TwoWay}" Toggled="CleanerToggle_Toggled" Tag="{Binding}" Margin="0" MinWidth="0" OffContent="Hidden" OnContent="Visible"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Border>
+            </Grid>
+
             <!-- Footer / Close Button -->
-            <Grid Grid.Row="2" Width="716" Margin="42,16,0,24" HorizontalAlignment="Center">
+            <Grid Grid.Row="2" Width="816" Margin="42,16,0,24" HorizontalAlignment="Center">
                 <Button Content="Close" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
             </Grid>
         </Grid>

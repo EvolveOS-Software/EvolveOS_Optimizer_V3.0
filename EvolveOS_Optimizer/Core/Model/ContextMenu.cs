@@ -26,6 +26,13 @@ namespace EvolveOS_Optimizer.Core.Model
         public string KeyName { get; set; } = string.Empty;
 
         public string RegistryKeyName => new string(Title.Where(char.IsLetterOrDigit).ToArray());
+
+        public bool Extended { get; set; } = false;
+        public string SpecificExtension { get; set; } = string.Empty;
+        public string Position { get; set; } = "Default";
+
+        public bool IsSubMenu { get; set; } = false;
+        public List<ClassicContextMenuItem> SubItems { get; set; } = new();
     }
 
     public class ModernContextMenuItem
@@ -44,6 +51,21 @@ namespace EvolveOS_Optimizer.Core.Model
 
         [JsonPropertyName("target")]
         public string Target { get; set; } = "All"; // e.g., "Files", "Folders", "Background", "All"
+
+        [JsonPropertyName("extended")]
+        public bool Extended { get; set; } = false;
+
+        [JsonPropertyName("specificExtension")]
+        public string SpecificExtension { get; set; } = string.Empty;
+
+        [JsonPropertyName("position")]
+        public string Position { get; set; } = "Default";
+
+        [JsonPropertyName("isSubMenu")]
+        public bool IsSubMenu { get; set; } = false;
+
+        [JsonPropertyName("subItems")]
+        public List<ModernContextMenuItem> SubItems { get; set; } = new();
     }
 
     public class ModernContextMenuConfig
