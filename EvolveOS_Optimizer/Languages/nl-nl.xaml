@@ -5299,4 +5299,162 @@
     <sys:String x:Key="fan_calib_failed">Mislukt</sys:String>
 
     <!-- endregion Diagnostics Fan Control -->
+
+    <!-- region Context Menu Editor -->
+
+    <sys:String x:Key="cme_window_title">Contextmenu editor</sys:String>
+    <sys:String x:Key="cme_view_editor">Menu-editor</sys:String>
+    <sys:String x:Key="cme_view_cleaner">Menu schoner</sys:String>
+
+    <!-- Engine & Toggles -->
+    <sys:String x:Key="cme_classic_toggle_title">Klassiek contextmenu gebruiken</sys:String>
+    <sys:String x:Key="cme_classic_toggle_desc">Gebruik het rechtsklikmenu in Windows 10-stijl met alle opties zichtbaar in plaats van het vereenvoudigde Windows 11-menu</sys:String>
+    <sys:String x:Key="cme_engine_title">Doelengine</sys:String>
+    <sys:String x:Key="cme_engine_desc">Selecteer welk rechtsklikmenu u wilt aanpassen</sys:String>
+    <sys:String x:Key="cme_engine_modern">Modern (Windows 11)</sys:String>
+    <sys:String x:Key="cme_engine_classic">Klassiek (Windows 10)</sys:String>
+
+    <!-- Active Items Tree -->
+    <sys:String x:Key="cme_active_items">Actieve aangepaste items</sys:String>
+    <sys:String x:Key="cme_applies_to">Is van toepassing op:</sys:String>
+    <sys:String x:Key="cme_remove_item">Item verwijderen</sys:String>
+    <sys:String x:Key="cme_export_config">Configuratie exporteren</sys:String>
+    <sys:String x:Key="cme_import_config">Configuratie importeren</sys:String>
+
+    <!-- Add New Action Form -->
+    <sys:String x:Key="cme_add_new_action">Nieuwe actie toevoegen</sys:String>
+    <sys:String x:Key="cme_quick_templates_header">Snelle sjablonen (Automatisch invullen)</sys:String>
+    <sys:String x:Key="cme_quick_templates_placeholder">Kies een snelle sjabloon...</sys:String>
+
+    <!-- Item Type & Cascading -->
+    <sys:String x:Key="cme_item_type_header">Itemtype</sys:String>
+    <sys:String x:Key="cme_item_type_action">Actie</sys:String>
+    <sys:String x:Key="cme_item_type_folder">Map (Submenu)</sys:String>
+    <sys:String x:Key="cme_place_inside_folder">Plaats in map</sys:String>
+    <sys:String x:Key="cme_none_root">Geen (Hoofdmap)</sys:String>
+
+    <!-- Main Properties -->
+    <sys:String x:Key="cme_display_name_header">Weergavenaam</sys:String>
+    <sys:String x:Key="cme_display_name_placeholder">bijv. Bewerken in VS Code</sys:String>
+    <sys:String x:Key="cme_exe_path_header">Pad naar uitvoerbaar bestand</sys:String>
+    <sys:String x:Key="cme_exe_path_placeholder">C:\App.exe</sys:String>
+    <sys:String x:Key="cme_browse_tooltip">Bladeren...</sys:String>
+    <sys:String x:Key="cme_arguments_header">Argumenten</sys:String>
+    <sys:String x:Key="cme_arguments_placeholder">bijv. "%1" of -silent</sys:String>
+    <sys:String x:Key="cme_target_menu_header">Doelmenu</sys:String>
+    <sys:String x:Key="cme_target_files">Bestanden</sys:String>
+    <sys:String x:Key="cme_target_folders">Mappen</sys:String>
+    <sys:String x:Key="cme_target_background">Achtergrond</sys:String>
+
+    <!-- Visual Appearance -->
+    <sys:String x:Key="cme_visual_appearance_header">Visuele weergave</sys:String>
+    <sys:String x:Key="cme_icon_path_header">Aangepast Icoonpad (.ico, .dll)</sys:String>
+    <sys:String x:Key="cme_icon_path_placeholder">Standaard is het uitvoerbare bestand</sys:String>
+    <sys:String x:Key="cme_browse_icon_tooltip">Icoon bladeren...</sys:String>
+    <sys:String x:Key="cme_menu_position_header">Menupositie</sys:String>
+    <sys:String x:Key="cme_position_default">Standaard</sys:String>
+    <sys:String x:Key="cme_position_top">Boven</sys:String>
+    <sys:String x:Key="cme_position_bottom">Onder</sys:String>
+
+    <!-- Advanced Targeting -->
+    <sys:String x:Key="cme_advanced_targeting_header">Geavanceerd &amp; Doelgericht</sys:String>
+    <sys:String x:Key="cme_specific_ext_header">Specifieke extensies</sys:String>
+    <sys:String x:Key="cme_specific_ext_placeholder">* of .png, .jpg, .txt</sys:String>
+    <sys:String x:Key="cme_hide_shift_header">Verbergen achter Shift + Rechtsklik</sys:String>
+    <sys:String x:Key="cme_run_admin_header">Als administrator uitvoeren (UAC)</sys:String>
+    <sys:String x:Key="cme_run_hidden_header">In verborgen venster uitvoeren</sys:String>
+    <sys:String x:Key="cme_add_to_menu_btn">Toevoegen aan menu</sys:String>
+
+    <!-- Advanced Presets -->
+    <sys:String x:Key="cme_advanced_presets_title">Geavanceerde ingebouwde voorinstellingen</sys:String>
+    <sys:String x:Key="cme_presets_header">Selecteer een vooraf gedefinieerde actie</sys:String>
+    <sys:String x:Key="cme_presets_placeholder">Kies een voorinstelling...</sys:String>
+    <sys:String x:Key="cme_preset_disabled">Uitgeschakeld</sys:String>
+    <sys:String x:Key="cme_preset_enabled">Ingeschakeld</sys:String>
+
+    <!-- Context Menu Cleaner -->
+    <sys:String x:Key="cme_cleaner_title">Shellextensies van derden</sys:String>
+    <sys:String x:Key="cme_cleaner_desc">Schakel opgeblazen vermeldingen uit die zijn toegevoegd door apps zoals WinRAR, Adobe of NVIDIA.</sys:String>
+    <sys:String x:Key="cme_cleaner_hidden">Verborgen</sys:String>
+    <sys:String x:Key="cme_cleaner_visible">Zichtbaar</sys:String>
+
+    <!-- Global -->
+    <sys:String x:Key="cme_close_btn">Sluiten</sys:String>
+
+    <!-- Dialog Titles & Status Messages -->
+    <sys:String x:Key="cme_export_success_title">Exporteren gelukt</sys:String>
+    <sys:String x:Key="cme_export_success_desc">Uw contextmenuconfiguratie is met succes geback-upt naar:</sys:String>
+    <sys:String x:Key="cme_export_failed_title">Exporteren mislukt</sys:String>
+    <sys:String x:Key="cme_export_failed_desc">Er is een fout opgetreden bij het exporteren van uw configuratie:</sys:String>
+    <sys:String x:Key="cme_import_config_title">Configuratie importeren</sys:String>
+    <sys:String x:Key="cme_import_success_title">Importeren gelukt</sys:String>
+    <sys:String x:Key="cme_import_success_desc">Uw contextmenuconfiguratie is met succes geïmporteerd en toegepast op Windows!</sys:String>
+    <sys:String x:Key="cme_import_failed_title">Importeren mislukt</sys:String>
+    <sys:String x:Key="cme_import_failed_desc">Er is een fout opgetreden bij het importeren van uw configuratiebestand:</sys:String>
+    <sys:String x:Key="cme_select_executable">Selecteer uitvoerbaar bestand</sys:String>
+    <sys:String x:Key="cme_select_icon">Selecteer icoon</sys:String>
+    <sys:String x:Key="cme_loading_presets">Voorinstellingen laden...</sys:String>
+    <sys:String x:Key="cme_target_unknown">Onbekend</sys:String>
+    <sys:String x:Key="cme_applied_to_locations">Toegepast op {0} registerlocaties</sys:String>
+    <sys:String x:Key="cme_ok">OK</sys:String>
+    <sys:String x:Key="cme_close">Sluiten</sys:String>
+
+    <!-- Quick Template Titles & Descriptions -->
+    <sys:String x:Key="cme_qt_takeown_title">Eigendom overnemen</sys:String>
+    <sys:String x:Key="cme_qt_takeown_desc">Verleent volledige administratieve rechten voor het geselecteerde bestand</sys:String>
+    <sys:String x:Key="cme_qt_cmd_title">Open hier opdrachtprompt</sys:String>
+    <sys:String x:Key="cme_qt_cmd_desc">Opent een standaardopdrachtprompt in de geselecteerde map</sys:String>
+    <sys:String x:Key="cme_qt_restart_exp_title">Windows Verkenner opnieuw starten</sys:String>
+    <sys:String x:Key="cme_qt_restart_exp_desc">Forceert het herstarten van het proces explorer.exe vanaf het bureaublad</sys:String>
+    <sys:String x:Key="cme_qt_copy_path_title">Bestandspad naar klembord kopiëren</sys:String>
+    <sys:String x:Key="cme_qt_copy_path_desc">Kopieert het volledige pad van het geselecteerde bestand</sys:String>
+    <sys:String x:Key="cme_qt_perm_del_title">Permanent verwijderen</sys:String>
+    <sys:String x:Key="cme_qt_perm_del_desc">Omzeilt de prullenbak om het bestand permanent te verwijderen</sys:String>
+    <sys:String x:Key="cme_qt_lock_pc_title">Pc vergrendelen</sys:String>
+    <sys:String x:Key="cme_qt_lock_pc_desc">Vergrendelt direct uw Windows-sessie</sys:String>
+
+    <sys:String x:Key="cme_qt_notepad_title">Openen met Kladblok</sys:String>
+    <sys:String x:Key="cme_qt_notepad_desc">Gedwongen openen van een onbekend bestand in Kladblok</sys:String>
+    <sys:String x:Key="cme_qt_ps_script_title">PowerShell script uitvoeren</sys:String>
+    <sys:String x:Key="cme_qt_ps_script_desc">Voert het script uit en omzeilt het uitvoeringsbeleid</sys:String>
+    <sys:String x:Key="cme_qt_block_fw_title">Uitvoerbaar bestand blokkeren in Firewall</sys:String>
+    <sys:String x:Key="cme_qt_block_fw_desc">Maakt een uitgaande Windows Firewall regel om de app te blokkeren</sys:String>
+    <sys:String x:Key="cme_qt_reg_dll_title">DLL / OCX registreren</sys:String>
+    <sys:String x:Key="cme_qt_reg_dll_desc">Registreert de bibliotheek met regsvr32</sys:String>
+    <sys:String x:Key="cme_qt_unreg_dll_title">DLL / OCX registratie ongedaan maken</sys:String>
+    <sys:String x:Key="cme_qt_unreg_dll_desc">Maakt de registratie van de bibliotheek ongedaan met regsvr32</sys:String>
+    <sys:String x:Key="cme_qt_sha256_title">SHA256 hash ophalen</sys:String>
+    <sys:String x:Key="cme_qt_sha256_desc">Berekent de SHA256 controlesom ter verificatie</sys:String>
+    <sys:String x:Key="cme_qt_md5_title">MD5 hash ophalen</sys:String>
+    <sys:String x:Key="cme_qt_md5_desc">Berekent de MD5 controlesom ter verificatie</sys:String>
+    <sys:String x:Key="cme_qt_extract_tar_title">Archief hier uitpakken (Tar/Zip)</sys:String>
+    <sys:String x:Key="cme_qt_extract_tar_desc">Pak de archiefinhoud uit met behulp van ingebouwde Windows Tar</sys:String>
+
+    <sys:String x:Key="cme_qt_ps_here_title">Open hier PowerShell</sys:String>
+    <sys:String x:Key="cme_qt_ps_here_desc">Opent een PowerShell venster in de geselecteerde map</sys:String>
+    <sys:String x:Key="cme_qt_cmd_admin_title">Open hier CMD (Admin)</sys:String>
+    <sys:String x:Key="cme_qt_cmd_admin_desc">Opent een verhoogde opdrachtprompt in de geselecteerde map</sys:String>
+    <sys:String x:Key="cme_qt_ps_admin_title">Open hier PowerShell (Admin)</sys:String>
+    <sys:String x:Key="cme_qt_ps_admin_desc">Opent een verhoogd PowerShell venster in de geselecteerde map</sys:String>
+    <sys:String x:Key="cme_qt_copy_folder_title">Mappad naar klembord kopiëren</sys:String>
+    <sys:String x:Key="cme_qt_copy_folder_desc">Kopieert het volledige pad van de geselecteerde map</sys:String>
+
+    <sys:String x:Key="cme_qt_taskmgr_title">Taakbeheer openen</sys:String>
+    <sys:String x:Key="cme_qt_taskmgr_desc">Start Taakbeheer van Windows</sys:String>
+    <sys:String x:Key="cme_qt_regedit_title">Registereditor openen</sys:String>
+    <sys:String x:Key="cme_qt_regedit_desc">Start de Windows registereditor</sys:String>
+    <sys:String x:Key="cme_qt_control_title">Configuratiescherm openen</sys:String>
+    <sys:String x:Key="cme_qt_control_desc">Start het verouderde Configuratiescherm</sys:String>
+    <sys:String x:Key="cme_qt_sysprop_title">Systeemeigenschappen openen</sys:String>
+    <sys:String x:Key="cme_qt_sysprop_desc">Opent geavanceerde systeeminstellingen</sys:String>
+    <sys:String x:Key="cme_qt_services_title">Services openen</sys:String>
+    <sys:String x:Key="cme_qt_services_desc">Opent de Windows Services beheerconsole</sys:String>
+    <sys:String x:Key="cme_qt_godmode_title">God Mode openen</sys:String>
+    <sys:String x:Key="cme_qt_godmode_desc">Opent de weergave van het hoofdconfiguratiescherm</sys:String>
+    <sys:String x:Key="cme_qt_flushdns_title">DNS legen</sys:String>
+    <sys:String x:Key="cme_qt_flushdns_desc">Wist de DNS resolvercache</sys:String>
+    <sys:String x:Key="cme_qt_adv_startup_title">Geavanceerde opstartopties</sys:String>
+    <sys:String x:Key="cme_qt_adv_startup_desc">Start de pc opnieuw op in de geavanceerde herstelomgeving</sys:String>
+
+    <!-- endregion Context Menu Editor -->
 </ResourceDictionary>

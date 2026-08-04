@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:EvolveOS_Optimizer.Core.Model"
+    xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     Closed="Window_Closed">
 
     <Grid Background="Transparent" x:Name="RootGrid">
@@ -20,12 +21,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Context Menu Editor" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <TextBlock Text="{helpers:ResourceString Key=cme_window_title}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
                 <!-- View Switcher -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="6" Padding="4">
-                    <ToggleButton x:Name="EditorViewButton" Content="Menu Editor" IsChecked="True" Checked="ViewMode_Checked" Width="130"/>
-                    <ToggleButton x:Name="CleanerViewButton" Content="Menu Cleaner" Checked="ViewMode_Checked" Width="130"/>
+                    <ToggleButton x:Name="EditorViewButton" Content="{helpers:ResourceString Key=cme_view_editor}" IsChecked="True" Checked="ViewMode_Checked" Width="130"/>
+                    <ToggleButton x:Name="CleanerViewButton" Content="{helpers:ResourceString Key=cme_view_cleaner}" Checked="ViewMode_Checked" Width="130"/>
                 </StackPanel>
             </Grid>
 
@@ -46,8 +47,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Use Classic Context Menu" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                <TextBlock Text="Use the Windows 10-style right-click menu with all options visible instead of the simplified Windows 11 menu" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{helpers:ResourceString Key=cme_classic_toggle_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                <TextBlock Text="{helpers:ResourceString Key=cme_classic_toggle_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
                             </StackPanel>
                             <ToggleSwitch x:Name="ClassicMenuToggle" Grid.Column="1" VerticalAlignment="Center" />
                         </Grid>
@@ -61,12 +62,12 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Target Engine" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
-                                <TextBlock Text="Select which right-click menu you want to customize" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <TextBlock Text="{helpers:ResourceString Key=cme_engine_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                <TextBlock Text="{helpers:ResourceString Key=cme_engine_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             </StackPanel>
                             <ComboBox x:Name="MenuTypeSelector" Grid.Column="1" SelectedIndex="0" Width="220" VerticalAlignment="Center" SelectionChanged="MenuTypeSelector_SelectionChanged">
-                                <ComboBoxItem Content="Modern (Windows 11)"/>
-                                <ComboBoxItem Content="Classic (Windows 10)"/>
+                                <ComboBoxItem Content="{helpers:ResourceString Key=cme_engine_modern}"/>
+                                <ComboBoxItem Content="{helpers:ResourceString Key=cme_engine_classic}"/>
                             </ComboBox>
                         </Grid>
                     </Border>
@@ -94,7 +95,7 @@
                                 </Grid.RowDefinitions>
 
                                 <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,0,0,1" Padding="16,12">
-                                    <TextBlock Text="Active Custom Items" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock Text="{helpers:ResourceString Key=cme_active_items}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </Border>
 
                                 <!-- Hierarchical TreeView -->
@@ -113,7 +114,7 @@
 
                                                     <!-- 2. The Target Badge -->
                                                     <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0">
-                                                        <TextBlock Text="Applies to:" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <TextBlock Text="{helpers:ResourceString Key=cme_applies_to}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                         <TextBlock Text="{Binding Content.Target}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
                                                     </StackPanel>
 
@@ -122,7 +123,7 @@
                                                 </StackPanel>
 
                                                 <!-- Delete Button -->
-                                                <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="8" ToolTipService.ToolTip="Remove item" Click="RemoveItem_Click" Tag="{Binding Content}" VerticalAlignment="Center">
+                                                <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="8" ToolTipService.ToolTip="{helpers:ResourceString Key=cme_remove_item}" Click="RemoveItem_Click" Tag="{Binding Content}" VerticalAlignment="Center">
                                                     <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
                                                 </Button>
                                             </Grid>
@@ -134,14 +135,14 @@
 
                         <!-- Portability Actions -->
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
-                            <Button Content="Export Config" Click="ExportConfig_Click">
+                            <Button Content="{helpers:ResourceString Key=cme_export_config}" Click="ExportConfig_Click">
                                 <Button.ContentTransitions>
                                     <TransitionCollection>
                                         <ContentThemeTransition/>
                                     </TransitionCollection>
                                 </Button.ContentTransitions>
                             </Button>
-                            <Button Content="Import Config" Click="ImportConfig_Click"/>
+                            <Button Content="{helpers:ResourceString Key=cme_import_config}" Click="ImportConfig_Click"/>
                         </StackPanel>
                     </Grid>
 
@@ -149,11 +150,11 @@
                     <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="0">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
                             <StackPanel Spacing="16">
-                                <TextBlock Text="Add New Action" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <TextBlock Text="{helpers:ResourceString Key=cme_add_new_action}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
                                 <ComboBox x:Name="QuickTemplatesComboBox"
-                                          Header="Quick Templates (Auto-fill)"
-                                          PlaceholderText="Choose a quick template..."
+                                          Header="{helpers:ResourceString Key=cme_quick_templates_header}"
+                                          PlaceholderText="{helpers:ResourceString Key=cme_quick_templates_placeholder}"
                                           HorizontalAlignment="Stretch"
                                           SelectionChanged="QuickTemplatesComboBox_SelectionChanged">
                                     <ComboBox.ItemTemplate>
@@ -161,7 +162,7 @@
                                             <StackPanel Margin="0,6,0,6" Spacing="2">
                                                 <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                                    <TextBlock Text="Applies to:" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                    <TextBlock Text="{helpers:ResourceString Key=cme_applies_to}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                                     <TextBlock Text="{Binding TargetName}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
                                                 </StackPanel>
                                                 <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,2,0,0"/>
@@ -178,9 +179,9 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <ToggleSwitch x:Name="IsSubMenuToggle" Header="Item Type" OffContent="Action" OnContent="Folder (Sub-Menu)"/>
+                                    <ToggleSwitch x:Name="IsSubMenuToggle" Header="{helpers:ResourceString Key=cme_item_type_header}" OffContent="{helpers:ResourceString Key=cme_item_type_action}" OnContent="{helpers:ResourceString Key=cme_item_type_folder}"/>
 
-                                    <ComboBox x:Name="ParentMenuComboBox" Grid.Column="1" Header="Place Inside Folder" PlaceholderText="None (Root)" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+                                    <ComboBox x:Name="ParentMenuComboBox" Grid.Column="1" Header="{helpers:ResourceString Key=cme_place_inside_folder}" PlaceholderText="{helpers:ResourceString Key=cme_none_root}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Title}" />
@@ -189,7 +190,7 @@
                                     </ComboBox>
                                 </Grid>
 
-                                <TextBox x:Name="TitleInput" Header="Display Name" PlaceholderText="e.g., Edit in VS Code"/>
+                                <TextBox x:Name="TitleInput" Header="{helpers:ResourceString Key=cme_display_name_header}" PlaceholderText="{helpers:ResourceString Key=cme_display_name_placeholder}"/>
 
                                 <!-- Grouped Executable Properties to easily collapse them when "Folder" is checked -->
                                 <StackPanel x:Name="CommandInputsContainer" Spacing="16">
@@ -198,65 +199,65 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="ExePathInput" Header="Executable Path" PlaceholderText="C:\App.exe"/>
-                                        <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseExe_Click" ToolTipService.ToolTip="Browse..."/>
+                                        <TextBox x:Name="ExePathInput" Header="{helpers:ResourceString Key=cme_exe_path_header}" PlaceholderText="{helpers:ResourceString Key=cme_exe_path_placeholder}"/>
+                                        <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseExe_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=cme_browse_tooltip}"/>
                                     </Grid>
 
-                                    <TextBox x:Name="ArgsInput" Header="Arguments" Text="" PlaceholderText="e.g. &quot;%1&quot; or -silent" />
+                                    <TextBox x:Name="ArgsInput" Header="{helpers:ResourceString Key=cme_arguments_header}" Text="" PlaceholderText="{helpers:ResourceString Key=cme_arguments_placeholder}" />
                                 </StackPanel>
 
-                                <ComboBox x:Name="TargetInput" Header="Target Menu" SelectedIndex="0" HorizontalAlignment="Stretch">
-                                    <ComboBoxItem Content="Files"/>
-                                    <ComboBoxItem Content="Folders"/>
-                                    <ComboBoxItem Content="Background"/>
+                                <ComboBox x:Name="TargetInput" Header="{helpers:ResourceString Key=cme_target_menu_header}" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=cme_target_files}"/>
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=cme_target_folders}"/>
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=cme_target_background}"/>
                                 </ComboBox>
 
                                 <!-- Visual Settings -->
-                                <Expander Header="Visual Appearance" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <Expander Header="{helpers:ResourceString Key=cme_visual_appearance_header}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                     <StackPanel Spacing="12" Padding="0,4,0,0">
                                         <Grid ColumnSpacing="8">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBox x:Name="IconPathInput" Header="Custom Icon Path (.ico, .dll)" PlaceholderText="Defaults to executable"/>
-                                            <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseIcon_Click" ToolTipService.ToolTip="Browse Icon..."/>
+                                            <TextBox x:Name="IconPathInput" Header="{helpers:ResourceString Key=cme_icon_path_header}" PlaceholderText="{helpers:ResourceString Key=cme_icon_path_placeholder}"/>
+                                            <Button Grid.Column="1" Content="&#xE8E5;" FontFamily="{ThemeResource SymbolThemeFontFamily}" VerticalAlignment="Bottom" Height="32" Click="BrowseIcon_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=cme_browse_icon_tooltip}"/>
                                         </Grid>
-                                        <ComboBox x:Name="PositionInput" Header="Menu Position" SelectedIndex="0" HorizontalAlignment="Stretch">
-                                            <ComboBoxItem Content="Default"/>
-                                            <ComboBoxItem Content="Top"/>
-                                            <ComboBoxItem Content="Bottom"/>
+                                        <ComboBox x:Name="PositionInput" Header="{helpers:ResourceString Key=cme_menu_position_header}" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=cme_position_default}"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=cme_position_top}"/>
+                                            <ComboBoxItem Content="{helpers:ResourceString Key=cme_position_bottom}"/>
                                         </ComboBox>
                                     </StackPanel>
                                 </Expander>
 
                                 <!-- Advanced Settings -->
-                                <Expander Header="Advanced &amp; Targeting" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <Expander Header="{helpers:ResourceString Key=cme_advanced_targeting_header}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                     <StackPanel Spacing="12" Padding="0,4,0,0">
-                                        <TextBox x:Name="SpecificExtInput" Header="Specific Extensions" PlaceholderText="* or .png, .jpg, .txt"/>
-                                        <ToggleSwitch x:Name="ExtendedToggle" Header="Hide behind Shift + Right-Click"/>
-                                        <ToggleSwitch x:Name="RunAsAdminToggle" Header="Run as Administrator (UAC)"/>
-                                        <ToggleSwitch x:Name="HiddenWindowToggle" Header="Run in Hidden Window"/>
+                                        <TextBox x:Name="SpecificExtInput" Header="{helpers:ResourceString Key=cme_specific_ext_header}" PlaceholderText="{helpers:ResourceString Key=cme_specific_ext_placeholder}"/>
+                                        <ToggleSwitch x:Name="ExtendedToggle" Header="{helpers:ResourceString Key=cme_hide_shift_header}"/>
+                                        <ToggleSwitch x:Name="RunAsAdminToggle" Header="{helpers:ResourceString Key=cme_run_admin_header}"/>
+                                        <ToggleSwitch x:Name="HiddenWindowToggle" Header="{helpers:ResourceString Key=cme_run_hidden_header}"/>
                                     </StackPanel>
                                 </Expander>
 
-                                <Button Content="Add to Menu" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Margin="0,8,0,0" Click="AddItem_Click"/>
+                                <Button Content="{helpers:ResourceString Key=cme_add_to_menu_btn}" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Stretch" Margin="0,8,0,0" Click="AddItem_Click"/>
 
                                 <!-- Advanced Settings Engine Presets (Classic Only) -->
                                 <StackPanel x:Name="AdvancedPresetsContainer" Spacing="12" Margin="0,16,0,0" Visibility="Collapsed">
                                     <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Margin="0,0,0,8" />
 
-                                    <TextBlock Text="Advanced Built-in Presets" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock Text="{helpers:ResourceString Key=cme_advanced_presets_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
                                     <ComboBox x:Name="PresetsComboBox"
-                                              Header="Select a predefined action"
-                                              PlaceholderText="Choose a preset..."
+                                              Header="{helpers:ResourceString Key=cme_presets_header}"
+                                              PlaceholderText="{helpers:ResourceString Key=cme_presets_placeholder}"
                                               HorizontalAlignment="Stretch"
                                               DisplayMemberPath="Name"
                                               SelectionChanged="PresetsComboBox_SelectionChanged"/>
 
                                     <ToggleSwitch x:Name="PresetToggleSwitch"
-                                                  OffContent="Disabled" OnContent="Enabled"
+                                                  OffContent="{helpers:ResourceString Key=cme_preset_disabled}" OnContent="{helpers:ResourceString Key=cme_preset_enabled}"
                                                   IsEnabled="False"
                                                   Toggled="PresetToggleSwitch_Toggled"/>
 
@@ -282,8 +283,8 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Padding="20,16" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,0,0,1">
-                            <TextBlock Text="Third-Party Shell Extensions" FontWeight="SemiBold" FontSize="16"/>
-                            <TextBlock Text="Disable bloated entries added by apps like WinRAR, Adobe, or NVIDIA." FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,4,0,0"/>
+                            <TextBlock Text="{helpers:ResourceString Key=cme_cleaner_title}" FontWeight="SemiBold" FontSize="16"/>
+                            <TextBlock Text="{helpers:ResourceString Key=cme_cleaner_desc}" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,4,0,0"/>
                         </StackPanel>
 
                         <ListView x:Name="CleanerListView" Grid.Row="1" Padding="0,8" SelectionMode="None">
@@ -298,7 +299,7 @@
                                             <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
                                             <TextBlock Text="{Binding TargetPathDisplay}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,2,0,0"/>
                                         </StackPanel>
-                                        <ToggleSwitch Grid.Column="1" IsOn="{Binding IsEnabled, Mode=TwoWay}" Toggled="CleanerToggle_Toggled" Tag="{Binding}" Margin="0" MinWidth="0" OffContent="Hidden" OnContent="Visible"/>
+                                        <ToggleSwitch Grid.Column="1" IsOn="{Binding IsEnabled, Mode=TwoWay}" Toggled="CleanerToggle_Toggled" Tag="{Binding}" Margin="0" MinWidth="0" OffContent="{helpers:ResourceString Key=cme_cleaner_hidden}" OnContent="{helpers:ResourceString Key=cme_cleaner_visible}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -309,7 +310,7 @@
 
             <!-- Footer / Close Button -->
             <Grid Grid.Row="2" Width="816" Margin="42,16,0,24" HorizontalAlignment="Center">
-                <Button Content="Close" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
+                <Button Content="{helpers:ResourceString Key=cme_close_btn}" Click="CloseButton_Click" Style="{ThemeResource DefaultButtonStyle}" HorizontalAlignment="Center" MinWidth="150" />
             </Grid>
         </Grid>
     </Grid>

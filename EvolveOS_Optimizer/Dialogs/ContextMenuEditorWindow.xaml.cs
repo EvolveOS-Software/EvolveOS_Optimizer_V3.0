@@ -200,47 +200,47 @@ namespace EvolveOS_Optimizer.Dialogs
             {
                 #region ORIGINAL PRESETS
 
-                new ContextMenuTemplate { Title = "Take Ownership", Description = "Grants full administrator permissions to the selected file", ExePath = "cmd.exe", Arguments = "/c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t", TargetIndex = 0, RunAsAdmin = true },
-                new ContextMenuTemplate { Title = "Open Command Prompt Here", Description = "Opens a standard command prompt in the selected directory", ExePath = "cmd.exe", Arguments = "/s /k pushd \"%V\"", TargetIndex = 1 },
-                new ContextMenuTemplate { Title = "Restart Windows Explorer", Description = "Force restarts the explorer.exe process from the desktop", ExePath = "cmd.exe", Arguments = "/c taskkill /f /im explorer.exe & start explorer.exe", TargetIndex = 2, HiddenWindow = true },
-                new ContextMenuTemplate { Title = "Copy File Path to Clipboard", Description = "Copies the full path of the selected file", ExePath = "cmd.exe", Arguments = "/c echo \"%1\" | clip", TargetIndex = 0 },
-                new ContextMenuTemplate { Title = "Permanently Delete", Description = "Bypasses the Recycle Bin to permanently delete the file", ExePath = "cmd.exe", Arguments = "/c del /f /q \"%1\"", TargetIndex = 0 },
-                new ContextMenuTemplate { Title = "Lock PC", Description = "Instantly locks your Windows session", ExePath = "rundll32.exe", Arguments = "user32.dll,LockWorkStation", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_takeown_title") ?? "Take Ownership", Description = ResourceString.GetString("cme_qt_takeown_desc") ?? "Grants full administrator permissions to the selected file", ExePath = "cmd.exe", Arguments = "/c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t", TargetIndex = 0, RunAsAdmin = true },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_cmd_title") ?? "Open Command Prompt Here", Description = ResourceString.GetString("cme_qt_cmd_desc") ?? "Opens a standard command prompt in the selected directory", ExePath = "cmd.exe", Arguments = "/s /k pushd \"%V\"", TargetIndex = 1 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_restart_exp_title") ?? "Restart Windows Explorer", Description = ResourceString.GetString("cme_qt_restart_exp_desc") ?? "Force restarts the explorer.exe process from the desktop", ExePath = "cmd.exe", Arguments = "/c taskkill /f /im explorer.exe & start explorer.exe", TargetIndex = 2, HiddenWindow = true },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_copy_path_title") ?? "Copy File Path to Clipboard", Description = ResourceString.GetString("cme_qt_copy_path_desc") ?? "Copies the full path of the selected file", ExePath = "cmd.exe", Arguments = "/c echo \"%1\" | clip", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_perm_del_title") ?? "Permanently Delete", Description = ResourceString.GetString("cme_qt_perm_del_desc") ?? "Bypasses the Recycle Bin to permanently delete the file", ExePath = "cmd.exe", Arguments = "/c del /f /q \"%1\"", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_lock_pc_title") ?? "Lock PC", Description = ResourceString.GetString("cme_qt_lock_pc_desc") ?? "Instantly locks your Windows session", ExePath = "rundll32.exe", Arguments = "user32.dll,LockWorkStation", TargetIndex = 2 },
 
                 #endregion
 
                 #region FILE OPERATIONS (TargetIndex = 0)
 
-                new ContextMenuTemplate { Title = "Open with Notepad", Description = "Forces any unknown file to open in Notepad", ExePath = "notepad.exe", Arguments = "\"%1\"", TargetIndex = 0 },
-                new ContextMenuTemplate { Title = "Run PowerShell Script", Description = "Executes the script while bypassing execution policies", ExePath = "powershell.exe", Arguments = "-ExecutionPolicy Bypass -NoExit -File \"%1\"", TargetIndex = 0 },
-                new ContextMenuTemplate { Title = "Block Executable in Firewall", Description = "Creates an outbound Windows Firewall rule to block the app", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/c netsh advfirewall firewall add rule name=\\\"Block %1\\\" dir=out program=\\\"%1\\\" action=block' -Verb RunAs", TargetIndex = 0, RunAsAdmin = true, HiddenWindow = true },
-                new ContextMenuTemplate { Title = "Register DLL / OCX", Description = "Registers the library using regsvr32", ExePath = "regsvr32.exe", Arguments = "\"%1\"", TargetIndex = 0, RunAsAdmin = true },
-                new ContextMenuTemplate { Title = "Unregister DLL / OCX", Description = "Unregisters the library using regsvr32", ExePath = "regsvr32.exe", Arguments = "/u \"%1\"", TargetIndex = 0, RunAsAdmin = true },
-                new ContextMenuTemplate { Title = "Get SHA256 Hash", Description = "Calculates the SHA256 checksum for verification", ExePath = "powershell.exe", Arguments = "-NoExit -Command Get-FileHash -Algorithm SHA256 -Path '%1' | Format-List", TargetIndex = 0 },
-                new ContextMenuTemplate { Title = "Get MD5 Hash", Description = "Calculates the MD5 checksum for verification", ExePath = "powershell.exe", Arguments = "-NoExit -Command Get-FileHash -Algorithm MD5 -Path '%1' | Format-List", TargetIndex = 0 },
-                new ContextMenuTemplate { Title = "Extract Archive Here (Tar/Zip)", Description = "Extracts the archive contents using built-in Windows Tar", ExePath = "tar.exe", Arguments = "-xf \"%1\"", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_notepad_title") ?? "Open with Notepad", Description = ResourceString.GetString("cme_qt_notepad_desc") ?? "Forces any unknown file to open in Notepad", ExePath = "notepad.exe", Arguments = "\"%1\"", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_ps_script_title") ?? "Run PowerShell Script", Description = ResourceString.GetString("cme_qt_ps_script_desc") ?? "Executes the script while bypassing execution policies", ExePath = "powershell.exe", Arguments = "-ExecutionPolicy Bypass -NoExit -File \"%1\"", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_block_fw_title") ?? "Block Executable in Firewall", Description = ResourceString.GetString("cme_qt_block_fw_desc") ?? "Creates an outbound Windows Firewall rule to block the app", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/c netsh advfirewall firewall add rule name=\\\"Block %1\\\" dir=out program=\\\"%1\\\" action=block' -Verb RunAs", TargetIndex = 0, RunAsAdmin = true, HiddenWindow = true },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_reg_dll_title") ?? "Register DLL / OCX", Description = ResourceString.GetString("cme_qt_reg_dll_desc") ?? "Registers the library using regsvr32", ExePath = "regsvr32.exe", Arguments = "\"%1\"", TargetIndex = 0, RunAsAdmin = true },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_unreg_dll_title") ?? "Unregister DLL / OCX", Description = ResourceString.GetString("cme_qt_unreg_dll_desc") ?? "Unregisters the library using regsvr32", ExePath = "regsvr32.exe", Arguments = "/u \"%1\"", TargetIndex = 0, RunAsAdmin = true },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_sha256_title") ?? "Get SHA256 Hash", Description = ResourceString.GetString("cme_qt_sha256_desc") ?? "Calculates the SHA256 checksum for verification", ExePath = "powershell.exe", Arguments = "-NoExit -Command Get-FileHash -Algorithm SHA256 -Path '%1' | Format-List", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_md5_title") ?? "Get MD5 Hash", Description = ResourceString.GetString("cme_qt_md5_desc") ?? "Calculates the MD5 checksum for verification", ExePath = "powershell.exe", Arguments = "-NoExit -Command Get-FileHash -Algorithm MD5 -Path '%1' | Format-List", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_extract_tar_title") ?? "Extract Archive Here (Tar/Zip)", Description = ResourceString.GetString("cme_qt_extract_tar_desc") ?? "Extracts the archive contents using built-in Windows Tar", ExePath = "tar.exe", Arguments = "-xf \"%1\"", TargetIndex = 0 },
 
                 #endregion
 
                 #region FOLDER OPERATIONS (TargetIndex = 1)
 
-                new ContextMenuTemplate { Title = "Open PowerShell Here", Description = "Opens a PowerShell window in the selected directory", ExePath = "powershell.exe", Arguments = "-NoExit -Command Set-Location -LiteralPath '%V'", TargetIndex = 1 },
-                new ContextMenuTemplate { Title = "Open CMD Here (Admin)", Description = "Opens an elevated command prompt in the selected directory", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/s /k pushd \\\"%V\\\"' -Verb RunAs", TargetIndex = 1, RunAsAdmin = true },
-                new ContextMenuTemplate { Title = "Open PowerShell Here (Admin)", Description = "Opens an elevated PowerShell window in the selected directory", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process powershell -ArgumentList '-NoExit -Command Set-Location -LiteralPath \\\"%V\\\"' -Verb RunAs", TargetIndex = 1, RunAsAdmin = true },
-                new ContextMenuTemplate { Title = "Copy Folder Path to Clipboard", Description = "Copies the full path of the selected folder", ExePath = "cmd.exe", Arguments = "/c echo \"%V\" | clip", TargetIndex = 1 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_ps_here_title") ?? "Open PowerShell Here", Description = ResourceString.GetString("cme_qt_ps_here_desc") ?? "Opens a PowerShell window in the selected directory", ExePath = "powershell.exe", Arguments = "-NoExit -Command Set-Location -LiteralPath '%V'", TargetIndex = 1 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_cmd_admin_title") ?? "Open CMD Here (Admin)", Description = ResourceString.GetString("cme_qt_cmd_admin_desc") ?? "Opens an elevated command prompt in the selected directory", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/s /k pushd \\\"%V\\\"' -Verb RunAs", TargetIndex = 1, RunAsAdmin = true },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_ps_admin_title") ?? "Open PowerShell Here (Admin)", Description = ResourceString.GetString("cme_qt_ps_admin_desc") ?? "Opens an elevated PowerShell window in the selected directory", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process powershell -ArgumentList '-NoExit -Command Set-Location -LiteralPath \\\"%V\\\"' -Verb RunAs", TargetIndex = 1, RunAsAdmin = true },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_copy_folder_title") ?? "Copy Folder Path to Clipboard", Description = ResourceString.GetString("cme_qt_copy_folder_desc") ?? "Copies the full path of the selected folder", ExePath = "cmd.exe", Arguments = "/c echo \"%V\" | clip", TargetIndex = 1 },
 
                 #endregion
 
                 #region SYSTEM / BACKGROUND TOOLS (TargetIndex = 2)
 
-                new ContextMenuTemplate { Title = "Open Task Manager", Description = "Launches the Windows Task Manager", ExePath = "taskmgr.exe", Arguments = "", TargetIndex = 2 },
-                new ContextMenuTemplate { Title = "Open Registry Editor", Description = "Launches the Windows Registry Editor", ExePath = "regedit.exe", Arguments = "", TargetIndex = 2 },
-                new ContextMenuTemplate { Title = "Open Control Panel", Description = "Launches the legacy Control Panel", ExePath = "control.exe", Arguments = "", TargetIndex = 2 },
-                new ContextMenuTemplate { Title = "Open System Properties", Description = "Opens advanced system settings", ExePath = "control.exe", Arguments = "sysdm.cpl", TargetIndex = 2 },
-                new ContextMenuTemplate { Title = "Open Services", Description = "Opens the Windows Services management console", ExePath = "mmc.exe", Arguments = "services.msc", TargetIndex = 2 },
-                new ContextMenuTemplate { Title = "Access God Mode", Description = "Opens the master Control Panel view", ExePath = "explorer.exe", Arguments = "shell:::{ED7BA470-8E54-465E-825C-99712043E01C}", TargetIndex = 2 },
-                new ContextMenuTemplate { Title = "Flush DNS", Description = "Clears the DNS resolver cache", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/c ipconfig /flushdns & pause' -Verb RunAs", TargetIndex = 2, RunAsAdmin = true },
-                new ContextMenuTemplate { Title = "Advanced Startup Options", Description = "Restarts the PC into the Advanced Recovery environment", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process shutdown -ArgumentList '/r /o /f /t 0' -Verb RunAs", TargetIndex = 2, RunAsAdmin = true, HiddenWindow = true }
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_taskmgr_title") ?? "Open Task Manager", Description = ResourceString.GetString("cme_qt_taskmgr_desc") ?? "Launches the Windows Task Manager", ExePath = "taskmgr.exe", Arguments = "", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_regedit_title") ?? "Open Registry Editor", Description = ResourceString.GetString("cme_qt_regedit_desc") ?? "Launches the Windows Registry Editor", ExePath = "regedit.exe", Arguments = "", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_control_title") ?? "Open Control Panel", Description = ResourceString.GetString("cme_qt_control_desc") ?? "Launches the legacy Control Panel", ExePath = "control.exe", Arguments = "", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_sysprop_title") ?? "Open System Properties", Description = ResourceString.GetString("cme_qt_sysprop_desc") ?? "Opens advanced system settings", ExePath = "control.exe", Arguments = "sysdm.cpl", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_services_title") ?? "Open Services", Description = ResourceString.GetString("cme_qt_services_desc") ?? "Opens the Windows Services management console", ExePath = "mmc.exe", Arguments = "services.msc", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_godmode_title") ?? "Access God Mode", Description = ResourceString.GetString("cme_qt_godmode_desc") ?? "Opens the master Control Panel view", ExePath = "explorer.exe", Arguments = "shell:::{ED7BA470-8E54-465E-825C-99712043E01C}", TargetIndex = 2 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_flushdns_title") ?? "Flush DNS", Description = ResourceString.GetString("cme_qt_flushdns_desc") ?? "Clears the DNS resolver cache", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/c ipconfig /flushdns & pause' -Verb RunAs", TargetIndex = 2, RunAsAdmin = true },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_adv_startup_title") ?? "Advanced Startup Options", Description = ResourceString.GetString("cme_qt_adv_startup_desc") ?? "Restarts the PC into the Advanced Recovery environment", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process shutdown -ArgumentList '/r /o /f /t 0' -Verb RunAs", TargetIndex = 2, RunAsAdmin = true, HiddenWindow = true }
 
                 #endregion
             };
@@ -292,7 +292,7 @@ namespace EvolveOS_Optimizer.Dialogs
 
                 var allExplorerSettings = await settingsService.LoadConfiguredSettingsAsync(
                     FeatureIds.ExplorerCustomization,
-                    "Loading presets...",
+                    ResourceString.GetString("cme_loading_presets") ?? "Loading presets...",
                     null
                 );
 
@@ -399,7 +399,6 @@ namespace EvolveOS_Optimizer.Dialogs
                 @"Directory\Background\shellex\ContextMenuHandlers"
             };
 
-            // 🚀 NEW: Safety blocklist to hide core Windows features from the user
             string[] systemBlocklist = {
                 "Taskband Pin", "Start Menu Pin", "Offline Files", "Previous Versions",
                 "New Menu Handler", "Encryption Context Menu", "EPP", "FileSyncEx",
@@ -437,14 +436,12 @@ namespace EvolveOS_Optimizer.Dialogs
                             catch { }
                         }
 
-                        // 🚀 NEW: Hide core OS items to prevent users from breaking Windows
                         bool isBlocked = systemBlocklist.Any(b =>
                             subKeyName.Contains(b, StringComparison.OrdinalIgnoreCase) ||
                             displayName.Contains(b, StringComparison.OrdinalIgnoreCase));
 
                         if (isBlocked) continue;
 
-                        // 🚀 NEW: Group duplicates together
                         var existingItem = _cleanerItems.FirstOrDefault(c => c.Name == subKeyName || c.DisplayName == displayName);
                         if (existingItem != null)
                         {
@@ -483,7 +480,6 @@ namespace EvolveOS_Optimizer.Dialogs
 
             if (sender is ToggleSwitch toggle && toggle.Tag is CleanerItem item)
             {
-                // 🚀 NEW: Loop through all grouped paths and apply the toggle to every location
                 foreach (var targetPath in item.TargetPaths)
                 {
                     try
@@ -532,9 +528,9 @@ namespace EvolveOS_Optimizer.Dialogs
 
                 ContentDialog successDialog = new ContentDialog
                 {
-                    Title = "Export Successful",
-                    Content = $"Your context menu configuration has been successfully backed up to:\n\n{filePath}",
-                    CloseButtonText = "OK",
+                    Title = ResourceString.GetString("cme_export_success_title") ?? "Export Successful",
+                    Content = $"{ResourceString.GetString("cme_export_success_desc") ?? "Your context menu configuration has been successfully backed up to:"}\n\n{filePath}",
+                    CloseButtonText = ResourceString.GetString("cme_ok") ?? "OK",
                     XamlRoot = RootGrid.XamlRoot
                 };
 
@@ -546,9 +542,9 @@ namespace EvolveOS_Optimizer.Dialogs
 
                 ContentDialog errorDialog = new ContentDialog
                 {
-                    Title = "Export Failed",
-                    Content = $"An error occurred while exporting your configuration:\n\n{ex.Message}",
-                    CloseButtonText = "Close",
+                    Title = ResourceString.GetString("cme_export_failed_title") ?? "Export Failed",
+                    Content = $"{ResourceString.GetString("cme_export_failed_desc") ?? "An error occurred while exporting your configuration:"}\n\n{ex.Message}",
+                    CloseButtonText = ResourceString.GetString("cme_close") ?? "Close",
                     XamlRoot = RootGrid.XamlRoot
                 };
 
@@ -558,21 +554,37 @@ namespace EvolveOS_Optimizer.Dialogs
 
         private async void ImportConfig_Click(object sender, RoutedEventArgs e)
         {
+            string selectedFile = string.Empty;
+            IntPtr pFile = Marshal.AllocHGlobal(260 * Marshal.SystemDefaultCharSize);
+
             try
             {
-                var picker = new Windows.Storage.Pickers.FileOpenPicker();
+                Marshal.WriteInt16(pFile, 0);
 
-                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+                var ofn = new OPENFILENAME();
+                ofn.lStructSize = Marshal.SizeOf(typeof(OPENFILENAME));
+                ofn.hwndOwner = WinRT.Interop.WindowNative.GetWindowHandle(this);
+                ofn.lpstrFilter = "JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0";
+                ofn.lpstrFile = pFile;
+                ofn.nMaxFile = 260;
+                ofn.lpstrTitle = ResourceString.GetString("cme_import_config_title") ?? "Import Configuration";
+                ofn.Flags = 0x00080000 | 0x00001000 | 0x00000008;
 
-                picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.List;
-                picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
-                picker.FileTypeFilter.Add(".json");
+                if (GetOpenFileName(ref ofn))
+                {
+                    selectedFile = Marshal.PtrToStringAuto(ofn.lpstrFile) ?? string.Empty;
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(pFile);
+            }
 
-                Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
-                if (file == null) return;
+            if (string.IsNullOrEmpty(selectedFile)) return;
 
-                string json = await File.ReadAllTextAsync(file.Path);
+            try
+            {
+                string json = await File.ReadAllTextAsync(selectedFile);
 
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var importedData = JsonSerializer.Deserialize<ContextMenuExportData>(json, options);
@@ -616,9 +628,9 @@ namespace EvolveOS_Optimizer.Dialogs
 
                     ContentDialog successDialog = new ContentDialog
                     {
-                        Title = "Import Successful",
-                        Content = "Your context menu configuration has been successfully imported and applied to Windows!",
-                        CloseButtonText = "OK",
+                        Title = ResourceString.GetString("cme_import_success_title") ?? "Import Successful",
+                        Content = ResourceString.GetString("cme_import_success_desc") ?? "Your context menu configuration has been successfully imported and applied to Windows!",
+                        CloseButtonText = ResourceString.GetString("cme_ok") ?? "OK",
                         XamlRoot = RootGrid.XamlRoot
                     };
 
@@ -631,9 +643,9 @@ namespace EvolveOS_Optimizer.Dialogs
 
                 ContentDialog errorDialog = new ContentDialog
                 {
-                    Title = "Import Failed",
-                    Content = $"An error occurred while importing your configuration file:\n\n{ex.Message}",
-                    CloseButtonText = "Close",
+                    Title = ResourceString.GetString("cme_import_failed_title") ?? "Import Failed",
+                    Content = $"{ResourceString.GetString("cme_import_failed_desc") ?? "An error occurred while importing your configuration file:"}\n\n{ex.Message}",
+                    CloseButtonText = ResourceString.GetString("cme_close") ?? "Close",
                     XamlRoot = RootGrid.XamlRoot
                 };
 
@@ -767,7 +779,7 @@ namespace EvolveOS_Optimizer.Dialogs
 
                 ofn.lpstrFile = pFile;
                 ofn.nMaxFile = 260;
-                ofn.lpstrTitle = "Select Executable";
+                ofn.lpstrTitle = ResourceString.GetString("cme_select_executable") ?? "Select Executable";
 
                 ofn.Flags = 0x00080000 | 0x00001000 | 0x00000008;
 
@@ -798,7 +810,7 @@ namespace EvolveOS_Optimizer.Dialogs
 
                 ofn.lpstrFile = pFile;
                 ofn.nMaxFile = 260;
-                ofn.lpstrTitle = "Select Icon";
+                ofn.lpstrTitle = ResourceString.GetString("cme_select_icon") ?? "Select Icon";
 
                 ofn.Flags = 0x00080000 | 0x00001000 | 0x00000008;
 
@@ -823,7 +835,12 @@ namespace EvolveOS_Optimizer.Dialogs
             if (string.IsNullOrWhiteSpace(TitleInput.Text)) return;
             if (!isSubMenu && string.IsNullOrWhiteSpace(ExePathInput.Text)) return;
 
-            string targetStr = (TargetInput.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Files";
+            string targetStr = TargetInput.SelectedIndex switch
+            {
+                1 => "Folders",
+                2 => "Background",
+                _ => "Files"
+            };
 
             string finalExe = isSubMenu ? "" : ExePathInput.Text;
             string finalArgs = isSubMenu ? "" : ArgsInput.Text;
@@ -836,7 +853,13 @@ namespace EvolveOS_Optimizer.Dialogs
             bool isExtended = ExtendedToggle != null && ExtendedToggle.IsOn;
             string specificExt = SpecificExtInput != null ? SpecificExtInput.Text.Trim() : "*";
             if (string.IsNullOrEmpty(specificExt)) specificExt = "*";
-            string positionStr = (PositionInput?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Default";
+
+            string positionStr = PositionInput?.SelectedIndex switch
+            {
+                1 => "Top",
+                2 => "Bottom",
+                _ => "Default"
+            };
 
             if (!isSubMenu && (runAsAdmin || hiddenWindow))
             {
@@ -1016,10 +1039,10 @@ namespace EvolveOS_Optimizer.Dialogs
 
         public string TargetName => TargetIndex switch
         {
-            0 => "Files",
-            1 => "Folders",
-            2 => "Background",
-            _ => "Unknown"
+            0 => ResourceString.GetString("cme_target_files") ?? "Files",
+            1 => ResourceString.GetString("cme_target_folders") ?? "Folders",
+            2 => ResourceString.GetString("cme_target_background") ?? "Background",
+            _ => ResourceString.GetString("cme_target_unknown") ?? "Unknown"
         };
     }
 
@@ -1030,7 +1053,7 @@ namespace EvolveOS_Optimizer.Dialogs
         public List<string> TargetPaths { get; set; } = new();
 
         public string TargetPathDisplay => TargetPaths.Count > 1
-            ? $"Applied to {TargetPaths.Count} registry locations"
+            ? string.Format(ResourceString.GetString("cme_applied_to_locations") ?? "Applied to {0} registry locations", TargetPaths.Count)
             : TargetPaths.FirstOrDefault() ?? "";
 
         private bool _isEnabled;

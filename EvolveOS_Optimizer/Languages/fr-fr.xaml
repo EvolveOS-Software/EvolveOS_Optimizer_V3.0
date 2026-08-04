@@ -5285,4 +5285,162 @@
     <sys:String x:Key="fan_calib_failed">Échec</sys:String>
 
     <!-- endregion Diagnostics Fan Control -->
+
+    <!-- region Context Menu Editor -->
+
+    <sys:String x:Key="cme_window_title">Éditeur du menu contextuel</sys:String>
+    <sys:String x:Key="cme_view_editor">Éditeur de menu</sys:String>
+    <sys:String x:Key="cme_view_cleaner">Nettoyeur de menu</sys:String>
+
+    <!-- Engine & Toggles -->
+    <sys:String x:Key="cme_classic_toggle_title">Utiliser le menu contextuel classique</sys:String>
+    <sys:String x:Key="cme_classic_toggle_desc">Utilisez le menu contextuel de style Windows 10 avec toutes les options visibles au lieu du menu simplifié de Windows 11</sys:String>
+    <sys:String x:Key="cme_engine_title">Moteur cible</sys:String>
+    <sys:String x:Key="cme_engine_desc">Sélectionnez le menu contextuel que vous souhaitez personnaliser</sys:String>
+    <sys:String x:Key="cme_engine_modern">Moderne (Windows 11)</sys:String>
+    <sys:String x:Key="cme_engine_classic">Classique (Windows 10)</sys:String>
+
+    <!-- Active Items Tree -->
+    <sys:String x:Key="cme_active_items">Éléments personnalisés actifs</sys:String>
+    <sys:String x:Key="cme_applies_to">S'applique à :</sys:String>
+    <sys:String x:Key="cme_remove_item">Supprimer l'élément</sys:String>
+    <sys:String x:Key="cme_export_config">Exporter la configuration</sys:String>
+    <sys:String x:Key="cme_import_config">Importer la configuration</sys:String>
+
+    <!-- Add New Action Form -->
+    <sys:String x:Key="cme_add_new_action">Ajouter une nouvelle action</sys:String>
+    <sys:String x:Key="cme_quick_templates_header">Modèles rapides (Remplissage automatique)</sys:String>
+    <sys:String x:Key="cme_quick_templates_placeholder">Choisissez un modèle rapide...</sys:String>
+
+    <!-- Item Type & Cascading -->
+    <sys:String x:Key="cme_item_type_header">Type d'élément</sys:String>
+    <sys:String x:Key="cme_item_type_action">Action</sys:String>
+    <sys:String x:Key="cme_item_type_folder">Dossier (Sous-menu)</sys:String>
+    <sys:String x:Key="cme_place_inside_folder">Placer dans le dossier</sys:String>
+    <sys:String x:Key="cme_none_root">Aucun (Racine)</sys:String>
+
+    <!-- Main Properties -->
+    <sys:String x:Key="cme_display_name_header">Nom affiché</sys:String>
+    <sys:String x:Key="cme_display_name_placeholder">ex. : Modifier dans VS Code</sys:String>
+    <sys:String x:Key="cme_exe_path_header">Chemin de l'exécutable</sys:String>
+    <sys:String x:Key="cme_exe_path_placeholder">C:\App.exe</sys:String>
+    <sys:String x:Key="cme_browse_tooltip">Parcourir...</sys:String>
+    <sys:String x:Key="cme_arguments_header">Arguments</sys:String>
+    <sys:String x:Key="cme_arguments_placeholder">ex. "%1" ou -silent</sys:String>
+    <sys:String x:Key="cme_target_menu_header">Menu cible</sys:String>
+    <sys:String x:Key="cme_target_files">Fichiers</sys:String>
+    <sys:String x:Key="cme_target_folders">Dossiers</sys:String>
+    <sys:String x:Key="cme_target_background">Arrière-plan</sys:String>
+
+    <!-- Visual Appearance -->
+    <sys:String x:Key="cme_visual_appearance_header">Apparence visuelle</sys:String>
+    <sys:String x:Key="cme_icon_path_header">Chemin de l'icône personnalisée (.ico, .dll)</sys:String>
+    <sys:String x:Key="cme_icon_path_placeholder">Par défaut, celui de l'exécutable</sys:String>
+    <sys:String x:Key="cme_browse_icon_tooltip">Parcourir l'icône...</sys:String>
+    <sys:String x:Key="cme_menu_position_header">Position dans le menu</sys:String>
+    <sys:String x:Key="cme_position_default">Par défaut</sys:String>
+    <sys:String x:Key="cme_position_top">Haut</sys:String>
+    <sys:String x:Key="cme_position_bottom">Bas</sys:String>
+
+    <!-- Advanced Targeting -->
+    <sys:String x:Key="cme_advanced_targeting_header">Avancé &amp; Ciblage</sys:String>
+    <sys:String x:Key="cme_specific_ext_header">Extensions spécifiques</sys:String>
+    <sys:String x:Key="cme_specific_ext_placeholder">* ou .png, .jpg, .txt</sys:String>
+    <sys:String x:Key="cme_hide_shift_header">Masquer derrière Shift + Clic droit</sys:String>
+    <sys:String x:Key="cme_run_admin_header">Exécuter en tant qu'administrateur (UAC)</sys:String>
+    <sys:String x:Key="cme_run_hidden_header">Exécuter dans une fenêtre masquée</sys:String>
+    <sys:String x:Key="cme_add_to_menu_btn">Ajouter au menu</sys:String>
+
+    <!-- Advanced Presets -->
+    <sys:String x:Key="cme_advanced_presets_title">Préréglages intégrés avancés</sys:String>
+    <sys:String x:Key="cme_presets_header">Sélectionnez une action prédéfinie</sys:String>
+    <sys:String x:Key="cme_presets_placeholder">Choisissez un préréglage...</sys:String>
+    <sys:String x:Key="cme_preset_disabled">Désactivé</sys:String>
+    <sys:String x:Key="cme_preset_enabled">Activé</sys:String>
+
+    <!-- Context Menu Cleaner -->
+    <sys:String x:Key="cme_cleaner_title">Extensions d'interface tierces</sys:String>
+    <sys:String x:Key="cme_cleaner_desc">Désactivez les entrées superflues ajoutées par des applications comme WinRAR, Adobe ou NVIDIA.</sys:String>
+    <sys:String x:Key="cme_cleaner_hidden">Masqué</sys:String>
+    <sys:String x:Key="cme_cleaner_visible">Visible</sys:String>
+
+    <!-- Global -->
+    <sys:String x:Key="cme_close_btn">Fermer</sys:String>
+
+    <!-- Dialog Titles & Status Messages -->
+    <sys:String x:Key="cme_export_success_title">Exportation réussie</sys:String>
+    <sys:String x:Key="cme_export_success_desc">La configuration de votre menu contextuel a été sauvegardée avec succès vers :</sys:String>
+    <sys:String x:Key="cme_export_failed_title">Échec de l'exportation</sys:String>
+    <sys:String x:Key="cme_export_failed_desc">Une erreur s'est produite lors de l'exportation de votre configuration :</sys:String>
+    <sys:String x:Key="cme_import_config_title">Importer la configuration</sys:String>
+    <sys:String x:Key="cme_import_success_title">Importation réussie</sys:String>
+    <sys:String x:Key="cme_import_success_desc">La configuration de votre menu contextuel a été importée et appliquée avec succès à Windows !</sys:String>
+    <sys:String x:Key="cme_import_failed_title">Échec de l'importation</sys:String>
+    <sys:String x:Key="cme_import_failed_desc">Une erreur s'est produite lors de l'importation de votre fichier de configuration :</sys:String>
+    <sys:String x:Key="cme_select_executable">Sélectionner l'exécutable</sys:String>
+    <sys:String x:Key="cme_select_icon">Sélectionner l'icône</sys:String>
+    <sys:String x:Key="cme_loading_presets">Chargement des préréglages...</sys:String>
+    <sys:String x:Key="cme_target_unknown">Inconnu</sys:String>
+    <sys:String x:Key="cme_applied_to_locations">Appliqué à {0} emplacements du Registre</sys:String>
+    <sys:String x:Key="cme_ok">OK</sys:String>
+    <sys:String x:Key="cme_close">Fermer</sys:String>
+
+    <!-- Quick Template Titles & Descriptions -->
+    <sys:String x:Key="cme_qt_takeown_title">Prendre possession</sys:String>
+    <sys:String x:Key="cme_qt_takeown_desc">Accorde les permissions d'administrateur complet au fichier sélectionné</sys:String>
+    <sys:String x:Key="cme_qt_cmd_title">Ouvrir l'invite de commandes ici</sys:String>
+    <sys:String x:Key="cme_qt_cmd_desc">Ouvre une invite de commandes standard dans le répertoire sélectionné</sys:String>
+    <sys:String x:Key="cme_qt_restart_exp_title">Redémarrer l'Explorateur Windows</sys:String>
+    <sys:String x:Key="cme_qt_restart_exp_desc">Force le redémarrage du processus explorer.exe depuis le bureau</sys:String>
+    <sys:String x:Key="cme_qt_copy_path_title">Copier le chemin du fichier</sys:String>
+    <sys:String x:Key="cme_qt_copy_path_desc">Copie le chemin complet du fichier sélectionné</sys:String>
+    <sys:String x:Key="cme_qt_perm_del_title">Supprimer définitivement</sys:String>
+    <sys:String x:Key="cme_qt_perm_del_desc">Contourne la Corbeille pour supprimer définitivement le fichier</sys:String>
+    <sys:String x:Key="cme_qt_lock_pc_title">Verrouiller le PC</sys:String>
+    <sys:String x:Key="cme_qt_lock_pc_desc">Verrouille instantanément votre session Windows</sys:String>
+
+    <sys:String x:Key="cme_qt_notepad_title">Ouvrir avec le Bloc-notes</sys:String>
+    <sys:String x:Key="cme_qt_notepad_desc">Force l'ouverture de n'importe quel fichier inconnu dans le Bloc-notes</sys:String>
+    <sys:String x:Key="cme_qt_ps_script_title">Exécuter le script PowerShell</sys:String>
+    <sys:String x:Key="cme_qt_ps_script_desc">Exécute le script en contournant les politiques d'exécution</sys:String>
+    <sys:String x:Key="cme_qt_block_fw_title">Bloquer l'exécutable dans le Pare-feu</sys:String>
+    <sys:String x:Key="cme_qt_block_fw_desc">Crée une règle de pare-feu Windows sortante pour bloquer l'application</sys:String>
+    <sys:String x:Key="cme_qt_reg_dll_title">Enregistrer la DLL / OCX</sys:String>
+    <sys:String x:Key="cme_qt_reg_dll_desc">Enregistre la bibliothèque à l'aide de regsvr32</sys:String>
+    <sys:String x:Key="cme_qt_unreg_dll_title">Désenregistrer la DLL / OCX</sys:String>
+    <sys:String x:Key="cme_qt_unreg_dll_desc">Annule l'enregistrement de la bibliothèque à l'aide de regsvr32</sys:String>
+    <sys:String x:Key="cme_qt_sha256_title">Obtenir le hachage SHA256</sys:String>
+    <sys:String x:Key="cme_qt_sha256_desc">Calcule la somme de contrôle SHA256 pour vérification</sys:String>
+    <sys:String x:Key="cme_qt_md5_title">Obtenir le hachage MD5</sys:String>
+    <sys:String x:Key="cme_qt_md5_desc">Calcule la somme de contrôle MD5 pour vérification</sys:String>
+    <sys:String x:Key="cme_qt_extract_tar_title">Extraire l'archive ici (Tar/Zip)</sys:String>
+    <sys:String x:Key="cme_qt_extract_tar_desc">Extrait le contenu de l'archive à l'aide de l'outil Tar intégré de Windows</sys:String>
+
+    <sys:String x:Key="cme_qt_ps_here_title">Ouvrir PowerShell ici</sys:String>
+    <sys:String x:Key="cme_qt_ps_here_desc">Ouvre une fenêtre PowerShell dans le répertoire sélectionné</sys:String>
+    <sys:String x:Key="cme_qt_cmd_admin_title">Ouvrir CMD ici (Admin)</sys:String>
+    <sys:String x:Key="cme_qt_cmd_admin_desc">Ouvre une invite de commandes avec élévation de privilèges dans le répertoire sélectionné</sys:String>
+    <sys:String x:Key="cme_qt_ps_admin_title">Ouvrir PowerShell ici (Admin)</sys:String>
+    <sys:String x:Key="cme_qt_ps_admin_desc">Ouvre une fenêtre PowerShell avec élévation de privilèges dans le répertoire sélectionné</sys:String>
+    <sys:String x:Key="cme_qt_copy_folder_title">Copier le chemin du dossier</sys:String>
+    <sys:String x:Key="cme_qt_copy_folder_desc">Copie le chemin complet du dossier sélectionné</sys:String>
+
+    <sys:String x:Key="cme_qt_taskmgr_title">Ouvrir le Gestionnaire des tâches</sys:String>
+    <sys:String x:Key="cme_qt_taskmgr_desc">Lance le Gestionnaire des tâches de Windows</sys:String>
+    <sys:String x:Key="cme_qt_regedit_title">Ouvrir l'Éditeur du Registre</sys:String>
+    <sys:String x:Key="cme_qt_regedit_desc">Lance l'Éditeur du Registre Windows</sys:String>
+    <sys:String x:Key="cme_qt_control_title">Ouvrir le Panneau de configuration</sys:String>
+    <sys:String x:Key="cme_qt_control_desc">Lance le Panneau de configuration classique</sys:String>
+    <sys:String x:Key="cme_qt_sysprop_title">Ouvrir les Propriétés système</sys:String>
+    <sys:String x:Key="cme_qt_sysprop_desc">Ouvre les paramètres système avancés</sys:String>
+    <sys:String x:Key="cme_qt_services_title">Ouvrir les Services</sys:String>
+    <sys:String x:Key="cme_qt_services_desc">Ouvre la console de gestion des services Windows</sys:String>
+    <sys:String x:Key="cme_qt_godmode_title">Accéder au Mode Dieu (God Mode)</sys:String>
+    <sys:String x:Key="cme_qt_godmode_desc">Ouvre la vue maître du Panneau de configuration</sys:String>
+    <sys:String x:Key="cme_qt_flushdns_title">Vider le cache DNS</sys:String>
+    <sys:String x:Key="cme_qt_flushdns_desc">Efface le cache du client DNS</sys:String>
+    <sys:String x:Key="cme_qt_adv_startup_title">Options de démarrage avancées</sys:String>
+    <sys:String x:Key="cme_qt_adv_startup_desc">Redémarre le PC dans l'environnement de récupération avancé</sys:String>
+
+    <!-- endregion Context Menu Editor -->
 </ResourceDictionary>
