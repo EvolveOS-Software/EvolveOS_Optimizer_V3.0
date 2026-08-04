@@ -1,10 +1,9 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Utilities.Services;
+using System.Reflection;
 using Microsoft.UI.Xaml.Markup;
+using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -14,6 +13,38 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         public string Key { get; set; } = string.Empty;
 
         protected override object ProvideValue()
+        {
+            return GetValue();
+        }
+
+        protected override object ProvideValue(IXamlServiceProvider serviceProvider)
+        {
+            if (serviceProvider?.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provideValueTarget)
+            {
+                if (provideValueTarget.TargetObject is TextBlock textBlock)
+                {
+                    bool isTextProperty = false;
+
+                    if (provideValueTarget.TargetProperty is DependencyProperty dp && dp == TextBlock.TextProperty)
+                    {
+                        isTextProperty = true;
+                    }
+                    else if (provideValueTarget.TargetProperty is PropertyInfo pi && pi.Name == "Text")
+                    {
+                        isTextProperty = true;
+                    }
+
+                    if (isTextProperty)
+                    {
+                        Loc.SetKey(textBlock, Key);
+                    }
+                }
+            }
+
+            return GetValue();
+        }
+
+        private string GetValue()
         {
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
