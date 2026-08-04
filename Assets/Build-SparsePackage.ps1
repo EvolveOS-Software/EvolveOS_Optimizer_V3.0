@@ -99,10 +99,19 @@ $PackageDir = "$ScriptDir\SparsePackageTemp"
 if (Test-Path $PackageDir) { Remove-Item $PackageDir -Recurse -Force }
 New-Item -ItemType Directory -Path "$PackageDir\Assets" | Out-Null
 
-# 4. Generate dummy assets AND a dummy Executable
-$Base64Png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-$PngBytes = [Convert]::FromBase64String($Base64Png)
-[IO.File]::WriteAllBytes("$PackageDir\Assets\EvolveOS_Optimizer-Logo.png", $PngBytes)
+# 4. Copy REAL assets AND generate a dummy Executable
+$RealLogoPath = "$ScriptDir\logo.png"
+
+if (Test-Path $RealLogoPath) {
+    Write-Host "Found application logo, copying to package..." -ForegroundColor Cyan
+    Copy-Item -Path $RealLogoPath -Destination "$PackageDir\Assets\EvolveOS_Optimizer-Logo.png" -Force
+} else {
+    Write-Warning "Application logo.png not found in script directory! Falling back to transparent dummy icon."
+    $Base64Png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+    $PngBytes = [Convert]::FromBase64String($Base64Png)
+    [IO.File]::WriteAllBytes("$PackageDir\Assets\EvolveOS_Optimizer-Logo.png", $PngBytes)
+}
+
 Set-Content -Path "$PackageDir\$AppName.exe" -Value "DummyExeForMakeAppxValidation"
 
 # Bundle the compiled C++ DLL into the package!

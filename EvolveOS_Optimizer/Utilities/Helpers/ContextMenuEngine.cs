@@ -2,11 +2,12 @@
 // Licensed under the MIT License.
 
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Win32;
 using EvolveOS_Optimizer.Core.Model;
+using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -349,6 +350,54 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 {
                     Debug.WriteLine("[ContextMenuEngine] AppxManifest.xml not found!");
                     return false;
+                }
+
+                try
+                {
+                    string assetsFolder = Path.Combine(manifestFolderPath, "Assets");
+                    if (!Directory.Exists(assetsFolder))
+                    {
+                        Directory.CreateDirectory(assetsFolder);
+                    }
+
+                    string logoDestination = Path.Combine(assetsFolder, "EvolveOS_Optimizer-Logo.png");
+
+                    if (!File.Exists(logoDestination))
+                    {
+                        string localLogo1 = Path.Combine(AppContext.BaseDirectory, "logo.png");
+                        string localLogo2 = Path.Combine(AppContext.BaseDirectory, "EvolveOS_Optimizer-Logo.png");
+
+                        if (File.Exists(localLogo2))
+                        {
+                            File.Copy(localLogo2, logoDestination, true);
+                        }
+                        else if (File.Exists(localLogo1))
+                        {
+                            File.Copy(localLogo1, logoDestination, true);
+                        }
+                        else
+                        {
+                            var assembly = Assembly.GetExecutingAssembly();
+
+                            string? resourceName = assembly.GetManifestResourceNames()
+                                .FirstOrDefault(n => n.EndsWith("EvolveOS_Optimizer-Logo.png", StringComparison.OrdinalIgnoreCase)
+                                                  || n.EndsWith("logo.png", StringComparison.OrdinalIgnoreCase));
+
+                            if (!string.IsNullOrEmpty(resourceName))
+                            {
+                                using Stream? stream = assembly.GetManifestResourceStream(resourceName);
+                                if (stream != null)
+                                {
+                                    using FileStream fs = new FileStream(logoDestination, FileMode.Create, FileAccess.Write);
+                                    stream.CopyTo(fs);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[ContextMenuEngine] Failed to prepare Assets folder: {ex.Message}");
                 }
 
                 var packageManager = new Windows.Management.Deployment.PackageManager();
