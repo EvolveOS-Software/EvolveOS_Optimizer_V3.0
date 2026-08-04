@@ -399,6 +399,15 @@ namespace EvolveOS_Optimizer.Dialogs
                 @"Directory\Background\shellex\ContextMenuHandlers"
             };
 
+            // 🚀 NEW: Safety blocklist to hide core Windows features from the user
+            string[] systemBlocklist = {
+                "Taskband Pin", "Start Menu Pin", "Offline Files", "Previous Versions",
+                "New Menu Handler", "Encryption Context Menu", "EPP", "FileSyncEx",
+                "BriefcaseMenu", "Sharing", "Open With", "WorkFolders", "Send To",
+                "Library Location", "PinToNameSpaceTree", "PlayTo", "Network",
+                "ModernSharing", "Extract"
+            };
+
             foreach (var path in basePaths)
             {
                 try
@@ -408,16 +417,10 @@ namespace EvolveOS_Optimizer.Dialogs
 
                     foreach (var subKeyName in key.GetSubKeyNames())
                     {
-                        if (subKeyName.Contains("Open With", StringComparison.OrdinalIgnoreCase) ||
-                            subKeyName.Contains("Sharing", StringComparison.OrdinalIgnoreCase) ||
-                            subKeyName.Contains("WorkFolders", StringComparison.OrdinalIgnoreCase))
-                            continue;
-
                         using var subKey = key.OpenSubKey(subKeyName);
                         bool isEnabled = subKey?.GetValue("LegacyDisable") == null;
 
                         string displayName = subKeyName;
-
                         string? clsid = subKeyName.StartsWith("{") ? subKeyName : subKey?.GetValue("") as string;
 
                         if (!string.IsNullOrEmpty(clsid) && clsid.StartsWith("{") && clsid.EndsWith("}"))
@@ -426,7 +429,6 @@ namespace EvolveOS_Optimizer.Dialogs
                             {
                                 using var clsidKey = Registry.ClassesRoot.OpenSubKey($@"CLSID\{clsid}");
                                 string? friendlyName = clsidKey?.GetValue("") as string;
-
                                 if (!string.IsNullOrWhiteSpace(friendlyName))
                                 {
                                     displayName = friendlyName;
@@ -435,13 +437,29 @@ namespace EvolveOS_Optimizer.Dialogs
                             catch { }
                         }
 
-                        if (!_cleanerItems.Any(c => c.Name == subKeyName && c.TargetPath == path))
+                        // 🚀 NEW: Hide core OS items to prevent users from breaking Windows
+                        bool isBlocked = systemBlocklist.Any(b =>
+                            subKeyName.Contains(b, StringComparison.OrdinalIgnoreCase) ||
+                            displayName.Contains(b, StringComparison.OrdinalIgnoreCase));
+
+                        if (isBlocked) continue;
+
+                        // 🚀 NEW: Group duplicates together
+                        var existingItem = _cleanerItems.FirstOrDefault(c => c.Name == subKeyName || c.DisplayName == displayName);
+                        if (existingItem != null)
+                        {
+                            if (!existingItem.TargetPaths.Contains(path))
+                            {
+                                existingItem.TargetPaths.Add(path);
+                            }
+                        }
+                        else
                         {
                             _cleanerItems.Add(new CleanerItem
                             {
                                 Name = subKeyName,
                                 DisplayName = displayName,
-                                TargetPath = path,
+                                TargetPaths = new List<string> { path },
                                 IsEnabled = isEnabled
                             });
                         }
@@ -465,28 +483,32 @@ namespace EvolveOS_Optimizer.Dialogs
 
             if (sender is ToggleSwitch toggle && toggle.Tag is CleanerItem item)
             {
-                try
+                // 🚀 NEW: Loop through all grouped paths and apply the toggle to every location
+                foreach (var targetPath in item.TargetPaths)
                 {
-                    using var key = Registry.ClassesRoot.OpenSubKey($@"{item.TargetPath}\{item.Name}", true);
-                    if (key != null)
+                    try
                     {
-                        if (toggle.IsOn)
+                        using var key = Registry.ClassesRoot.OpenSubKey($@"{targetPath}\{item.Name}", true);
+                        if (key != null)
                         {
-                            key.DeleteValue("LegacyDisable", false);
-                        }
-                        else
-                        {
-                            key.SetValue("LegacyDisable", string.Empty, RegistryValueKind.String);
+                            if (toggle.IsOn)
+                            {
+                                key.DeleteValue("LegacyDisable", false);
+                            }
+                            else
+                            {
+                                key.SetValue("LegacyDisable", string.Empty, RegistryValueKind.String);
+                            }
                         }
                     }
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    Debug.WriteLine("[Cleaner] Requires Admin privileges to modify ContextMenuHandlers.");
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[Cleaner] Failed to toggle item: {ex.Message}");
+                    catch (UnauthorizedAccessException)
+                    {
+                        Debug.WriteLine($"[Cleaner] Requires Admin privileges to modify {item.Name} at {targetPath}.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[Cleaner] Failed to toggle item {item.Name}: {ex.Message}");
+                    }
                 }
             }
         }
@@ -1005,7 +1027,11 @@ namespace EvolveOS_Optimizer.Dialogs
     {
         public string Name { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
-        public string TargetPath { get; set; } = string.Empty;
+        public List<string> TargetPaths { get; set; } = new();
+
+        public string TargetPathDisplay => TargetPaths.Count > 1
+            ? $"Applied to {TargetPaths.Count} registry locations"
+            : TargetPaths.FirstOrDefault() ?? "";
 
         private bool _isEnabled;
         public bool IsEnabled

@@ -296,7 +296,7 @@
                                         </Grid.ColumnDefinitions>
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
-                                            <TextBlock Text="{Binding TargetPath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,2,0,0"/>
+                                            <TextBlock Text="{Binding TargetPathDisplay}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,2,0,0"/>
                                         </StackPanel>
                                         <ToggleSwitch Grid.Column="1" IsOn="{Binding IsEnabled, Mode=TwoWay}" Toggled="CleanerToggle_Toggled" Tag="{Binding}" Margin="0" MinWidth="0" OffContent="Hidden" OnContent="Visible"/>
                                     </Grid>
