@@ -357,14 +357,22 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 var options = new Windows.Management.Deployment.AddPackageOptions
                 {
-                    ExternalLocationUri = externalLocationUri
+                    ExternalLocationUri = externalLocationUri,
+                    DeferRegistrationWhenPackagesAreInUse = true
                 };
 
-                var deploymentOperation = packageManager.AddPackageByUriAsync(manifestUri, options);
+                var deploymentTask = packageManager.AddPackageByUriAsync(manifestUri, options).AsTask();
+                var completedTask = await Task.WhenAny(deploymentTask, Task.Delay(5000));
 
-                var result = await deploymentOperation;
+                if (completedTask == deploymentTask)
+                {
+                    Debug.WriteLine("[ContextMenuEngine] Sparse Package registered successfully.");
+                }
+                else
+                {
+                    Debug.WriteLine("[ContextMenuEngine] Sparse Package registration deferred or timed out.");
+                }
 
-                Debug.WriteLine("[ContextMenuEngine] Sparse Package registered successfully.");
                 return true;
             }
             catch (Exception ex)

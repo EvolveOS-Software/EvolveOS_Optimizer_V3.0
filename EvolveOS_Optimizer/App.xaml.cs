@@ -135,16 +135,25 @@ namespace EvolveOS_Optimizer
 
             Task.Run(async () =>
             {
-                try { var dummy = Windows.ApplicationModel.Package.Current.Id; }
-                catch (InvalidOperationException) { AppNotificationManager.Default.Register(); }
+                try
+                {
+                    try { var dummy = Windows.ApplicationModel.Package.Current.Id; }
+                    catch (InvalidOperationException) { AppNotificationManager.Default.Register(); }
 
-                await IdentityHelper.EnsureAppIdentityAsync();
+                    await IdentityHelper.EnsureAppIdentityAsync();
 
-                EnsureShortcutWithAumid();
+                    EnsureShortcutWithAumid();
 
-                _host = CompositionRoot.CreateEvolveOSHost().Build();
-
-                HostInitializationSource.SetResult(true);
+                    _host = CompositionRoot.CreateEvolveOSHost().Build();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[App] Background Initialization Error: {ex.Message}");
+                }
+                finally
+                {
+                    HostInitializationSource.TrySetResult(true);
+                }
 
                 UIThreadDispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () =>
                 {

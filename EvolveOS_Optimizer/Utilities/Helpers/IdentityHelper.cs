@@ -52,28 +52,38 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                             string msixPath = Path.Combine(exeDir, "EvolveOS_Package.msix");
                             if (!File.Exists(msixPath))
                             {
-                                MessageBox(IntPtr.Zero, "Failed to locate EvolveOS_Package.msix!", "Extraction Error", 0x10);
+                                MessageBox(IntPtr.Zero, "Failed to locate EvolveOS_Package.msix!", "Extraction Error", 0x40010);
                                 return;
                             }
 
                             var options = new AddPackageOptions
                             {
                                 ExternalLocationUri = new Uri(exeDir),
-                                AllowUnsigned = true
+                                AllowUnsigned = true,
+                                DeferRegistrationWhenPackagesAreInUse = true
                             };
 
-                            var deploymentResult = await packageManager.AddPackageByUriAsync(new Uri(msixPath), options);
+                            var deploymentTask = packageManager.AddPackageByUriAsync(new Uri(msixPath), options).AsTask();
+                            var completedTask = await Task.WhenAny(deploymentTask, Task.Delay(5000));
 
-                            if (!deploymentResult.IsRegistered)
+                            if (completedTask == deploymentTask)
                             {
-                                MessageBox(IntPtr.Zero, $"MSIX Install Failed!\n\nReason: {deploymentResult.ErrorText}\n\nCode: {deploymentResult.ExtendedErrorCode}", "Registration Error", 0x10);
-                                return;
+                                var deploymentResult = deploymentTask.Result;
+                                if (!deploymentResult.IsRegistered)
+                                {
+                                    MessageBox(IntPtr.Zero, $"MSIX Install Failed!\n\nReason: {deploymentResult.ErrorText}\n\nCode: {deploymentResult.ExtendedErrorCode}", "Registration Error", 0x40010);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                Debug.WriteLine("[IdentityHelper] Registration deferred or timed out to prevent deadlock. Proceeding.");
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox(IntPtr.Zero, $"Critical Crash in Bootstrapper:\n\n{ex.Message}", "Fatal Error", 0x10);
+                        MessageBox(IntPtr.Zero, $"Critical Crash in Bootstrapper:\n\n{ex.Message}", "Fatal Error", 0x40010);
                     }
                 });
             }
@@ -119,7 +129,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
             catch (Exception ex)
             {
-                MessageBox(IntPtr.Zero, $"Cert Install Failed.\n\n{ex.Message}", "Cert Error", 0x10);
+                MessageBox(IntPtr.Zero, $"Cert Install Failed.\n\n{ex.Message}", "Cert Error", 0x40010);
             }
         }
     }
