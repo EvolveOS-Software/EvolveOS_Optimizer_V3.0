@@ -98,38 +98,55 @@
                                     <TextBlock Text="{helpers:ResourceString Key=cme_active_items}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 </Border>
 
-                                <!-- Hierarchical TreeView -->
-                                <TreeView x:Name="ItemsTreeView" Grid.Row="1" Padding="0,8" SelectionMode="Single">
-                                    <TreeView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,4,16,4" Padding="12" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6" MinWidth="220">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
+                                <!-- Flat ListView with Sorting -->
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                                                <StackPanel VerticalAlignment="Center">
-                                                    <!-- 1. The Title -->
-                                                    <TextBlock Text="{Binding Content.Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                    <TreeView x:Name="ItemsTreeView" Padding="0,8" SelectionMode="Single">
+                                        <TreeView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,4,16,4" Padding="12" Background="{ThemeResource LayerFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6" MinWidth="220">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                    <!-- 2. The Target Badge -->
-                                                    <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0">
-                                                        <TextBlock Text="{helpers:ResourceString Key=cme_applies_to}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                                        <TextBlock Text="{Binding Content.Target}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                                    <StackPanel VerticalAlignment="Center">
+                                                        <!-- 1. The Title -->
+                                                        <TextBlock Text="{Binding Content.Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+
+                                                        <!-- 2. The Target Badge -->
+                                                        <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0">
+                                                            <TextBlock Text="{helpers:ResourceString Key=cme_applies_to}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                            <TextBlock Text="{Binding Content.Target}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                                                        </StackPanel>
+
+                                                        <!-- 3. The Executable Path -->
+                                                        <TextBlock Text="{Binding Content.ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
                                                     </StackPanel>
 
-                                                    <!-- 3. The Executable Path -->
-                                                    <TextBlock Text="{Binding Content.ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
-                                                </StackPanel>
+                                                    <!-- Delete Button -->
+                                                    <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="8" ToolTipService.ToolTip="{helpers:ResourceString Key=cme_remove_item}" Click="RemoveItem_Click" Tag="{Binding Content}" VerticalAlignment="Center">
+                                                        <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </TreeView.ItemTemplate>
+                                    </TreeView>
 
-                                                <!-- Delete Button -->
-                                                <Button Grid.Column="1" Background="Transparent" BorderThickness="0" Padding="8" ToolTipService.ToolTip="{helpers:ResourceString Key=cme_remove_item}" Click="RemoveItem_Click" Tag="{Binding Content}" VerticalAlignment="Center">
-                                                    <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
-                                                </Button>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </TreeView.ItemTemplate>
-                                </TreeView>
+                                    <!-- Up / Down Order Buttons -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="8" Margin="0,0,16,0">
+                                        <Button Background="Transparent" BorderThickness="0" Padding="8" Click="MoveUp_Click" ToolTipService.ToolTip="Move Up">
+                                            <FontIcon Glyph="&#xE70E;" FontSize="14"/>
+                                        </Button>
+                                        <Button Background="Transparent" BorderThickness="0" Padding="8" Click="MoveDown_Click" ToolTipService.ToolTip="Move Down">
+                                            <FontIcon Glyph="&#xE70D;" FontSize="14"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
                             </Grid>
                         </Border>
 
@@ -173,27 +190,9 @@
 
                                 <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Margin="0,-4,0,-4" />
 
-                                <!-- Cascading Menu Options -->
-                                <Grid ColumnSpacing="16">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ToggleSwitch x:Name="IsSubMenuToggle" Header="{helpers:ResourceString Key=cme_item_type_header}" OffContent="{helpers:ResourceString Key=cme_item_type_action}" OnContent="{helpers:ResourceString Key=cme_item_type_folder}"/>
-
-                                    <ComboBox x:Name="ParentMenuComboBox" Grid.Column="1" Header="{helpers:ResourceString Key=cme_place_inside_folder}" PlaceholderText="{helpers:ResourceString Key=cme_none_root}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Title}" />
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                </Grid>
-
                                 <TextBox x:Name="TitleInput" Header="{helpers:ResourceString Key=cme_display_name_header}" PlaceholderText="{helpers:ResourceString Key=cme_display_name_placeholder}"/>
 
-                                <!-- Grouped Executable Properties to easily collapse them when "Folder" is checked -->
-                                <StackPanel x:Name="CommandInputsContainer" Spacing="16">
+                                <StackPanel Spacing="16">
                                     <Grid ColumnSpacing="8">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>

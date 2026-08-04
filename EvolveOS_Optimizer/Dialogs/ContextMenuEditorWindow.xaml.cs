@@ -119,11 +119,6 @@ namespace EvolveOS_Optimizer.Dialogs
                 }
             }
 
-            if (IsSubMenuToggle != null)
-            {
-                IsSubMenuToggle.Toggled += IsSubMenuToggle_Toggled;
-            }
-
             LoadData();
             LoadCleanerItems();
 
@@ -337,52 +332,133 @@ namespace EvolveOS_Optimizer.Dialogs
             if (ItemsTreeView == null) return;
 
             ItemsTreeView.RootNodes.Clear();
-            var subMenuFolders = new List<object>();
 
             if (MenuTypeSelector.SelectedIndex == 0) // Modern
             {
                 foreach (var item in _modernItems)
                 {
-                    ItemsTreeView.RootNodes.Add(CreateModernNode(item, subMenuFolders));
+                    ItemsTreeView.RootNodes.Add(CreateModernNode(item));
                 }
             }
             else // Classic
             {
                 foreach (var item in _classicItems)
                 {
-                    ItemsTreeView.RootNodes.Add(CreateClassicNode(item, subMenuFolders));
+                    ItemsTreeView.RootNodes.Add(CreateClassicNode(item));
                 }
             }
+        }
 
-            if (ParentMenuComboBox != null)
+        private TreeViewNode CreateModernNode(ModernContextMenuItem item)
+        {
+            return new TreeViewNode { Content = item, IsExpanded = true };
+        }
+
+        private TreeViewNode CreateClassicNode(ClassicContextMenuItem item)
+        {
+            return new TreeViewNode { Content = item, IsExpanded = true };
+        }
+
+        #endregion
+
+        #region Sorting Logic (Up / Down)
+
+        private async void MoveUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (ItemsTreeView?.SelectedNode == null) return;
+
+            if (MenuTypeSelector.SelectedIndex == 0) // Modern Menu
             {
-                ParentMenuComboBox.ItemsSource = subMenuFolders;
-                ParentMenuComboBox.SelectedIndex = -1;
+                if (ItemsTreeView.SelectedNode.Content is ModernContextMenuItem item)
+                {
+                    int index = _modernItems.IndexOf(item);
+                    if (index > 0)
+                    {
+                        _modernItems.Move(index, index - 1);
+                        ContextMenuEngine.SaveModernItems(_modernItems.ToList());
+
+                        string packageFolder = Path.Combine(AppContext.BaseDirectory, "ModernMenuPackage");
+                        await ContextMenuEngine.RegisterSparsePackageAsync(packageFolder);
+                        UpdateListBinding();
+
+                        ItemsTreeView.SelectedNode = ItemsTreeView.RootNodes[index - 1];
+                    }
+                }
+            }
+            else // Classic Menu
+            {
+                if (ItemsTreeView.SelectedNode.Content is ClassicContextMenuItem item)
+                {
+                    int index = _classicItems.IndexOf(item);
+                    if (index > 0)
+                    {
+                        _classicItems.Move(index, index - 1);
+
+                        // Re-register classic items to physically reflect their new registry order
+                        foreach (var oldItem in _classicItems)
+                        {
+                            ContextMenuEngine.RemoveClassicItem(oldItem);
+                        }
+                        foreach (var newItem in _classicItems)
+                        {
+                            ContextMenuEngine.AddClassicItem(newItem);
+                        }
+
+                        UpdateListBinding();
+
+                        ItemsTreeView.SelectedNode = ItemsTreeView.RootNodes[index - 1];
+                    }
+                }
             }
         }
 
-        private TreeViewNode CreateModernNode(ModernContextMenuItem item, List<object> subMenuFolders)
+        private async void MoveDown_Click(object sender, RoutedEventArgs e)
         {
-            var node = new TreeViewNode { Content = item, IsExpanded = true };
-            if (item.IsSubMenu) subMenuFolders.Add(item);
+            if (ItemsTreeView?.SelectedNode == null) return;
 
-            foreach (var child in item.SubItems)
+            if (MenuTypeSelector.SelectedIndex == 0) // Modern Menu
             {
-                node.Children.Add(CreateModernNode(child, subMenuFolders));
+                if (ItemsTreeView.SelectedNode.Content is ModernContextMenuItem item)
+                {
+                    int index = _modernItems.IndexOf(item);
+                    if (index >= 0 && index < _modernItems.Count - 1)
+                    {
+                        _modernItems.Move(index, index + 1);
+                        ContextMenuEngine.SaveModernItems(_modernItems.ToList());
+
+                        string packageFolder = Path.Combine(AppContext.BaseDirectory, "ModernMenuPackage");
+                        await ContextMenuEngine.RegisterSparsePackageAsync(packageFolder);
+                        UpdateListBinding();
+
+                        ItemsTreeView.SelectedNode = ItemsTreeView.RootNodes[index + 1];
+                    }
+                }
             }
-            return node;
-        }
-
-        private TreeViewNode CreateClassicNode(ClassicContextMenuItem item, List<object> subMenuFolders)
-        {
-            var node = new TreeViewNode { Content = item, IsExpanded = true };
-            if (item.IsSubMenu) subMenuFolders.Add(item);
-
-            foreach (var child in item.SubItems)
+            else // Classic Menu
             {
-                node.Children.Add(CreateClassicNode(child, subMenuFolders));
+                if (ItemsTreeView.SelectedNode.Content is ClassicContextMenuItem item)
+                {
+                    int index = _classicItems.IndexOf(item);
+                    if (index >= 0 && index < _classicItems.Count - 1)
+                    {
+                        _classicItems.Move(index, index + 1);
+
+                        // Re-register classic items to physically reflect their new registry order
+                        foreach (var oldItem in _classicItems)
+                        {
+                            ContextMenuEngine.RemoveClassicItem(oldItem);
+                        }
+                        foreach (var newItem in _classicItems)
+                        {
+                            ContextMenuEngine.AddClassicItem(newItem);
+                        }
+
+                        UpdateListBinding();
+
+                        ItemsTreeView.SelectedNode = ItemsTreeView.RootNodes[index + 1];
+                    }
+                }
             }
-            return node;
         }
 
         #endregion
@@ -677,14 +753,6 @@ namespace EvolveOS_Optimizer.Dialogs
             }
         }
 
-        private void IsSubMenuToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (CommandInputsContainer != null)
-            {
-                CommandInputsContainer.Visibility = IsSubMenuToggle.IsOn ? Visibility.Collapsed : Visibility.Visible;
-            }
-        }
-
         private void QuickTemplatesComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (QuickTemplatesComboBox.SelectedItem is ContextMenuTemplate template)
@@ -700,10 +768,6 @@ namespace EvolveOS_Optimizer.Dialogs
                 if (SpecificExtInput != null) SpecificExtInput.Text = "*";
                 if (ExtendedToggle != null) ExtendedToggle.IsOn = false;
                 if (PositionInput != null) PositionInput.SelectedIndex = 0;
-
-                if (IsSubMenuToggle != null) IsSubMenuToggle.IsOn = false;
-
-                QuickTemplatesComboBox.SelectedIndex = -1;
             }
         }
 
@@ -830,10 +894,8 @@ namespace EvolveOS_Optimizer.Dialogs
 
         private async void AddItem_Click(object sender, RoutedEventArgs e)
         {
-            bool isSubMenu = IsSubMenuToggle != null && IsSubMenuToggle.IsOn;
-
             if (string.IsNullOrWhiteSpace(TitleInput.Text)) return;
-            if (!isSubMenu && string.IsNullOrWhiteSpace(ExePathInput.Text)) return;
+            if (string.IsNullOrWhiteSpace(ExePathInput.Text)) return;
 
             string targetStr = TargetInput.SelectedIndex switch
             {
@@ -842,8 +904,8 @@ namespace EvolveOS_Optimizer.Dialogs
                 _ => "Files"
             };
 
-            string finalExe = isSubMenu ? "" : ExePathInput.Text;
-            string finalArgs = isSubMenu ? "" : ArgsInput.Text;
+            string finalExe = ExePathInput.Text;
+            string finalArgs = ArgsInput.Text;
             string finalIcon = IconPathInput != null && !string.IsNullOrWhiteSpace(IconPathInput.Text)
                 ? IconPathInput.Text
                 : ExePathInput.Text;
@@ -861,7 +923,7 @@ namespace EvolveOS_Optimizer.Dialogs
                 _ => "Default"
             };
 
-            if (!isSubMenu && (runAsAdmin || hiddenWindow))
+            if (runAsAdmin || hiddenWindow)
             {
                 string verb = runAsAdmin ? "-Verb RunAs" : "";
                 string windowStyle = hiddenWindow ? "-WindowStyle Hidden" : "";
@@ -883,18 +945,10 @@ namespace EvolveOS_Optimizer.Dialogs
                     Extended = isExtended,
                     SpecificExtension = specificExt,
                     Position = positionStr,
-                    IsSubMenu = isSubMenu
+                    IsSubMenu = false // Enforcing flat items
                 };
 
-                var parentFolder = ParentMenuComboBox?.SelectedItem as ModernContextMenuItem;
-                if (parentFolder != null)
-                {
-                    parentFolder.SubItems.Add(newItem);
-                }
-                else
-                {
-                    _modernItems.Add(newItem);
-                }
+                _modernItems.Add(newItem);
 
                 ContextMenuEngine.SaveModernItems(_modernItems.ToList());
 
@@ -923,19 +977,10 @@ namespace EvolveOS_Optimizer.Dialogs
                     Extended = isExtended,
                     SpecificExtension = specificExt,
                     Position = positionStr,
-                    IsSubMenu = isSubMenu
+                    IsSubMenu = false // Enforcing flat items
                 };
 
-                var parentFolder = ParentMenuComboBox?.SelectedItem as ClassicContextMenuItem;
-                if (parentFolder != null)
-                {
-                    parentFolder.SubItems.Add(newItem);
-                }
-                else
-                {
-                    _classicItems.Add(newItem);
-                }
-
+                _classicItems.Add(newItem);
                 ContextMenuEngine.AddClassicItem(newItem);
             }
 
@@ -951,8 +996,7 @@ namespace EvolveOS_Optimizer.Dialogs
             if (ExtendedToggle != null) ExtendedToggle.IsOn = false;
             if (SpecificExtInput != null) SpecificExtInput.Text = string.Empty;
             if (PositionInput != null) PositionInput.SelectedIndex = 0;
-            if (IsSubMenuToggle != null) IsSubMenuToggle.IsOn = false;
-            if (ParentMenuComboBox != null) ParentMenuComboBox.SelectedIndex = -1;
+            if (QuickTemplatesComboBox != null) QuickTemplatesComboBox.SelectedIndex = -1;
         }
 
         private void RemoveItem_Click(object sender, RoutedEventArgs e)
@@ -961,37 +1005,17 @@ namespace EvolveOS_Optimizer.Dialogs
             {
                 if (MenuTypeSelector.SelectedIndex == 0 && btn.Tag is ModernContextMenuItem modernItem)
                 {
-                    RemoveModernItem(_modernItems, modernItem);
+                    _modernItems.Remove(modernItem);
                     ContextMenuEngine.SaveModernItems(_modernItems.ToList());
                 }
                 else if (MenuTypeSelector.SelectedIndex == 1 && btn.Tag is ClassicContextMenuItem classicItem)
                 {
-                    RemoveClassicItem(_classicItems, classicItem);
+                    _classicItems.Remove(classicItem);
                     ContextMenuEngine.RemoveClassicItem(classicItem);
                 }
 
                 UpdateListBinding();
             }
-        }
-
-        private bool RemoveModernItem(ICollection<ModernContextMenuItem> list, ModernContextMenuItem target)
-        {
-            if (list.Remove(target)) return true;
-            foreach (var item in list)
-            {
-                if (RemoveModernItem(item.SubItems, target)) return true;
-            }
-            return false;
-        }
-
-        private bool RemoveClassicItem(ICollection<ClassicContextMenuItem> list, ClassicContextMenuItem target)
-        {
-            if (list.Remove(target)) return true;
-            foreach (var item in list)
-            {
-                if (RemoveClassicItem(item.SubItems, target)) return true;
-            }
-            return false;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
