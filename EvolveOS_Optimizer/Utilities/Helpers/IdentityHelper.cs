@@ -39,6 +39,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                         ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_Package.msix"), "EvolveOS_Package.msix");
                         ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_MenuProxy.dll"), "EvolveOS_MenuProxy.dll");
+                        ExtractResourceToDisk(Path.Combine(exeDir, "EvolveOS_Watchdog.dll"), "EvolveOS_Watchdog.dll");
                         ExtractResourceToDisk(Path.Combine(exeDir, "AppxManifest.xml"), "AppxManifest.xml");
                         ExtractResourceToDisk(Path.Combine(assetsDir, "EvolveOS_Optimizer-Logo.png"), "EvolveOS_Optimizer-Logo.png");
 

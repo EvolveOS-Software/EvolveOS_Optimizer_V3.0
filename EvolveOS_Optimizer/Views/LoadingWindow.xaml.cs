@@ -697,6 +697,9 @@ namespace EvolveOS_Optimizer.Views
                     }
                 }
 
+                DatabaseSecurityService.QueueForDeleteOnReboot(mdfPath);
+                DatabaseSecurityService.QueueForDeleteOnReboot(ldfPath);
+
                 if (!CanOpenFile(mdfPath))
                 {
                     UpdateStatusDirect(ResourceString.GetString("status_starting_sql") ?? "Starting SQL engine...");

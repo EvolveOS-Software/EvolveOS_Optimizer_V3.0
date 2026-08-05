@@ -1,9 +1,8 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -13,6 +12,19 @@ namespace EvolveOS_Optimizer.Utilities.Services
 {
     public static class DatabaseSecurityService
     {
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern bool MoveFileEx(string lpExistingFileName, string? lpNewFileName, uint dwFlags);
+
+        public static void QueueForDeleteOnReboot(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                return;
+
+            uint MOVEFILE_DELAY_UNTIL_REBOOT = 0x4;
+
+            MoveFileEx(filePath, null, MOVEFILE_DELAY_UNTIL_REBOOT);
+        }
+
         private const string ApplicationPepper = "E-Ke:(8@h5}WPn@#:Jl:}fD8gHa$04-L,P-OS";
         private const int Iterations = 50000;
         private const int KeySize = 32;

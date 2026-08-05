@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using CommunityToolkit.Mvvm.Messaging;
@@ -142,6 +143,8 @@ namespace EvolveOS_Optimizer
 
                     await IdentityHelper.EnsureAppIdentityAsync();
 
+                    WatchdogService.EnsureWatchdogAndStart(PlainDb);
+
                     EnsureShortcutWithAumid();
 
                     _host = CompositionRoot.CreateEvolveOSHost().Build();
@@ -171,7 +174,7 @@ namespace EvolveOS_Optimizer
                     _logService?.LogInformation("EvolveOS_Optimizer application starting...");
 
                     SetPriority(LocalMachineSettingsEngine.RunOnPriority);
-                    _hotkeyService = new EvolveOS_Optimizer.Utilities.Services.HotkeyService();
+                    _hotkeyService = new HotkeyService();
 
                     UIThreadDispatcher.TryEnqueue(DispatcherQueuePriority.Low, async () =>
                     {
