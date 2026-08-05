@@ -5442,5 +5442,15 @@
     <sys:String x:Key="cme_qt_adv_startup_title">Options de démarrage avancées</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_desc">Redémarre le PC dans l'environnement de récupération avancé</sys:String>
 
+    <sys:String x:Key="cme_editor_header">Éditeur de menu contextuel</sys:String>
+    <sys:String x:Key="cme_editor_desc">Ajouter ou supprimer des applications personnalisées de vos menus contextuels classiques et modernes</sys:String>
+    <sys:String x:Key="cme_editor_tooltip">Ouvrir l'éditeur</sys:String>
+
+    <sys:String x:Key="cme_badge_modern_fallback">Moderne 0</sys:String>
+    <sys:String x:Key="cme_badge_classic_fallback">Classique 0</sys:String>
+
+    <sys:String x:Key="Badge_Modern">Moderne</sys:String>
+    <sys:String x:Key="Badge_Classic">Classique</sys:String>
+
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>

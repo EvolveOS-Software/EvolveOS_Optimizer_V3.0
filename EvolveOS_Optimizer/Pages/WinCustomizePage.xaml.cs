@@ -318,6 +318,12 @@ public sealed partial class WinCustomizePage : Page
     private void ContextMenuEditorCard_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
         var editorWindow = new Dialogs.ContextMenuEditorWindow();
+
+        editorWindow.Closed += (s, args) =>
+        {
+            DispatcherQueue.TryEnqueue(() => { _ = UpdateContextMenuEditorBadgesAsync(); });
+        };
+
         editorWindow.Activate();
     }
     #endregion
@@ -349,6 +355,8 @@ public sealed partial class WinCustomizePage : Page
             ExplorerRecommendedPill, ExplorerRecommendedText,
             ExplorerDefaultPill, ExplorerDefaultText,
             ExplorerCustomPill, ExplorerCustomText);
+
+        _ = UpdateContextMenuEditorBadgesAsync();
     }
 
     private void UpdateOverviewNewBadges()
@@ -427,6 +435,37 @@ public sealed partial class WinCustomizePage : Page
         }
 
         container.Visibility = showAny ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private async Task UpdateContextMenuEditorBadgesAsync()
+    {
+        try
+        {
+            int modernCount = 0;
+            int classicCount = 0;
+
+            await Task.Run(() =>
+            {
+                var modernConfig = ContextMenuEngine.LoadModernItems();
+                modernCount = modernConfig.Items?.Count ?? 0;
+
+                var classicList = ContextMenuEngine.GetClassicItems();
+                classicCount = classicList?.Count ?? 0;
+            });
+
+            string modernLabel = _localizationService?.GetString("Badge_Modern") ?? "Modern";
+            string classicLabel = _localizationService?.GetString("Badge_Classic") ?? "Classic";
+
+            ContextMenuModernText.Text = $"{modernLabel} {modernCount}";
+            ContextMenuClassicText.Text = $"{classicLabel} {classicCount}";
+
+            ContextMenuModernPill.Visibility = (modernCount > 0 && _isInfoBadgesVisible) ? Visibility.Visible : Visibility.Collapsed;
+            ContextMenuClassicPill.Visibility = (classicCount > 0 && _isInfoBadgesVisible) ? Visibility.Visible : Visibility.Collapsed;
+        }
+        catch (Exception ex)
+        {
+            ErrorLogging.LogDebug("CustomizePage", $"Failed to update context menu badges: {ex}");
+        }
     }
     #endregion
 

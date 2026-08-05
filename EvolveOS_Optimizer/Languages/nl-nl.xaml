@@ -5456,5 +5456,15 @@
     <sys:String x:Key="cme_qt_adv_startup_title">Geavanceerde opstartopties</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_desc">Start de pc opnieuw op in de geavanceerde herstelomgeving</sys:String>
 
+    <sys:String x:Key="cme_editor_header">Contextmenu editor</sys:String>
+    <sys:String x:Key="cme_editor_desc">Aangepaste apps toevoegen of verwijderen uit je klassieke en moderne rechtermuisknopmenu's</sys:String>
+    <sys:String x:Key="cme_editor_tooltip">Editor openen</sys:String>
+
+    <sys:String x:Key="cme_badge_modern_fallback">Modern 0</sys:String>
+    <sys:String x:Key="cme_badge_classic_fallback">Klassiek 0</sys:String>
+
+    <sys:String x:Key="Badge_Modern">Modern</sys:String>
+    <sys:String x:Key="Badge_Classic">Klassiek</sys:String>
+
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>

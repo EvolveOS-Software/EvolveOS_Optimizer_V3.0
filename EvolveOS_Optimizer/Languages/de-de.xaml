@@ -5432,5 +5432,15 @@
     <sys:String x:Key="cme_qt_adv_startup_title">Erweiterte Startoptionen</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_desc">Startet den PC in der erweiterten Wiederherstellungsumgebung neu</sys:String>
 
+    <sys:String x:Key="cme_editor_header">Kontextmenü Editor</sys:String>
+    <sys:String x:Key="cme_editor_desc">Benutzerdefinierte Apps zum klassischen und modernen Rechtsklickmenü hinzufügen oder daraus entfernen</sys:String>
+    <sys:String x:Key="cme_editor_tooltip">Editor öffnen</sys:String>
+
+    <sys:String x:Key="cme_badge_modern_fallback">Modern 0</sys:String>
+    <sys:String x:Key="cme_badge_classic_fallback">Klassisch 0</sys:String>
+
+    <sys:String x:Key="Badge_Modern">Modern</sys:String>
+    <sys:String x:Key="Badge_Classic">Klassisch</sys:String>
+
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>

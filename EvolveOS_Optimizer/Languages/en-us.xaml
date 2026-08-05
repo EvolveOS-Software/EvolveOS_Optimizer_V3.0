@@ -5546,5 +5546,15 @@
     <sys:String x:Key="cme_qt_adv_startup_title">Advanced Startup Options</sys:String>
     <sys:String x:Key="cme_qt_adv_startup_desc">Restarts the PC into the Advanced Recovery environment</sys:String>
 
+    <sys:String x:Key="cme_editor_header">Context Menu Editor</sys:String>
+    <sys:String x:Key="cme_editor_desc">Add or remove custom apps from your classic and modern right-click menus</sys:String>
+    <sys:String x:Key="cme_editor_tooltip">Open Editor</sys:String>
+
+    <sys:String x:Key="cme_badge_modern_fallback">Modern 0</sys:String>
+    <sys:String x:Key="cme_badge_classic_fallback">Classic 0</sys:String>
+
+    <sys:String x:Key="Badge_Modern">Modern</sys:String>
+    <sys:String x:Key="Badge_Classic">Classic</sys:String>
+
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>
