@@ -55,7 +55,7 @@
     <sys:String x:Key="status_encrypting_backup">Crittografia della copia di backup...</sys:String>
     <sys:String x:Key="status_finalizing_backup">Completamento delle impostazioni di backup...</sys:String>
     <sys:String x:Key="closing_message">Chiusura di EvolveOS Optimizer</sys:String>
-    <sys:String x:Key="status_rebooting">Riavvio di EvolveOS Optimizer in corso...</sys:String>
+    <sys:String x:Key="status_rebooting">Riavvio di EvolveOS Optimizer in corso</sys:String>
     <sys:String x:Key="status_prep_close">Preparazione alla chiusura...</sys:String>
     <sys:String x:Key="status_goodbye">Arrivederci!</sys:String>
     <!-- endregion Loading/Closing Window -->
@@ -5462,6 +5462,14 @@
 
     <sys:String x:Key="Badge_Modern">Moderno</sys:String>
     <sys:String x:Key="Badge_Classic">Classico</sys:String>
+
+    <sys:String x:Key="cme_modern_toggle_title">Abilita il menu moderno EvolveOS</sys:String>
+    <sys:String x:Key="cme_modern_toggle_desc">Mostra o nascondi le tue app personalizzate nel menu contestuale predefinito di Windows 11</sys:String>
+
+    <sys:String x:Key="cme_reboot_title">Riavvio dell'applicazione richiesto</sys:String>
+    <sys:String x:Key="cme_reboot_desc">Per applicare correttamente le estensioni del menu contestuale moderno, l'applicazione deve essere riavviata. Vuoi continuare?</sys:String>
+    <sys:String x:Key="cme_continue">Continua</sys:String>
+    <sys:String x:Key="cme_cancel">Annulla</sys:String>
 
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>

@@ -55,7 +55,7 @@
     <sys:String x:Key="status_encrypting_backup">Back-up kopie versleutelen...</sys:String>
     <sys:String x:Key="status_finalizing_backup">Back-up instellingen voltooien...</sys:String>
     <sys:String x:Key="closing_message">EvolveOS Optimizer afsluiten</sys:String>
-    <sys:String x:Key="status_rebooting">EvolveOS Optimizer opnieuw opstarten...</sys:String>
+    <sys:String x:Key="status_rebooting">EvolveOS Optimizer opnieuw opstarten</sys:String>
     <sys:String x:Key="status_prep_close">Voorbereiden om af te sluiten...</sys:String>
     <sys:String x:Key="status_goodbye">Tot ziens!</sys:String>
     <!-- endregion Loading Closing Window -->
@@ -5465,6 +5465,14 @@
 
     <sys:String x:Key="Badge_Modern">Modern</sys:String>
     <sys:String x:Key="Badge_Classic">Klassiek</sys:String>
+
+    <sys:String x:Key="cme_modern_toggle_title">EvolveOS modern menu inschakelen</sys:String>
+    <sys:String x:Key="cme_modern_toggle_desc">Toon of verberg je aangepaste apps in het standaard Windows 11-contextmenu</sys:String>
+
+    <sys:String x:Key="cme_reboot_title">Herstart van applicatie vereist</sys:String>
+    <sys:String x:Key="cme_reboot_desc">Om de moderne contextmenu extensies correct toe te passen, moet de applicatie opnieuw worden gestart. Wilt u doorgaan?</sys:String>
+    <sys:String x:Key="cme_continue">Doorgaan</sys:String>
+    <sys:String x:Key="cme_cancel">Annuleren</sys:String>
 
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>

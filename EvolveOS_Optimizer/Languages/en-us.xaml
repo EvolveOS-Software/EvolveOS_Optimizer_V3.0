@@ -55,7 +55,7 @@
     <sys:String x:Key="status_encrypting_backup">Encrypting backup copy...</sys:String>
     <sys:String x:Key="status_finalizing_backup">Finalizing backup settings...</sys:String>
     <sys:String x:Key="closing_message">Closing EvolveOS Optimizer</sys:String>
-    <sys:String x:Key="status_rebooting">Restarting EvolveOS Optimizer...</sys:String>
+    <sys:String x:Key="status_rebooting">Restarting EvolveOS Optimizer</sys:String>
     <sys:String x:Key="status_prep_close">Preparing to close...</sys:String>
     <sys:String x:Key="status_goodbye">Goodbye!</sys:String>
     <!-- endregion Loading/Closing Window -->
@@ -5555,6 +5555,14 @@
 
     <sys:String x:Key="Badge_Modern">Modern</sys:String>
     <sys:String x:Key="Badge_Classic">Classic</sys:String>
+
+    <sys:String x:Key="cme_modern_toggle_title">Enable EvolveOS Modern Menu</sys:String>
+    <sys:String x:Key="cme_modern_toggle_desc">Show or hide your custom apps in the default Windows 11 context menu</sys:String>
+
+    <sys:String x:Key="cme_reboot_title">Application Restart Required</sys:String>
+    <sys:String x:Key="cme_reboot_desc">To properly apply the modern context menu extensions, the application needs to restart. Would you like to continue?</sys:String>
+    <sys:String x:Key="cme_continue">Continue</sys:String>
+    <sys:String x:Key="cme_cancel">Cancel</sys:String>
 
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>

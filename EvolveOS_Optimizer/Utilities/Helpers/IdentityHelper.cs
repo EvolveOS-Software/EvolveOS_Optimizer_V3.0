@@ -4,8 +4,9 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
-using Windows.Management.Deployment;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Managers;
+using Windows.Management.Deployment;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -46,7 +47,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         var packageManager = new PackageManager();
                         var packages = packageManager.FindPackagesForUser(string.Empty).Where(p => p.Id.Name == "EvolveOS.Optimizer").ToList();
 
-                        if (packages.Count == 0)
+                        if (packages.Count == 0 && LocalMachineSettingsEngine.IsModernContextMenuEnabled)
                         {
                             InstallTrustedCertificate();
 

@@ -143,6 +143,8 @@ namespace EvolveOS_Optimizer
 
                     await IdentityHelper.EnsureAppIdentityAsync();
 
+                    await ContextMenuEngine.AutoHealModernMenuAsync();
+
                     WatchdogService.EnsureWatchdogAndStart(PlainDb);
 
                     EnsureShortcutWithAumid();

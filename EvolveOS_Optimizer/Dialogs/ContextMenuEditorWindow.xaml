@@ -36,7 +36,24 @@
 
                     <!-- Engine Selectors (Top) -->
                     <StackPanel Spacing="12">
-                        <!-- 1. Windows 11 Classic Menu Override -->
+                        <!-- 1. Enable/Disable EvolveOS Modern Menu -->
+                        <Border x:Name="ModernMenuToggleContainer" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{helpers:ResourceString Key=cme_modern_toggle_title}" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock Text="{helpers:ResourceString Key=cme_modern_toggle_desc}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                </StackPanel>
+
+                                <ToggleSwitch x:Name="ModernMenuToggle" Grid.Column="1" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <!-- 2. Windows 11 Classic Menu Override -->
                         <Border x:Name="ClassicMenuToggleContainer" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -51,7 +68,7 @@
                             </Grid>
                         </Border>
 
-                        <!-- 2. Engine Selector -->
+                        <!-- 3. Engine Selector -->
                         <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
                             <Grid>
                                 <Grid.ColumnDefinitions>

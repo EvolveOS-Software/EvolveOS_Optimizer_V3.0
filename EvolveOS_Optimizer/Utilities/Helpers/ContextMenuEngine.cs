@@ -6,20 +6,20 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using EvolveOS_Optimizer.Core.Model;
+using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class ContextMenuEngine
     {
+        #region Constants and Fields
+
         private const string Win11ClassicMenuKey = @"Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}";
 
-        private static string GetModernConfigPath()
-        {
-            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(localAppData, "EvolveOS_Optimizer", "ModernContextMenu.json");
-        }
+        #endregion
 
         #region Classic vs Modern Toggle
 
@@ -339,6 +339,68 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         #endregion
 
+        #region Modern Menu Item Configuration (JSON Data)
+
+        private static string GetModernConfigPath()
+        {
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            return Path.Combine(localAppData, "EvolveOS_Optimizer", "ModernContextMenu.json");
+        }
+
+        public static ModernContextMenuConfig LoadModernItems()
+        {
+            try
+            {
+                string configPath = GetModernConfigPath();
+
+                if (!File.Exists(configPath))
+                {
+                    return new ModernContextMenuConfig();
+                }
+
+                string json = File.ReadAllText(configPath, Encoding.UTF8);
+                return JsonSerializer.Deserialize<ModernContextMenuConfig>(json) ?? new ModernContextMenuConfig();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ContextMenuEngine] Failed to load modern items: {ex.Message}");
+                return new ModernContextMenuConfig();
+            }
+        }
+
+        public static void SaveModernItems(List<ModernContextMenuItem> items)
+        {
+            try
+            {
+                string jsonPath = GetModernConfigPath();
+                string folderPath = Path.GetDirectoryName(jsonPath)!;
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var rootObject = new { items = items };
+
+                string jsonContent = JsonSerializer.Serialize(rootObject,
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    });
+
+                File.WriteAllText(jsonPath, jsonContent, Encoding.UTF8);
+
+                Debug.WriteLine($"[ContextMenuEngine] JSON successfully written to: {jsonPath}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ContextMenuEngine] CRASH saving JSON: {ex.Message}");
+            }
+        }
+
+        #endregion
+
         #region Modern Menu Item Manager (Sparse Package Bridge)
 
         public static async Task<bool> RegisterSparsePackageAsync(string manifestFolderPath)
@@ -348,7 +410,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 var manifestPath = Path.Combine(manifestFolderPath, "AppxManifest.xml");
                 if (!File.Exists(manifestPath))
                 {
-                    Debug.WriteLine("[ContextMenuEngine] AppxManifest.xml not found!");
+                    Debug.WriteLine($"[ContextMenuEngine] Register failed: AppxManifest.xml not found at {manifestPath}");
                     return false;
                 }
 
@@ -407,22 +469,34 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 var options = new Windows.Management.Deployment.AddPackageOptions
                 {
                     ExternalLocationUri = externalLocationUri,
-                    DeferRegistrationWhenPackagesAreInUse = true
+                    AllowUnsigned = true
                 };
 
+                Debug.WriteLine($"[ContextMenuEngine] Attempting to register package at: {manifestPath}");
+
                 var deploymentTask = packageManager.AddPackageByUriAsync(manifestUri, options).AsTask();
+
                 var completedTask = await Task.WhenAny(deploymentTask, Task.Delay(5000));
 
                 if (completedTask == deploymentTask)
                 {
-                    Debug.WriteLine("[ContextMenuEngine] Sparse Package registered successfully.");
+                    var result = deploymentTask.Result;
+                    if (result.IsRegistered)
+                    {
+                        Debug.WriteLine("[ContextMenuEngine] Sparse Package registered successfully.");
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"[ContextMenuEngine] Package registration failed: {result.ErrorText}");
+                        return false;
+                    }
                 }
                 else
                 {
-                    Debug.WriteLine("[ContextMenuEngine] Sparse Package registration deferred or timed out.");
+                    Debug.WriteLine("[ContextMenuEngine] Sparse Package registration timed out (Startup hang prevented).");
+                    return false;
                 }
-
-                return true;
             }
             catch (Exception ex)
             {
@@ -431,58 +505,108 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
-        public static ModernContextMenuConfig LoadModernItems()
+        public static async Task<bool> UnregisterSparsePackageAsync(string manifestFolderPath)
         {
             try
             {
-                string configPath = GetModernConfigPath();
+                var manifestPath = Path.Combine(manifestFolderPath, "AppxManifest.xml");
+                if (!File.Exists(manifestPath)) return true;
 
-                if (!File.Exists(configPath))
+                string xml = await File.ReadAllTextAsync(manifestPath);
+                var match = Regex.Match(xml, @"<Identity\b[^>]*\bName\s*=\s*""([^""]+)""", RegexOptions.IgnoreCase);
+                if (!match.Success) return false;
+
+                string identityName = match.Groups[1].Value;
+
+                var packageManager = new Windows.Management.Deployment.PackageManager();
+                var packages = packageManager.FindPackagesForUser(string.Empty);
+
+                var targetPackage = packages.FirstOrDefault(p => p.Id.Name.Equals(identityName, StringComparison.OrdinalIgnoreCase));
+
+                if (targetPackage != null)
                 {
-                    return new ModernContextMenuConfig();
+                    Debug.WriteLine($"[ContextMenuEngine] Attempting to cleanly unregister package: {targetPackage.Id.FullName}");
+
+                    var deploymentOperation = packageManager.RemovePackageAsync(targetPackage.Id.FullName);
+                    await deploymentOperation;
+
+                    Debug.WriteLine($"[ContextMenuEngine] Sparse Package '{identityName}' unregistered successfully.");
                 }
 
-                string json = File.ReadAllText(configPath, Encoding.UTF8);
-                return JsonSerializer.Deserialize<ModernContextMenuConfig>(json) ?? new ModernContextMenuConfig();
+                return true;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ContextMenuEngine] Failed to load modern items: {ex.Message}");
-                return new ModernContextMenuConfig();
+                Debug.WriteLine($"[ContextMenuEngine] Failed to unregister Sparse Package: {ex.Message}");
+                return false;
             }
         }
 
-        public static void SaveModernItems(List<ModernContextMenuItem> items)
+        public static string GetModernPackageFolder()
+        {
+            string? exeLocation = Environment.ProcessPath;
+
+            string baseDir = (!string.IsNullOrEmpty(exeLocation)
+                ? Path.GetDirectoryName(exeLocation)
+                : AppContext.BaseDirectory) ?? AppContext.BaseDirectory ?? string.Empty;
+
+            if (string.IsNullOrEmpty(baseDir))
+            {
+                baseDir = AppContext.BaseDirectory ?? string.Empty;
+            }
+
+            if (File.Exists(Path.Combine(baseDir, "AppxManifest.xml")))
+            {
+                return baseDir;
+            }
+
+            string subFolder = Path.Combine(baseDir, "ModernMenuPackage");
+            if (File.Exists(Path.Combine(subFolder, "AppxManifest.xml")))
+            {
+                return subFolder;
+            }
+
+            string fallbackContext = AppContext.BaseDirectory ?? string.Empty;
+            if (!string.IsNullOrEmpty(fallbackContext) && File.Exists(Path.Combine(fallbackContext, "AppxManifest.xml")))
+            {
+                return fallbackContext;
+            }
+
+            if (!string.IsNullOrEmpty(baseDir))
+            {
+                DirectoryInfo? dir = new DirectoryInfo(baseDir);
+                while (dir != null)
+                {
+                    string candidateRoot = dir.FullName;
+                    if (File.Exists(Path.Combine(candidateRoot, "AppxManifest.xml"))) return candidateRoot;
+
+                    string candidateSub = Path.Combine(dir.FullName, "ModernMenuPackage");
+                    if (File.Exists(Path.Combine(candidateSub, "AppxManifest.xml"))) return candidateSub;
+
+                    dir = dir.Parent;
+                }
+            }
+
+            return baseDir;
+        }
+
+        public static async Task AutoHealModernMenuAsync()
         {
             try
             {
-                string jsonPath = GetModernConfigPath();
-                string folderPath = Path.GetDirectoryName(jsonPath)!;
-
-                if (!Directory.Exists(folderPath))
+                if (LocalMachineSettingsEngine.IsModernContextMenuEnabled)
                 {
-                    Directory.CreateDirectory(folderPath);
+                    string packageFolder = GetModernPackageFolder();
+                    await RegisterSparsePackageAsync(packageFolder);
                 }
-
-                var rootObject = new { items = items };
-
-                string jsonContent = JsonSerializer.Serialize(rootObject,
-                    new JsonSerializerOptions
-                    {
-                        WriteIndented = true,
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                    });
-
-                File.WriteAllText(jsonPath, jsonContent, Encoding.UTF8);
-
-                Debug.WriteLine($"[ContextMenuEngine] JSON successfully written to: {jsonPath}");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ContextMenuEngine] CRASH saving JSON: {ex.Message}");
+                Debug.WriteLine($"[ContextMenuEngine] Auto-heal failed: {ex.Message}");
             }
         }
 
         #endregion
+
     }
 }

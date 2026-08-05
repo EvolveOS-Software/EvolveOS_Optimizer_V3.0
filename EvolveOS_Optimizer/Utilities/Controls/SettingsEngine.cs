@@ -478,16 +478,23 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
         internal static void SelfReboot(string injectedCommand = "")
         {
-            string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
-            if (!string.IsNullOrEmpty(exePath))
+            string? exePath = Environment.ProcessPath;
+            if (string.IsNullOrEmpty(exePath))
             {
-                string extra = string.IsNullOrWhiteSpace(injectedCommand) ? "" : $"{injectedCommand} & ";
-                string rebootCommand = $"ping 127.0.0.1 -n 15 > nul & {extra}start \"\" \"{exePath}\""; // Fifteen pings (-n 15) is +/- 14 seconds to fully release its file locks, encrypt the database, stop the SQL service, and dispose of the Mutex.
-
-                _ = CommandExecutor.RunCommand(rebootCommand, isPowerShell: false);
+                exePath = Process.GetCurrentProcess().MainModule?.FileName;
             }
 
-            App.ExitApp(ResourceString.GetString("status_rebooting") ?? "Restarting EvolveOS Optimizer...");
+            if (!string.IsNullOrEmpty(exePath))
+            {
+                int currentPid = Process.GetCurrentProcess().Id;
+                string extra = string.IsNullOrWhiteSpace(injectedCommand) ? "" : $"{injectedCommand}; ";
+
+                string psScript = $"{extra}Wait-Process -Id {currentPid} -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 800; Start-Process '{exePath}';";
+
+                _ = CommandExecutor.RunCommand(psScript, isPowerShell: true);
+            }
+
+            App.ExitApp(ResourceString.GetString("status_rebooting") ?? "Restarting EvolveOS Optimizer");
         }
     }
     #endregion
@@ -544,6 +551,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["FindHotkeyKey"] = (int)VirtualKey.F,
             ["HideRegistryWarning"] = false,
             ["HidePawnIoPrompt"] = false,
+            ["IsModernContextMenuEnabled"] = false,
 
             ["EnableThermalWarnings"] = false,
             ["EnableThermalShutdown"] = false,
@@ -560,7 +568,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["RamWarningTemp"] = 65,
             ["RamMaxTemp"] = 80,
             ["MoboWarningTemp"] = 60,
-            ["MoboMaxTemp"] = 80
+            ["MoboMaxTemp"] = 80,
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -615,6 +623,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static int FindHotkeyKey { get => (int)_cachedSettings["FindHotkeyKey"]; set => ChangingParameters("FindHotkeyKey", value); }
         internal static bool HideRegistryWarning { get => (bool)_cachedSettings["HideRegistryWarning"]; set => ChangingParameters("HideRegistryWarning", value); }
         internal static bool HidePawnIoPrompt { get => (bool)_cachedSettings["HidePawnIoPrompt"]; set => ChangingParameters("HidePawnIoPrompt", value); }
+        internal static bool IsModernContextMenuEnabled { get => (bool)_cachedSettings["IsModernContextMenuEnabled"]; set => ChangingParameters("IsModernContextMenuEnabled", value); }
 
         internal static bool EnableThermalWarnings { get => (bool)_cachedSettings["EnableThermalWarnings"]; set => ChangingParameters("EnableThermalWarnings", value); }
         internal static bool EnableThermalShutdown { get => (bool)_cachedSettings["EnableThermalShutdown"]; set => ChangingParameters("EnableThermalShutdown", value); }

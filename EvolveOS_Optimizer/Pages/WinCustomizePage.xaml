@@ -414,8 +414,8 @@
                                 </controls:SettingsCard>
 
                                 <controls:SettingsCard
-                                    Header="{x:Bind helpers:ResourceString.GetString('cme_editor_header')}"
-                                    Description="{x:Bind helpers:ResourceString.GetString('cme_editor_desc')}"
+                                    Header="{x:Bind helpers:ResourceString.GetString('cme_editor_header'), Mode=OneTime}"
+                                    Description="{x:Bind helpers:ResourceString.GetString('cme_editor_desc'), Mode=OneTime}"
                                     IsClickEnabled="True"
                                     Click="ContextMenuEditorCard_Click">
 
@@ -434,7 +434,7 @@
                                         Margin="0,1,0,0"
                                         Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 <TextBlock x:Name="ContextMenuModernText"
-                                                           Text="{x:Bind helpers:ResourceString.GetString('cme_badge_modern_fallback')}"
+                                                           Text="{x:Bind helpers:ResourceString.GetString('cme_badge_modern_fallback'), Mode=OneTime}"
                                                            Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                             </StackPanel>
@@ -449,7 +449,7 @@
                                                                         Margin="0,1,0,0"
                                                                         Foreground="{ThemeResource BadgeCustomForeground}"/>
                                                 <TextBlock x:Name="ContextMenuClassicText"
-                                                           Text="{x:Bind helpers:ResourceString.GetString('cme_badge_classic_fallback')}"
+                                                           Text="{x:Bind helpers:ResourceString.GetString('cme_badge_classic_fallback'), Mode=OneTime}"
                                                            Style="{StaticResource BadgeTextStyle}"
                                                            Foreground="{ThemeResource BadgeCustomForeground}"/>
                                             </StackPanel>
@@ -458,7 +458,7 @@
                                     </StackPanel>
 
                                     <controls:SettingsCard.ActionIcon>
-                                        <FontIcon Glyph="&#xE8A7;" FontSize="14" ToolTipService.ToolTip="{x:Bind helpers:ResourceString.GetString('cme_editor_tooltip')}" />
+                                        <FontIcon Glyph="&#xE8A7;" FontSize="14" ToolTipService.ToolTip="{x:Bind helpers:ResourceString.GetString('cme_editor_tooltip'), Mode=OneTime}" />
                                     </controls:SettingsCard.ActionIcon>
                                 </controls:SettingsCard>
 

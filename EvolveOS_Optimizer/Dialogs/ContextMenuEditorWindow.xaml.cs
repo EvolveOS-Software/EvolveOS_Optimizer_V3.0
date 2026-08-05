@@ -119,6 +119,12 @@ namespace EvolveOS_Optimizer.Dialogs
                 }
             }
 
+            if (ModernMenuToggle != null)
+            {
+                ModernMenuToggle.IsOn = LocalMachineSettingsEngine.IsModernContextMenuEnabled;
+                ModernMenuToggle.Toggled += ModernMenuToggle_Toggled;
+            }
+
             LoadData();
             LoadCleanerItems();
 
@@ -377,7 +383,7 @@ namespace EvolveOS_Optimizer.Dialogs
                         _modernItems.Move(index, index - 1);
                         ContextMenuEngine.SaveModernItems(_modernItems.ToList());
 
-                        string packageFolder = Path.Combine(AppContext.BaseDirectory, "ModernMenuPackage");
+                        string packageFolder = ContextMenuEngine.GetModernPackageFolder();
                         await ContextMenuEngine.RegisterSparsePackageAsync(packageFolder);
                         UpdateListBinding();
 
@@ -426,7 +432,7 @@ namespace EvolveOS_Optimizer.Dialogs
                         _modernItems.Move(index, index + 1);
                         ContextMenuEngine.SaveModernItems(_modernItems.ToList());
 
-                        string packageFolder = Path.Combine(AppContext.BaseDirectory, "ModernMenuPackage");
+                        string packageFolder = ContextMenuEngine.GetModernPackageFolder();
                         await ContextMenuEngine.RegisterSparsePackageAsync(packageFolder);
                         UpdateListBinding();
 
@@ -677,7 +683,7 @@ namespace EvolveOS_Optimizer.Dialogs
                         }
 
                         ContextMenuEngine.SaveModernItems(_modernItems.ToList());
-                        string packageFolder = Path.Combine(AppContext.BaseDirectory, "ModernMenuPackage");
+                        string packageFolder = ContextMenuEngine.GetModernPackageFolder();
                         await ContextMenuEngine.RegisterSparsePackageAsync(packageFolder);
                     }
 
@@ -827,6 +833,61 @@ namespace EvolveOS_Optimizer.Dialogs
             await ContextMenuEngine.RestartExplorerAsync();
         }
 
+        private async void ModernMenuToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isInitialized) return;
+
+            bool enableModern = ModernMenuToggle.IsOn;
+            ModernMenuToggle.IsEnabled = false;
+
+            try
+            {
+                string packageFolder = ContextMenuEngine.GetModernPackageFolder();
+
+                if (enableModern)
+                {
+                    ContentDialog confirmDialog = new ContentDialog
+                    {
+                        Title = ResourceString.GetString("cme_reboot_title") ?? "Application Restart Required",
+                        Content = ResourceString.GetString("cme_reboot_desc") ?? "To properly apply the modern context menu extensions, the application needs to restart. Would you like to continue?",
+                        PrimaryButtonText = ResourceString.GetString("cme_continue") ?? "Continue",
+                        CloseButtonText = ResourceString.GetString("cme_cancel") ?? "Cancel",
+                        XamlRoot = RootGrid.XamlRoot
+                    };
+
+                    ContentDialogResult result = await confirmDialog.ShowAsync();
+
+                    if (result != ContentDialogResult.Primary)
+                    {
+                        ModernMenuToggle.Toggled -= ModernMenuToggle_Toggled;
+                        ModernMenuToggle.IsOn = false;
+                        ModernMenuToggle.Toggled += ModernMenuToggle_Toggled;
+                        ModernMenuToggle.IsEnabled = true;
+                        return;
+                    }
+
+                    LocalMachineSettingsEngine.IsModernContextMenuEnabled = true;
+
+                    this.Close();
+                    SettingsEngine.SelfReboot();
+                }
+                else
+                {
+                    LocalMachineSettingsEngine.IsModernContextMenuEnabled = false;
+
+                    await ContextMenuEngine.UnregisterSparsePackageAsync(packageFolder);
+                    //await ContextMenuEngine.RestartExplorerAsync(); // Not needed but keep for potential future use
+
+                    ModernMenuToggle.IsEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ContextMenuEditor] Failed to toggle modern menu: {ex.Message}");
+                ModernMenuToggle.IsEnabled = true;
+            }
+        }
+
         private void BrowseExe_Click(object sender, RoutedEventArgs e)
         {
             IntPtr pFile = Marshal.AllocHGlobal(260 * Marshal.SystemDefaultCharSize);
@@ -945,14 +1006,14 @@ namespace EvolveOS_Optimizer.Dialogs
                     Extended = isExtended,
                     SpecificExtension = specificExt,
                     Position = positionStr,
-                    IsSubMenu = false // Enforcing flat items
+                    IsSubMenu = false
                 };
 
                 _modernItems.Add(newItem);
 
                 ContextMenuEngine.SaveModernItems(_modernItems.ToList());
 
-                string packageFolder = Path.Combine(AppContext.BaseDirectory, "ModernMenuPackage");
+                string packageFolder = ContextMenuEngine.GetModernPackageFolder();
                 await ContextMenuEngine.RegisterSparsePackageAsync(packageFolder);
 
                 await ContextMenuEngine.RestartExplorerAsync();
@@ -977,7 +1038,7 @@ namespace EvolveOS_Optimizer.Dialogs
                     Extended = isExtended,
                     SpecificExtension = specificExt,
                     Position = positionStr,
-                    IsSubMenu = false // Enforcing flat items
+                    IsSubMenu = false
                 };
 
                 _classicItems.Add(newItem);
