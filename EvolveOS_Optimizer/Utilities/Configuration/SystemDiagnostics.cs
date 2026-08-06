@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 
@@ -66,6 +67,9 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         private static ulong _prevIdleTime;
         private static ulong _prevKernelTime;
         private static ulong _prevUserTime;
+        private static DateTime _lastCpuCheck = DateTime.MinValue;
+        private static double _lastCpuUsage = 0.0;
+        private static readonly object _cpuLock = new object();
 
         private static readonly (object[] Keys, string Type)[] MediaTypeMap = new (object[] Keys, string Type)[]
         {
@@ -222,6 +226,19 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 string wallpaperPath = Registry.GetValue(@"HKEY_CURRENT_USER\Control Panel\Desktop", "WallPaper", string.Empty)?.ToString() ?? string.Empty;
 
+                if (string.IsNullOrWhiteSpace(wallpaperPath) || !File.Exists(wallpaperPath))
+                {
+                    string cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Windows\Themes");
+                    if (Directory.Exists(cacheFolder))
+                    {
+                        wallpaperPath = Directory.GetFiles(cacheFolder, "TranscodedWallpaper*")
+                            .Select(f => new FileInfo(f))
+                            .Where(f => f.Exists)
+                            .OrderByDescending(f => f.LastWriteTime)
+                            .FirstOrDefault()?.FullName ?? string.Empty;
+                    }
+                }
+
                 if (!string.IsNullOrWhiteSpace(wallpaperPath) && File.Exists(wallpaperPath))
                 {
                     WallpaperPath = wallpaperPath;
@@ -265,18 +282,24 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 try
                 {
-                    using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Caption, OSArchitecture, BuildNumber, Version from Win32_OperatingSystem", new System.Management.EnumerationOptions { ReturnImmediately = true });
+                    using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Caption, Description, OSArchitecture, BuildNumber, Version from Win32_OperatingSystem", new System.Management.EnumerationOptions { ReturnImmediately = true });
                     using var results = searcher.Get();
                     foreach (ManagementObject managementObj in results)
                     {
                         using (managementObj)
                         {
-                            string data = managementObj["Caption"] as string ?? "Windows";
-                            HardwareData.OS.Name = $"{data} {Regex.Replace((string)managementObj["OSArchitecture"], @"\-.+", "-bit")} {(!string.IsNullOrWhiteSpace(release) ? $"({release})" : string.Empty)}";
+                            string data = new string[] { "Caption", "Description" }.Select(p => managementObj[p] as string).FirstOrDefault(s => !string.IsNullOrWhiteSpace(s)) ?? "Windows";
+
+                            HardwareData.OS.Name = $"{(data.Contains('W') ? data.Substring(data.IndexOf('W')) : data)} {Regex.Replace((string)managementObj["OSArchitecture"], @"\-.+", "-bit")} {(!string.IsNullOrWhiteSpace(release) ? $"({release})" : string.Empty)}";
                             HardwareData.OS.Version = $"{(string)managementObj["Version"]}.{revisionNumber}";
 
                             string buildRaw = $"{Convert.ToString(managementObj["BuildNumber"])}.{revisionNumber}";
+
                             if (decimal.TryParse(buildRaw, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal result))
+                            {
+                                HardwareData.OS.Build = result;
+                            }
+                            else if (decimal.TryParse(Registry.GetValue(regPath, "CurrentBuild", "0")?.ToString(), out result))
                             {
                                 HardwareData.OS.Build = result;
                             }
@@ -319,21 +342,86 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 try
                 {
-                    using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Manufacturer, Product, Version from Win32_BaseBoard", new System.Management.EnumerationOptions { ReturnImmediately = true });
-                    using var results = searcher.Get();
-                    var entries = new List<string>();
-                    foreach (ManagementObject managementObj in results)
+                    string mbName = string.Empty;
+                    string mbVersion = string.Empty;
+                    string mbSerial = string.Empty;
+                    string mbChipset = string.Empty;
+
+                    using (var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Manufacturer, Product, Version, SerialNumber from Win32_BaseBoard", new System.Management.EnumerationOptions { ReturnImmediately = true }))
                     {
-                        using (managementObj)
+                        foreach (ManagementObject managementObj in searcher.Get().Cast<ManagementObject>())
                         {
-                            string data = $"{managementObj["Manufacturer"]} {managementObj["Product"]}";
-                            string? dataVersion = managementObj["Version"]?.ToString();
-                            entries.Add(!string.IsNullOrWhiteSpace(dataVersion) ? $"{data}, V{dataVersion}" : data);
+                            using (managementObj)
+                            {
+                                mbName = $"{managementObj["Manufacturer"]?.ToString() ?? string.Empty} {managementObj["Product"]?.ToString() ?? string.Empty}".Trim();
+                                mbVersion = managementObj["Version"]?.ToString()?.Trim() ?? string.Empty;
+                                mbSerial = managementObj["SerialNumber"]?.ToString()?.Trim() ?? string.Empty;
+                            }
                         }
                     }
-                    Motherboard = string.Join(Environment.NewLine, entries);
+
+                    string[] registryPaths = { @"SYSTEM\CurrentControlSet\Enum\PCI", @"SYSTEM\CurrentControlSet\Enum\ACPI" };
+
+                    foreach (string rootPath in registryPaths)
+                    {
+                        bool isPci = rootPath.IndexOf("PCI", StringComparison.OrdinalIgnoreCase) >= 0;
+
+                        List<string>? devices = RegistryHelp.GetSubKeyNames<List<string>>(Registry.LocalMachine, rootPath);
+                        if (devices == null) continue;
+
+                        foreach (string deviceId in devices)
+                        {
+                            string devicePath = rootPath + @"\" + deviceId;
+                            List<string>? instances = RegistryHelp.GetSubKeyNames<List<string>>(Registry.LocalMachine, devicePath);
+                            if (instances == null) continue;
+
+                            foreach (string instanceId in instances)
+                            {
+                                string driverRef = RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\{devicePath}\{instanceId}", "Driver", string.Empty);
+                                if (string.IsNullOrEmpty(driverRef)) continue;
+
+                                string driverDesc = RegistryHelp.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\{driverRef}", "DriverDesc", string.Empty);
+                                if (string.IsNullOrEmpty(driverDesc) || driverDesc.TrimStart().StartsWith("@", StringComparison.Ordinal))
+                                {
+                                    continue;
+                                }
+
+                                bool match = isPci
+                                    ? (driverDesc.IndexOf("LPC", StringComparison.OrdinalIgnoreCase) >= 0 || driverDesc.IndexOf("eSPI", StringComparison.OrdinalIgnoreCase) >= 0)
+                                    : (driverDesc.IndexOf("Qualcomm", StringComparison.OrdinalIgnoreCase) >= 0 || driverDesc.IndexOf("Snapdragon", StringComparison.OrdinalIgnoreCase) >= 0);
+
+                                if (!match) continue;
+
+                                string chipset = ParseChipset(driverDesc) ?? string.Empty;
+
+                                if (!string.IsNullOrWhiteSpace(chipset))
+                                {
+                                    mbChipset = chipset;
+                                    goto BuildString;
+                                }
+                            }
+                        }
+                    }
+
+                BuildString:
+                    List<string> details = new List<string>();
+                    if (!string.IsNullOrWhiteSpace(mbVersion)) details.Add($"V{mbVersion}");
+                    if (!string.IsNullOrWhiteSpace(mbChipset)) details.Add($"Chipset: {mbChipset}");
+                    if (!string.IsNullOrWhiteSpace(mbSerial)) details.Add($"S/N: {mbSerial}");
+
+                    if (details.Count > 0)
+                    {
+                        Motherboard = $"{mbName} ({string.Join(", ", details)})";
+                    }
+                    else
+                    {
+                        Motherboard = mbName;
+                    }
                 }
-                catch { Motherboard = "Unavailable"; }
+                catch
+                {
+                    Motherboard = "Unavailable";
+                }
             }
         }
 
@@ -564,18 +652,42 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             {
                 try
                 {
-                    string scope = isMsftAvailable ? @"root\microsoft\windows\storage" : @"root\cimv2";
-                    string query = isMsftAvailable ? "select FriendlyName, Size from MSFT_PhysicalDisk" : "select Model, Size from Win32_DiskDrive";
-
-                    using var searcher = new ManagementObjectSearcher(scope, query);
-                    using var results = searcher.Get();
-                    foreach (ManagementObject managementObj in results)
+                    if (isMsftAvailable)
                     {
-                        using (managementObj)
+                        using var searcher = new ManagementObjectSearcher(@"root\microsoft\windows\storage", "select FriendlyName, Size, MediaType, BusType from MSFT_PhysicalDisk", new System.Management.EnumerationOptions { ReturnImmediately = true });
+                        using var results = searcher.Get();
+                        foreach (ManagementObject managementObj in results)
                         {
-                            string name = managementObj[isMsftAvailable ? "FriendlyName" : "Model"]?.ToString() ?? "Disk";
-                            string size = SizeCalculationHelper(Convert.ToUInt64(managementObj["Size"]));
-                            result.AppendLine($"{size} [{name}]");
+                            using (managementObj)
+                            {
+                                string name = managementObj["FriendlyName"]?.ToString() ?? "Disk";
+                                string size = SizeCalculationHelper(Convert.ToUInt64(managementObj["Size"] ?? 0));
+
+                                ushort mediaType = managementObj["MediaType"] != null ? Convert.ToUInt16(managementObj["MediaType"]) : (ushort)0;
+                                ushort busType = managementObj["BusType"] != null ? Convert.ToUInt16(managementObj["BusType"]) : (ushort)0;
+
+                                string typeLabel = busType == 17 ? "NVMe" : busType == 7 ? "USB" : mediaType == 4 ? "SSD" : mediaType == 3 ? "HDD" : "Drive";
+
+                                result.AppendLine($"{size} [{name}] ({typeLabel})");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Model, Size, MediaType, InterfaceType from Win32_DiskDrive", new System.Management.EnumerationOptions { ReturnImmediately = true });
+                        using var results = searcher.Get();
+                        foreach (ManagementObject managementObj in results)
+                        {
+                            using (managementObj)
+                            {
+                                string name = managementObj["Model"]?.ToString() ?? "Disk";
+                                string size = SizeCalculationHelper(Convert.ToUInt64(managementObj["Size"] ?? 0));
+
+                                string interfaceType = managementObj["InterfaceType"]?.ToString() ?? string.Empty;
+                                string typeLabel = interfaceType.Contains("USB") ? "USB" : name.Contains("NVMe") ? "NVMe" : "Drive";
+
+                                result.AppendLine($"{size} [{name}] ({typeLabel})");
+                            }
                         }
                     }
                 }
@@ -587,17 +699,59 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         private string GetAudioDevices()
         {
             StringBuilder result = new StringBuilder();
+
+            static (bool isUsb, string name) IsUsbAudioDevice(string deviceID)
+            {
+                foreach (string basePath in new[] { @"SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\Render", @"SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\Capture" })
+                {
+                    using RegistryKey? regKey = Registry.LocalMachine.OpenSubKey(basePath);
+                    if (regKey != null)
+                    {
+                        foreach (string subKeyName in regKey.GetSubKeyNames())
+                        {
+                            string propsPath = $@"HKEY_LOCAL_MACHINE\{basePath}\{subKeyName}\Properties";
+                            using RegistryKey? subKey = regKey.OpenSubKey(subKeyName + @"\Properties");
+                            if (subKey != null)
+                            {
+                                string valueID = Registry.GetValue(propsPath, "{b3f8fa53-0004-438e-9003-51a46e139bfc},2", string.Empty)?.ToString() ?? string.Empty;
+
+                                if (!string.IsNullOrEmpty(valueID) && valueID.IndexOf(deviceID, StringComparison.OrdinalIgnoreCase) >= 0)
+                                {
+                                    string nameValue6 = Registry.GetValue(propsPath, "{b3f8fa53-0004-438e-9003-51a46e139bfc},6", string.Empty)?.ToString()?.Trim() ?? string.Empty;
+                                    string typeNameValue2 = Registry.GetValue(propsPath, "{a45c254e-df1c-4efd-8020-67d146a850e0},2", string.Empty)?.ToString()?.Trim() ?? string.Empty;
+
+                                    string name = nameValue6.Length > 10 && !string.Equals(nameValue6, typeNameValue2, StringComparison.OrdinalIgnoreCase) ? nameValue6 : $"{typeNameValue2} {nameValue6}".Trim();
+                                    return (true, name);
+                                }
+                            }
+                        }
+                    }
+                }
+                return (false, string.Empty);
+            }
+
             lock (_wmiLock)
             {
                 try
                 {
-                    using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select Name, PNPDeviceID from Win32_SoundDevice where Status = 'OK'");
+                    using var searcher = new ManagementObjectSearcher(@"root\cimv2", "select DeviceID, Name, Caption, PNPDeviceID from Win32_SoundDevice where Status = 'OK'", new System.Management.EnumerationOptions { ReturnImmediately = true });
                     using var results = searcher.Get();
                     foreach (ManagementObject managementObj in results)
                     {
                         using (managementObj)
                         {
-                            result.AppendLine(managementObj["Name"]?.ToString() ?? "Audio Device");
+                            (bool isUsbDevice, string usbName) = IsUsbAudioDevice(managementObj["DeviceID"]?.ToString() ?? string.Empty);
+
+                            if (isUsbDevice && !string.IsNullOrEmpty(usbName))
+                            {
+                                result.AppendLine(usbName);
+                            }
+                            else
+                            {
+                                string wmiName = new[] { "Name", "Caption" }.Select(prop => managementObj[prop] as string).FirstOrDefault(info => !string.IsNullOrEmpty(info)) ?? "Audio Device";
+                                result.AppendLine(wmiName);
+                            }
+
                             string pnpId = managementObj["PNPDeviceID"]?.ToString() ?? string.Empty;
                             VendorDetection.Realtek |= pnpId.IndexOf("VEN_10EC", StringComparison.OrdinalIgnoreCase) >= 0;
                         }
@@ -752,36 +906,48 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
         {
             return await Task.Run(() =>
             {
-                if (!GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+                lock (_cpuLock)
                 {
-                    return 0.0;
-                }
+                    if ((DateTime.UtcNow - _lastCpuCheck).TotalMilliseconds < 500)
+                    {
+                        return _lastCpuUsage;
+                    }
 
-                ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
-                ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
-                ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+                    if (!GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+                    {
+                        return 0.0;
+                    }
 
-                if (_prevIdleTime == 0)
-                {
+                    ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                    ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                    ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+
+                    if (_prevIdleTime == 0)
+                    {
+                        _prevIdleTime = curIdleTime;
+                        _prevKernelTime = curKernelTime;
+                        _prevUserTime = curUserTime;
+                        _lastCpuCheck = DateTime.UtcNow;
+                        return 0.0;
+                    }
+
+                    ulong idleDiff = curIdleTime - _prevIdleTime;
+                    ulong kernelDiff = curKernelTime - _prevKernelTime;
+                    ulong userDiff = curUserTime - _prevUserTime;
+                    ulong totalSystemTime = kernelDiff + userDiff;
+
                     _prevIdleTime = curIdleTime;
                     _prevKernelTime = curKernelTime;
                     _prevUserTime = curUserTime;
-                    return 0.0;
+                    _lastCpuCheck = DateTime.UtcNow;
+
+                    if (totalSystemTime == 0) return 0.0;
+
+                    double cpuUsage = (totalSystemTime - idleDiff) * 100.0 / totalSystemTime;
+                    _lastCpuUsage = Math.Clamp(Math.Round(cpuUsage, 1), 0, 100);
+
+                    return _lastCpuUsage;
                 }
-
-                ulong idleDiff = curIdleTime - _prevIdleTime;
-                ulong kernelDiff = curKernelTime - _prevKernelTime;
-                ulong userDiff = curUserTime - _prevUserTime;
-                ulong totalSystemTime = kernelDiff + userDiff;
-
-                _prevIdleTime = curIdleTime;
-                _prevKernelTime = curKernelTime;
-                _prevUserTime = curUserTime;
-
-                if (totalSystemTime == 0) return 0.0;
-
-                double cpuUsage = (totalSystemTime - idleDiff) * 100.0 / totalSystemTime;
-                return Math.Clamp(Math.Round(cpuUsage, 1), 0, 100);
             });
         }
 
@@ -911,6 +1077,25 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                 return memStatus.ullTotalPageFile / (1024.0 * 1024.0 * 1024.0);
             }
             return 16.0;
+        }
+
+        private string ParseChipset(string rawCaption)
+        {
+            if (!string.IsNullOrWhiteSpace(rawCaption))
+            {
+                Match match = Regex.Match(rawCaption, @"\((?<res>(?=[^)]*\d)[^)]{3,})\)|\b(?<res>[A-Z]{1,2}\d{2,4}[A-Z]?)\b");
+                if (match.Success)
+                {
+                    return match.Groups["res"].Value;
+                }
+
+                string clean = Regex.Replace(rawCaption, @"\([RTMtm]+\)|(?i:\b(Intel|AMD|NVIDIA|VIA|Series|Chipset|Family|LPC|Controller|Interface|Bridge|Host|Standard)\b)", "");
+                clean = Regex.Replace(clean, @"[()\[\]\-\s]+", " ").Trim();
+
+                return clean.Length > 2 ? clean : rawCaption;
+            }
+
+            return string.Empty;
         }
 
         internal new string GetWallpaperPath() => WallpaperPath ?? string.Empty;
