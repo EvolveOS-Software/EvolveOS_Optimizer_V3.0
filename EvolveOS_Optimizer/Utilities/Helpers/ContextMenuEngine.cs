@@ -386,7 +386,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     new JsonSerializerOptions
                     {
                         WriteIndented = true,
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
                     });
 
                 File.WriteAllText(jsonPath, jsonContent, Encoding.UTF8);

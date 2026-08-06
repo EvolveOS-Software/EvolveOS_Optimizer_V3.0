@@ -5460,5 +5460,11 @@
     <sys:String x:Key="cme_continue">Continuer</sys:String>
     <sys:String x:Key="cme_cancel">Annuler</sys:String>
 
+    <sys:String x:Key="cme_add_separator_btn">Ajouter un séparateur</sys:String>
+    <sys:String x:Key="cme_separator_dialog_title">Nommez votre séparateur</sys:String>
+    <sys:String x:Key="cme_separator_dialog_desc">Donnez une étiquette à ce séparateur pour l'identifier facilement dans votre liste. (Remarque : Windows ne dessinera qu'une ligne physique dans le menu réel).</sys:String>
+    <sys:String x:Key="cme_add">Ajouter</sys:String>
+    <sys:String x:Key="cme_cancel">Annuler</sys:String>
+
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>

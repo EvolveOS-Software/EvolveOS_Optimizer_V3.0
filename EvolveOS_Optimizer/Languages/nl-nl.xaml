@@ -5474,5 +5474,11 @@
     <sys:String x:Key="cme_continue">Doorgaan</sys:String>
     <sys:String x:Key="cme_cancel">Annuleren</sys:String>
 
+    <sys:String x:Key="cme_add_separator_btn">Scheidingslijn toevoegen</sys:String>
+    <sys:String x:Key="cme_separator_dialog_title">Scheidingslijn een naam geven</sys:String>
+    <sys:String x:Key="cme_separator_dialog_desc">Geef deze scheidingslijn een label om deze gemakkelijk te herkennen in uw lijst. (Opmerking: Windows tekent alleen een fysieke lijn in het daadwerkelijke menu).</sys:String>
+    <sys:String x:Key="cme_add">Toevoegen</sys:String>
+    <sys:String x:Key="cme_cancel">Annuleren</sys:String>
+
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>

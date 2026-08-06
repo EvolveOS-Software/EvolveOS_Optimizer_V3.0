@@ -5,9 +5,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:EvolveOS_Optimizer.Core.Model"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
+    xmlns:dialogs="using:EvolveOS_Optimizer.Dialogs"
     Closed="Window_Closed">
 
     <Grid Background="Transparent" x:Name="RootGrid">
+
+        <Grid.Resources>
+            <dialogs:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis" />
+        </Grid.Resources>
+
         <Grid Visibility="Visible">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -196,9 +202,15 @@
                                 </StackPanel>
                             </Grid>
 
-                            <!-- Add Action Button -->
+                            <!-- Add Action Buttons -->
                             <Border BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Margin="0,-4,0,-4" Padding="0,16,0,0">
-                                <Button Content="{helpers:ResourceString Key=cme_add_to_menu_btn}" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Right" MinWidth="200" Click="AddItem_Click"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+                                    <!-- Separator Button -->
+                                    <Button Content="{helpers:ResourceString Key=cme_add_separator_btn}" MinWidth="140" Click="AddSeparator_Click"/>
+
+                                    <!-- Add Button -->
+                                    <Button Content="{helpers:ResourceString Key=cme_add_to_menu_btn}" Style="{StaticResource AccentButtonStyle}" MinWidth="200" Click="AddItem_Click"/>
+                                </StackPanel>
                             </Border>
                         </StackPanel>
                     </Border>
@@ -249,16 +261,17 @@
                                                     <TextBlock Text="{Binding Content.Title}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Margin="0,0,0,2"/>
 
                                                     <!-- Pill Badge -->
-                                                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2,0,2">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2,0,2" Visibility="{Binding Content.IsSeparator, Converter={StaticResource InverseBoolToVis}, FallbackValue=Visible}">
                                                         <TextBlock Text="{helpers:ResourceString Key=cme_applies_to}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
                                                         <Border Style="{StaticResource BadgePreferenceStyle}">
-                                                            <TextBlock Text="{Binding Content.Target}" 
-                                                                       Style="{StaticResource BadgeTextStyle}" 
+                                                            <TextBlock Text="{Binding Content.Target}"
+                                                                       Style="{StaticResource BadgeTextStyle}"
                                                                        Foreground="{ThemeResource BadgePreferenceForeground}"/>
                                                         </Border>
                                                     </StackPanel>
 
-                                                    <TextBlock Text="{Binding Content.ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Margin="-2,6,0,0" MaxWidth="500"/>
+                                                    <!-- The ExePath -->
+                                                    <TextBlock Text="{Binding Content.ExePath}" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Margin="-2,6,0,0" MaxWidth="500" Visibility="{Binding Content.IsSeparator, Converter={StaticResource InverseBoolToVis}, FallbackValue=Visible}"/>
                                                 </StackPanel>
 
                                                 <!-- Delete Button -->

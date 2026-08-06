@@ -204,7 +204,7 @@ namespace EvolveOS_Optimizer.Dialogs
                 new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_takeown_title") ?? "Take Ownership", Description = ResourceString.GetString("cme_qt_takeown_desc") ?? "Grants full administrator permissions to the selected file", ExePath = "cmd.exe", Arguments = "/c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t", TargetIndex = 0, RunAsAdmin = true },
                 new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_cmd_title") ?? "Open Command Prompt Here", Description = ResourceString.GetString("cme_qt_cmd_desc") ?? "Opens a standard command prompt in the selected directory", ExePath = "cmd.exe", Arguments = "/s /k pushd \"%V\"", TargetIndex = 1 },
                 new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_restart_exp_title") ?? "Restart Windows Explorer", Description = ResourceString.GetString("cme_qt_restart_exp_desc") ?? "Force restarts the explorer.exe process from the desktop", ExePath = "cmd.exe", Arguments = "/c taskkill /f /im explorer.exe & start explorer.exe", TargetIndex = 2, HiddenWindow = true },
-                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_copy_path_title") ?? "Copy File Path to Clipboard", Description = ResourceString.GetString("cme_qt_copy_path_desc") ?? "Copies the full path of the selected file", ExePath = "cmd.exe", Arguments = "/c echo \"%1\" | clip", TargetIndex = 0 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_copy_path_title") ?? "Copy File Path to Clipboard", Description = ResourceString.GetString("cme_qt_copy_path_desc") ?? "Copies the full path of the selected file", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Set-Clipboard -Value \"%1\"", TargetIndex = 0 },
                 new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_perm_del_title") ?? "Permanently Delete", Description = ResourceString.GetString("cme_qt_perm_del_desc") ?? "Bypasses the Recycle Bin to permanently delete the file", ExePath = "cmd.exe", Arguments = "/c del /f /q \"%1\"", TargetIndex = 0 },
                 new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_lock_pc_title") ?? "Lock PC", Description = ResourceString.GetString("cme_qt_lock_pc_desc") ?? "Instantly locks your Windows session", ExePath = "rundll32.exe", Arguments = "user32.dll,LockWorkStation", TargetIndex = 2 },
 
@@ -228,7 +228,7 @@ namespace EvolveOS_Optimizer.Dialogs
                 new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_ps_here_title") ?? "Open PowerShell Here", Description = ResourceString.GetString("cme_qt_ps_here_desc") ?? "Opens a PowerShell window in the selected directory", ExePath = "powershell.exe", Arguments = "-NoExit -Command Set-Location -LiteralPath '%V'", TargetIndex = 1 },
                 new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_cmd_admin_title") ?? "Open CMD Here (Admin)", Description = ResourceString.GetString("cme_qt_cmd_admin_desc") ?? "Opens an elevated command prompt in the selected directory", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process cmd -ArgumentList '/s /k pushd \\\"%V\\\"' -Verb RunAs", TargetIndex = 1, RunAsAdmin = true },
                 new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_ps_admin_title") ?? "Open PowerShell Here (Admin)", Description = ResourceString.GetString("cme_qt_ps_admin_desc") ?? "Opens an elevated PowerShell window in the selected directory", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Start-Process powershell -ArgumentList '-NoExit -Command Set-Location -LiteralPath \\\"%V\\\"' -Verb RunAs", TargetIndex = 1, RunAsAdmin = true },
-                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_copy_folder_title") ?? "Copy Folder Path to Clipboard", Description = ResourceString.GetString("cme_qt_copy_folder_desc") ?? "Copies the full path of the selected folder", ExePath = "cmd.exe", Arguments = "/c echo \"%V\" | clip", TargetIndex = 1 },
+                new ContextMenuTemplate { Title = ResourceString.GetString("cme_qt_copy_folder_title") ?? "Copy Folder Path to Clipboard", Description = ResourceString.GetString("cme_qt_copy_folder_desc") ?? "Copies the full path of the selected folder", ExePath = "powershell.exe", Arguments = "-WindowStyle Hidden -Command Set-Clipboard -Value \"%V\"", TargetIndex = 1 },
 
                 #endregion
 
@@ -1060,6 +1060,76 @@ namespace EvolveOS_Optimizer.Dialogs
             if (QuickTemplatesComboBox != null) QuickTemplatesComboBox.SelectedIndex = -1;
         }
 
+        private async void AddSeparator_Click(object sender, RoutedEventArgs e)
+        {
+            if (MenuTypeSelector.SelectedIndex != 0) return;
+
+            TextBox inputTextBox = new TextBox
+            {
+                PlaceholderText = "e.g., Developer Tools",
+                Width = 350,
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+
+            ContentDialog nameDialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("cme_separator_dialog_title") ?? "Name Your Separator",
+                Content = new StackPanel
+                {
+                    Spacing = 12,
+                    Children =
+            {
+                new TextBlock
+                {
+                    Text = ResourceString.GetString("cme_separator_dialog_desc") ?? "Give this separator a label to easily identify it in your list. (Note: Windows will only draw a physical line in the actual menu).",
+                    TextWrapping = TextWrapping.Wrap
+                },
+                inputTextBox
+            }
+                },
+                PrimaryButtonText = ResourceString.GetString("cme_add") ?? "Add",
+                CloseButtonText = ResourceString.GetString("cme_cancel") ?? "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = RootGrid.XamlRoot
+            };
+
+            ContentDialogResult result = await nameDialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                string rawText = string.IsNullOrWhiteSpace(inputTextBox.Text)
+                    ? "Separator"
+                    : inputTextBox.Text.Trim();
+
+                string customTitle = $"──────── {rawText} ────────";
+
+                string targetStr = TargetInput.SelectedIndex switch
+                {
+                    1 => "Folders",
+                    2 => "Background",
+                    _ => "Files"
+                };
+
+                var separatorItem = new ModernContextMenuItem
+                {
+                    Title = customTitle,
+                    IsSeparator = true,
+                    Target = targetStr,
+                    ExePath = "separator",
+                    Position = "Default"
+                };
+
+                _modernItems.Add(separatorItem);
+
+                ContextMenuEngine.SaveModernItems(_modernItems.ToList());
+
+                string packageFolder = ContextMenuEngine.GetModernPackageFolder();
+                await ContextMenuEngine.RegisterSparsePackageAsync(packageFolder);
+
+                UpdateListBinding();
+            }
+        }
+
         private void RemoveItem_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn)
@@ -1162,6 +1232,23 @@ namespace EvolveOS_Optimizer.Dialogs
     {
         public List<ModernContextMenuItem> Modern { get; set; } = new();
         public List<ClassicContextMenuItem> Classic { get; set; } = new();
+    }
+
+    #endregion
+
+    #region Converter
+
+    public class InverseBoolToVisibilityConverter : Microsoft.UI.Xaml.Data.IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value is bool isSeparator && isSeparator)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
     }
 
     #endregion

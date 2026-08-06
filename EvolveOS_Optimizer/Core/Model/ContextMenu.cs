@@ -55,6 +55,9 @@ namespace EvolveOS_Optimizer.Core.Model
         [JsonPropertyName("extended")]
         public bool Extended { get; set; } = false;
 
+        [JsonPropertyName("isSeparator")]
+        public bool IsSeparator { get; set; } = false;
+
         [JsonPropertyName("specificExtension")]
         public string SpecificExtension { get; set; } = string.Empty;
 

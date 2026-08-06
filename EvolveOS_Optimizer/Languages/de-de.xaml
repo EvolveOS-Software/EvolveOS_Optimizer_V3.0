@@ -5450,5 +5450,11 @@
     <sys:String x:Key="cme_continue">Fortfahren</sys:String>
     <sys:String x:Key="cme_cancel">Abbrechen</sys:String>
 
+    <sys:String x:Key="cme_add_separator_btn">Trennlinie hinzufügen</sys:String>
+    <sys:String x:Key="cme_separator_dialog_title">Trennlinie benennen</sys:String>
+    <sys:String x:Key="cme_separator_dialog_desc">Geben Sie dieser Trennlinie eine Bezeichnung, um sie in Ihrer Liste leicht zu identifizieren. (Hinweis: Windows zeichnet im eigentlichen Menü nur eine physische Linie).</sys:String>
+    <sys:String x:Key="cme_add">Hinzufügen</sys:String>
+    <sys:String x:Key="cme_cancel">Abbrechen</sys:String>
+
     <!-- endregion Context Menu Editor -->
 </ResourceDictionary>
