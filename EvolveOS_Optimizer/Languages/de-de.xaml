@@ -5323,6 +5323,7 @@
 
     <!-- Active Items Tree -->
     <sys:String x:Key="cme_active_items">Aktive benutzerdefinierte Elemente</sys:String>
+    <sys:String x:Key="cme_active_items_desc">Verwalten, neu anordnen oder entfernen Sie Ihre aktuellen Kontextmenüeinträge</sys:String>
     <sys:String x:Key="cme_applies_to">Gilt für:</sys:String>
     <sys:String x:Key="cme_remove_item">Element entfernen</sys:String>
     <sys:String x:Key="cme_export_config">Konfiguration exportieren</sys:String>
@@ -5330,6 +5331,7 @@
 
     <!-- Add New Action Form -->
     <sys:String x:Key="cme_add_new_action">Neue Aktion hinzufügen</sys:String>
+    <sys:String x:Key="cme_add_new_action_desc">Erstellen und konfigurieren Sie einen neuen Kontextmenüeintrag</sys:String>
     <sys:String x:Key="cme_quick_templates_header">Schnellvorlagen (Autom. ausfüllen)</sys:String>
     <sys:String x:Key="cme_quick_templates_placeholder">Schnellvorlage auswählen...</sys:String>
 

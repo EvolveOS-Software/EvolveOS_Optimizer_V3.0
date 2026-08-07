@@ -5347,6 +5347,7 @@
 
     <!-- Active Items Tree -->
     <sys:String x:Key="cme_active_items">Actieve aangepaste items</sys:String>
+    <sys:String x:Key="cme_active_items_desc">Beheer, herschik of verwijder uw huidige contextmenu items</sys:String>
     <sys:String x:Key="cme_applies_to">Is van toepassing op:</sys:String>
     <sys:String x:Key="cme_remove_item">Item verwijderen</sys:String>
     <sys:String x:Key="cme_export_config">Configuratie exporteren</sys:String>
@@ -5354,6 +5355,7 @@
 
     <!-- Add New Action Form -->
     <sys:String x:Key="cme_add_new_action">Nieuwe actie toevoegen</sys:String>
+    <sys:String x:Key="cme_add_new_action_desc">Maak en configureer een nieuw contextmenu item</sys:String>
     <sys:String x:Key="cme_quick_templates_header">Snelle sjablonen (Automatisch invullen)</sys:String>
     <sys:String x:Key="cme_quick_templates_placeholder">Kies een snelle sjabloon...</sys:String>
 

@@ -5333,6 +5333,7 @@
 
     <!-- Active Items Tree -->
     <sys:String x:Key="cme_active_items">Éléments personnalisés actifs</sys:String>
+    <sys:String x:Key="cme_active_items_desc">Gérez, réorganisez ou supprimez vos entrées de menu contextuel actuelles</sys:String>
     <sys:String x:Key="cme_applies_to">S'applique à :</sys:String>
     <sys:String x:Key="cme_remove_item">Supprimer l'élément</sys:String>
     <sys:String x:Key="cme_export_config">Exporter la configuration</sys:String>
@@ -5340,6 +5341,7 @@
 
     <!-- Add New Action Form -->
     <sys:String x:Key="cme_add_new_action">Ajouter une nouvelle action</sys:String>
+    <sys:String x:Key="cme_add_new_action_desc">Créez et configurez une nouvelle entrée de menu contextuel</sys:String>
     <sys:String x:Key="cme_quick_templates_header">Modèles rapides (Remplissage automatique)</sys:String>
     <sys:String x:Key="cme_quick_templates_placeholder">Choisissez un modèle rapide...</sys:String>
 

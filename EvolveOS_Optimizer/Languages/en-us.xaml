@@ -5437,6 +5437,7 @@
 
     <!-- Active Items Tree -->
     <sys:String x:Key="cme_active_items">Active Custom Items</sys:String>
+    <sys:String x:Key="cme_active_items_desc">Manage, reorder, or remove your current context menu entries</sys:String>
     <sys:String x:Key="cme_applies_to">Applies to:</sys:String>
     <sys:String x:Key="cme_remove_item">Remove item</sys:String>
     <sys:String x:Key="cme_export_config">Export Config</sys:String>
@@ -5444,6 +5445,7 @@
 
     <!-- Add New Action Form -->
     <sys:String x:Key="cme_add_new_action">Add New Action</sys:String>
+    <sys:String x:Key="cme_add_new_action_desc">Create and configure a new context menu entry</sys:String>
     <sys:String x:Key="cme_quick_templates_header">Quick Templates (Auto-fill)</sys:String>
     <sys:String x:Key="cme_quick_templates_placeholder">Choose a quick template...</sys:String>
 
