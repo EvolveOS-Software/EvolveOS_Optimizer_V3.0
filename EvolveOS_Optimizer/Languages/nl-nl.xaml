@@ -488,6 +488,37 @@
     <sys:String x:Key="status_limited_optimization">Beperkte modus: Voer uit als Admin voor volledige optimalisatie</sys:String>
     <sys:String x:Key="msg_elevation_declined_title">Verhoging geweigerd</sys:String>
     <sys:String x:Key="msg_elevation_declined_body">De applicatie moet worden uitgevoerd met administratorrechten om systeembrede optimalisaties toe te passen.</sys:String>
+
+    <!-- Layout Settings -->
+    <sys:String x:Key="txt_customize_layout_desc">Kies welke widgets op uw dashboard worden weergegeven en pas het tijdsbestek voor de hardwaregrafieken aan.</sys:String>
+
+    <sys:String x:Key="txt_general_widgets">Algemene widgets</sys:String>
+    <sys:String x:Key="txt_hardware_monitors">Hardwaremonitors</sys:String>
+    <sys:String x:Key="txt_historical_graphs">Historische grafieken</sys:String>
+
+    <sys:String x:Key="txt_on">Aan</sys:String>
+    <sys:String x:Key="txt_off">Uit</sys:String>
+
+    <sys:String x:Key="txt_weather">Weer</sys:String>
+    <sys:String x:Key="txt_network_status">Netwerkstatus</sys:String>
+    <sys:String x:Key="txt_ram_info">RAM info</sys:String>
+    <sys:String x:Key="txt_cpu_info">CPU info</sys:String>
+    <sys:String x:Key="txt_gpu_info">GPU info</sys:String>
+    <sys:String x:Key="txt_disk_space">Schijfruimte</sys:String>
+    <sys:String x:Key="txt_gaming_mode">Gamemodus</sys:String>
+    <sys:String x:Key="txt_dns_encryption">DNS versleuteling</sys:String>
+    <sys:String x:Key="txt_system_health">Systeemgezondheid</sys:String>
+    <sys:String x:Key="txt_system_security">Systeembeveiliging</sys:String>
+
+    <sys:String x:Key="txt_cpu_graph">CPU grafiek</sys:String>
+    <sys:String x:Key="txt_ram_graph">RAM grafiek</sys:String>
+    <sys:String x:Key="txt_network_graph">Netwerkgrafiek</sys:String>
+    <sys:String x:Key="txt_gpu_graph">GPU grafiek</sys:String>
+
+    <sys:String x:Key="txt_graph_timeframe">Grafiek tijdsbestek</sys:String>
+    <sys:String x:Key="txt_60_seconds">60 seconden</sys:String>
+    <sys:String x:Key="txt_5_minutes">5 minuten</sys:String>
+    <sys:String x:Key="txt_15_minutes">15 minuten</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->

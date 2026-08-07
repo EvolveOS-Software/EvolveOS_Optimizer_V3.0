@@ -27,8 +27,12 @@ namespace EvolveOS_Optimizer.Pages
         #region Fields
         private GridViewItem? _activeDraggedItem = null;
         private GridViewItem? _hoveredTargetItem = null;
+        private Border? _activeDraggedCard = null;
         private bool _isTrackingDrag = false;
+
+        private Dictionary<GridViewItem, Windows.Foundation.Rect> _logicalBounds = new();
         private Windows.Foundation.Point _dragStartPoint;
+        private Windows.Foundation.Point _draggedItemBasePos;
 
         private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
         private readonly DispatcherQueue _dispatcherQueue;
@@ -1028,6 +1032,18 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Dashboard Customization (Internal Smooth Visual Drag, Drop, Visibility)
+
+        private async void BtnCustomizeLayout_Click(object sender, RoutedEventArgs e)
+        {
+            CustomizeLayoutDialog.XamlRoot = this.XamlRoot;
+            await CustomizeLayoutDialog.ShowAsync();
+        }
+
+        private void BtnCloseCustomizeLayout_Click(object sender, RoutedEventArgs e)
+        {
+            CustomizeLayoutDialog.Hide();
+        }
+
         private void LoadDashboardLayout()
         {
             ToggleWeather.IsOn = SettingsEngine.Dashboard_CardWeather;
@@ -1258,7 +1274,7 @@ namespace EvolveOS_Optimizer.Pages
                 FactoryAnimation.AnimateCardScale(card, 1.01);
             }
         }
-
+         
         private void DashCard_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             if (sender is Border card && !_isTrackingDrag)
@@ -1282,12 +1298,31 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (container != null)
                 {
+                    _activeDraggedCard = card;
                     _activeDraggedItem = container;
                     _hoveredTargetItem = null;
                     _isTrackingDrag = false;
                     _dragStartPoint = e.GetCurrentPoint(DashboardGridView).Position;
 
-                    Canvas.SetZIndex(_activeDraggedItem, 100);
+                    _logicalBounds.Clear();
+                    foreach (var item in DashboardGridView.Items.OfType<GridViewItem>())
+                    {
+                        var transform = item.TransformToVisual(DashboardGridView);
+                        var bounds = transform.TransformBounds(new Windows.Foundation.Rect(0, 0, item.ActualWidth, item.ActualHeight));
+                        _logicalBounds[item] = bounds;
+
+                        if (item.Content is Border b)
+                        {
+                            b.TranslationTransition = new Microsoft.UI.Xaml.Vector3Transition { Duration = TimeSpan.FromMilliseconds(250) };
+                        }
+                    }
+
+                    if (_logicalBounds.TryGetValue(container, out var draggedBounds))
+                    {
+                        _draggedItemBasePos = new Windows.Foundation.Point(draggedBounds.X, draggedBounds.Y);
+                    }
+
+                    Canvas.SetZIndex(container, 1000);
                     card.CapturePointer(e.Pointer);
                 }
             }
@@ -1295,7 +1330,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void DashCard_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (_activeDraggedItem == null || sender is not Border card) return;
+            if (_activeDraggedCard == null || _activeDraggedItem == null) return;
 
             var currentPoint = e.GetCurrentPoint(DashboardGridView).Position;
             double deltaX = currentPoint.X - _dragStartPoint.X;
@@ -1304,6 +1339,9 @@ namespace EvolveOS_Optimizer.Pages
             if (!_isTrackingDrag && (Math.Abs(deltaX) > 4 || Math.Abs(deltaY) > 4))
             {
                 _isTrackingDrag = true;
+
+                _activeDraggedCard.TranslationTransition = null;
+
                 if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
                 {
                     panel.IsDragInProgress = true;
@@ -1312,32 +1350,42 @@ namespace EvolveOS_Optimizer.Pages
 
             if (_isTrackingDrag)
             {
-                _activeDraggedItem.Translation = new System.Numerics.Vector3((float)deltaX, (float)deltaY, 10f);
-                _activeDraggedItem.Opacity = 0.8;
+                _activeDraggedCard.Translation = new System.Numerics.Vector3((float)deltaX, (float)deltaY, 10f);
+                _activeDraggedCard.Opacity = 0.8f;
 
-                if (_hoveredTargetItem != null && _hoveredTargetItem != _activeDraggedItem)
-                {
-                    if (_hoveredTargetItem.Content is Border previousTarget)
-                        FactoryAnimation.AnimateCardScale(previousTarget, 1.0);
-                }
-
-                _hoveredTargetItem = null;
+                GridViewItem? newHoveredItem = null;
 
                 foreach (var item in DashboardGridView.Items.OfType<GridViewItem>())
                 {
                     if (item == _activeDraggedItem) continue;
 
-                    var transform = item.TransformToVisual(DashboardGridView);
-                    var bounds = transform.TransformBounds(new Windows.Foundation.Rect(0, 0, item.ActualWidth, item.ActualHeight));
-
-                    if (bounds.Contains(currentPoint))
+                    if (_logicalBounds.TryGetValue(item, out var bounds))
                     {
-                        _hoveredTargetItem = item;
-                        if (_hoveredTargetItem.Content is Border targetBorder)
+                        if (bounds.Contains(currentPoint))
                         {
-                            FactoryAnimation.AnimateCardScale(targetBorder, 0.95);
+                            newHoveredItem = item;
+                            break;
                         }
-                        break;
+                    }
+                }
+
+                if (newHoveredItem != _hoveredTargetItem)
+                {
+                    if (_hoveredTargetItem != null && _hoveredTargetItem.Content is Border oldBorder)
+                    {
+                        oldBorder.Translation = System.Numerics.Vector3.Zero;
+                    }
+
+                    _hoveredTargetItem = newHoveredItem;
+
+                    if (_hoveredTargetItem != null && _hoveredTargetItem.Content is Border targetBorder)
+                    {
+                        var targetRect = _logicalBounds[_hoveredTargetItem];
+
+                        float offsetX = (float)(_draggedItemBasePos.X - targetRect.X);
+                        float offsetY = (float)(_draggedItemBasePos.Y - targetRect.Y);
+
+                        targetBorder.Translation = new System.Numerics.Vector3(offsetX, offsetY, 0);
                     }
                 }
             }
@@ -1351,47 +1399,63 @@ namespace EvolveOS_Optimizer.Pages
                 card.ReleasePointerCapture(e.Pointer);
             }
 
-            if (_activeDraggedItem != null)
+            if (_isTrackingDrag && _activeDraggedItem != null)
             {
-                _activeDraggedItem.Translation = new System.Numerics.Vector3(0, 0, 0);
-                _activeDraggedItem.Opacity = 1.0;
-                Canvas.SetZIndex(_activeDraggedItem, 0);
-            }
-
-            if (_isTrackingDrag && _activeDraggedItem != null && _hoveredTargetItem != null)
-            {
-                if (_hoveredTargetItem.Content is Border targetBorder)
+                foreach (var item in DashboardGridView.Items.OfType<GridViewItem>())
                 {
-                    FactoryAnimation.AnimateCardScale(targetBorder, 1.0);
+                    if (item.Content is Border b)
+                    {
+                        b.TranslationTransition = null;
+                        b.Translation = System.Numerics.Vector3.Zero;
+                        b.Opacity = 1.0f;
+                    }
+                    Canvas.SetZIndex(item, 0);
                 }
 
-                int oldIndex = DashboardGridView.Items.IndexOf(_activeDraggedItem);
-                int newIndex = DashboardGridView.Items.IndexOf(_hoveredTargetItem);
-
-                if (oldIndex != -1 && newIndex != -1)
+                if (_hoveredTargetItem != null && _hoveredTargetItem != _activeDraggedItem)
                 {
-                    var item1 = DashboardGridView.Items[oldIndex];
-                    var item2 = DashboardGridView.Items[newIndex];
+                    var originalTransitions = DashboardGridView.ItemContainerTransitions;
+                    DashboardGridView.ItemContainerTransitions = new Microsoft.UI.Xaml.Media.Animation.TransitionCollection();
 
-                    if (oldIndex < newIndex)
+                    int oldIndex = DashboardGridView.Items.IndexOf(_activeDraggedItem);
+                    int newIndex = DashboardGridView.Items.IndexOf(_hoveredTargetItem);
+
+                    if (oldIndex != -1 && newIndex != -1)
                     {
-                        DashboardGridView.Items.RemoveAt(newIndex);
-                        DashboardGridView.Items.RemoveAt(oldIndex);
-                        DashboardGridView.Items.Insert(oldIndex, item2);
-                        DashboardGridView.Items.Insert(newIndex, item1);
-                    }
-                    else
-                    {
-                        DashboardGridView.Items.RemoveAt(oldIndex);
-                        DashboardGridView.Items.RemoveAt(newIndex);
-                        DashboardGridView.Items.Insert(newIndex, item1);
-                        DashboardGridView.Items.Insert(oldIndex, item2);
+                        var item1 = DashboardGridView.Items[oldIndex];
+                        var item2 = DashboardGridView.Items[newIndex];
+
+                        if (oldIndex < newIndex)
+                        {
+                            DashboardGridView.Items.RemoveAt(newIndex);
+                            DashboardGridView.Items.RemoveAt(oldIndex);
+                            DashboardGridView.Items.Insert(oldIndex, item2);
+                            DashboardGridView.Items.Insert(newIndex, item1);
+                        }
+                        else
+                        {
+                            DashboardGridView.Items.RemoveAt(oldIndex);
+                            DashboardGridView.Items.RemoveAt(newIndex);
+                            DashboardGridView.Items.Insert(newIndex, item1);
+                            DashboardGridView.Items.Insert(oldIndex, item2);
+                        }
+
+                        SaveDashboardLayout();
                     }
 
-                    SaveDashboardLayout();
+                    DashboardGridView.UpdateLayout();
+                    DashboardGridView.ItemContainerTransitions = originalTransitions;
                 }
             }
+            else if (_activeDraggedCard != null)
+            {
+                _activeDraggedCard.TranslationTransition = null;
+                _activeDraggedCard.Translation = System.Numerics.Vector3.Zero;
+                _activeDraggedCard.Opacity = 1.0f;
+                if (_activeDraggedItem != null) Canvas.SetZIndex(_activeDraggedItem, 0);
+            }
 
+            _activeDraggedCard = null;
             _activeDraggedItem = null;
             _hoveredTargetItem = null;
             _isTrackingDrag = false;
@@ -1999,7 +2063,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 this.DataContext = null;
                 this.Content = null;
-                this.Bindings?.StopTracking();
+                //this.Bindings?.StopTracking();
 
                 _ = Task.Run(() =>
                 {

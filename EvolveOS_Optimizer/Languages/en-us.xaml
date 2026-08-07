@@ -466,6 +466,37 @@
     <sys:String x:Key="status_limited_optimization">Limited Mode: Run as Admin for full optimization</sys:String>
     <sys:String x:Key="msg_elevation_declined_title">Elevation Declined</sys:String>
     <sys:String x:Key="msg_elevation_declined_body">The application must be elevated to apply system-wide optimizations.</sys:String>
+
+    <!-- Layout Settings -->
+    <sys:String x:Key="txt_customize_layout_desc">Choose which widgets to display on your dashboard and adjust your global hardware graph timeframe.</sys:String>
+    
+    <sys:String x:Key="txt_general_widgets">General Widgets</sys:String>
+    <sys:String x:Key="txt_hardware_monitors">Hardware Monitors</sys:String>
+    <sys:String x:Key="txt_historical_graphs">Historical Graphs</sys:String>
+
+    <sys:String x:Key="txt_on">On</sys:String>
+    <sys:String x:Key="txt_off">Off</sys:String>
+
+    <sys:String x:Key="txt_weather">Weather</sys:String>
+    <sys:String x:Key="txt_network_status">Network Status</sys:String>
+    <sys:String x:Key="txt_ram_info">RAM Info</sys:String>
+    <sys:String x:Key="txt_cpu_info">CPU Info</sys:String>
+    <sys:String x:Key="txt_gpu_info">GPU Info</sys:String>
+    <sys:String x:Key="txt_disk_space">Disk Space</sys:String>
+    <sys:String x:Key="txt_gaming_mode">Gaming Mode</sys:String>
+    <sys:String x:Key="txt_dns_encryption">DNS Encryption</sys:String>
+    <sys:String x:Key="txt_system_health">System Health</sys:String>
+    <sys:String x:Key="txt_system_security">System Security</sys:String>
+
+    <sys:String x:Key="txt_cpu_graph">CPU Graph</sys:String>
+    <sys:String x:Key="txt_ram_graph">RAM Graph</sys:String>
+    <sys:String x:Key="txt_network_graph">Network Graph</sys:String>
+    <sys:String x:Key="txt_gpu_graph">GPU Graph</sys:String>
+
+    <sys:String x:Key="txt_graph_timeframe">Graph Timeframe</sys:String>
+    <sys:String x:Key="txt_60_seconds">60 Seconds</sys:String>
+    <sys:String x:Key="txt_5_minutes">5 Minutes</sys:String>
+    <sys:String x:Key="txt_15_minutes">15 Minutes</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->
@@ -5571,4 +5602,6 @@
     <sys:String x:Key="cme_cancel">Cancel</sys:String>
 
     <!-- endregion Context Menu Editor -->
+    
+    
 </ResourceDictionary>

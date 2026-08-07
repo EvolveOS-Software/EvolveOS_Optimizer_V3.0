@@ -187,41 +187,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Button VerticalAlignment="Bottom" Margin="0,0,-3,0" Background="Transparent" BorderThickness="0" IsTabStop="False" Padding="6" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_customize_layout}">
-                    <Button.Flyout>
-                        <Flyout>
-                            <StackPanel Spacing="10" MinWidth="200">
-                                <TextBlock helpers:Loc.Key="text_customize_dashboard" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,0,5"/>
-                                <ToggleSwitch x:Name="ToggleWeather" Header="Weather" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardWeather"/>
-                                <ToggleSwitch x:Name="ToggleNetwork" Header="Network Status" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetwork"/>
-                                <ToggleSwitch x:Name="ToggleRam" Header="RAM Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRam"/>
-                                <ToggleSwitch x:Name="ToggleCpu" Header="CPU Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpu"/>
-                                <ToggleSwitch x:Name="ToggleGpu" Header="GPU Info" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpu"/>
-                                <ToggleSwitch x:Name="ToggleDisk" Header="Disk Space" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDisk"/>
-                                <ToggleSwitch x:Name="ToggleGamingMode" Header="Gaming Mode" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGamingMode"/>
-                                <ToggleSwitch x:Name="ToggleDns" Header="DNS Encryption" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDns"/>
-                                <ToggleSwitch x:Name="ToggleHealth" Header="System Health" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardMaintenance"/>
-                                <ToggleSwitch x:Name="ToggleSecurity" Header="System Security" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardSecurity"/>
-                                <ToggleSwitch x:Name="ToggleCpuGraph" Header="CPU Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpuGraph"/>
-                                <ToggleSwitch x:Name="ToggleRamGraph" Header="RAM Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRamGraph"/>
-                                <ToggleSwitch x:Name="ToggleNetworkGraph" Header="Network Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetworkGraph"/>
-                                <ToggleSwitch x:Name="ToggleGpuGraph" Header="GPU Graph" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpuGraph"/>
-
-                                <MenuFlyoutSeparator Margin="0,5"/>
-
-                                <TextBlock Text="Graph Timeframe" Style="{StaticResource BodyTextBlockStyle}"/>
-                                <ComboBox x:Name="ComboGlobalTimeframe" SelectionChanged="ComboGlobalTimeframe_SelectionChanged" HorizontalAlignment="Stretch">
-                                    <x:String>60 Seconds</x:String>
-                                    <x:String>5 Minutes</x:String>
-                                    <x:String>15 Minutes</x:String>
-                                </ComboBox>
-
-                                <MenuFlyoutSeparator Margin="0,5"/>
-
-                                <Button Content="{helpers:ResourceString Key=button_reset_default}" Click="ResetDashboard_Click" HorizontalAlignment="Stretch" />
-                            </StackPanel>
-                        </Flyout>
-                    </Button.Flyout>
+                <Button VerticalAlignment="Bottom" Margin="0,0,-3,0" Background="Transparent" BorderThickness="0" IsTabStop="False" Padding="6" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_customize_layout}" Click="BtnCustomizeLayout_Click">
                     <FontIcon Glyph="&#xE713;" FontSize="14" Foreground="{StaticResource Brush_Inactive}"/>
                 </Button>
             </StackPanel>
@@ -1197,6 +1163,96 @@
                 </StackPanel>
             </Border>
         </StackPanel>
+
+        <ContentDialog x:Name="CustomizeLayoutDialog"
+               Title="{helpers:ResourceString Key=text_customize_dashboard}"
+               CornerRadius="8"
+               MaxWidth="650">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="0,0,-12,0" Padding="0,0,12,0">
+                    <StackPanel Spacing="20" MinWidth="500" Margin="0,10,0,10">
+
+                        <TextBlock Text="{helpers:ResourceString Key=txt_customize_layout_desc}" 
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                           TextWrapping="Wrap" 
+                           Margin="0,-5,0,5" 
+                           LineHeight="20"/>
+
+                        <!-- Section 1: General Widgets -->
+                        <StackPanel Spacing="12">
+                            <TextBlock helpers:Loc.Key="txt_general_widgets" Style="{StaticResource BodyStrongTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto" RowSpacing="10" ColumnSpacing="30">
+                                <ToggleSwitch Grid.Row="0" Grid.Column="0" x:Name="ToggleWeather" Header="{helpers:ResourceString Key=txt_weather}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardWeather"/>
+                                <ToggleSwitch Grid.Row="0" Grid.Column="1" x:Name="ToggleDisk" Header="{helpers:ResourceString Key=txt_disk_space}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDisk"/>
+
+                                <ToggleSwitch Grid.Row="1" Grid.Column="0" x:Name="ToggleGamingMode" Header="{helpers:ResourceString Key=txt_gaming_mode}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGamingMode"/>
+                                <ToggleSwitch Grid.Row="1" Grid.Column="1" x:Name="ToggleDns" Header="{helpers:ResourceString Key=txt_dns_encryption}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDns"/>
+
+                                <ToggleSwitch Grid.Row="2" Grid.Column="0" x:Name="ToggleHealth" Header="{helpers:ResourceString Key=txt_system_health}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardMaintenance"/>
+                                <ToggleSwitch Grid.Row="2" Grid.Column="1" x:Name="ToggleSecurity" Header="{helpers:ResourceString Key=txt_system_security}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardSecurity"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+
+                        <!-- Section 2: Hardware Monitors -->
+                        <StackPanel Spacing="12">
+                            <TextBlock helpers:Loc.Key="txt_hardware_monitors" Style="{StaticResource BodyStrongTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" RowSpacing="10" ColumnSpacing="30">
+                                <ToggleSwitch Grid.Row="0" Grid.Column="0" x:Name="ToggleCpu" Header="{helpers:ResourceString Key=txt_cpu_info}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpu"/>
+                                <ToggleSwitch Grid.Row="0" Grid.Column="1" x:Name="ToggleGpu" Header="{helpers:ResourceString Key=txt_gpu_info}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpu"/>
+
+                                <ToggleSwitch Grid.Row="1" Grid.Column="0" x:Name="ToggleRam" Header="{helpers:ResourceString Key=txt_ram_info}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRam"/>
+                                <ToggleSwitch Grid.Row="1" Grid.Column="1" x:Name="ToggleNetwork" Header="{helpers:ResourceString Key=txt_network_status}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetwork"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+
+                        <!-- Section 3: Historical Graphs -->
+                        <StackPanel Spacing="12">
+                            <TextBlock helpers:Loc.Key="txt_historical_graphs" Style="{StaticResource BodyStrongTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" RowSpacing="10" ColumnSpacing="30">
+                                <ToggleSwitch Grid.Row="0" Grid.Column="0" x:Name="ToggleCpuGraph" Header="{helpers:ResourceString Key=txt_cpu_graph}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardCpuGraph"/>
+                                <ToggleSwitch Grid.Row="0" Grid.Column="1" x:Name="ToggleGpuGraph" Header="{helpers:ResourceString Key=txt_gpu_graph}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGpuGraph"/>
+
+                                <ToggleSwitch Grid.Row="1" Grid.Column="0" x:Name="ToggleRamGraph" Header="{helpers:ResourceString Key=txt_ram_graph}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardRamGraph"/>
+                                <ToggleSwitch Grid.Row="1" Grid.Column="1" x:Name="ToggleNetworkGraph" Header="{helpers:ResourceString Key=txt_network_graph}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardNetworkGraph"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+
+                        <StackPanel Orientation="Horizontal" Spacing="20" Margin="0,0,0,10">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{helpers:ResourceString Key=txt_graph_timeframe}" Style="{StaticResource BodyTextBlockStyle}"/>
+                                <ComboBox x:Name="ComboGlobalTimeframe" SelectionChanged="ComboGlobalTimeframe_SelectionChanged" Width="220">
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=txt_60_seconds}"/>
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=txt_5_minutes}"/>
+                                    <ComboBoxItem Content="{helpers:ResourceString Key=txt_15_minutes}"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <Button VerticalAlignment="Bottom" Content="{helpers:ResourceString Key=button_reset_default}" Click="ResetDashboard_Click" MinWidth="120" Height="32"/>
+                        </StackPanel>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Button Grid.Row="1" 
+                Content="{helpers:ResourceString Key=btn_close}" 
+                Style="{StaticResource AccentButtonStyle}" 
+                HorizontalAlignment="Center" 
+                Width="160" 
+                Margin="0,20,0,0" 
+                Click="BtnCloseCustomizeLayout_Click"/>
+            </Grid>
+        </ContentDialog>
 
     </Grid>
 </Page>
