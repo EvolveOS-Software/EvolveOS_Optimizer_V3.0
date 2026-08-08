@@ -651,25 +651,30 @@ namespace EvolveOS_Optimizer.Pages
             {
                 Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
 
-                _currentCardStates.Clear();
-                _entranceQueue.Clear();
-
-                if (this.DataContext is PackagesViewModel vm)
-                {
-                    vm.DisplayState?.Clear();
-                    vm.SelectedPackages?.Clear();
-                }
-
                 this.Loaded -= PackagesPage_Loaded;
                 this.Unloaded -= PackagesPage_Unloaded;
 
-                this.DataContext = null;
-                this.Content = null;
-                //this.Bindings?.StopTracking();
-
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
-                    DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        _currentCardStates.Clear();
+                        _entranceQueue.Clear();
+
+                        if (this.DataContext is PackagesViewModel vm)
+                        {
+                            vm.DisplayState?.Clear();
+                            vm.SelectedPackages?.Clear();
+                        }
+
+                        // this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
                 });
             }
             else

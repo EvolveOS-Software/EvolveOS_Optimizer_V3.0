@@ -1,13 +1,14 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class GamingOptimizePage : Page
+public sealed partial class GamingOptimizePage : Page, IPurgeable
 {
     public OptimizeViewModel ViewModel { get; }
 
@@ -45,18 +46,41 @@ public sealed partial class GamingOptimizePage : Page
 
         if (!SettingsEngine.IsHighPerformanceModeEnabled)
         {
-            Purge();
+            _ = Purge();
         }
     }
 
     #region Purge Page
-    private void Purge()
+
+    public Task Purge()
     {
         Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-        Bindings.StopTracking();
+        if (!SettingsEngine.IsHighPerformanceModeEnabled)
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI...");
 
-        this.Content = null;
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(350);
+
+                DispatcherQueue?.TryEnqueue(() =>
+                {
+                    this.Bindings?.StopTracking();
+                    this.DataContext = null;
+                    this.Content = null;
+                });
+
+                DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+        }
+
+        return Task.CompletedTask;
     }
+
     #endregion
 }

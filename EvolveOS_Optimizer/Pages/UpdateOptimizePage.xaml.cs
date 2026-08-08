@@ -1,13 +1,14 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class UpdateOptimizePage : Page
+public sealed partial class UpdateOptimizePage : Page, IPurgeable
 {
     public OptimizeViewModel ViewModel { get; }
 
@@ -45,18 +46,30 @@ public sealed partial class UpdateOptimizePage : Page
 
         if (!SettingsEngine.IsHighPerformanceModeEnabled)
         {
-            Purge();
+            _ = Purge();
         }
     }
 
     #region Purge Page
-    private void Purge()
+    public Task Purge()
     {
         Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-        Bindings.StopTracking();
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(350);
 
-        this.Content = null;
+            DispatcherQueue?.TryEnqueue(() =>
+            {
+                this.Bindings?.StopTracking();
+                this.Content = null;
+            });
+
+            DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+        });
+
+        return Task.CompletedTask;
+
     }
     #endregion
 }

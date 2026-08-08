@@ -66,6 +66,9 @@ namespace EvolveOS_Optimizer.Pages
         #region Window Management
         private void CloseCurrentWindow()
         {
+            if (contentFrame != null) contentFrame.Content = null;
+            KeyItem = null;
+
             if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 8))
             {
                 if (AppWindow != null)

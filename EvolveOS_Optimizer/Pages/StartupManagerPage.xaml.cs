@@ -548,20 +548,25 @@ namespace EvolveOS_Optimizer.Pages
             {
                 Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and App Collections...");
 
-                _allApps.Clear();
-                _startupApps.Clear();
-
                 this.Loaded -= Page_Loaded;
                 this.Unloaded -= Page_Unloaded;
 
-                if (StartupAppsListView != null) StartupAppsListView.ItemsSource = null;
-
-                this.DataContext = null;
-                this.Content = null;
-                //this.Bindings?.StopTracking();
-
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        _allApps.Clear();
+                        _startupApps.Clear();
+
+                        if (StartupAppsListView != null) StartupAppsListView.ItemsSource = null;
+
+                        //this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
                     DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
                 });
             }

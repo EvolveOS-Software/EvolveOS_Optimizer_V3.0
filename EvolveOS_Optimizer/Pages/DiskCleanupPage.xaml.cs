@@ -551,7 +551,7 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-        public async Task Purge()
+        public Task Purge()
         {
             Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
@@ -565,36 +565,43 @@ namespace EvolveOS_Optimizer.Pages
             {
                 Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and ViewModel...");
 
-                if (_viewModel != null)
-                {
-                    _viewModel.Categories?.Clear();
-                    _viewModel.ResultLines?.Clear();
-                    _viewModel.DetailLines?.Clear();
-                    _viewModel.HistoryChart?.Clear();
-                    _viewModel.CategoryInsights?.Clear();
-                    _viewModel.AnalyzedNodes?.Clear();
-
-                    _viewModel = null;
-                }
-
-                _buttonsWithOpenFlyouts.Clear();
-
                 this.Loaded -= DiskCleanupPage_Loaded;
                 this.Unloaded -= DiskCleanupPage_Unloaded;
 
-                this.DataContext = null;
-                this.Content = null;
-                this.Bindings?.StopTracking();
-
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
-                    DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        if (_viewModel != null)
+                        {
+                            _viewModel.Categories?.Clear();
+                            _viewModel.ResultLines?.Clear();
+                            _viewModel.DetailLines?.Clear();
+                            _viewModel.HistoryChart?.Clear();
+                            _viewModel.CategoryInsights?.Clear();
+                            _viewModel.AnalyzedNodes?.Clear();
+
+                            _viewModel = null;
+                        }
+
+                        _buttonsWithOpenFlyouts.Clear();
+
+                        this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
                 });
             }
             else
             {
                 Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
             }
+
+            return Task.CompletedTask;
         }
 
         #endregion

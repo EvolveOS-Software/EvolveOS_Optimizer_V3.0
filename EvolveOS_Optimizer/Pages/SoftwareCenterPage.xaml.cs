@@ -8,7 +8,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class SoftwareCenterPage : Page
+public sealed partial class SoftwareCenterPage : Page, IPurgeable
 {
     #region Static Members (For Tray/External Navigation)
     public static Action<string>? ExternalPaneRequest;
@@ -65,7 +65,7 @@ public sealed partial class SoftwareCenterPage : Page
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
-        Purge();
+        _ = Purge();
     }
 
     private async void SoftwareNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -149,26 +149,31 @@ public sealed partial class SoftwareCenterPage : Page
         {
             Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking Host Frame and Shared ViewModel...");
 
-            if (_sharedViewModel != null)
-            {
-                _sharedViewModel.DisplayState?.Clear();
-                _sharedViewModel.SelectedPackages?.Clear();
-                _sharedViewModel = null;
-            }
-
-            _previousItem = null;
-
             this.Loaded -= SoftwareCenterPage_Loaded;
             this.Unloaded -= Page_Unloaded;
 
-            if (ContentFrame != null) ContentFrame.Content = null;
-
-            this.DataContext = null;
-            this.Content = null;
-            //this.Bindings?.StopTracking();
-
-            _ = Task.Run(() =>
+            _ = Task.Run(async () =>
             {
+                await Task.Delay(350);
+
+                DispatcherQueue?.TryEnqueue(() =>
+                {
+                    if (_sharedViewModel != null)
+                    {
+                        _sharedViewModel.DisplayState?.Clear();
+                        _sharedViewModel.SelectedPackages?.Clear();
+                        _sharedViewModel = null;
+                    }
+
+                    _previousItem = null;
+
+                    if (ContentFrame != null) ContentFrame.Content = null;
+
+                    //this.Bindings?.StopTracking();
+                    this.DataContext = null;
+                    this.Content = null;
+                });
+
                 DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
             });
         }

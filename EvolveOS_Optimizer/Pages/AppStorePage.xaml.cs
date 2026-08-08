@@ -2292,16 +2292,21 @@ namespace EvolveOS_Optimizer.Pages
                 this.Loaded -= AppStorePage_Loaded;
                 this.Unloaded -= AppStorePage_Unloaded;
 
-                if (PackagesGridView != null) PackagesGridView.ItemsSource = null;
-                if (UpdatesGridView != null) UpdatesGridView.ItemsSource = null;
-                if (InstalledGridView != null) InstalledGridView.ItemsSource = null;
-
-                this.DataContext = null;
-                this.Content = null;
-                this.Bindings?.StopTracking();
-
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        if (PackagesGridView != null) PackagesGridView.ItemsSource = null;
+                        if (UpdatesGridView != null) UpdatesGridView.ItemsSource = null;
+                        if (InstalledGridView != null) InstalledGridView.ItemsSource = null;
+
+                        this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
                     DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
                 });
             }

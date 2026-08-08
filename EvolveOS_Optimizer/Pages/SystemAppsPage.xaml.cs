@@ -1148,18 +1148,25 @@ public sealed partial class SystemAppsPage : Page, IPurgeable
         {
             Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and App Collections...");
 
-            AppList?.Clear();
-            allApps?.Clear();
-
             this.Loaded -= SystemAppsPage_Loaded;
             this.Unloaded -= SystemAppsPage_Unloaded;
 
-            ViewModel = null;
-            this.DataContext = null;
-            this.Content = null;
-
-            _ = Task.Run(() =>
+            _ = Task.Run(async () =>
             {
+                await Task.Delay(350);
+
+                DispatcherQueue?.TryEnqueue(() =>
+                {
+                    AppList?.Clear();
+                    allApps?.Clear();
+
+                    ViewModel = null;
+
+                    //this.Bindings?.StopTracking();
+                    this.DataContext = null;
+                    this.Content = null;
+                });
+
                 DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
             });
         }

@@ -54,9 +54,18 @@ public sealed partial class NotificationOptimizePage : Page
     {
         Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-        Bindings.StopTracking();
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(350);
 
-        this.Content = null;
+            DispatcherQueue?.TryEnqueue(() =>
+            {
+                this.Bindings?.StopTracking();
+                this.Content = null;
+            });
+
+            DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+        });
     }
     #endregion
 }

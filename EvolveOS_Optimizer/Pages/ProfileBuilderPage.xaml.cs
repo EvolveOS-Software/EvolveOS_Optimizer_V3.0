@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class ProfileBuilderPage : Page
+public sealed partial class ProfileBuilderPage : Page, IPurgeable
 {
     #region Properties
 
@@ -402,21 +402,42 @@ public sealed partial class ProfileBuilderPage : Page
         _isDialogShowing = false;
     }
 
-    protected override async void OnNavigatedFrom(NavigationEventArgs e)
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
     {
         base.OnNavigatedFrom(e);
         _isConfirmedNavigation = false;
-        await Purge();
+
+        _ = Purge();
     }
 
-    public async Task Purge()
+    public Task Purge()
     {
         Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
         if (!SettingsEngine.IsHighPerformanceModeEnabled)
         {
-            await Task.Run(() => { DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup(); });
+            Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI...");
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(350);
+
+                DispatcherQueue?.TryEnqueue(() =>
+                {
+                    this.Bindings?.StopTracking();
+                    this.DataContext = null;
+                    this.Content = null;
+                });
+
+                DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+            });
         }
+        else
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+        }
+
+        return Task.CompletedTask;
     }
 
     #endregion

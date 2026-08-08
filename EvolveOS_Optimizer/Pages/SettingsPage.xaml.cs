@@ -1812,14 +1812,19 @@ namespace EvolveOS_Optimizer.Pages
                 this.Loaded -= SettingsPage_Loaded;
                 this.Unloaded -= SettingsPage_Unloaded;
 
-                this.DataContext = null;
-                this.Content = null;
-                //this.Bindings?.StopTracking();
-
                 _isInitialized = false;
 
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
                     DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
                 });
             }

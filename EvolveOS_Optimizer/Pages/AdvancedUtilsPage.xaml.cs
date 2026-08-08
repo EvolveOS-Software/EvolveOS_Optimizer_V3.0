@@ -36,7 +36,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void AdvancedUtilsPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            Purge();
+            _ = Purge();
         }
 
         private async void BtnOpenPasswordManager_Click(object sender, RoutedEventArgs e)
@@ -234,12 +234,17 @@ namespace EvolveOS_Optimizer.Pages
 
                 this.Unloaded -= AdvancedUtilsPage_Unloaded;
 
-                this.DataContext = null;
-                this.Content = null;
-                this.Bindings?.StopTracking();
-
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
                     DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
                 });
             }

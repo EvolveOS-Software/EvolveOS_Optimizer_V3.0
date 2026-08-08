@@ -4,14 +4,16 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Security;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class PasswordManagerPage : Page
+    public sealed partial class PasswordManagerPage : Page, IPurgeable
     {
         #region Fields & Initialization
 
@@ -48,6 +50,16 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     ViewModel.LoadDataCommand.Execute(null);
                 }
+            }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                _ = Purge();
             }
         }
 
@@ -162,6 +174,69 @@ namespace EvolveOS_Optimizer.Pages
             _generatorWindow.Activate();
         }
 
+        #endregion
+
+        #region Purge Page
+        public Task Purge()
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
+
+            if (_generatorWindow != null)
+            {
+                _generatorWindow.Close();
+                _generatorWindow = null;
+            }
+
+            if (RecordPasswordBox != null)
+            {
+                RecordPasswordBox.Password = string.Empty;
+            }
+
+            var addPopup = AddRecordPopup ?? (Popup)this.FindName("AddRecordPopup");
+            if (addPopup != null) addPopup.IsOpen = false;
+
+            var settingsPopup = PopupSettings ?? (Popup)this.FindName("PopupSettings");
+            if (settingsPopup != null) settingsPopup.IsOpen = false;
+
+            UIHelper.SetOverlay(false);
+
+            if (MainContentView != null) MainContentView.IsHitTestVisible = true;
+
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking Passwords & UI...");
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        if (ViewModel != null)
+                        {
+                            if (ViewModel.AddRecordVM != null)
+                            {
+                                ViewModel.AddRecordVM.CloseRequestedAction = null;
+                            }
+                        }
+
+                        ViewModel = null;
+
+                        this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
+
+            return Task.CompletedTask;
+        }
         #endregion
     }
 }

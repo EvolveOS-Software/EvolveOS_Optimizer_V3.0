@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using CommunityToolkit.Mvvm.Messaging;
 using EvolveOS_Optimizer.Core.Enums;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Dialogs;
@@ -22,7 +23,7 @@ using static Vanara.PInvoke.AdvApi32;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class ValuesViewerPage : Page
+    public sealed partial class ValuesViewerPage : Page, IPurgeable
     {
         #region Fields
         private static readonly HttpClient _http = new HttpClient();
@@ -41,6 +42,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             this.InitializeComponent();
             this.Loaded += async (s, e) => await InitializeAiStateAsync();
+            this.Unloaded += ValuesViewerPage_Unloaded;
 
             WeakReferenceMessenger.Default.Register<OpenFindDialogMessage>(this, (r, m) =>
             {
@@ -58,6 +60,13 @@ namespace EvolveOS_Optimizer.Pages
 
                 page.OnFindButtonClick(page, new RoutedEventArgs());
             });
+        }
+        #endregion
+
+        #region Lifecycle Events
+        private async void ValuesViewerPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            await Purge();
         }
         #endregion
 
@@ -960,6 +969,52 @@ namespace EvolveOS_Optimizer.Pages
             AiProvider.Mistral => LocalMachineSettingsEngine.MistralApiKey,
             _ => ""
         };
+        #endregion
+
+        #region Purge Page
+        public async Task Purge()
+        {
+            Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
+
+            if (_searchCancellationToken != null)
+            {
+                try { _searchCancellationToken.Cancel(); _searchCancellationToken.Dispose(); } catch { }
+                _searchCancellationToken = null;
+            }
+
+            if (!SettingsEngine.IsHighPerformanceModeEnabled)
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Events...");
+
+                WeakReferenceMessenger.Default.Unregister<OpenFindDialogMessage>(this);
+                this.Unloaded -= ValuesViewerPage_Unloaded;
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        if (ViewModel != null)
+                        {
+                            ViewModel.ValueItems?.Clear();
+                            ViewModel.SearchResults?.Clear();
+                            ViewModel.SnapshotResults?.Clear();
+                        }
+
+                        // this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
+            }
+        }
         #endregion
     }
 }

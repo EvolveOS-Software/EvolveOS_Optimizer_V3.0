@@ -1637,32 +1637,37 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     Debug.WriteLine("[DiagnosticsPage] Low Resource Mode: Evicting heavy UI buffers...");
 
-                    if (ViewModel != null)
+                    _ = Task.Run(async () =>
                     {
-                        ViewModel.PerformanceGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-                        ViewModel.PerformanceAreaPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-                        ViewModel.PerformanceGraphPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
-                        ViewModel.PerformanceAreaPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
-                        ViewModel.TemperatureGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+                        await Task.Delay(350);
 
-                        Debug.WriteLine("[DiagnosticsPage] Severed main window PointCollections. Tray collections preserved.");
-                    }
+                        DispatcherQueue?.TryEnqueue(() =>
+                        {
+                            if (ViewModel != null)
+                            {
+                                ViewModel.PerformanceGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+                                ViewModel.PerformanceAreaPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+                                ViewModel.PerformanceGraphPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
+                                ViewModel.PerformanceAreaPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
+                                ViewModel.TemperatureGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
 
-                    foreach (var result in _scanResults.Values)
-                    {
-                        result.Clear();
-                    }
+                                Debug.WriteLine("[DiagnosticsPage] Severed main window PointCollections. Tray collections preserved.");
+                            }
 
-                    _controls.Clear();
+                            foreach (var result in _scanResults.Values)
+                            {
+                                result.Clear();
+                            }
 
-                    this.DataContext = null;
-                    this.Content = null;
-                    this.Bindings?.StopTracking();
+                            _controls.Clear();
 
-                    _isInitialized = false;
+                            this.Bindings?.StopTracking();
+                            this.DataContext = null;
+                            this.Content = null;
 
-                    _ = Task.Run(() =>
-                    {
+                            _isInitialized = false;
+                        });
+
                         GC.Collect(2, GCCollectionMode.Optimized, false, false);
                         ViewModel?.ForceImmediateMemoryCleanup();
                     });

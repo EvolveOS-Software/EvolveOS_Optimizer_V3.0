@@ -1,6 +1,7 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Assets.UserControl;
 using EvolveOS_Optimizer.Core.ViewModel;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -9,7 +10,7 @@ using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Pages
 {
-    public sealed partial class RegistryEditorPage : Page
+    public sealed partial class RegistryEditorPage : Page, IPurgeable
     {
         private Dictionary<NavigationViewItem, RegistryWorkspace> _workspaces = new();
         private int _workspaceCount = 0;
@@ -43,9 +44,9 @@ namespace EvolveOS_Optimizer.Pages
             await ShowRegistryWarningDialogAsync();
         }
 
-        private async void RegistryEditorPage_Unloaded(object sender, RoutedEventArgs e)
+        private void RegistryEditorPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            await Purge();
+            _ = Purge();
         }
         #endregion
 
@@ -190,28 +191,41 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-        public async Task Purge()
+        public Task Purge()
         {
             Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
             if (!SettingsEngine.IsHighPerformanceModeEnabled)
             {
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Workspaces...");
+
                 Loaded -= RegistryEditorPage_Loaded;
                 Unloaded -= RegistryEditorPage_Unloaded;
 
-                WorkspaceNavView.MenuItems.Clear();
-                _workspaces.Clear();
-                WorkspaceContainer.Content = null;
-
-                await Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
-                    DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        WorkspaceNavView.MenuItems.Clear();
+                        _workspaces.Clear();
+                        WorkspaceContainer.Content = null;
+
+                        //this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
                 });
             }
             else
             {
-                Debug.WriteLine($"[{this.GetType().Name}] State preserved in RAM cache.");
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
             }
+
+            return Task.CompletedTask;
         }
         #endregion
     }

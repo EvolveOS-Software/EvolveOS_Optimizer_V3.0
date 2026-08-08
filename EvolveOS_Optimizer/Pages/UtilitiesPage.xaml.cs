@@ -124,14 +124,18 @@ namespace EvolveOS_Optimizer.Pages
                 if (ContentFrame != null) ContentFrame.Navigated -= ContentFrame_Navigated;
                 this.Unloaded -= Page_Unloaded;
 
-                if (ContentFrame != null) ContentFrame.Content = null;
-
-                this.DataContext = null;
-                this.Content = null;
-                //this.Bindings?.StopTracking();
-
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
+                    await Task.Delay(350);
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        if (ContentFrame != null) ContentFrame.Content = null;
+                        //this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
                     DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
                 });
             }

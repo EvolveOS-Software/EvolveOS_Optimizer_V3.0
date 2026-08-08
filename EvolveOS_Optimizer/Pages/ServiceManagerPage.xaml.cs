@@ -621,7 +621,7 @@ public sealed partial class ServiceManagerPage : Page, IPurgeable
     #endregion
 
     #region Purge Page
-    public async Task Purge()
+    public Task Purge()
     {
         Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
@@ -637,22 +637,27 @@ public sealed partial class ServiceManagerPage : Page, IPurgeable
         {
             Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Service Collections...");
 
-            _allServices.Clear();
-            _filteredServices.Clear();
-            _registryCache.Clear();
-            _userInteractedComboBoxes.Clear();
-
             this.Loaded -= ServicesPage_Loaded;
             this.Unloaded -= ServicesPage_Unloaded;
 
-            if (ServicesListView != null) ServicesListView.ItemsSource = null;
-
-            this.DataContext = null;
-            this.Content = null;
-            //this.Bindings?.StopTracking();
-
-            _ = Task.Run(() =>
+            _ = Task.Run(async () =>
             {
+                await Task.Delay(350);
+
+                DispatcherQueue?.TryEnqueue(() =>
+                {
+                    _allServices.Clear();
+                    _filteredServices.Clear();
+                    _registryCache.Clear();
+                    _userInteractedComboBoxes.Clear();
+
+                    if (ServicesListView != null) ServicesListView.ItemsSource = null;
+
+                    //this.Bindings?.StopTracking();
+                    this.DataContext = null;
+                    this.Content = null;
+                });
+
                 DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
             });
         }
@@ -660,6 +665,8 @@ public sealed partial class ServiceManagerPage : Page, IPurgeable
         {
             Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
         }
+
+        return Task.CompletedTask;
     }
     #endregion
 }

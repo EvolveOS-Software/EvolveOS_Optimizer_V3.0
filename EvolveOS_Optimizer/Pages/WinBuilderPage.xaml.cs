@@ -515,20 +515,36 @@ namespace EvolveOS_Optimizer.Pages
 
             if (!SettingsEngine.IsHighPerformanceModeEnabled)
             {
-                AvailableApps?.Clear();
-                AvailableElements?.Clear();
+                Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Collections...");
+
                 this.Unloaded -= WinBuilderPage_Unloaded;
 
-                if (this.FindName("AppsItemsControl") is ItemsControl appsControl)
-                    appsControl.ItemsSource = null;
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(350);
 
-                if (this.FindName("ElementsItemsControl") is ItemsControl elementsControl)
-                    elementsControl.ItemsSource = null;
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        AvailableApps?.Clear();
+                        AvailableElements?.Clear();
 
-                this.DataContext = null;
-                this.Content = null;
+                        if (this.FindName("AppsItemsControl") is ItemsControl appsControl)
+                            appsControl.ItemsSource = null;
 
-                _ = Task.Run(() => { DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup(); });
+                        if (this.FindName("ElementsItemsControl") is ItemsControl elementsControl)
+                            elementsControl.ItemsSource = null;
+
+                        this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null;
+                    });
+
+                    DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
+                });
+            }
+            else
+            {
+                Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
             }
         }
         #endregion

@@ -20,7 +20,7 @@ using IUserPreferencesService = EvolveOS_Optimizer.Core.Interfaces.IUserPreferen
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class WinCustomizePage : Page
+public sealed partial class WinCustomizePage : Page, IPurgeable
 {
     #region Fields & Properties
     private static readonly Dictionary<string, string> SectionIconResourceKeys = new()
@@ -741,10 +741,18 @@ public sealed partial class WinCustomizePage : Page
             _settingsRefreshedSubscription?.Dispose();
             _settingsRefreshedSubscription = null;
 
-            InnerContentFrame.Content = null;
-
-            await Task.Run(() =>
+            _ = Task.Run(async () =>
             {
+                await Task.Delay(350);
+
+                DispatcherQueue?.TryEnqueue(() =>
+                {
+                    if (InnerContentFrame != null)
+                    {
+                        InnerContentFrame.Content = null;
+                    }
+                });
+
                 DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
             });
         }

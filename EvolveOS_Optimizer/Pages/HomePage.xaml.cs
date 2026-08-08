@@ -2061,12 +2061,17 @@ namespace EvolveOS_Optimizer.Pages
                 this.Loaded -= HomePage_Loaded;
                 this.Unloaded -= Page_Unloaded;
 
-                this.DataContext = null;
-                this.Content = null;
-                //this.Bindings?.StopTracking();
-
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
+                    await Task.Delay(350); // Wait for WinUI page transition animation to finish
+
+                    DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        this.Bindings?.StopTracking();
+                        this.DataContext = null;
+                        this.Content = null; // Safely nuked without crashing the renderer!
+                    });
+
                     DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
                 });
             }

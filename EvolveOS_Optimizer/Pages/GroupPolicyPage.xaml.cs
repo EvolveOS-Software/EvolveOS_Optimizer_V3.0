@@ -771,22 +771,31 @@ public sealed partial class GroupPolicyPage : Page, IPurgeable
         {
             Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Collections...");
 
-            _policyStates = null;
-
-            ConfiguredPoliciesListView.ItemsSource = null;
-            CategorySummaryRepeater.ItemsSource = null;
-
             this.Loaded -= GroupPolicyPage_Loaded;
             this.Unloaded -= GroupPolicyPage_Unloaded;
-            ConfiguredPoliciesListView.SelectionChanged -= ConfiguredPoliciesListView_SelectionChanged;
 
-            this.DataContext = null;
-            this.Content = null;
-            //this.Bindings?.StopTracking();
-
-            _ = Task.Run(() =>
+            if (ConfiguredPoliciesListView != null)
             {
-                DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                ConfiguredPoliciesListView.SelectionChanged -= ConfiguredPoliciesListView_SelectionChanged;
+            }
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(350);
+
+                DispatcherQueue?.TryEnqueue(() =>
+                {
+                    _policyStates = null;
+
+                    if (ConfiguredPoliciesListView != null) ConfiguredPoliciesListView.ItemsSource = null;
+                    if (CategorySummaryRepeater != null) CategorySummaryRepeater.ItemsSource = null;
+
+                    //this.Bindings?.StopTracking();
+                    this.DataContext = null;
+                    this.Content = null;
+                });
+
+                DiagnosticsPageViewModel.Current?.ForceImmediateMemoryCleanup();
             });
         }
         else
