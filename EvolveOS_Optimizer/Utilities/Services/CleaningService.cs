@@ -13,6 +13,12 @@ namespace EvolveOS_Optimizer.Utilities.Services
 {
     public class CleaningService
     {
+        private static readonly EnumerationOptions SafeEnumOptions = new()
+        {
+            IgnoreInaccessible = true,
+            ReturnSpecialDirectories = false
+        };
+
         #region Public API
         public Task<ScanResult> AnalyzeAsync(CleanerEntry entry, IProgress<string>? progress = null, CancellationToken token = default) =>
             Task.Run(() => Analyze(entry, progress, token), token);
@@ -42,7 +48,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
                         if (!seen.Add(file)) continue;
 
-                        var size = TryGetDeletableSize(file);
+                        long size = GetFileSizeFast(file);
                         if (size < 0) continue;
 
                         result.FilesToDelete.Add(file);
@@ -69,7 +75,6 @@ namespace EvolveOS_Optimizer.Utilities.Services
         private IEnumerable<string> FindFiles(FileKeyEntry fileKey, List<ExclusionRule> excluded, IProgress<string>? progress, CancellationToken token)
         {
             bool recurse = fileKey.Flag is FileKeyFlag.Recurse or FileKeyFlag.RemoveSelf;
-
             var patterns = fileKey.Pattern.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             foreach (var dir in PathLocator.ResolvePaths(fileKey.Path))
@@ -94,16 +99,31 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             progress?.Report(root);
 
+            bool matchAll = patterns.Contains("*");
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var p in patterns)
+
+            IEnumerable<string> files;
+            try { files = Directory.EnumerateFiles(root, "*", SafeEnumOptions); }
+            catch { files = Array.Empty<string>(); }
+
+            foreach (var f in files)
             {
-                IEnumerable<string> files;
-                try { files = Directory.EnumerateFiles(root, p); }
-                catch { files = []; }
-                foreach (var f in files)
+                if (token.IsCancellationRequested) yield break;
+
+                if (matchAll)
                 {
-                    if (token.IsCancellationRequested) yield break;
                     if (seen.Add(f)) yield return f;
+                    continue;
+                }
+
+                var fileName = Path.GetFileName(f);
+                foreach (var p in patterns)
+                {
+                    if (FileSystemName.MatchesSimpleExpression(p, fileName, ignoreCase: true))
+                    {
+                        if (seen.Add(f)) yield return f;
+                        break;
+                    }
                 }
             }
 
@@ -112,7 +132,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             IEnumerable<string> dirs;
             try
             {
-                dirs = Directory.EnumerateDirectories(root)
+                dirs = Directory.EnumerateDirectories(root, "*", SafeEnumOptions)
                                 .Where(d => (File.GetAttributes(d) & FileAttributes.ReparsePoint) == 0);
             }
             catch { yield break; }
@@ -131,44 +151,58 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             int deletedCount = 0;
             long deletedBytes = 0;
+            int uiThrottleCounter = 0;
 
-            foreach (var file in result.FilesToDelete)
+            int safeIoThreads = Math.Clamp(Environment.ProcessorCount, 2, 8);
+
+            Parallel.ForEach(result.FilesToDelete, new ParallelOptions
             {
-                token.ThrowIfCancellationRequested();
+                MaxDegreeOfParallelism = safeIoThreads,
+                CancellationToken = token
+            }, file =>
+            {
                 long size = 0;
                 try
                 {
                     size = new FileInfo(file).Length;
                     File.Delete(file);
-                    deletedCount++;
-                    deletedBytes += size;
-                    progress?.Report($"Deleted: {file}");
+
+                    Interlocked.Increment(ref deletedCount);
+                    Interlocked.Add(ref deletedBytes, size);
+
+                    if (Interlocked.Increment(ref uiThrottleCounter) % 25 == 0)
+                    {
+                        progress?.Report($"Deleted: {file}");
+                    }
                 }
                 catch
                 {
                     try
                     {
-                        UnlockHandleHelper.UnlockDirectory(file);
-                        File.Delete(file);
-                        deletedCount++;
-                        deletedBytes += size;
-                        progress?.Report($"Deleted: {file}");
+                        var fi = new FileInfo(file);
+                        if (fi.Exists)
+                        {
+                            if (fi.IsReadOnly) fi.IsReadOnly = false;
+
+                            UnlockHandleHelper.UnlockDirectory(file);
+
+                            fi.Delete();
+
+                            Interlocked.Increment(ref deletedCount);
+                            Interlocked.Add(ref deletedBytes, size);
+                            progress?.Report($"Force Deleted: {file}");
+                        }
                     }
                     catch
                     {
                         var lockers = UnlockHandleHelper.GetLockingProcessNames(file);
                         if (lockers.Count > 0)
                         {
-                            string conflictList = string.Join(", ", lockers);
-                            progress?.Report($"Skipped (In Use): {Path.GetFileName(file)} is locked by {conflictList}");
-                        }
-                        else
-                        {
-                            progress?.Report($"Error: Could not delete {Path.GetFileName(file)} (Access Denied)");
+                            progress?.Report($"Skipped (In Use): {Path.GetFileName(file)} is locked by {string.Join(", ", lockers)}");
                         }
                     }
                 }
-            }
+            });
 
             foreach (var regItem in result.RegistryToDelete)
             {
@@ -198,36 +232,64 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             if (!Directory.Exists(path) || IsProtected(path)) return;
 
+            string[] subDirs;
             try
             {
-                foreach (var sub in Directory.GetDirectories(path, "*", SearchOption.AllDirectories)
-                                             .OrderByDescending(d => d.Length))
+                subDirs = Directory.GetDirectories(path, "*", SearchOption.AllDirectories)
+                                   .OrderByDescending(d => d.Length)
+                                   .ToArray();
+            }
+            catch { return; }
+
+            foreach (var sub in subDirs)
+            {
+                token.ThrowIfCancellationRequested();
+
+                if (IsProtected(sub)) continue;
+
+                TryDeleteSingleDirectory(sub, progress);
+            }
+
+            TryDeleteSingleDirectory(path, progress);
+        }
+
+        private static void TryDeleteSingleDirectory(string dirPath, IProgress<string>? progress)
+        {
+            try
+            {
+                var di = new DirectoryInfo(dirPath);
+
+                if ((di.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                 {
-                    token.ThrowIfCancellationRequested();
-
-                    if (IsProtected(sub)) continue;
-
-                    if (Directory.GetFileSystemEntries(sub).Length == 0)
-                        Directory.Delete(sub);
+                    di.Attributes &= ~FileAttributes.ReadOnly;
                 }
 
-                if (Directory.GetFileSystemEntries(path).Length == 0)
-                    Directory.Delete(path);
+                if (di.GetFileSystemInfos().Length == 0)
+                {
+                    di.Delete();
+                }
             }
             catch
             {
                 try
                 {
-                    UnlockHandleHelper.UnlockDirectory(path);
-                    if (Directory.GetFileSystemEntries(path).Length == 0)
-                        Directory.Delete(path);
+                    UnlockHandleHelper.UnlockDirectory(dirPath);
+
+                    var diRetry = new DirectoryInfo(dirPath);
+                    if ((diRetry.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                        diRetry.Attributes &= ~FileAttributes.ReadOnly;
+
+                    if (diRetry.GetFileSystemInfos().Length == 0)
+                    {
+                        diRetry.Delete();
+                    }
                 }
                 catch
                 {
-                    var lockers = UnlockHandleHelper.GetLockingProcessNames(path);
+                    var lockers = UnlockHandleHelper.GetLockingProcessNames(dirPath);
                     if (lockers.Count > 0)
                     {
-                        progress?.Report($"Directory locked by: {string.Join(", ", lockers)}");
+                        progress?.Report($"Skipped (In Use): Directory '{Path.GetFileName(dirPath)}' locked by {string.Join(", ", lockers)}");
                     }
                 }
             }
@@ -263,17 +325,13 @@ namespace EvolveOS_Optimizer.Utilities.Services
             return rules;
         }
 
-        private static long TryGetDeletableSize(string path)
+        private static long GetFileSizeFast(string path)
         {
-            const uint DELETE = 0x00010000;
-            const uint FILE_SHARE_ALL = 0x7;
-            const uint OPEN_EXISTING = 3;
-
-            using var handle = Win32Helper.CreateFileW(path, DELETE, FILE_SHARE_ALL,
-                                                       IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
-            if (handle.IsInvalid) return -1;
-
-            try { return new FileInfo(path).Length; }
+            try
+            {
+                var fi = new FileInfo(path);
+                return fi.Exists ? fi.Length : -1;
+            }
             catch { return -1; }
         }
 
@@ -287,10 +345,10 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         private static readonly string[] ProtectedSegments =
         {
-            @"\IndexedDB\chrome-extension_", // Protects 1Password/Bitwarden etc.
-            @"\WinUI3",                      // Prevents crashing the WinUI 3 renderer
-            @"\EvolveOS",                    // Protects app-specific subfolders
-            @".WebView2"                     // Prevents crashing embedded WebViews
+            @"\IndexedDB\chrome-extension_",
+            @"\WinUI3",
+            @"\EvolveOS",
+            @".WebView2"
         };
 
         private static bool IsProtected(string path) =>
