@@ -30,15 +30,17 @@ namespace EvolveOS_Optimizer.Utilities.Services
             IProgress<string>? entryProgress = progress is null ? null
                 : new PrefixedProgress(entry.Name, progress);
 
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
             foreach (var fileKey in entry.FileKeys)
             {
-                if (token.IsCancellationRequested) break;
                 try
                 {
                     foreach (var file in FindFiles(fileKey, excluded, entryProgress, token))
                     {
                         if (token.IsCancellationRequested) break;
-                        if (result.FilesToDelete.Contains(file)) continue;
+
+                        if (!seen.Add(file)) continue;
 
                         var size = TryGetDeletableSize(file);
                         if (size < 0) continue;
@@ -47,13 +49,17 @@ namespace EvolveOS_Optimizer.Utilities.Services
                         result.TotalBytes += size;
                     }
                 }
+                catch (OperationCanceledException) { throw; }
                 catch { }
             }
 
             foreach (var regKey in entry.RegKeys)
             {
-                token.ThrowIfCancellationRequested();
-                try { result.RegistryToDelete.AddRange(RegistryHelp.FindRegistryItems(regKey)); }
+                try
+                {
+                    result.RegistryToDelete.AddRange(RegistryHelp.FindRegistryItems(regKey));
+                }
+                catch (OperationCanceledException) { throw; }
                 catch { }
             }
 
@@ -64,45 +70,57 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             bool recurse = fileKey.Flag is FileKeyFlag.Recurse or FileKeyFlag.RemoveSelf;
 
+            var patterns = fileKey.Pattern.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
             foreach (var dir in PathLocator.ResolvePaths(fileKey.Path))
             {
                 if (token.IsCancellationRequested) yield break;
                 if (!Directory.Exists(dir)) continue;
 
-                progress?.Report(dir);
-
-                foreach (var pattern in fileKey.Pattern.Split(';', StringSplitOptions.RemoveEmptyEntries))
-                    foreach (var f in EnumerateFilesSafe(dir, pattern.Trim(), recurse, progress, token))
-                    {
-                        if (token.IsCancellationRequested) yield break;
-                        if (!IsExcluded(f, excluded))
-                            yield return f;
-                    }
+                foreach (var f in EnumerateFilesSafe(dir, patterns, excluded, recurse, progress, token))
+                {
+                    if (token.IsCancellationRequested) yield break;
+                    if (!IsExcluded(f, excluded) && !IsProtected(f))
+                        yield return f;
+                }
             }
         }
 
-        private static IEnumerable<string> EnumerateFilesSafe(string root, string pattern, bool recurse, IProgress<string>? progress = null, CancellationToken token = default)
+        private static IEnumerable<string> EnumerateFilesSafe(string root, string[] patterns, List<ExclusionRule> excluded, bool recurse, IProgress<string>? progress = null, CancellationToken token = default)
         {
-            IEnumerable<string> files;
-            try { files = Directory.EnumerateFiles(root, pattern); }
-            catch { files = []; }
-            foreach (var f in files)
+            var scanRoot = root.TrimEnd('\\') + "\\";
+            if (excluded.Any(rule => rule.Pattern is null && scanRoot.StartsWith(rule.DirPrefix, StringComparison.OrdinalIgnoreCase)))
+                yield break;
+
+            progress?.Report(root);
+
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var p in patterns)
             {
-                if (token.IsCancellationRequested) yield break;
-                yield return f;
+                IEnumerable<string> files;
+                try { files = Directory.EnumerateFiles(root, p); }
+                catch { files = []; }
+                foreach (var f in files)
+                {
+                    if (token.IsCancellationRequested) yield break;
+                    if (seen.Add(f)) yield return f;
+                }
             }
 
             if (!recurse) yield break;
 
             IEnumerable<string> dirs;
-            try { dirs = Directory.EnumerateDirectories(root); }
+            try
+            {
+                dirs = Directory.EnumerateDirectories(root)
+                                .Where(d => (File.GetAttributes(d) & FileAttributes.ReparsePoint) == 0);
+            }
             catch { yield break; }
 
             foreach (var sub in dirs)
             {
-                if (token.IsCancellationRequested) yield break;
-                progress?.Report(sub);
-                foreach (var f in EnumerateFilesSafe(sub, pattern, recurse: true, progress, token))
+                token.ThrowIfCancellationRequested();
+                foreach (var f in EnumerateFilesSafe(sub, patterns, excluded, recurse: true, progress, token))
                     yield return f;
             }
         }
@@ -178,13 +196,17 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         private static void TryPruneEmptyDirs(string path, IProgress<string>? progress, CancellationToken token)
         {
-            if (!Directory.Exists(path)) return;
+            if (!Directory.Exists(path) || IsProtected(path)) return;
+
             try
             {
                 foreach (var sub in Directory.GetDirectories(path, "*", SearchOption.AllDirectories)
                                              .OrderByDescending(d => d.Length))
                 {
                     token.ThrowIfCancellationRequested();
+
+                    if (IsProtected(sub)) continue;
+
                     if (Directory.GetFileSystemEntries(sub).Length == 0)
                         Directory.Delete(sub);
                 }
@@ -224,6 +246,20 @@ namespace EvolveOS_Optimizer.Utilities.Services
                     rules.Add(new ExclusionRule(p.TrimEnd('\\') + "\\", ex.Pattern));
                 }
             }
+
+            try
+            {
+                string baseDir = AppContext.BaseDirectory.TrimEnd('\\') + "\\";
+                rules.Add(new ExclusionRule(baseDir, null));
+
+                string tempPath = Path.GetTempPath();
+                if (!tempPath.EndsWith("\\")) tempPath += "\\";
+
+                string procName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+                rules.Add(new ExclusionRule(tempPath, $"{procName}*"));
+            }
+            catch { }
+
             return rules;
         }
 
@@ -234,7 +270,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
             const uint OPEN_EXISTING = 3;
 
             using var handle = Win32Helper.CreateFileW(path, DELETE, FILE_SHARE_ALL,
-                                           IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
+                                                       IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
             if (handle.IsInvalid) return -1;
 
             try { return new FileInfo(path).Length; }
@@ -248,6 +284,17 @@ namespace EvolveOS_Optimizer.Utilities.Services
                     return true;
             return false;
         }
+
+        private static readonly string[] ProtectedSegments =
+        {
+            @"\IndexedDB\chrome-extension_", // Protects 1Password/Bitwarden etc.
+            @"\WinUI3",                      // Prevents crashing the WinUI 3 renderer
+            @"\EvolveOS",                    // Protects app-specific subfolders
+            @".WebView2"                     // Prevents crashing embedded WebViews
+        };
+
+        private static bool IsProtected(string path) =>
+            ProtectedSegments.Any(s => path.Contains(s, StringComparison.OrdinalIgnoreCase));
 
         private readonly record struct ExclusionRule(string DirPrefix, string? Pattern)
         {
