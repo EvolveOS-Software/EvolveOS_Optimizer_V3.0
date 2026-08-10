@@ -9,6 +9,17 @@
     <sys:String x:Key="title_restore_point">Créer un point de restauration</sys:String>
     <sys:String x:Key="txt_restore_point_dialog">Il est fortement recommandé de créer un point de restauration système avant d'utiliser cet outil ou d'autres outils d'optimisation.</sys:String>
     <sys:String x:Key="btn_continue">Continuer</sys:String>
+
+    <sys:String x:Key="rb_standard_restore">Restauration du système standard (Classique)</sys:String>
+    <sys:String x:Key="rb_pitr_restore">Point-in-Time Restore (Avancé)</sys:String>
+    <sys:String x:Key="rb_pitr_unsupported">(Nécessite Windows 11 25H2+)</sys:String>
+
+    <!-- Point-in-Time Restore (PITR) Window Strings -->
+    <sys:String x:Key="pitr_window_title">Point-in-Time Restore</sys:String>
+    <sys:String x:Key="pitr_win11_exclusive">Exclusivité Windows 11 25H2</sys:String>
+    <sys:String x:Key="pitr_view_snapshots_btn">Voir les instantanés</sys:String>
+    <sys:String x:Key="pitr_close_btn">Fermer</sys:String>
+    <sys:String x:Key="pitr_storage_gb">{0} Go</sys:String>
     <!-- endregion System Restore Point -->
 
     <!-- region Default Description Block String(s) -->
@@ -256,12 +267,18 @@
     <sys:String x:Key="Settings_RevertDesc">Annulez les optimisations du système et restaurez votre PC à son état précédent à l'aide de la Restauration du système Windows.</sys:String>
     <sys:String x:Key="Settings_RevertButton">Restaurer le système</sys:String>
 
+    <sys:String x:Key="Settings_PitrConfig_Title">Configuration de Point-in-Time Restore</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Desc">Configurez les instantanés automatisés avancés, les limites de stockage et les options de récupération (Windows 11 25H2+).</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Button">Configurer PITR</sys:String>
+
     <sys:String x:Key="Settings_RevertDialogTitle">Rétablir les paramètres par défaut ?</sys:String>
     <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer utilise la Restauration du système Windows pour annuler en toute sécurité toutes les modifications apportées à votre système.&#x0a;&#x0a;En cliquant sur 'Continuer', l'assistant de Restauration du système Windows s'ouvrira. Veuillez sélectionner le point de restauration nommé 'EvolveOS Initial Backup' pour annuler toutes les optimisations.</sys:String>
 
     <sys:String x:Key="Settings_RevertMissingTitle">Point de restauration manquant</sys:String>
     <sys:String x:Key="Settings_RevertMissingContent">Le point de restauration 'EvolveOS Optimizer Initial Backup' est introuvable. Vous avez peut-être choisi de ne pas le créer, ou Windows l'a supprimé automatiquement pour libérer de l'espace disque.&#x0a;&#x0a;Vous pouvez toujours continuer à ouvrir l'assistant de Restauration du système pour rechercher des points de restauration manuels plus anciens.</sys:String>
 
+    <sys:String x:Key="Settings_RestorePrompt_Button">Réactiver l'invite</sys:String>
+    <sys:String x:Key="Settings_RestorePrompt_Enabled">Activé !</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStart">Demander de créer un point de restauration au démarrage</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStartDesc">Affiche une invite pour créer un point de restauration système à chaque lancement de l'application.</sys:String>
 

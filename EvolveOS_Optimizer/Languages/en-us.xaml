@@ -9,6 +9,17 @@
     <sys:String x:Key="title_restore_point">Create Restore Point</sys:String>
     <sys:String x:Key="txt_restore_point_dialog">It is highly recommended to create a system restore point before using this or other optimization tools.</sys:String>
     <sys:String x:Key="btn_continue">Continue</sys:String>
+
+    <sys:String x:Key="rb_standard_restore">Standard System Restore (Legacy)</sys:String>
+    <sys:String x:Key="rb_pitr_restore">Point-in-Time Restore (Advanced)</sys:String>
+    <sys:String x:Key="rb_pitr_unsupported">(Requires Windows 11 25H2+)</sys:String>
+
+    <!-- Point-in-Time Restore (PITR) Window Strings -->
+    <sys:String x:Key="pitr_window_title">Point-in-Time Restore</sys:String>
+    <sys:String x:Key="pitr_win11_exclusive">Windows 11 25H2 Exclusive</sys:String>
+    <sys:String x:Key="pitr_view_snapshots_btn">View Snapshots</sys:String>
+    <sys:String x:Key="pitr_close_btn">Close</sys:String>
+    <sys:String x:Key="pitr_storage_gb">{0} GB</sys:String>
     <!-- endregion System Restore Point -->
 
     <!-- region Default Description Block String(s) -->
@@ -259,12 +270,18 @@
     <sys:String x:Key="Settings_RevertDesc">Undo system optimizations and return your PC to its previous state using Windows System Restore.</sys:String>
     <sys:String x:Key="Settings_RevertButton">Restore System</sys:String>
 
+    <sys:String x:Key="Settings_PitrConfig_Title">Point-in-Time Restore Configuration</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Desc">Configure advanced automated snapshots, storage limits, and recovery options (Windows 11 25H2+).</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Button">Configure PITR</sys:String>
+
     <sys:String x:Key="Settings_RevertDialogTitle">Revert to Defaults?</sys:String>
     <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer uses Windows System Restore to safely revert all changes made to your system.&#x0a;&#x0a;Clicking 'Continue' will open the Windows System Restore wizard. Please select the restore point named 'EvolveOS Initial Backup' to undo all tweaks.</sys:String>
 
     <sys:String x:Key="Settings_RevertMissingTitle">Restore Point Missing</sys:String>
     <sys:String x:Key="Settings_RevertMissingContent">The 'EvolveOS Optimizer Initial Backup' restore point could not be found. You may have opted out of creating it, or Windows automatically deleted it to free up disk space.&#x0a;&#x0a;You can still continue to open the System Restore wizard to look for older, manual restore points.</sys:String>
 
+    <sys:String x:Key="Settings_RestorePrompt_Button">Re-enable Prompt</sys:String>
+    <sys:String x:Key="Settings_RestorePrompt_Enabled">Enabled!</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStart">Prompt to create a restore point on startup</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStartDesc">Shows a prompt to create a system restore point every time you launch the application.</sys:String>
 

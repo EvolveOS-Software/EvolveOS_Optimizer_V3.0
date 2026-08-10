@@ -12,6 +12,7 @@ using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Dialogs;
 using EvolveOS_Optimizer.Pages;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -788,10 +789,31 @@ namespace EvolveOS_Optimizer
 
         private async Task ShowRestorePointDialogAsync()
         {
+            bool isPitrSupported = Environment.OSVersion.Version.Build >= 26200;
+
+            var rbStandard = new RadioButton
+            {
+                Content = ResourceString.GetString("rb_standard_restore") ?? "Standard System Restore (Legacy)",
+                IsChecked = true,
+                Margin = new Thickness(0, 10, 0, 0)
+            };
+
+            var rbPitr = new RadioButton
+            {
+                Content = ResourceString.GetString("rb_pitr_restore") ?? "Point-in-Time Restore (Advanced)",
+                Margin = new Thickness(0, 8, 0, 10),
+                IsEnabled = isPitrSupported
+            };
+
+            if (!isPitrSupported)
+            {
+                rbPitr.Content += " " + (ResourceString.GetString("rb_pitr_unsupported") ?? "(Requires Windows 11 25H2+)");
+            }
+
             var neverShowAgain = new CheckBox
             {
                 Content = ResourceString.GetString("chkbox_do_not_show") ?? "Do not show this again",
-                Margin = new Thickness(0, 10, 0, 0),
+                Margin = new Thickness(0, 15, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
@@ -805,10 +827,12 @@ namespace EvolveOS_Optimizer
             {
                 new TextBlock
                 {
-                    Text = ResourceString.GetString("txt_restore_point_dialog") ?? "It is highly recommended to create a system restore point before using this or other optimization tools.",
+                    Text = ResourceString.GetString("txt_restore_point_dialog") ?? "It is highly recommended to create a system restore point before using optimization tools. Please choose your preferred protection method:",
                     TextWrapping = TextWrapping.Wrap,
                     Margin = new Thickness(0, 0, 0, 10)
                 },
+                rbStandard,
+                rbPitr,
                 neverShowAgain
             }
                 },
@@ -831,13 +855,23 @@ namespace EvolveOS_Optimizer
 
                 if (result == ContentDialogResult.Primary)
                 {
-                    Debug.WriteLine("[RestorePoint] Opening SystemPropertiesProtection");
-
-                    Process.Start(new ProcessStartInfo
+                    if (rbPitr.IsChecked == true)
                     {
-                        FileName = "SystemPropertiesProtection.exe",
-                        UseShellExecute = true
-                    });
+                        Debug.WriteLine("[RestorePoint] Opening Point-in-Time Restore Window");
+
+                        var pitrWindow = new PointInTimeRestoreWindow();
+                        pitrWindow.Activate();
+                    }
+                    else
+                    {
+                        Debug.WriteLine("[RestorePoint] Opening SystemPropertiesProtection");
+
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "SystemPropertiesProtection.exe",
+                            UseShellExecute = true
+                        });
+                    }
                 }
             }
             catch (Exception ex)

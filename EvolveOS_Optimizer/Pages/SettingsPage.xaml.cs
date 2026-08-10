@@ -14,6 +14,7 @@ using EvolveOS_Optimizer.Core.Enums;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Core.ViewModel;
+using EvolveOS_Optimizer.Dialogs;
 using EvolveOS_Optimizer.Utilities.Animation;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
@@ -193,11 +194,28 @@ namespace EvolveOS_Optimizer.Pages
             _isInitialized = true;
             InitializeAutoThemeScheduler();
             ApplyUIPermissions();
+
+            if (LocalMachineSettingsEngine.IsFirstRun)
+            {
+                if (BtnResetRestorePrompt != null && TxtResetRestorePrompt != null)
+                {
+                    BtnResetRestorePrompt.IsEnabled = false;
+                    TxtResetRestorePrompt.Text = GetText("Settings_RestorePrompt_Enabled");
+                }
+            }
+            else
+            {
+                if (BtnResetRestorePrompt != null && TxtResetRestorePrompt != null)
+                {
+                    BtnResetRestorePrompt.IsEnabled = true;
+                    TxtResetRestorePrompt.Text = GetText("Settings_RestorePrompt_Button");
+                }
+            }
         }
 
         private void SettingsPage_Unloaded(object sender, RoutedEventArgs e)
         {
-            Purge();
+            _ = Purge();
         }
         #endregion
 
@@ -1450,6 +1468,30 @@ namespace EvolveOS_Optimizer.Pages
             }
 
             if (btn != null) btn.IsEnabled = true;
+        }
+
+        private void BtnResetRestorePrompt_Click(object sender, RoutedEventArgs e)
+        {
+            LocalMachineSettingsEngine.IsFirstRun = true;
+
+            if (sender is Button btn)
+            {
+                btn.IsEnabled = false;
+                TxtResetRestorePrompt.Text = GetText("Settings_RestorePrompt_Enabled");
+            }
+        }
+
+        private void BtnOpenPitrWindow_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var pitrWindow = new PointInTimeRestoreWindow();
+                pitrWindow.Activate();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SettingsPage] Failed to open Point-in-Time Restore window: {ex.Message}");
+            }
         }
 
         private async Task<bool> DoesEvolveOsRestorePointExistAsync()

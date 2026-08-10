@@ -854,11 +854,26 @@ public static class UpdateOptimizations
                     {
                         new RegistrySetting
                         {
-                            KeyPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\EvolveOS_Optimizer\Dummy",
-                            ValueName = "DummyLimit",
+                            KeyPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\EvolveOS_Optimizer\Settings",
+                            ValueName = "PITR_MaxStorage",
                             RecommendedValue = 20,
                             DefaultValue = 10,
                             ValueType = Microsoft.Win32.RegistryValueKind.DWord
+                        }
+                    },
+                    PowerShellScripts = new List<PowerShellScriptSetting>
+                    {
+                        new PowerShellScriptSetting
+                        {
+                            EnabledScript = @"
+                                $size = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\EvolveOS_Optimizer\Settings' -Name 'PITR_MaxStorage' -ErrorAction SilentlyContinue).PITR_MaxStorage
+                                if ($null -eq $size) { $size = 20 }
+                                $drive = $env:SystemDrive
+                                if (-not $drive) { $drive = 'C:' }
+                                vssadmin resize shadowstorage /For=$drive /On=$drive /MaxSize=""$($size)GB""
+                            ",
+                            DisabledScript = null,
+                            RequiresElevation = true
                         }
                     }
                 },

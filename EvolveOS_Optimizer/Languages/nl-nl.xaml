@@ -9,6 +9,17 @@
     <sys:String x:Key="title_restore_point">Herstelpunt maken</sys:String>
     <sys:String x:Key="txt_restore_point_dialog">Het wordt ten zeerste aanbevolen om een systeemherstelpunt te maken voordat u deze of andere optimalisatietools gebruikt.</sys:String>
     <sys:String x:Key="btn_continue">Doorgaan</sys:String>
+
+    <sys:String x:Key="rb_standard_restore">Standaard systeemherstel (Klassiek)</sys:String>
+    <sys:String x:Key="rb_pitr_restore">Point-in-Time Restore (Geavanceerd)</sys:String>
+    <sys:String x:Key="rb_pitr_unsupported">(Vereist Windows 11 25H2+)</sys:String>
+
+    <!-- Point-in-Time Restore (PITR) Window Strings -->
+    <sys:String x:Key="pitr_window_title">Point-in-Time Restore</sys:String>
+    <sys:String x:Key="pitr_win11_exclusive">Exclusief voor Windows 11 25H2</sys:String>
+    <sys:String x:Key="pitr_view_snapshots_btn">Momentopnamen bekijken</sys:String>
+    <sys:String x:Key="pitr_close_btn">Sluiten</sys:String>
+    <sys:String x:Key="pitr_storage_gb">{0} GB</sys:String>
     <!-- endregion System Restore Point -->
 
     <!-- region Default Description Block String(s) -->
@@ -256,12 +267,18 @@
     <sys:String x:Key="Settings_RevertDesc">Maak systeemoptimalisaties ongedaan en breng uw pc terug naar de vorige staat met behulp van Windows Systeemherstel.</sys:String>
     <sys:String x:Key="Settings_RevertButton">Systeem herstellen</sys:String>
 
+    <sys:String x:Key="Settings_PitrConfig_Title">Point-in-Time Restore configuratie</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Desc">Configureer geavanceerde automatische momentopnamen, opslaglimieten en herstelopties (Windows 11 25H2+).</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Button">Configureer PITR</sys:String>
+
     <sys:String x:Key="Settings_RevertDialogTitle">Terugzetten naar standaardinstellingen?</sys:String>
     <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer gebruikt Windows Systeemherstel om veilig alle wijzigingen aan uw systeem ongedaan te maken.&#x0a;&#x0a;Door op 'Doorgaan' te klikken, wordt de wizard Windows Systeemherstel geopend. Selecteer het herstelpunt met de naam 'EvolveOS Initial Backup' om alle aanpassingen ongedaan te maken.</sys:String>
 
     <sys:String x:Key="Settings_RevertMissingTitle">Herstelpunt ontbreekt</sys:String>
     <sys:String x:Key="Settings_RevertMissingContent">Het herstelpunt 'EvolveOS Optimizer Initial Backup' is niet gevonden. U heeft er mogelijk voor gekozen dit niet aan te maken, of Windows heeft het automatisch verwijderd om schijfruimte vrij te maken.&#x0a;&#x0a;U kunt nog steeds doorgaan met het openen van de wizard Systeemherstel om te zoeken naar oudere, handmatige herstelpunten.</sys:String>
 
+    <sys:String x:Key="Settings_RestorePrompt_Button">Melding opnieuw inschakelen</sys:String>
+    <sys:String x:Key="Settings_RestorePrompt_Enabled">Ingeschakeld!</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStart">Vragen om een herstelpunt te maken bij opstarten</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStartDesc">Toont een prompt om een systeemherstelpunt te maken elke keer dat u de applicatie start.</sys:String>
 

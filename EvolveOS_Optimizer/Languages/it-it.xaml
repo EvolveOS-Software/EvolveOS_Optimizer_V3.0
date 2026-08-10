@@ -9,6 +9,17 @@
     <sys:String x:Key="title_restore_point">Crea punto di ripristino</sys:String>
     <sys:String x:Key="txt_restore_point_dialog">Si consiglia vivamente di creare un punto di ripristino del sistema prima di utilizzare questo o altri strumenti di ottimizzazione.</sys:String>
     <sys:String x:Key="btn_continue">Continua</sys:String>
+
+    <sys:String x:Key="rb_standard_restore">Ripristino configurazione di sistema standard (Classico)</sys:String>
+    <sys:String x:Key="rb_pitr_restore">Point-in-Time Restore (Avanzato)</sys:String>
+    <sys:String x:Key="rb_pitr_unsupported">(Richiede Windows 11 25H2+)</sys:String>
+
+    <!-- Point-in-Time Restore (PITR) Window Strings -->
+    <sys:String x:Key="pitr_window_title">Point-in-Time Restore</sys:String>
+    <sys:String x:Key="pitr_win11_exclusive">Esclusiva Windows 11 25H2</sys:String>
+    <sys:String x:Key="pitr_view_snapshots_btn">Visualizza snapshot</sys:String>
+    <sys:String x:Key="pitr_close_btn">Chiudi</sys:String>
+    <sys:String x:Key="pitr_storage_gb">{0} GB</sys:String>
     <!-- endregion System Restore Point -->
 
     <!-- region Default Description Block String(s) -->
@@ -256,12 +267,18 @@
     <sys:String x:Key="Settings_RevertDesc">Annulla le ottimizzazioni del sistema e riporta il PC allo stato precedente utilizzando il Ripristino configurazione di sistema di Windows.</sys:String>
     <sys:String x:Key="Settings_RevertButton">Ripristina il sistema</sys:String>
 
+    <sys:String x:Key="Settings_PitrConfig_Title">Configurazione Point-in-Time Restore</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Desc">Configura snapshot automatici avanzati, limiti di archiviazione e opzioni di ripristino (Windows 11 25H2+).</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Button">Configura PITR</sys:String>
+
     <sys:String x:Key="Settings_RevertDialogTitle">Ripristinare le impostazioni predefinite?</sys:String>
     <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer utilizza il Ripristino configurazione di sistema di Windows per annullare in sicurezza tutte le modifiche apportate al sistema.&#x0a;&#x0a;Facendo clic su 'Continua' si aprirà la procedura guidata di Ripristino configurazione di sistema di Windows. Seleziona il punto di ripristino denominato 'EvolveOS Initial Backup' per annullare tutte le modifiche.</sys:String>
 
     <sys:String x:Key="Settings_RevertMissingTitle">Punto di ripristino mancante</sys:String>
     <sys:String x:Key="Settings_RevertMissingContent">Il punto di ripristino 'EvolveOS Optimizer Initial Backup' non è stato trovato. Potresti aver scelto di non crearlo, oppure Windows lo ha eliminato automaticamente per liberare spazio sul disco.&#x0a;&#x0a;Puoi comunque continuare ad aprire la procedura guidata di Ripristino configurazione di sistema per cercare punti di ripristino manuali più vecchi.</sys:String>
 
+    <sys:String x:Key="Settings_RestorePrompt_Button">Riabilita richiesta</sys:String>
+    <sys:String x:Key="Settings_RestorePrompt_Enabled">Abilitato!</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStart">Richiedi di creare un punto di ripristino all'avvio</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStartDesc">Mostra una richiesta per creare un punto di ripristino del sistema ogni volta che avvii l'applicazione.</sys:String>
 

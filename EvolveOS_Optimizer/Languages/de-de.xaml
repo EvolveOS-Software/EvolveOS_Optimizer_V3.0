@@ -9,6 +9,17 @@
     <sys:String x:Key="title_restore_point">Wiederherstellungspunkt erstellen</sys:String>
     <sys:String x:Key="txt_restore_point_dialog">Es wird dringend empfohlen, einen Systemwiederherstellungspunkt zu erstellen, bevor Sie diese oder andere Optimierungstools verwenden.</sys:String>
     <sys:String x:Key="btn_continue">Weiter</sys:String>
+
+    <sys:String x:Key="rb_standard_restore">Standard-Systemwiederherstellung (Klassisch)</sys:String>
+    <sys:String x:Key="rb_pitr_restore">Point-in-Time Restore (Erweitert)</sys:String>
+    <sys:String x:Key="rb_pitr_unsupported">(Erfordert Windows 11 25H2+)</sys:String>
+
+    <!-- Point-in-Time Restore (PITR) Window Strings -->
+    <sys:String x:Key="pitr_window_title">Point-in-Time Restore</sys:String>
+    <sys:String x:Key="pitr_win11_exclusive">Exklusiv für Windows 11 25H2</sys:String>
+    <sys:String x:Key="pitr_view_snapshots_btn">Snapshots anzeigen</sys:String>
+    <sys:String x:Key="pitr_close_btn">Schließen</sys:String>
+    <sys:String x:Key="pitr_storage_gb">{0} GB</sys:String>
     <!-- endregion System Restore Point -->
 
     <!-- region Default Description Block String(s) -->
@@ -256,12 +267,18 @@
     <sys:String x:Key="Settings_RevertDesc">Machen Sie Systemoptimierungen rückgängig und setzen Sie Ihren PC mithilfe der Windows-Systemwiederherstellung auf seinen vorherigen Zustand zurück.</sys:String>
     <sys:String x:Key="Settings_RevertButton">System wiederherstellen</sys:String>
 
+    <sys:String x:Key="Settings_PitrConfig_Title">Point-in-Time Restore-Konfiguration</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Desc">Konfigurieren Sie erweiterte automatische Snapshots, Speicherlimits und Wiederherstellungsoptionen (Windows 11 25H2+).</sys:String>
+    <sys:String x:Key="Settings_PitrConfig_Button">PITR konfigurieren</sys:String>
+
     <sys:String x:Key="Settings_RevertDialogTitle">Auf Standardeinstellungen zurücksetzen?</sys:String>
     <sys:String x:Key="Settings_RevertDialogContent">EvolveOS Optimizer verwendet die Windows-Systemwiederherstellung, um alle an Ihrem System vorgenommenen Änderungen sicher rückgängig zu machen.&#x0a;&#x0a;Wenn Sie auf 'Weiter' klicken, wird der Assistent für die Windows-Systemwiederherstellung geöffnet. Bitte wählen Sie den Wiederherstellungspunkt namens 'EvolveOS Initial Backup' aus, um alle Optimierungen rückgängig zu machen.</sys:String>
 
     <sys:String x:Key="Settings_RevertMissingTitle">Wiederherstellungspunkt fehlt</sys:String>
     <sys:String x:Key="Settings_RevertMissingContent">Der Wiederherstellungspunkt 'EvolveOS Optimizer Initial Backup' konnte nicht gefunden werden. Möglicherweise haben Sie sich gegen die Erstellung entschieden, oder Windows hat ihn automatisch gelöscht, um Speicherplatz freizugeben.&#x0a;&#x0a;Sie können den Systemwiederherstellungs-Assistenten trotzdem weiterhin öffnen, um nach älteren, manuellen Wiederherstellungspunkten zu suchen.</sys:String>
 
+    <sys:String x:Key="Settings_RestorePrompt_Button">Hinweis reaktivieren</sys:String>
+    <sys:String x:Key="Settings_RestorePrompt_Enabled">Aktiviert!</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStart">Beim Start zur Erstellung eines Wiederherstellungspunkts auffordern</sys:String>
     <sys:String x:Key="Settings_ShowRestorePointOnStartDesc">Zeigt bei jedem Start der Anwendung eine Aufforderung zur Erstellung eines Systemwiederherstellungspunkts an.</sys:String>
 
