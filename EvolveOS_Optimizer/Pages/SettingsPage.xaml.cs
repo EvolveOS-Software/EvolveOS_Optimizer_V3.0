@@ -302,6 +302,11 @@ namespace EvolveOS_Optimizer.Pages
                         currentTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? "Dark" : "Light";
                     }
 
+                    if (selected == "DarkGlass")
+                    {
+                        currentTheme = "Dark";
+                    }
+
                     MainWindow.Instance.RootGrid.RequestedTheme = currentTheme == "Dark" ? ElementTheme.Dark : ElementTheme.Light;
 
                     if (selected == "None")
@@ -1820,7 +1825,7 @@ namespace EvolveOS_Optimizer.Pages
 
                     DispatcherQueue?.TryEnqueue(() =>
                     {
-                        this.Bindings?.StopTracking();
+                        //this.Bindings?.StopTracking();
                         this.DataContext = null;
                         this.Content = null;
                     });

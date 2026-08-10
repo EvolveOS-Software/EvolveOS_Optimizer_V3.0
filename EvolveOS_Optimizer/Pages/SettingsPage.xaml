@@ -114,6 +114,7 @@
                                 <ComboBoxItem Tag="MicaAlt"/>
                                 <ComboBoxItem Tag="Acrylic"/>
                                 <ComboBoxItem Tag="AcrylicThin"/>
+                                <ComboBoxItem Tag="DarkGlass"/>
                             </ComboBox>
                         </Grid>
 

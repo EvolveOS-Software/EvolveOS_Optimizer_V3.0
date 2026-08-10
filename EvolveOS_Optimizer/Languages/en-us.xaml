@@ -160,6 +160,7 @@
     <sys:String x:Key="Settings_Backdrop_MicaAlt">Mica Alt</sys:String>
     <sys:String x:Key="Settings_Backdrop_Acrylic">Acrylic</sys:String>
     <sys:String x:Key="Settings_Backdrop_AcrylicThin">Acrylic (Thin)</sys:String>
+    <sys:String x:Key="Settings_Backdrop_DarkGlass">Dark Glass</sys:String>
 
     <sys:String x:Key="Settings_Theme_Title">App Theme</sys:String>
     <sys:String x:Key="Settings_Theme_Subtitle">Choose between Light, Dark, or System visual styles</sys:String>

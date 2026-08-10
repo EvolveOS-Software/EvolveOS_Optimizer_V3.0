@@ -46,6 +46,48 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     }
                 }
 
+                if (mainWindow.Content is FrameworkElement rootContent)
+                {
+                    var globalOverlay = FindVisualChildByName<Grid>(rootContent, "GlobalOverlay");
+                    var windowDimOverlay = FindVisualChildByName<Grid>(rootContent, "WindowDimOverlay");
+
+                    bool isDarkGlass = SettingsEngine.Backdrop == "DarkGlass";
+
+                    if (globalOverlay != null)
+                    {
+                        if (isDarkGlass)
+                        {
+                            globalOverlay.Background = new Microsoft.UI.Xaml.Media.AcrylicBrush
+                            {
+                                TintColor = Microsoft.UI.Colors.Black,
+                                TintOpacity = 0.25f,
+                                FallbackColor = Microsoft.UI.Colors.Black
+                            };
+                        }
+                        else
+                        {
+                            globalOverlay.Background = new SolidColorBrush(ToColor("#AA000000"));
+                        }
+                    }
+
+                    if (windowDimOverlay != null)
+                    {
+                        if (isDarkGlass)
+                        {
+                            windowDimOverlay.Background = new Microsoft.UI.Xaml.Media.AcrylicBrush
+                            {
+                                TintColor = Microsoft.UI.Colors.Black,
+                                TintOpacity = 0.35f,
+                                FallbackColor = Microsoft.UI.Colors.Black
+                            };
+                        }
+                        else
+                        {
+                            windowDimOverlay.Background = new SolidColorBrush(ToColor("#B3000000"));
+                        }
+                    }
+                }
+
                 if (isVisible && bringToFront)
                 {
                     mainWindow.Activate();
@@ -93,6 +135,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                             "Mica" => new AlwaysActiveMicaBackdrop() { Kind = MicaKind.Base },
                             "MicaAlt" => new AlwaysActiveMicaBackdrop() { Kind = MicaKind.BaseAlt },
                             "Acrylic" => new AlwaysActiveAcrylicBackdrop(),
+                            "DarkGlass" => new DarkGlassBackdrop(),
                             _ => null
                         };
                     }
