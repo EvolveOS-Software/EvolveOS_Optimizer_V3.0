@@ -33,43 +33,48 @@
     <!-- endregion Safe Mode -->
 
     <!-- region Loading/Closing Window -->
-    <sys:String x:Key="loading_message">Hardwaregegevens &amp; beveiligingsprotocollen initialiseren</sys:String>
-    <sys:String x:Key="status_waiting_system">Wachten op systeeminitialisatie...</sys:String>
+    <sys:String x:Key="loading_message">Hardwaregegevens &amp; beveiliging initialiseren</sys:String>
     <sys:String x:Key="status_extracting_resources">Bronnen uitpakken...</sys:String>
-    <sys:String x:Key="status_installing_engine">Vereiste database-engine wordt geïnstalleerd...</sys:String>
-    <sys:String x:Key="status_configuring_engine">Database-engine wordt geconfigureerd...</sys:String>
+    <sys:String x:Key="status_installing_engine">Vereiste database engine installeren...</sys:String>
+    <sys:String x:Key="status_configuring_engine">Database engine configureren...</sys:String>
     <sys:String x:Key="status_initializing_db">Database initialiseren...</sys:String>
-    <sys:String x:Key="status_checking_db">Beschikbaarheid database controleren...</sys:String>
+    <sys:String x:Key="status_checking_db">Databasebeschikbaarheid checken...</sys:String>
     <sys:String x:Key="status_db_not_found">Database niet gevonden...</sys:String>
     <sys:String x:Key="status_decrypting_db">Database ontsleutelen...</sys:String>
     <sys:String x:Key="status_starting_sql">SQL-engine starten...</sys:String>
     <sys:String x:Key="status_finalizing_access">Toegang afronden...</sys:String>
     <sys:String x:Key="status_db_ready">Database gereed</sys:String>
-    <sys:String x:Key="status_saving_backup">De initiële back-up opslaan...</sys:String>
-    <sys:String x:Key="status_hardware_gather">Hardware en telemetrie worden opgevraagd...</sys:String>
+    <sys:String x:Key="status_saving_backup">Initiële back-up opslaan...</sys:String>
 
-    <sys:String x:Key="step1_load">Trusted Installer Service starten...</sys:String>
-    <sys:String x:Key="step2_load">Windows-licentiestatus controleren...</sys:String>
+    <!-- Loading Status Direct Messages -->
+    <sys:String x:Key="status_starting_services">Kerndiensten starten...</sys:String>
+    <sys:String x:Key="status_waiting_system">Wachten op systeeminitialisatie...</sys:String>
+    <sys:String x:Key="status_hardware_gather">Hardware &amp; telemetrie ondervragen...</sys:String>
+
+    <!-- Loading Sequence Steps -->
+    <sys:String x:Key="step1_load">Achtergronddiensten starten...</sys:String>
+    <sys:String x:Key="step2_load">Systeemdatabase voorbereiden...</sys:String>
     <sys:String x:Key="step3_load">Hardwarediagnostiek verzamelen...</sys:String>
-    <sys:String x:Key="step4_load">Versie-updates valideren...</sys:String>
-    <sys:String x:Key="step5_load">Geïnstalleerde pakketten scannen...</sys:String>
-    <sys:String x:Key="step6_load">Defender-uitsluitingen controleren...</sys:String>
-    <sys:String x:Key="step7_load">Status van lokaal account verifiëren...</sys:String>
-    <sys:String x:Key="step8_load">Netsh-netwerkstatus analyseren...</sys:String>
-    <sys:String x:Key="step9_load">Bluetooth- en Tick-configuratie controleren...</sys:String>
+    <sys:String x:Key="step4_load">Windows-licentiestatus checken...</sys:String>
+    <sys:String x:Key="step5_load">Versie updates valideren...</sys:String>
+    <sys:String x:Key="step6_load">Geïnstalleerde pakketten scannen...</sys:String>
+    <sys:String x:Key="step7_load">Lokaal account &amp; Bluetooth checken...</sys:String>
+    <sys:String x:Key="step8_load">Temperatuursensoren starten...</sys:String>
+    <sys:String x:Key="step9_load">Actieve processen &amp; services checken...</sys:String>
     <sys:String x:Key="step10_load">Alle systemen gereed!</sys:String>
 
-    <sys:String x:Key="status_init_backup">Database back-up initialiseren...</sys:String>
-    <sys:String x:Key="status_closing_db">Database engine sluiten...</sys:String>
+    <!-- Closing/Restart Sequence Steps -->
+    <sys:String x:Key="status_init_backup">Databaseback-up initialiseren...</sys:String>
+    <sys:String x:Key="status_closing_db">Database engine afsluiten...</sys:String>
     <sys:String x:Key="status_securing_files">Bestanden beveiligen...</sys:String>
-    <sys:String x:Key="status_writing_backup">Back-up naar schijf schrijven...</sys:String>
-    <sys:String x:Key="status_encrypting_backup">Back-up kopie versleutelen...</sys:String>
-    <sys:String x:Key="status_finalizing_backup">Back-up instellingen voltooien...</sys:String>
+    <sys:String x:Key="status_writing_backup">Backup wegschrijven...</sys:String>
+    <sys:String x:Key="status_encrypting_backup">Backupkopie versleutelen...</sys:String>
+    <sys:String x:Key="status_finalizing_backup">Backupinstellingen afronden...</sys:String>
     <sys:String x:Key="closing_message">EvolveOS Optimizer afsluiten</sys:String>
-    <sys:String x:Key="status_rebooting">EvolveOS Optimizer opnieuw opstarten</sys:String>
-    <sys:String x:Key="status_prep_close">Voorbereiden om af te sluiten...</sys:String>
+    <sys:String x:Key="status_rebooting">EvolveOS Optimizer herstarten</sys:String>
+    <sys:String x:Key="status_prep_close">Afsluiten voorbereiden...</sys:String>
     <sys:String x:Key="status_goodbye">Tot ziens!</sys:String>
-    <!-- endregion Loading Closing Window -->
+    <!-- endregion Loading/Closing Window -->
 
     <!-- region Notification Manager -->
     <sys:String x:Key="click_to_copy_noty">Klik om te kopiëren</sys:String>

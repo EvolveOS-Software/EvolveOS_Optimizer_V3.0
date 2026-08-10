@@ -33,41 +33,46 @@
     <!-- endregion Safe Mode -->
 
     <!-- region Loading/Closing Window -->
-    <sys:String x:Key="loading_message">Initialisiere Hardwaredaten &amp; Sicherheitsprotokolle</sys:String>
-    <sys:String x:Key="status_waiting_system">Warten auf Systeminitialisierung...</sys:String>
-    <sys:String x:Key="status_extracting_resources">Ressourcen werden extrahiert...</sys:String>
-    <sys:String x:Key="status_installing_engine">Erforderliche Datenbank-Engine wird installiert...</sys:String>
-    <sys:String x:Key="status_configuring_engine">Datenbank-Engine wird konfiguriert...</sys:String>
-    <sys:String x:Key="status_initializing_db">Datenbank wird initialisiert...</sys:String>
-    <sys:String x:Key="status_checking_db">Datenbankverfügbarkeit wird geprüft...</sys:String>
+    <sys:String x:Key="loading_message">Hardware-Daten &amp; Sicherheitsprotokolle laden</sys:String>
+    <sys:String x:Key="status_extracting_resources">Ressourcen entpacken...</sys:String>
+    <sys:String x:Key="status_installing_engine">Datenbank Engine installieren...</sys:String>
+    <sys:String x:Key="status_configuring_engine">Datenbank Engine konfigurieren...</sys:String>
+    <sys:String x:Key="status_initializing_db">Datenbank initialisieren...</sys:String>
+    <sys:String x:Key="status_checking_db">Datenbank prüfen...</sys:String>
     <sys:String x:Key="status_db_not_found">Datenbank nicht gefunden...</sys:String>
-    <sys:String x:Key="status_decrypting_db">Datenbank wird entschlüsselt...</sys:String>
-    <sys:String x:Key="status_starting_sql">SQL-Engine wird gestartet...</sys:String>
-    <sys:String x:Key="status_finalizing_access">Zugriff wird abgeschlossen...</sys:String>
+    <sys:String x:Key="status_decrypting_db">Datenbank entschlüsseln...</sys:String>
+    <sys:String x:Key="status_starting_sql">SQL Engine starten...</sys:String>
+    <sys:String x:Key="status_finalizing_access">Zugriff abschließen...</sys:String>
     <sys:String x:Key="status_db_ready">Datenbank bereit</sys:String>
-    <sys:String x:Key="status_saving_backup">Ursprünglichen Backup-Status speichern...</sys:String>
-    <sys:String x:Key="status_hardware_gather">Hardware und Telemetrie werden abgefragt...</sys:String>
+    <sys:String x:Key="status_saving_backup">Initiales Backup speichern...</sys:String>
 
-    <sys:String x:Key="step1_load">Trusted Installer-Dienst wird gestartet...</sys:String>
-    <sys:String x:Key="step2_load">Windows-Lizenzstatus wird überprüft...</sys:String>
-    <sys:String x:Key="step3_load">Hardware-Diagnosedaten werden erfasst...</sys:String>
-    <sys:String x:Key="step4_load">Versionsupdates werden validiert...</sys:String>
-    <sys:String x:Key="step5_load">Installierte Pakete werden gescannt...</sys:String>
-    <sys:String x:Key="step6_load">Defender-Ausschlüsse werden überprüft...</sys:String>
-    <sys:String x:Key="step7_load">Status des lokalen Kontos wird verifiziert...</sys:String>
-    <sys:String x:Key="step8_load">Netsh-Netzwerkstatus wird analysiert...</sys:String>
-    <sys:String x:Key="step9_load">Bluetooth- und Tick-Konfiguration wird überprüft...</sys:String>
+    <!-- Loading Status Direct Messages -->
+    <sys:String x:Key="status_starting_services">Kerndienste starten...</sys:String>
+    <sys:String x:Key="status_waiting_system">Warten auf Systemstart...</sys:String>
+    <sys:String x:Key="status_hardware_gather">Hardware &amp; Telemetrie abrufen...</sys:String>
+
+    <!-- Loading Sequence Steps -->
+    <sys:String x:Key="step1_load">Hintergrunddienste starten...</sys:String>
+    <sys:String x:Key="step2_load">Systemdatenbank vorbereiten...</sys:String>
+    <sys:String x:Key="step3_load">Hardwarediagnostik sammeln...</sys:String>
+    <sys:String x:Key="step4_load">Windows Lizenzstatus prüfen...</sys:String>
+    <sys:String x:Key="step5_load">Versionsupdates validieren...</sys:String>
+    <sys:String x:Key="step6_load">Installierte Pakete scannen...</sys:String>
+    <sys:String x:Key="step7_load">Lokales Konto &amp; Bluetooth prüfen...</sys:String>
+    <sys:String x:Key="step8_load">Temperatursensoren starten...</sys:String>
+    <sys:String x:Key="step9_load">Aktive Prozesse &amp; Dienste prüfen...</sys:String>
     <sys:String x:Key="step10_load">Alle Systeme bereit!</sys:String>
 
-    <sys:String x:Key="status_init_backup">Datenbank Backup wird initialisiert...</sys:String>
-    <sys:String x:Key="status_closing_db">Datenbank Engine wird geschlossen...</sys:String>
-    <sys:String x:Key="status_securing_files">Dateien werden gesichert...</sys:String>
-    <sys:String x:Key="status_writing_backup">Backup wird auf Datenträger geschrieben...</sys:String>
-    <sys:String x:Key="status_encrypting_backup">Backup Kopie wird verschlüsselt...</sys:String>
-    <sys:String x:Key="status_finalizing_backup">Backup Einstellungen werden abgeschlossen...</sys:String>
-    <sys:String x:Key="closing_message">EvolveOS Optimizer wird geschlossen</sys:String>
-    <sys:String x:Key="status_rebooting">EvolveOS Optimizer wird neu gestartet</sys:String>
-    <sys:String x:Key="status_prep_close">Schließen wird vorbereitet...</sys:String>
+    <!-- Closing/Restart Sequence Steps -->
+    <sys:String x:Key="status_init_backup">Datenbank-Backup initialisieren...</sys:String>
+    <sys:String x:Key="status_closing_db">Datenbank Engine schließen...</sys:String>
+    <sys:String x:Key="status_securing_files">Dateien absichern...</sys:String>
+    <sys:String x:Key="status_writing_backup">Backup auf Laufwerk schreiben...</sys:String>
+    <sys:String x:Key="status_encrypting_backup">Backup Kopie verschlüsseln...</sys:String>
+    <sys:String x:Key="status_finalizing_backup">Backup Einstellungen prüfen...</sys:String>
+    <sys:String x:Key="closing_message">EvolveOS Optimizer schließen</sys:String>
+    <sys:String x:Key="status_rebooting">EvolveOS Optimizer neu starten</sys:String>
+    <sys:String x:Key="status_prep_close">Schließen vorbereiten...</sys:String>
     <sys:String x:Key="status_goodbye">Auf Wiedersehen!</sys:String>
     <!-- endregion Loading/Closing Window -->
 

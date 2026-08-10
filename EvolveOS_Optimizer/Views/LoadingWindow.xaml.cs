@@ -69,7 +69,7 @@ namespace EvolveOS_Optimizer.Views
                 string fallbackPath = Path.Combine(AppContext.BaseDirectory, "Resources", "EvolveOSLogo.png");
                 if (File.Exists(fallbackPath))
                 {
-                    DisplayProfileAvatar.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(fallbackPath));
+                    DisplayProfileAvatar.Source = new BitmapImage(new Uri(fallbackPath));
                 }
 
                 if (StatusLoading != null)
@@ -116,7 +116,7 @@ namespace EvolveOS_Optimizer.Views
         }
         #endregion
 
-        #region Iinitial Activation (FIXED STARTUP SEQUENCE)
+        #region Initial Activation
         private async void LoadingWindow_Activated(object sender, WindowActivatedEventArgs e)
         {
             this.Activated -= LoadingWindow_Activated;
@@ -133,7 +133,15 @@ namespace EvolveOS_Optimizer.Views
                     CheckSystemUptimeBackground();
                 });
 
-                _ = LoadUserDisplayDataAsync();
+                await LoadUserDisplayDataAsync();
+
+                string startText = Localizer["status_starting_services"];
+                if (string.IsNullOrEmpty(startText) || startText == "status_starting_services")
+                    startText = "Starting core services...";
+
+                UpdateStatusDirect(startText);
+
+                await Task.Delay(1500);
 
                 ScheduledCleanService.Instance.Start();
                 RegistryMonitorService.Instance.StartMonitoring();
@@ -297,8 +305,10 @@ namespace EvolveOS_Optimizer.Views
         #region Main Processing Engine
         private async Task StartProcessingAsync()
         {
-            UpdateStatus(1);
             var token = _cts.Token;
+
+            // Step 1: Background services initializing
+            UpdateStatus(1);
 
             Task weatherTask = Task.Run(async () =>
             {
@@ -324,16 +334,19 @@ namespace EvolveOS_Optimizer.Views
             });
 
             await App.HostInitializationSource.Task;
-            await Task.Delay(1000, token);
+            await Task.Delay(1500, token);
 
             var diagnosticsInstance = DiagnosticsPageViewModel.Current;
 
             if (_isSystemBusy)
             {
-                UpdateStatusDirect(ResourceString.GetString("status_waiting_system") ?? "Waiting for system to initialize...");
+                string waitText = ResourceString.GetString("status_waiting_system") ?? "Waiting for system to initialize...";
+                UpdateStatusDirect(waitText);
                 await Task.Delay(3500, token);
             }
 
+            // Step 2: Preparing system database
+            UpdateStatus(2);
             bool isDbReady = await Task.Run(async () =>
             {
                 bool isEngineInstalled = await EnsureDatabaseEngineInstalledAsync(token);
@@ -344,74 +357,93 @@ namespace EvolveOS_Optimizer.Views
 
             if (!isDbReady || token.IsCancellationRequested) return;
 
-            await Task.Run(async () =>
+            try
             {
-                try
+                // Step 3: Gathering hardware diagnostics
+                UpdateStatus(3);
+                await Task.Delay(1500, token);
+
+                Task diagnosticsScanTask = Task.Run(async () =>
                 {
-                    if (token.IsCancellationRequested) return;
+                    if (diagnosticsInstance != null)
+                    {
+                        await diagnosticsInstance.ExecuteFullScanAsync();
+                    }
+                });
 
-                    Report(10);
-                    await Task.Delay(1200, token);
+                // Step 4: Checking Windows License
+                UpdateStatus(4);
+                var t1 = Task.Run(() => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus)));
+                await Task.Delay(1500, token); // Increased delay
 
-                    UpdateStatusDirect(ResourceString.GetString("status_hardware_gather") ?? "Interrogating hardware and telemetry...");
-                    await Task.Delay(1200, token);
+                // Step 5: Validating version updates
+                UpdateStatus(5);
+                var t2 = ExecuteAsyncWithLogging(() => SystemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(SystemDiagnostics.ValidateVersionUpdatesAsync));
+                await Task.Delay(1500, token);
 
-                    Task diagnosticsScanTask = diagnosticsInstance.ExecuteFullScanAsync();
+                // Step 6: Scanning installed packages
+                UpdateStatus(6);
+                var t3 = Task.Run(() => ExecuteWithLogging(_uninstallingPakages.GetInstalledPackages, nameof(_uninstallingPakages.GetInstalledPackages)));
+                await Task.Delay(1500, token);
 
-                    Report(20);
-                    await Task.Delay(800, token);
-
-                    await Task.WhenAll(
-                        Task.Run(() => ExecuteWithLogging(WindowsLicense.LicenseStatus, nameof(WindowsLicense.LicenseStatus))),
-                        Task.Run(() => ExecuteWithLogging(_systemDiagnostics.GetHardwareData, nameof(_systemDiagnostics.GetHardwareData))),
-                        ExecuteAsyncWithLogging(() => SystemDiagnostics.ValidateVersionUpdatesAsync(token), nameof(SystemDiagnostics.ValidateVersionUpdatesAsync)),
-                        Task.Run(() => ExecuteWithLogging(_uninstallingPakages.GetInstalledPackages, nameof(_uninstallingPakages.GetInstalledPackages))),
-                        //ExecuteAsyncWithLogging(RunGuard.CheckingDefenderExclusions, nameof(RunGuard.CheckingDefenderExclusions)),
-                        Task.Run(() =>
-                        {
-                            ExecuteWithLogging(UninstallingPackages.CheckingForLocalAccount, nameof(UninstallingPackages.CheckingForLocalAccount));
-                            ExecuteWithLogging(BluetoothManager.Initialize, nameof(BluetoothManager.Initialize));
-                        }),
-                        Task.Run(() => ExecuteWithLogging(HardwareTemperatureService.Instance.Initialize, nameof(HardwareTemperatureService.Initialize)))
-                    );
-
-                    Report(80);
-                    await Task.Delay(1000, token); // Let Step 8 type out smoothly
-
-                    HardwareData.RunningProcessesCount = await _systemDiagnostics.GetProcessCount();
-                    HardwareData.RunningServicesCount = await _systemDiagnostics.GetServicesCount();
-
-                    Report(90);
-                    await Task.Delay(1000, token);
-
-                    await _systemDiagnostics.GetTotalProcessorUsage();
-                    await _systemDiagnostics.GetPhysicalAvailableMemory();
-                }
-                catch (OperationCanceledException) { }
-                catch (Exception ex)
+                // Step 7: Verifying local account & Bluetooth
+                UpdateStatus(7);
+                var t4 = Task.Run(() =>
                 {
-                    ErrorLogging.LogWritingFile(ex, "TelemetryGathering_Fail");
-                }
-            }, token);
+                    ExecuteWithLogging(UninstallingPackages.CheckingForLocalAccount, nameof(UninstallingPackages.CheckingForLocalAccount));
+                    ExecuteWithLogging(BluetoothManager.Initialize, nameof(BluetoothManager.Initialize));
+                });
+                await Task.Delay(1500, token);
+
+                // Step 8: Initializing temperature sensors
+                UpdateStatus(8);
+                var t5 = Task.Run(() => ExecuteWithLogging(HardwareTemperatureService.Instance.Initialize, nameof(HardwareTemperatureService.Initialize)));
+                await Task.Delay(1500, token);
+
+                // Step 9: Analyzing active processes & services
+                UpdateStatus(9);
+                var t6 = Task.Run(() => ExecuteWithLogging(_systemDiagnostics.GetHardwareData, nameof(_systemDiagnostics.GetHardwareData)));
+
+                // Wait for all the parallel background tasks to securely finish
+                await Task.WhenAll(t1, t2, t3, t4, t5, t6, diagnosticsScanTask);
+
+                // Fetch final stats
+                HardwareData.RunningProcessesCount = await _systemDiagnostics.GetProcessCount();
+                HardwareData.RunningServicesCount = await _systemDiagnostics.GetServicesCount();
+                await _systemDiagnostics.GetTotalProcessorUsage();
+                await _systemDiagnostics.GetPhysicalAvailableMemory();
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                ErrorLogging.LogWritingFile(ex, "TelemetryGathering_Fail");
+            }
 
             if (token.IsCancellationRequested) return;
 
             try
             {
-                Report(100);
-                await Task.Delay(800, token);
+                // Step 10: All systems ready!
+                UpdateStatus(10);
+                await Task.Delay(1500, token);
+
                 await Task.WhenAny(weatherTask, Task.Delay(1500, token));
 
                 if (token.IsCancellationRequested) return;
 
                 string? sessionUser = string.Empty;
-                bool isSessionValid = AuthSessionManager.IsSessionValid(out sessionUser, out _);
+                bool isSessionValid = false;
+
+                await Task.Run(() =>
+                {
+                    isSessionValid = AuthSessionManager.IsSessionValid(out sessionUser, out _);
+                }, token);
 
                 if (_isAutoLoginSuccessful || isSessionValid)
                 {
-                    string? targetUser = !string.IsNullOrEmpty(UserSession.Username)
+                    string targetUser = !string.IsNullOrEmpty(UserSession.Username)
                         ? UserSession.Username!
-                        : sessionUser;
+                        : sessionUser ?? "DefaultUser";
 
                     if (string.IsNullOrEmpty(targetUser))
                     {
@@ -422,8 +454,11 @@ namespace EvolveOS_Optimizer.Views
 
                     try
                     {
-                        var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
-                        var loginData = await userDataAccess.GetPasswordAndImageAsync(targetUser);
+                        var loginData = await Task.Run(async () =>
+                        {
+                            var userDataAccess = new UserDataAccess(SqlConnectionHelper.connectReturn());
+                            return await userDataAccess.GetPasswordAndImageAsync(targetUser);
+                        }, token);
 
                         if (loginData.ProfileImageBytes != null && loginData.ProfileImageBytes.Length > 0)
                         {

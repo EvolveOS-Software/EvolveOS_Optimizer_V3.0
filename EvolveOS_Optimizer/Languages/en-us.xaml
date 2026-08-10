@@ -34,7 +34,6 @@
 
     <!-- region Loading/Closing Window -->
     <sys:String x:Key="loading_message">Initializing hardware data &amp; security protocols</sys:String>
-    <sys:String x:Key="status_waiting_system">Waiting for system to initialize...</sys:String>
     <sys:String x:Key="status_extracting_resources">Extracting resources...</sys:String>
     <sys:String x:Key="status_installing_engine">Installing required database engine...</sys:String>
     <sys:String x:Key="status_configuring_engine">Configuring database engine...</sys:String>
@@ -46,19 +45,25 @@
     <sys:String x:Key="status_finalizing_access">Finalizing access...</sys:String>
     <sys:String x:Key="status_db_ready">Database Ready</sys:String>
     <sys:String x:Key="status_saving_backup">Saving initial backup state...</sys:String>
+
+    <!-- Loading Status Direct Messages -->
+    <sys:String x:Key="status_starting_services">Starting core services...</sys:String>
+    <sys:String x:Key="status_waiting_system">Waiting for system to initialize...</sys:String>
     <sys:String x:Key="status_hardware_gather">Interrogating hardware and telemetry...</sys:String>
 
-    <sys:String x:Key="step1_load">Starting Trusted Installer Service...</sys:String>
-    <sys:String x:Key="step2_load">Checking Windows License status...</sys:String>
-    <sys:String x:Key="step3_load">Gathering Hardware Diagnostics...</sys:String>
-    <sys:String x:Key="step4_load">Validating Version Updates...</sys:String>
-    <sys:String x:Key="step5_load">Scanning Installed Packages...</sys:String>
-    <sys:String x:Key="step6_load">Checking Defender Exclusions...</sys:String>
-    <sys:String x:Key="step7_load">Verifying Local Account status...</sys:String>
-    <sys:String x:Key="step8_load">Analyzing Netsh Network state...</sys:String>
-    <sys:String x:Key="step9_load">Checking Bluetooth and Tick configuration...</sys:String>
+    <!-- Loading Sequence Steps -->
+    <sys:String x:Key="step1_load">Starting background services...</sys:String>
+    <sys:String x:Key="step2_load">Preparing system database...</sys:String>
+    <sys:String x:Key="step3_load">Gathering hardware diagnostics...</sys:String>
+    <sys:String x:Key="step4_load">Checking Windows License status...</sys:String>
+    <sys:String x:Key="step5_load">Validating version updates...</sys:String>
+    <sys:String x:Key="step6_load">Scanning installed packages...</sys:String>
+    <sys:String x:Key="step7_load">Verifying local account &amp; Bluetooth...</sys:String>
+    <sys:String x:Key="step8_load">Initializing temperature sensors...</sys:String>
+    <sys:String x:Key="step9_load">Analyzing active processes &amp; services...</sys:String>
     <sys:String x:Key="step10_load">All systems ready!</sys:String>
 
+    <!-- Closing/Restart Sequence Steps -->
     <sys:String x:Key="status_init_backup">Initializing database backup...</sys:String>
     <sys:String x:Key="status_closing_db">Closing database engine...</sys:String>
     <sys:String x:Key="status_securing_files">Securing files...</sys:String>

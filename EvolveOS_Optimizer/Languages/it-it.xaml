@@ -33,41 +33,46 @@
     <!-- endregion Safe Mode -->
 
     <!-- region Loading/Closing Window -->
-    <sys:String x:Key="loading_message">Inizializzazione dei dati hardware &amp; dei protocolli di sicurezza</sys:String>
-    <sys:String x:Key="status_waiting_system">In attesa dell'inizializzazione del sistema...</sys:String>
-    <sys:String x:Key="status_extracting_resources">Estrazione delle risorse...</sys:String>
-    <sys:String x:Key="status_installing_engine">Installazione del motore di database richiesto...</sys:String>
-    <sys:String x:Key="status_configuring_engine">Configurazione del motore di database...</sys:String>
-    <sys:String x:Key="status_initializing_db">Inizializzazione del database...</sys:String>
-    <sys:String x:Key="status_checking_db">Controllo della disponibilità del database...</sys:String>
+    <sys:String x:Key="loading_message">Inizializzazione dati hardware &amp; sicurezza</sys:String>
+    <sys:String x:Key="status_extracting_resources">Estrazione risorse...</sys:String>
+    <sys:String x:Key="status_installing_engine">Installazione motore database...</sys:String>
+    <sys:String x:Key="status_configuring_engine">Configurazione motore DB...</sys:String>
+    <sys:String x:Key="status_initializing_db">Inizializzazione database...</sys:String>
+    <sys:String x:Key="status_checking_db">Verifica database in corso...</sys:String>
     <sys:String x:Key="status_db_not_found">Database non trovato...</sys:String>
-    <sys:String x:Key="status_decrypting_db">Decrittografia del database...</sys:String>
-    <sys:String x:Key="status_starting_sql">Avvio del motore SQL...</sys:String>
-    <sys:String x:Key="status_finalizing_access">Completamento dell'accesso...</sys:String>
+    <sys:String x:Key="status_decrypting_db">Decrittografia database...</sys:String>
+    <sys:String x:Key="status_starting_sql">Avvio motore SQL...</sys:String>
+    <sys:String x:Key="status_finalizing_access">Finalizzazione accesso...</sys:String>
     <sys:String x:Key="status_db_ready">Database pronto</sys:String>
-    <sys:String x:Key="status_saving_backup">Salvataggio del backup iniziale in corso...</sys:String>
-    <sys:String x:Key="status_hardware_gather">Interrogazione hardware e telemetria in corso...</sys:String>
+    <sys:String x:Key="status_saving_backup">Salvataggio backup iniziale...</sys:String>
 
-    <sys:String x:Key="step1_load">Avvio del servizio Trusted Installer...</sys:String>
-    <sys:String x:Key="step2_load">Controllo dello stato della licenza di Windows...</sys:String>
-    <sys:String x:Key="step3_load">Raccolta dei dati di diagnostica hardware...</sys:String>
-    <sys:String x:Key="step4_load">Convalida degli aggiornamenti di versione...</sys:String>
-    <sys:String x:Key="step5_load">Scansione dei pacchetti installati...</sys:String>
-    <sys:String x:Key="step6_load">Controllo delle esclusioni di Defender...</sys:String>
-    <sys:String x:Key="step7_load">Verifica dello stato dell'account locale...</sys:String>
-    <sys:String x:Key="step8_load">Analisi dello stato della rete Netsh...</sys:String>
-    <sys:String x:Key="step9_load">Controllo della configurazione Bluetooth e Tick...</sys:String>
+    <!-- Loading Status Direct Messages -->
+    <sys:String x:Key="status_starting_services">Avvio servizi di base...</sys:String>
+    <sys:String x:Key="status_waiting_system">Attesa avvio del sistema...</sys:String>
+    <sys:String x:Key="status_hardware_gather">Analisi hardware e telemetria...</sys:String>
+
+    <!-- Loading Sequence Steps -->
+    <sys:String x:Key="step1_load">Avvio servizi in background...</sys:String>
+    <sys:String x:Key="step2_load">Preparazione database sistema...</sys:String>
+    <sys:String x:Key="step3_load">Raccolta diagnostica hardware...</sys:String>
+    <sys:String x:Key="step4_load">Verifica licenza di Windows...</sys:String>
+    <sys:String x:Key="step5_load">Convalida aggiornamenti...</sys:String>
+    <sys:String x:Key="step6_load">Scansione pacchetti installati...</sys:String>
+    <sys:String x:Key="step7_load">Verifica account locale &amp; BT...</sys:String>
+    <sys:String x:Key="step8_load">Inizializzazione sensori termici...</sys:String>
+    <sys:String x:Key="step9_load">Analisi processi &amp; servizi attivi...</sys:String>
     <sys:String x:Key="step10_load">Tutti i sistemi pronti!</sys:String>
 
-    <sys:String x:Key="status_init_backup">Inizializzazione backup del database...</sys:String>
-    <sys:String x:Key="status_closing_db">Chiusura del motore del database...</sys:String>
-    <sys:String x:Key="status_securing_files">Protezione dei file in corso...</sys:String>
-    <sys:String x:Key="status_writing_backup">Scrittura del backup sul disco...</sys:String>
-    <sys:String x:Key="status_encrypting_backup">Crittografia della copia di backup...</sys:String>
-    <sys:String x:Key="status_finalizing_backup">Completamento delle impostazioni di backup...</sys:String>
-    <sys:String x:Key="closing_message">Chiusura di EvolveOS Optimizer</sys:String>
-    <sys:String x:Key="status_rebooting">Riavvio di EvolveOS Optimizer in corso</sys:String>
-    <sys:String x:Key="status_prep_close">Preparazione alla chiusura...</sys:String>
+    <!-- Closing/Restart Sequence Steps -->
+    <sys:String x:Key="status_init_backup">Inizializzazione backup...</sys:String>
+    <sys:String x:Key="status_closing_db">Chiusura motore database...</sys:String>
+    <sys:String x:Key="status_securing_files">Messa in sicurezza file...</sys:String>
+    <sys:String x:Key="status_writing_backup">Scrittura backup su disco...</sys:String>
+    <sys:String x:Key="status_encrypting_backup">Crittografia della copia...</sys:String>
+    <sys:String x:Key="status_finalizing_backup">Finalizzazione impostazioni...</sys:String>
+    <sys:String x:Key="closing_message">Chiusura EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="status_rebooting">Riavvio EvolveOS Optimizer</sys:String>
+    <sys:String x:Key="status_prep_close">Preparazione chiusura...</sys:String>
     <sys:String x:Key="status_goodbye">Arrivederci!</sys:String>
     <!-- endregion Loading/Closing Window -->
 
