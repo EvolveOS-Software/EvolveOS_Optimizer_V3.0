@@ -20,14 +20,17 @@ namespace EvolveOS_Optimizer.Utilities.Services
         };
 
         #region Public API
+
         public Task<ScanResult> AnalyzeAsync(CleanerEntry entry, IProgress<string>? progress = null, CancellationToken token = default) =>
             Task.Run(() => Analyze(entry, progress, token), token);
 
         public Task<(int count, long bytes)> CleanAsync(ScanResult result, IProgress<string>? progress = null, CancellationToken token = default) =>
             Task.Run(() => Clean(result, progress, token), token);
+
         #endregion
 
         #region Analyze Logic
+
         private ScanResult Analyze(CleanerEntry entry, IProgress<string>? progress, CancellationToken token)
         {
             var result = new ScanResult { Entry = entry };
@@ -144,9 +147,11 @@ namespace EvolveOS_Optimizer.Utilities.Services
                     yield return f;
             }
         }
+
         #endregion
 
         #region Clean Logic
+
         private (int count, long bytes) Clean(ScanResult result, IProgress<string>? progress, CancellationToken token)
         {
             int deletedCount = 0;
@@ -179,27 +184,36 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 {
                     try
                     {
-                        var fi = new FileInfo(file);
-                        if (fi.Exists)
+                        var lockers = UnlockHandleHelper.GetLockingProcessNames(file);
+
+                        bool isCriticalSystemProcess = lockers.Any(locker =>
+                            CriticalSystemProcesses.Any(sysProc =>
+                                locker.Contains(sysProc, StringComparison.OrdinalIgnoreCase)));
+
+                        if (isCriticalSystemProcess)
                         {
-                            if (fi.IsReadOnly) fi.IsReadOnly = false;
+                            progress?.Report($"Skipped (System Lock): {Path.GetFileName(file)} is held by OS");
+                        }
+                        else
+                        {
+                            var fi = new FileInfo(file);
+                            if (fi.Exists)
+                            {
+                                if (fi.IsReadOnly) fi.IsReadOnly = false;
 
-                            UnlockHandleHelper.UnlockDirectory(file);
+                                UnlockHandleHelper.UnlockDirectory(file);
 
-                            fi.Delete();
+                                fi.Delete();
 
-                            Interlocked.Increment(ref deletedCount);
-                            Interlocked.Add(ref deletedBytes, size);
-                            progress?.Report($"Force Deleted: {file}");
+                                Interlocked.Increment(ref deletedCount);
+                                Interlocked.Add(ref deletedBytes, size);
+                                progress?.Report($"Force Deleted: {file}");
+                            }
                         }
                     }
                     catch
                     {
-                        var lockers = UnlockHandleHelper.GetLockingProcessNames(file);
-                        if (lockers.Count > 0)
-                        {
-                            progress?.Report($"Skipped (In Use): {Path.GetFileName(file)} is locked by {string.Join(", ", lockers)}");
-                        }
+                        progress?.Report($"Skipped (Access Denied): {Path.GetFileName(file)}");
                     }
                 }
             });
@@ -273,30 +287,41 @@ namespace EvolveOS_Optimizer.Utilities.Services
             {
                 try
                 {
-                    UnlockHandleHelper.UnlockDirectory(dirPath);
+                    var lockers = UnlockHandleHelper.GetLockingProcessNames(dirPath);
 
-                    var diRetry = new DirectoryInfo(dirPath);
-                    if ((diRetry.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                        diRetry.Attributes &= ~FileAttributes.ReadOnly;
+                    bool isCriticalSystemProcess = lockers.Any(locker =>
+                        CriticalSystemProcesses.Any(sysProc =>
+                            locker.Contains(sysProc, StringComparison.OrdinalIgnoreCase)));
 
-                    if (diRetry.GetFileSystemInfos().Length == 0)
+                    if (isCriticalSystemProcess)
                     {
-                        diRetry.Delete();
+                        progress?.Report($"Skipped (System Lock): Directory '{Path.GetFileName(dirPath)}' is held by OS");
+                    }
+                    else
+                    {
+                        UnlockHandleHelper.UnlockDirectory(dirPath);
+
+                        var diRetry = new DirectoryInfo(dirPath);
+                        if ((diRetry.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                            diRetry.Attributes &= ~FileAttributes.ReadOnly;
+
+                        if (diRetry.GetFileSystemInfos().Length == 0)
+                        {
+                            diRetry.Delete();
+                        }
                     }
                 }
                 catch
                 {
-                    var lockers = UnlockHandleHelper.GetLockingProcessNames(dirPath);
-                    if (lockers.Count > 0)
-                    {
-                        progress?.Report($"Skipped (In Use): Directory '{Path.GetFileName(dirPath)}' locked by {string.Join(", ", lockers)}");
-                    }
+                    progress?.Report($"Skipped (Access Denied): Directory '{Path.GetFileName(dirPath)}'");
                 }
             }
         }
+
         #endregion
 
         #region Helpers
+
         private List<ExclusionRule> BuildExclusions(CleanerEntry entry)
         {
             var rules = new List<ExclusionRule>();
@@ -343,6 +368,16 @@ namespace EvolveOS_Optimizer.Utilities.Services
             return false;
         }
 
+        private static readonly string[] CriticalSystemProcesses =
+        {
+            "svchost", "system", "services", "lsass", "csrss", "winlogon",
+            "smss", "spoolsv", "explorer", "searchindexer", "wmiprvse",
+            "trustedinstaller", "tiworker", "msmpeng", "nissrv",
+            "wudfhost", "taskhostw", "sihost", "fontdrvhost", "dashost",
+            "audiodg", "mousocoreworker", "securityhealthservice", "dllhost",
+            "conhost", "runtimebroker", "searchhost", "startmenuexperiencehost"
+        };
+
         private static readonly string[] ProtectedSegments =
         {
             @"\IndexedDB\chrome-extension_",
@@ -378,6 +413,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             public void Report(string path) => inner.Report($"{prefix}  ›  {path}");
         }
+
         #endregion
     }
 }
