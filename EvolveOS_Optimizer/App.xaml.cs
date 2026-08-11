@@ -159,7 +159,7 @@ namespace EvolveOS_Optimizer
                     HostInitializationSource.TrySetResult(true);
                 }
 
-                UIThreadDispatcher.TryEnqueue(DispatcherQueuePriority.Normal, () =>
+                UIThreadDispatcher.TryEnqueue(DispatcherQueuePriority.Normal, async () =>
                 {
                     _logService = Services.GetService<ILogService>();
                     InitializeLocalization();
@@ -176,6 +176,20 @@ namespace EvolveOS_Optimizer
 
                     SetPriority(LocalMachineSettingsEngine.RunOnPriority);
                     _hotkeyService = new HotkeyService();
+
+                    try
+                    {
+                        var orchestrator = Services.GetRequiredService<IStartupOrchestrator>();
+                        var statusProgress = new Progress<string>(msg => Debug.WriteLine($"[Startup Status] {msg}"));
+                        var detailProgress = new Progress<TaskProgressDetail>(detail => { });
+
+                        await orchestrator.RunStartupSequenceAsync(statusProgress, detailProgress).ConfigureAwait(false);
+                        _logService?.LogInformation("[App] Startup sequence executed successfully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logService?.LogWarning($"[App] Startup sequence failed: {ex.Message}");
+                    }
 
                     UIThreadDispatcher.TryEnqueue(DispatcherQueuePriority.Low, async () =>
                     {

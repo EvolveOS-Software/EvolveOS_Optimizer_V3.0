@@ -38,7 +38,8 @@ public class StartupOrchestrator : IStartupOrchestrator
         IProgress<string> statusProgress,
         IProgress<TaskProgressDetail> detailedProgress)
     {
-        bool isFirstLaunch = false;
+        var lastRun = _preferencesService.GetPreference("LastRunVersion", "");
+        bool isFirstLaunch = string.IsNullOrWhiteSpace(lastRun);
 
         statusProgress.Report("Loading_InitializingSettings");
         try
@@ -49,7 +50,7 @@ public class StartupOrchestrator : IStartupOrchestrator
             try
             {
                 var allAddedInVersions = CollectAddedInVersions(_settingsRegistry);
-                _newBadgeService.Initialize(allAddedInVersions);
+                await _newBadgeService.InitializeAsync(allAddedInVersions).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

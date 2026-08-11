@@ -20,12 +20,6 @@ public class NewBadgeService : INewBadgeService
     {
         _prefs = prefs;
         _logService = logService;
-
-        var storedBaselineStr = _prefs.GetPreference("NewBadgeBaseline", "");
-        if (TryParseVersion(storedBaselineStr, out var storedBaseline))
-        {
-            _baseline = storedBaseline;
-        }
     }
     #endregion
 
@@ -38,72 +32,40 @@ public class NewBadgeService : INewBadgeService
     #endregion
 
     #region Public Methods
-    public void Initialize(IEnumerable<string?> allAddedInVersions)
+    public async Task InitializeAsync(IEnumerable<string?> allAddedInVersions)
     {
-        var currentAssemblyVersion = GetAppVersion();
-        _prefs.SetPreferenceAsync("LastRunVersion", currentAssemblyVersion);
+        var currentAppVersion = GetAppVersion();
+        var lastRunVersionStr = _prefs.GetPreference("LastRunVersion", "");
 
-        Version? highestInRegistry = null;
-        if (allAddedInVersions != null)
+        if (!TryParseVersion(lastRunVersionStr, out var lastRunVersion))
         {
-            foreach (var raw in allAddedInVersions)
-            {
-                if (string.IsNullOrWhiteSpace(raw))
-                    continue;
-                if (!TryParseVersion(raw, out var parsed))
-                    continue;
-                if (highestInRegistry is null || parsed > highestInRegistry)
-                    highestInRegistry = parsed;
-            }
-        }
+            Version? highestInRegistry = GetHighestVersion(allAddedInVersions);
 
-        // Use to reset the baseline
-        //var storedHighestStr = "0.0.0";
-        //var storedBaselineStr = "0.0.0";
-
-        var storedHighestStr = _prefs.GetPreference(UserPreferenceKeys.HighestSeenAddedInVersion, "");
-        var storedBaselineStr = _prefs.GetPreference("NewBadgeBaseline", "");
-
-        var highestOk = TryParseVersion(storedHighestStr, out var storedHighest);
-        var baselineOk = TryParseVersion(storedBaselineStr, out var storedBaseline);
-        if (!highestOk || !baselineOk)
-        {
-            _baseline = new Version(0, 0, 0);
             if (highestInRegistry is not null)
             {
-                _prefs.SetPreferenceAsync(
-                    UserPreferenceKeys.HighestSeenAddedInVersion,
-                    VersionToString(highestInRegistry));
+                _baseline = new Version(highestInRegistry.Major, highestInRegistry.Minor, 0, 0);
             }
-            _prefs.SetPreferenceAsync("NewBadgeBaseline", VersionToString(_baseline));
+            else
+            {
+                _baseline = currentAppVersion;
+            }
 
-            _logService.LogInformation(
-                "[NewBadge] Uninitialized or half-populated state. Baseline set to 0.0.0 (all tagged settings treated as new).");
-            return;
+            _logService.LogInformation($"[NewBadge] Fresh install detected. Baseline set to {_baseline}.");
         }
-
-        if (highestInRegistry is not null && highestInRegistry > storedHighest)
+        else
         {
-            _baseline = storedHighest;
-            _prefs.SetPreferenceAsync(
-                UserPreferenceKeys.HighestSeenAddedInVersion,
-                VersionToString(highestInRegistry));
-            _prefs.SetPreferenceAsync("NewBadgeBaseline", VersionToString(storedHighest));
-            ShowNewBadges = true;
-            _logService.LogInformation(
-                $"[NewBadge] Effective upgrade: registry highest {highestInRegistry} > stored {storedHighest}. " +
-                $"Baseline={storedHighest}; ShowNewBadges reset to true.");
-            return;
+            _baseline = lastRunVersion;
+            _logService.LogInformation($"[NewBadge] Upgrade detected. Last run: {lastRunVersion}, Current: {currentAppVersion}. Baseline set to {_baseline}.");
         }
 
-        _baseline = storedBaseline;
-        _logService.LogDebug(
-            $"[NewBadge] No upgrade. Baseline={_baseline}, ShowNewBadges={ShowNewBadges}.");
+        await _prefs.SetPreferenceAsync("LastRunVersion", VersionToString(currentAppVersion)).ConfigureAwait(false);
+
+        await Task.Delay(150).ConfigureAwait(false);
     }
 
     public bool IsSettingNew(string? addedInVersion, string settingId)
     {
-        if (string.IsNullOrEmpty(addedInVersion))
+        if (!ShowNewBadges || string.IsNullOrWhiteSpace(addedInVersion))
             return false;
 
         if (!TryParseVersion(addedInVersion, out var settingVersion))
@@ -113,22 +75,53 @@ public class NewBadgeService : INewBadgeService
     }
     #endregion
 
-    #region Private Methods
-    private static string GetAppVersion()
+    #region Private Helpers
+    private static Version? GetHighestVersion(IEnumerable<string?> versions)
     {
-        var attr = Assembly.GetEntryAssembly()?
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+        Version? highest = null;
+        if (versions is null) return null;
 
-        var version = attr?.InformationalVersion ?? "0.0.0";
+        foreach (var raw in versions)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) continue;
+            if (!TryParseVersion(raw, out var parsed)) continue;
 
-        version = version.Replace("Build:", string.Empty, StringComparison.OrdinalIgnoreCase).Trim();
-        version = version.TrimStart('v');
+            if (highest is null || parsed > highest)
+            {
+                highest = parsed;
+            }
+        }
+        return highest;
+    }
 
-        var plusIndex = version.IndexOf('+');
-        if (plusIndex >= 0)
-            version = version[..plusIndex];
+    private static Version GetAppVersion()
+    {
+        try
+        {
+            var entryAssembly = Assembly.GetEntryAssembly();
+            var informationalVersion = entryAssembly?
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                .InformationalVersion;
 
-        return version;
+            var versionStr = informationalVersion?.Split(' ').Last().Trim() ?? "1.0.0";
+
+            var plusIndex = versionStr.IndexOf('+');
+            if (plusIndex >= 0)
+            {
+                versionStr = versionStr[..plusIndex];
+            }
+
+            if (Version.TryParse(versionStr, out var parsed))
+            {
+                return parsed;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[GetAppVersion] Error parsing version: {ex.Message}");
+        }
+
+        return new Version(0, 0, 0);
     }
 
     private static bool TryParseVersion(string versionStr, out Version parsed)
@@ -138,6 +131,7 @@ public class NewBadgeService : INewBadgeService
             parsed = new Version(0, 0, 0);
             return false;
         }
+
         versionStr = versionStr.Trim().TrimStart('v');
         return Version.TryParse(versionStr, out parsed!);
     }
