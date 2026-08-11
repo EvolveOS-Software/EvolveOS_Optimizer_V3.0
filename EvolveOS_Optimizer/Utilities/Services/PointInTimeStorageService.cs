@@ -1,13 +1,10 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Win32;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
+using Microsoft.Win32;
 
 namespace EvolveOS_Optimizer.Utilities.Services;
 

@@ -1,9 +1,9 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using LibreHardwareMonitor.Hardware;
 using System.Collections.Concurrent;
 using System.Threading;
+using LibreHardwareMonitor.Hardware;
 
 namespace EvolveOS_Optimizer.Utilities.Services
 {

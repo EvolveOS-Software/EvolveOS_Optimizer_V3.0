@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EvolveOS_Optimizer.Pages;
 
-public sealed partial class SoundOptimizePage : Page, IPurgeable   
+public sealed partial class SoundOptimizePage : Page, IPurgeable
 {
     public OptimizeViewModel ViewModel { get; }
 

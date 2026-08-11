@@ -1,12 +1,11 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using EvolveOS_Optimizer.Core.Interfaces;
+using System.Management;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using Microsoft.Win32;
-using System.Management;
 
 namespace EvolveOS_Optimizer.Utilities.Services;
 
@@ -17,7 +16,7 @@ public class RegistryMonitorService
     private const string TargetKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\Recovery\PITR\Settings";
 
     private int _desiredState = 1;
-    private int _desiredInterval = 1440; 
+    private int _desiredInterval = 1440;
     private int _desiredRetention = 4320;
 
     private ManagementEventWatcher? _watcher;
@@ -112,6 +111,6 @@ public class RegistryMonitorService
             key.SetValue(valueName, desiredValue, RegistryValueKind.DWord);
             return true;
         }
-        return false; 
+        return false;
     }
 }

@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System;
 using Microsoft.UI.Xaml.Data;
 
 namespace EvolveOS_Optimizer.Core.Converters;

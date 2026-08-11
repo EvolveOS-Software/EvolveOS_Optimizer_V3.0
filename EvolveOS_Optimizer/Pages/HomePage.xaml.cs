@@ -1274,7 +1274,7 @@ namespace EvolveOS_Optimizer.Pages
                 FactoryAnimation.AnimateCardScale(card, 1.01);
             }
         }
-         
+
         private void DashCard_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             if (sender is Border card && !_isTrackingDrag)

@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using CommunityToolkit.Mvvm.Messaging;
