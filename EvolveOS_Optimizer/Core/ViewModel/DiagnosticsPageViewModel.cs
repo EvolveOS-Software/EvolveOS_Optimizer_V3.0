@@ -1000,6 +1000,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     LocalMachineSettingsEngine.DiagnosticsGraphTime = value;
 
+                    _peakNetworkSpeedMbps = 10f;
+
                     OnPropertyChanged(nameof(XAxisLabelStart));
                     OnPropertyChanged(nameof(XAxisLabelQ1));
                     OnPropertyChanged(nameof(XAxisLabelMid));
@@ -1021,6 +1023,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public string XAxisLabelQ3 => MaxGraphSeconds >= 3600
             ? $"-{(MaxGraphSeconds * 0.25) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.25) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.25:0} SEC");
+
+        private string _yAxis100 = "100";
+        public string YAxis100 { get => _yAxis100; set => SetProperty(ref _yAxis100, value); }
+
+        private string _yAxis75 = "75";
+        public string YAxis75 { get => _yAxis75; set => SetProperty(ref _yAxis75, value); }
+
+        private string _yAxis50 = "50";
+        public string YAxis50 { get => _yAxis50; set => SetProperty(ref _yAxis50, value); }
+
+        private string _yAxis25 = "25";
+        public string YAxis25 { get => _yAxis25; set => SetProperty(ref _yAxis25, value); }
 
 
         private string _aiSummary = ResourceString.GetString("diag_ai_sleeping") ?? "AI Engine sleeping. Run a scan to generate a system health summary.";
@@ -2754,6 +2768,32 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (tempPointsToProcess.Count > 0) tempPointsToProcess = DownsampleLTTB(tempPointsToProcess, maxVisualPoints);
             }
 
+            double maxNetScale = 100.0;
+            bool isNetwork = ActiveGraphMetric == TelemetryMetric.Network;
+
+            if (isNetwork)
+            {
+                double maxDown = pointsToProcess.Count > 0 ? pointsToProcess.Max() : 0;
+                double maxUp = altPointsToProcess.Count > 0 ? altPointsToProcess.Max() : 0;
+                double absoluteMax = Math.Max(maxDown, maxUp);
+
+                if (absoluteMax > _peakNetworkSpeedMbps)
+                {
+                    _peakNetworkSpeedMbps = (float)(absoluteMax * 1.1);
+                }
+                else if (_peakNetworkSpeedMbps > 10f && absoluteMax < (_peakNetworkSpeedMbps * 0.1f))
+                {
+                    _peakNetworkSpeedMbps = Math.Max(10f, (float)(_peakNetworkSpeedMbps * 0.995));
+                }
+
+                maxNetScale = Math.Max(10.0, Math.Ceiling(_peakNetworkSpeedMbps));
+            }
+
+            YAxis100 = Math.Round(maxNetScale).ToString();
+            YAxis75 = Math.Round(maxNetScale * 0.75).ToString();
+            YAxis50 = Math.Round(maxNetScale * 0.50).ToString();
+            YAxis25 = Math.Round(maxNetScale * 0.25).ToString();
+
             int intervals = Math.Max(0, pointsToShow - 1);
             double equivalentSeconds = intervals / pollsPerSecond;
             double occupiedWidth = MaxGraphSeconds > 0 ? logicalWidth * (equivalentSeconds / MaxGraphSeconds) : logicalWidth;
@@ -2766,7 +2806,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 double currentX = startX;
                 foreach (var yVal in pointsToProcess)
                 {
-                    newPoints.Add(new Point(currentX, yVal));
+                    double finalY = isNetwork
+                        ? 100.0 - (Math.Clamp(yVal / maxNetScale, 0.0, 1.0) * 100.0)
+                        : yVal;
+
+                    newPoints.Add(new Point(currentX, finalY));
                     currentX += pixelsPerStep;
                 }
 
@@ -2812,7 +2856,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 double currentAltX = startX;
                 foreach (var yVal in altPointsToProcess)
                 {
-                    newPointsAlt.Add(new Point(currentAltX, yVal));
+                    double finalY = isNetwork
+                        ? 100.0 - (Math.Clamp(yVal / maxNetScale, 0.0, 1.0) * 100.0)
+                        : yVal;
+
+                    newPointsAlt.Add(new Point(currentAltX, finalY));
                     currentAltX += pixelsPerStep;
                 }
 
@@ -3858,26 +3906,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _displayDownMbps = (_displayDownMbps * 0.8f) + (downMbps * 0.2f);
                 _displayUpMbps = (_displayUpMbps * 0.8f) + (upMbps * 0.2f);
 
-                float currentMax = Math.Max(_displayDownMbps, _displayUpMbps);
-                if (currentMax > _peakNetworkSpeedMbps)
-                {
-                    _peakNetworkSpeedMbps = currentMax * 1.1f;
-                }
-                else if (_peakNetworkSpeedMbps > 10f && currentMax < (_peakNetworkSpeedMbps * 0.1f))
-                {
-                    _peakNetworkSpeedMbps = Math.Max(10f, _peakNetworkSpeedMbps * 0.99f);
-                }
-
-                float downPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((_displayDownMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
-                float upPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((_displayUpMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
-
                 _cpuHistoryBuffer.Add(100 - _displayCpuUsage);
                 _ramHistoryBuffer.Add(100 - ramUsage);
                 _diskHistoryBuffer.Add(100 - _displayDiskUsage);
                 _pageHistoryBuffer.Add(100 - pagefileUsage);
                 _gpuHistoryBuffer.Add(100 - _displayGpuUsage);
-                _networkDownHistoryBuffer.Add(100 - downPct);
-                _networkUpHistoryBuffer.Add(100 - upPct);
+
+                _networkDownHistoryBuffer.Add(_displayDownMbps);
+                _networkUpHistoryBuffer.Add(_displayUpMbps);
 
                 if (_cpuHistoryBuffer.Count > MaxHistoryCapacity)
                 {

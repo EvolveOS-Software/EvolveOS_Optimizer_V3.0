@@ -1588,10 +1588,11 @@
                                                                     <RowDefinition Height="*"/>
                                                                     <RowDefinition Height="*"/>
                                                                 </Grid.RowDefinitions>
-                                                                <TextBlock Grid.Row="0" Text="100" VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
-                                                                <TextBlock Grid.Row="0" Grid.RowSpan="2" Text="75" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
-                                                                <TextBlock Grid.Row="1" Grid.RowSpan="2" Text="50" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
-                                                                <TextBlock Grid.Row="2" Grid.RowSpan="2" Text="25" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
+
+                                                                <TextBlock Grid.Row="0" Text="{x:Bind ViewModel.YAxis100, Mode=OneWay}" VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
+                                                                <TextBlock Grid.Row="0" Grid.RowSpan="2" Text="{x:Bind ViewModel.YAxis75, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
+                                                                <TextBlock Grid.Row="1" Grid.RowSpan="2" Text="{x:Bind ViewModel.YAxis50, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
+                                                                <TextBlock Grid.Row="2" Grid.RowSpan="2" Text="{x:Bind ViewModel.YAxis25, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
                                                                 <TextBlock Grid.Row="3" Text="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource AxisLabelStyle}"/>
                                                             </Grid>
 
