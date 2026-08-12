@@ -237,7 +237,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 string source = record.ProviderName ?? "Unknown";
                 byte level = (byte)(record.Level ?? 2);
 
-                if (source.Contains("ACPI", StringComparison.OrdinalIgnoreCase))
+                if (source.Contains("ACPI", StringComparison.OrdinalIgnoreCase) ||
+                    (eventId == 63 && source.Contains("IntelMEProv", StringComparison.OrdinalIgnoreCase)))
                 {
                     return;
                 }
@@ -304,7 +305,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     rawDescription = "Live Interception: The event description could not be parsed from the system publisher.";
                 }
 
-                if (rawDescription.Contains("embedded controller", StringComparison.OrdinalIgnoreCase))
+                if (rawDescription.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) ||
+                    rawDescription.Contains("IntelMEProv", StringComparison.OrdinalIgnoreCase) ||
+                    rawDescription.Contains("Intel(R) Platform License Manager Service", StringComparison.OrdinalIgnoreCase) ||
+                    rawDescription.Contains("WUDFRd failed to load", StringComparison.OrdinalIgnoreCase) ||
+                    (rawDescription.Contains("Intel(R) Ethernet Controller", StringComparison.OrdinalIgnoreCase) && rawDescription.Contains("Network link is disconnected", StringComparison.OrdinalIgnoreCase)))
                 {
                     return;
                 }

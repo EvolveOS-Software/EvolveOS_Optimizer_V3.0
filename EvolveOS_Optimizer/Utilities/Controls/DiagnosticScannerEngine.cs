@@ -464,9 +464,14 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
                     foreach (var ev in systemEvents)
                     {
+                        string combinedMessage = $"{ev.Message} {ev.FullMessage}";
+
                         if (ev.SourceName?.Contains("ACPI", StringComparison.OrdinalIgnoreCase) == true ||
-                            ev.Message?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true ||
-                            ev.FullMessage?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true)
+                            combinedMessage.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) ||
+                            combinedMessage.Contains("IntelMEProv", StringComparison.OrdinalIgnoreCase) ||
+                            combinedMessage.Contains("Intel(R) Platform License Manager Service", StringComparison.OrdinalIgnoreCase) ||
+                            combinedMessage.Contains("WUDFRd failed to load", StringComparison.OrdinalIgnoreCase) ||
+                            (combinedMessage.Contains("Intel(R) Ethernet Controller", StringComparison.OrdinalIgnoreCase) && combinedMessage.Contains("Network link is disconnected", StringComparison.OrdinalIgnoreCase)))
                         {
                             continue;
                         }

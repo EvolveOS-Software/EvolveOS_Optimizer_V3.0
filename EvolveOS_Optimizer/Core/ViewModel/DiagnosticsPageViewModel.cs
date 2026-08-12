@@ -4118,10 +4118,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _liveWatcher = new LiveEventWatcherHelper(async newEvent =>
             {
-                if (newEvent.EventId == 13 &&
-                   (newEvent.SourceName?.Contains("ACPI", StringComparison.OrdinalIgnoreCase) == true ||
-                    newEvent.Message?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true ||
-                    newEvent.FullMessage?.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) == true))
+                string combinedMessage = $"{newEvent.Message} {newEvent.FullMessage}";
+
+                if ((newEvent.EventId == 13 && newEvent.SourceName?.Contains("ACPI", StringComparison.OrdinalIgnoreCase) == true) ||
+                    combinedMessage.Contains("embedded controller", StringComparison.OrdinalIgnoreCase) ||
+                    combinedMessage.Contains("IntelMEProv", StringComparison.OrdinalIgnoreCase) ||
+                    combinedMessage.Contains("Intel(R) Platform License Manager Service", StringComparison.OrdinalIgnoreCase) ||
+                    combinedMessage.Contains("WUDFRd failed to load", StringComparison.OrdinalIgnoreCase) ||
+                    (combinedMessage.Contains("Intel(R) Ethernet Controller", StringComparison.OrdinalIgnoreCase) && combinedMessage.Contains("Network link is disconnected", StringComparison.OrdinalIgnoreCase)))
                 {
                     return;
                 }
