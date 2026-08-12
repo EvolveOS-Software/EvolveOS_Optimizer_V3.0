@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Management;
 using System.Net.NetworkInformation;
+using System.Text.Json;
 using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -113,6 +114,96 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private DateTime _lastWarningTime = DateTime.MinValue;
         private static DateTime? _emergencyThresholdMetTime = null;
         private static bool _sniperModeAttempted = false;
+        #endregion
+
+        #region Long-Term Telemetry (72 Hours)
+        private readonly List<double> _cpuLongTermBuffer = new();
+        private readonly List<double> _ramLongTermBuffer = new();
+        private readonly List<double> _diskLongTermBuffer = new();
+        private readonly List<double> _pageLongTermBuffer = new();
+        private readonly List<double> _gpuLongTermBuffer = new();
+        private readonly List<double> _netDownLongTermBuffer = new();
+        private readonly List<double> _netUpLongTermBuffer = new();
+        private readonly List<double> _cpuTempLongTermBuffer = new();
+        private readonly List<double> _gpuTempLongTermBuffer = new();
+        private readonly List<double> _ramTempLongTermBuffer = new();
+        private readonly List<double> _moboTempLongTermBuffer = new();
+
+        private int _telemetryTickCount = 0;
+        private const int TicksPerMinute = 300; // 5 polls/sec * 60 sec
+        private const int MaxLongTermCapacity = 4320; // 72 hours * 60 mins
+
+        public class TelemetrySnapshot
+        {
+            public List<double> Cpu { get; set; } = new();
+            public List<double> Ram { get; set; } = new();
+            public List<double> Disk { get; set; } = new();
+            public List<double> Page { get; set; } = new();
+            public List<double> Gpu { get; set; } = new();
+            public List<double> NetDown { get; set; } = new();
+            public List<double> NetUp { get; set; } = new();
+            public List<double> CpuTemp { get; set; } = new();
+            public List<double> GpuTemp { get; set; } = new();
+            public List<double> RamTemp { get; set; } = new();
+            public List<double> MoboTemp { get; set; } = new();
+        }
+
+        private static readonly string _telemetryStorePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EvolveOS_Optimizer", "Telemetry72H.json");
+
+        private void LoadLongTermTelemetry()
+        {
+            try
+            {
+                if (File.Exists(_telemetryStorePath))
+                {
+                    string json = File.ReadAllText(_telemetryStorePath);
+                    var snapshot = JsonSerializer.Deserialize<TelemetrySnapshot>(json);
+                    if (snapshot != null)
+                    {
+                        _cpuLongTermBuffer.AddRange(snapshot.Cpu);
+                        _ramLongTermBuffer.AddRange(snapshot.Ram);
+                        _diskLongTermBuffer.AddRange(snapshot.Disk);
+                        _pageLongTermBuffer.AddRange(snapshot.Page);
+                        _gpuLongTermBuffer.AddRange(snapshot.Gpu);
+                        _netDownLongTermBuffer.AddRange(snapshot.NetDown);
+                        _netUpLongTermBuffer.AddRange(snapshot.NetUp);
+                        _cpuTempLongTermBuffer.AddRange(snapshot.CpuTemp);
+                        _gpuTempLongTermBuffer.AddRange(snapshot.GpuTemp);
+                        _ramTempLongTermBuffer.AddRange(snapshot.RamTemp);
+                        _moboTempLongTermBuffer.AddRange(snapshot.MoboTemp);
+                    }
+                }
+            }
+            catch { Debug.WriteLine("Failed to load 72H telemetry."); }
+        }
+
+        private async Task SaveLongTermTelemetryAsync()
+        {
+            try
+            {
+                var snapshot = new TelemetrySnapshot
+                {
+                    Cpu = _cpuLongTermBuffer.ToList(),
+                    Ram = _ramLongTermBuffer.ToList(),
+                    Disk = _diskLongTermBuffer.ToList(),
+                    Page = _pageLongTermBuffer.ToList(),
+                    Gpu = _gpuLongTermBuffer.ToList(),
+                    NetDown = _netDownLongTermBuffer.ToList(),
+                    NetUp = _netUpLongTermBuffer.ToList(),
+                    CpuTemp = _cpuTempLongTermBuffer.ToList(),
+                    GpuTemp = _gpuTempLongTermBuffer.ToList(),
+                    RamTemp = _ramTempLongTermBuffer.ToList(),
+                    MoboTemp = _moboTempLongTermBuffer.ToList(),
+                };
+
+                string dir = Path.GetDirectoryName(_telemetryStorePath)!;
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+                string json = JsonSerializer.Serialize(snapshot);
+                await File.WriteAllTextAsync(_telemetryStorePath, json);
+            }
+            catch { Debug.WriteLine("Failed to save 72H telemetry."); }
+        }
         #endregion
 
         #region Fields (Maintenance)
@@ -387,6 +478,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             LocalMachineSettingsEngine.SettingChanged += OnGlobalSettingChanged;
 
             LocalMachineSettingsEngine.LoadDismissedEventsList();
+
+            LoadLongTermTelemetry();
 
             PerformanceGraphPoints.Add(new Point(400, 100));
             TemperatureGraphPoints.Add(new Point(400, 100));
@@ -888,8 +981,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             new GraphScaleOption { Title = ResourceString.GetString("diag_graph_60sec") ?? "60 Seconds", Seconds = 60 },
             new GraphScaleOption { Title = ResourceString.GetString("diag_graph_5min") ?? "5 Minutes", Seconds = 300 },
-            new GraphScaleOption { Title = ResourceString.GetString("diag_graph_10min") ?? "10 Minutes", Seconds = 600 },
-            new GraphScaleOption { Title = ResourceString.GetString("diag_graph_15min") ?? "15 Minutes", Seconds = 900 }
+            new GraphScaleOption { Title = ResourceString.GetString("diag_graph_15min") ?? "15 Minutes", Seconds = 900 },
+            new GraphScaleOption { Title = "1 Hour", Seconds = 3600 },
+            new GraphScaleOption { Title = "6 Hours", Seconds = 21600 },
+            new GraphScaleOption { Title = "24 Hours", Seconds = 86400 },
+            new GraphScaleOption { Title = "72 Hours", Seconds = 259200 }
         };
 
         private int _maxGraphSeconds = LocalMachineSettingsEngine.DiagnosticsGraphTime;
@@ -912,21 +1008,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        public string XAxisLabelStart => MaxGraphSeconds >= 300
-            ? $"-{MaxGraphSeconds / 60} MIN"
-            : $"-{MaxGraphSeconds} SEC";
+        public string XAxisLabelStart => MaxGraphSeconds >= 3600
+                    ? $"-{MaxGraphSeconds / 3600} HRS" : (MaxGraphSeconds >= 300 ? $"-{MaxGraphSeconds / 60} MIN" : $"-{MaxGraphSeconds} SEC");
 
-        public string XAxisLabelQ1 => MaxGraphSeconds >= 300
-            ? $"-{(MaxGraphSeconds * 0.75) / 60.0:0.#} MIN"
-            : $"-{MaxGraphSeconds * 0.75:0} SEC";
+        public string XAxisLabelQ1 => MaxGraphSeconds >= 3600
+            ? $"-{(MaxGraphSeconds * 0.75) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.75) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.75:0} SEC");
 
-        public string XAxisLabelMid => MaxGraphSeconds >= 300
-            ? $"-{(MaxGraphSeconds * 0.5) / 60.0:0.#} MIN"
-            : $"-{MaxGraphSeconds * 0.5:0} SEC";
+        public string XAxisLabelMid => MaxGraphSeconds >= 3600
+            ? $"-{(MaxGraphSeconds * 0.5) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.5) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.5:0} SEC");
 
-        public string XAxisLabelQ3 => MaxGraphSeconds >= 300
-            ? $"-{(MaxGraphSeconds * 0.25) / 60.0:0.#} MIN"
-            : $"-{MaxGraphSeconds * 0.25:0} SEC";
+        public string XAxisLabelQ3 => MaxGraphSeconds >= 3600
+            ? $"-{(MaxGraphSeconds * 0.25) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.25) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.25:0} SEC");
 
 
         private string _aiSummary = ResourceString.GetString("diag_ai_sleeping") ?? "AI Engine sleeping. Run a scan to generate a system health summary.";
@@ -2587,24 +2679,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private void RebuildGraphFromHistory()
         {
             double logicalWidth = 400.0;
+            bool useLongTerm = MaxGraphSeconds > 900;
 
             var newPoints = new PointCollection();
             var areaPoints = new PointCollection();
-
             var newPointsAlt = new PointCollection();
             var areaPointsAlt = new PointCollection();
-
             var newTempPoints = new PointCollection();
             var newTempAreaPoints = new PointCollection();
 
             var targetBuffer = ActiveGraphMetric switch
             {
-                TelemetryMetric.RAM => _ramHistoryBuffer,
-                TelemetryMetric.Disk => _diskHistoryBuffer,
-                TelemetryMetric.Pagefile => _pageHistoryBuffer,
-                TelemetryMetric.GPU => _gpuHistoryBuffer,
-                TelemetryMetric.Network => _networkDownHistoryBuffer,
-                _ => _cpuHistoryBuffer
+                TelemetryMetric.RAM => useLongTerm ? _ramLongTermBuffer : _ramHistoryBuffer,
+                TelemetryMetric.Disk => useLongTerm ? _diskLongTermBuffer : _diskHistoryBuffer,
+                TelemetryMetric.Pagefile => useLongTerm ? _pageLongTermBuffer : _pageHistoryBuffer,
+                TelemetryMetric.GPU => useLongTerm ? _gpuLongTermBuffer : _gpuHistoryBuffer,
+                TelemetryMetric.Network => useLongTerm ? _netDownLongTermBuffer : _networkDownHistoryBuffer,
+                _ => useLongTerm ? _cpuLongTermBuffer : _cpuHistoryBuffer
             };
 
             if (targetBuffer.Count == 0)
@@ -2623,16 +2714,17 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 return;
             }
 
-            int pollsPerSecond = 5;
-            int pointsToShow = Math.Min(targetBuffer.Count, (MaxGraphSeconds * pollsPerSecond) + 1);
+            double pollsPerSecond = useLongTerm ? (1.0 / 60.0) : 5.0;
+            int pointsToShow = (int)Math.Min(targetBuffer.Count, (MaxGraphSeconds * pollsPerSecond) + 1);
+
             var visibleHistory = targetBuffer.Skip(targetBuffer.Count - pointsToShow).ToList();
 
             List<double>? targetTempBuffer = ActiveGraphMetric switch
             {
-                TelemetryMetric.GPU => _gpuTempHistoryBuffer,
-                TelemetryMetric.RAM => _ramTempHistoryBuffer,
-                TelemetryMetric.Motherboard => _moboTempHistoryBuffer,
-                TelemetryMetric.CPU => _cpuTempHistoryBuffer,
+                TelemetryMetric.GPU => useLongTerm ? _gpuTempLongTermBuffer : _gpuTempHistoryBuffer,
+                TelemetryMetric.RAM => useLongTerm ? _ramTempLongTermBuffer : _ramTempHistoryBuffer,
+                TelemetryMetric.Motherboard => useLongTerm ? _moboTempLongTermBuffer : _moboTempHistoryBuffer,
+                TelemetryMetric.CPU => useLongTerm ? _cpuTempLongTermBuffer : _cpuTempHistoryBuffer,
                 _ => null
             };
 
@@ -2645,40 +2737,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             var pointsToProcess = visibleHistory;
             var altPointsToProcess = new List<double>();
 
-            bool useAlt = ActiveGraphMetric == TelemetryMetric.Network && _networkUpHistoryBuffer.Count > 0;
+            bool useAlt = ActiveGraphMetric == TelemetryMetric.Network && (useLongTerm ? _netUpLongTermBuffer : _networkUpHistoryBuffer).Count > 0;
             if (useAlt)
             {
-                altPointsToProcess = _networkUpHistoryBuffer.Skip(Math.Max(0, _networkUpHistoryBuffer.Count - pointsToShow)).ToList();
+                var altBuffer = useLongTerm ? _netUpLongTermBuffer : _networkUpHistoryBuffer;
+                altPointsToProcess = altBuffer.Skip(Math.Max(0, altBuffer.Count - pointsToShow)).ToList();
             }
 
-            int maxVisualPoints = 60;
+            int maxVisualPoints = 120;
             if (pointsToProcess.Count > maxVisualPoints)
             {
-                var downsampled = new List<double>();
-                var downsampledAlt = new List<double>();
-                var downsampledTemp = new List<double>();
-
-                double step = (double)(pointsToProcess.Count - 1) / (maxVisualPoints - 1);
-
-                for (int i = 0; i < maxVisualPoints; i++)
-                {
-                    int index = (int)Math.Min(Math.Round(i * step), pointsToProcess.Count - 1);
-                    downsampled.Add(pointsToProcess[index]);
-
-                    if (useAlt && index < altPointsToProcess.Count)
-                        downsampledAlt.Add(altPointsToProcess[index]);
-
-                    if (index < tempPointsToProcess.Count)
-                        downsampledTemp.Add(tempPointsToProcess[index]);
-                }
-
-                pointsToProcess = downsampled;
-                if (useAlt) altPointsToProcess = downsampledAlt;
-                tempPointsToProcess = downsampledTemp;
+                pointsToProcess = DownsampleLTTB(pointsToProcess, maxVisualPoints);
+                if (useAlt) altPointsToProcess = DownsampleLTTB(altPointsToProcess, maxVisualPoints);
+                if (tempPointsToProcess.Count > 0) tempPointsToProcess = DownsampleLTTB(tempPointsToProcess, maxVisualPoints);
             }
 
             int intervals = Math.Max(0, pointsToShow - 1);
-            double equivalentSeconds = (double)intervals / pollsPerSecond;
+            double equivalentSeconds = intervals / pollsPerSecond;
             double occupiedWidth = MaxGraphSeconds > 0 ? logicalWidth * (equivalentSeconds / MaxGraphSeconds) : logicalWidth;
             double startX = logicalWidth - occupiedWidth;
 
@@ -2754,6 +2829,50 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
             }
+        }
+
+        private List<double> DownsampleLTTB(List<double> data, int threshold)
+        {
+            if (data.Count <= threshold || threshold <= 2) return data;
+
+            var sampled = new List<double>(threshold);
+            double every = (double)(data.Count - 2) / (threshold - 2);
+
+            int a = 0;
+            sampled.Add(data[a]);
+
+            for (int i = 0; i < threshold - 2; i++)
+            {
+                int avgRangeStart = (int)(Math.Floor((i + 1) * every) + 1);
+                int avgRangeEnd = (int)(Math.Floor((i + 2) * every) + 1);
+                avgRangeEnd = Math.Min(avgRangeEnd, data.Count);
+
+                double avgY = 0;
+                for (int j = avgRangeStart; j < avgRangeEnd; j++) avgY += data[j];
+                avgY /= Math.Max(1, avgRangeEnd - avgRangeStart);
+
+                int rangeOffs = (int)(Math.Floor(i * every) + 1);
+                int rangeTo = (int)(Math.Floor((i + 1) * every) + 1);
+
+                double maxArea = -1;
+                int nextA = rangeOffs;
+
+                for (int j = rangeOffs; j < rangeTo; j++)
+                {
+                    double area = Math.Abs((a - j) * (data[j] - avgY) - (a - (i + 1)) * (data[a] - avgY)) * 0.5;
+                    if (area > maxArea)
+                    {
+                        maxArea = area;
+                        nextA = j;
+                    }
+                }
+
+                sampled.Add(data[nextA]);
+                a = nextA;
+            }
+
+            sampled.Add(data[data.Count - 1]);
+            return sampled;
         }
 
         [RelayCommand]
@@ -3771,6 +3890,41 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _gpuTempHistoryBuffer.RemoveAt(0);
                     _ramTempHistoryBuffer.RemoveAt(0);
                     _moboTempHistoryBuffer.RemoveAt(0);
+                }
+
+                if (++_telemetryTickCount >= TicksPerMinute)
+                {
+                    _telemetryTickCount = 0;
+
+                    _cpuLongTermBuffer.Add(_cpuHistoryBuffer.TakeLast(TicksPerMinute).Average());
+                    _ramLongTermBuffer.Add(_ramHistoryBuffer.TakeLast(TicksPerMinute).Average());
+                    _diskLongTermBuffer.Add(_diskHistoryBuffer.TakeLast(TicksPerMinute).Average());
+                    _pageLongTermBuffer.Add(_pageHistoryBuffer.TakeLast(TicksPerMinute).Average());
+                    _gpuLongTermBuffer.Add(_gpuHistoryBuffer.TakeLast(TicksPerMinute).Average());
+                    _netDownLongTermBuffer.Add(_networkDownHistoryBuffer.TakeLast(TicksPerMinute).Average());
+                    _netUpLongTermBuffer.Add(_networkUpHistoryBuffer.TakeLast(TicksPerMinute).Average());
+
+                    _cpuTempLongTermBuffer.Add(_cpuTempHistoryBuffer.TakeLast(TicksPerMinute).Max());
+                    _gpuTempLongTermBuffer.Add(_gpuTempHistoryBuffer.TakeLast(TicksPerMinute).Max());
+                    _ramTempLongTermBuffer.Add(_ramTempHistoryBuffer.TakeLast(TicksPerMinute).Max());
+                    _moboTempLongTermBuffer.Add(_moboTempHistoryBuffer.TakeLast(TicksPerMinute).Max());
+
+                    if (_cpuLongTermBuffer.Count > MaxLongTermCapacity)
+                    {
+                        _cpuLongTermBuffer.RemoveAt(0);
+                        _ramLongTermBuffer.RemoveAt(0);
+                        _diskLongTermBuffer.RemoveAt(0);
+                        _pageLongTermBuffer.RemoveAt(0);
+                        _gpuLongTermBuffer.RemoveAt(0);
+                        _netDownLongTermBuffer.RemoveAt(0);
+                        _netUpLongTermBuffer.RemoveAt(0);
+                        _cpuTempLongTermBuffer.RemoveAt(0);
+                        _gpuTempLongTermBuffer.RemoveAt(0);
+                        _ramTempLongTermBuffer.RemoveAt(0);
+                        _moboTempLongTermBuffer.RemoveAt(0);
+                    }
+
+                    _ = Task.Run(SaveLongTermTelemetryAsync);
                 }
 
                 if (!IsOptimizationRunning)
