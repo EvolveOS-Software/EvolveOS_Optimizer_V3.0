@@ -1125,6 +1125,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             set => SetProperty(ref _performanceAreaPointsAlt, value);
         }
 
+        private double _performanceDotX;
+        public double PerformanceDotX { get => _performanceDotX; set => SetProperty(ref _performanceDotX, value); }
+
+        private double _performanceDotY;
+        public double PerformanceDotY { get => _performanceDotY; set => SetProperty(ref _performanceDotY, value); }
+
+        private double _performanceAltDotX;
+        public double PerformanceAltDotX { get => _performanceAltDotX; set => SetProperty(ref _performanceAltDotX, value); }
+
+        private double _performanceAltDotY;
+        public double PerformanceAltDotY { get => _performanceAltDotY; set => SetProperty(ref _performanceAltDotY, value); }
+
+        private double _temperatureDotX;
+        public double TemperatureDotX { get => _temperatureDotX; set => SetProperty(ref _temperatureDotX, value); }
+
+        private double _temperatureDotY;
+        public double TemperatureDotY { get => _temperatureDotY; set => SetProperty(ref _temperatureDotY, value); }
+
         private string _currentCpuLoadStr = "0%";
         public string CurrentCpuLoadStr
         {
@@ -2719,14 +2737,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 newPoints.Add(new Point(logicalWidth, 100));
                 PerformanceGraphPoints = newPoints;
                 PerformanceAreaPoints = areaPoints;
+                PerformanceDotX = logicalWidth - 3;
+                PerformanceDotY = 100 - 3;
 
                 newPointsAlt.Add(new Point(logicalWidth, 100));
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
+                PerformanceAltDotX = logicalWidth - 3;
+                PerformanceAltDotY = 100 - 3;
 
                 newTempPoints.Add(new Point(logicalWidth, 100));
                 TemperatureGraphPoints = newTempPoints;
                 TemperatureAreaPoints = newTempAreaPoints;
+                TemperatureDotX = logicalWidth - 3;
+                TemperatureDotY = 100 - 3;
                 return;
             }
 
@@ -2819,6 +2843,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     areaPoints.Add(new Point(newPoints.First().X, 100));
                     foreach (var p in newPoints) areaPoints.Add(p);
                     areaPoints.Add(new Point(newPoints.Last().X, 100));
+
+                    var lastPoint = newPoints.Last();
+                    PerformanceDotX = lastPoint.X - 3;
+                    PerformanceDotY = lastPoint.Y - 3;
                 }
             }
             else
@@ -2843,6 +2871,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     newTempAreaPoints.Add(new Point(newTempPoints.First().X, 100));
                     foreach (var p in newTempPoints) newTempAreaPoints.Add(p);
                     newTempAreaPoints.Add(new Point(newTempPoints.Last().X, 100));
+
+                    var lastPoint = newTempPoints.Last();
+                    TemperatureDotX = lastPoint.X - 3;
+                    TemperatureDotY = lastPoint.Y - 3;
                 }
             }
 
@@ -2869,6 +2901,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     areaPointsAlt.Add(new Point(newPointsAlt.First().X, 100));
                     foreach (var p in newPointsAlt) areaPointsAlt.Add(p);
                     areaPointsAlt.Add(new Point(newPointsAlt.Last().X, 100));
+
+                    var lastAltPoint = newPointsAlt.Last();
+                    PerformanceAltDotX = lastAltPoint.X - 3;
+                    PerformanceAltDotY = lastAltPoint.Y - 3;
                 }
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
@@ -2878,6 +2914,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 newPointsAlt.Add(new Point(logicalWidth, 100));
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
+
+                PerformanceAltDotX = logicalWidth - 3;
+                PerformanceAltDotY = 100 - 3;
             }
         }
 
