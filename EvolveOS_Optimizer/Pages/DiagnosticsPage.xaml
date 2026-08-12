@@ -42,6 +42,14 @@
             <GradientStop Color="#0000D6E8" Offset="1.0" />
         </LinearGradientBrush>
 
+        <LinearGradientBrush x:Key="Brush_UploadGraphGradientFill" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#80FF5555" Offset="0.0" />
+            <GradientStop Color="#40FF5555" Offset="0.25" />
+            <GradientStop Color="#1AFF5555" Offset="0.55" />
+            <GradientStop Color="#05FF5555" Offset="0.85" />
+            <GradientStop Color="#00FF5555" Offset="1.0" />
+        </LinearGradientBrush>
+
         <LinearGradientBrush x:Key="Brush_TempGraphGradientFill" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#80FF9900" Offset="0.0" />
             <GradientStop Color="#40FF9900" Offset="0.25" />
@@ -1595,6 +1603,11 @@
                                                                                  Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
                                                                         <Polyline Points="{x:Bind ViewModel.PerformanceGraphPoints, Mode=OneWay}" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1"
                                                                                   Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                                                                        <Polygon Points="{x:Bind ViewModel.PerformanceAreaPointsAlt, Mode=OneWay}" Fill="{StaticResource Brush_UploadGraphGradientFill}"
+                                                                                 Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}" />
+                                                                        <Polyline Points="{x:Bind ViewModel.PerformanceGraphPointsAlt, Mode=OneWay}" Stroke="#FFFF5555" StrokeThickness="1"
+                                                                                  Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}" />
 
                                                                         <Polygon Points="{x:Bind ViewModel.TemperatureAreaPoints, Mode=OneWay}" Fill="{StaticResource Brush_TempGraphGradientFill}"
                                                                                  Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />

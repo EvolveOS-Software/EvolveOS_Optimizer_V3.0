@@ -842,6 +842,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnPropertyChanged(nameof(NetworkSecondaryVisibility));
                     OnPropertyChanged(nameof(MoboSecondaryVisibility));
                     OnPropertyChanged(nameof(HeroStandardVisibility));
+                    OnPropertyChanged(nameof(NetworkGraphAltVisibility));
 
                     OnPropertyChanged(nameof(ActivePrimaryLabel));
                     OnPropertyChanged(nameof(ActivePrimaryValueStr));
@@ -900,6 +901,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public Visibility NetworkSecondaryVisibility => IsNetworkSelected ? Visibility.Collapsed : Visibility.Visible;
         public Visibility MoboSecondaryVisibility => IsMoboSelected ? Visibility.Collapsed : Visibility.Visible;
         public Visibility HeroStandardVisibility => IsNetworkSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility NetworkGraphAltVisibility => IsNetworkSelected ? Visibility.Visible : Visibility.Collapsed;
 
         public string ActivePrimaryLabel => ActiveGraphMetric switch
         {
@@ -4643,11 +4645,32 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 if (_cachedNetworkInterfaces == null || (DateTime.Now - _lastNetworkInterfaceRefresh).TotalSeconds >= 60)
                 {
-                    _cachedNetworkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
-                        .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
-                                     ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                                     ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
-                        .ToArray();
+                    var allInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+                    var mainInterface = allInterfaces.FirstOrDefault(ni =>
+                        ni.OperationalStatus == OperationalStatus.Up &&
+                        ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                        ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
+                        ni.GetIPProperties().GatewayAddresses.Any(g => g.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork));
+
+                    if (mainInterface == null)
+                    {
+                        mainInterface = allInterfaces.FirstOrDefault(ni =>
+                            ni.OperationalStatus == OperationalStatus.Up &&
+                            (ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
+                             ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) &&
+                            !ni.Description.Contains("Virtual", StringComparison.OrdinalIgnoreCase) &&
+                            !ni.Description.Contains("Pseudo", StringComparison.OrdinalIgnoreCase));
+                    }
+
+                    if (mainInterface != null)
+                    {
+                        _cachedNetworkInterfaces = new[] { mainInterface };
+                    }
+                    else
+                    {
+                        _cachedNetworkInterfaces = Array.Empty<NetworkInterface>();
+                    }
 
                     _lastNetworkInterfaceRefresh = DateTime.Now;
                 }
@@ -4660,10 +4683,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         currentDown += stats.BytesReceived;
                         currentUp += stats.BytesSent;
                     }
-                    catch
-                    {
-                        // Silently ignore if an adapter disconnects exactly while reading stats
-                    }
+                    catch { }
                 }
 
                 float downMbps = 0;
