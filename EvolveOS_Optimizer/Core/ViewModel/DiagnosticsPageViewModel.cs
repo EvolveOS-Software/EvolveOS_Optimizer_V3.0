@@ -47,6 +47,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private System.Threading.Timer? _telemetryTimer;
         internal double _totalMemoryMb = 0;
+        private float _displayCpuUsage = 0f;
+        private float _displayDiskUsage = 0f;
+        private float _displayGpuUsage = 0f;
+        private float _displayDownMbps = 0f;
+        private float _displayUpMbps = 0f;
         private float _peakNetworkSpeedMbps = 10f;
 
         private ulong _prevIdleTime;
@@ -95,7 +100,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly List<double> _gpuTempHistoryBuffer = new List<double>();
         private readonly List<double> _ramTempHistoryBuffer = new List<double>();
         private readonly List<double> _moboTempHistoryBuffer = new List<double>();
-        private const int MaxHistoryCapacity = 900;
+        private const int MaxHistoryCapacity = 5000;
 
         private readonly HashSet<string> _dismissedEventHashes = new();
 
@@ -2618,7 +2623,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 return;
             }
 
-            int pointsToShow = Math.Min(targetBuffer.Count, MaxGraphSeconds + 1);
+            int pollsPerSecond = 5;
+            int pointsToShow = Math.Min(targetBuffer.Count, (MaxGraphSeconds * pollsPerSecond) + 1);
             var visibleHistory = targetBuffer.Skip(targetBuffer.Count - pointsToShow).ToList();
 
             List<double>? targetTempBuffer = ActiveGraphMetric switch
@@ -2672,7 +2678,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
 
             int intervals = Math.Max(0, pointsToShow - 1);
-            double occupiedWidth = MaxGraphSeconds > 0 ? logicalWidth * ((double)intervals / MaxGraphSeconds) : logicalWidth;
+            double equivalentSeconds = (double)intervals / pollsPerSecond;
+            double occupiedWidth = MaxGraphSeconds > 0 ? logicalWidth * (equivalentSeconds / MaxGraphSeconds) : logicalWidth;
             double startX = logicalWidth - occupiedWidth;
 
             double pixelsPerStep = pointsToProcess.Count > 1 ? occupiedWidth / (pointsToProcess.Count - 1) : 0;
@@ -3606,7 +3613,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
             MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
 
-            _telemetryTimer = new System.Threading.Timer(UpdateTelemetryGraph, null, 0, 1000);
+            _telemetryTimer = new System.Threading.Timer(UpdateTelemetryGraph, null, 0, 200);
         }
 
         #region AFK / Idle Detection
@@ -3724,7 +3731,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float downMbps = netUsage.downMbps;
                 float upMbps = netUsage.upMbps;
 
-                float currentMax = Math.Max(downMbps, upMbps);
+                _displayCpuUsage = (_displayCpuUsage * 0.8f) + (cpuUsage * 0.2f);
+                _displayDiskUsage = (_displayDiskUsage * 0.8f) + (diskUsage * 0.2f);
+                _displayGpuUsage = (_displayGpuUsage * 0.8f) + (gpuUsage * 0.2f);
+                _displayDownMbps = (_displayDownMbps * 0.8f) + (downMbps * 0.2f);
+                _displayUpMbps = (_displayUpMbps * 0.8f) + (upMbps * 0.2f);
+
+                float currentMax = Math.Max(_displayDownMbps, _displayUpMbps);
                 if (currentMax > _peakNetworkSpeedMbps)
                 {
                     _peakNetworkSpeedMbps = currentMax * 1.1f;
@@ -3734,14 +3747,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _peakNetworkSpeedMbps = Math.Max(10f, _peakNetworkSpeedMbps * 0.99f);
                 }
 
-                float downPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((downMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
-                float upPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((upMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
+                float downPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((_displayDownMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
+                float upPct = (_peakNetworkSpeedMbps > 0) ? Math.Clamp((_displayUpMbps / _peakNetworkSpeedMbps) * 100f, 0f, 100f) : 0;
 
-                _cpuHistoryBuffer.Add(100 - cpuUsage);
+                _cpuHistoryBuffer.Add(100 - _displayCpuUsage);
                 _ramHistoryBuffer.Add(100 - ramUsage);
-                _diskHistoryBuffer.Add(100 - diskUsage);
+                _diskHistoryBuffer.Add(100 - _displayDiskUsage);
                 _pageHistoryBuffer.Add(100 - pagefileUsage);
-                _gpuHistoryBuffer.Add(100 - gpuUsage);
+                _gpuHistoryBuffer.Add(100 - _displayGpuUsage);
                 _networkDownHistoryBuffer.Add(100 - downPct);
                 _networkUpHistoryBuffer.Add(100 - upPct);
 
@@ -3821,16 +3834,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
                         MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
 
-                        CurrentCpuLoadStr = $"{(int)cpuUsage}%";
+                        CurrentCpuLoadStr = $"{(int)Math.Round(_displayCpuUsage)}%";
                         CurrentRamLoadStr = $"{(int)ramUsage}%";
-                        CurrentIoLoadStr = $"{(int)diskUsage}%";
+                        CurrentIoLoadStr = $"{(int)Math.Round(_displayDiskUsage)}%";
                         CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
-                        CurrentGpuLoadStr = $"{(int)gpuUsage}%";
+                        CurrentGpuLoadStr = $"{(int)Math.Round(_displayGpuUsage)}%";
 
-                        CurrentNetworkDownLoadStr = $"{downMbps:0.#} ▼";
-                        CurrentNetworkUpLoadStr = $"{upMbps:0.#} ▲";
-                        CurrentNetworkLoadStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲ Mbps";
-                        CurrentNetworkLoadSecondaryStr = $"{downMbps:0.#} ▼ / {upMbps:0.#} ▲";
+                        CurrentNetworkDownLoadStr = $"{_displayDownMbps:0.#} ▼";
+                        CurrentNetworkUpLoadStr = $"{_displayUpMbps:0.#} ▲";
+                        CurrentNetworkLoadStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲ Mbps";
+                        CurrentNetworkLoadSecondaryStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲";
 
                         OnPropertyChanged(nameof(ActivePrimaryValueStr));
                         OnPropertyChanged(nameof(ActiveTemperatureStr));
@@ -4023,15 +4036,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             double height)
         {
             var newPoints = new PointCollection();
-            var data = buffer.Reverse().Take(pointsToTake).Reverse().ToList();
+            int pollsPerSecond = 5;
 
-            if (data.Count == 0) return newPoints;
+            var rawData = buffer.Reverse().Take(pointsToTake * pollsPerSecond).Reverse().ToList();
 
-            double startX = 60 - ((data.Count - 1) * stepX);
+            if (rawData.Count == 0) return newPoints;
 
-            for (int i = 0; i < data.Count; i++)
+            double startX = 60 - ((pointsToTake - 1) * stepX);
+
+            for (int i = 0; i < pointsToTake; i++)
             {
-                double y = (data[i] / 100.0) * height;
+                int dataIndex = (int)Math.Round((double)i * (rawData.Count - 1) / Math.Max(1, pointsToTake - 1));
+                dataIndex = Math.Clamp(dataIndex, 0, rawData.Count - 1);
+
+                double y = (rawData[dataIndex] / 100.0) * height;
                 newPoints.Add(new Windows.Foundation.Point(startX + (i * stepX), y));
             }
 
@@ -5106,7 +5124,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (LocalMachineSettingsEngine.EnableLiveDiagnostics)
             {
-                _telemetryTimer?.Change(0, 1000);
+                _telemetryTimer?.Change(0, 200);
 
                 StartLiveMonitoring();
             }
