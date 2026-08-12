@@ -1143,6 +1143,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private double _temperatureDotY;
         public double TemperatureDotY { get => _temperatureDotY; set => SetProperty(ref _temperatureDotY, value); }
 
+        private double _dotScaleX = 1.0;
+        public double DotScaleX { get => _dotScaleX; set => SetProperty(ref _dotScaleX, value); }
+
+        private double _dotScaleY = 1.0;
+        public double DotScaleY { get => _dotScaleY; set => SetProperty(ref _dotScaleY, value); }
+
         private string _currentCpuLoadStr = "0%";
         public string CurrentCpuLoadStr
         {
@@ -2737,20 +2743,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 newPoints.Add(new Point(logicalWidth, 100));
                 PerformanceGraphPoints = newPoints;
                 PerformanceAreaPoints = areaPoints;
-                PerformanceDotX = logicalWidth - 3;
-                PerformanceDotY = 100 - 3;
+                PerformanceDotX = logicalWidth - 6;
+                PerformanceDotY = 100 - 6;
 
                 newPointsAlt.Add(new Point(logicalWidth, 100));
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
-                PerformanceAltDotX = logicalWidth - 3;
-                PerformanceAltDotY = 100 - 3;
+                PerformanceAltDotX = logicalWidth - 6;
+                PerformanceAltDotY = 100 - 6;
 
                 newTempPoints.Add(new Point(logicalWidth, 100));
                 TemperatureGraphPoints = newTempPoints;
                 TemperatureAreaPoints = newTempAreaPoints;
-                TemperatureDotX = logicalWidth - 3;
-                TemperatureDotY = 100 - 3;
+                TemperatureDotX = logicalWidth - 6;
+                TemperatureDotY = 100 - 6;
                 return;
             }
 
@@ -2845,8 +2851,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     areaPoints.Add(new Point(newPoints.Last().X, 100));
 
                     var lastPoint = newPoints.Last();
-                    PerformanceDotX = lastPoint.X - 3;
-                    PerformanceDotY = lastPoint.Y - 3;
+                    PerformanceDotX = lastPoint.X - 6;
+                    PerformanceDotY = lastPoint.Y - 6;
                 }
             }
             else
@@ -2873,8 +2879,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     newTempAreaPoints.Add(new Point(newTempPoints.Last().X, 100));
 
                     var lastPoint = newTempPoints.Last();
-                    TemperatureDotX = lastPoint.X - 3;
-                    TemperatureDotY = lastPoint.Y - 3;
+                    TemperatureDotX = lastPoint.X - 6;
+                    TemperatureDotY = lastPoint.Y - 6;
                 }
             }
 
@@ -2903,8 +2909,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     areaPointsAlt.Add(new Point(newPointsAlt.Last().X, 100));
 
                     var lastAltPoint = newPointsAlt.Last();
-                    PerformanceAltDotX = lastAltPoint.X - 3;
-                    PerformanceAltDotY = lastAltPoint.Y - 3;
+                    PerformanceAltDotX = lastAltPoint.X - 6;
+                    PerformanceAltDotY = lastAltPoint.Y - 6;
                 }
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
@@ -2915,8 +2921,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 PerformanceGraphPointsAlt = newPointsAlt;
                 PerformanceAreaPointsAlt = areaPointsAlt;
 
-                PerformanceAltDotX = logicalWidth - 3;
-                PerformanceAltDotY = 100 - 3;
+                PerformanceAltDotX = logicalWidth - 6;
+                PerformanceAltDotY = 100 - 6;
             }
         }
 

@@ -1087,6 +1087,18 @@ namespace EvolveOS_Optimizer.Pages
 
             UpdateDriverButtonStates();
         }
+
+        private void GraphViewbox_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (sender is FrameworkElement fe && fe.ActualWidth > 0 && fe.ActualHeight > 0)
+            {
+                double sx = fe.ActualWidth / 400.0;
+                double sy = fe.ActualHeight / 100.0;
+
+                DiagnosticsPageViewModel.Current.DotScaleX = sx > 0 ? 1.0 / sx : 1.0;
+                DiagnosticsPageViewModel.Current.DotScaleY = sy > 0 ? 1.0 / sy : 1.0;
+            }
+        }
         #endregion
 
         #region AI Event Log Explainer
