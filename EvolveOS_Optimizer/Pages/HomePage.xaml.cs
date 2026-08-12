@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using EvolveOS_Optimizer.Assets.UserControl;
 using EvolveOS_Optimizer.Core.Interfaces;
@@ -13,12 +12,14 @@ using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.Win32;
+using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -30,29 +31,19 @@ namespace EvolveOS_Optimizer.Pages
         private Border? _activeDraggedCard = null;
         private bool _isTrackingDrag = false;
 
-        private Dictionary<GridViewItem, Windows.Foundation.Rect> _logicalBounds = new();
-        private Windows.Foundation.Point _dragStartPoint;
-        private Windows.Foundation.Point _draggedItemBasePos;
+        private Dictionary<GridViewItem, Rect> _logicalBounds = new();
+        private Point _dragStartPoint;
+        private Point _draggedItemBasePos;
 
-        private readonly SystemDiagnostics _systemDiagnostics = new SystemDiagnostics();
         private readonly DispatcherQueue _dispatcherQueue;
 
-        private DispatcherTimer? _monitoringTimer;
         private DispatcherTimer? _wallpaperTimer;
 
         private string _currentWallpaperPath = string.Empty;
         private DateTime _currentWallpaperWriteTime = DateTime.MinValue;
 
-        private NetworkInterface[]? _activeInterfaces;
-        private DateTime _lastInterfaceUpdate = DateTime.MinValue;
-
         private const string RegistryPath = @"Software\EvolveOS_Optimizer";
         private const string RegistryValueName = "LastLocation";
-
-        private long _lastDownloadBytes = 0;
-        private long _lastUploadBytes = 0;
-        private DateTime _lastUpdateTime = DateTime.Now;
-        private bool _isFirstTick = true;
 
         private bool _isCurrentPageActive = false;
         private bool _isInitialized = false;
@@ -62,6 +53,11 @@ namespace EvolveOS_Optimizer.Pages
         private List<double> _netDownHistory = new List<double>();
         private List<double> _netUpHistory = new List<double>();
         private List<double> _gpuHistory = new List<double>();
+
+        private int _maxCpuDataPoints = 300;
+        private int _maxRamDataPoints = 300;
+        private int _maxNetDataPoints = 300;
+        private int _maxGpuDataPoints = 300;
         #endregion
 
         public HomePageViewModel ViewModel { get; } = new();
@@ -87,23 +83,20 @@ namespace EvolveOS_Optimizer.Pages
 
             this.Loaded += HomePage_Loaded;
             this.Unloaded += Page_Unloaded;
+
+            ViewModel.OnTelemetryTicked += ViewModel_OnTelemetryTicked;
         }
 
-        private async void HomePage_Loaded(object sender, RoutedEventArgs e)
+        private void HomePage_Loaded(object sender, RoutedEventArgs e)
         {
             if (_isCurrentPageActive) return;
             _isCurrentPageActive = true;
 
+            StartWallpaperMonitor();
+            ResumeLiveMonitoring();
+
             MainWinViewModel.AppHidden += PauseLiveMonitoring;
             MainWinViewModel.AppRestored += ResumeLiveMonitoring;
-
-            var stats = GetCurrentNetworkBytes();
-            _lastDownloadBytes = stats.Down;
-            _lastUploadBytes = stats.Up;
-            _lastUpdateTime = DateTime.Now;
-
-            StartMonitoring();
-            StartWallpaperMonitor();
 
             if (!_isInitialized)
             {
@@ -115,24 +108,6 @@ namespace EvolveOS_Optimizer.Pages
 
                 _ = CalculateSystemHealthAsync();
                 _ = CalculateSecurityHealthAsync();
-
-                if (HardwareData.Memory.Total == 0)
-                {
-                    try
-                    {
-                        using var searcher = new System.Management.ManagementObjectSearcher("SELECT TotalPhysicalMemory FROM Win32_ComputerSystem");
-                        foreach (var obj in searcher.Get())
-                        {
-                            double totalBytes = Convert.ToDouble(obj["TotalPhysicalMemory"]);
-                            HardwareData.Memory.Total = totalBytes / 1024 / 1024;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"[HardwareData] Failed to get total RAM: {ex.Message}");
-                        HardwareData.Memory.Total = 16384;
-                    }
-                }
 
                 StartShimmer(IpShimmerBrush, "Stop2");
                 StartShimmer(LocalIpShimmerBrush, "LocalStop2");
@@ -163,7 +138,6 @@ namespace EvolveOS_Optimizer.Pages
 
         private void PauseLiveMonitoring()
         {
-            _monitoringTimer?.Stop();
             _wallpaperTimer?.Stop();
 
             if (this.DataContext is HomePageViewModel vm)
@@ -176,177 +150,47 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ResumeLiveMonitoring()
         {
-            if (_monitoringTimer != null && !_monitoringTimer.IsEnabled)
-            {
-                _monitoringTimer.Start();
-                _wallpaperTimer?.Start();
-
-                if (this.DataContext is HomePageViewModel vm)
-                {
-                    vm.ResumeUpdates();
-                }
-
-                Debug.WriteLine("[HomePage] Live monitoring RESUMED.");
-            }
-        }
-        #endregion
-
-        #region Real-time Monitoring (Hardware & Network)
-        private void StartMonitoring()
-        {
-            if (_monitoringTimer == null)
-            {
-                _monitoringTimer = new DispatcherTimer();
-                _monitoringTimer.Interval = TimeSpan.FromSeconds(1);
-                _monitoringTimer.Tick += OnMonitoringTick;
-            }
-
-            _monitoringTimer.Start();
+            _wallpaperTimer?.Start();
 
             if (this.DataContext is HomePageViewModel vm)
             {
                 vm.ResumeUpdates();
             }
+
+            Debug.WriteLine("[HomePage] Live monitoring RESUMED.");
         }
+        #endregion
 
-        private async void OnMonitoringTick(object? sender, object e)
+        #region View/UI Telemetry Updates (Linked to ViewModel)
+        private void ViewModel_OnTelemetryTicked(TelemetryDataPayload payload)
         {
-            if (this.XamlRoot == null) return;
-            await UpdateHardwareStats();
-        }
+            if (!_isCurrentPageActive) return;
 
-        private async Task UpdateHardwareStats()
-        {
-            try
+            CPULoad.Value = Math.Clamp(payload.Cpu, 0, 100);
+            RAMLoad.Value = Math.Clamp(payload.Ram, 0, 100);
+            CPUText.Text = ((int)Math.Round(payload.Cpu)).ToString();
+            RAMText.Text = ((int)Math.Round(payload.Ram)).ToString();
+
+            if (payload.IsFullSecond)
             {
-                var pCountTask = _systemDiagnostics.GetProcessCountAsync();
-                var sCountTask = _systemDiagnostics.GetServicesCount();
-                var cpuTask = _systemDiagnostics.GetTotalProcessorUsage();
-                var gpuTask = SystemDiagnostics.GetGpuUsage();
-
-                await Task.WhenAll(pCountTask, sCountTask, cpuTask, gpuTask);
-
-                string pCount = await pCountTask;
-                string sCount = await sCountTask;
-                double cpuPercentage = await cpuTask;
-                int gpuPercentage = await gpuTask;
-
-                var memInfo = GC.GetGCMemoryInfo();
-                double totalBytes = (double)memInfo.TotalAvailableMemoryBytes;
-                double availBytes = await _systemDiagnostics.GetPhysicalAvailableMemory();
-                double ramPercentage = (totalBytes > 0) ? ((totalBytes - availBytes) / totalBytes) * 100.0 : 0;
-
-                var currentStats = GetCurrentNetworkBytes();
-                DateTime now = DateTime.Now;
-                double timeDiff = (now - _lastUpdateTime).TotalSeconds;
-
-                double dlMbps = 0, ulMbps = 0;
-
-                if (timeDiff > 0 && !_isFirstTick)
-                {
-                    if (currentStats.Down >= _lastDownloadBytes)
-                    {
-                        dlMbps = ((currentStats.Down - _lastDownloadBytes) * 8.0) / timeDiff / 1_000_000.0;
-                    }
-
-                    if (currentStats.Up >= _lastUploadBytes)
-                    {
-                        ulMbps = ((currentStats.Up - _lastUploadBytes) * 8.0) / timeDiff / 1_000_000.0;
-                    }
-                }
-
-                _lastDownloadBytes = currentStats.Down;
-                _lastUploadBytes = currentStats.Up;
-                _lastUpdateTime = now;
-                _isFirstTick = false;
-
-                _dispatcherQueue.TryEnqueue(() =>
-                {
-                    if (this.XamlRoot == null) return;
-
-                    if (this.DataContext is HomePageViewModel vm)
-                    {
-                        vm.RefreshStats(pCount, sCount);
-                        vm.UpdateDateTime();
-
-                        CPULoad.Value = Math.Clamp(cpuPercentage, 0, 100);
-                        RAMLoad.Value = Math.Clamp(ramPercentage, 0, 100);
-                        CPUText.Text = ((int)CPULoad.Value).ToString();
-                        RAMText.Text = ((int)RAMLoad.Value).ToString();
-                        ProcCountText.Text = pCount;
-                        SvcCountText.Text = sCount;
-
-                        DownLoadRing.Value = Math.Clamp(dlMbps, 0, 1000);
-                        UpLoadRing.Value = Math.Clamp(ulMbps, 0, 1000);
-
-                        DownLoadText.Text = dlMbps.ToString("F2");
-                        UpLoadText.Text = ulMbps.ToString("F2");
-                    }
-
-                    UpdateCpuGraph(cpuPercentage);
-                    UpdateRamGraph(ramPercentage);
-                    UpdateNetworkGraph(dlMbps, ulMbps);
-                    UpdateGpuGraph(gpuPercentage);
-                });
+                ProcCountText.Text = payload.ProcCount;
+                SvcCountText.Text = payload.SvcCount;
             }
-            catch (Exception ex) { Debug.WriteLine(ex.Message); }
-        }
 
-        private (long Down, long Up) GetCurrentNetworkBytes()
-        {
-            long d = 0, u = 0;
-            try
-            {
-                if (_activeInterfaces == null || (DateTime.Now - _lastInterfaceUpdate).TotalSeconds > 60)
-                {
-                    var allInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            DownLoadRing.Value = Math.Clamp(payload.NetDown, 0, 1000);
+            UpLoadRing.Value = Math.Clamp(payload.NetUp, 0, 1000);
 
-                    var mainInterface = allInterfaces.FirstOrDefault(ni =>
-                        ni.OperationalStatus == OperationalStatus.Up &&
-                        ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                        ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
-                        ni.GetIPProperties().GatewayAddresses.Any(g => g.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork));
+            DownLoadText.Text = payload.NetDown.ToString("F2");
+            UpLoadText.Text = payload.NetUp.ToString("F2");
 
-                    if (mainInterface == null)
-                    {
-                        mainInterface = allInterfaces.FirstOrDefault(ni =>
-                            ni.OperationalStatus == OperationalStatus.Up &&
-                            (ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
-                             ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) &&
-                            !ni.Description.Contains("Virtual", StringComparison.OrdinalIgnoreCase) &&
-                            !ni.Description.Contains("Pseudo", StringComparison.OrdinalIgnoreCase));
-                    }
-
-                    if (mainInterface != null)
-                    {
-                        _activeInterfaces = new[] { mainInterface };
-                    }
-                    else
-                    {
-                        _activeInterfaces = Array.Empty<NetworkInterface>();
-                    }
-
-                    _lastInterfaceUpdate = DateTime.Now;
-                }
-
-                foreach (var ni in _activeInterfaces)
-                {
-                    var stats = ni.GetIPStatistics();
-                    d += stats.BytesReceived;
-                    u += stats.BytesSent;
-                }
-            }
-            catch
-            {
-                _activeInterfaces = null;
-            }
-            return (d, u);
+            UpdateCpuGraph(payload.Cpu);
+            UpdateRamGraph(payload.Ram);
+            UpdateNetworkGraph(payload.NetDown, payload.NetUp);
+            UpdateGpuGraph(payload.Gpu);
         }
         #endregion
 
         #region GPU Graph Logic
-        private int _maxGpuDataPoints = 60;
-
         private void UpdateGpuAxisLabels(int totalSeconds)
         {
             if (TxtGpuAxis1 == null || TxtGpuAxis2 == null || TxtGpuAxis3 == null || TxtGpuAxis4 == null) return;
@@ -381,13 +225,14 @@ namespace EvolveOS_Optimizer.Pages
         private void DrawGpuGraph()
         {
             if (GpuGraphCanvas == null || GpuGraphLine == null || GpuGraphFill == null || GpuGraphDot == null) return;
-
             if (_gpuHistory.Count < 2 || GpuGraphCanvas.ActualWidth == 0 || GpuGraphCanvas.ActualHeight == 0) return;
 
             double width = GpuGraphCanvas.ActualWidth;
             double height = GpuGraphCanvas.ActualHeight;
             double maxGpu = 100.0;
-            double stepX = width / (_gpuHistory.Count - 1);
+
+            double stepX = width / Math.Max(1, _maxGpuDataPoints - 1);
+            double startX = width - ((_gpuHistory.Count - 1) * stepX);
 
             var geometry = new PathGeometry();
             var fillGeometry = new PathGeometry();
@@ -397,26 +242,26 @@ namespace EvolveOS_Optimizer.Pages
 
             double startY = height - (_gpuHistory[0] / maxGpu * height);
 
-            figure.StartPoint = new Windows.Foundation.Point(0, startY);
-            fillFigure.StartPoint = new Windows.Foundation.Point(0, height);
-            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(0, startY) });
+            figure.StartPoint = new Point(startX, startY);
+            fillFigure.StartPoint = new Point(startX, height);
+            fillFigure.Segments.Add(new LineSegment { Point = new Point(startX, startY) });
 
-            Windows.Foundation.Point lastPoint = figure.StartPoint;
+            Point lastPoint = figure.StartPoint;
 
             for (int i = 1; i < _gpuHistory.Count; i++)
             {
-                double x = i * stepX;
+                double x = startX + (i * stepX);
                 double y = height - (_gpuHistory[i] / maxGpu * height);
 
                 y = Math.Max(0, Math.Min(height, y));
 
-                lastPoint = new Windows.Foundation.Point(x, y);
+                lastPoint = new Point(x, y);
 
                 figure.Segments.Add(new LineSegment { Point = lastPoint });
                 fillFigure.Segments.Add(new LineSegment { Point = lastPoint });
             }
 
-            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(width, height) });
+            fillFigure.Segments.Add(new LineSegment { Point = new Point(width, height) });
 
             geometry.Figures.Add(figure);
             fillGeometry.Figures.Add(fillFigure);
@@ -431,8 +276,6 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Network Graph Logic
-        private int _maxNetDataPoints = 60;
-
         private void UpdateNetAxisLabels(int totalSeconds)
         {
             if (TxtNetAxis1 == null || TxtNetAxis2 == null || TxtNetAxis3 == null || TxtNetAxis4 == null) return;
@@ -486,7 +329,8 @@ namespace EvolveOS_Optimizer.Pages
                 TxtNetY1.Text = Math.Round(maxNetScale * 0.25).ToString();
             }
 
-            double stepX = width / (_netDownHistory.Count - 1);
+            double stepX = width / Math.Max(1, _maxNetDataPoints - 1);
+            double startX = width - ((_netDownHistory.Count - 1) * stepX);
 
             var downGeo = new PathGeometry();
             var upGeo = new PathGeometry();
@@ -501,21 +345,21 @@ namespace EvolveOS_Optimizer.Pages
             double startYDown = height - (_netDownHistory[0] / maxNetScale * height);
             double startYUp = height - (_netUpHistory[0] / maxNetScale * height);
 
-            downFig.StartPoint = new Windows.Foundation.Point(0, Math.Max(0, Math.Min(height, startYDown)));
-            upFig.StartPoint = new Windows.Foundation.Point(0, Math.Max(0, Math.Min(height, startYUp)));
+            downFig.StartPoint = new Point(startX, Math.Max(0, Math.Min(height, startYDown)));
+            upFig.StartPoint = new Point(startX, Math.Max(0, Math.Min(height, startYUp)));
 
-            downFillFig.StartPoint = new Windows.Foundation.Point(0, height);
+            downFillFig.StartPoint = new Point(startX, height);
             downFillFig.Segments.Add(new LineSegment { Point = downFig.StartPoint });
 
-            upFillFig.StartPoint = new Windows.Foundation.Point(0, height);
+            upFillFig.StartPoint = new Point(startX, height);
             upFillFig.Segments.Add(new LineSegment { Point = upFig.StartPoint });
 
-            Windows.Foundation.Point lastDownPoint = downFig.StartPoint;
-            Windows.Foundation.Point lastUpPoint = upFig.StartPoint;
+            Point lastDownPoint = downFig.StartPoint;
+            Point lastUpPoint = upFig.StartPoint;
 
             for (int i = 1; i < _netDownHistory.Count; i++)
             {
-                double x = i * stepX;
+                double x = startX + (i * stepX);
 
                 double yDown = height - (_netDownHistory[i] / maxNetScale * height);
                 double yUp = height - (_netUpHistory[i] / maxNetScale * height);
@@ -523,8 +367,8 @@ namespace EvolveOS_Optimizer.Pages
                 yDown = Math.Max(0, Math.Min(height, yDown));
                 yUp = Math.Max(0, Math.Min(height, yUp));
 
-                lastDownPoint = new Windows.Foundation.Point(x, yDown);
-                lastUpPoint = new Windows.Foundation.Point(x, yUp);
+                lastDownPoint = new Point(x, yDown);
+                lastUpPoint = new Point(x, yUp);
 
                 downFig.Segments.Add(new LineSegment { Point = lastDownPoint });
                 upFig.Segments.Add(new LineSegment { Point = lastUpPoint });
@@ -533,8 +377,8 @@ namespace EvolveOS_Optimizer.Pages
                 upFillFig.Segments.Add(new LineSegment { Point = lastUpPoint });
             }
 
-            downFillFig.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(width, height) });
-            upFillFig.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(width, height) });
+            downFillFig.Segments.Add(new LineSegment { Point = new Point(width, height) });
+            upFillFig.Segments.Add(new LineSegment { Point = new Point(width, height) });
 
             downGeo.Figures.Add(downFig);
             upGeo.Figures.Add(upFig);
@@ -560,9 +404,6 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region RAM Graph Logic
-
-        private int _maxRamDataPoints = 60;
-
         private void UpdateRamAxisLabels(int totalSeconds)
         {
             if (TxtRamAxis1 == null || TxtRamAxis2 == null || TxtRamAxis3 == null || TxtRamAxis4 == null) return;
@@ -598,13 +439,14 @@ namespace EvolveOS_Optimizer.Pages
         private void DrawRamGraph()
         {
             if (RamGraphCanvas == null || RamGraphLine == null || RamGraphFill == null || RamGraphDot == null) return;
-
             if (_ramHistory.Count < 2 || RamGraphCanvas.ActualWidth == 0 || RamGraphCanvas.ActualHeight == 0) return;
 
             double width = RamGraphCanvas.ActualWidth;
             double height = RamGraphCanvas.ActualHeight;
             double maxRam = 100.0;
-            double stepX = width / (_ramHistory.Count - 1);
+
+            double stepX = width / Math.Max(1, _maxRamDataPoints - 1);
+            double startX = width - ((_ramHistory.Count - 1) * stepX);
 
             var geometry = new PathGeometry();
             var fillGeometry = new PathGeometry();
@@ -614,26 +456,26 @@ namespace EvolveOS_Optimizer.Pages
 
             double startY = height - (_ramHistory[0] / maxRam * height);
 
-            figure.StartPoint = new Windows.Foundation.Point(0, startY);
-            fillFigure.StartPoint = new Windows.Foundation.Point(0, height);
-            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(0, startY) });
+            figure.StartPoint = new Point(startX, startY);
+            fillFigure.StartPoint = new Point(startX, height);
+            fillFigure.Segments.Add(new LineSegment { Point = new Point(startX, startY) });
 
-            Windows.Foundation.Point lastPoint = figure.StartPoint;
+            Point lastPoint = figure.StartPoint;
 
             for (int i = 1; i < _ramHistory.Count; i++)
             {
-                double x = i * stepX;
+                double x = startX + (i * stepX);
                 double y = height - (_ramHistory[i] / maxRam * height);
 
                 y = Math.Max(0, Math.Min(height, y));
 
-                lastPoint = new Windows.Foundation.Point(x, y);
+                lastPoint = new Point(x, y);
 
                 figure.Segments.Add(new LineSegment { Point = lastPoint });
                 fillFigure.Segments.Add(new LineSegment { Point = lastPoint });
             }
 
-            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(width, height) });
+            fillFigure.Segments.Add(new LineSegment { Point = new Point(width, height) });
 
             geometry.Figures.Add(figure);
             fillGeometry.Figures.Add(fillFigure);
@@ -648,8 +490,6 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region CPU Graph Logic
-        private int _maxCpuDataPoints = 60;
-
         private void UpdateAxisLabels(int totalSeconds)
         {
             if (TxtAxis1 == null || TxtAxis2 == null || TxtAxis3 == null || TxtAxis4 == null) return;
@@ -693,13 +533,14 @@ namespace EvolveOS_Optimizer.Pages
         private void DrawCpuGraph()
         {
             if (CpuGraphCanvas == null || CpuGraphLine == null || CpuGraphFill == null || CpuGraphDot == null) return;
-
             if (_cpuHistory.Count < 2 || CpuGraphCanvas.ActualWidth == 0 || CpuGraphCanvas.ActualHeight == 0) return;
 
             double width = CpuGraphCanvas.ActualWidth;
             double height = CpuGraphCanvas.ActualHeight;
             double maxCpu = 100.0;
-            double stepX = width / (_cpuHistory.Count - 1);
+
+            double stepX = width / Math.Max(1, _maxCpuDataPoints - 1);
+            double startX = width - ((_cpuHistory.Count - 1) * stepX);
 
             var geometry = new PathGeometry();
             var fillGeometry = new PathGeometry();
@@ -709,26 +550,26 @@ namespace EvolveOS_Optimizer.Pages
 
             double startY = height - (_cpuHistory[0] / maxCpu * height);
 
-            figure.StartPoint = new Windows.Foundation.Point(0, startY);
-            fillFigure.StartPoint = new Windows.Foundation.Point(0, height);
-            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(0, startY) });
+            figure.StartPoint = new Point(startX, startY);
+            fillFigure.StartPoint = new Point(startX, height);
+            fillFigure.Segments.Add(new LineSegment { Point = new Point(startX, startY) });
 
-            Windows.Foundation.Point lastPoint = figure.StartPoint;
+            Point lastPoint = figure.StartPoint;
 
             for (int i = 1; i < _cpuHistory.Count; i++)
             {
-                double x = i * stepX;
+                double x = startX + (i * stepX);
                 double y = height - (_cpuHistory[i] / maxCpu * height);
 
                 y = Math.Max(0, Math.Min(height, y));
 
-                lastPoint = new Windows.Foundation.Point(x, y);
+                lastPoint = new Point(x, y);
 
                 figure.Segments.Add(new LineSegment { Point = lastPoint });
                 fillFigure.Segments.Add(new LineSegment { Point = lastPoint });
             }
 
-            fillFigure.Segments.Add(new LineSegment { Point = new Windows.Foundation.Point(width, height) });
+            fillFigure.Segments.Add(new LineSegment { Point = new Point(width, height) });
 
             geometry.Figures.Add(figure);
             fillGeometry.Figures.Add(fillFigure);
@@ -758,10 +599,11 @@ namespace EvolveOS_Optimizer.Pages
                 case 2: totalSeconds = 900; break;
             }
 
-            _maxCpuDataPoints = totalSeconds;
-            _maxRamDataPoints = totalSeconds;
-            _maxNetDataPoints = totalSeconds;
-            _maxGpuDataPoints = totalSeconds;
+            int pollsPerSecond = 5;
+            _maxCpuDataPoints = totalSeconds * pollsPerSecond;
+            _maxRamDataPoints = totalSeconds * pollsPerSecond;
+            _maxNetDataPoints = totalSeconds * pollsPerSecond;
+            _maxGpuDataPoints = totalSeconds * pollsPerSecond;
 
             UpdateAxisLabels(totalSeconds);    // CPU
             UpdateRamAxisLabels(totalSeconds); // RAM
@@ -861,7 +703,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 if (element.TranslationTransition == null)
                 {
-                    element.TranslationTransition = new Microsoft.UI.Xaml.Vector3Transition()
+                    element.TranslationTransition = new Vector3Transition()
                     {
                         Duration = TimeSpan.FromMilliseconds(200)
                     };
@@ -877,7 +719,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 if (element.TranslationTransition == null)
                 {
-                    element.TranslationTransition = new Microsoft.UI.Xaml.Vector3Transition()
+                    element.TranslationTransition = new Vector3Transition()
                     {
                         Duration = TimeSpan.FromMilliseconds(200)
                     };
@@ -1082,7 +924,7 @@ namespace EvolveOS_Optimizer.Pages
                 GamingModeButtonLabel.Text = ResourceString.GetString("gm_label_gaming");
                 GamingModeBtnText.Text = ResourceString.GetString("gm_btn_disable");
 
-                DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/health_good.png"));
+                DashGamingStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/health_good.png"));
                 DashGamingStatusImage.Opacity = 1.0;
                 GamingSpinner.Visibility = Visibility.Visible;
                 GamingSpinner.IsActive = true;
@@ -1092,7 +934,7 @@ namespace EvolveOS_Optimizer.Pages
                 GamingModeButtonLabel.Text = ResourceString.GetString("gm_label_normal");
                 GamingModeBtnText.Text = ResourceString.GetString("gm_btn_enable");
 
-                DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
+                DashGamingStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
                 DashGamingStatusImage.Opacity = 1.0;
                 GamingSpinner.Visibility = Visibility.Collapsed;
                 GamingSpinner.IsActive = false;
@@ -1175,11 +1017,11 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void SetCustomCursor(UIElement element, Microsoft.UI.Input.InputSystemCursorShape shape)
+        private void SetCustomCursor(UIElement element, InputSystemCursorShape shape)
         {
             if (element == null) return;
 
-            var cursor = Microsoft.UI.Input.InputSystemCursor.Create(shape);
+            var cursor = InputSystemCursor.Create(shape);
             var cursorProperty = typeof(UIElement).GetProperty("ProtectedCursor", BindingFlags.Instance | BindingFlags.NonPublic);
 
             if (cursorProperty != null)
@@ -1190,38 +1032,38 @@ namespace EvolveOS_Optimizer.Pages
 
         private void DashboardDragCursor()
         {
-            SetCustomCursor(CardWeather, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardNetwork, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardRam, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardCpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardCpuGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardGpu, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardDisk, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardGamingMode, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardDns, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardMaintenance, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardSecurity, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardCpuGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardRamGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardNetworkGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardGpuGraph, Microsoft.UI.Input.InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardWeather, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardNetwork, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardRam, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardCpu, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardCpuGraph, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardGpu, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardDisk, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardGamingMode, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardDns, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardMaintenance, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardSecurity, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardCpuGraph, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardRamGraph, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardNetworkGraph, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardGpuGraph, InputSystemCursorShape.SizeAll);
 
-            SetCustomCursor(RefreshWeatherButton, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(LocationButton, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(Calendar, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnVision, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnOpenDnsPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnStartService, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnDebug, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnOpenMaintenancePage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnRefreshHealth, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnOpenSecurityPage, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnRefreshSecurity, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnDashViewIssues, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
-            SetCustomCursor(BtnGamingMode, Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+            SetCustomCursor(RefreshWeatherButton, InputSystemCursorShape.Arrow);
+            SetCustomCursor(LocationButton, InputSystemCursorShape.Arrow);
+            SetCustomCursor(Calendar, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnVision, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenDnsPage, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnStartService, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnDebug, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenMaintenancePage, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRefreshHealth, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenSecurityPage, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRefreshSecurity, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnDashViewIssues, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnGamingMode, InputSystemCursorShape.Arrow);
 
-            SetCustomCursor(IpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
-            SetCustomCursor(LocalIpAddress, Microsoft.UI.Input.InputSystemCursorShape.Hand);
+            SetCustomCursor(IpAddress, InputSystemCursorShape.Hand);
+            SetCustomCursor(LocalIpAddress, InputSystemCursorShape.Hand);
         }
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
@@ -1308,18 +1150,18 @@ namespace EvolveOS_Optimizer.Pages
                     foreach (var item in DashboardGridView.Items.OfType<GridViewItem>())
                     {
                         var transform = item.TransformToVisual(DashboardGridView);
-                        var bounds = transform.TransformBounds(new Windows.Foundation.Rect(0, 0, item.ActualWidth, item.ActualHeight));
+                        var bounds = transform.TransformBounds(new Rect(0, 0, item.ActualWidth, item.ActualHeight));
                         _logicalBounds[item] = bounds;
 
                         if (item.Content is Border b)
                         {
-                            b.TranslationTransition = new Microsoft.UI.Xaml.Vector3Transition { Duration = TimeSpan.FromMilliseconds(250) };
+                            b.TranslationTransition = new Vector3Transition { Duration = TimeSpan.FromMilliseconds(250) };
                         }
                     }
 
                     if (_logicalBounds.TryGetValue(container, out var draggedBounds))
                     {
-                        _draggedItemBasePos = new Windows.Foundation.Point(draggedBounds.X, draggedBounds.Y);
+                        _draggedItemBasePos = new Point(draggedBounds.X, draggedBounds.Y);
                     }
 
                     Canvas.SetZIndex(container, 1000);
@@ -1415,7 +1257,7 @@ namespace EvolveOS_Optimizer.Pages
                 if (_hoveredTargetItem != null && _hoveredTargetItem != _activeDraggedItem)
                 {
                     var originalTransitions = DashboardGridView.ItemContainerTransitions;
-                    DashboardGridView.ItemContainerTransitions = new Microsoft.UI.Xaml.Media.Animation.TransitionCollection();
+                    DashboardGridView.ItemContainerTransitions = new TransitionCollection();
 
                     int oldIndex = DashboardGridView.Items.IndexOf(_activeDraggedItem);
                     int newIndex = DashboardGridView.Items.IndexOf(_hoveredTargetItem);
@@ -1475,7 +1317,6 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Gaming Mode
-
         private void BtnToggleGamingConsole_Click(object sender, RoutedEventArgs e)
         {
             bool isConsoleOpen = BtnToggleGamingConsole.IsChecked ?? false;
@@ -1545,7 +1386,7 @@ namespace EvolveOS_Optimizer.Pages
 
                     if (targetState)
                     {
-                        DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/health_good.png"));
+                        DashGamingStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/health_good.png"));
                         DashGamingStatusImage.Opacity = 1.0;
 
                         GamingSpinner.Visibility = Visibility.Visible;
@@ -1556,7 +1397,7 @@ namespace EvolveOS_Optimizer.Pages
                     }
                     else
                     {
-                        DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
+                        DashGamingStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
                         DashGamingStatusImage.Opacity = 1.0;
 
                         GamingSpinner.IsActive = false;
@@ -1573,7 +1414,7 @@ namespace EvolveOS_Optimizer.Pages
                 GamingSpinner.IsActive = false;
                 GamingSpinner.Visibility = Visibility.Collapsed;
 
-                DashGamingStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
+                DashGamingStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
                 DashGamingStatusImage.Opacity = 0.8;
             }
             finally
@@ -1639,7 +1480,6 @@ namespace EvolveOS_Optimizer.Pages
             }
             else
             {
-
                 IconServiceStopped.Visibility = Visibility.Visible;
                 ImgServiceRunning.Visibility = Visibility.Collapsed;
                 TxtServicesRunning.Visibility = Visibility.Collapsed;
@@ -1753,7 +1593,7 @@ namespace EvolveOS_Optimizer.Pages
                     vRamPercentage, totalVRamGb,
                     junkGigabytes);
 
-                DashMaintenanceStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(healthResult.ImagePath));
+                DashMaintenanceStatusImage.Source = new BitmapImage(new Uri(healthResult.ImagePath));
                 TxtHealthStatus.Text = healthResult.StatusText;
 
                 string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
@@ -1812,7 +1652,6 @@ namespace EvolveOS_Optimizer.Pages
 
                 await Task.Run(async () =>
                 {
-                    // Gather all statuses
                     var antivirusInfo = await SecurityDiagnostics.GetAntivirusInfoAsync();
                     bool isAvEnabled = antivirusInfo.IsEnabled;
                     bool isFwEnabled = await SecurityDiagnostics.IsFirewallEnabledAsync();
@@ -1831,18 +1670,18 @@ namespace EvolveOS_Optimizer.Pages
                     string psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync();
                     bool isPsPolicySecure = psPolicy != "Unrestricted" && psPolicy != "Bypass" && psPolicy != "Error";
 
-                    if (!isAvEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_VirusThreatProtection")); }
-                    if (!isFwEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_FirewallNetworkProtection")); }
-                    if (!isRtEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RealTimeProtection")); }
-                    if (!isUacEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_UAC")); }
-                    if (!isWuEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_WindowsUpdate")); }
-                    if (!isTpEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_TamperProtection")); }
-                    if (!isSmartAppControlSecure) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_SmartAppControl")); }
-                    if (!isPsPolicySecure) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_PSExecutionPolicy")); }
-                    if (!isLsaEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_LSAProtection")); }
-                    if (isRdpEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RemoteDesktop")); }
-                    if (isRaEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RemoteAssistance")); }
-                    if (isDevModeEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_DeveloperMode")); }
+                    if (!isAvEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_VirusThreatProtection") ?? "Virus & Threat Protection"); }
+                    if (!isFwEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_FirewallNetworkProtection") ?? "Firewall is disabled"); }
+                    if (!isRtEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RealTimeProtection") ?? "Real-Time Protection"); }
+                    if (!isUacEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_UAC") ?? "UAC Level"); }
+                    if (!isWuEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_WindowsUpdate") ?? "Windows Update"); }
+                    if (!isTpEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_TamperProtection") ?? "Tamper Protection"); }
+                    if (!isSmartAppControlSecure) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_SmartAppControl") ?? "Smart App Control"); }
+                    if (!isPsPolicySecure) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_PSExecutionPolicy") ?? "PowerShell Policy"); }
+                    if (!isLsaEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_LSAProtection") ?? "LSA Protection"); }
+                    if (isRdpEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RemoteDesktop") ?? "Remote Desktop"); }
+                    if (isRaEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance"); }
+                    if (isDevModeEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_DeveloperMode") ?? "Developer Mode"); }
 
                     isCoreProtected = isAvEnabled && isFwEnabled && isRtEnabled;
                 });
@@ -1850,16 +1689,19 @@ namespace EvolveOS_Optimizer.Pages
                 if (!isCoreProtected)
                 {
                     DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/unsecure.png"));
+                    DashSecurityStatusImage.Opacity = 1.0;
                     TxtSecurityStatus.Text = $"{issuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
                 }
                 else if (issuesCount > 0)
                 {
                     DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
+                    DashSecurityStatusImage.Opacity = 0.5;
                     TxtSecurityStatus.Text = $"{issuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
                 }
                 else
                 {
                     DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
+                    DashSecurityStatusImage.Opacity = 1.0;
                     TxtSecurityStatus.Text = ResourceString.GetString("text_security_good") ?? "System is Secure";
                 }
 
@@ -1959,7 +1801,7 @@ namespace EvolveOS_Optimizer.Pages
         #region Privacy & Masking Logic
         private void BtnVision_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if (e.Key == Windows.System.VirtualKey.Space || e.Key == Windows.System.VirtualKey.Enter)
+            if (e.Key == VirtualKey.Space || e.Key == VirtualKey.Enter)
             {
                 e.Handled = true;
             }
@@ -2037,11 +1879,12 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Purge Page
-        public async Task Purge()
+        public Task Purge()
         {
             Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
-            _monitoringTimer?.Stop();
+            ViewModel.OnTelemetryTicked -= ViewModel_OnTelemetryTicked;
+
             _wallpaperTimer?.Stop();
 
             ViewModel?.PauseUpdates();
@@ -2063,13 +1906,13 @@ namespace EvolveOS_Optimizer.Pages
 
                 _ = Task.Run(async () =>
                 {
-                    await Task.Delay(350); // Wait for WinUI page transition animation to finish
+                    await Task.Delay(350);
 
                     DispatcherQueue?.TryEnqueue(() =>
                     {
                         this.Bindings?.StopTracking();
                         this.DataContext = null;
-                        this.Content = null; // Safely nuked without crashing the renderer!
+                        this.Content = null;
                     });
 
                     DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
@@ -2079,6 +1922,8 @@ namespace EvolveOS_Optimizer.Pages
             {
                 Debug.WriteLine($"[{this.GetType().Name}] High Performance Mode: State preserved in RAM cache.");
             }
+
+            return Task.CompletedTask;
         }
         #endregion
     }

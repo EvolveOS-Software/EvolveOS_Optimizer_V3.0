@@ -1,9 +1,9 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
+using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Threading;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
@@ -14,18 +14,70 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 {
     public partial class HomePageViewModel : ViewModelBase, IDisposable
     {
+        #region Native Methods & Structs
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetSystemTimes(out FILETIME lpIdleTime, out FILETIME lpKernelTime, out FILETIME lpUserTime);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct FILETIME
+        {
+            public uint dwLowDateTime;
+            public uint dwHighDateTime;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private struct MEMORYSTATUSEX
+        {
+            public uint dwLength;
+            public uint dwMemoryLoad;
+            public ulong ullTotalPhys;
+            public ulong ullAvailPhys;
+            public ulong ullTotalPageFile;
+            public ulong ullAvailPageFile;
+            public ulong ullTotalVirtual;
+            public ulong ullAvailVirtual;
+            public ulong ullAvailExtendedVirtual;
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+        #endregion
+
         #region Fields
         private readonly HomePageModel _model = new HomePageModel();
         private readonly SystemDiagnostics _monitoringService = new SystemDiagnostics();
         private readonly WeatherService _weatherService = new WeatherService();
 
-        private DispatcherTimer? _statsTimer;
+        private System.Threading.Timer? _telemetryTimer;
         private DispatcherTimer? _weatherTimer;
-
-        public int GpuUsageDisplay => HardwareData.Gpu.Usage;
-        public int GpuUsagePercentage => HardwareData.Gpu.Usage;
-
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+
+        public event Action<TelemetryDataPayload>? OnTelemetryTicked;
+
+        private int _isUpdatingTelemetry = 0;
+        private int _monitoringTick = 0;
+        private double _displayCpuUsage = 0;
+        private double _displayGpuUsage = 0;
+        private double _displayDownMbps = 0;
+        private double _displayUpMbps = 0;
+        private double _lastRamPercentage = 0;
+        private string _lastPCount = "0";
+        private string _lastSCount = "0";
+
+        private ulong _prevIdleTime;
+        private ulong _prevKernelTime;
+        private ulong _prevUserTime;
+        private long _prevNetworkDownBytes;
+        private long _prevNetworkUpBytes;
+        private DateTime _lastNetworkCheckTime = DateTime.MinValue;
+        private bool _isFirstTick = true;
+
+        private PerformanceCounterCategory? _gpuCategory;
+        private readonly Dictionary<string, PerformanceCounter> _gpuCounters = new();
+        private DateTime _lastGpuInstanceRefresh = DateTime.MinValue;
+        private NetworkInterface[]? _cachedNetworkInterfaces;
+        private DateTime _lastNetworkInterfaceRefresh = DateTime.MinValue;
 
         private ObservableCollection<HomePageModel> _displayData = new();
         private ObservableCollection<DriveSpaceInfo> _diskDrives = new();
@@ -43,13 +95,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Properties
+        public int GpuUsageDisplay => HardwareData.Gpu.Usage;
+        public int GpuUsagePercentage => HardwareData.Gpu.Usage;
 
         public double CpuUsage => HardwareData.Processor.Usage;
         public string CpuUsageText => CpuUsage.ToString("F0");
 
         public double RamUsage => HardwareData.Memory.Usage;
         public string RamUsageText => RamUsage.ToString("F0");
-
 
         public string? OSName
         {
@@ -76,14 +129,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public double DownloadSpeedMbps { get; set; }
         public double UploadSpeedMbps { get; set; }
 
-
         public Visibility VisionVisibility => SetVisibility;
         public bool IsVisionChecked
         {
             get => StateButtonVision;
             set { StateButtonVision = value; OnPropertyChanged(); }
         }
-
 
         public ObservableCollection<HomePageModel> DisplayData
         {
@@ -216,14 +267,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (SettingsEngine.IsHiddenIpAddress != value)
                 {
                     SettingsEngine.IsHiddenIpAddress = value;
-
                     SetBlurValue = value ? 0 : 20;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public Microsoft.UI.Xaml.Visibility IpVisibility => SystemDiagnostics.isIPAddressFormatValid ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+        public Visibility IpVisibility => SystemDiagnostics.isIPAddressFormatValid ? Visibility.Visible : Visibility.Collapsed;
 
         public HomePageModel? this[string name]
         {
@@ -261,9 +311,244 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _ = FetchWeatherAsync(_weatherLocation, _cts.Token);
 
-            SetupTimer();
+            InitHardwareState();
+            SetupWeatherTimer();
         }
 
+        private void InitHardwareState()
+        {
+            if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+            {
+                _prevIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                _prevKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                _prevUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+            }
+        }
+        #endregion
+
+        #region Background Engine (High-Performance Telemetry)
+        public void ResumeUpdates()
+        {
+            if (_telemetryTimer == null)
+            {
+                _telemetryTimer = new System.Threading.Timer(TelemetryTimer_Tick, null, 0, 200);
+            }
+            else
+            {
+                _telemetryTimer.Change(0, 200);
+            }
+
+            _weatherTimer?.Start();
+            Debug.WriteLine("[HomePageVM] Background timers RESUMED.");
+        }
+
+        public void PauseUpdates()
+        {
+            _telemetryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+            _weatherTimer?.Stop();
+            Debug.WriteLine("[HomePageVM] Background timers PAUSED.");
+        }
+
+        private void TelemetryTimer_Tick(object? state)
+        {
+            if (Interlocked.CompareExchange(ref _isUpdatingTelemetry, 1, 0) != 0) return;
+
+            try
+            {
+                _monitoringTick++;
+                bool isFullSecond = _monitoringTick >= 5;
+                if (isFullSecond) _monitoringTick = 0;
+
+                double rawCpu = 0;
+                if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+                {
+                    ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                    ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                    ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+
+                    ulong idleDiff = curIdleTime - _prevIdleTime;
+                    ulong kernelDiff = curKernelTime - _prevKernelTime;
+                    ulong userDiff = curUserTime - _prevUserTime;
+                    ulong totalSystemTime = kernelDiff + userDiff;
+
+                    _prevIdleTime = curIdleTime;
+                    _prevKernelTime = curKernelTime;
+                    _prevUserTime = curUserTime;
+
+                    if (totalSystemTime > 0)
+                    {
+                        rawCpu = (double)((totalSystemTime - idleDiff) * 100.0 / totalSystemTime);
+                        rawCpu = Math.Clamp(rawCpu, 0, 100);
+                    }
+                }
+
+                MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
+                memStatus.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+                double rawRam = 0;
+                if (GlobalMemoryStatusEx(ref memStatus))
+                {
+                    rawRam = memStatus.dwMemoryLoad;
+                }
+
+                var netUsage = GetNetworkUsage();
+                DateTime now = DateTime.Now;
+                double timeDiff = (now - _lastNetworkCheckTime).TotalSeconds;
+
+                double rawDlMbps = 0, rawUlMbps = 0;
+                if (timeDiff > 0 && !_isFirstTick)
+                {
+                    if (netUsage.Down >= _prevNetworkDownBytes)
+                        rawDlMbps = ((netUsage.Down - _prevNetworkDownBytes) * 8.0) / timeDiff / 1_000_000.0;
+
+                    if (netUsage.Up >= _prevNetworkUpBytes)
+                        rawUlMbps = ((netUsage.Up - _prevNetworkUpBytes) * 8.0) / timeDiff / 1_000_000.0;
+                }
+
+                _prevNetworkDownBytes = netUsage.Down;
+                _prevNetworkUpBytes = netUsage.Up;
+                _lastNetworkCheckTime = now;
+                _isFirstTick = false;
+
+                double rawGpu = GetGpuUsage();
+
+                _displayCpuUsage = (_displayCpuUsage * 0.8) + (rawCpu * 0.2);
+                _displayGpuUsage = (_displayGpuUsage * 0.8) + (rawGpu * 0.2);
+                _displayDownMbps = (_displayDownMbps * 0.8) + (rawDlMbps * 0.2);
+                _displayUpMbps = (_displayUpMbps * 0.8) + (rawUlMbps * 0.2);
+                _lastRamPercentage = rawRam;
+
+                if (isFullSecond)
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var pCount = await _monitoringService.GetProcessCountAsync();
+                            var sCount = await _monitoringService.GetServicesCount();
+
+                            App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                            {
+                                _lastPCount = pCount;
+                                _lastSCount = sCount;
+                                RefreshStats(pCount, sCount);
+                            });
+                        }
+                        catch { }
+                    });
+                }
+
+                var payload = new TelemetryDataPayload
+                {
+                    Cpu = _displayCpuUsage,
+                    Ram = _lastRamPercentage,
+                    Gpu = _displayGpuUsage,
+                    NetDown = _displayDownMbps,
+                    NetUp = _displayUpMbps,
+                    ProcCount = _lastPCount,
+                    SvcCount = _lastSCount,
+                    IsFullSecond = isFullSecond
+                };
+
+                App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                {
+                    if (isFullSecond) UpdateDateTime();
+                    OnTelemetryTicked?.Invoke(payload);
+                });
+            }
+            catch { }
+            finally
+            {
+                _isUpdatingTelemetry = 0;
+            }
+        }
+
+        private (long Down, long Up) GetNetworkUsage()
+        {
+            try
+            {
+                long d = 0, u = 0;
+                if (_cachedNetworkInterfaces == null || (DateTime.Now - _lastNetworkInterfaceRefresh).TotalSeconds >= 60)
+                {
+                    var allInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+                    var mainInterface = allInterfaces.FirstOrDefault(ni =>
+                        ni.OperationalStatus == OperationalStatus.Up &&
+                        ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                        ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
+                        ni.GetIPProperties().GatewayAddresses.Any(g => g.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork));
+
+                    if (mainInterface == null)
+                    {
+                        mainInterface = allInterfaces.FirstOrDefault(ni =>
+                            ni.OperationalStatus == OperationalStatus.Up &&
+                            (ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet || ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) &&
+                            !ni.Description.Contains("Virtual", StringComparison.OrdinalIgnoreCase) &&
+                            !ni.Description.Contains("Pseudo", StringComparison.OrdinalIgnoreCase));
+                    }
+
+                    _cachedNetworkInterfaces = mainInterface != null ? new[] { mainInterface } : Array.Empty<NetworkInterface>();
+                    _lastNetworkInterfaceRefresh = DateTime.Now;
+                }
+
+                foreach (var ni in _cachedNetworkInterfaces)
+                {
+                    try
+                    {
+                        var stats = ni.GetIPStatistics();
+                        d += stats.BytesReceived;
+                        u += stats.BytesSent;
+                    }
+                    catch { }
+                }
+                return (d, u);
+            }
+            catch { return (0, 0); }
+        }
+
+        private float GetGpuUsage()
+        {
+            try
+            {
+                if (_gpuCategory == null)
+                {
+                    _gpuCategory = new PerformanceCounterCategory("GPU Engine");
+                }
+
+                if ((DateTime.Now - _lastGpuInstanceRefresh).TotalSeconds >= 10)
+                {
+                    var currentInstances = _gpuCategory.GetInstanceNames()
+                        .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
+                        .ToHashSet();
+
+                    var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
+                    foreach (var key in toRemove)
+                    {
+                        _gpuCounters[key].Dispose();
+                        _gpuCounters.Remove(key);
+                    }
+
+                    foreach (var instance in currentInstances)
+                    {
+                        if (!_gpuCounters.ContainsKey(instance))
+                        {
+                            var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
+                            counter.NextValue();
+                            _gpuCounters[instance] = counter;
+                        }
+                    }
+
+                    _lastGpuInstanceRefresh = DateTime.Now;
+                }
+
+                float totalUsage = 0;
+                foreach (var counter in _gpuCounters.Values)
+                {
+                    totalUsage += counter.NextValue();
+                }
+
+                return Math.Clamp(totalUsage, 0f, 100f);
+            }
+            catch { return 0f; }
+        }
         #endregion
 
         #region System Data Management
@@ -274,13 +559,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _displayData.Add(new HomePageModel { Name = "OSVersion", Data = HardwareData.OS.Version });
             _displayData.Add(new HomePageModel { Name = "Processes", Data = HardwareData.RunningProcessesCount });
             _displayData.Add(new HomePageModel { Name = "Services", Data = HardwareData.RunningServicesCount });
-
             _displayData.Add(new HomePageModel { Name = "Network", Data = HardwareData.NetworkAdapter });
             _displayData.Add(new HomePageModel { Name = "IpAddress", Data = HardwareData.UserIPAddress });
-
             _displayData.Add(new HomePageModel { Name = "Memory", Data = HardwareData.Memory.Data });
             _displayData.Add(new HomePageModel { Name = "Type", Data = HardwareData.Memory.Type });
-
             _displayData.Add(new HomePageModel { Name = "CPU", Data = HardwareData.Processor.DetailedData });
             _displayData.Add(new HomePageModel { Name = "GPU", Data = HardwareData.Gpu.Data });
             _displayData.Add(new HomePageModel { Name = "Storage", Data = HardwareData.Storage });
@@ -292,38 +574,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (_displayData == null) return;
 
-            var osName = _displayData.FirstOrDefault(x => x.Name == "OSName");
-            if (osName != null) osName.Data = HardwareData.OS.Name;
-
-            var osVer = _displayData.FirstOrDefault(x => x.Name == "OSVersion");
-            if (osVer != null) osVer.Data = HardwareData.OS.Version;
-
             var proc = _displayData.FirstOrDefault(x => x.Name == "Processes");
             if (proc != null) proc.Data = processCount;
 
             var svc = _displayData.FirstOrDefault(x => x.Name == "Services");
             if (svc != null) svc.Data = servicesCount;
-
-            var netItem = _displayData.FirstOrDefault(x => x.Name == "Network");
-            if (netItem != null) netItem.Data = HardwareData.NetworkAdapter;
-
-            var ipItem = _displayData.FirstOrDefault(x => x.Name == "IpAddress");
-            if (ipItem != null) ipItem.Data = HardwareData.UserIPAddress;
-
-            var memItem = _displayData.FirstOrDefault(x => x.Name == "Memory");
-            if (memItem != null) memItem.Data = HardwareData.Memory.Data;
-
-            var typeItem = _displayData.FirstOrDefault(x => x.Name == "Type");
-            if (typeItem != null) typeItem.Data = HardwareData.Memory.Type;
-
-            var cpuItem = _displayData.FirstOrDefault(x => x.Name == "CPU");
-            if (cpuItem != null) cpuItem.Data = HardwareData.Processor.DetailedData;
-
-            var gpuItem = _displayData.FirstOrDefault(x => x.Name == "GPU");
-            if (gpuItem != null) gpuItem.Data = HardwareData.Gpu.Data;
-
-            var storageItem = _displayData.FirstOrDefault(x => x.Name == "Storage");
-            if (storageItem != null) storageItem.Data = HardwareData.Storage;
 
             if (LocalIP.Data != HardwareData.LocalIPAddress)
             {
@@ -335,12 +590,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             OnPropertyChanged(nameof(GpuUsagePercentage));
 
             OnPropertyChanged("Item[]");
-        }
-
-        private void UpdateNetworkSpeed()
-        {
-            DownloadSpeed = _monitoringService.GetDownloadSpeed();
-            UploadSpeed = _monitoringService.GetUploadSpeed();
         }
 
         public void UpdateDateTime()
@@ -355,7 +604,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             try
             {
                 var driveData = DiskInfoService.GetDrivesData();
-
                 DiskDrives = new ObservableCollection<DriveSpaceInfo>(driveData);
             }
             catch (Exception ex)
@@ -366,6 +614,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Weather Service
+        private void SetupWeatherTimer()
+        {
+            _weatherTimer?.Stop();
+            _weatherTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(15) };
+            _weatherTimer.Tick += (s, e) => { _ = FetchWeatherAsync(_weatherLocation, _cts.Token); };
+            _weatherTimer.Start();
+        }
+
         public async Task FetchWeatherAsync(string? locationOverride = null, CancellationToken token = default, bool forceRefresh = false)
         {
             try
@@ -377,10 +633,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 if (data == null || token.IsCancellationRequested) return;
 
-                _dispatcherQueue.TryEnqueue(() =>
+                App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
                 {
-                    if (_isDisposed || token.IsCancellationRequested || _fiveDayForecast == null)
-                        return;
+                    if (_isDisposed || token.IsCancellationRequested || _fiveDayForecast == null) return;
 
                     WeatherDescription = data.Description;
                     WeatherTemperature = data.TempC.ToString("F0") + "°";
@@ -402,10 +657,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 });
             }
             catch (OperationCanceledException) { }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[Weather UI Error] {ex.Message}");
-            }
+            catch (Exception ex) { Debug.WriteLine($"[Weather UI Error] {ex.Message}"); }
         }
 
         private static string LoadLocationFromRegistry()
@@ -416,23 +668,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (key != null)
                 {
                     var saved = key.GetValue("LastLocation") as string;
-                    if (!string.IsNullOrWhiteSpace(saved))
-                    {
-                        return saved;
-                    }
+                    if (!string.IsNullOrWhiteSpace(saved)) return saved;
                 }
             }
-            catch
-            {
-                // Log error if necessary, otherwise fall back
-            }
-
+            catch { }
             return "Paris";
         }
 
         public void UpdateWeatherData(WeatherData data)
         {
-            _dispatcherQueue.TryEnqueue(() =>
+            App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
             {
                 this.WeatherTemperature = $"{data.TempC:F0}°";
                 this.WeatherDescription = data.Description;
@@ -450,84 +695,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
         #endregion
 
-        #region Background Statistics Timer
-
-        private void SetupTimer()
-        {
-            _statsTimer?.Stop();
-
-            _statsTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1)
-            };
-
-            _statsTimer.Tick += StatsTimer_Tick;
-            _statsTimer.Start();
-
-            StatsTimer_Tick(null, null);
-
-            _weatherTimer?.Stop();
-            _weatherTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMinutes(15)
-            };
-            _weatherTimer.Tick += (s, e) =>
-            {
-                _ = FetchWeatherAsync(_weatherLocation, _cts.Token);
-            };
-            _weatherTimer.Start();
-        }
-
-        private async void StatsTimer_Tick(object? sender, object? e)
-        {
-            try
-            {
-                UpdateNetworkSpeed();
-
-                var processTask = _monitoringService.GetProcessCountAsync();
-                var servicesTask = _monitoringService.GetServicesCount();
-                var cpuTask = _monitoringService.GetTotalProcessorUsage();
-                var gpuTask = SystemDiagnostics.GetGpuUsage();
-
-                await Task.WhenAll(processTask, servicesTask, cpuTask, gpuTask);
-
-                HardwareData.Processor.Usage = (int)await cpuTask;
-                HardwareData.Memory.Usage = (int)SystemDiagnostics.GetMemoryUsagePercentage();
-                HardwareData.RunningProcessesCount = await processTask;
-                HardwareData.RunningServicesCount = await servicesTask;
-
-                RefreshStats(HardwareData.RunningProcessesCount, HardwareData.RunningServicesCount);
-                UpdateDateTime();
-
-                OnPropertyChanged(nameof(CpuUsage));
-                OnPropertyChanged(nameof(CpuUsageText));
-                OnPropertyChanged(nameof(RamUsage));
-                OnPropertyChanged(nameof(RamUsageText));
-                OnPropertyChanged(nameof(DownloadSpeed));
-                OnPropertyChanged(nameof(UploadSpeed));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[StatsTimer Error] {ex.Message}");
-            }
-        }
-
-        public void PauseUpdates()
-        {
-            _statsTimer?.Stop();
-            _weatherTimer?.Stop();
-            Debug.WriteLine("[HomePageVM] Background timers PAUSED.");
-        }
-
-        public void ResumeUpdates()
-        {
-            _statsTimer?.Start();
-            _weatherTimer?.Start();
-            Debug.WriteLine("[HomePageVM] Background timers RESUMED.");
-        }
-
-        #endregion
-
         #region Disposal
         protected override void Dispose(bool disposing)
         {
@@ -535,10 +702,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 _isDisposed = true;
 
-                if (_statsTimer != null)
+                if (_telemetryTimer != null)
                 {
-                    _statsTimer.Stop();
-                    _statsTimer = null;
+                    _telemetryTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    _telemetryTimer.Dispose();
+                    _telemetryTimer = null;
                 }
 
                 if (_weatherTimer != null)
@@ -549,37 +717,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 try
                 {
-                    if (!_cts.IsCancellationRequested)
+                    foreach (var counter in _gpuCounters.Values)
                     {
-                        _cts.Cancel();
+                        counter.Dispose();
                     }
+                    _gpuCounters.Clear();
+                }
+                catch { }
+
+                try
+                {
+                    if (!_cts.IsCancellationRequested) _cts.Cancel();
                     _cts.Dispose();
                 }
                 catch (ObjectDisposedException) { }
 
-                if (_displayData != null)
-                {
-                    _displayData.Clear();
-                    _displayData = null!;
-                }
-
-                if (_fiveDayForecast != null)
-                {
-                    _fiveDayForecast.Clear();
-                    _fiveDayForecast = null!;
-                }
-
-                if (_diskDrives != null)
-                {
-                    _diskDrives.Clear();
-                    _diskDrives = null!;
-                }
-
-                if (_availableCities != null)
-                {
-                    _availableCities.Clear();
-                    _availableCities = null!;
-                }
+                if (_displayData != null) { _displayData.Clear(); _displayData = null!; }
+                if (_fiveDayForecast != null) { _fiveDayForecast.Clear(); _fiveDayForecast = null!; }
+                if (_diskDrives != null) { _diskDrives.Clear(); _diskDrives = null!; }
+                if (_availableCities != null) { _availableCities.Clear(); _availableCities = null!; }
 
                 (_weatherService as IDisposable)?.Dispose();
                 (_monitoringService as IDisposable)?.Dispose();
@@ -592,15 +748,5 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             base.Dispose(disposing);
         }
         #endregion
-
-        private void UpdateModelData(string name, string newData)
-        {
-            var item = _displayData.FirstOrDefault(x => x.Name == name);
-            if (item != null && item.Data != newData)
-            {
-                item.Data = newData;
-                OnPropertyChanged("Item[]");
-            }
-        }
     }
 }
