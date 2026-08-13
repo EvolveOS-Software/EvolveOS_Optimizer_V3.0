@@ -605,52 +605,109 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
 
         private static void CleanDirectorySafely(string directoryPath)
         {
-            if (!Directory.Exists(directoryPath)) return;
-
-            string currentAppBaseDir = AppContext.BaseDirectory.TrimEnd('\\', '/');
-            string targetDir = directoryPath.TrimEnd('\\', '/');
-
-            if (targetDir.Equals(currentAppBaseDir, StringComparison.OrdinalIgnoreCase))
+            try
             {
-                return;
-            }
+                if (!Directory.Exists(directoryPath)) return;
 
-            DirectoryInfo dir = new DirectoryInfo(directoryPath);
+                DirectoryInfo dir = new DirectoryInfo(directoryPath);
 
-            bool isParentOfApp = currentAppBaseDir.StartsWith(targetDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
-
-            if (!isParentOfApp)
-            {
-                foreach (FileInfo file in dir.GetFiles())
+                if ((dir.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
                 {
-                    try { file.Delete(); } catch { }
-                }
-            }
-
-            foreach (DirectoryInfo subDir in dir.GetDirectories())
-            {
-                string subDirFullName = subDir.FullName.TrimEnd('\\', '/');
-
-                if (subDirFullName.Equals(currentAppBaseDir, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
+                    return;
                 }
 
-                if (currentAppBaseDir.StartsWith(subDirFullName + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+                string currentAppBaseDir = AppContext.BaseDirectory.TrimEnd('\\', '/');
+                string targetDir = directoryPath.TrimEnd('\\', '/');
+
+                if (targetDir.Equals(currentAppBaseDir, StringComparison.OrdinalIgnoreCase))
                 {
-                    CleanDirectorySafely(subDir.FullName);
+                    return;
                 }
-                else
+
+                bool isParentOfApp = currentAppBaseDir.StartsWith(targetDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+
+                if (!isParentOfApp)
                 {
                     try
                     {
-                        subDir.Delete(true);
+                        foreach (FileInfo file in dir.EnumerateFiles())
+                        {
+                            try
+                            {
+                                file.Delete();
+                            }
+                            catch (IOException)
+                            {
+                                ErrorLogging.LogDebug(new Exception($"[Cleaner] Skipped locked file: {file.Name}"));
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                ErrorLogging.LogDebug(new Exception($"[Cleaner] Access denied to file: {file.Name}"));
+                            }
+                            catch (Exception ex)
+                            {
+                                ErrorLogging.LogDebug(new Exception($"[Cleaner] Failed to delete {file.Name}: {ex.Message}"));
+                            }
+                        }
                     }
-                    catch
+                    catch (UnauthorizedAccessException)
                     {
-                        CleanDirectorySafely(subDir.FullName);
+                        ErrorLogging.LogDebug(new Exception($"[Cleaner] Access denied to read directory contents: {dir.Name}"));
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorLogging.LogDebug(new Exception($"[Cleaner] Failed to enumerate files in {dir.Name}: {ex.Message}"));
                     }
                 }
+
+                try
+                {
+                    foreach (DirectoryInfo subDir in dir.EnumerateDirectories())
+                    {
+                        string subDirFullName = subDir.FullName.TrimEnd('\\', '/');
+
+                        if (subDir.Name.Equals(".net", StringComparison.OrdinalIgnoreCase) &&
+                            directoryPath.TrimEnd('\\', '/').Equals(Path.GetTempPath().TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+
+                        if (subDirFullName.Equals(currentAppBaseDir, StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+
+                        if ((subDir.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+                        {
+                            continue;
+                        }
+
+                        if (currentAppBaseDir.StartsWith(subDirFullName + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CleanDirectorySafely(subDir.FullName);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                subDir.Delete(true);
+                            }
+                            catch (IOException)
+                            {
+                                CleanDirectorySafely(subDir.FullName);
+                            }
+                            catch
+                            {
+                                CleanDirectorySafely(subDir.FullName);
+                            }
+                        }
+                    }
+                }
+                catch { }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Cleaner] Access exception processing {directoryPath}: {ex.Message}");
             }
         }
 
