@@ -2,8 +2,10 @@
 // Licensed under the MIT License.
 
 using System.IO;
+using System.Threading;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Services;
+using Microsoft.Data.SqlClient;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
@@ -36,31 +38,35 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             try
             {
-                Microsoft.Data.SqlClient.SqlConnection.ClearAllPools();
+                SqlConnection.ClearAllPools();
 
-                using (var conn = new Microsoft.Data.SqlClient.SqlConnection(masterConnString))
+                using (var conn = new SqlConnection(masterConnString))
                 {
                     conn.Open();
 
                     string sql = $@"
-                                    DECLARE @dbName NVARCHAR(256);
-                                    SELECT @dbName = DB_NAME(database_id) 
-                                    FROM sys.master_files 
-                                    WHERE physical_name = '{dbSafePath}';
+                DECLARE @dbName NVARCHAR(256);
+                SELECT @dbName = DB_NAME(database_id) 
+                FROM sys.master_files 
+                WHERE physical_name = '{dbSafePath}';
+                
+                IF @dbName IS NOT NULL
+                BEGIN
+                    EXEC('ALTER DATABASE [' + @dbName + '] SET SINGLE_USER WITH ROLLBACK IMMEDIATE');
+                    EXEC sp_detach_db @dbName;
+                END";
 
-                                    IF @dbName IS NOT NULL
-                                    BEGIN
-                                    EXEC('ALTER DATABASE [' + @dbName + '] SET SINGLE_USER WITH ROLLBACK IMMEDIATE');
-                                    EXEC sp_detach_db @dbName;
-                                    END";
-
-                    using (var cmd = new Microsoft.Data.SqlClient.SqlCommand(sql, conn))
+                    using (var cmd = new SqlCommand(sql, conn))
                     {
                         cmd.ExecuteNonQuery();
                     }
                 }
 
-                System.Threading.Thread.Sleep(800);
+                Thread.Sleep(800);
+            }
+            catch (SqlException ex) when (ex.Number == 50 || ex.Number == -1)
+            {
+                Debug.WriteLine($"[Database Release] Ignored LocalDB boot failure: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -70,7 +76,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
         public static bool RestoreDatabase(string selectedBackupFilePath)
         {
-            Microsoft.Data.SqlClient.SqlConnection.ClearAllPools();
+            SqlConnection.ClearAllPools();
 
             string targetDbName = "EvolveOS_OptimizerDb_Main";
 
@@ -89,7 +95,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     usingTempDecryptedFile = true;
                 }
 
-                using (var conn = new Microsoft.Data.SqlClient.SqlConnection(masterConnString))
+                using (var conn = new SqlConnection(masterConnString))
                 {
                     conn.Open();
 
@@ -101,7 +107,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                         ALTER DATABASE [{targetDbName}] SET MULTI_USER;
                     ";
 
-                    using (var cmd = new Microsoft.Data.SqlClient.SqlCommand(sql, conn))
+                    using (var cmd = new SqlCommand(sql, conn))
                     {
                         cmd.CommandTimeout = 120;
                         cmd.ExecuteNonQuery();
