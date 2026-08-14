@@ -1140,6 +1140,140 @@
                 </Border>
             </GridViewItem>
 
+            <GridViewItem x:Name="GviRamBoost">
+                <Border x:Name="CardRamBoost" Style="{StaticResource DashCard}" Padding="16" Margin="0" MinWidth="340"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerCanceled">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header with Expand/Collapse Button -->
+                        <Grid Grid.Row="0" Margin="0,0,0,0">
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
+                                <FontIcon Glyph="&#xE9A1;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
+                                <TextBlock Text="Memory Optimizer" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                            </StackPanel>
+
+                            <Button x:Name="BtnExpandRamBoost" Background="Transparent" BorderThickness="0" Padding="4" HorizontalAlignment="Right" Click="BtnExpandRamBoost_Click" Margin="0,-4,0,0">
+                                <FontIcon x:Name="IconExpandRamBoost" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </Button>
+                        </Grid>
+
+                        <!-- Top Section: Always Visible -->
+                        <Grid Grid.Row="1" ColumnDefinitions="Auto, *" VerticalAlignment="Center">
+
+                            <!-- Left: Main Ring & GB/GB -->
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0" Spacing="8">
+                                <Grid Width="95" Height="95">
+                                    <Ellipse Stroke="{StaticResource Brush_Separator}" StrokeThickness="5" Opacity="0.2"/>
+                                    <ProgressRing x:Name="BoostRamRing" Maximum="100" Width="95" Height="95" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                                    <TextBlock Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontSize="18" FontFamily="Jura" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                                <TextBlock Text="{x:Bind ViewModel.RamUsageGbText, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" FontFamily="Jura Medium"/>
+                            </StackPanel>
+
+                            <!-- Right: 4 Mini Cards Grid -->
+                            <Grid Grid.Column="1" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="6" RowSpacing="6" VerticalAlignment="Center">
+                                <!-- 1. Total Installed -->
+                                <Border Grid.Row="0" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Total Physical" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{x:Bind ViewModel.TotalRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                                <!-- 2. In Use -->
+                                <Border Grid.Row="0" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="In Use" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Bottom">
+                                            <TextBlock Text="{x:Bind ViewModel.UsedRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
+                                            <TextBlock Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <!-- 3. Available -->
+                                <Border Grid.Row="1" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Available" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Bottom">
+                                            <TextBlock Text="{x:Bind ViewModel.AvailableRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
+                                            <TextBlock Text="{x:Bind ViewModel.AvailableRamPercentageText, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource SystemFillColorSuccessBrush}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <!-- 4. System Cache -->
+                                <Border Grid.Row="1" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="0">
+                                        <TextBlock Text="System Cache" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" Margin="0,0,0,2"/>
+                                        <TextBlock Text="{x:Bind ViewModel.SystemCacheGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
+                                        <TextBlock Text="Standby + Mapped" FontSize="9" Opacity="0.6" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,1,0,0" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="Standby + Mapped"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Grid>
+
+                        <!-- Expanded Section (Hidden by default) -->
+                        <StackPanel x:Name="RamBoostExpandedContent" Grid.Row="2" Visibility="Collapsed" VerticalAlignment="Bottom" Margin="0,16,0,0">
+
+                            <!-- Middle: Wide Historical Load Card -->
+                            <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="12,10" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,0,0,12">
+                                <StackPanel Spacing="6">
+                                    <Grid>
+                                        <TextBlock Text="Load - Last 5 Min" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{x:Bind ViewModel.LastBoostFreedText, Mode=OneWay}" FontSize="11" FontWeight="Bold" FontFamily="Jura Medium" HorizontalAlignment="Right" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    </Grid>
+                                    <ProgressBar Value="{x:Bind ViewModel.AverageRamLoad, Mode=OneWay}" Maximum="100" Height="4" Foreground="{ThemeResource MyDynamicAccentBrush}" CornerRadius="2"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Bottom: Action & Results -->
+                            <StackPanel Spacing="8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="BoostStatusText" Grid.Column="0" Text="Ready to optimize" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Left" Margin="0,0,10,0"/>
+                                    <TextBlock x:Name="BoostResultsText" Grid.Column="1" Text="" FontSize="11" FontWeight="Bold" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontFamily="Jura Medium" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" MaxLines="1"/>
+                                </Grid>
+
+                                <ProgressBar x:Name="BoostProgressBar" Value="0" Maximum="100" Height="2" Visibility="Collapsed" IsIndeterminate="True" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+
+                                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="8">
+                                    <Button x:Name="BtnOptimizeMemory" Grid.Column="0" HorizontalAlignment="Stretch" Click="BtnOptimizeMemory_Click" FontFamily="Jura Medium" Height="34">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <FontIcon Glyph="&#xE945;" FontSize="13"/>
+                                            <TextBlock Text="Optimize Now"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Border Grid.Column="1" Height="36" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="10,0" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                        <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                                            <TextBlock Text="Auto" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" FontFamily="Jura Medium" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                            <ToggleSwitch x:Name="ToggleAutoOptimize" IsOn="False" Toggled="ToggleAutoOptimize_Toggled" VerticalAlignment="Center" Margin="0,-4,-8,-4" MinWidth="0" OnContent="" OffContent=""/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                                <!-- Badge Underneath -->
+                                <Border Style="{StaticResource BadgePreferenceStyle}" HorizontalAlignment="Center" Margin="0,4,0,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                        <FontIcon Glyph="&#xE909;" FontSize="11" Foreground="{ThemeResource BadgePreferenceForeground}" VerticalAlignment="Center" Margin="0,0,0,1"/>
+                                        <TextBlock x:Name="TxtAutoTriggerBadge" Text="Auto-trigger at 85% RAM usage" Style="{StaticResource BadgeTextStyle}" Foreground="{ThemeResource BadgePreferenceForeground}"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                        </StackPanel>
+
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
         </GridView>
 
         <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,10">
@@ -1167,6 +1301,7 @@
         <ContentDialog x:Name="CustomizeLayoutDialog"
                Title="{helpers:ResourceString Key=text_customize_dashboard}"
                CornerRadius="8"
+               IsTabStop="False"
                MaxWidth="650">
             <Grid>
                 <Grid.RowDefinitions>
@@ -1186,15 +1321,17 @@
                         <!-- Section 1: General Widgets -->
                         <StackPanel Spacing="12">
                             <TextBlock helpers:Loc.Key="txt_general_widgets" Style="{StaticResource BodyStrongTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto" RowSpacing="10" ColumnSpacing="30">
-                                <ToggleSwitch Grid.Row="0" Grid.Column="0" x:Name="ToggleWeather" Header="{helpers:ResourceString Key=txt_weather}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardWeather"/>
-                                <ToggleSwitch Grid.Row="0" Grid.Column="1" x:Name="ToggleDisk" Header="{helpers:ResourceString Key=txt_disk_space}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDisk"/>
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="30" RowDefinitions="Auto, Auto, Auto, Auto" RowSpacing="10">
+                                <ToggleSwitch Grid.Column="0" Grid.Row="0" Header="{helpers:ResourceString Key=txt_weather}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardWeather" Toggled="ToggleCard_Toggled" x:Name="ToggleWeather"/>
+                                <ToggleSwitch Grid.Column="1" Grid.Row="0" Header="{helpers:ResourceString Key=txt_disk_space}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardDisk" Toggled="ToggleCard_Toggled" x:Name="ToggleDisk"/>
 
-                                <ToggleSwitch Grid.Row="1" Grid.Column="0" x:Name="ToggleGamingMode" Header="{helpers:ResourceString Key=txt_gaming_mode}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardGamingMode"/>
-                                <ToggleSwitch Grid.Row="1" Grid.Column="1" x:Name="ToggleDns" Header="{helpers:ResourceString Key=txt_dns_encryption}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardDns"/>
+                                <ToggleSwitch Grid.Column="0" Grid.Row="1" Header="{helpers:ResourceString Key=txt_gaming_mode}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardGamingMode" Toggled="ToggleCard_Toggled" x:Name="ToggleGamingMode"/>
+                                <ToggleSwitch Grid.Column="1" Grid.Row="1" Header="{helpers:ResourceString Key=txt_dns_encryption}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardDns" Toggled="ToggleCard_Toggled" x:Name="ToggleDns"/>
 
-                                <ToggleSwitch Grid.Row="2" Grid.Column="0" x:Name="ToggleHealth" Header="{helpers:ResourceString Key=txt_system_health}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardMaintenance"/>
-                                <ToggleSwitch Grid.Row="2" Grid.Column="1" x:Name="ToggleSecurity" Header="{helpers:ResourceString Key=txt_system_security}" OnContent="{helpers:ResourceString Key=txt_on}" OffContent="{helpers:ResourceString Key=txt_off}" IsOn="True" Toggled="ToggleCard_Toggled" Tag="CardSecurity"/>
+                                <ToggleSwitch Grid.Column="0" Grid.Row="2" Header="{helpers:ResourceString Key=txt_system_health}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardMaintenance" Toggled="ToggleCard_Toggled" x:Name="ToggleHealth"/>
+                                <ToggleSwitch Grid.Column="1" Grid.Row="2" Header="{helpers:ResourceString Key=txt_system_security}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardSecurity" Toggled="ToggleCard_Toggled" x:Name="ToggleSecurity"/>
+
+                                <ToggleSwitch Grid.Column="0" Grid.Row="3" Header="Memory Optimizer" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardRamBoost" Toggled="ToggleCard_Toggled" x:Name="ToggleRamBoost"/>
                             </Grid>
                         </StackPanel>
 
@@ -1244,14 +1381,34 @@
                     </StackPanel>
                 </ScrollViewer>
 
-                <Button Grid.Row="1" 
-                Content="{helpers:ResourceString Key=btn_close}" 
-                Style="{StaticResource AccentButtonStyle}" 
-                HorizontalAlignment="Center" 
-                Width="160" 
-                Margin="0,20,0,0" 
-                Click="BtnCloseCustomizeLayout_Click"/>
+                <Button Grid.Row="1"
+                        Content="{helpers:ResourceString Key=btn_close}"
+                        Style="{StaticResource AccentButtonStyle}"
+                        HorizontalAlignment="Center"
+                        Width="160"
+                        Margin="0,20,0,0"
+                        Click="BtnCloseCustomizeLayout_Click"/>
             </Grid>
+        </ContentDialog>
+
+        <ContentDialog x:Name="AutoOptimizeDialog"
+                       Title="Configure Auto-Optimization"
+                       CornerRadius="8"
+                       IsTabStop="False"
+                       MaxWidth="400"
+                       PrimaryButtonText="Save"
+                       SecondaryButtonText="Cancel">
+            <StackPanel Spacing="16" MinWidth="280">
+                <TextBlock Text="Set the memory usage percentage threshold to automatically trigger optimization:" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                <StackPanel Spacing="8">
+                    <Grid>
+                        <TextBlock Text="Trigger Threshold:" VerticalAlignment="Center" FontFamily="Jura Medium"/>
+                        <TextBlock x:Name="TxtDialogThresholdValue" Text="85%" HorizontalAlignment="Right" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
+                    </Grid>
+                    <Slider x:Name="SliderRamThreshold" Minimum="50" Maximum="95" StepFrequency="1" Value="85" ValueChanged="SliderRamThreshold_ValueChanged"/>
+                </StackPanel>
+            </StackPanel>
         </ContentDialog>
 
     </Grid>

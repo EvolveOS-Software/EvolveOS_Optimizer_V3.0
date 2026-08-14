@@ -66,6 +66,21 @@ namespace EvolveOS_Optimizer.Assets.UserControl
             }
         }
 
+        private (int colSpan, int rowSpan) GetCardSpans(UIElement child, UIElement? bigCard)
+        {
+            if (child == bigCard) return (LargeCardColumnSpan, LargeCardRowSpan);
+
+            int rowSpan = 1;
+            int colSpan = 1;
+
+            if (child is FrameworkElement fe && fe.Height > 300)
+            {
+                rowSpan = 2;
+            }
+
+            return (colSpan, rowSpan);
+        }
+
         private void EnsureRowExists(int rowIndex, int totalColumns)
         {
             while (_cellOccupancy.Count <= rowIndex)
@@ -108,17 +123,13 @@ namespace EvolveOS_Optimizer.Assets.UserControl
 
             int totalColumns = CalculateTotalColumns(availableSize.Width);
             var bigCard = BigCard;
-
-            var bigCardWidth = (SmallCardFixedUnitWidth * LargeCardColumnSpan) + HorizontalSpacing;
-            var bigCardHeight = (SmallCardFixedUnitHeight * LargeCardRowSpan) + VerticalSpacing;
-
             double maxLayoutHeight = 0;
 
             foreach (var child in visibleChildren)
             {
-                bool isBig = (child == bigCard);
-                int colSpan = isBig ? LargeCardColumnSpan : 1;
-                int rowSpan = isBig ? LargeCardRowSpan : 1;
+                var spans = GetCardSpans(child, bigCard);
+                int colSpan = spans.colSpan;
+                int rowSpan = spans.rowSpan;
 
                 (int row, int col) = FindNextAvailableCellWithSpan(colSpan, rowSpan, totalColumns);
 
@@ -128,8 +139,8 @@ namespace EvolveOS_Optimizer.Assets.UserControl
                     for (int c = col; c < col + colSpan; c++) _cellOccupancy[r][c] = true;
                 }
 
-                double w = isBig ? bigCardWidth : SmallCardFixedUnitWidth;
-                double h = isBig ? bigCardHeight : SmallCardFixedUnitHeight;
+                double w = (SmallCardFixedUnitWidth * colSpan) + ((colSpan - 1) * HorizontalSpacing);
+                double h = (SmallCardFixedUnitHeight * rowSpan) + ((rowSpan - 1) * VerticalSpacing);
 
                 child.Measure(new Size(w, h));
 
@@ -149,14 +160,11 @@ namespace EvolveOS_Optimizer.Assets.UserControl
             int totalColumns = CalculateTotalColumns(finalSize.Width);
             var bigCard = BigCard;
 
-            var bigCardWidth = (SmallCardFixedUnitWidth * LargeCardColumnSpan) + HorizontalSpacing;
-            var bigCardHeight = (SmallCardFixedUnitHeight * LargeCardRowSpan) + VerticalSpacing;
-
             foreach (var child in visibleChildren)
             {
-                bool isBig = (child == bigCard);
-                int colSpan = isBig ? LargeCardColumnSpan : 1;
-                int rowSpan = isBig ? LargeCardRowSpan : 1;
+                var spans = GetCardSpans(child, bigCard);
+                int colSpan = spans.colSpan;
+                int rowSpan = spans.rowSpan;
 
                 (int row, int col) = FindNextAvailableCellWithSpan(colSpan, rowSpan, totalColumns);
 
@@ -166,8 +174,9 @@ namespace EvolveOS_Optimizer.Assets.UserControl
                     for (int c = col; c < col + colSpan; c++) _cellOccupancy[r][c] = true;
                 }
 
-                double w = isBig ? bigCardWidth : SmallCardFixedUnitWidth;
-                double h = isBig ? bigCardHeight : SmallCardFixedUnitHeight;
+                double w = (SmallCardFixedUnitWidth * colSpan) + ((colSpan - 1) * HorizontalSpacing);
+                double h = (SmallCardFixedUnitHeight * rowSpan) + ((rowSpan - 1) * VerticalSpacing);
+
                 double targetX = col * (SmallCardFixedUnitWidth + HorizontalSpacing);
                 double targetY = row * (SmallCardFixedUnitHeight + VerticalSpacing);
 

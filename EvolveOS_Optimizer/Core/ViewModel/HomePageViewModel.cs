@@ -94,6 +94,36 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private double _uploadSpeed;
         #endregion
 
+        #region Memory Boost Card Properties
+        private string _ramUsageGbText = "0.0 / 0.0 GB";
+        public string RamUsageGbText { get => _ramUsageGbText; set { _ramUsageGbText = value; OnPropertyChanged(); } }
+
+        private string _totalRamGb = "0.0 GB";
+        public string TotalRamGb { get => _totalRamGb; set { _totalRamGb = value; OnPropertyChanged(); } }
+
+        private string _usedRamGb = "0.0 GB";
+        public string UsedRamGb { get => _usedRamGb; set { _usedRamGb = value; OnPropertyChanged(); } }
+
+        private string _availableRamGb = "0.0 GB";
+        public string AvailableRamGb { get => _availableRamGb; set { _availableRamGb = value; OnPropertyChanged(); } }
+
+        private string _systemCacheGb = "0.0 GB";
+        public string SystemCacheGb { get => _systemCacheGb; set { _systemCacheGb = value; OnPropertyChanged(); } }
+
+        private string _ramUsagePercentageText = "0%";
+        public string RamUsagePercentageText { get => _ramUsagePercentageText; set { _ramUsagePercentageText = value; OnPropertyChanged(); } }
+
+        private string _availableRamPercentageText = "0%";
+        public string AvailableRamPercentageText { get => _availableRamPercentageText; set { _availableRamPercentageText = value; OnPropertyChanged(); } }
+
+        private double _averageRamLoad = 0;
+        public double AverageRamLoad { get => _averageRamLoad; set { _averageRamLoad = value; OnPropertyChanged(); } }
+
+        private string _lastBoostFreedText = "Last run: -- MB";
+        public string LastBoostFreedText { get => _lastBoostFreedText; set { _lastBoostFreedText = value; OnPropertyChanged(); }
+        }
+        #endregion
+
         #region Properties
         public int GpuUsageDisplay => HardwareData.Gpu.Usage;
         public int GpuUsagePercentage => HardwareData.Gpu.Usage;
@@ -388,6 +418,27 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (GlobalMemoryStatusEx(ref memStatus))
                 {
                     rawRam = memStatus.dwMemoryLoad;
+
+                    if (isFullSecond)
+                    {
+                        double totalGb = memStatus.ullTotalPhys / 1073741824.0;
+                        double availGb = memStatus.ullAvailPhys / 1073741824.0;
+                        double usedGb = totalGb - availGb;
+
+                        double cacheGb = (memStatus.ullTotalPageFile - memStatus.ullAvailPageFile) / 1073741824.0 * 0.4;
+
+                        App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                        {
+                            TotalRamGb = $"{totalGb:F1} GB";
+                            UsedRamGb = $"{usedGb:F1} GB";
+                            AvailableRamGb = $"{availGb:F1} GB";
+                            SystemCacheGb = $"{Math.Max(0.1, cacheGb):F1} GB";
+
+                            RamUsageGbText = $"{usedGb:F1} / {totalGb:F1} GB";
+                            RamUsagePercentageText = $"{rawRam}%";
+                            AvailableRamPercentageText = $"{100 - rawRam}%";
+                        });
+                    }
                 }
 
                 var netUsage = GetNetworkUsage();

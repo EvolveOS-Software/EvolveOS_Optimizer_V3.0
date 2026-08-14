@@ -82,12 +82,16 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_CardDns"] = true,
             ["Dashboard_CardHealth"] = true,
             ["Dashboard_CardSecurity"] = true,
+            ["Dashboard_CardRamBoost"] = true,
             ["Dashboard_CardCpuGraph"] = true,
             ["Dashboard_CardRamGraph"] = true,
             ["Dashboard_CardNetworkGraph"] = true,
             ["Dashboard_CardGpuGraph"] = true,
             ["Dashboard_GraphTimeframe"] = 0,
             ["AutoLoginSessionHours"] = 4,
+
+            ["Dashboard_AutoRamOptimize"] = false,
+            ["Dashboard_AutoRamThreshold"] = 85,
 
             ["IsPasswordGenHotkeyEnabled"] = false,
             ["PasswordGenHotkeyModifier"] = 1,
@@ -170,11 +174,14 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_CardDns { get => (bool)_cachedSettings["Dashboard_CardDns"]; set => ChangingParameters("Dashboard_CardDns", value); }
         internal static bool Dashboard_CardHealth { get => (bool)_cachedSettings["Dashboard_CardHealth"]; set => ChangingParameters("Dashboard_CardHealth", value); }
         internal static bool Dashboard_CardSecurity { get => (bool)_cachedSettings["Dashboard_CardSecurity"]; set => ChangingParameters("Dashboard_CardSecurity", value); }
+        internal static bool Dashboard_CardRamBoost { get => (bool)_cachedSettings["Dashboard_CardRamBoost"]; set => ChangingParameters("Dashboard_CardRamBoost", value); }
         internal static bool Dashboard_CardCpuGraph { get => (bool)_cachedSettings["Dashboard_CardCpuGraph"]; set => ChangingParameters("Dashboard_CardCpuGraph", value); }
         internal static bool Dashboard_CardRamGraph { get => (bool)_cachedSettings["Dashboard_CardRamGraph"]; set => ChangingParameters("Dashboard_CardRamGraph", value); }
         internal static bool Dashboard_CardNetworkGraph { get => (bool)_cachedSettings["Dashboard_CardNetworkGraph"]; set => ChangingParameters("Dashboard_CardNetworkGraph", value); }
         internal static bool Dashboard_CardGpuGraph { get => (bool)_cachedSettings["Dashboard_CardGpuGraph"]; set => ChangingParameters("Dashboard_CardGpuGraph", value); }
         internal static int Dashboard_GraphTimeframe { get => (int)_cachedSettings["Dashboard_GraphTimeframe"]; set => ChangingParameters("Dashboard_GraphTimeframe", value); }
+        internal static bool Dashboard_AutoRamOptimize { get => (bool)_cachedSettings["Dashboard_AutoRamOptimize"]; set => ChangingParameters("Dashboard_AutoRamOptimize", value); }
+        internal static int Dashboard_AutoRamThreshold { get => (int)_cachedSettings["Dashboard_AutoRamThreshold"]; set => ChangingParameters("Dashboard_AutoRamThreshold", value); }
 
         internal static bool IsAutoThemeEnabled { get => (bool)_cachedSettings["EnableAutoTheme"]; set => ChangingParameters("EnableAutoTheme", value); }
         internal static TimeSpan LightThemeTime { get => TimeSpan.TryParse((string)_cachedSettings["LightThemeTimeStr"], out TimeSpan result) ? result : new TimeSpan(8, 0, 0); set => ChangingParameters("LightThemeTimeStr", value.ToString(@"hh\:mm\:ss")); }
