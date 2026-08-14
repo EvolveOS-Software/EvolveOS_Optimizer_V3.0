@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.IO;
+using System.Management;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using EvolveOS_Optimizer.Assets.UserControl;
@@ -13,6 +14,7 @@ using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Maintenance;
+using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -717,42 +719,6 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private void DiskCard_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            if (sender is UIElement element)
-            {
-                var visual = ElementCompositionPreview.GetElementVisual(element);
-                var compositor = visual.Compositor;
-
-                visual.CenterPoint = new System.Numerics.Vector3((float)(element.ActualSize.X / 2), (float)(element.ActualSize.Y / 2), 0f);
-
-                var springAnimation = compositor.CreateSpringVector3Animation();
-                springAnimation.Target = "Scale";
-                springAnimation.FinalValue = new System.Numerics.Vector3(1.05f, 1.05f, 1f);
-                springAnimation.DampingRatio = 0.6f;
-                springAnimation.Period = TimeSpan.FromMilliseconds(50);
-
-                visual.StartAnimation("Scale", springAnimation);
-            }
-        }
-
-        private void DiskCard_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            if (sender is UIElement element)
-            {
-                var visual = ElementCompositionPreview.GetElementVisual(element);
-                var compositor = visual.Compositor;
-
-                var springAnimation = compositor.CreateSpringVector3Animation();
-                springAnimation.Target = "Scale";
-                springAnimation.FinalValue = new System.Numerics.Vector3(1f, 1f, 1f);
-                springAnimation.DampingRatio = 0.9f;
-                springAnimation.Period = TimeSpan.FromMilliseconds(50);
-
-                visual.StartAnimation("Scale", springAnimation);
-            }
-        }
-
         private void LoadWeather()
         {
             if (this.DataContext is HomePageViewModel vm)
@@ -1055,6 +1021,9 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnRefreshSecurity, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnDashViewIssues, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnGamingMode, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnExpandDisk, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRunDiskCleanup, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOptimizeDrive, InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, InputSystemCursorShape.Hand);
@@ -1744,6 +1713,249 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
+        #region Disk Card
+
+        private string _selectedSmartDrive = "C:";
+
+        private async void BtnExpandDisk_Click(object sender, RoutedEventArgs e)
+        {
+            bool isExpanded = DiskExpandedContent.Visibility == Visibility.Collapsed;
+
+            double targetHeight = isExpanded ? 450 : 220;
+
+            GviDisk.Height = targetHeight;
+            CardDisk.Height = targetHeight;
+
+            if (isExpanded)
+            {
+                DiskExpandedContent.Visibility = Visibility.Visible;
+                IconExpandDisk.Glyph = "\uE70E"; // Chevron Up
+
+                DiskScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+
+                _ = FetchSmartDataAsync();
+            }
+            else
+            {
+                DiskExpandedContent.Visibility = Visibility.Collapsed;
+                IconExpandDisk.Glyph = "\uE70D"; // Chevron Down
+
+                DiskScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
+            }
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+
+                var options = new BringIntoViewOptions
+                {
+                    AnimationDesired = true,
+                };
+
+                GviDisk.StartBringIntoView(options);
+            }
+        }
+
+        private async void BtnRunDiskCleanup_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn) btn.IsEnabled = false;
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    string tempPath = Path.GetTempPath();
+                    foreach (var file in Directory.EnumerateFiles(tempPath))
+                    {
+                        try { File.Delete(file); } catch { }
+                    }
+                }
+                catch { }
+            });
+
+            if (sender is Button b) b.IsEnabled = true;
+        }
+
+        private async void BtnOptimizeDrive_Click(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn != null) btn.IsEnabled = false;
+
+            try
+            {
+                string targetDrive = _selectedSmartDrive;
+
+                List<string> sharedDrives = new();
+                try
+                {
+                    sharedDrives = SystemDiagnostics.GetSiblingDrives(targetDrive);
+                }
+                catch { }
+
+                XamlRoot? root = this.XamlRoot ?? (this.Content?.XamlRoot);
+                if (root != null)
+                {
+                    bool isShared = sharedDrives.Count > 1;
+                    string sharedList = isShared ? string.Join(" and ", sharedDrives) : targetDrive;
+
+                    string contentMsg = isShared
+                        ? $"Note: Drives {sharedList} reside on the same physical disk. Optimizing {targetDrive} will optimize the entire physical hardware unit. Proceed?"
+                        : $"Are you sure you want to run TRIM / Optimize on the {targetDrive} drive?";
+
+                    ContentDialog dialog = new ContentDialog
+                    {
+                        XamlRoot = root,
+                        Title = isShared ? "Shared Physical Drive" : "Optimize Drive",
+                        Content = contentMsg,
+                        PrimaryButtonText = "Optimize Now",
+                        CloseButtonText = "Cancel",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+
+                    if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                    {
+                        dialog.Style = (Style)style;
+                    }
+
+                    ContentDialogResult result = await dialog.ShowAsync();
+                    if (result != ContentDialogResult.Primary)
+                    {
+                        return;
+                    }
+                }
+
+                if (TxtSmartHealth != null) TxtSmartHealth.Text = "Optimizing...";
+
+                await CommandExecutor.RunCommand($"defrag.exe {targetDrive} /O", isPowerShell: false, waitForExit: true);
+
+                _ = FetchSmartDataAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Optimize Button Error] {ex.Message}");
+            }
+            finally
+            {
+                if (btn != null) btn.IsEnabled = true;
+            }
+        }
+
+        private void DriveItem_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is FrameworkElement fe && fe.DataContext != null)
+            {
+                dynamic driveInfo = fe.DataContext;
+                _selectedSmartDrive = driveInfo.Name;
+
+                if (DiskExpandedContent.Visibility == Visibility.Visible)
+                {
+                    TxtSmartHealth.Text = "Checking...";
+                    TxtSmartType.Text = "--";
+                    TxtSmartTemp.Text = "--";
+                    TxtSmartHealth.Foreground = new SolidColorBrush(Colors.Gray);
+
+                    _ = FetchSmartDataAsync();
+                }
+            }
+        }
+
+        private void DiskCard_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is UIElement element)
+            {
+                SetCustomCursor(element, InputSystemCursorShape.Hand);
+
+                var visual = ElementCompositionPreview.GetElementVisual(element);
+                var compositor = visual.Compositor;
+
+                visual.CenterPoint = new System.Numerics.Vector3((float)(element.ActualSize.X / 2), (float)(element.ActualSize.Y / 2), 0f);
+
+                var springAnimation = compositor.CreateSpringVector3Animation();
+                springAnimation.Target = "Scale";
+                springAnimation.FinalValue = new System.Numerics.Vector3(1.05f, 1.05f, 1f);
+                springAnimation.DampingRatio = 0.6f;
+                springAnimation.Period = TimeSpan.FromMilliseconds(50);
+
+                visual.StartAnimation("Scale", springAnimation);
+            }
+        }
+
+        private void DiskCard_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is UIElement element)
+            {
+                SetCustomCursor(element, InputSystemCursorShape.Arrow);
+
+                var visual = ElementCompositionPreview.GetElementVisual(element);
+                var compositor = visual.Compositor;
+
+                var springAnimation = compositor.CreateSpringVector3Animation();
+                springAnimation.Target = "Scale";
+                springAnimation.FinalValue = new System.Numerics.Vector3(1f, 1f, 1f);
+                springAnimation.DampingRatio = 0.9f;
+                springAnimation.Period = TimeSpan.FromMilliseconds(50);
+
+                visual.StartAnimation("Scale", springAnimation);
+            }
+        }
+
+        private async Task FetchSmartDataAsync()
+        {
+            string healthResult = "Checking...";
+            string typeResult = "--";
+            string tempResult = "--";
+            Color healthColor = Colors.Gray;
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    var smartData = SystemDiagnostics.GetDriveSmartInfo(_selectedSmartDrive);
+
+                    healthResult = smartData.Health;
+                    typeResult = smartData.Type;
+                    tempResult = smartData.Temp;
+
+                    if (tempResult == "--")
+                    {
+                        float sysTemp = HardwareTemperatureService.Instance.GetMotherboardTemperature();
+                        if (sysTemp <= 0) sysTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
+
+                        if (sysTemp > 0) tempResult = $"{(int)sysTemp}°C";
+                    }
+
+                    healthColor = healthResult == "Good"
+                        ? Colors.SeaGreen
+                        : Colors.Orange;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SMART Fetch Error] {ex.Message}");
+                    healthResult = "Error";
+                    healthColor = Colors.Red;
+                }
+            });
+
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (TxtSmartHealth != null)
+                {
+                    TxtSmartHealth.Text = healthResult;
+                    TxtSmartHealth.Foreground = new SolidColorBrush(healthColor);
+                    TxtSmartType.Text = typeResult;
+                    TxtSmartTemp.Text = tempResult;
+                }
+            });
+        }
+
+        #endregion
+
         #region Memory Optimization Engine
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -1830,7 +2042,7 @@ namespace EvolveOS_Optimizer.Pages
             BtnOptimizeMemory.IsEnabled = true;
         }
 
-        private void BtnExpandRamBoost_Click(object sender, RoutedEventArgs e)
+        private async void BtnExpandRamBoost_Click(object sender, RoutedEventArgs e)
         {
             bool isExpanded = RamBoostExpandedContent.Visibility == Visibility.Collapsed;
 
@@ -1854,6 +2066,18 @@ namespace EvolveOS_Optimizer.Pages
             {
                 panel.InvalidateMeasure();
                 panel.InvalidateArrange();
+            }
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+
+                var options = new BringIntoViewOptions
+                {
+                    AnimationDesired = true,
+                };
+
+                GviRamBoost.StartBringIntoView(options);
             }
         }
 

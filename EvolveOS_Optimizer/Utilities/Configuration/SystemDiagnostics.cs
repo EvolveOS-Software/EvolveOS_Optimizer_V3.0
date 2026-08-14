@@ -696,6 +696,188 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             return result.ToString().Trim();
         }
 
+        internal static (string Health, string Type, string Temp) GetDriveSmartInfo(string driveLetter)
+        {
+            string healthStatus = "Good";
+            string driveType = "Drive";
+            string driveTemp = "--";
+
+            driveLetter = driveLetter.Replace("\\", "").Replace(":", "").ToUpper().Trim();
+
+            try
+            {
+                if (isMsftAvailable)
+                {
+                    string diskNumber = "-1";
+
+                    try
+                    {
+                        using var partitionSearcher = new ManagementObjectSearcher(@"root\microsoft\windows\storage", $"SELECT DiskNumber FROM MSFT_Partition WHERE DriveLetter = '{driveLetter}'");
+                        foreach (ManagementObject part in partitionSearcher.Get())
+                        {
+                            diskNumber = part["DiskNumber"]?.ToString() ?? "-1";
+                            break;
+                        }
+                    }
+                    catch { }
+
+                    if (diskNumber != "-1")
+                    {
+                        using var diskSearcher = new ManagementObjectSearcher(@"root\microsoft\windows\storage", $"SELECT HealthStatus, MediaType, BusType FROM MSFT_PhysicalDisk WHERE DeviceId='{diskNumber}'");
+                        foreach (ManagementObject obj in diskSearcher.Get())
+                        {
+                            ushort health = obj["HealthStatus"] != null ? Convert.ToUInt16(obj["HealthStatus"]) : (ushort)0;
+                            healthStatus = health == 0 ? "Good" : "Warning";
+
+                            ushort mediaType = obj["MediaType"] != null ? Convert.ToUInt16(obj["MediaType"]) : (ushort)0;
+                            ushort busType = obj["BusType"] != null ? Convert.ToUInt16(obj["BusType"]) : (ushort)0;
+
+                            if (busType == 17) driveType = "NVMe SSD";
+                            else if (busType == 7) driveType = "USB Drive";
+                            else if (mediaType == 4) driveType = "SATA SSD";
+                            else if (mediaType == 3) driveType = "HDD";
+                            else driveType = "Drive";
+
+                            break;
+                        }
+
+                        try
+                        {
+                            using var tempSearcher = new ManagementObjectSearcher(@"root\microsoft\windows\storage", $"SELECT Temperature FROM MSFT_StorageReliabilityCounter WHERE DeviceId='{diskNumber}'");
+                            foreach (ManagementObject obj in tempSearcher.Get())
+                            {
+                                if (obj["Temperature"] != null)
+                                {
+                                    int t = Convert.ToInt32(obj["Temperature"]);
+                                    if (t > 0) driveTemp = $"{t}°C";
+                                }
+                                break;
+                            }
+                        }
+                        catch { }
+
+                        return (healthStatus, driveType, driveTemp);
+                    }
+                }
+
+                string win32Index = "0";
+                try
+                {
+                    using var partSearcher = new ManagementObjectSearcher($"ASSOCIATORS OF {{Win32_LogicalDisk.DeviceID='{driveLetter}:'}} VIA Win32_LogicalDiskToPartition");
+                    foreach (ManagementObject part in partSearcher.Get())
+                    {
+                        using var driveSearcher = new ManagementObjectSearcher($"ASSOCIATORS OF {{Win32_DiskPartition.DeviceID='{part["DeviceID"]}'}} VIA Win32_DiskDriveToDiskPartition");
+                        foreach (ManagementObject drive in driveSearcher.Get())
+                        {
+                            win32Index = drive["Index"]?.ToString() ?? "0";
+                            break;
+                        }
+                        break;
+                    }
+                }
+                catch { }
+
+                using var searcherFallback = new ManagementObjectSearcher($"SELECT Status, Model, InterfaceType FROM Win32_DiskDrive WHERE Index={win32Index}");
+                foreach (ManagementObject obj in searcherFallback.Get())
+                {
+                    string status = obj["Status"]?.ToString() ?? "OK";
+                    healthStatus = status.Equals("OK", StringComparison.OrdinalIgnoreCase) ? "Good" : "Warning";
+
+                    string model = obj["Model"]?.ToString() ?? "";
+                    string interfaceType = obj["InterfaceType"]?.ToString() ?? "";
+
+                    if (model.IndexOf("NVMe", StringComparison.OrdinalIgnoreCase) >= 0) driveType = "NVMe SSD";
+                    else if (model.IndexOf("SSD", StringComparison.OrdinalIgnoreCase) >= 0) driveType = "SATA SSD";
+                    else if (interfaceType.IndexOf("USB", StringComparison.OrdinalIgnoreCase) >= 0) driveType = "USB Drive";
+                    else driveType = "HDD";
+
+                    break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SystemDiagnostics] SMART Error: {ex.Message}");
+                healthStatus = "Error";
+            }
+
+            return (healthStatus, driveType, driveTemp);
+        }
+
+        internal static List<string> GetSiblingDrives(string driveLetter)
+        {
+            var siblings = new List<string>();
+            try
+            {
+                driveLetter = driveLetter.Replace("\\", "").Replace(":", "").ToUpper().Trim();
+                if (string.IsNullOrEmpty(driveLetter)) return siblings;
+
+                if (isMsftAvailable)
+                {
+                    string diskNumber = "-1";
+                    using var partSearcher = new ManagementObjectSearcher(@"root\microsoft\windows\storage", $"SELECT DiskNumber FROM MSFT_Partition WHERE DriveLetter = '{driveLetter}'");
+                    foreach (ManagementObject part in partSearcher.Get())
+                    {
+                        diskNumber = part["DiskNumber"]?.ToString() ?? "-1";
+                        break;
+                    }
+
+                    if (diskNumber != "-1")
+                    {
+                        using var siblingSearcher = new ManagementObjectSearcher(@"root\microsoft\windows\storage", $"SELECT DriveLetter FROM MSFT_Partition WHERE DiskNumber = {diskNumber}");
+                        foreach (ManagementObject part in siblingSearcher.Get())
+                        {
+                            string l = part["DriveLetter"]?.ToString() ?? "";
+
+                            if (!string.IsNullOrWhiteSpace(l) && !l.Contains('\0'))
+                            {
+                                siblings.Add(l.ToUpper() + ":");
+                            }
+                        }
+                        if (siblings.Count > 0) return siblings.Distinct().ToList();
+                    }
+                }
+
+                string physicalDeviceId = "";
+
+                using var logSearcher = new ManagementObjectSearcher($"ASSOCIATORS OF {{Win32_LogicalDisk.DeviceID='{driveLetter}:'}} VIA Win32_LogicalDiskToPartition");
+                foreach (ManagementObject part in logSearcher.Get())
+                {
+                    using var driveSearcher = new ManagementObjectSearcher($"ASSOCIATORS OF {{Win32_DiskPartition.DeviceID='{part["DeviceID"]}'}} VIA Win32_DiskDriveToDiskPartition");
+                    foreach (ManagementObject drive in driveSearcher.Get())
+                    {
+                        physicalDeviceId = drive["DeviceID"]?.ToString() ?? "";
+                        break;
+                    }
+                    if (!string.IsNullOrEmpty(physicalDeviceId)) break;
+                }
+
+                if (!string.IsNullOrEmpty(physicalDeviceId))
+                {
+                    string escapedDeviceId = physicalDeviceId.Replace("\\", "\\\\");
+
+                    using var drivePartSearcher = new ManagementObjectSearcher($"ASSOCIATORS OF {{Win32_DiskDrive.DeviceID='{escapedDeviceId}'}} VIA Win32_DiskDriveToDiskPartition");
+                    foreach (ManagementObject part in drivePartSearcher.Get())
+                    {
+                        using var logDiskSearcher = new ManagementObjectSearcher($"ASSOCIATORS OF {{Win32_DiskPartition.DeviceID='{part["DeviceID"]}'}} VIA Win32_LogicalDiskToPartition");
+                        foreach (ManagementObject logDisk in logDiskSearcher.Get())
+                        {
+                            string devId = logDisk["DeviceID"]?.ToString() ?? "";
+                            if (!string.IsNullOrEmpty(devId))
+                            {
+                                siblings.Add(devId.ToUpper());
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[GetSiblingDrives Error] {ex.Message}");
+            }
+
+            return siblings.Distinct().ToList();
+        }
+
         private string GetAudioDevices()
         {
             StringBuilder result = new StringBuilder();

@@ -136,7 +136,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
-        internal static async Task RunCommand(string command, bool isPowerShell = false)
+        internal static async Task RunCommand(string command, bool isPowerShell = false, bool waitForExit = false)
         {
             await Task.Run(() =>
             {
@@ -154,7 +154,10 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 {
                     using (Process? process = Process.Start(startInfo))
                     {
-                        // No wait needed for fire-and-forget commands
+                        if (waitForExit)
+                        {
+                            process?.WaitForExit();
+                        }
                     }
                 }
                 catch (Exception ex)
