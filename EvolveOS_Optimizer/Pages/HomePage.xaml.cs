@@ -3,8 +3,10 @@
 
 using System.IO;
 using System.Management;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using EvolveOS_Optimizer.Assets.UserControl;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
@@ -1024,6 +1026,9 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnExpandDisk, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRunDiskCleanup, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOptimizeDrive, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnExpandNetwork, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnFlushDns, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnResetAdapter, InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, InputSystemCursorShape.Hand);
@@ -1956,6 +1961,184 @@ namespace EvolveOS_Optimizer.Pages
 
         #endregion
 
+        #region Network Card
+
+        public class NetworkProcessInfo
+        {
+            public string ProcessName { get; set; } = string.Empty;
+            public string ConnectionCount { get; set; } = string.Empty;
+        }
+
+        private CancellationTokenSource? _networkMonitorCts;
+
+        private async void BtnExpandNetwork_Click(object sender, RoutedEventArgs e)
+        {
+            bool isExpanded = NetworkExpandedContent.Visibility == Visibility.Collapsed;
+            double targetHeight = isExpanded ? 450 : 220;
+
+            GviNetwork.Height = targetHeight;
+            CardNetwork.Height = targetHeight;
+
+            if (isExpanded)
+            {
+                NetworkExpandedContent.Visibility = Visibility.Visible;
+                IconExpandNetwork.Glyph = "\uE70E"; // Chevron Up
+
+                _networkMonitorCts = new CancellationTokenSource();
+                _ = MonitorNetworkExpandedAsync(_networkMonitorCts.Token);
+            }
+            else
+            {
+                NetworkExpandedContent.Visibility = Visibility.Collapsed;
+                IconExpandNetwork.Glyph = "\uE70D"; // Chevron Down
+
+                _networkMonitorCts?.Cancel();
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
+            }
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+                GviNetwork.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true });
+            }
+        }
+
+        private async Task MonitorNetworkExpandedAsync(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    using Ping ping = new Ping();
+                    PingReply reply = await ping.SendPingAsync("8.8.8.8", 2000);
+
+                    DispatcherQueue.TryEnqueue(() =>
+                    {
+                        if (reply.Status == IPStatus.Success)
+                        {
+                            TxtPingValue.Text = $"{reply.RoundtripTime} ms";
+                            TxtPingValue.Foreground = new SolidColorBrush(reply.RoundtripTime < 50 ? Colors.SeaGreen : (reply.RoundtripTime < 100 ? Colors.Orange : Colors.Red));
+                        }
+                        else
+                        {
+                            TxtPingValue.Text = "Offline";
+                            TxtPingValue.Foreground = new SolidColorBrush(Colors.Red);
+                        }
+                    });
+                }
+                catch { }
+
+                try
+                {
+                    var activeConnections = await Task.Run(() => GetTopNetworkProcesses());
+                    DispatcherQueue.TryEnqueue(() =>
+                    {
+                        NetworkHogsList.ItemsSource = activeConnections;
+                    });
+                }
+                catch { }
+
+                await Task.Delay(3000, token);
+            }
+        }
+
+        private List<NetworkProcessInfo> GetTopNetworkProcesses()
+        {
+            var results = new List<NetworkProcessInfo>();
+            try
+            {
+                var output = CommandExecutor.StartTask("netstat -ano").GetAwaiter().GetResult();
+                var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                var pidCounts = new Dictionary<int, int>();
+
+                foreach (var line in lines.Skip(4))
+                {
+                    var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 5 && parts[0] == "TCP" && parts[3] == "ESTABLISHED")
+                    {
+                        if (int.TryParse(parts[4], out int pid) && pid > 0 && pid != 4)
+                        {
+                            if (!pidCounts.ContainsKey(pid)) pidCounts[pid] = 0;
+                            pidCounts[pid]++;
+                        }
+                    }
+                }
+
+                var topPids = pidCounts.OrderByDescending(kv => kv.Value).Take(3);
+                foreach (var kv in topPids)
+                {
+                    try
+                    {
+                        using var proc = Process.GetProcessById(kv.Key);
+                        results.Add(new NetworkProcessInfo
+                        {
+                            ProcessName = proc.ProcessName + ".exe",
+                            ConnectionCount = $"{kv.Value} connections"
+                        });
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+            if (results.Count == 0)
+            {
+                results.Add(new NetworkProcessInfo { ProcessName = "Idle / No active connections", ConnectionCount = "" });
+            }
+
+            return results;
+        }
+
+        private async void BtnFlushDns_Click(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn != null) btn.IsEnabled = false;
+
+            TxtPingValue.Text = "Flushing...";
+            TxtPingValue.Foreground = new SolidColorBrush(Colors.Orange);
+
+            bool success = await Task.Run(() => ClearingMemory.FlushDnsCache());
+
+            if (success)
+            {
+                TxtPingValue.Text = "Flushed!";
+                TxtPingValue.Foreground = new SolidColorBrush(Colors.SeaGreen);
+            }
+            else
+            {
+                TxtPingValue.Text = "Errors Occurred";
+                TxtPingValue.Foreground = new SolidColorBrush(Colors.Red);
+            }
+
+            await Task.Delay(2000);
+            if (btn != null) btn.IsEnabled = true;
+        }
+
+        private async void BtnResetAdapter_Click(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn != null) btn.IsEnabled = false;
+
+            TxtPingValue.Text = "Resetting...";
+            TxtPingValue.Foreground = new SolidColorBrush(Colors.Orange);
+
+            await CommandExecutor.RunCommand("Restart-NetAdapter -Name \"*\" -Confirm:$false", isPowerShell: true, waitForExit: true);
+
+            TxtPingValue.Text = "Restarted!";
+            TxtPingValue.Foreground = new SolidColorBrush(Colors.SeaGreen);
+
+            await Task.Delay(2000);
+            if (btn != null) btn.IsEnabled = true;
+        }
+
+        #endregion
+
         #region Memory Optimization Engine
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -2029,6 +2212,8 @@ namespace EvolveOS_Optimizer.Pages
             {
                 BoostStatusText.Foreground = (Brush)successBrush;
             }
+
+            await CalculateSystemHealthAsync();
 
             await Task.Delay(5000);
 
