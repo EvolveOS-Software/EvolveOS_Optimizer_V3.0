@@ -2,8 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Hosting;
 using Windows.Foundation;
 
 namespace EvolveOS_Optimizer.Assets.UserControl
@@ -190,31 +188,38 @@ namespace EvolveOS_Optimizer.Assets.UserControl
 
         private void AnimateChild(UIElement child, Point newPos)
         {
-            if (IsDragInProgress) return;
-
-            Visual visual = ElementCompositionPreview.GetElementVisual(child);
-
-            Vector3 targetOffset = Vector3.Zero;
+            if (IsDragInProgress)
+            {
+                _lastPos[child] = newPos;
+                return;
+            }
 
             if (!_lastPos.ContainsKey(child))
             {
                 _lastPos[child] = newPos;
-                visual.Offset = targetOffset;
                 return;
             }
 
-            if (Math.Abs(_lastPos[child].X - newPos.X) > 0.5 || Math.Abs(_lastPos[child].Y - newPos.Y) > 0.5)
+            var oldPos = _lastPos[child];
+
+            if (Math.Abs(oldPos.X - newPos.X) > 0.5 || Math.Abs(oldPos.Y - newPos.Y) > 0.5)
             {
-                var oldPos = _lastPos[child];
                 _lastPos[child] = newPos;
 
-                Vector3 startOffset = new Vector3((float)(oldPos.X - newPos.X), (float)(oldPos.Y - newPos.Y), 0f);
-                visual.Offset = startOffset;
+                float deltaX = (float)(oldPos.X - newPos.X);
+                float deltaY = (float)(oldPos.Y - newPos.Y);
 
-                var moveAnim = visual.Compositor.CreateVector3KeyFrameAnimation();
-                moveAnim.InsertKeyFrame(1.0f, Vector3.Zero);
-                moveAnim.Duration = TimeSpan.FromMilliseconds(450);
-                visual.StartAnimation("Offset", moveAnim);
+                child.TranslationTransition = null;
+                child.Translation = new Vector3(deltaX, deltaY, 0f);
+
+                child.DispatcherQueue.TryEnqueue(() =>
+                {
+                    child.TranslationTransition = new Vector3Transition
+                    {
+                        Duration = TimeSpan.FromMilliseconds(400)
+                    };
+                    child.Translation = Vector3.Zero;
+                });
             }
         }
     }
