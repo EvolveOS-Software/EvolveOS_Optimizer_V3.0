@@ -71,7 +71,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableStartMinimized"] = false,
             ["EncryptionMode"] = KeyDerivationMode.Balanced.ToString(),
 
-            ["DashboardCardOrder"] = "CardWeather,CardDns,CardSecurity,CardGamingMode,CardMaintenance,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk",
+            ["DashboardCardOrder"] = "CardWeather,CardDns,CardSecurity,CardMaintenance,CardRamBoost,CardGamingMode,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk",
             ["Dashboard_CardWeather"] = true,
             ["Dashboard_CardNetwork"] = true,
             ["Dashboard_CardRam"] = true,

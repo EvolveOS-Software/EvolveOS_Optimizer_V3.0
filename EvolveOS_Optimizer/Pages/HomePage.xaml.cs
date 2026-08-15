@@ -844,6 +844,8 @@ namespace EvolveOS_Optimizer.Pages
 
         private void LoadDashboardLayout()
         {
+            _isInternalToggle = true;
+
             ToggleWeather.IsOn = SettingsEngine.Dashboard_CardWeather;
             ToggleNetwork.IsOn = SettingsEngine.Dashboard_CardNetwork;
             ToggleRam.IsOn = SettingsEngine.Dashboard_CardRam;
@@ -922,6 +924,8 @@ namespace EvolveOS_Optimizer.Pages
             {
                 ComboGlobalTimeframe.SelectedIndex = SettingsEngine.Dashboard_GraphTimeframe;
             }
+
+            _isInternalToggle = false;
         }
 
         private void SetCardVisibility(string cardName, bool isVisible)
@@ -969,6 +973,8 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ToggleCard_Toggled(object sender, RoutedEventArgs e)
         {
+            if (_isInternalToggle) return;
+
             if (sender is ToggleSwitch ts && ts.Tag is string cardName)
             {
                 SetCardVisibility(cardName, ts.IsOn);
@@ -1036,7 +1042,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsEngine.DashboardCardOrder = "CardWeather,CardDns,CardSecurity,CardGamingMode,CardMaintenance,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk";
+            SettingsEngine.DashboardCardOrder = "CardWeather,CardDns,CardSecurity,CardMaintenance,CardGamingMode,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk";
             SettingsEngine.Dashboard_CardWeather = true;
             SettingsEngine.Dashboard_CardNetwork = true;
             SettingsEngine.Dashboard_CardRam = true;
