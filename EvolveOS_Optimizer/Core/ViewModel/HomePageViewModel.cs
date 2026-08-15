@@ -92,6 +92,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private string _currentDate = DateTime.Now.ToString("dddd, MMMM d");
         private double _downloadSpeed;
         private double _uploadSpeed;
+
+        private readonly object _gpuLock = new object();
         #endregion
 
         #region Memory Boost Card Properties
@@ -570,20 +572,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
                         .ToHashSet();
 
-                    var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
-                    foreach (var key in toRemove)
+                    lock (_gpuLock)
                     {
-                        _gpuCounters[key].Dispose();
-                        _gpuCounters.Remove(key);
-                    }
-
-                    foreach (var instance in currentInstances)
-                    {
-                        if (!_gpuCounters.ContainsKey(instance))
+                        var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
+                        foreach (var key in toRemove)
                         {
-                            var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
-                            counter.NextValue();
-                            _gpuCounters[instance] = counter;
+                            _gpuCounters[key].Dispose();
+                            _gpuCounters.Remove(key);
+                        }
+
+                        foreach (var instance in currentInstances)
+                        {
+                            if (!_gpuCounters.ContainsKey(instance))
+                            {
+                                var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
+                                counter.NextValue();
+                                _gpuCounters[instance] = counter;
+                            }
                         }
                     }
 
@@ -591,9 +596,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
 
                 float totalUsage = 0;
-                foreach (var counter in _gpuCounters.Values)
+
+                lock (_gpuLock)
                 {
-                    totalUsage += counter.NextValue();
+                    foreach (var counter in _gpuCounters.Values)
+                    {
+                        totalUsage += counter.NextValue();
+                    }
                 }
 
                 return Math.Clamp(totalUsage, 0f, 100f);
@@ -768,11 +777,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 try
                 {
-                    foreach (var counter in _gpuCounters.Values)
+                    lock (_gpuLock)
                     {
-                        counter.Dispose();
+                        foreach (var counter in _gpuCounters.Values)
+                        {
+                            counter.Dispose();
+                        }
+                        _gpuCounters.Clear();
                     }
-                    _gpuCounters.Clear();
                 }
                 catch { }
 

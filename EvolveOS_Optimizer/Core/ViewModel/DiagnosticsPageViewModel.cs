@@ -47,6 +47,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly DiagnosticScannerEngine _scannerEngine;
 
         private System.Threading.Timer? _telemetryTimer;
+        private int _isUpdatingTelemetry = 0;
+
         internal double _totalMemoryMb = 0;
         private float _displayCpuUsage = 0f;
         private float _displayDiskUsage = 0f;
@@ -3865,6 +3867,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private void UpdateTelemetryGraph(object? state)
         {
+            if (Interlocked.CompareExchange(ref _isUpdatingTelemetry, 1, 0) != 0) return;
+
             try
             {
                 if (!_isRefreshingTemperatures)
@@ -4096,7 +4100,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     });
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[UpdateTelemetryGraph Error] {ex.Message}");
+            }
+            finally
+            {
+                _isUpdatingTelemetry = 0;
+            }
         }
 
         private void EvaluateThermalLimits(int cpuTemp, int gpuTemp, int ramTemp, int moboTemp)
@@ -4308,12 +4319,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _diskCounter?.Dispose();
                     _diskCounter = null;
 
-                    foreach (var counter in _gpuCounters.Values)
+                    lock (_gpuLock)
                     {
-                        counter.Dispose();
+                        foreach (var counter in _gpuCounters.Values)
+                        {
+                            counter.Dispose();
+                        }
+                        _gpuCounters.Clear();
+                        _gpuCategory = null;
                     }
-                    _gpuCounters.Clear();
-                    _gpuCategory = null;
                 }
                 catch { /* Ignore cleanup errors */ }
 
@@ -4645,6 +4659,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private System.Diagnostics.PerformanceCounterCategory? _gpuCategory;
         private readonly Dictionary<string, System.Diagnostics.PerformanceCounter> _gpuCounters = new();
 
+        private readonly object _gpuLock = new object();
+
         private DateTime _lastGpuInstanceRefresh = DateTime.MinValue;
         private NetworkInterface[]? _cachedNetworkInterfaces;
         private DateTime _lastNetworkInterfaceRefresh = DateTime.MinValue;
@@ -4664,20 +4680,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
                         .ToHashSet();
 
-                    var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
-                    foreach (var key in toRemove)
+                    lock (_gpuLock)
                     {
-                        _gpuCounters[key].Dispose();
-                        _gpuCounters.Remove(key);
-                    }
-
-                    foreach (var instance in currentInstances)
-                    {
-                        if (!_gpuCounters.ContainsKey(instance))
+                        var toRemove = _gpuCounters.Keys.Where(k => !currentInstances.Contains(k)).ToList();
+                        foreach (var key in toRemove)
                         {
-                            var counter = new System.Diagnostics.PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
-                            counter.NextValue();
-                            _gpuCounters[instance] = counter;
+                            _gpuCounters[key].Dispose();
+                            _gpuCounters.Remove(key);
+                        }
+
+                        foreach (var instance in currentInstances)
+                        {
+                            if (!_gpuCounters.ContainsKey(instance))
+                            {
+                                var counter = new System.Diagnostics.PerformanceCounter("GPU Engine", "Utilization Percentage", instance, true);
+                                counter.NextValue();
+                                _gpuCounters[instance] = counter;
+                            }
                         }
                     }
 
@@ -4685,9 +4704,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
 
                 float totalUsage = 0;
-                foreach (var counter in _gpuCounters.Values)
+
+                lock (_gpuLock)
                 {
-                    totalUsage += counter.NextValue();
+                    foreach (var counter in _gpuCounters.Values)
+                    {
+                        totalUsage += counter.NextValue();
+                    }
                 }
 
                 return Math.Clamp(totalUsage, 0f, 100f);
