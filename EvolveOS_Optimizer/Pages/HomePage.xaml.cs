@@ -16,6 +16,7 @@ using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Maintenance;
+using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
@@ -1035,6 +1036,9 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnExpandNetwork, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnFlushDns, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnResetAdapter, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnExpandDns, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnBenchmarkDns, InputSystemCursorShape.Arrow);
+            SetCustomCursor(CmbDnsPresets, InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, InputSystemCursorShape.Hand);
@@ -1408,11 +1412,17 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region DNS Card
+
+        private readonly DnsManager _dnsManager = new();
+        private bool _isDnsInternalChange = false;
+
         private void BtnOpenDnsPage_Click(object sender, RoutedEventArgs e)
         {
             if (MainWindow.Instance != null)
             {
-                MainWindow.Instance.SwitchPage("Utilities");
+                MainWindow.Instance.SwitchPage("Diagnostics", "DnsCrypt");
+
+                DiagnosticsPageViewModel.Current.IsManualDnsViewOpen = true;
             }
             else
             {
@@ -1521,6 +1531,236 @@ namespace EvolveOS_Optimizer.Pages
                 BtnDebug.IsEnabled = true;
             }
         }
+
+        private async void BtnExpandDns_Click(object sender, RoutedEventArgs e)
+        {
+            bool isExpanded = DnsExpandedContent.Visibility == Visibility.Collapsed;
+            double targetHeight = isExpanded ? 450 : 220;
+
+            GviDns.Height = targetHeight;
+            CardDns.Height = targetHeight;
+
+            if (isExpanded)
+            {
+                DnsExpandedContent.Visibility = Visibility.Visible;
+                IconExpandDns.Glyph = "\uE70E"; // Chevron Up
+
+                PopulateDnsPresets();
+            }
+            else
+            {
+                DnsExpandedContent.Visibility = Visibility.Collapsed;
+                IconExpandDns.Glyph = "\uE70D"; // Chevron Down
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
+            }
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+                GviDns.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true });
+            }
+        }
+
+        private void PopulateDnsPresets()
+        {
+            _isDnsInternalChange = true;
+
+            if (CmbDnsPresets.ItemsSource == null)
+            {
+                CmbDnsPresets.ItemsSource = DnsPreset.DefaultPresets;
+            }
+
+            string currentPrimary = _dnsManager.GetCurrentIpv4Primary();
+
+            var matchedPreset = DnsPreset.DefaultPresets.FirstOrDefault(p => p.Ipv4Primary == currentPrimary)
+                                ?? DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "Automatic");
+
+            CmbDnsPresets.SelectedItem = matchedPreset;
+
+            ToggleFamilySafe.IsOn = matchedPreset?.Name?.Contains("Family") == true || matchedPreset?.Name?.Contains("Adult") == true;
+            ToggleAdBlock.IsOn = matchedPreset?.Name?.Contains("AdGuard") == true || matchedPreset?.Name?.Contains("Security") == true;
+
+            _isDnsInternalChange = false;
+        }
+
+        private async void CmbDnsPresets_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isDnsInternalChange || CmbDnsPresets.SelectedItem is not DnsPreset selectedPreset) return;
+
+            ShowDnsFeedback($"Applying {selectedPreset.Name}...", Colors.Orange);
+
+            bool v4Success = await Task.Run(() => _dnsManager.SetIpv4Dns(selectedPreset.Ipv4Primary ?? "", selectedPreset.Ipv4Secondary ?? ""));
+            bool v6Success = true;
+
+            if (!string.IsNullOrEmpty(selectedPreset.Ipv6Primary))
+            {
+                v6Success = await Task.Run(() => _dnsManager.SetIpv6Dns(selectedPreset.Ipv6Primary ?? "", selectedPreset.Ipv6Secondary ?? ""));
+            }
+
+            await Task.Run(() => ClearingMemory.FlushDnsCache());
+
+            if (v4Success)
+            {
+                ShowDnsFeedback($"Applied {selectedPreset.Name}!", Colors.SeaGreen);
+            }
+            else
+            {
+                ShowDnsFeedback("Failed to update DNS settings.", Colors.Red);
+            }
+        }
+
+        private void ToggleFamilySafe_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (_isDnsInternalChange) return;
+
+            if (ToggleFamilySafe.IsOn)
+            {
+                var familyPreset = DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "AdGuard DNS (Family)")
+                                   ?? DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "CleanBrowsing (Family)");
+
+                if (familyPreset != null)
+                {
+                    CmbDnsPresets.SelectedItem = familyPreset;
+                }
+            }
+            else
+            {
+                var defaultPreset = DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "Cloudflare (1.1.1.1)")
+                                    ?? DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "Automatic");
+
+                if (defaultPreset != null)
+                {
+                    CmbDnsPresets.SelectedItem = defaultPreset;
+                }
+            }
+        }
+
+        private void ToggleAdBlock_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (_isDnsInternalChange) return;
+
+            if (ToggleAdBlock.IsOn)
+            {
+                var adguardPreset = DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "AdGuard DNS (Default)")
+                                    ?? DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "Quad9 (Security)");
+
+                if (adguardPreset != null)
+                {
+                    CmbDnsPresets.SelectedItem = adguardPreset;
+                }
+            }
+            else
+            {
+                var autoPreset = DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "Automatic");
+                if (autoPreset != null)
+                {
+                    CmbDnsPresets.SelectedItem = autoPreset;
+                }
+            }
+        }
+
+        private async void BtnBenchmarkDns_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn) btn.IsEnabled = false;
+
+            ShowDnsFeedback("Testing all providers...", Microsoft.UI.Colors.Orange);
+
+            var benchmarkTargets = DnsPreset.DefaultPresets
+                .Where(p => !string.IsNullOrWhiteSpace(p.Ipv4Primary)
+                         && p.Ipv4Primary != "0.0.0.0"
+                         && p.Ipv4Primary != "127.0.0.1")
+                .ToList();
+
+            var pingTasks = benchmarkTargets.Select(async target =>
+            {
+                long latency = -1;
+                try
+                {
+                    using Ping ping = new Ping();
+                    var reply = await ping.SendPingAsync(target.Ipv4Primary!, 1200);
+                    if (reply.Status == IPStatus.Success)
+                    {
+                        latency = reply.RoundtripTime;
+                    }
+                }
+                catch { }
+
+                return new DnsBenchmarkingItem
+                {
+                    Name = target.Name ?? "",
+                    IP = target.Ipv4Primary!,
+                    Latency = latency,
+                    PresetReference = target
+                };
+            });
+
+            var resultsArray = await Task.WhenAll(pingTasks);
+
+            var fastest = resultsArray
+                .Where(r => r.Latency >= 0)
+                .OrderBy(r => r.Latency)
+                .FirstOrDefault();
+
+            if (fastest != null && fastest.PresetReference != null)
+            {
+                XamlRoot? root = this.XamlRoot ?? (this.Content?.XamlRoot);
+                if (root != null)
+                {
+                    ContentDialog dialog = new ContentDialog
+                    {
+                        XamlRoot = root,
+                        Title = "Speed Test Complete",
+                        Content = $"The fastest DNS server for your connection is {fastest.Name} with a latency of {fastest.Latency} ms.\n\nWould you like to apply it now?",
+                        PrimaryButtonText = "Apply Now",
+                        CloseButtonText = "Cancel",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+
+                    if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+                    {
+                        dialog.Style = (Style)style;
+                    }
+
+                    TxtDnsFeedback.Visibility = Visibility.Collapsed;
+
+                    ContentDialogResult result = await dialog.ShowAsync();
+
+                    if (result == ContentDialogResult.Primary)
+                    {
+                        ShowDnsFeedback($"Applied: {fastest.Name} ({fastest.Latency} ms)", Colors.SeaGreen);
+                        CmbDnsPresets.SelectedItem = fastest.PresetReference;
+                    }
+                    else
+                    {
+                        ShowDnsFeedback($"Fastest was {fastest.Name} ({fastest.Latency} ms). No changes made.", Colors.SeaGreen);
+                    }
+                }
+            }
+            else
+            {
+                ShowDnsFeedback("Latency test timed out.", Colors.Red);
+            }
+
+            if (sender is Button b) b.IsEnabled = true;
+        }
+
+        private async void ShowDnsFeedback(string message, Color color)
+        {
+            if (TxtDnsFeedback == null) return;
+
+            TxtDnsFeedback.Text = message;
+            TxtDnsFeedback.Foreground = new SolidColorBrush(color);
+            TxtDnsFeedback.Visibility = Visibility.Visible;
+
+            await Task.Delay(4000);
+            TxtDnsFeedback.Visibility = Visibility.Collapsed;
+        }
+
         #endregion
 
         #region Health Card
@@ -1589,6 +1829,7 @@ namespace EvolveOS_Optimizer.Pages
                 BtnRefreshHealth.IsEnabled = true;
             }
         }
+
         #endregion
 
         #region Security Card

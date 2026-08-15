@@ -666,36 +666,109 @@
                 </Border>
             </GridViewItem>
 
-            <GridViewItem>
-                <Border x:Name="CardDns" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+            <GridViewItem x:Name="GviDns" Height="220">
+                <Border x:Name="CardDns" Style="{StaticResource DashCard}" Padding="16" Margin="0" MinWidth="340"
                         PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerCanceled">
-                    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Row 0: Header with Expand Chevron and Navigation Button -->
                         <Grid Grid.Row="0" Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <FontIcon Glyph="&#xE774;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <FontIcon Grid.Column="0" Glyph="&#xE774;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" helpers:Loc.Key="title_dns_encryption" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
-                            <Button x:Name="BtnOpenDnsPage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDnsPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_dns_page}">
+
+                            <Button x:Name="BtnOpenDnsPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDnsPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_dns_page}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
                             </Button>
+
+                            <Button x:Name="BtnExpandDns" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandDns_Click" Margin="4,0,0,0">
+                                <FontIcon x:Name="IconExpandDns" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </Button>
                         </Grid>
-                        <Grid Grid.Row="1" Height="120" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <FontIcon x:Name="IconServiceStopped" Glyph="&#xE7E8;" FontSize="50" Foreground="{ThemeResource Brush_Error}" Opacity="0.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Image x:Name="ImgServiceRunning" Source="ms-appx:///Assets/PngImages/secure.png" Width="80" Height="80" Margin="0,0,0,3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
-                            <ProgressRing x:Name="ProgressRingRunServices" IsActive="True" Width="15" Height="15" Canvas.ZIndex="10" Margin="0,0,16,28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+
+                        <!-- Row 1: Default Summary & Service Controls -->
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Height="120" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <FontIcon x:Name="IconServiceStopped" Glyph="&#xE7E8;" FontSize="50" Foreground="{ThemeResource Brush_Error}" Opacity="0.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image x:Name="ImgServiceRunning" Source="ms-appx:///Assets/PngImages/secure.png" Width="80" Height="80" Margin="0,0,0,3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                <ProgressRing x:Name="ProgressRingRunServices" IsActive="True" Width="15" Height="15" Canvas.ZIndex="10" Margin="0,0,16,28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                            </Grid>
+
+                            <StackPanel Grid.Row="1" Spacing="2" Margin="0,0">
+                                <TextBlock x:Name="TxtServicesRunning" helpers:Loc.Key="text_services_running" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="statusLabel" helpers:Loc.Key="text_status" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
+                            </StackPanel>
+
+                            <ProgressBar x:Name="progressBar" Grid.Row="2" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8"/>
+
+                            <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12" VerticalAlignment="Bottom">
+                                <Button x:Name="BtnDebug" IsTabStop="False" Grid.Column="0" Content="{helpers:ResourceString Key=btn_debug_process}" HorizontalAlignment="Stretch" Click="BtnDebug_Click" FontFamily="Jura Medium"/>
+                                <Button x:Name="BtnStartService" IsTabStop="False" Grid.Column="1" Content="{helpers:ResourceString Key=btn_start_service}" HorizontalAlignment="Stretch" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="Jura Medium"/>
+                            </Grid>
                         </Grid>
-                        <StackPanel Grid.Row="2" Spacing="2" Margin="0,0">
-                            <TextBlock x:Name="TxtServicesRunning" helpers:Loc.Key="text_services_running" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
-                            <TextBlock x:Name="statusLabel" helpers:Loc.Key="text_status" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
+
+                        <!-- Row 2: Expanded DNS Features -->
+                        <StackPanel x:Name="DnsExpandedContent" Grid.Row="2" Visibility="Collapsed" VerticalAlignment="Bottom" Margin="0,16,0,0" Spacing="10">
+
+                            <!-- Preset Dropdown & Latency Benchmark Button -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="DNS Preset" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="8">
+                                    <ComboBox x:Name="CmbDnsPresets" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectionChanged="CmbDnsPresets_SelectionChanged" FontFamily="Jura Medium"/>
+                                    <Button x:Name="BtnBenchmarkDns" Grid.Column="1" Click="BtnBenchmarkDns_Click" ToolTipService.ToolTip="Benchmark &amp; Pick Fastest" Padding="8,6">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <FontIcon x:Name="IconBenchmark" Glyph="&#xE9D9;" FontSize="12"/>
+                                            <TextBlock Text="Speed Test" FontSize="11" FontFamily="Jura Medium"/>
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Filter Quick Toggles -->
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                                <!-- Family Safe Toggle -->
+                                <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="10,6" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="Family Safe" FontSize="11" FontWeight="SemiBold" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="Block Adult/NSFW" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        </StackPanel>
+                                        <ToggleSwitch x:Name="ToggleFamilySafe" Grid.Column="1" Margin="0,-6,-10,-6" MinWidth="0" OnContent="" OffContent="" Toggled="ToggleFamilySafe_Toggled"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Ad/Malware Filter Toggle -->
+                                <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="10,6" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="Ad / Malware" FontSize="11" FontWeight="SemiBold" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="AdGuard Shield" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        </StackPanel>
+                                        <ToggleSwitch x:Name="ToggleAdBlock" Grid.Column="1" Margin="0,-6,-10,-6" MinWidth="0" OnContent="" OffContent="" Toggled="ToggleAdBlock_Toggled"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+
+                            <!-- Status Feedback Label -->
+                            <TextBlock x:Name="TxtDnsFeedback" Text="" FontSize="11" FontFamily="Jura Medium" HorizontalAlignment="Center" Foreground="{ThemeResource SystemFillColorSuccessBrush}" Visibility="Collapsed"/>
                         </StackPanel>
-                        <ProgressBar x:Name="progressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8"/>
-                        <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="12" VerticalAlignment="Bottom">
-                            <Button x:Name="BtnDebug" IsTabStop="False" Grid.Column="0" Content="{helpers:ResourceString Key=btn_debug_process}" HorizontalAlignment="Stretch" Click="BtnDebug_Click" FontFamily="Jura Medium"/>
-                            <Button x:Name="BtnStartService" IsTabStop="False" Grid.Column="1" Content="{helpers:ResourceString Key=btn_start_service}" HorizontalAlignment="Stretch" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="Jura Medium"/>
-                        </Grid>
                     </Grid>
                 </Border>
             </GridViewItem>
