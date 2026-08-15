@@ -1028,6 +1028,8 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnOpenSecurityPage, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOptimizeMemory, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnExpandRamBoost, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRamBoostSettings, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenRamBoostPage, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRefreshSecurity, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnDashViewIssues, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnGamingMode, InputSystemCursorShape.Arrow);
@@ -2416,6 +2418,7 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Memory Optimization Engine
+
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
@@ -2441,7 +2444,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             BtnOptimizeMemory.IsEnabled = false;
             BoostProgressBar.Visibility = Visibility.Visible;
-            BoostStatusText.Text = "Trimming processes & clearing standby cache...";
+            BoostStatusText.Text = "Running memory optimization...";
             BoostResultsText.Text = "";
 
             await Task.Delay(400);
@@ -2451,7 +2454,6 @@ namespace EvolveOS_Optimizer.Pages
 
             await Task.Run(() =>
             {
-
                 MEMORYSTATUSEX memBefore = new MEMORYSTATUSEX();
                 memBefore.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
                 GlobalMemoryStatusEx(ref memBefore);
@@ -2459,8 +2461,28 @@ namespace EvolveOS_Optimizer.Pages
                 var allProcs = Process.GetProcesses();
                 procsTrimmed = allProcs.Length;
 
-                ClearingMemory.EmptyWorkingSetFunction();
-                ClearingMemory.ClearFileSystemCache(ClearStandbyCache: true, lowPriority: false);
+                if (SettingsEngine.Dashboard_BoostWorkingSets)
+                {
+                    ClearingMemory.EmptyWorkingSetFunction();
+                }
+
+                if (SettingsEngine.Dashboard_BoostStandbyCache)
+                {
+                    ClearingMemory.ClearFileSystemCache(ClearStandbyCache: true, lowPriority: false);
+                }
+
+                if (SettingsEngine.Dashboard_BoostCombinedPageList)
+                {
+                    ClearingMemory.OptimizeCombinedPageList();
+                }
+                if (SettingsEngine.Dashboard_BoostModifiedPageList)
+                {
+                    ClearingMemory.OptimizeModifiedPageList();
+                }
+                if (SettingsEngine.Dashboard_BoostRegistryCache)
+                {
+                    ClearingMemory.OptimizeRegistryCache();
+                }
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -2503,6 +2525,132 @@ namespace EvolveOS_Optimizer.Pages
             BtnOptimizeMemory.IsEnabled = true;
         }
 
+        private async void BtnRamBoostSettings_Click(object sender, RoutedEventArgs e)
+        {
+            XamlRoot? root = this.XamlRoot ?? (this.Content?.XamlRoot);
+            if (root == null) return;
+
+            StackPanel panel = new StackPanel { Spacing = 8 };
+
+            ToggleSwitch toggleWorkingSets, toggleStandbyCache, toggleCombinedPageList, toggleModifiedPageList, toggleRegistryCache;
+
+            panel.Children.Add(CreateSettingRow("Trim Process Working Sets", "Reclaims physical RAM from background applications.", SettingsEngine.Dashboard_BoostWorkingSets, out toggleWorkingSets));
+            panel.Children.Add(CreateSettingRow("Clear Standby Cache", "Purges cached filesystem data from RAM.", SettingsEngine.Dashboard_BoostStandbyCache, out toggleStandbyCache));
+            panel.Children.Add(CreateSettingRow("Optimize Combined Page List", "Combines identical pages to free physical memory.", SettingsEngine.Dashboard_BoostCombinedPageList, out toggleCombinedPageList));
+            panel.Children.Add(CreateSettingRow("Optimize Modified Page List", "Flushes modified pages to disk to free active RAM.", SettingsEngine.Dashboard_BoostModifiedPageList, out toggleModifiedPageList));
+            panel.Children.Add(CreateSettingRow("Optimize Registry Cache", "Reconciles and frees system registry hive memory.", SettingsEngine.Dashboard_BoostRegistryCache, out toggleRegistryCache));
+
+            TextBlock errorBlock = new TextBlock
+            {
+                Text = "⚠️ At least one optimization feature must remain enabled.",
+                Foreground = new SolidColorBrush(Colors.OrangeRed),
+                FontSize = 11,
+                Visibility = Visibility.Collapsed,
+                Margin = new Thickness(0, 8, 0, 0)
+            };
+            panel.Children.Add(errorBlock);
+
+            ScrollViewer scrollViewer = new ScrollViewer
+            {
+                Content = panel,
+                MaxHeight = 350,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+            };
+
+            ContentDialog dialog = new ContentDialog
+            {
+                XamlRoot = root,
+                Title = "Memory Optimizer Settings",
+                Content = scrollViewer,
+                PrimaryButtonText = "Save Changes",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+            {
+                dialog.Style = (Style)style;
+            }
+
+            dialog.PrimaryButtonClick += (s, args) =>
+            {
+                bool anyEnabled = toggleWorkingSets.IsOn || toggleStandbyCache.IsOn || toggleCombinedPageList.IsOn || toggleModifiedPageList.IsOn || toggleRegistryCache.IsOn;
+
+                if (!anyEnabled)
+                {
+                    args.Cancel = true;
+                    errorBlock.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    errorBlock.Visibility = Visibility.Collapsed;
+
+                    SettingsEngine.Dashboard_BoostWorkingSets = toggleWorkingSets.IsOn;
+                    SettingsEngine.Dashboard_BoostStandbyCache = toggleStandbyCache.IsOn;
+                    SettingsEngine.Dashboard_BoostCombinedPageList = toggleCombinedPageList.IsOn;
+                    SettingsEngine.Dashboard_BoostModifiedPageList = toggleModifiedPageList.IsOn;
+                    SettingsEngine.Dashboard_BoostRegistryCache = toggleRegistryCache.IsOn;
+                }
+            };
+
+            await dialog.ShowAsync();
+        }
+
+        private FrameworkElement CreateSettingRow(string title, string description, bool initialValue, out ToggleSwitch toggleSwitch)
+        {
+            ToggleSwitch toggle = new ToggleSwitch
+            {
+                IsOn = initialValue,
+                OnContent = null,
+                OffContent = null,
+                MinWidth = 0,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Margin = new Thickness(12, 0, 0, 0)
+            };
+
+            TextBlock titleBlock = new TextBlock
+            {
+                Text = title,
+                FontWeight = FontWeights.SemiBold,
+                FontSize = 13
+            };
+
+            TextBlock descBlock = new TextBlock
+            {
+                Text = description,
+                FontSize = 11,
+                Opacity = 0.6,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            StackPanel textPanel = new StackPanel
+            {
+                Spacing = 2,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            textPanel.Children.Add(titleBlock);
+            textPanel.Children.Add(descBlock);
+
+            Grid grid = new Grid
+            {
+                ColumnDefinitions =
+        {
+            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+            new ColumnDefinition { Width = GridLength.Auto }
+        },
+                Margin = new Thickness(0, 6, 0, 6)
+            };
+
+            Grid.SetColumn(textPanel, 0);
+            Grid.SetColumn(toggle, 1);
+            grid.Children.Add(textPanel);
+            grid.Children.Add(toggle);
+
+            toggleSwitch = toggle;
+            return grid;
+        }
+
         private async void BtnExpandRamBoost_Click(object sender, RoutedEventArgs e)
         {
             bool isExpanded = RamBoostExpandedContent.Visibility == Visibility.Collapsed;
@@ -2539,6 +2687,18 @@ namespace EvolveOS_Optimizer.Pages
                 };
 
                 GviRamBoost.StartBringIntoView(options);
+            }
+        }
+
+        private void BtnOpenRamBoostPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWindow.Instance != null)
+            {
+                MainWindow.Instance.SwitchPage("Diagnostics", "Maintenance");
+            }
+            else
+            {
+                Debug.WriteLine("❌ MainWindow.Instance is null!");
             }
         }
 
@@ -2601,6 +2761,7 @@ namespace EvolveOS_Optimizer.Pages
                 TxtDialogThresholdValue.Text = $"{Math.Round(e.NewValue)}%";
             }
         }
+
         #endregion
 
         #region Admin & UI Helper Methods

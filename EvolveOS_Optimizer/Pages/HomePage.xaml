@@ -1351,14 +1351,28 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Header with Expand/Collapse Button -->
-                        <Grid Grid.Row="0" Margin="0,0,0,0">
-                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
-                                <FontIcon Glyph="&#xE9A1;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="Memory Optimizer" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
-                            </StackPanel>
+                        <!-- Row 0: Header with Settings Button and Expand Chevron -->
+                        <Grid Grid.Row="0" Margin="0,-5,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                            <Button x:Name="BtnExpandRamBoost" Background="Transparent" BorderThickness="0" Padding="4" HorizontalAlignment="Right" Click="BtnExpandRamBoost_Click" Margin="0,-4,0,0">
+                            <FontIcon Grid.Column="0" Glyph="&#xE9A1;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="Memory Optimizer" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+
+                            <Button x:Name="BtnOpenRamBoostPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenRamBoostPage_Click" ToolTipService.ToolTip="Open Maintenance Center">
+                                <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
+                            </Button>
+
+                            <Button x:Name="BtnRamBoostSettings" Grid.Column="3" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnRamBoostSettings_Click" ToolTipService.ToolTip="Optimizer Settings">
+                                <FontIcon Glyph="&#xE713;" FontSize="14" Opacity="0.6"/>
+                            </Button>
+
+                            <Button x:Name="BtnExpandRamBoost" Grid.Column="4" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandRamBoost_Click" Margin="4,0,0,0">
                                 <FontIcon x:Name="IconExpandRamBoost" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             </Button>
                         </Grid>

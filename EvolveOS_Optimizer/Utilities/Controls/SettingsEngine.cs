@@ -92,6 +92,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
 
             ["Dashboard_AutoRamOptimize"] = false,
             ["Dashboard_AutoRamThreshold"] = 85,
+            ["Dashboard_BoostWorkingSets"] = true,
+            ["Dashboard_BoostStandbyCache"] = true,
+            ["Dashboard_BoostCombinedPageList"] = true,
+            ["Dashboard_BoostModifiedPageList"] = true,
+            ["Dashboard_BoostRegistryCache"] = true,
 
             ["IsPasswordGenHotkeyEnabled"] = false,
             ["PasswordGenHotkeyModifier"] = 1,
@@ -182,6 +187,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static int Dashboard_GraphTimeframe { get => (int)_cachedSettings["Dashboard_GraphTimeframe"]; set => ChangingParameters("Dashboard_GraphTimeframe", value); }
         internal static bool Dashboard_AutoRamOptimize { get => (bool)_cachedSettings["Dashboard_AutoRamOptimize"]; set => ChangingParameters("Dashboard_AutoRamOptimize", value); }
         internal static int Dashboard_AutoRamThreshold { get => (int)_cachedSettings["Dashboard_AutoRamThreshold"]; set => ChangingParameters("Dashboard_AutoRamThreshold", value); }
+        internal static bool Dashboard_BoostWorkingSets { get => (bool)_cachedSettings["Dashboard_BoostWorkingSets"]; set => ChangingParameters("Dashboard_BoostWorkingSets", value); }
+        internal static bool Dashboard_BoostStandbyCache { get => (bool)_cachedSettings["Dashboard_BoostStandbyCache"]; set => ChangingParameters("Dashboard_BoostStandbyCache", value); }
+        internal static bool Dashboard_BoostCombinedPageList { get => (bool)_cachedSettings["Dashboard_BoostCombinedPageList"]; set => ChangingParameters("Dashboard_BoostCombinedPageList", value); }
+        internal static bool Dashboard_BoostModifiedPageList { get => (bool)_cachedSettings["Dashboard_BoostModifiedPageList"]; set => ChangingParameters("Dashboard_BoostModifiedPageList", value); }
+        internal static bool Dashboard_BoostRegistryCache { get => (bool)_cachedSettings["Dashboard_BoostRegistryCache"]; set => ChangingParameters("Dashboard_BoostRegistryCache", value); }
+
 
         internal static bool IsAutoThemeEnabled { get => (bool)_cachedSettings["EnableAutoTheme"]; set => ChangingParameters("EnableAutoTheme", value); }
         internal static TimeSpan LightThemeTime { get => TimeSpan.TryParse((string)_cachedSettings["LightThemeTimeStr"], out TimeSpan result) ? result : new TimeSpan(8, 0, 0); set => ChangingParameters("LightThemeTimeStr", value.ToString(@"hh\:mm\:ss")); }
