@@ -252,9 +252,34 @@ namespace EvolveOS_Optimizer.Pages
             double startY = height - (_gpuHistory[0] / maxGpu * height);
 
             Point startPoint = new Point(startX, startY);
-            var points = new PointCollection();
-            var fillPoints = new PointCollection { startPoint };
             Point lastPoint = startPoint;
+
+            if (GpuGraphLine.Data is not PathGeometry lineGeo)
+            {
+                lineGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                lineGeo.Figures.Add(fig);
+                GpuGraphLine.Data = lineGeo;
+            }
+            var lineFigure = (PathFigure)lineGeo.Figures[0];
+            lineFigure.StartPoint = startPoint;
+            var linePoints = ((PolyLineSegment)lineFigure.Segments[0]).Points;
+            linePoints.Clear();
+
+            if (GpuGraphFill.Data is not PathGeometry fillGeo)
+            {
+                fillGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                fillGeo.Figures.Add(fig);
+                GpuGraphFill.Data = fillGeo;
+            }
+            var fillFigure = (PathFigure)fillGeo.Figures[0];
+            fillFigure.StartPoint = new Point(startX, height);
+            var fillPoints = ((PolyLineSegment)fillFigure.Segments[0]).Points;
+            fillPoints.Clear();
+            fillPoints.Add(startPoint);
 
             for (int i = 1; i < _gpuHistory.Count; i++)
             {
@@ -262,22 +287,10 @@ namespace EvolveOS_Optimizer.Pages
                 double y = Math.Max(0, Math.Min(height, height - (_gpuHistory[i] / maxGpu * height)));
                 lastPoint = new Point(x, y);
 
-                points.Add(lastPoint);
+                linePoints.Add(lastPoint);
                 fillPoints.Add(lastPoint);
             }
             fillPoints.Add(new Point(width, height));
-
-            var lineGeo = new PathGeometry();
-            var lineFig = new PathFigure { StartPoint = startPoint };
-            lineFig.Segments.Add(new PolyLineSegment { Points = points });
-            lineGeo.Figures.Add(lineFig);
-            GpuGraphLine.Data = lineGeo;
-
-            var fillGeo = new PathGeometry();
-            var fillFig = new PathFigure { StartPoint = new Point(startX, height) };
-            fillFig.Segments.Add(new PolyLineSegment { Points = fillPoints });
-            fillGeo.Figures.Add(fillFig);
-            GpuGraphFill.Data = fillGeo;
 
             GpuGraphDot.Visibility = Visibility.Visible;
             Canvas.SetLeft(GpuGraphDot, lastPoint.X);
@@ -347,13 +360,62 @@ namespace EvolveOS_Optimizer.Pages
             Point startPointDown = new Point(startX, Math.Max(0, Math.Min(height, startYDown)));
             Point startPointUp = new Point(startX, Math.Max(0, Math.Min(height, startYUp)));
 
-            var downPoints = new PointCollection();
-            var upPoints = new PointCollection();
-            var downFillPoints = new PointCollection { startPointDown };
-            var upFillPoints = new PointCollection { startPointUp };
-
             Point lastDownPoint = startPointDown;
             Point lastUpPoint = startPointUp;
+
+            if (NetGraphLineDown.Data is not PathGeometry downGeo)
+            {
+                downGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                downGeo.Figures.Add(fig);
+                NetGraphLineDown.Data = downGeo;
+            }
+            var downFig = (PathFigure)downGeo.Figures[0];
+            downFig.StartPoint = startPointDown;
+            var downPoints = ((PolyLineSegment)downFig.Segments[0]).Points;
+            downPoints.Clear();
+
+            if (NetGraphFillDown.Data is not PathGeometry downFillGeo)
+            {
+                downFillGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                downFillGeo.Figures.Add(fig);
+                NetGraphFillDown.Data = downFillGeo;
+            }
+            var downFillFig = (PathFigure)downFillGeo.Figures[0];
+            downFillFig.StartPoint = new Point(startX, height);
+            var downFillPoints = ((PolyLineSegment)downFillFig.Segments[0]).Points;
+            downFillPoints.Clear();
+            downFillPoints.Add(startPointDown);
+
+            if (NetGraphLineUp.Data is not PathGeometry upGeo)
+            {
+                upGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                upGeo.Figures.Add(fig);
+                NetGraphLineUp.Data = upGeo;
+            }
+            var upFig = (PathFigure)upGeo.Figures[0];
+            upFig.StartPoint = startPointUp;
+            var upPoints = ((PolyLineSegment)upFig.Segments[0]).Points;
+            upPoints.Clear();
+
+            if (NetGraphFillUp.Data is not PathGeometry upFillGeo)
+            {
+                upFillGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                upFillGeo.Figures.Add(fig);
+                NetGraphFillUp.Data = upFillGeo;
+            }
+            var upFillFig = (PathFigure)upFillGeo.Figures[0];
+            upFillFig.StartPoint = new Point(startX, height);
+            var upFillPoints = ((PolyLineSegment)upFillFig.Segments[0]).Points;
+            upFillPoints.Clear();
+            upFillPoints.Add(startPointUp);
 
             for (int i = 1; i < _netDownHistory.Count; i++)
             {
@@ -372,30 +434,6 @@ namespace EvolveOS_Optimizer.Pages
 
             downFillPoints.Add(new Point(width, height));
             upFillPoints.Add(new Point(width, height));
-
-            var downGeo = new PathGeometry();
-            var downFig = new PathFigure { StartPoint = startPointDown };
-            downFig.Segments.Add(new PolyLineSegment { Points = downPoints });
-            downGeo.Figures.Add(downFig);
-            NetGraphLineDown.Data = downGeo;
-
-            var downFillGeo = new PathGeometry();
-            var downFillFig = new PathFigure { StartPoint = new Point(startX, height) };
-            downFillFig.Segments.Add(new PolyLineSegment { Points = downFillPoints });
-            downFillGeo.Figures.Add(downFillFig);
-            NetGraphFillDown.Data = downFillGeo;
-
-            var upGeo = new PathGeometry();
-            var upFig = new PathFigure { StartPoint = startPointUp };
-            upFig.Segments.Add(new PolyLineSegment { Points = upPoints });
-            upGeo.Figures.Add(upFig);
-            NetGraphLineUp.Data = upGeo;
-
-            var upFillGeo = new PathGeometry();
-            var upFillFig = new PathFigure { StartPoint = new Point(startX, height) };
-            upFillFig.Segments.Add(new PolyLineSegment { Points = upFillPoints });
-            upFillGeo.Figures.Add(upFillFig);
-            NetGraphFillUp.Data = upFillGeo;
 
             NetGraphDotDown.Visibility = Visibility.Visible;
             NetGraphDotUp.Visibility = Visibility.Visible;
@@ -457,9 +495,34 @@ namespace EvolveOS_Optimizer.Pages
             double startY = height - (_ramHistory[0] / maxRam * height);
 
             Point startPoint = new Point(startX, startY);
-            var points = new PointCollection();
-            var fillPoints = new PointCollection { startPoint };
             Point lastPoint = startPoint;
+
+            if (RamGraphLine.Data is not PathGeometry lineGeo)
+            {
+                lineGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                lineGeo.Figures.Add(fig);
+                RamGraphLine.Data = lineGeo;
+            }
+            var lineFigure = (PathFigure)lineGeo.Figures[0];
+            lineFigure.StartPoint = startPoint;
+            var linePoints = ((PolyLineSegment)lineFigure.Segments[0]).Points;
+            linePoints.Clear();
+
+            if (RamGraphFill.Data is not PathGeometry fillGeo)
+            {
+                fillGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                fillGeo.Figures.Add(fig);
+                RamGraphFill.Data = fillGeo;
+            }
+            var fillFigure = (PathFigure)fillGeo.Figures[0];
+            fillFigure.StartPoint = new Point(startX, height);
+            var fillPoints = ((PolyLineSegment)fillFigure.Segments[0]).Points;
+            fillPoints.Clear();
+            fillPoints.Add(startPoint);
 
             for (int i = 1; i < _ramHistory.Count; i++)
             {
@@ -467,22 +530,10 @@ namespace EvolveOS_Optimizer.Pages
                 double y = Math.Max(0, Math.Min(height, height - (_ramHistory[i] / maxRam * height)));
                 lastPoint = new Point(x, y);
 
-                points.Add(lastPoint);
+                linePoints.Add(lastPoint);
                 fillPoints.Add(lastPoint);
             }
             fillPoints.Add(new Point(width, height));
-
-            var lineGeo = new PathGeometry();
-            var lineFig = new PathFigure { StartPoint = startPoint };
-            lineFig.Segments.Add(new PolyLineSegment { Points = points });
-            lineGeo.Figures.Add(lineFig);
-            RamGraphLine.Data = lineGeo;
-
-            var fillGeo = new PathGeometry();
-            var fillFig = new PathFigure { StartPoint = new Point(startX, height) };
-            fillFig.Segments.Add(new PolyLineSegment { Points = fillPoints });
-            fillGeo.Figures.Add(fillFig);
-            RamGraphFill.Data = fillGeo;
 
             RamGraphDot.Visibility = Visibility.Visible;
             Canvas.SetLeft(RamGraphDot, lastPoint.X);
@@ -544,9 +595,40 @@ namespace EvolveOS_Optimizer.Pages
             double startY = height - (_cpuHistory[0] / maxCpu * height);
 
             Point startPoint = new Point(startX, startY);
-            var points = new PointCollection();
-            var fillPoints = new PointCollection { startPoint };
             Point lastPoint = startPoint;
+
+            if (CpuGraphLine.Data is not PathGeometry lineGeo)
+            {
+                lineGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                lineGeo.Figures.Add(fig);
+                CpuGraphLine.Data = lineGeo;
+            }
+
+            var lineFigure = (PathFigure)lineGeo.Figures[0];
+            lineFigure.StartPoint = startPoint;
+            var lineSegment = (PolyLineSegment)lineFigure.Segments[0];
+
+            var linePoints = lineSegment.Points;
+            linePoints.Clear();
+
+            if (CpuGraphFill.Data is not PathGeometry fillGeo)
+            {
+                fillGeo = new PathGeometry();
+                var fig = new PathFigure();
+                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
+                fillGeo.Figures.Add(fig);
+                CpuGraphFill.Data = fillGeo;
+            }
+
+            var fillFigure = (PathFigure)fillGeo.Figures[0];
+            fillFigure.StartPoint = new Point(startX, height);
+            var fillSegment = (PolyLineSegment)fillFigure.Segments[0];
+
+            var fillPoints = fillSegment.Points;
+            fillPoints.Clear();
+            fillPoints.Add(startPoint);
 
             for (int i = 1; i < _cpuHistory.Count; i++)
             {
@@ -554,22 +636,10 @@ namespace EvolveOS_Optimizer.Pages
                 double y = Math.Max(0, Math.Min(height, height - (_cpuHistory[i] / maxCpu * height)));
                 lastPoint = new Point(x, y);
 
-                points.Add(lastPoint);
+                linePoints.Add(lastPoint);
                 fillPoints.Add(lastPoint);
             }
             fillPoints.Add(new Point(width, height));
-
-            var lineGeo = new PathGeometry();
-            var lineFig = new PathFigure { StartPoint = startPoint };
-            lineFig.Segments.Add(new PolyLineSegment { Points = points });
-            lineGeo.Figures.Add(lineFig);
-            CpuGraphLine.Data = lineGeo;
-
-            var fillGeo = new PathGeometry();
-            var fillFig = new PathFigure { StartPoint = new Point(startX, height) };
-            fillFig.Segments.Add(new PolyLineSegment { Points = fillPoints });
-            fillGeo.Figures.Add(fillFig);
-            CpuGraphFill.Data = fillGeo;
 
             CpuGraphDot.Visibility = Visibility.Visible;
             Canvas.SetLeft(CpuGraphDot, lastPoint.X);
