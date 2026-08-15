@@ -594,26 +594,30 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
             }
         }
 
-        private static void SafeCleanTempFolders()
+        public static long SafeCleanTempFolders()
         {
+            long totalFreed = 0;
             string localTemp = Path.GetTempPath();
             string winTemp = Path.Combine(PathLocator.Folders.SystemDrive, @"Windows\Temp");
 
-            CleanDirectorySafely(winTemp);
-            CleanDirectorySafely(localTemp);
+            totalFreed += CleanDirectorySafely(winTemp);
+            totalFreed += CleanDirectorySafely(localTemp);
+
+            return totalFreed;
         }
 
-        private static void CleanDirectorySafely(string directoryPath)
+        public static long CleanDirectorySafely(string directoryPath)
         {
+            long sizeFreed = 0;
             try
             {
-                if (!Directory.Exists(directoryPath)) return;
+                if (!Directory.Exists(directoryPath)) return 0;
 
                 DirectoryInfo dir = new DirectoryInfo(directoryPath);
 
                 if ((dir.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
                 {
-                    return;
+                    return 0;
                 }
 
                 string currentAppBaseDir = AppContext.BaseDirectory.TrimEnd('\\', '/');
@@ -621,7 +625,7 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
 
                 if (targetDir.Equals(currentAppBaseDir, StringComparison.OrdinalIgnoreCase))
                 {
-                    return;
+                    return 0;
                 }
 
                 bool isParentOfApp = currentAppBaseDir.StartsWith(targetDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
@@ -634,30 +638,16 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
                         {
                             try
                             {
+                                long fileSize = file.Length;
                                 file.Delete();
+                                sizeFreed += fileSize;
                             }
-                            catch (IOException)
-                            {
-                                ErrorLogging.LogDebug(new Exception($"[Cleaner] Skipped locked file: {file.Name}"));
-                            }
-                            catch (UnauthorizedAccessException)
-                            {
-                                ErrorLogging.LogDebug(new Exception($"[Cleaner] Access denied to file: {file.Name}"));
-                            }
-                            catch (Exception ex)
-                            {
-                                ErrorLogging.LogDebug(new Exception($"[Cleaner] Failed to delete {file.Name}: {ex.Message}"));
-                            }
+                            catch (IOException) { }
+                            catch (UnauthorizedAccessException) { }
+                            catch (Exception) { }
                         }
                     }
-                    catch (UnauthorizedAccessException)
-                    {
-                        ErrorLogging.LogDebug(new Exception($"[Cleaner] Access denied to read directory contents: {dir.Name}"));
-                    }
-                    catch (Exception ex)
-                    {
-                        ErrorLogging.LogDebug(new Exception($"[Cleaner] Failed to enumerate files in {dir.Name}: {ex.Message}"));
-                    }
+                    catch { }
                 }
 
                 try
@@ -684,21 +674,18 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
 
                         if (currentAppBaseDir.StartsWith(subDirFullName + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
                         {
-                            CleanDirectorySafely(subDir.FullName);
+                            sizeFreed += CleanDirectorySafely(subDir.FullName);
                         }
                         else
                         {
                             try
                             {
+                                sizeFreed += CleanDirectorySafely(subDir.FullName);
                                 subDir.Delete(true);
-                            }
-                            catch (IOException)
-                            {
-                                CleanDirectorySafely(subDir.FullName);
                             }
                             catch
                             {
-                                CleanDirectorySafely(subDir.FullName);
+                                sizeFreed += CleanDirectorySafely(subDir.FullName);
                             }
                         }
                     }
@@ -709,6 +696,8 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
             {
                 Debug.WriteLine($"[Cleaner] Access exception processing {directoryPath}: {ex.Message}");
             }
+
+            return sizeFreed;
         }
 
         #region Restart Explorer

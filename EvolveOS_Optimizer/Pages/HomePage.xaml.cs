@@ -20,6 +20,7 @@ using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
+using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Hosting;
@@ -2016,22 +2017,38 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void BtnRunDiskCleanup_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn) btn.IsEnabled = false;
+            if (sender is not Button btn) return;
 
-            await Task.Run(() =>
+            var originalContent = btn.Content;
+            btn.IsEnabled = false;
+
+            var cleaningPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6 };
+            cleaningPanel.Children.Add(new FontIcon { Glyph = "\uE895", FontSize = 13 });
+            cleaningPanel.Children.Add(new TextBlock { Text = "Cleaning..." });
+            btn.Content = cleaningPanel;
+
+            long bytesFreed = await Task.Run(() => ClearingMemory.SafeCleanTempFolders());
+
+            await Task.Delay(400);
+
+            double mbFreed = bytesFreed / (1024.0 * 1024.0);
+            string resultText = bytesFreed > 0 ? $"Freed {mbFreed:0.##} MB" : "Already Clean";
+
+            var resultPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6 };
+            resultPanel.Children.Add(new FontIcon { Glyph = "\uE73E", FontSize = 13, Foreground = new SolidColorBrush(Colors.SeaGreen) });
+            resultPanel.Children.Add(new TextBlock
             {
-                try
-                {
-                    string tempPath = Path.GetTempPath();
-                    foreach (var file in Directory.EnumerateFiles(tempPath))
-                    {
-                        try { File.Delete(file); } catch { }
-                    }
-                }
-                catch { }
+                Text = resultText,
+                Foreground = new SolidColorBrush(Colors.SeaGreen),
+                FontSize = 11
             });
 
-            if (sender is Button b) b.IsEnabled = true;
+            btn.Content = resultPanel;
+
+            await Task.Delay(3500);
+
+            btn.Content = originalContent;
+            btn.IsEnabled = true;
         }
 
         private async void BtnOptimizeDrive_Click(object sender, RoutedEventArgs e)
@@ -2095,6 +2112,18 @@ namespace EvolveOS_Optimizer.Pages
             finally
             {
                 if (btn != null) btn.IsEnabled = true;
+            }
+        }
+
+        private void BtnOpenDiskCleanupPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWindow.Instance != null)
+            {
+                MainWindow.Instance.SwitchPage("SystemCleaner");
+            }
+            else
+            {
+                Debug.WriteLine("❌ MainWindow.Instance is null!");
             }
         }
 
