@@ -1046,14 +1046,14 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsEngine.DashboardCardOrder = "CardWeather,CardDns,CardSecurity,CardMaintenance,CardGamingMode,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardRam,CardNetwork,CardDisk";
+            SettingsEngine.DashboardCardOrder = "CardSecurity,CardWeather,CardMaintenance,CardDns,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardDisk,CardNetwork,CardRam,CardGamingMode";
             SettingsEngine.Dashboard_CardWeather = true;
             SettingsEngine.Dashboard_CardNetwork = true;
-            SettingsEngine.Dashboard_CardRam = true;
+            SettingsEngine.Dashboard_CardRam = false;
             SettingsEngine.Dashboard_CardCpu = true;
             SettingsEngine.Dashboard_CardGpu = true;
             SettingsEngine.Dashboard_CardDisk = true;
-            SettingsEngine.Dashboard_CardGamingMode = true;
+            SettingsEngine.Dashboard_CardGamingMode = false;
             SettingsEngine.Dashboard_CardDns = true;
             SettingsEngine.Dashboard_CardHealth = true;
             SettingsEngine.Dashboard_CardSecurity = true;
@@ -1066,11 +1066,11 @@ namespace EvolveOS_Optimizer.Pages
 
             ToggleWeather.IsOn = true;
             ToggleNetwork.IsOn = true;
-            ToggleRam.IsOn = true;
+            ToggleRam.IsOn = false;
             ToggleCpu.IsOn = true;
             ToggleGpu.IsOn = true;
             ToggleDisk.IsOn = true;
-            ToggleGamingMode.IsOn = true;
+            ToggleGamingMode.IsOn = false;
             ToggleDns.IsOn = true;
             ToggleHealth.IsOn = true;
             ToggleSecurity.IsOn = true;
