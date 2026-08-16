@@ -6,9 +6,11 @@ using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
 using EvolveOS_Optimizer.Core.Base;
+using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
@@ -141,6 +143,47 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private string _gpuPowerDrawStr = "-- W";
         public string GpuPowerDrawStr { get => _gpuPowerDrawStr; set { _gpuPowerDrawStr = value; OnPropertyChanged(); } }
+
+        #endregion
+
+        #region CPU Card Properties
+
+        private int _cpuUsageDisplay;
+        public int CpuUsageDisplay { get => _cpuUsageDisplay; set { _cpuUsageDisplay = value; OnPropertyChanged(); } }
+
+        private string _cpuTempStr = "--°C";
+        public string CpuTempStr { get => _cpuTempStr; set { _cpuTempStr = value; OnPropertyChanged(); } }
+
+        private string _cpuClockStr = "-- MHz";
+        public string CpuClockStr { get => _cpuClockStr; set { _cpuClockStr = value; OnPropertyChanged(); } }
+
+        private string _cpuPowerDrawStr = "-- W";
+        public string CpuPowerDrawStr { get => _cpuPowerDrawStr; set { _cpuPowerDrawStr = value; OnPropertyChanged(); } }
+
+        #endregion
+
+        #region CPU Power Plan Properties
+
+        private ObservableCollection<ComboBoxDisplayOption> _availablePowerPlans = new();
+        public ObservableCollection<ComboBoxDisplayOption> AvailablePowerPlans
+        {
+            get => _availablePowerPlans;
+            set { _availablePowerPlans = value; OnPropertyChanged(); }
+        }
+
+        private object? _selectedPowerPlan;
+        public object? SelectedPowerPlan
+        {
+            get => _selectedPowerPlan;
+            set
+            {
+                if (_selectedPowerPlan != value)
+                {
+                    _selectedPowerPlan = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         #endregion
 
@@ -354,6 +397,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _monitoringService.GetHardwareData();
 
                 HardwareTemperatureService.Instance.Initialize();
+
+                InitializePowerPlans();
             });
 
             LocalIP = new IPWrapper { Data = _monitoringService.GetDefaultLocalIP() };
@@ -376,6 +421,138 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _prevUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
             }
         }
+        #endregion
+
+        #region Powerplan
+
+        private void InitializePowerPlans()
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var predefinedPlans = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                    {
+                        { "381b4222-f694-41f0-9685-ff5bb260df2e", "Balanced" },
+                        { "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c", "High performance" },
+                        { "a1841308-3541-4fab-bc81-f71556f20b4a", "Power saver" },
+                        { "e9a42b02-d5df-448d-aa00-03f14749eb61", "Ultimate Performance" }
+                    };
+
+                    string output = await CommandExecutor.StartTask("powercfg /l");
+                    var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    var options = new List<ComboBoxDisplayOption>();
+                    ComboBoxDisplayOption? activeOption = null;
+                    var installedGuids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                    foreach (var line in lines)
+                    {
+                        if (line.Contains("Power Scheme GUID:"))
+                        {
+                            int guidStart = line.IndexOf(":") + 1;
+                            int guidEnd = line.IndexOf("(");
+                            string guid = line.Substring(guidStart, guidEnd - guidStart).Trim();
+                            installedGuids.Add(guid);
+
+                            int nameStart = line.IndexOf("(") + 1;
+                            int nameEnd = line.IndexOf(")");
+                            string name = line.Substring(nameStart, nameEnd - nameStart).Trim();
+
+                            bool isActive = line.Contains("*");
+
+                            var uiState = new PowerPlanComboBoxOption
+                            {
+                                ExistsOnSystem = true,
+                                IsActive = isActive
+                            };
+
+                            var displayOption = new ComboBoxDisplayOption(name, guid, null, uiState);
+                            options.Add(displayOption);
+
+                            if (isActive)
+                            {
+                                activeOption = displayOption;
+                            }
+                        }
+                    }
+
+                    foreach (var kvp in predefinedPlans)
+                    {
+                        if (!installedGuids.Contains(kvp.Key))
+                        {
+                            var uiState = new PowerPlanComboBoxOption
+                            {
+                                ExistsOnSystem = false,
+                                IsActive = false
+                            };
+                            options.Add(new ComboBoxDisplayOption(kvp.Value, kvp.Key, null, uiState));
+                        }
+                    }
+
+                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        AvailablePowerPlans.Clear();
+                        foreach (var opt in options)
+                        {
+                            AvailablePowerPlans.Add(opt);
+                        }
+
+                        SelectedPowerPlan = activeOption?.Value;
+                    });
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Power Plan Init Error] {ex.Message}");
+                }
+            });
+        }
+
+        public void ApplySelectedPowerPlan(object selectedItem)
+        {
+            string? guid = null;
+
+            if (selectedItem is string s)
+            {
+                guid = s;
+            }
+            else if (selectedItem is ComboBoxDisplayOption option)
+            {
+                guid = option.Value?.ToString();
+            }
+
+            if (!string.IsNullOrEmpty(guid))
+            {
+                var match = AvailablePowerPlans.FirstOrDefault(p => p.Value?.ToString() == guid);
+                bool needsInstall = false;
+
+                if (match != null && match.Tag is PowerPlanComboBoxOption state)
+                {
+                    needsInstall = !state.ExistsOnSystem;
+                }
+
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        if (needsInstall)
+                        {
+                            await CommandExecutor.StartTask($"powercfg -duplicatescheme {guid}");
+                        }
+
+                        await CommandExecutor.StartTask($"powercfg /setactive {guid}");
+
+                        await Task.Delay(200);
+                        InitializePowerPlans();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[Power Plan Apply Error] {ex.Message}");
+                    }
+                });
+            }
+        }
+
         #endregion
 
         #region Background Engine (High-Performance Telemetry)
@@ -503,6 +680,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             float gpuPower = 0;
                             float gpuVram = 0;
 
+                            float cpuTemp = 0;
+                            float cpuPower = 0;
+                            float cpuClock = 0;
+
                             if (Interlocked.CompareExchange(ref _isUpdatingGpuSensors, 1, 0) == 0)
                             {
                                 try
@@ -511,6 +692,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                                     gpuTemp = HardwareTemperatureService.Instance.GetGpuTemperature();
                                     gpuPower = HardwareTemperatureService.Instance.GetGpuPower();
                                     gpuVram = HardwareTemperatureService.Instance.GetGpuVramUsedGb();
+
+                                    cpuTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
+                                    cpuPower = HardwareTemperatureService.Instance.GetCpuPower();
+                                    cpuClock = HardwareTemperatureService.Instance.GetCpuClock();
                                 }
                                 catch { }
                                 finally
@@ -528,6 +713,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                                 if (gpuTemp > 0) GpuTemperatureStr = $"{(int)gpuTemp}°C";
                                 if (gpuPower > 0) GpuPowerDrawStr = $"{(int)gpuPower} W";
                                 if (gpuVram > 0) GpuVramUsedStr = $"{gpuVram:F1} GB";
+
+                                if (cpuTemp > 0) CpuTempStr = $"{(int)cpuTemp}°C";
+                                if (cpuPower > 0) CpuPowerDrawStr = $"{(int)cpuPower} W";
+                                if (cpuClock > 0) CpuClockStr = $"{(int)cpuClock} MHz";
                             });
                         }
                         catch { }
@@ -552,6 +741,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     OnTelemetryTicked?.Invoke(payload);
 
                     GpuUsageDisplay = (int)Math.Round(_displayGpuUsage);
+                    CpuUsageDisplay = (int)Math.Round(_displayCpuUsage);
                 });
             }
             catch { }

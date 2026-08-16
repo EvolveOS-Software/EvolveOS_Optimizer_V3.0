@@ -219,6 +219,8 @@ public sealed partial class PowerPlanComboBox : UserControl
 
         if (statusIndicator != null)
         {
+            statusIndicator.Visibility = Visibility.Visible;
+
             statusIndicator.Fill = powerPlanOption.ExistsOnSystem ? ExistsBrush : NotExistsBrush;
             ToolTipService.SetToolTip(statusIndicator,
                 powerPlanOption.ExistsOnSystem ? ExistsTooltipText : NotExistsTooltipText);

@@ -309,6 +309,59 @@ namespace EvolveOS_Optimizer.Utilities.Services
             }
         }
 
+        public float GetCpuPower()
+        {
+            lock (_hardwareLock)
+            {
+                try
+                {
+                    if (_computer == null || _computer.Hardware == null) return 0f;
+
+                    foreach (var hw in _computer.Hardware)
+                    {
+                        if (hw.HardwareType == HardwareType.Cpu)
+                        {
+                            var powerSensors = hw.Sensors.Where(s => s.SensorType == SensorType.Power && s.Value.HasValue).ToList();
+
+                            var packagePower = powerSensors.FirstOrDefault(s =>
+                                s.Name.Contains("Package", StringComparison.OrdinalIgnoreCase));
+
+                            if (packagePower != null) return packagePower.Value.GetValueOrDefault();
+
+                            return powerSensors.FirstOrDefault()?.Value.GetValueOrDefault() ?? 0f;
+                        }
+                    }
+                    return 0f;
+                }
+                catch { return 0f; }
+            }
+        }
+
+        public float GetCpuClock()
+        {
+            lock (_hardwareLock)
+            {
+                try
+                {
+                    if (_computer == null || _computer.Hardware == null) return 0f;
+
+                    foreach (var hw in _computer.Hardware)
+                    {
+                        if (hw.HardwareType == HardwareType.Cpu)
+                        {
+                            var clockSensors = hw.Sensors.Where(s => s.SensorType == SensorType.Clock && s.Value.HasValue).ToList();
+
+                            var coreClocks = clockSensors.Where(s => s.Name.Contains("Core", StringComparison.OrdinalIgnoreCase)).ToList();
+
+                            if (coreClocks.Count > 0) return coreClocks.Max(s => s.Value.GetValueOrDefault());
+                        }
+                    }
+                    return 0f;
+                }
+                catch { return 0f; }
+            }
+        }
+
         public float GetDiskTemperature()
         {
             lock (_hardwareLock)

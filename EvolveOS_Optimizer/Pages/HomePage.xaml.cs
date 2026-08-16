@@ -645,6 +645,14 @@ namespace EvolveOS_Optimizer.Pages
             Canvas.SetLeft(CpuGraphDot, lastPoint.X);
             Canvas.SetTop(CpuGraphDot, lastPoint.Y);
         }
+
+        private void CmbPowerPlan_DropDownClosed(object sender, object e)
+        {
+            if (ViewModel != null && e != null)
+            {
+                ViewModel.ApplySelectedPowerPlan(e);
+            }
+        }
         #endregion
 
         #region Global Graph Settings
@@ -1115,6 +1123,10 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnExpandGpu, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenGraphicsSettings, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRestartGpuDriver, InputSystemCursorShape.Arrow);
+
+            SetCustomCursor(BtnExpandCpu, InputSystemCursorShape.Arrow);
+            SetCustomCursor(CmbPowerPlan, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenResmon, InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, InputSystemCursorShape.Hand);
@@ -2576,6 +2588,67 @@ namespace EvolveOS_Optimizer.Pages
             {
                 await Task.Delay(2000);
                 if (btn != null) btn.IsEnabled = true;
+            }
+        }
+
+        #endregion
+
+        #region CPU Card
+
+        private async void BtnExpandCpu_Click(object sender, RoutedEventArgs e)
+        {
+            bool isExpanded = CpuExpandedContent.Visibility == Visibility.Collapsed;
+
+            double targetHeight = isExpanded ? 450 : 220;
+
+            GviCpu.Height = targetHeight;
+            CardCpu.Height = targetHeight;
+
+            if (isExpanded)
+            {
+                CpuExpandedContent.Visibility = Visibility.Visible;
+                IconExpandCpu.Glyph = "\uE70E"; // Chevron Up
+            }
+            else
+            {
+                CpuExpandedContent.Visibility = Visibility.Collapsed;
+                IconExpandCpu.Glyph = "\uE70D"; // Chevron Down
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
+            }
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+                GviCpu.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true });
+            }
+        }
+
+        private void BtnOpenPowerOptions_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo("control", "powercfg.cpl") { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[CPU Action Error] {ex.Message}");
+            }
+        }
+
+        private void BtnOpenResmon_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo("resmon") { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[CPU Action Error] {ex.Message}");
             }
         }
 
