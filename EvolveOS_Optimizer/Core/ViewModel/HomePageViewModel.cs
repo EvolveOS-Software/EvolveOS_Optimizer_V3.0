@@ -100,6 +100,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly object _gpuLock = new object();
         #endregion
 
+        #region Dashboard Settings
+
+        public bool SaveCardStates
+        {
+            get => SettingsEngine.SaveCardExpandedStates;
+            set
+            {
+                if (SettingsEngine.SaveCardExpandedStates != value)
+                {
+                    SettingsEngine.SaveCardExpandedStates = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion
+
         #region Memory Boost Card Properties
         private string _ramUsageGbText = "0.0 / 0.0 GB";
         public string RamUsageGbText { get => _ramUsageGbText; set { _ramUsageGbText = value; OnPropertyChanged(); } }
@@ -162,7 +179,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #endregion
 
-        #region CPU Power Plan Properties
+        #region CPU Card Power Plan Properties
 
         private ObservableCollection<ComboBoxDisplayOption> _availablePowerPlans = new();
         public ObservableCollection<ComboBoxDisplayOption> AvailablePowerPlans

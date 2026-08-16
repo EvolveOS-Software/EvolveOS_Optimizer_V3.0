@@ -98,6 +98,14 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_BoostModifiedPageList"] = true,
             ["Dashboard_BoostRegistryCache"] = true,
 
+            ["SaveCardExpandedStates"] = true,
+            ["IsCpuCardExpanded"] = false,
+            ["IsGpuCardExpanded"] = false,
+            ["IsDiskCardExpanded"] = false,
+            ["IsNetworkCardExpanded"] = false,
+            ["IsDnsCardExpanded"] = false,
+            ["IsRamBoostCardExpanded"] = false,
+
             ["IsPasswordGenHotkeyEnabled"] = false,
             ["PasswordGenHotkeyModifier"] = 1,
             ["PasswordGenHotkeyKey"] = 80,
@@ -192,6 +200,13 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_BoostCombinedPageList { get => (bool)_cachedSettings["Dashboard_BoostCombinedPageList"]; set => ChangingParameters("Dashboard_BoostCombinedPageList", value); }
         internal static bool Dashboard_BoostModifiedPageList { get => (bool)_cachedSettings["Dashboard_BoostModifiedPageList"]; set => ChangingParameters("Dashboard_BoostModifiedPageList", value); }
         internal static bool Dashboard_BoostRegistryCache { get => (bool)_cachedSettings["Dashboard_BoostRegistryCache"]; set => ChangingParameters("Dashboard_BoostRegistryCache", value); }
+        internal static bool SaveCardExpandedStates { get => (bool)_cachedSettings["SaveCardExpandedStates"]; set => ChangingParameters("SaveCardExpandedStates", value); }
+        internal static bool IsCpuCardExpanded { get => (bool)_cachedSettings["IsCpuCardExpanded"]; set => ChangingParameters("IsCpuCardExpanded", value); }
+        internal static bool IsGpuCardExpanded { get => (bool)_cachedSettings["IsGpuCardExpanded"]; set => ChangingParameters("IsGpuCardExpanded", value); }
+        internal static bool IsDiskCardExpanded { get => (bool)_cachedSettings["IsDiskCardExpanded"]; set => ChangingParameters("IsDiskCardExpanded", value); }
+        internal static bool IsNetworkCardExpanded { get => (bool)_cachedSettings["IsNetworkCardExpanded"]; set => ChangingParameters("IsNetworkCardExpanded", value); }
+        internal static bool IsDnsCardExpanded { get => (bool)_cachedSettings["IsDnsCardExpanded"]; set => ChangingParameters("IsDnsCardExpanded", value); }
+        internal static bool IsRamBoostCardExpanded { get => (bool)_cachedSettings["IsRamBoostCardExpanded"]; set => ChangingParameters("IsRamBoostCardExpanded", value); }
 
 
         internal static bool IsAutoThemeEnabled { get => (bool)_cachedSettings["EnableAutoTheme"]; set => ChangingParameters("EnableAutoTheme", value); }

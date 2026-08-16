@@ -119,6 +119,16 @@ namespace EvolveOS_Optimizer.Pages
                 DashboardDragCursor();
                 UpdateDnsCardUI();
 
+                if (ViewModel.SaveCardStates)
+                {
+                    if (SettingsEngine.IsCpuCardExpanded) BtnExpandCpu_Click(this, new RoutedEventArgs());
+                    if (SettingsEngine.IsGpuCardExpanded) BtnExpandGpu_Click(this, new RoutedEventArgs());
+                    if (SettingsEngine.IsDiskCardExpanded) BtnExpandDisk_Click(this, new RoutedEventArgs());
+                    if (SettingsEngine.IsNetworkCardExpanded) BtnExpandNetwork_Click(this, new RoutedEventArgs());
+                    if (SettingsEngine.IsDnsCardExpanded) BtnExpandDns_Click(this, new RoutedEventArgs());
+                    if (SettingsEngine.IsRamBoostCardExpanded) BtnExpandRamBoost_Click(this, new RoutedEventArgs());
+                }
+
                 _ = CalculateSystemHealthAsync();
                 _ = CalculateSecurityHealthAsync();
 
@@ -1647,6 +1657,8 @@ namespace EvolveOS_Optimizer.Pages
                 panel.InvalidateArrange();
             }
 
+            if (ViewModel.SaveCardStates) SettingsEngine.IsDnsCardExpanded = isExpanded;
+
             if (isExpanded)
             {
                 await Task.Delay(50);
@@ -2089,6 +2101,8 @@ namespace EvolveOS_Optimizer.Pages
                 panel.InvalidateArrange();
             }
 
+            if (ViewModel.SaveCardStates) SettingsEngine.IsDiskCardExpanded = isExpanded;
+
             if (isExpanded)
             {
                 await Task.Delay(50);
@@ -2385,6 +2399,8 @@ namespace EvolveOS_Optimizer.Pages
                 panel.InvalidateArrange();
             }
 
+            if (ViewModel.SaveCardStates) SettingsEngine.IsNetworkCardExpanded = isExpanded;
+
             if (isExpanded)
             {
                 await Task.Delay(50);
@@ -2552,6 +2568,8 @@ namespace EvolveOS_Optimizer.Pages
                 panel.InvalidateArrange();
             }
 
+            if (ViewModel.SaveCardStates) SettingsEngine.IsGpuCardExpanded = isExpanded;
+
             if (isExpanded)
             {
                 await Task.Delay(50);
@@ -2620,6 +2638,8 @@ namespace EvolveOS_Optimizer.Pages
                 panel.InvalidateMeasure();
                 panel.InvalidateArrange();
             }
+
+            if (ViewModel.SaveCardStates) SettingsEngine.IsCpuCardExpanded = isExpanded;
 
             if (isExpanded)
             {
@@ -2913,6 +2933,8 @@ namespace EvolveOS_Optimizer.Pages
                 panel.InvalidateMeasure();
                 panel.InvalidateArrange();
             }
+
+            if (ViewModel.SaveCardStates) SettingsEngine.IsRamBoostCardExpanded = isExpanded;
 
             if (isExpanded)
             {
