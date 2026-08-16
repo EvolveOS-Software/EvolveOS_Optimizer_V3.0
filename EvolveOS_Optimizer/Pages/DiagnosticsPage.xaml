@@ -1542,10 +1542,18 @@
                                                                         <TextBlock Text="DNS OPTIMIZER" FontSize="11" FontWeight="Bold" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                                                     </StackPanel>
                                                                 </Button>
-                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_disk}" IsChecked="{x:Bind ViewModel.IsDiskSelected, Mode=TwoWay}"  Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
+                                                                <ToggleButton Content="{helpers:ResourceString Key=diag_btn_disk}" IsChecked="{x:Bind ViewModel.IsDiskSelected, Mode=TwoWay}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
                                                                 <ToggleButton x:Name="DiskDetailsToggle" Content="Storage Info" IsChecked="{x:Bind ViewModel.IsStorageInfoSelected, Mode=TwoWay}"
                                                                       Visibility="{x:Bind ViewModel.IsDiskSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
                                                                       CornerRadius="4" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SystemAccentColor}"/>
+
+                                                                <ComboBox ItemsSource="{x:Bind ViewModel.AvailableDisks, Mode=OneWay}"
+                                                                          SelectedIndex="{x:Bind ViewModel.SelectedDiskIndex, Mode=TwoWay}"
+                                                                          Visibility="{x:Bind ViewModel.DiskSelectorVisibility, Mode=OneWay}"
+                                                                          Width="180" Height="28" FontSize="11"
+                                                                          Background="#11FFFFFF" BorderBrush="#33FFFFFF"
+                                                                          FontFamily="{ThemeResource Jura}" VerticalAlignment="Center"/>
+
                                                                 <ToggleButton Content="{helpers:ResourceString Key=diag_btn_page}" IsChecked="{x:Bind ViewModel.IsPageSelected, Mode=TwoWay}"  Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}" CornerRadius="4" MinWidth="55" FontSize="11" FontWeight="SemiBold"/>
 
                                                             </StackPanel>
@@ -1554,6 +1562,7 @@
 
                                                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Spacing="10" Margin="15,0,0,0">
                                                             <ToggleSwitch IsOn="{x:Bind ViewModel.IsGraphingTemperature, Mode=TwoWay}"
+                                                                          Visibility="{x:Bind ViewModel.TemperatureToggleVisibility, Mode=OneWay}"
                                                                           OffContent="LOAD" OnContent="TEMP" MinWidth="0"
                                                                           FontSize="10" FontFamily="{ThemeResource Jura}"
                                                                           VerticalAlignment="Center" Margin="0,0,0,0"/>
@@ -1736,10 +1745,16 @@
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
-                                                                                <!-- Disk: Unchanged -->
-                                                                                <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.DiskSecondaryVisibility, Mode=OneWay}">
-                                                                                    <TextBlock helpers:Loc.Key="diag_io_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                    <TextBlock Text="{x:Bind ViewModel.CurrentIoLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                                                <!-- Disk: Load & Temp -->
+                                                                                <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.DiskSecondaryVisibility, Mode=OneWay}">
+                                                                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                                                                        <TextBlock helpers:Loc.Key="diag_io_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentIoLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                                                    </StackPanel>
+                                                                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.DiskTempStr, Mode=OneWay}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="11" FontWeight="Bold"/>
+                                                                                    </StackPanel>
                                                                                 </StackPanel>
 
                                                                                 <!-- Pagefile: Unchanged -->

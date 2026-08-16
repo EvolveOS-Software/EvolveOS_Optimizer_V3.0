@@ -2265,6 +2265,16 @@ namespace EvolveOS_Optimizer.Pages
             string tempResult = "--";
             Color healthColor = Colors.Gray;
 
+            int driveIndex = 0;
+            if (ViewModel != null && ViewModel.DiskDrives != null)
+            {
+                var selectedDrive = ViewModel.DiskDrives.FirstOrDefault(d => d.Name == _selectedSmartDrive);
+                if (selectedDrive != null)
+                {
+                    driveIndex = ViewModel.DiskDrives.IndexOf(selectedDrive);
+                }
+            }
+
             await Task.Run(() =>
             {
                 try
@@ -2275,12 +2285,23 @@ namespace EvolveOS_Optimizer.Pages
                     typeResult = smartData.Type;
                     tempResult = smartData.Temp;
 
-                    if (tempResult == "--")
+                    if (tempResult == "--" || string.IsNullOrEmpty(tempResult))
                     {
-                        float sysTemp = HardwareTemperatureService.Instance.GetMotherboardTemperature();
-                        if (sysTemp <= 0) sysTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
+                        float specificDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperatureByIndex(driveIndex);
 
-                        if (sysTemp > 0) tempResult = $"{(int)sysTemp}°C";
+                        if (specificDiskTemp > 0)
+                        {
+                            tempResult = $"{(int)specificDiskTemp}°C";
+                        }
+                        else
+                        {
+                            // Fallback to highest temp if specific drive sensor fails
+                            float maxDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperature();
+                            if (maxDiskTemp > 0)
+                            {
+                                tempResult = $"{(int)maxDiskTemp}°C";
+                            }
+                        }
                     }
 
                     healthColor = healthResult == "Good"

@@ -27,7 +27,8 @@ namespace EvolveOS_Optimizer.Utilities.Services
                 IsGpuEnabled = true,
                 IsMotherboardEnabled = true,
                 IsMemoryEnabled = true,
-                IsControllerEnabled = true
+                IsControllerEnabled = true,
+                IsStorageEnabled = true
             };
 
             _computer.Open();
@@ -227,6 +228,119 @@ namespace EvolveOS_Optimizer.Utilities.Services
             }
 
             return coreLoads;
+        }
+
+        public float GetDiskTemperature()
+        {
+            try
+            {
+                float highestTemp = -1f;
+
+                if (_computer == null || _computer.Hardware == null)
+                    return highestTemp;
+
+                foreach (var hardware in _computer.Hardware)
+                {
+                    if (hardware.HardwareType == HardwareType.Storage)
+                    {
+                        hardware.Update();
+
+                        var allSensors = new List<ISensor>();
+                        CollectSensors(hardware, allSensors);
+
+                        var tempSensors = allSensors
+                            .Where(s => s.SensorType == SensorType.Temperature && s.Value.HasValue)
+                            .ToList();
+
+                        var primarySensor = tempSensors.FirstOrDefault(s =>
+                            s.Name.Equals("Temperature", StringComparison.OrdinalIgnoreCase) ||
+                            s.Name.Equals("Temperature 1", StringComparison.OrdinalIgnoreCase) ||
+                            s.Name.Contains("Composite", StringComparison.OrdinalIgnoreCase));
+
+                        var activeSensor = primarySensor ?? tempSensors.FirstOrDefault();
+
+                        if (activeSensor != null && activeSensor.Value.HasValue)
+                        {
+                            float tempVal = activeSensor.Value.GetValueOrDefault();
+
+                            if (tempVal > 0f && tempVal < 85f)
+                            {
+                                if (tempVal > highestTemp)
+                                {
+                                    highestTemp = tempVal;
+                                }
+                            }
+                        }
+                    }
+                }
+                return highestTemp;
+            }
+            catch
+            {
+                return -1f;
+            }
+        }
+
+        public float GetDiskTemperatureByIndex(int index)
+        {
+            try
+            {
+                if (_computer == null || _computer.Hardware == null) return -1f;
+
+                var storageDrives = _computer.Hardware.Where(h => h.HardwareType == HardwareType.Storage).ToList();
+
+                if (index >= 0 && index < storageDrives.Count)
+                {
+                    var hardware = storageDrives[index];
+                    hardware.Update();
+
+                    var allSensors = new List<ISensor>();
+                    CollectSensors(hardware, allSensors);
+
+                    var tempSensors = allSensors
+                        .Where(s => s.SensorType == SensorType.Temperature && s.Value.HasValue)
+                        .ToList();
+
+                    var primarySensor = tempSensors.FirstOrDefault(s =>
+                        s.Name.Equals("Temperature", StringComparison.OrdinalIgnoreCase) ||
+                        s.Name.Equals("Temperature 1", StringComparison.OrdinalIgnoreCase) ||
+                        s.Name.Contains("Composite", StringComparison.OrdinalIgnoreCase));
+
+                    var activeSensor = primarySensor ?? tempSensors.FirstOrDefault();
+
+                    if (activeSensor != null && activeSensor.Value.HasValue)
+                    {
+                        float tempVal = activeSensor.Value.GetValueOrDefault();
+                        if (tempVal > 0f && tempVal < 85f)
+                        {
+                            return tempVal;
+                        }
+                    }
+                }
+                return -1f;
+            }
+            catch
+            {
+                return -1f;
+            }
+        }
+
+        public List<string> GetStorageDriveNames()
+        {
+            var driveNames = new List<string>();
+            try
+            {
+                if (_computer != null && _computer.Hardware != null)
+                {
+                    var storageHardware = _computer.Hardware.Where(h => h.HardwareType == HardwareType.Storage).ToList();
+                    foreach (var hw in storageHardware)
+                    {
+                        driveNames.Add(hw.Name); // E.g., "Samsung SSD 970 EVO"
+                    }
+                }
+            }
+            catch { }
+            return driveNames;
         }
 
         public List<ISensor> GetFanControlSensors()

@@ -103,6 +103,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly List<double> _gpuTempHistoryBuffer = new List<double>();
         private readonly List<double> _ramTempHistoryBuffer = new List<double>();
         private readonly List<double> _moboTempHistoryBuffer = new List<double>();
+        private readonly List<double> _diskTempHistoryBuffer = new List<double>();
         private const int MaxHistoryCapacity = 5000;
 
         private readonly HashSet<string> _dismissedEventHashes = new();
@@ -130,6 +131,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly List<double> _gpuTempLongTermBuffer = new();
         private readonly List<double> _ramTempLongTermBuffer = new();
         private readonly List<double> _moboTempLongTermBuffer = new();
+        private readonly List<double> _diskTempLongTermBuffer = new();
 
         private int _telemetryTickCount = 0;
         private const int TicksPerMinute = 300; // 5 polls/sec * 60 sec
@@ -802,7 +804,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Advanced Features Bridge (Diagnostics)
 
+        private ObservableCollection<string> _availableDisks = new ObservableCollection<string>();
+        public ObservableCollection<string> AvailableDisks { get => _availableDisks; set => SetProperty(ref _availableDisks, value); }
+
+        private int _selectedDiskIndex = 0;
+        public int SelectedDiskIndex { get => _selectedDiskIndex; set => SetProperty(ref _selectedDiskIndex, value); }
+
+        public Visibility DiskSelectorVisibility =>
+            (ActiveGraphMetric == TelemetryMetric.Disk && IsGraphingTemperature) ? Visibility.Visible : Visibility.Collapsed;
+
         public enum TelemetryMetric { CPU, RAM, Disk, Pagefile, GPU, Network, Motherboard }
+
+        public Visibility TemperatureToggleVisibility =>
+            (ActiveGraphMetric == TelemetryMetric.Network ||
+            ActiveGraphMetric == TelemetryMetric.Pagefile)
+            ? Visibility.Collapsed : Visibility.Visible;
 
         private TelemetryMetric _activeGraphMetric = TelemetryMetric.CPU;
         public TelemetryMetric ActiveGraphMetric
@@ -821,13 +837,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     {
                         IsGraphingTemperature = true;
                     }
-                    else if (value == TelemetryMetric.Disk ||
-                             value == TelemetryMetric.Pagefile ||
+                    else if (value == TelemetryMetric.Pagefile ||
                              value == TelemetryMetric.Network)
                     {
                         IsGraphingTemperature = false;
                     }
 
+                    OnPropertyChanged(nameof(DiskSelectorVisibility));
+                    OnPropertyChanged(nameof(TemperatureToggleVisibility));
                     OnPropertyChanged(nameof(IsCpuSelected));
                     OnPropertyChanged(nameof(IsRamSelected));
                     OnPropertyChanged(nameof(IsDiskSelected));
@@ -933,6 +950,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             TelemetryMetric.GPU => GpuTempStr,
             TelemetryMetric.Motherboard => MoboTempStr,
             TelemetryMetric.CPU => CpuTempStr,
+            TelemetryMetric.Disk => DiskTempStr,
             _ => ""
         };
 
@@ -940,8 +958,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             get
             {
-                if (ActiveGraphMetric == TelemetryMetric.Disk ||
-                    ActiveGraphMetric == TelemetryMetric.Pagefile ||
+                if (ActiveGraphMetric == TelemetryMetric.Pagefile ||
                     ActiveGraphMetric == TelemetryMetric.Network ||
                     ActiveGraphMetric == TelemetryMetric.Motherboard)
                 {
@@ -953,6 +970,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     TelemetryMetric.RAM => _cachedMemTemp,
                     TelemetryMetric.GPU => _cachedGpuTemp,
                     TelemetryMetric.CPU => _cachedCpuTemp,
+                    TelemetryMetric.Disk => _cachedDiskTemp,
                     _ => -1f
                 };
 
@@ -969,6 +987,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (SetProperty(ref _isGraphingTemperature, value))
                 {
                     OnPropertyChanged(nameof(IsGraphingLoad));
+                    OnPropertyChanged(nameof(DiskSelectorVisibility));
                     RebuildGraphFromHistory();
                 }
             }
@@ -1226,6 +1245,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private string _moboTempStr = "--°C";
         public string MoboTempStr { get => _moboTempStr; set => SetProperty(ref _moboTempStr, value); }
+
+        private string _diskTempStr = "--°C";
+        public string DiskTempStr { get => _diskTempStr; set => SetProperty(ref _diskTempStr, value); }
 
         public ObservableCollection<HourlyMetric> StabilityTrendData { get; } = new();
         public ObservableCollection<HardwareIssue> DetectedHardwareIssues { get; } = new();
@@ -2773,6 +2795,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 TelemetryMetric.RAM => useLongTerm ? _ramTempLongTermBuffer : _ramTempHistoryBuffer,
                 TelemetryMetric.Motherboard => useLongTerm ? _moboTempLongTermBuffer : _moboTempHistoryBuffer,
                 TelemetryMetric.CPU => useLongTerm ? _cpuTempLongTermBuffer : _cpuTempHistoryBuffer,
+                TelemetryMetric.Disk => useLongTerm ? _diskTempLongTermBuffer : _diskTempHistoryBuffer,
                 _ => null
             };
 
@@ -3802,6 +3825,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             if (_telemetryTimer != null) return;
 
+            var diskNames = HardwareTemperatureService.Instance.GetStorageDriveNames();
+            _dispatcherQueue?.TryEnqueue(() =>
+            {
+                AvailableDisks.Clear();
+                foreach (var disk in diskNames) AvailableDisks.Add(disk);
+                if (AvailableDisks.Count > 0 && SelectedDiskIndex < 0) SelectedDiskIndex = 0;
+            });
+
             try
             {
                 var gcStatus = GC.GetGCMemoryInfo();
@@ -3824,10 +3855,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             float memTemp = HardwareTemperatureService.Instance.GetMemoryTemperature();
             float moboTemp = HardwareTemperatureService.Instance.GetMotherboardTemperature();
 
+            int targetDiskIndex = _selectedDiskIndex >= 0 ? _selectedDiskIndex : 0;
+            float diskTemp = HardwareTemperatureService.Instance.GetDiskTemperatureByIndex(targetDiskIndex);
+
             CpuTempStr = cpuTemp > 0 ? $"{(int)cpuTemp}°C" : "--°C";
             GpuTempStr = gpuTemp > 0 ? $"{(int)gpuTemp}°C" : "--°C";
             RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
             MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
+            DiskTempStr = diskTemp > 0 ? $"{(int)diskTemp}°C" : "--°C";
 
             _telemetryTimer = new System.Threading.Timer(UpdateTelemetryGraph, null, 0, 200);
         }
@@ -3864,6 +3899,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private float _cachedGpuTemp = -1f;
         private float _cachedMemTemp = -1f;
         private float _cachedMoboTemp = -1f;
+        private float _cachedDiskTemp = -1f;
 
         private void UpdateTelemetryGraph(object? state)
         {
@@ -3880,10 +3916,26 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         {
                             HardwareTemperatureService.Instance.UpdateSensors();
 
+                            var diskNames = HardwareTemperatureService.Instance.GetStorageDriveNames();
+                            _dispatcherQueue?.TryEnqueue(() =>
+                            {
+                                if (AvailableDisks.Count != diskNames.Count)
+                                {
+                                    int currentIndex = SelectedDiskIndex;
+                                    AvailableDisks.Clear();
+                                    foreach (var disk in diskNames) AvailableDisks.Add(disk);
+
+                                    SelectedDiskIndex = (currentIndex >= 0 && currentIndex < AvailableDisks.Count) ? currentIndex : 0;
+                                }
+                            });
+
                             _cachedCpuTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
                             _cachedGpuTemp = HardwareTemperatureService.Instance.GetGpuTemperature();
                             _cachedMemTemp = HardwareTemperatureService.Instance.GetMemoryTemperature();
                             _cachedMoboTemp = HardwareTemperatureService.Instance.GetMotherboardTemperature();
+
+                            int targetDiskIndex = _selectedDiskIndex >= 0 ? _selectedDiskIndex : 0;
+                            _cachedDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperatureByIndex(targetDiskIndex);
                         }
                         catch { }
                         finally { _isRefreshingTemperatures = false; }
@@ -3894,6 +3946,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float gpuTemp = _cachedGpuTemp;
                 float memTemp = _cachedMemTemp;
                 float moboTemp = _cachedMoboTemp;
+                float diskTemp = _cachedDiskTemp;
 
                 EvaluateThermalLimits((int)cpuTemp, (int)gpuTemp, (int)memTemp, (int)moboTemp);
 
@@ -3901,6 +3954,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _gpuTempHistoryBuffer.Add(gpuTemp <= 0f ? -1 : gpuTemp);
                 _ramTempHistoryBuffer.Add(memTemp <= 0f ? -1 : memTemp);
                 _moboTempHistoryBuffer.Add(moboTemp <= 0f ? -1 : moboTemp);
+                _diskTempHistoryBuffer.Add(diskTemp <= 0f ? -1 : diskTemp);
 
                 float cpuUsage = 0;
                 if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
@@ -4074,6 +4128,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         GpuTempStr = gpuTemp > 0 ? $"{(int)gpuTemp}°C" : "--°C";
                         RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
                         MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
+                        DiskTempStr = diskTemp > 0 ? $"{(int)diskTemp}°C" : "--°C";
 
                         CurrentCpuLoadStr = $"{(int)Math.Round(_displayCpuUsage)}%";
                         CurrentRamLoadStr = $"{(int)ramUsage}%";
