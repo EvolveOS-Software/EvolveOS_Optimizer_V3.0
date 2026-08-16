@@ -13,42 +13,52 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         private Computer? _computer;
         private readonly UpdateVisitor _updateVisitor = new UpdateVisitor();
+        private readonly object _hardwareLock = new object();
 
         private readonly ConcurrentDictionary<ISensor, List<Core.Model.FanCurvePoint>> _activeFanCurves = new();
         private CancellationTokenSource? _fanLoopCts;
 
         public void Initialize()
         {
-            if (_computer != null) return;
-
-            _computer = new Computer
+            lock (_hardwareLock)
             {
-                IsCpuEnabled = true,
-                IsGpuEnabled = true,
-                IsMotherboardEnabled = true,
-                IsMemoryEnabled = true,
-                IsControllerEnabled = true,
-                IsStorageEnabled = true
-            };
+                if (_computer != null) return;
 
-            _computer.Open();
-            _computer.Accept(_updateVisitor);
+                _computer = new Computer
+                {
+                    IsCpuEnabled = true,
+                    IsGpuEnabled = true,
+                    IsMotherboardEnabled = true,
+                    IsMemoryEnabled = true,
+                    IsControllerEnabled = true,
+                    IsStorageEnabled = true
+                };
+
+                _computer.Open();
+                _computer.Accept(_updateVisitor);
+            }
         }
 
         public void UpdateSensors()
         {
-            _computer?.Accept(_updateVisitor);
+            lock (_hardwareLock)
+            {
+                _computer?.Accept(_updateVisitor);
+            }
         }
 
         public void UpdateCpuSensors()
         {
-            if (_computer == null) return;
-
-            foreach (var hardware in _computer.Hardware)
+            lock (_hardwareLock)
             {
-                if (hardware.HardwareType == HardwareType.Cpu)
+                if (_computer == null) return;
+
+                foreach (var hardware in _computer.Hardware)
                 {
-                    hardware.Update();
+                    if (hardware.HardwareType == HardwareType.Cpu)
+                    {
+                        hardware.Update();
+                    }
                 }
             }
         }
@@ -64,23 +74,26 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         private float GetHardwareTemp(HardwareType type)
         {
-            if (_computer == null) return 0f;
-
-            var allTempsForThisType = new List<float>();
-
-            foreach (var hardware in _computer.Hardware)
+            lock (_hardwareLock)
             {
-                if (hardware.HardwareType == type)
+                if (_computer == null) return 0f;
+
+                var allTempsForThisType = new List<float>();
+
+                foreach (var hardware in _computer.Hardware)
                 {
-                    float temp = GetBestTemperature(hardware);
-                    if (temp > 0)
+                    if (hardware.HardwareType == type)
                     {
-                        allTempsForThisType.Add(temp);
+                        float temp = GetBestTemperature(hardware);
+                        if (temp > 0)
+                        {
+                            allTempsForThisType.Add(temp);
+                        }
                     }
                 }
-            }
 
-            return allTempsForThisType.Count > 0 ? allTempsForThisType.Max() : 0f;
+                return allTempsForThisType.Count > 0 ? allTempsForThisType.Max() : 0f;
+            }
         }
 
         private float GetBestTemperature(IHardware hardware)
@@ -170,79 +183,199 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         public Dictionary<string, float> GetCpuCoreTemperatures()
         {
-            var coreTemps = new Dictionary<string, float>();
-            if (_computer == null) return coreTemps;
-
-            foreach (var hardware in _computer.Hardware)
+            lock (_hardwareLock)
             {
-                if (hardware.HardwareType == HardwareType.Cpu)
+                var coreTemps = new Dictionary<string, float>();
+                if (_computer == null) return coreTemps;
+
+                foreach (var hardware in _computer.Hardware)
                 {
-                    var allSensors = new List<ISensor>();
-                    CollectSensors(hardware, allSensors);
-
-                    var coreSensors = allSensors
-                        .Where(s => s.SensorType == SensorType.Temperature
-                                    && s.Value.HasValue
-                                    && s.Name.Contains("Core", StringComparison.OrdinalIgnoreCase)
-                                    && !s.Name.Contains("Max", StringComparison.OrdinalIgnoreCase)
-                                    && !s.Name.Contains("Average", StringComparison.OrdinalIgnoreCase)
-                                    && !s.Name.Contains("Package", StringComparison.OrdinalIgnoreCase))
-                        .OrderBy(s => s.Name);
-
-                    foreach (var sensor in coreSensors)
+                    if (hardware.HardwareType == HardwareType.Cpu)
                     {
-                        coreTemps[sensor.Name] = sensor.Value.GetValueOrDefault();
+                        var allSensors = new List<ISensor>();
+                        CollectSensors(hardware, allSensors);
+
+                        var coreSensors = allSensors
+                            .Where(s => s.SensorType == SensorType.Temperature
+                                     && s.Value.HasValue
+                                     && s.Name.Contains("Core", StringComparison.OrdinalIgnoreCase)
+                                     && !s.Name.Contains("Max", StringComparison.OrdinalIgnoreCase)
+                                     && !s.Name.Contains("Average", StringComparison.OrdinalIgnoreCase)
+                                     && !s.Name.Contains("Package", StringComparison.OrdinalIgnoreCase))
+                            .OrderBy(s => s.Name);
+
+                        foreach (var sensor in coreSensors)
+                        {
+                            coreTemps[sensor.Name] = sensor.Value.GetValueOrDefault();
+                        }
                     }
                 }
-            }
 
-            return coreTemps;
+                return coreTemps;
+            }
         }
 
         public Dictionary<string, float> GetCpuCoreLoads()
         {
-            var coreLoads = new Dictionary<string, float>();
-            if (_computer == null) return coreLoads;
-
-            foreach (var hardware in _computer.Hardware)
+            lock (_hardwareLock)
             {
-                if (hardware.HardwareType == HardwareType.Cpu)
+                var coreLoads = new Dictionary<string, float>();
+                if (_computer == null) return coreLoads;
+
+                foreach (var hardware in _computer.Hardware)
                 {
-                    var allSensors = new List<ISensor>();
-                    CollectSensors(hardware, allSensors);
-
-                    var coreSensors = allSensors
-                        .Where(s => s.SensorType == SensorType.Load
-                                    && s.Value.HasValue
-                                    && s.Name.Contains("Core", StringComparison.OrdinalIgnoreCase)
-                                    && !s.Name.Contains("Total", StringComparison.OrdinalIgnoreCase)
-                                    && !s.Name.Contains("Max", StringComparison.OrdinalIgnoreCase)
-                                    && !s.Name.Contains("Average", StringComparison.OrdinalIgnoreCase))
-                        .OrderBy(s => s.Name);
-
-                    foreach (var sensor in coreSensors)
+                    if (hardware.HardwareType == HardwareType.Cpu)
                     {
-                        coreLoads[sensor.Name] = sensor.Value.GetValueOrDefault();
+                        var allSensors = new List<ISensor>();
+                        CollectSensors(hardware, allSensors);
+
+                        var coreSensors = allSensors
+                            .Where(s => s.SensorType == SensorType.Load
+                                     && s.Value.HasValue
+                                     && s.Name.Contains("Core", StringComparison.OrdinalIgnoreCase)
+                                     && !s.Name.Contains("Total", StringComparison.OrdinalIgnoreCase)
+                                     && !s.Name.Contains("Max", StringComparison.OrdinalIgnoreCase)
+                                     && !s.Name.Contains("Average", StringComparison.OrdinalIgnoreCase))
+                            .OrderBy(s => s.Name);
+
+                        foreach (var sensor in coreSensors)
+                        {
+                            coreLoads[sensor.Name] = sensor.Value.GetValueOrDefault();
+                        }
                     }
                 }
-            }
 
-            return coreLoads;
+                return coreLoads;
+            }
+        }
+
+        public float GetGpuPower()
+        {
+            lock (_hardwareLock)
+            {
+                try
+                {
+                    if (_computer == null || _computer.Hardware == null) return 0f;
+
+                    foreach (var hw in _computer.Hardware)
+                    {
+                        if (hw.HardwareType == HardwareType.GpuNvidia || hw.HardwareType == HardwareType.GpuAmd || hw.HardwareType == HardwareType.GpuIntel)
+                        {
+                            var powerSensors = hw.Sensors.Where(s => s.SensorType == SensorType.Power && s.Value.HasValue).ToList();
+
+                            var packagePower = powerSensors.FirstOrDefault(s =>
+                                s.Name.Contains("Package", StringComparison.OrdinalIgnoreCase) ||
+                                s.Name.Contains("Total", StringComparison.OrdinalIgnoreCase) ||
+                                s.Name.Contains("GPU Power", StringComparison.OrdinalIgnoreCase));
+
+                            if (packagePower != null) return packagePower.Value.GetValueOrDefault();
+
+                            return powerSensors.FirstOrDefault()?.Value.GetValueOrDefault() ?? 0f;
+                        }
+                    }
+                    return 0f;
+                }
+                catch { return 0f; }
+            }
+        }
+
+        public float GetGpuVramUsedGb()
+        {
+            lock (_hardwareLock)
+            {
+                try
+                {
+                    if (_computer == null || _computer.Hardware == null) return 0f;
+
+                    foreach (var hw in _computer.Hardware)
+                    {
+                        if (hw.HardwareType == HardwareType.GpuNvidia || hw.HardwareType == HardwareType.GpuAmd || hw.HardwareType == HardwareType.GpuIntel)
+                        {
+                            var dataSensors = hw.Sensors.Where(s => (s.SensorType == SensorType.SmallData || s.SensorType == SensorType.Data) && s.Value.HasValue).ToList();
+
+                            var vramUsed = dataSensors.FirstOrDefault(s =>
+                                s.Name.Contains("Memory Used", StringComparison.OrdinalIgnoreCase) ||
+                                s.Name.Contains("GPU Memory Dedicated", StringComparison.OrdinalIgnoreCase));
+
+                            if (vramUsed != null)
+                            {
+                                return vramUsed.Value.GetValueOrDefault() / 1024f;
+                            }
+                        }
+                    }
+                    return 0f;
+                }
+                catch { return 0f; }
+            }
         }
 
         public float GetDiskTemperature()
         {
-            try
+            lock (_hardwareLock)
             {
-                float highestTemp = -1f;
-
-                if (_computer == null || _computer.Hardware == null)
-                    return highestTemp;
-
-                foreach (var hardware in _computer.Hardware)
+                try
                 {
-                    if (hardware.HardwareType == HardwareType.Storage)
+                    float highestTemp = -1f;
+
+                    if (_computer == null || _computer.Hardware == null)
+                        return highestTemp;
+
+                    foreach (var hardware in _computer.Hardware)
                     {
+                        if (hardware.HardwareType == HardwareType.Storage)
+                        {
+                            hardware.Update();
+
+                            var allSensors = new List<ISensor>();
+                            CollectSensors(hardware, allSensors);
+
+                            var tempSensors = allSensors
+                                .Where(s => s.SensorType == SensorType.Temperature && s.Value.HasValue)
+                                .ToList();
+
+                            var primarySensor = tempSensors.FirstOrDefault(s =>
+                                s.Name.Equals("Temperature", StringComparison.OrdinalIgnoreCase) ||
+                                s.Name.Equals("Temperature 1", StringComparison.OrdinalIgnoreCase) ||
+                                s.Name.Contains("Composite", StringComparison.OrdinalIgnoreCase));
+
+                            var activeSensor = primarySensor ?? tempSensors.FirstOrDefault();
+
+                            if (activeSensor != null && activeSensor.Value.HasValue)
+                            {
+                                float tempVal = activeSensor.Value.GetValueOrDefault();
+
+                                if (tempVal > 0f && tempVal < 85f)
+                                {
+                                    if (tempVal > highestTemp)
+                                    {
+                                        highestTemp = tempVal;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return highestTemp;
+                }
+                catch
+                {
+                    return -1f;
+                }
+            }
+        }
+
+        public float GetDiskTemperatureByIndex(int index)
+        {
+            lock (_hardwareLock)
+            {
+                try
+                {
+                    if (_computer == null || _computer.Hardware == null) return -1f;
+
+                    var storageDrives = _computer.Hardware.Where(h => h.HardwareType == HardwareType.Storage).ToList();
+
+                    if (index >= 0 && index < storageDrives.Count)
+                    {
+                        var hardware = storageDrives[index];
                         hardware.Update();
 
                         var allSensors = new List<ISensor>();
@@ -262,120 +395,87 @@ namespace EvolveOS_Optimizer.Utilities.Services
                         if (activeSensor != null && activeSensor.Value.HasValue)
                         {
                             float tempVal = activeSensor.Value.GetValueOrDefault();
-
                             if (tempVal > 0f && tempVal < 85f)
                             {
-                                if (tempVal > highestTemp)
-                                {
-                                    highestTemp = tempVal;
-                                }
+                                return tempVal;
                             }
                         }
                     }
+                    return -1f;
                 }
-                return highestTemp;
-            }
-            catch
-            {
-                return -1f;
-            }
-        }
-
-        public float GetDiskTemperatureByIndex(int index)
-        {
-            try
-            {
-                if (_computer == null || _computer.Hardware == null) return -1f;
-
-                var storageDrives = _computer.Hardware.Where(h => h.HardwareType == HardwareType.Storage).ToList();
-
-                if (index >= 0 && index < storageDrives.Count)
+                catch
                 {
-                    var hardware = storageDrives[index];
-                    hardware.Update();
-
-                    var allSensors = new List<ISensor>();
-                    CollectSensors(hardware, allSensors);
-
-                    var tempSensors = allSensors
-                        .Where(s => s.SensorType == SensorType.Temperature && s.Value.HasValue)
-                        .ToList();
-
-                    var primarySensor = tempSensors.FirstOrDefault(s =>
-                        s.Name.Equals("Temperature", StringComparison.OrdinalIgnoreCase) ||
-                        s.Name.Equals("Temperature 1", StringComparison.OrdinalIgnoreCase) ||
-                        s.Name.Contains("Composite", StringComparison.OrdinalIgnoreCase));
-
-                    var activeSensor = primarySensor ?? tempSensors.FirstOrDefault();
-
-                    if (activeSensor != null && activeSensor.Value.HasValue)
-                    {
-                        float tempVal = activeSensor.Value.GetValueOrDefault();
-                        if (tempVal > 0f && tempVal < 85f)
-                        {
-                            return tempVal;
-                        }
-                    }
+                    return -1f;
                 }
-                return -1f;
-            }
-            catch
-            {
-                return -1f;
             }
         }
 
         public List<string> GetStorageDriveNames()
         {
-            var driveNames = new List<string>();
-            try
+            lock (_hardwareLock)
             {
-                if (_computer != null && _computer.Hardware != null)
+                var driveNames = new List<string>();
+                try
                 {
-                    var storageHardware = _computer.Hardware.Where(h => h.HardwareType == HardwareType.Storage).ToList();
-                    foreach (var hw in storageHardware)
+                    if (_computer != null && _computer.Hardware != null)
                     {
-                        driveNames.Add(hw.Name); // E.g., "Samsung SSD 970 EVO"
+                        var storageHardware = _computer.Hardware.Where(h => h.HardwareType == HardwareType.Storage).ToList();
+                        foreach (var hw in storageHardware)
+                        {
+                            driveNames.Add(hw.Name); // E.g., "Samsung SSD 970 EVO"
+                        }
                     }
                 }
+                catch { }
+                return driveNames;
             }
-            catch { }
-            return driveNames;
         }
 
         public List<ISensor> GetFanControlSensors()
         {
-            var controlSensors = new List<ISensor>();
-            if (_computer == null) return controlSensors;
-
-            foreach (var hardware in _computer.Hardware)
+            lock (_hardwareLock)
             {
-                var allSensors = new List<ISensor>();
-                CollectSensors(hardware, allSensors);
+                var controlSensors = new List<ISensor>();
+                if (_computer == null) return controlSensors;
 
-                var controls = allSensors.Where(s => s.SensorType == SensorType.Control && s.Control != null);
-                controlSensors.AddRange(controls);
+                foreach (var hardware in _computer.Hardware)
+                {
+                    var allSensors = new List<ISensor>();
+                    CollectSensors(hardware, allSensors);
+
+                    var controls = allSensors.Where(s => s.SensorType == SensorType.Control && s.Control != null);
+                    controlSensors.AddRange(controls);
+                }
+
+                return controlSensors;
             }
-
-            return controlSensors;
         }
 
         public ISensor? GetMatchingRpmSensor(ISensor controlSensor)
         {
-            var hardware = controlSensor.Hardware;
-            return hardware.Sensors.FirstOrDefault(s =>
-                s.SensorType == SensorType.Fan &&
-                s.Index == controlSensor.Index);
+            lock (_hardwareLock)
+            {
+                var hardware = controlSensor.Hardware;
+                return hardware.Sensors.FirstOrDefault(s =>
+                    s.SensorType == SensorType.Fan &&
+                    s.Index == controlSensor.Index);
+            }
         }
 
         public void SetFanSpeed(ISensor controlSensor, float percentage)
         {
-            controlSensor.Control?.SetSoftware(percentage);
+            lock (_hardwareLock)
+            {
+                controlSensor.Control?.SetSoftware(percentage);
+            }
         }
 
         public void RevertFanToDefault(ISensor controlSensor)
         {
-            controlSensor.Control?.SetDefault();
+            lock (_hardwareLock)
+            {
+                controlSensor.Control?.SetDefault();
+            }
         }
 
         public void RegisterFanCurve(ISensor controlSensor, List<Core.Model.FanCurvePoint> curve)
@@ -453,8 +553,11 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
         public void Close()
         {
-            _fanLoopCts?.Cancel();
-            _computer?.Close();
+            lock (_hardwareLock)
+            {
+                _fanLoopCts?.Cancel();
+                _computer?.Close();
+            }
         }
     }
 

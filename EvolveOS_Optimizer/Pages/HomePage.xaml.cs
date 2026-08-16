@@ -1112,6 +1112,9 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnExpandDns, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnBenchmarkDns, InputSystemCursorShape.Arrow);
             SetCustomCursor(CmbDnsPresets, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnExpandGpu, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenGraphicsSettings, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRestartGpuDriver, InputSystemCursorShape.Arrow);
 
             SetCustomCursor(IpAddress, InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, InputSystemCursorShape.Hand);
@@ -2504,6 +2507,76 @@ namespace EvolveOS_Optimizer.Pages
 
             await Task.Delay(2000);
             if (btn != null) btn.IsEnabled = true;
+        }
+
+        #endregion
+
+        #region GPU Card
+
+        private async void BtnExpandGpu_Click(object sender, RoutedEventArgs e)
+        {
+            bool isExpanded = GpuExpandedContent.Visibility == Visibility.Collapsed;
+
+
+            double targetHeight = isExpanded ? 450 : 220;
+
+            GviGpu.Height = targetHeight;
+            CardGpu.Height = targetHeight;
+
+            if (isExpanded)
+            {
+                GpuExpandedContent.Visibility = Visibility.Visible;
+                IconExpandGpu.Glyph = "\uE70E"; // Chevron Up
+            }
+            else
+            {
+                GpuExpandedContent.Visibility = Visibility.Collapsed;
+                IconExpandGpu.Glyph = "\uE70D"; // Chevron Down
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
+            }
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+                GviGpu.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true });
+            }
+        }
+
+        private void BtnOpenGraphicsSettings_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo("ms-settings:display-advancedgraphics") { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[GPU Settings Error] {ex.Message}");
+            }
+        }
+
+        private async void BtnRestartGpuDriver_Click(object sender, RoutedEventArgs e)
+        {
+            Button? btn = sender as Button;
+            if (btn != null) btn.IsEnabled = false;
+
+            try
+            {
+                await CommandExecutor.RunCommand("Stop-Process -Name dwm -Force", isPowerShell: true, waitForExit: false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[GPU Reset Error] {ex.Message}");
+            }
+            finally
+            {
+                await Task.Delay(2000);
+                if (btn != null) btn.IsEnabled = true;
+            }
         }
 
         #endregion

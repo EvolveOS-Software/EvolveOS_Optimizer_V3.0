@@ -9,6 +9,7 @@ using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
+using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -57,6 +58,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private int _isUpdatingTelemetry = 0;
         private int _monitoringTick = 0;
+        private int _isUpdatingGpuSensors = 0;
         private double _displayCpuUsage = 0;
         private double _displayGpuUsage = 0;
         private double _displayDownMbps = 0;
@@ -126,10 +128,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
         #endregion
 
-        #region Properties
-        public int GpuUsageDisplay => HardwareData.Gpu.Usage;
-        public int GpuUsagePercentage => HardwareData.Gpu.Usage;
+        #region GPU Card Properties
 
+        private int _gpuUsageDisplay;
+        public int GpuUsageDisplay { get => _gpuUsageDisplay; set { _gpuUsageDisplay = value; OnPropertyChanged(); } }
+
+        private string _gpuTemperatureStr = "--°C";
+        public string GpuTemperatureStr { get => _gpuTemperatureStr; set { _gpuTemperatureStr = value; OnPropertyChanged(); } }
+
+        private string _gpuVramUsedStr = "-- GB";
+        public string GpuVramUsedStr { get => _gpuVramUsedStr; set { _gpuVramUsedStr = value; OnPropertyChanged(); } }
+
+        private string _gpuPowerDrawStr = "-- W";
+        public string GpuPowerDrawStr { get => _gpuPowerDrawStr; set { _gpuPowerDrawStr = value; OnPropertyChanged(); } }
+
+        #endregion
+
+        #region Properties
         public double CpuUsage => HardwareData.Processor.Usage;
         public string CpuUsageText => CpuUsage.ToString("F0");
 
@@ -334,7 +349,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             SystemDiagnostics.InitCpuBaseline();
 
             _weatherLocation = LoadLocationFromRegistry();
-            Task.Run(() => _monitoringService.GetHardwareData());
+            Task.Run(() =>
+            {
+                _monitoringService.GetHardwareData();
+
+                HardwareTemperatureService.Instance.Initialize();
+            });
 
             LocalIP = new IPWrapper { Data = _monitoringService.GetDefaultLocalIP() };
 
@@ -479,11 +499,35 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             var pCount = await _monitoringService.GetProcessCountAsync();
                             var sCount = await _monitoringService.GetServicesCount();
 
+                            float gpuTemp = 0;
+                            float gpuPower = 0;
+                            float gpuVram = 0;
+
+                            if (Interlocked.CompareExchange(ref _isUpdatingGpuSensors, 1, 0) == 0)
+                            {
+                                try
+                                {
+                                    HardwareTemperatureService.Instance.UpdateSensors();
+                                    gpuTemp = HardwareTemperatureService.Instance.GetGpuTemperature();
+                                    gpuPower = HardwareTemperatureService.Instance.GetGpuPower();
+                                    gpuVram = HardwareTemperatureService.Instance.GetGpuVramUsedGb();
+                                }
+                                catch { }
+                                finally
+                                {
+                                    Volatile.Write(ref _isUpdatingGpuSensors, 0);
+                                }
+                            }
+
                             App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
                             {
                                 _lastPCount = pCount;
                                 _lastSCount = sCount;
                                 RefreshStats(pCount, sCount);
+
+                                if (gpuTemp > 0) GpuTemperatureStr = $"{(int)gpuTemp}°C";
+                                if (gpuPower > 0) GpuPowerDrawStr = $"{(int)gpuPower} W";
+                                if (gpuVram > 0) GpuVramUsedStr = $"{gpuVram:F1} GB";
                             });
                         }
                         catch { }
@@ -506,6 +550,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     if (isFullSecond) UpdateDateTime();
                     OnTelemetryTicked?.Invoke(payload);
+
+                    GpuUsageDisplay = (int)Math.Round(_displayGpuUsage);
                 });
             }
             catch { }
@@ -646,9 +692,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
 
             OnPropertyChanged(nameof(IpVisibility));
-            OnPropertyChanged(nameof(GpuUsageDisplay));
-            OnPropertyChanged(nameof(GpuUsagePercentage));
-
             OnPropertyChanged("Item[]");
         }
 
