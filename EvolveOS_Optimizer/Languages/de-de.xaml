@@ -3249,6 +3249,51 @@
     <sys:String x:Key="cleanup_status_cancelling">Wird abgebrochen...</sys:String>
     <sys:String x:Key="cleanup_status_cancelled">Vorgang abgebrochen.</sys:String>
 
+    <sys:String x:Key="cleanup_dev_title">Entwickler-Workspaces</sys:String>
+    <sys:String x:Key="cleanup_dev_desc">Löscht Caches und Build-Artefakte von Entwicklertools.</sys:String>
+    <sys:String x:Key="cleanup_dev_btn_scan">Caches scannen</sys:String>
+    <sys:String x:Key="cleanup_dev_btn_clean">Ausgewählte Caches leeren</sys:String>
+
+    <!-- Developer Toolchains Categories & Microstates -->
+    <sys:String x:Key="txt_scanning_dots">Wird gescannt...</sys:String>
+    <sys:String x:Key="txt_cleaning_dots">Wird bereinigt...</sys:String>
+    <sys:String x:Key="txt_cleaned">Bereinigt</sys:String>
+
+    <sys:String x:Key="dev_cat_js">JavaScript Ökosystem</sys:String>
+    <sys:String x:Key="dev_cat_systems">Systemprogrammierung</sys:String>
+    <sys:String x:Key="dev_cat_python">Python Ökosystem</sys:String>
+    <sys:String x:Key="dev_cat_dotnet">.NET Ökosystem</sys:String>
+    <sys:String x:Key="dev_cat_jvm">JVM Ökosystem</sys:String>
+    <sys:String x:Key="dev_cat_ide">IDE &amp; Werkzeuge</sys:String>
+
+    <!-- Developer Toolchain Rules -->
+    <sys:String x:Key="dev_node_name">Node.js (npm, Yarn, pnpm)</sys:String>
+    <sys:String x:Key="dev_node_desc">Globale Paket-Caches für die Paketmanager npm, Yarn und pnpm.</sys:String>
+
+    <sys:String x:Key="dev_rust_name">Rust (Cargo)</sys:String>
+    <sys:String x:Key="dev_rust_desc">Cargo Registry Downloads und Git Datenbank Cache.</sys:String>
+
+    <sys:String x:Key="dev_python_name">Python (pip, uv)</sys:String>
+    <sys:String x:Key="dev_python_desc">Heruntergeladene whl- und tar.gz Paket Caches.</sys:String>
+
+    <sys:String x:Key="dev_dotnet_name">.NET (NuGet)</sys:String>
+    <sys:String x:Key="dev_dotnet_desc">Globale NuGet-Paket-Caches und HTTP-Download-Cache.</sys:String>
+
+    <sys:String x:Key="dev_go_name">Go (Build &amp; Mod)</sys:String>
+    <sys:String x:Key="dev_go_desc">Go-Compiler Build Cache und Modul Cache.</sys:String>
+
+    <sys:String x:Key="dev_cpp_name">C/C++ (vcpkg, ccache)</sys:String>
+    <sys:String x:Key="dev_cpp_desc">Vcpkg Archive und sccache/ccache Build Beschleunigungs Caches.</sys:String>
+
+    <sys:String x:Key="dev_java_name">Java (Gradle, Maven)</sys:String>
+    <sys:String x:Key="dev_java_desc">Gradle Caches und lokales Maven Repository. (Das Löschen von Maven erfordert ein erneutes Herunterladen der Artefakte).</sys:String>
+
+    <sys:String x:Key="dev_vs_name">Visual Studio MSBuild</sys:String>
+    <sys:String x:Key="dev_vs_desc">Komponentenmodell Caches und temporäre MSBuild-Artefakte.</sys:String>
+
+    <sys:String x:Key="dev_jb_name">JetBrains IDEs</sys:String>
+    <sys:String x:Key="dev_jb_desc">System Caches, alte Indexierungsdaten und temporäre Dateien für Rider, IntelliJ, WebStorm usw.</sys:String>
+
     <!-- Winapp32 Warnings -->
     <sys:String x:Key="warning_ms_mouse_keyboard_settings">Dadurch werden auch alle app spezifischen Einstellungen gelöscht.</sys:String>
     <sys:String x:Key="warning_paramount_rss">Dies führt dazu, dass die dynamische RSS-Datei von Paramount erneut heruntergeladen werden muss.</sys:String>

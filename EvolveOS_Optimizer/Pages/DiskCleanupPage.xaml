@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="EvolveOS_Optimizer.Pages.DiskCleanupPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -461,171 +462,227 @@
                                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                                               Padding="5,12,5,0"
                                               Visibility="{x:Bind ViewModel.IsNotEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                    <ItemsControl ItemsSource="{x:Bind ViewModel.Categories, Mode=OneWay}" Padding="0">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:DiskCleanupCategoryViewModel">
-                                                <Expander HorizontalAlignment="Stretch"
-                                                          HorizontalContentAlignment="Stretch"
-                                                          IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}"
-                                                          Expanding="CategoryExpander_Expanding"
-                                                          Margin="10,3,10,5"
-                                                          Padding="0">
 
-                                                    <Expander.Header>
-                                                        <Grid HorizontalAlignment="Stretch"
-                                                              VerticalAlignment="Stretch"
-                                                              Background="Transparent"
-                                                              MinHeight="40"
-                                                              Margin="-12,0,0,0"
-                                                              PointerEntered="CatHeader_PointerEntered"
-                                                              PointerExited="CatHeader_PointerExited">
+                                    <StackPanel Spacing="4">
 
+                                        <ItemsControl ItemsSource="{x:Bind ViewModel.Categories, Mode=OneWay}" Padding="0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:DiskCleanupCategoryViewModel">
+                                                    <Expander HorizontalAlignment="Stretch"
+                                                              HorizontalContentAlignment="Stretch"
+                                                              IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}"
+                                                              Expanding="CategoryExpander_Expanding"
+                                                              Margin="10,3,10,5"
+                                                              Padding="0">
+
+                                                        <Expander.Header>
+                                                            <Grid HorizontalAlignment="Stretch"
+                                                                  VerticalAlignment="Stretch"
+                                                                  Background="Transparent"
+                                                                  MinHeight="40"
+                                                                  Margin="-12,0,0,0"
+                                                                  PointerEntered="CatHeader_PointerEntered"
+                                                                  PointerExited="CatHeader_PointerExited">
+
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="42" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <FontIcon Grid.Column="0"
+                                                                          Glyph="{x:Bind Glyph}"
+                                                                          FontSize="16"
+                                                                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                          HorizontalAlignment="Center"
+                                                                          VerticalAlignment="Center"/>
+
+                                                                <TextBlock Grid.Column="1"
+                                                                           Text="{x:Bind Name}"
+                                                                           FontSize="13"
+                                                                           FontFamily="{ThemeResource Jura-SemiBold}"
+                                                                           TextTrimming="CharacterEllipsis"
+                                                                           ToolTipService.ToolTip="{x:Bind Name}"
+                                                                           VerticalAlignment="Center"
+                                                                           Margin="4,0,12,0"/>
+
+                                                                <Border Grid.Column="2"
+                                                                        Background="{x:Bind BadgeBackground, Mode=OneWay}"
+                                                                        BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                                                        BorderThickness="1"
+                                                                        Opacity="0.85"
+                                                                        CornerRadius="4"
+                                                                        Padding="10,2"
+                                                                        Margin="0,0,8,0"
+                                                                        VerticalAlignment="Center">
+                                                                    <TextBlock Text="{x:Bind SelectionStateLabel, Mode=OneWay}"
+                                                                               FontSize="10"
+                                                                               FontFamily="{ThemeResource Jura-SemiBold}"
+                                                                               Foreground="{x:Bind BadgeForeground, Mode=OneWay}"
+                                                                               VerticalAlignment="Center"/>
+                                                                </Border>
+
+                                                                <Button Grid.Column="3"
+                                                                        Width="32"
+                                                                        Height="32"
+                                                                        Padding="0"
+                                                                        Margin="0,0,4,0"
+                                                                        Opacity="0"
+                                                                        Background="Transparent"
+                                                                        BorderThickness="0"
+                                                                        VerticalAlignment="Center"
+                                                                        ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_category_actions_tooltip}">
+                                                                    <Button.Resources>
+                                                                        <Thickness x:Key="ButtonPadding">0</Thickness>
+                                                                        <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
+                                                                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SubtleFillColorSecondary}" />
+                                                                        <SolidColorBrush x:Key="ButtonBorderBrush" Color="Transparent" />
+                                                                    </Button.Resources>
+                                                                    <FontIcon Glyph="&#xE712;" FontSize="14" />
+                                                                    <Button.Flyout>
+                                                                        <MenuFlyout Placement="BottomEdgeAlignedRight" Opened="ActionMenu_Opened" Closed="ActionMenu_Closed">
+                                                                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_defaults}" Command="{x:Bind SelectDefaultsCommand}" />
+                                                                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_all}" Command="{x:Bind SelectAllCommand}" />
+                                                                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_none}" Command="{x:Bind SelectNoneCommand}" />
+                                                                            <MenuFlyoutSeparator />
+                                                                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_analyze_cat}" Tag="{x:Bind}" Click="CatAnalyze_Click" />
+                                                                            <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_clean_cat}" Tag="{x:Bind}" Click="CatClean_Click" />
+                                                                        </MenuFlyout>
+                                                                    </Button.Flyout>
+                                                                </Button>
+                                                            </Grid>
+                                                        </Expander.Header>
+
+                                                        <ItemsControl ItemsSource="{x:Bind Entries, Mode=OneWay}" Padding="4,0,0,4">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate x:DataType="vm:DiskCleanupEntryViewModel">
+                                                                    <Grid Padding="2,1" Margin="16,0,0,0"
+                                                                          Background="Transparent"
+                                                                          MinHeight="32"
+                                                                          PointerEntered="EntryRow_PointerEntered"
+                                                                          PointerExited="EntryRow_PointerExited">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                        <CheckBox Grid.Column="0"
+                                                                                  IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
+                                                                                  ToolTipService.ToolTip="{x:Bind Warning}"
+                                                                                  MinWidth="0"
+                                                                                  Padding="6,3">
+                                                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                                                <FontIcon Glyph="&#xE7BA;" FontSize="11" Foreground="OrangeRed" VerticalAlignment="Center" Visibility="{x:Bind HasWarning, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                                <TextBlock Text="{x:Bind Name}" FontSize="12" FontFamily="{ThemeResource Jura}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind Name}" Margin="0,5,0,0" />
+                                                                            </StackPanel>
+                                                                        </CheckBox>
+
+                                                                        <TextBlock Grid.Column="1"
+                                                                                   Text="{x:Bind SizeText, Mode=OneWay}"
+                                                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                                   FontFamily="{ThemeResource Jura}"
+                                                                                   FontSize="11"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Margin="2,0,4,0" />
+
+                                                                        <Button Grid.Column="2" Width="22" Height="22" Padding="0" Margin="0,0,4,0" Opacity="0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_entry_actions_tooltip}">
+                                                                            <FontIcon Glyph="&#xE712;" FontSize="10" />
+                                                                            <Button.Flyout>
+                                                                                <MenuFlyout Placement="Bottom" Opened="ActionMenu_Opened" Closed="ActionMenu_Closed">
+
+                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_analyze_entry}"
+                                                                                                    Tag="{x:Bind}"
+                                                                                                    Click="EntryAnalyze_Click">
+                                                                                        <MenuFlyoutItem.Icon>
+                                                                                            <FontIcon Glyph="&#xE11A;" />
+                                                                                        </MenuFlyoutItem.Icon>
+                                                                                    </MenuFlyoutItem>
+
+                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_clean_entry}"
+                                                                                                    Tag="{x:Bind}"
+                                                                                                    Click="EntryClean_Click">
+                                                                                        <MenuFlyoutItem.Icon>
+                                                                                            <FontIcon Glyph="&#xE74D;" />
+                                                                                        </MenuFlyoutItem.Icon>
+                                                                                    </MenuFlyoutItem>
+
+                                                                                    <MenuFlyoutSeparator />
+
+                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=ai_explainer_btn_text}"
+                                                                                                    Tag="{x:Bind}"
+                                                                                                    IsEnabled="{x:Bind IsAiEnabled(), Mode=OneWay}"
+                                                                                                    Click="EntryExplain_Click">
+                                                                                        <MenuFlyoutItem.Icon>
+                                                                                            <FontIcon Glyph="&#xE946;" />
+                                                                                        </MenuFlyoutItem.Icon>
+                                                                                    </MenuFlyoutItem>
+
+                                                                                </MenuFlyout>
+                                                                            </Button.Flyout>
+                                                                        </Button>
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </Expander>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <Expander x:Name="DevWorkspacesExpander"
+                                                  HorizontalAlignment="Stretch"
+                                                  HorizontalContentAlignment="Stretch"
+                                                  Margin="10,6,10,20"
+                                                  Padding="0"
+                                                  Expanding="DevWorkspacesExpander_Expanding">
+                                            <Expander.Header>
+                                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" MinHeight="40" Margin="-12,0,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="42" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <FontIcon Grid.Column="0" Glyph="&#xE943;" FontSize="16" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                                    <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=cleanup_dev_title}" FontSize="13" FontFamily="{ThemeResource Jura-SemiBold}" VerticalAlignment="Center" Margin="4,0,12,0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_dev_desc}"/>
+
+                                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="2" VerticalAlignment="Center" Margin="0,0,8,0">
+                                                        <Button Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" Command="{x:Bind ViewModel.AnalyzeDevToolchainsCommand}" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_dev_btn_scan}">
+                                                            <FontIcon Glyph="&#xE11A;" FontSize="14" />
+                                                        </Button>
+                                                        <Button Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" Command="{x:Bind ViewModel.CleanDevToolchainsCommand}" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_dev_btn_clean}">
+                                                            <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="OrangeRed" />
+                                                        </Button>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Expander.Header>
+
+                                            <ItemsControl ItemsSource="{x:Bind ViewModel.DevToolchains, Mode=OneWay}" Padding="4,0,0,4">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:DevCleanupItemViewModel">
+                                                        <Grid Padding="2,1" Margin="16,0,0,0" MinHeight="32" Background="Transparent">
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="42" />
                                                                 <ColumnDefinition Width="*" />
-                                                                <ColumnDefinition Width="Auto" />
                                                                 <ColumnDefinition Width="Auto" />
                                                             </Grid.ColumnDefinitions>
 
-                                                            <FontIcon Grid.Column="0"
-                                                                      Glyph="{x:Bind Glyph}"
-                                                                      FontSize="16"
-                                                                      Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                                      HorizontalAlignment="Center"
-                                                                      VerticalAlignment="Center"/>
+                                                            <CheckBox Grid.Column="0" IsChecked="{x:Bind IsSelected, Mode=TwoWay}" ToolTipService.ToolTip="{x:Bind Description}" MinWidth="0" Padding="6,3">
+                                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                                    <TextBlock Text="{x:Bind Name}" FontSize="12" FontFamily="{ThemeResource Jura}" TextTrimming="CharacterEllipsis" Margin="0,5,0,0"/>
+                                                                </StackPanel>
+                                                            </CheckBox>
 
-                                                            <TextBlock Grid.Column="1"
-                                                                       Text="{x:Bind Name}"
-                                                                       FontSize="13"
-                                                                       FontFamily="{ThemeResource Jura-SemiBold}"
-                                                                       TextTrimming="CharacterEllipsis"
-                                                                       ToolTipService.ToolTip="{x:Bind Name}"
-                                                                       VerticalAlignment="Center"
-                                                                       Margin="4,0,12,0"/>
-
-                                                            <Border Grid.Column="2"
-                                                                    Background="{x:Bind BadgeBackground, Mode=OneWay}"
-                                                                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                                                                    BorderThickness="1"
-                                                                    Opacity="0.85"
-                                                                    CornerRadius="4"
-                                                                    Padding="10,2"
-                                                                    Margin="0,0,8,0"
-                                                                    VerticalAlignment="Center">
-                                                                <TextBlock Text="{x:Bind SelectionStateLabel, Mode=OneWay}"
-                                                                           FontSize="10"
-                                                                           FontFamily="{ThemeResource Jura-SemiBold}"
-                                                                           Foreground="{x:Bind BadgeForeground, Mode=OneWay}"
-                                                                           VerticalAlignment="Center"/>
-                                                            </Border>
-
-                                                            <Button Grid.Column="3"
-                                                                    Width="32"
-                                                                    Height="32"
-                                                                    Padding="0"
-                                                                    Margin="0,0,4,0"
-                                                                    Opacity="0"
-                                                                    Background="Transparent"
-                                                                    BorderThickness="0"
-                                                                    VerticalAlignment="Center"
-                                                                    ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_category_actions_tooltip}">
-                                                                <Button.Resources>
-                                                                    <Thickness x:Key="ButtonPadding">0</Thickness>
-                                                                    <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
-                                                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SubtleFillColorSecondary}" />
-                                                                    <SolidColorBrush x:Key="ButtonBorderBrush" Color="Transparent" />
-                                                                </Button.Resources>
-                                                                <FontIcon Glyph="&#xE712;" FontSize="14" />
-                                                                <Button.Flyout>
-                                                                    <MenuFlyout Placement="BottomEdgeAlignedRight" Opened="ActionMenu_Opened" Closed="ActionMenu_Closed">
-                                                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_defaults}" Command="{x:Bind SelectDefaultsCommand}" />
-                                                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_all}" Command="{x:Bind SelectAllCommand}" />
-                                                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_select_none}" Command="{x:Bind SelectNoneCommand}" />
-                                                                        <MenuFlyoutSeparator />
-                                                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_analyze_cat}" Tag="{x:Bind}" Click="CatAnalyze_Click" />
-                                                                        <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_clean_cat}" Tag="{x:Bind}" Click="CatClean_Click" />
-                                                                    </MenuFlyout>
-                                                                </Button.Flyout>
-                                                            </Button>
+                                                            <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource Jura}" FontSize="11" VerticalAlignment="Center" Margin="2,0,16,0" />
                                                         </Grid>
-                                                    </Expander.Header>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Expander>
 
-                                                    <ItemsControl ItemsSource="{x:Bind Entries, Mode=OneWay}" Padding="4,0,0,4">
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate x:DataType="vm:DiskCleanupEntryViewModel">
-                                                                <Grid Padding="2,1" Margin="16,0,0,0"
-                                                                      Background="Transparent"
-                                                                      MinHeight="32"
-                                                                      PointerEntered="EntryRow_PointerEntered"
-                                                                      PointerExited="EntryRow_PointerExited">
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="*" />
-                                                                        <ColumnDefinition Width="Auto" />
-                                                                        <ColumnDefinition Width="Auto" />
-                                                                    </Grid.ColumnDefinitions>
-
-                                                                    <CheckBox Grid.Column="0"
-                                                                              IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
-                                                                              ToolTipService.ToolTip="{x:Bind Warning}"
-                                                                              MinWidth="0"
-                                                                              Padding="6,3">
-                                                                        <StackPanel Orientation="Horizontal" Spacing="6">
-                                                                            <FontIcon Glyph="&#xE7BA;" FontSize="11" Foreground="OrangeRed" VerticalAlignment="Center" Visibility="{x:Bind HasWarning, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                                                            <TextBlock Text="{x:Bind Name}" FontSize="12" FontFamily="{ThemeResource Jura}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind Name}" Margin="0,5,0,0" />
-                                                                        </StackPanel>
-                                                                    </CheckBox>
-
-                                                                    <TextBlock Grid.Column="1"
-                                                                               Text="{x:Bind SizeText, Mode=OneWay}"
-                                                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                                               FontFamily="{ThemeResource Jura}"
-                                                                               FontSize="11"
-                                                                               VerticalAlignment="Center"
-                                                                               Margin="2,0,4,0" />
-
-                                                                    <Button Grid.Column="2" Width="22" Height="22" Padding="0" Margin="0,0,4,0" Opacity="0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_entry_actions_tooltip}">
-                                                                        <FontIcon Glyph="&#xE712;" FontSize="10" />
-                                                                        <Button.Flyout>
-                                                                            <MenuFlyout Placement="Bottom" Opened="ActionMenu_Opened" Closed="ActionMenu_Closed">
-                                                                                
-                                                                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_analyze_entry}"
-                                                                                                Tag="{x:Bind}"
-                                                                                                Click="EntryAnalyze_Click">
-                                                                                    <MenuFlyoutItem.Icon>
-                                                                                        <FontIcon Glyph="&#xE11A;" />
-                                                                                    </MenuFlyoutItem.Icon>
-                                                                                </MenuFlyoutItem>
-
-                                                                                <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_clean_entry}"
-                                                                                                Tag="{x:Bind}"
-                                                                                                Click="EntryClean_Click">
-                                                                                    <MenuFlyoutItem.Icon>
-                                                                                        <FontIcon Glyph="&#xE74D;" />
-                                                                                    </MenuFlyoutItem.Icon>
-                                                                                </MenuFlyoutItem>
-
-                                                                                <MenuFlyoutSeparator />
-
-                                                                                <MenuFlyoutItem Text="{helpers:ResourceString Key=ai_explainer_btn_text}"
-                                                                                                Tag="{x:Bind}"
-                                                                                                IsEnabled="{x:Bind IsAiEnabled(), Mode=OneWay}"
-                                                                                                Click="EntryExplain_Click">
-                                                                                    <MenuFlyoutItem.Icon>
-                                                                                        <FontIcon Glyph="&#xE946;" />
-                                                                                    </MenuFlyoutItem.Icon>
-                                                                                </MenuFlyoutItem>
-                                                                                
-                                                                            </MenuFlyout>
-                                                                        </Button.Flyout>
-                                                                    </Button>
-                                                                </Grid>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
-                                                </Expander>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+                                    </StackPanel>
                                 </ScrollViewer>
                             </Grid>
                         </Border>

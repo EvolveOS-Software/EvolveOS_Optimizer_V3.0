@@ -3267,6 +3267,51 @@
     <sys:String x:Key="cleanup_status_cancelling">Annullamento in corso...</sys:String>
     <sys:String x:Key="cleanup_status_cancelled">Operazione annullata.</sys:String>
 
+    <sys:String x:Key="cleanup_dev_title">Workspace sviluppatori</sys:String>
+    <sys:String x:Key="cleanup_dev_desc">Elimina le cache e gli artefatti di compilazione degli strumenti per sviluppatori.</sys:String>
+    <sys:String x:Key="cleanup_dev_btn_scan">Scansiona cache</sys:String>
+    <sys:String x:Key="cleanup_dev_btn_clean">Svuota cache selezionate</sys:String>
+
+    <!-- Developer Toolchains Categories & Microstates -->
+    <sys:String x:Key="txt_scanning_dots">Scansione in corso...</sys:String>
+    <sys:String x:Key="txt_cleaning_dots">Pulizia in corso...</sys:String>
+    <sys:String x:Key="txt_cleaned">Pulito</sys:String>
+
+    <sys:String x:Key="dev_cat_js">Ecosistema JavaScript</sys:String>
+    <sys:String x:Key="dev_cat_systems">Programmazione di sistema</sys:String>
+    <sys:String x:Key="dev_cat_python">Ecosistema Python</sys:String>
+    <sys:String x:Key="dev_cat_dotnet">Ecosistema .NET</sys:String>
+    <sys:String x:Key="dev_cat_jvm">Ecosistema JVM</sys:String>
+    <sys:String x:Key="dev_cat_ide">IDE &amp; Strumenti</sys:String>
+
+    <!-- Developer Toolchain Rules -->
+    <sys:String x:Key="dev_node_name">Node.js (npm, Yarn, pnpm)</sys:String>
+    <sys:String x:Key="dev_node_desc">Cache dei pacchetti globali per i gestori di pacchetti npm, Yarn e pnpm.</sys:String>
+
+    <sys:String x:Key="dev_rust_name">Rust (Cargo)</sys:String>
+    <sys:String x:Key="dev_rust_desc">Download del registro di Cargo e cache del database git.</sys:String>
+
+    <sys:String x:Key="dev_python_name">Python (pip, uv)</sys:String>
+    <sys:String x:Key="dev_python_desc">Cache dei pacchetti whl e tar.gz scaricati.</sys:String>
+
+    <sys:String x:Key="dev_dotnet_name">.NET (NuGet)</sys:String>
+    <sys:String x:Key="dev_dotnet_desc">Cache globali dei pacchetti NuGet e cache dei download HTTP.</sys:String>
+
+    <sys:String x:Key="dev_go_name">Go (Build &amp; Mod)</sys:String>
+    <sys:String x:Key="dev_go_desc">Cache di compilazione del compilatore Go e cache dei moduli.</sys:String>
+
+    <sys:String x:Key="dev_cpp_name">C/C++ (vcpkg, ccache)</sys:String>
+    <sys:String x:Key="dev_cpp_desc">Archivi vcpkg e cache di accelerazione della compilazione sccache/ccache.</sys:String>
+
+    <sys:String x:Key="dev_java_name">Java (Gradle, Maven)</sys:String>
+    <sys:String x:Key="dev_java_desc">Cache di Gradle e repository locale Maven. (Lo svuotamento di Maven richiede il download dei nuovi artefatti).</sys:String>
+
+    <sys:String x:Key="dev_vs_name">Visual Studio MSBuild</sys:String>
+    <sys:String x:Key="dev_vs_desc">Cache del modello dei componenti e artefatti MSBuild temporanei.</sys:String>
+
+    <sys:String x:Key="dev_jb_name">IDE JetBrains</sys:String>
+    <sys:String x:Key="dev_jb_desc">Cache di sistema, vecchi dati di indicizzazione e file temporanei per Rider, IntelliJ, WebStorm, ecc.</sys:String>
+
     <!-- Winapp32 Warnings -->
     <sys:String x:Key="warning_ms_mouse_keyboard_settings">Questo eliminerà anche tutte le impostazioni specifiche dell'app.</sys:String>
     <sys:String x:Key="warning_paramount_rss">Ciò comporterà un nuovo download del file RSS dinamico di Paramount.</sys:String>

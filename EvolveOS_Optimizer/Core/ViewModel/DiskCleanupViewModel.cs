@@ -14,6 +14,7 @@ using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Services;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
@@ -37,6 +38,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private CancellationTokenSource? _analyzerCts;
         private CancellationTokenSource? _analyzerSearchCts;
         private CancellationTokenSource? _cleanerCts;
+
+        private readonly DevCleanupEngine _devEngine = new();
+
+        [ObservableProperty] public partial ObservableCollection<DevCleanupItemViewModel> DevToolchains { get; set; } = [];
         #endregion
 
         #region Observable State (Cleaner)
@@ -120,6 +125,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 { ".exe", (locInstallers, "#5AC8FA", "\uE896") }, { ".msi", (locInstallers, "#5AC8FA", "\uE896") }, { ".iso", (locInstallers, "#5AC8FA", "\uE896") },
                 { ".doc", (locDocs, "#007AFF", "\uE8A5") }, { ".pdf", (locDocs, "#007AFF", "\uE8A5") }, { ".txt", (locDocs, "#007AFF", "\uE8A5") }
             };
+
+            foreach (var rule in _devEngine.GetRules())
+            {
+                DevToolchains.Add(new DevCleanupItemViewModel(rule));
+            }
         }
         #endregion
 
@@ -1020,6 +1030,91 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 IsCleaning = false;
             }
         }
+
+        [RelayCommand]
+        private async Task AnalyzeDevToolchainsAsync()
+        {
+            if (IsBusy) return;
+
+            IsBusy = true;
+            IsAnalyzing = true;
+            StatusText = ResourceString.GetString("cleanup_status_dev_scanning") ?? "Scanning Developer Workspaces...";
+
+            if (DevToolchains.Count == 0)
+            {
+                foreach (var rule in _devEngine.GetRules())
+                {
+                    DevToolchains.Add(new DevCleanupItemViewModel(rule));
+                }
+            }
+
+            long totalDevBytes = 0;
+
+            await Task.Run(async () =>
+            {
+                foreach (var vm in DevToolchains)
+                {
+                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                        vm.SizeText = ResourceString.GetString("txt_scanning_dots") ?? "Scanning...");
+
+                    long size = await vm.Rule.CalculateSizeAsync();
+
+                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        vm.SizeBytes = size;
+                        vm.SizeText = size > 0 ? size.FormatBytes() : "0 B";
+
+                        // Force uncheck if it has no data to clean
+                        if (size == 0) vm.IsSelected = false;
+                    });
+
+                    totalDevBytes += size;
+                }
+            });
+
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_dev_scan_complete") ?? "Developer Scan Complete. Found {0} of artifacts.", totalDevBytes.FormatBytes());
+            IsBusy = false;
+            IsAnalyzing = false;
+        }
+
+        [RelayCommand]
+        private async Task CleanDevToolchainsAsync()
+        {
+            var selectedItems = DevToolchains.Where(x => x.IsSelected && x.SizeBytes > 0).ToList();
+            if (selectedItems.Count == 0) return;
+
+            IsBusy = true;
+            IsCleaning = true;
+            StatusText = ResourceString.GetString("cleanup_status_dev_cleaning") ?? "Purging developer caches...";
+
+            long totalFreed = 0;
+
+            await Task.Run(async () =>
+            {
+                foreach (var item in selectedItems)
+                {
+                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                        item.SizeText = ResourceString.GetString("txt_cleaning_dots") ?? "Cleaning...");
+
+                    long freed = await item.Rule.PurgeAsync();
+                    totalFreed += freed;
+
+                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        item.SizeBytes = 0;
+                        item.SizeText = ResourceString.GetString("txt_cleaned") ?? "Cleaned";
+                        item.IsSelected = false;
+                    });
+                }
+            });
+
+            await RecordCleaningSessionAsync(totalFreed);
+
+            StatusText = string.Format(ResourceString.GetString("cleanup_status_dev_clean_complete") ?? "Developer Cleanup Complete. Recovered {0}.", totalFreed.FormatBytes());
+
+            IsBusy = false;
+            IsCleaning = false;
+        }
         #endregion
 
         #region History & Analytics
@@ -1823,5 +1918,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
     [System.Text.Json.Serialization.JsonSerializable(typeof(List<CleaningSession>))]
     internal partial class HistoryJsonContext : System.Text.Json.Serialization.JsonSerializerContext { }
+
+    public partial class DevCleanupItemViewModel : ObservableObject
+    {
+        public IDevCleanupRule Rule { get; }
+
+        [ObservableProperty] public partial bool IsSelected { get; set; }
+        [ObservableProperty] public partial string SizeText { get; set; } = "";
+        [ObservableProperty] public partial long SizeBytes { get; set; } = 0;
+
+        public string Name => Rule.Name;
+        public string Category => Rule.Category;
+        public string Description => Rule.Description;
+
+        public DevCleanupItemViewModel(IDevCleanupRule rule)
+        {
+            Rule = rule;
+            IsSelected = rule.IsDefaultSelected;
+        }
+    }
     #endregion
 }

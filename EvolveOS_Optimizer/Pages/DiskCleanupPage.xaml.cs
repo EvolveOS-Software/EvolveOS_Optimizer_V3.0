@@ -373,6 +373,17 @@ namespace EvolveOS_Optimizer.Pages
             });
         }
 
+        private async void DevWorkspacesExpander_Expanding(Expander sender, ExpanderExpandingEventArgs args)
+        {
+            await Task.Delay(150);
+
+            sender.StartBringIntoView(new BringIntoViewOptions
+            {
+                AnimationDesired = true,
+                VerticalAlignmentRatio = 1.0f
+            });
+        }
+
         private void StorageTreeView_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
         {
             if (args.InvokedItem is StorageNode selectedNode)

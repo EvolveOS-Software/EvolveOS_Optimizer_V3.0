@@ -3271,6 +3271,51 @@
     <sys:String x:Key="cleanup_status_cancelling">Annuleren...</sys:String>
     <sys:String x:Key="cleanup_status_cancelled">Bewerking geannuleerd.</sys:String>
 
+    <sys:String x:Key="cleanup_dev_title">Ontwikkelaarswerkruimten</sys:String>
+    <sys:String x:Key="cleanup_dev_desc">Wist caches en build artefacten in verschillende ontwikkelaarstools.</sys:String>
+    <sys:String x:Key="cleanup_dev_btn_scan">Ontwikkelaarscaches scannen</sys:String>
+    <sys:String x:Key="cleanup_dev_btn_clean">Geselecteerde caches wissen</sys:String>
+
+    <!-- Developer Toolchains Categories & Microstates -->
+    <sys:String x:Key="txt_scanning_dots">Scannen...</sys:String>
+    <sys:String x:Key="txt_cleaning_dots">Wissen...</sys:String>
+    <sys:String x:Key="txt_cleaned">Gewist</sys:String>
+
+    <sys:String x:Key="dev_cat_js">JavaScript-ecosysteem</sys:String>
+    <sys:String x:Key="dev_cat_systems">Systeemprogrammering</sys:String>
+    <sys:String x:Key="dev_cat_python">Python-ecosysteem</sys:String>
+    <sys:String x:Key="dev_cat_dotnet">.NET ecosysteem</sys:String>
+    <sys:String x:Key="dev_cat_jvm">JVM ecosysteem</sys:String>
+    <sys:String x:Key="dev_cat_ide">IDE &amp; Tools</sys:String>
+
+    <!-- Developer Toolchain Rules -->
+    <sys:String x:Key="dev_node_name">Node.js (npm, Yarn, pnpm)</sys:String>
+    <sys:String x:Key="dev_node_desc">Globale pakketcaches voor npm, Yarn en pnpm pakketbeheerders.</sys:String>
+
+    <sys:String x:Key="dev_rust_name">Rust (Cargo)</sys:String>
+    <sys:String x:Key="dev_rust_desc">Cargo registerdownloads en git databasecache.</sys:String>
+
+    <sys:String x:Key="dev_python_name">Python (pip, uv)</sys:String>
+    <sys:String x:Key="dev_python_desc">Gedownloade whl- en tar.gz pakketcaches.</sys:String>
+
+    <sys:String x:Key="dev_dotnet_name">.NET (NuGet)</sys:String>
+    <sys:String x:Key="dev_dotnet_desc">Globale NuGet-pakketcaches en HTTP downloadcache.</sys:String>
+
+    <sys:String x:Key="dev_go_name">Go (Build &amp; Mod)</sys:String>
+    <sys:String x:Key="dev_go_desc">Go-compiler build cache en module-cache.</sys:String>
+
+    <sys:String x:Key="dev_cpp_name">C/C++ (vcpkg, ccache)</sys:String>
+    <sys:String x:Key="dev_cpp_desc">Vcpkg archieven en sccache/ccache build acceleratiecaches.</sys:String>
+
+    <sys:String x:Key="dev_java_name">Java (Gradle, Maven)</sys:String>
+    <sys:String x:Key="dev_java_desc">Gradle caches en lokale Maven repository. (Het wissen van Maven vereist het opnieuw downloaden van artefacten).</sys:String>
+
+    <sys:String x:Key="dev_vs_name">Visual Studio MSBuild</sys:String>
+    <sys:String x:Key="dev_vs_desc">Componentmodel-caches en tijdelijke MSBuild-artefacten.</sys:String>
+
+    <sys:String x:Key="dev_jb_name">JetBrains IDE's</sys:String>
+    <sys:String x:Key="dev_jb_desc">Systeemcaches, oude indexeringsgegevens en tijdelijke bestanden voor Rider, IntelliJ, WebStorm, enz.</sys:String>
+
     <!-- Winapp32 Warnings -->
     <sys:String x:Key="warning_ms_mouse_keyboard_settings">Hierdoor worden ook alle app specifieke instellingen verwijderd.</sys:String>
     <sys:String x:Key="warning_paramount_rss">Hierdoor moet u het Paramount Dynamic RSS-bestand opnieuw downloaden.</sys:String>
