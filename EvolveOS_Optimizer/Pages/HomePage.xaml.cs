@@ -1896,14 +1896,33 @@ namespace EvolveOS_Optimizer.Pages
 
                 TxtHealthStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning System...";
 
+                await Task.Delay(1000);
+
                 double ramPercentage = SystemDiagnostics.GetMemoryUsagePercentage();
-                double vRamPercentage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
-
-                await Task.Delay(1500);
-                double junkGigabytes = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
-
                 double totalRamGb = SystemDiagnostics.GetTotalPhysicalMemoryGigabytes();
+
+                double vRamPercentage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
                 double totalVRamGb = SystemDiagnostics.GetTotalVirtualMemoryGigabytes();
+
+                if (DiagnosticsPageViewModel.Current?.Computer?.Memory != null)
+                {
+                    ramPercentage = DiagnosticsPageViewModel.Current.Computer.Memory.Physical?.Used?.Percentage ?? ramPercentage;
+                    totalRamGb = DiagnosticsPageViewModel.Current.Computer.Memory.Physical?.Total?.Gigabytes ?? totalRamGb;
+                    vRamPercentage = DiagnosticsPageViewModel.Current.Computer.Memory.Virtual?.Used?.Percentage ?? vRamPercentage;
+                    totalVRamGb = DiagnosticsPageViewModel.Current.Computer.Memory.Virtual?.Total?.Gigabytes ?? totalVRamGb;
+                }
+
+                double junkGigabytes = 0.0;
+
+                if (DiagnosticsPageViewModel.Current != null && !string.IsNullOrEmpty(DiagnosticsPageViewModel.Current.TotalSpaceToFree))
+                {
+                    junkGigabytes = ParseSizeToGigabytes(DiagnosticsPageViewModel.Current.TotalSpaceToFree);
+                }
+                else
+                {
+                    double rawQuickJunk = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
+                    junkGigabytes = Math.Max(0, rawQuickJunk / 2.5);
+                }
 
                 var healthResult = SystemHealthHelper.EvaluateHealth(
                     ramPercentage, totalRamGb,
@@ -1929,6 +1948,23 @@ namespace EvolveOS_Optimizer.Pages
                 DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
                 BtnRefreshHealth.IsEnabled = true;
             }
+        }
+
+        private double ParseSizeToGigabytes(string sizeText)
+        {
+            if (string.IsNullOrWhiteSpace(sizeText)) return 0;
+
+            sizeText = sizeText.ToUpper();
+            string numericPart = new string(sizeText.Where(c => char.IsDigit(c) || c == '.' || c == ',').ToArray()).Replace(",", ".");
+
+            if (double.TryParse(numericPart, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double value))
+            {
+                if (sizeText.Contains("GB")) return value;
+                if (sizeText.Contains("MB")) return value / 1024.0;
+                if (sizeText.Contains("KB")) return value / (1024.0 * 1024.0);
+                if (sizeText.Contains("TB")) return value * 1024.0;
+            }
+            return 0;
         }
 
         #endregion
