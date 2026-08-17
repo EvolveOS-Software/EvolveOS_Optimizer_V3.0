@@ -546,6 +546,139 @@
     <sys:String x:Key="txt_60_seconds">60 secondi</sys:String>
     <sys:String x:Key="txt_5_minutes">5 minuti</sys:String>
     <sys:String x:Key="txt_15_minutes">15 minuti</sys:String>
+
+    <!-- DASHBOARD: CPU CARD -->
+    <sys:String x:Key="txt_live_load">Carico in tempo reale</sys:String>
+    <sys:String x:Key="txt_temp">Temp</sys:String>
+    <sys:String x:Key="txt_clock">Clock</sys:String>
+    <sys:String x:Key="txt_power">Alimentazione</sys:String>
+    <sys:String x:Key="btn_resmon">ResMon</sys:String>
+    <sys:String x:Key="txt_cpu_history">Cronologia CPU</sys:String>
+
+    <!-- DASHBOARD: GPU CARD -->
+    <sys:String x:Key="txt_vram_used">VRAM usata</sys:String>
+    <sys:String x:Key="txt_power_draw">Consumo energetico</sys:String>
+    <sys:String x:Key="btn_graphics_settings">Impostazioni grafiche</sys:String>
+    <sys:String x:Key="btn_reset_driver">Ripristina driver</sys:String>
+    <sys:String x:Key="txt_gpu_history">Cronologia GPU</sys:String>
+
+    <!-- DASHBOARD: RAM CARD -->
+    <sys:String x:Key="txt_memory_history">Cronologia memoria</sys:String>
+
+    <!-- DASHBOARD: NETWORK CARD -->
+    <sys:String x:Key="txt_live_ping">Ping in tempo reale (8.8.8.8)</sys:String>
+    <sys:String x:Key="txt_testing">Test in corso...</sys:String>
+    <sys:String x:Key="txt_top_apps_connections">App principali (Connessioni attive)</sys:String>
+    <sys:String x:Key="btn_flush_dns">Svuota DNS</sys:String>
+    <sys:String x:Key="btn_reset_adapter">Ripristina scheda</sys:String>
+    <sys:String x:Key="txt_network_history">Cronologia di rete</sys:String>
+
+    <!-- DASHBOARD: DISK CARD -->
+    <sys:String x:Key="tooltip_open_disk_cleanup">Apri pulizia disco</sys:String>
+    <sys:String x:Key="txt_free_space_colon">Libero:</sys:String>
+    <sys:String x:Key="txt_health">Stato di salute</sys:String>
+    <sys:String x:Key="txt_checking">Controllo in corso...</sys:String>
+    <sys:String x:Key="txt_type">Tipo</sys:String>
+    <sys:String x:Key="btn_clean_junk">Pulisci file inutili</sys:String>
+    <sys:String x:Key="btn_trim_optimize">TRIM / Ottimizza</sys:String>
+
+    <!-- DASHBOARD: DNS CARD -->
+    <sys:String x:Key="tooltip_open_dns_page">Apri DNS Crypt</sys:String>
+    <sys:String x:Key="txt_dns_preset">Preset DNS</sys:String>
+    <sys:String x:Key="tooltip_benchmark_dns">Benchmark &amp; Scegli il più veloce</sys:String>
+    <sys:String x:Key="btn_speed_test">Test di velocità</sys:String>
+    <sys:String x:Key="txt_family_safe">Sicurezza in famiglia</sys:String>
+    <sys:String x:Key="txt_block_adult_nsfw">Blocca Adulti/NSFW</sys:String>
+    <sys:String x:Key="txt_ad_malware">Pubblicità / Malware</sys:String>
+    <sys:String x:Key="txt_adguard_shield">Scudo AdGuard</sys:String>
+
+    <!-- DASHBOARD: RAM BOOST CARD -->
+    <sys:String x:Key="txt_memory_optimizer">Ottimizzatore di memoria</sys:String>
+    <sys:String x:Key="tooltip_optimizer_settings">Impostazioni ottimizzatore</sys:String>
+    <sys:String x:Key="txt_total_physical">Totale fisica</sys:String>
+    <sys:String x:Key="txt_in_use">In uso</sys:String>
+    <sys:String x:Key="txt_available">Disponibile</sys:String>
+    <sys:String x:Key="txt_system_cache">Cache di sistema</sys:String>
+    <sys:String x:Key="txt_standby_mapped">Standby + Mappata</sys:String>
+    <sys:String x:Key="txt_load_last_5_min">Carico - Ultimi 5 min</sys:String>
+    <sys:String x:Key="txt_ready_to_optimize">Pronto per l'ottimizzazione</sys:String>
+    <sys:String x:Key="btn_optimize_now">Ottimizza ora</sys:String>
+    <sys:String x:Key="txt_auto">Auto</sys:String>
+
+    <!-- DASHBOARD: SETTINGS DIALOG-->
+    <sys:String x:Key="txt_card_expansion">Espansione scheda</sys:String>
+    <sys:String x:Key="txt_remember_state">Ricorda stato</sys:String>
+    <sys:String x:Key="txt_dont_save">Non salvare</sys:String>
+    <sys:String x:Key="btn_close">Chiudi</sys:String>
+
+    <!-- DASHBOARD: AUTO OPTIMIZE -->
+    <sys:String x:Key="txt_configure_auto_optimization">Configura ottimizzazione automatica</sys:String>
+    <sys:String x:Key="txt_auto_optimize_desc">Imposta la soglia percentuale di utilizzo della memoria per avviare automaticamente l'ottimizzazione:</sys:String>
+    <sys:String x:Key="txt_trigger_threshold">Soglia di attivazione:</sys:String>
+
+    <!-- WEATHER DROPDOWN WIDGET -->
+    <sys:String x:Key="txt_or_enter_custom">O inserisci personalizzato:</sys:String>
+    <sys:String x:Key="txt_placeholder_city">Seleziona una città...</sys:String>
+    <sys:String x:Key="txt_placeholder_location">Inserisci il nome della città...</sys:String>
+    <sys:String x:Key="btn_update_location">Aggiorna posizione</sys:String>
+
+    <!-- Code-Behind: Memory Optimizer -->
+    <sys:String x:Key="txt_running_memory_opt">Ottimizzazione della memoria in corso...</sys:String>
+    <sys:String x:Key="txt_optimized">Ottimizzato</sys:String>
+    <sys:String x:Key="txt_mb_freed">MB liberati</sys:String>
+    <sys:String x:Key="txt_apps_trimmed">app ridotte</sys:String>
+    <sys:String x:Key="title_memory_optimizer_settings">Impostazioni ottimizzatore di memoria</sys:String>
+    <sys:String x:Key="msg_min_one_opt_feature">⚠️ Almeno una funzione di ottimizzazione deve rimanere attivata.</sys:String>
+    <sys:String x:Key="setting_trim_ws_title">Riduci set di lavoro dei processi</sys:String>
+    <sys:String x:Key="setting_trim_ws_desc">Recupera RAM fisica dalle applicazioni in background.</sys:String>
+    <sys:String x:Key="setting_standby_title">Svuota cache di standby</sys:String>
+    <sys:String x:Key="setting_standby_desc">Elimina i dati del file system memorizzati nella cache dalla RAM.</sys:String>
+    <sys:String x:Key="setting_combo_title">Ottimizza elenco pagine combinate</sys:String>
+    <sys:String x:Key="setting_combo_desc">Combina pagine identiche per liberare memoria fisica.</sys:String>
+    <sys:String x:Key="setting_mod_title">Ottimizza elenco pagine modificate</sys:String>
+    <sys:String x:Key="setting_mod_desc">Scarica le pagine modificate sul disco per liberare RAM attiva.</sys:String>
+    <sys:String x:Key="setting_reg_title">Ottimizza cache di registro</sys:String>
+    <sys:String x:Key="setting_reg_desc">Riconcilia e libera la memoria dell'hive del registro di sistema.</sys:String>
+
+    <!-- Code-Behind: Disk Card -->
+    <sys:String x:Key="txt_cleaning">Pulizia in corso...</sys:String>
+    <sys:String x:Key="txt_freed_mb">{0:0.##} MB liberati</sys:String>
+    <sys:String x:Key="txt_already_clean">Già pulito</sys:String>
+    <sys:String x:Key="title_shared_drive">Unità fisica condivisa</sys:String>
+    <sys:String x:Key="title_optimize_drive">Ottimizza unità</sys:String>
+    <sys:String x:Key="msg_optimize_shared">Nota: Le unità {0} risiedono sullo stesso disco fisico. L'ottimizzazione di {1} ottimizzerà l'intera unità hardware fisica. Procedere?</sys:String>
+    <sys:String x:Key="msg_optimize_single">Sei sicuro di voler eseguire TRIM / Ottimizza sull'unità {0}?</sys:String>
+    <sys:String x:Key="txt_optimizing">Ottimizzazione in corso...</sys:String>
+
+    <!-- Code-Behind: Network Card -->
+    <sys:String x:Key="txt_offline">Offline</sys:String>
+    <sys:String x:Key="txt_idle_no_connections">Inattivo / Nessuna connessione attiva</sys:String>
+    <sys:String x:Key="txt_flushing">Svuotamento in corso...</sys:String>
+    <sys:String x:Key="txt_flushed">Svuotato!</sys:String>
+    <sys:String x:Key="txt_errors_occurred">Si sono verificati errori</sys:String>
+    <sys:String x:Key="txt_resetting">Ripristino in corso...</sys:String>
+    <sys:String x:Key="txt_restarted">Riavviato!</sys:String>
+
+    <!-- Code-Behind: DNS Card -->
+    <sys:String x:Key="txt_dnscrypt_not_installed">DNSCrypt non è installato.</sys:String>
+    <sys:String x:Key="txt_dnscrypt_running">Il servizio DNSCrypt è in esecuzione.</sys:String>
+    <sys:String x:Key="btn_stop_service">Ferma il servizio</sys:String>
+    <sys:String x:Key="txt_nothing_running">Nessun processo in background</sys:String>
+    <sys:String x:Key="btn_start_service">Avvia il servizio</sys:String>
+    <sys:String x:Key="txt_service_action_failed">Azione del servizio non riuscita.</sys:String>
+    <sys:String x:Key="txt_connection_failed">Connessione fallita.</sys:String>
+    <sys:String x:Key="txt_testing_providers">Test di tutti i provider...</sys:String>
+    <sys:String x:Key="title_speed_test_complete">Test di velocità completato</sys:String>
+    <sys:String x:Key="msg_fastest_dns">Il server DNS più veloce per la tua connessione è {0} con una latenza di {1} ms.&#x0a;&#x0a;Vuoi applicarlo ora?</sys:String>
+    <sys:String x:Key="btn_apply_now">Applica ora</sys:String>
+    <sys:String x:Key="txt_latency_timeout">Timeout del test di latenza.</sys:String>
+    <sys:String x:Key="txt_applied_dns">Applicato: {0} ({1} ms)</sys:String>
+    <sys:String x:Key="txt_fastest_dns_no_change">Il più veloce era {0} ({1} ms). Nessuna modifica apportata.</sys:String>
+    <sys:String x:Key="txt_applied_dns_success">{0} applicato!</sys:String>
+    <sys:String x:Key="txt_dns_update_failed">Impossibile aggiornare le impostazioni DNS.</sys:String>
+
+    <!-- Code-Behind: Health / Security Cards -->
+    <sys:String x:Key="txt_scan_failed">Scansione fallita.</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->

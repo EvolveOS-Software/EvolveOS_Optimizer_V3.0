@@ -1534,7 +1534,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 BtnStartService.IsEnabled = false;
                 BtnDebug.IsEnabled = false;
-                statusLabel.Text = "DNSCrypt is not installed.";
+                statusLabel.Text = ResourceString.GetString("txt_dnscrypt_not_installed") ?? "DNSCrypt is not installed.";
 
                 IconServiceStopped.Visibility = Visibility.Visible;
                 ImgServiceRunning.Visibility = Visibility.Collapsed;
@@ -1556,10 +1556,10 @@ namespace EvolveOS_Optimizer.Pages
                 TxtServicesRunning.Visibility = Visibility.Visible;
                 ProgressRingRunServices.Visibility = Visibility.Visible;
 
-                statusLabel.Text = "DNSCrypt Service is running.";
+                statusLabel.Text = ResourceString.GetString("txt_dnscrypt_running") ?? "DNSCrypt Service is running.";
                 statusLabel.Opacity = 1.0;
 
-                BtnStartService.Content = "Stop service";
+                BtnStartService.Content = ResourceString.GetString("btn_stop_service") ?? "Stop service";
                 BtnStartService.Style = (Style)Application.Current.Resources["DefaultButtonStyle"];
             }
             else
@@ -1569,10 +1569,10 @@ namespace EvolveOS_Optimizer.Pages
                 TxtServicesRunning.Visibility = Visibility.Collapsed;
                 ProgressRingRunServices.Visibility = Visibility.Collapsed;
 
-                statusLabel.Text = "Nothing is running in the background";
+                statusLabel.Text = ResourceString.GetString("txt_nothing_running") ?? "Nothing is running in the background";
                 statusLabel.Opacity = 0.7;
 
-                BtnStartService.Content = "Start service";
+                BtnStartService.Content = ResourceString.GetString("btn_start_service") ?? "Start service";
                 BtnStartService.Style = (Style)Application.Current.Resources["AccentButtonStyle"];
             }
         }
@@ -1595,7 +1595,7 @@ namespace EvolveOS_Optimizer.Pages
             catch (Exception ex)
             {
                 Debug.WriteLine($"[Dashboard DNS] Error: {ex.Message}");
-                statusLabel.Text = "Service action failed.";
+                statusLabel.Text = ResourceString.GetString("txt_service_action_failed") ?? "Service action failed.";
             }
             finally
             {
@@ -1614,7 +1614,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (!isConnected)
                 {
-                    statusLabel.Text = "Connection failed.";
+                    statusLabel.Text = ResourceString.GetString("txt_connection_failed") ?? "Connection failed.";
                     return;
                 }
 
@@ -1706,11 +1706,12 @@ namespace EvolveOS_Optimizer.Pages
 
             if (v4Success)
             {
-                ShowDnsFeedback($"Applied {selectedPreset.Name}!", Colors.SeaGreen);
+                string successFmt = ResourceString.GetString("txt_applied_dns_success") ?? "Applied {0}!";
+                ShowDnsFeedback(string.Format(successFmt, selectedPreset.Name), Colors.SeaGreen);
             }
             else
             {
-                ShowDnsFeedback("Failed to update DNS settings.", Colors.Red);
+                ShowDnsFeedback(ResourceString.GetString("txt_dns_update_failed") ?? "Failed to update DNS settings.", Colors.Red);
             }
         }
 
@@ -1768,7 +1769,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is Button btn) btn.IsEnabled = false;
 
-            ShowDnsFeedback("Testing all providers...", Microsoft.UI.Colors.Orange);
+            ShowDnsFeedback(ResourceString.GetString("txt_testing_providers") ?? "Testing all providers...", Microsoft.UI.Colors.Orange);
 
             var benchmarkTargets = DnsPreset.DefaultPresets
                 .Where(p => !string.IsNullOrWhiteSpace(p.Ipv4Primary)
@@ -1783,10 +1784,7 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     using Ping ping = new Ping();
                     var reply = await ping.SendPingAsync(target.Ipv4Primary!, 1200);
-                    if (reply.Status == IPStatus.Success)
-                    {
-                        latency = reply.RoundtripTime;
-                    }
+                    if (reply.Status == IPStatus.Success) latency = reply.RoundtripTime;
                 }
                 catch { }
 
@@ -1811,13 +1809,14 @@ namespace EvolveOS_Optimizer.Pages
                 XamlRoot? root = this.XamlRoot ?? (this.Content?.XamlRoot);
                 if (root != null)
                 {
+                    string contentFmt = ResourceString.GetString("msg_fastest_dns") ?? "The fastest DNS server for your connection is {0} with a latency of {1} ms.\n\nWould you like to apply it now?";
                     ContentDialog dialog = new ContentDialog
                     {
                         XamlRoot = root,
-                        Title = "Speed Test Complete",
-                        Content = $"The fastest DNS server for your connection is {fastest.Name} with a latency of {fastest.Latency} ms.\n\nWould you like to apply it now?",
-                        PrimaryButtonText = "Apply Now",
-                        CloseButtonText = "Cancel",
+                        Title = ResourceString.GetString("title_speed_test_complete") ?? "Speed Test Complete",
+                        Content = string.Format(contentFmt, fastest.Name, fastest.Latency),
+                        PrimaryButtonText = ResourceString.GetString("btn_apply_now") ?? "Apply Now",
+                        CloseButtonText = ResourceString.GetString("btn_cancel") ?? "Cancel",
                         DefaultButton = ContentDialogButton.Primary
                     };
 
@@ -1832,18 +1831,20 @@ namespace EvolveOS_Optimizer.Pages
 
                     if (result == ContentDialogResult.Primary)
                     {
-                        ShowDnsFeedback($"Applied: {fastest.Name} ({fastest.Latency} ms)", Colors.SeaGreen);
+                        string applySuccessFmt = ResourceString.GetString("txt_applied_dns") ?? "Applied: {0} ({1} ms)";
+                        ShowDnsFeedback(string.Format(applySuccessFmt, fastest.Name, fastest.Latency), Colors.SeaGreen);
                         CmbDnsPresets.SelectedItem = fastest.PresetReference;
                     }
                     else
                     {
-                        ShowDnsFeedback($"Fastest was {fastest.Name} ({fastest.Latency} ms). No changes made.", Colors.SeaGreen);
+                        string noChangeFmt = ResourceString.GetString("txt_fastest_dns_no_change") ?? "Fastest was {0} ({1} ms). No changes made.";
+                        ShowDnsFeedback(string.Format(noChangeFmt, fastest.Name, fastest.Latency), Colors.SeaGreen);
                     }
                 }
             }
             else
             {
-                ShowDnsFeedback("Latency test timed out.", Colors.Red);
+                ShowDnsFeedback(ResourceString.GetString("txt_latency_timeout") ?? "Latency test timed out.", Colors.Red);
             }
 
             if (sender is Button b) b.IsEnabled = true;
@@ -1921,7 +1922,7 @@ namespace EvolveOS_Optimizer.Pages
             catch (Exception ex)
             {
                 Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
-                TxtHealthStatus.Text = "Scan failed.";
+                TxtHealthStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
             }
             finally
             {
@@ -2047,7 +2048,7 @@ namespace EvolveOS_Optimizer.Pages
             catch (Exception ex)
             {
                 Debug.WriteLine($"❌ [Security Check Error] {ex.Message}");
-                TxtSecurityStatus.Text = "Scan failed.";
+                TxtSecurityStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
             }
             finally
             {
@@ -2125,7 +2126,7 @@ namespace EvolveOS_Optimizer.Pages
 
             var cleaningPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6 };
             cleaningPanel.Children.Add(new FontIcon { Glyph = "\uE895", FontSize = 13 });
-            cleaningPanel.Children.Add(new TextBlock { Text = "Cleaning..." });
+            cleaningPanel.Children.Add(new TextBlock { Text = ResourceString.GetString("txt_cleaning") ?? "Cleaning..." });
             btn.Content = cleaningPanel;
 
             long bytesFreed = await Task.Run(() => ClearingMemory.SafeCleanTempFolders());
@@ -2133,7 +2134,10 @@ namespace EvolveOS_Optimizer.Pages
             await Task.Delay(400);
 
             double mbFreed = bytesFreed / (1024.0 * 1024.0);
-            string resultText = bytesFreed > 0 ? $"Freed {mbFreed:0.##} MB" : "Already Clean";
+
+            string resultText = bytesFreed > 0
+                ? string.Format(ResourceString.GetString("txt_freed_mb") ?? "Freed {0:0.##} MB", mbFreed)
+                : ResourceString.GetString("txt_already_clean") ?? "Already Clean";
 
             var resultPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6 };
             resultPanel.Children.Add(new FontIcon { Glyph = "\uE73E", FontSize = 13, Foreground = new SolidColorBrush(Colors.SeaGreen) });
@@ -2175,16 +2179,16 @@ namespace EvolveOS_Optimizer.Pages
                     string sharedList = isShared ? string.Join(" and ", sharedDrives) : targetDrive;
 
                     string contentMsg = isShared
-                        ? $"Note: Drives {sharedList} reside on the same physical disk. Optimizing {targetDrive} will optimize the entire physical hardware unit. Proceed?"
-                        : $"Are you sure you want to run TRIM / Optimize on the {targetDrive} drive?";
+                        ? string.Format(ResourceString.GetString("msg_optimize_shared") ?? "Note: Drives {0} reside on the same physical disk. Optimizing {1} will optimize the entire physical hardware unit. Proceed?", sharedList, targetDrive)
+                        : string.Format(ResourceString.GetString("msg_optimize_single") ?? "Are you sure you want to run TRIM / Optimize on the {0} drive?", targetDrive);
 
                     ContentDialog dialog = new ContentDialog
                     {
                         XamlRoot = root,
-                        Title = isShared ? "Shared Physical Drive" : "Optimize Drive",
+                        Title = isShared ? (ResourceString.GetString("title_shared_drive") ?? "Shared Physical Drive") : (ResourceString.GetString("title_optimize_drive") ?? "Optimize Drive"),
                         Content = contentMsg,
-                        PrimaryButtonText = "Optimize Now",
-                        CloseButtonText = "Cancel",
+                        PrimaryButtonText = ResourceString.GetString("btn_optimize_now") ?? "Optimize Now",
+                        CloseButtonText = ResourceString.GetString("btn_cancel") ?? "Cancel",
                         DefaultButton = ContentDialogButton.Primary
                     };
 
@@ -2200,7 +2204,7 @@ namespace EvolveOS_Optimizer.Pages
                     }
                 }
 
-                if (TxtSmartHealth != null) TxtSmartHealth.Text = "Optimizing...";
+                if (TxtSmartHealth != null) TxtSmartHealth.Text = ResourceString.GetString("txt_optimizing") ?? "Optimizing...";
 
                 await CommandExecutor.RunCommand($"defrag.exe {targetDrive} /O", isPowerShell: false, waitForExit: true);
 
@@ -2237,7 +2241,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (DiskExpandedContent.Visibility == Visibility.Visible)
                 {
-                    TxtSmartHealth.Text = "Checking...";
+                    TxtSmartHealth.Text = ResourceString.GetString("txt_checking") ?? "Checking...";
                     TxtSmartType.Text = "--";
                     TxtSmartTemp.Text = "--";
                     TxtSmartHealth.Foreground = new SolidColorBrush(Colors.Gray);
@@ -2289,7 +2293,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private async Task FetchSmartDataAsync()
         {
-            string healthResult = "Checking...";
+            string healthResult = ResourceString.GetString("txt_checking") ?? "Checking...";
             string typeResult = "--";
             string tempResult = "--";
             Color healthColor = Colors.Gray;
@@ -2324,7 +2328,6 @@ namespace EvolveOS_Optimizer.Pages
                         }
                         else
                         {
-                            // Fallback to highest temp if specific drive sensor fails
                             float maxDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperature();
                             if (maxDiskTemp > 0)
                             {
@@ -2333,9 +2336,7 @@ namespace EvolveOS_Optimizer.Pages
                         }
                     }
 
-                    healthColor = healthResult == "Good"
-                        ? Colors.SeaGreen
-                        : Colors.Orange;
+                    healthColor = healthResult == "Good" ? Colors.SeaGreen : Colors.Orange;
                 }
                 catch (Exception ex)
                 {
@@ -2426,7 +2427,7 @@ namespace EvolveOS_Optimizer.Pages
                         }
                         else
                         {
-                            TxtPingValue.Text = "Offline";
+                            TxtPingValue.Text = ResourceString.GetString("txt_offline") ?? "Offline";
                             TxtPingValue.Foreground = new SolidColorBrush(Colors.Red);
                         }
                     });
@@ -2454,7 +2455,6 @@ namespace EvolveOS_Optimizer.Pages
             {
                 var output = CommandExecutor.StartTask("netstat -ano").GetAwaiter().GetResult();
                 var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
                 var pidCounts = new Dictionary<int, int>();
 
                 foreach (var line in lines.Skip(4))
@@ -2489,7 +2489,11 @@ namespace EvolveOS_Optimizer.Pages
 
             if (results.Count == 0)
             {
-                results.Add(new NetworkProcessInfo { ProcessName = "Idle / No active connections", ConnectionCount = "" });
+                results.Add(new NetworkProcessInfo
+                {
+                    ProcessName = ResourceString.GetString("txt_idle_no_connections") ?? "Idle / No active connections",
+                    ConnectionCount = ""
+                });
             }
 
             return results;
@@ -2500,19 +2504,19 @@ namespace EvolveOS_Optimizer.Pages
             Button? btn = sender as Button;
             if (btn != null) btn.IsEnabled = false;
 
-            TxtPingValue.Text = "Flushing...";
+            TxtPingValue.Text = ResourceString.GetString("txt_flushing") ?? "Flushing...";
             TxtPingValue.Foreground = new SolidColorBrush(Colors.Orange);
 
             bool success = await Task.Run(() => ClearingMemory.FlushDnsCache());
 
             if (success)
             {
-                TxtPingValue.Text = "Flushed!";
+                TxtPingValue.Text = ResourceString.GetString("txt_flushed") ?? "Flushed!";
                 TxtPingValue.Foreground = new SolidColorBrush(Colors.SeaGreen);
             }
             else
             {
-                TxtPingValue.Text = "Errors Occurred";
+                TxtPingValue.Text = ResourceString.GetString("txt_errors_occurred") ?? "Errors Occurred";
                 TxtPingValue.Foreground = new SolidColorBrush(Colors.Red);
             }
 
@@ -2525,12 +2529,12 @@ namespace EvolveOS_Optimizer.Pages
             Button? btn = sender as Button;
             if (btn != null) btn.IsEnabled = false;
 
-            TxtPingValue.Text = "Resetting...";
+            TxtPingValue.Text = ResourceString.GetString("txt_resetting") ?? "Resetting...";
             TxtPingValue.Foreground = new SolidColorBrush(Colors.Orange);
 
             await CommandExecutor.RunCommand("Restart-NetAdapter -Name \"*\" -Confirm:$false", isPowerShell: true, waitForExit: true);
 
-            TxtPingValue.Text = "Restarted!";
+            TxtPingValue.Text = ResourceString.GetString("txt_restarted") ?? "Restarted!";
             TxtPingValue.Foreground = new SolidColorBrush(Colors.SeaGreen);
 
             await Task.Delay(2000);
@@ -2701,7 +2705,7 @@ namespace EvolveOS_Optimizer.Pages
         {
             BtnOptimizeMemory.IsEnabled = false;
             BoostProgressBar.Visibility = Visibility.Visible;
-            BoostStatusText.Text = "Running memory optimization...";
+            BoostStatusText.Text = ResourceString.GetString("txt_running_memory_opt") ?? "Running memory optimization...";
             BoostResultsText.Text = "";
 
             await Task.Delay(400);
@@ -2718,28 +2722,11 @@ namespace EvolveOS_Optimizer.Pages
                 var allProcs = Process.GetProcesses();
                 procsTrimmed = allProcs.Length;
 
-                if (SettingsEngine.Dashboard_BoostWorkingSets)
-                {
-                    ClearingMemory.EmptyWorkingSetFunction();
-                }
-
-                if (SettingsEngine.Dashboard_BoostStandbyCache)
-                {
-                    ClearingMemory.ClearFileSystemCache(ClearStandbyCache: true, lowPriority: false);
-                }
-
-                if (SettingsEngine.Dashboard_BoostCombinedPageList)
-                {
-                    ClearingMemory.OptimizeCombinedPageList();
-                }
-                if (SettingsEngine.Dashboard_BoostModifiedPageList)
-                {
-                    ClearingMemory.OptimizeModifiedPageList();
-                }
-                if (SettingsEngine.Dashboard_BoostRegistryCache)
-                {
-                    ClearingMemory.OptimizeRegistryCache();
-                }
+                if (SettingsEngine.Dashboard_BoostWorkingSets) ClearingMemory.EmptyWorkingSetFunction();
+                if (SettingsEngine.Dashboard_BoostStandbyCache) ClearingMemory.ClearFileSystemCache(ClearStandbyCache: true, lowPriority: false);
+                if (SettingsEngine.Dashboard_BoostCombinedPageList) ClearingMemory.OptimizeCombinedPageList();
+                if (SettingsEngine.Dashboard_BoostModifiedPageList) ClearingMemory.OptimizeModifiedPageList();
+                if (SettingsEngine.Dashboard_BoostRegistryCache) ClearingMemory.OptimizeRegistryCache();
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -2754,12 +2741,14 @@ namespace EvolveOS_Optimizer.Pages
             });
 
             long mbFreed = bytesFreed / (1024 * 1024);
-
             if (mbFreed < 15) mbFreed = new Random().Next(25, 85);
 
             BoostProgressBar.Visibility = Visibility.Collapsed;
-            BoostStatusText.Text = "Optimized";
-            BoostResultsText.Text = $"{mbFreed:N0} MB freed • {procsTrimmed} apps trimmed";
+            BoostStatusText.Text = ResourceString.GetString("txt_optimized") ?? "Optimized";
+
+            string strMbFreed = ResourceString.GetString("txt_mb_freed") ?? "MB freed";
+            string strAppsTrimmed = ResourceString.GetString("txt_apps_trimmed") ?? "apps trimmed";
+            BoostResultsText.Text = $"{mbFreed:N0} {strMbFreed} • {procsTrimmed} {strAppsTrimmed}";
 
             ViewModel.LastBoostFreedText = $"Last run: {mbFreed:N0} MB";
 
@@ -2769,10 +2758,9 @@ namespace EvolveOS_Optimizer.Pages
             }
 
             await CalculateSystemHealthAsync();
-
             await Task.Delay(5000);
 
-            BoostStatusText.Text = "Ready to optimize";
+            BoostStatusText.Text = ResourceString.GetString("txt_ready_to_optimize") ?? "Ready to optimize";
             if (Application.Current.Resources.TryGetValue("TextFillColorSecondaryBrush", out object secondaryBrush))
             {
                 BoostStatusText.Foreground = (Brush)secondaryBrush;
@@ -2791,15 +2779,34 @@ namespace EvolveOS_Optimizer.Pages
 
             ToggleSwitch toggleWorkingSets, toggleStandbyCache, toggleCombinedPageList, toggleModifiedPageList, toggleRegistryCache;
 
-            panel.Children.Add(CreateSettingRow("Trim Process Working Sets", "Reclaims physical RAM from background applications.", SettingsEngine.Dashboard_BoostWorkingSets, out toggleWorkingSets));
-            panel.Children.Add(CreateSettingRow("Clear Standby Cache", "Purges cached filesystem data from RAM.", SettingsEngine.Dashboard_BoostStandbyCache, out toggleStandbyCache));
-            panel.Children.Add(CreateSettingRow("Optimize Combined Page List", "Combines identical pages to free physical memory.", SettingsEngine.Dashboard_BoostCombinedPageList, out toggleCombinedPageList));
-            panel.Children.Add(CreateSettingRow("Optimize Modified Page List", "Flushes modified pages to disk to free active RAM.", SettingsEngine.Dashboard_BoostModifiedPageList, out toggleModifiedPageList));
-            panel.Children.Add(CreateSettingRow("Optimize Registry Cache", "Reconciles and frees system registry hive memory.", SettingsEngine.Dashboard_BoostRegistryCache, out toggleRegistryCache));
+            panel.Children.Add(CreateSettingRow(
+                ResourceString.GetString("setting_trim_ws_title") ?? "Trim Process Working Sets",
+                ResourceString.GetString("setting_trim_ws_desc") ?? "Reclaims physical RAM from background applications.",
+                SettingsEngine.Dashboard_BoostWorkingSets, out toggleWorkingSets));
+
+            panel.Children.Add(CreateSettingRow(
+                ResourceString.GetString("setting_standby_title") ?? "Clear Standby Cache",
+                ResourceString.GetString("setting_standby_desc") ?? "Purges cached filesystem data from RAM.",
+                SettingsEngine.Dashboard_BoostStandbyCache, out toggleStandbyCache));
+
+            panel.Children.Add(CreateSettingRow(
+                ResourceString.GetString("setting_combo_title") ?? "Optimize Combined Page List",
+                ResourceString.GetString("setting_combo_desc") ?? "Combines identical pages to free physical memory.",
+                SettingsEngine.Dashboard_BoostCombinedPageList, out toggleCombinedPageList));
+
+            panel.Children.Add(CreateSettingRow(
+                ResourceString.GetString("setting_mod_title") ?? "Optimize Modified Page List",
+                ResourceString.GetString("setting_mod_desc") ?? "Flushes modified pages to disk to free active RAM.",
+                SettingsEngine.Dashboard_BoostModifiedPageList, out toggleModifiedPageList));
+
+            panel.Children.Add(CreateSettingRow(
+                ResourceString.GetString("setting_reg_title") ?? "Optimize Registry Cache",
+                ResourceString.GetString("setting_reg_desc") ?? "Reconciles and frees system registry hive memory.",
+                SettingsEngine.Dashboard_BoostRegistryCache, out toggleRegistryCache));
 
             TextBlock errorBlock = new TextBlock
             {
-                Text = "⚠️ At least one optimization feature must remain enabled.",
+                Text = ResourceString.GetString("msg_min_one_opt_feature") ?? "⚠️ At least one optimization feature must remain enabled.",
                 Foreground = new SolidColorBrush(Colors.OrangeRed),
                 FontSize = 11,
                 Visibility = Visibility.Collapsed,
@@ -2817,10 +2824,10 @@ namespace EvolveOS_Optimizer.Pages
             ContentDialog dialog = new ContentDialog
             {
                 XamlRoot = root,
-                Title = "Memory Optimizer Settings",
+                Title = ResourceString.GetString("title_memory_optimizer_settings") ?? "Memory Optimizer Settings",
                 Content = scrollViewer,
-                PrimaryButtonText = "Save Changes",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = ResourceString.GetString("btn_save") ?? "Save Changes",
+                CloseButtonText = ResourceString.GetString("btn_cancel") ?? "Cancel",
                 DefaultButton = ContentDialogButton.Primary
             };
 

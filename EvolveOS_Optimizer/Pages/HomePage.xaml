@@ -40,10 +40,10 @@
                     <ControlTemplate TargetType="GridViewItem">
                         <Grid Background="Transparent">
                             <ContentPresenter x:Name="ContentPresenter"
-                                      ContentTransitions="{TemplateBinding ContentTransitions}"
-                                      Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch" />
+                                              ContentTransitions="{TemplateBinding ContentTransitions}"
+                                              Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch" />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -260,7 +260,7 @@
                                                             <StackPanel Spacing="12" MinWidth="220">
                                                                 <TextBlock helpers:Loc.Key="txt_select_location" Style="{StaticResource BodyStrongTextBlockStyle}"/>
                                                                 <ComboBox x:Name="CityPicker" ItemsSource="{x:Bind ViewModel.AvailableCities, Mode=OneWay}" HorizontalAlignment="Stretch" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_city}" SelectionChanged="CityPicker_SelectionChanged"/>
-                                                                <TextBlock Text="Or enter custom:" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                                                <TextBlock Text="{helpers:ResourceString Key=txt_or_enter_custom}" Style="{StaticResource CaptionTextBlockStyle}"/>
                                                                 <TextBox x:Name="CustomLocationBox" PlaceholderText="{helpers:ResourceString Key=txt_placeholder_location}" KeyDown="CustomLocationBox_KeyDown"/>
                                                                 <Button Content="{helpers:ResourceString Key=btn_update_location}" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Click="UpdateLocation_Click"/>
                                                             </StackPanel>
@@ -438,15 +438,15 @@
                                 <Grid>
                                     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                                         <FontIcon Glyph="&#xE839;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                                        <TextBlock Text="Live Ping (8.8.8.8)" FontSize="12" FontFamily="Jura Medium" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_live_ping}" FontSize="12" FontFamily="Jura Medium" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                     </StackPanel>
-                                    <TextBlock x:Name="TxtPingValue" Text="Testing..." FontSize="14" FontWeight="Bold" FontFamily="Jura" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                    <TextBlock x:Name="TxtPingValue" Text="{helpers:ResourceString Key=txt_testing}" FontSize="14" FontWeight="Bold" FontFamily="Jura" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                 </Grid>
                             </Border>
 
                             <!-- Top Active Connections -->
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Top Apps (Active Connections)" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" Margin="0,0,0,4"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_top_apps_connections}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" Margin="0,0,0,4"/>
                                 <ItemsControl x:Name="NetworkHogsList">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -470,14 +470,14 @@
                                 <Button x:Name="BtnFlushDns" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnFlushDns_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE898;" FontSize="13"/>
-                                        <TextBlock Text="Flush DNS"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_flush_dns}"/>
                                     </StackPanel>
                                 </Button>
 
                                 <Button x:Name="BtnResetAdapter" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnResetAdapter_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE72C;" FontSize="13"/>
-                                        <TextBlock Text="Reset Adapter"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_reset_adapter}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -551,7 +551,7 @@
                                     <ProgressRing Value="{x:Bind ViewModel.CpuUsageDisplay, Mode=OneWay}" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}" Width="95" Height="95"/>
                                     <TextBlock Text="{x:Bind ViewModel.CpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="20" FontWeight="Bold" FontFamily="Jura" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
-                                <TextBlock Text="Live Load" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_live_load}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Center"/>
                             </StackPanel>
 
                             <!-- Hardware Vitals (Temp, Clock, Power) -->
@@ -559,7 +559,7 @@
                                 <!-- 1. Temperature -->
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Temp" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_temp}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock Text="{x:Bind ViewModel.CpuTempStr, Mode=OneWay}" FontSize="14" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                     </StackPanel>
                                 </Border>
@@ -567,7 +567,7 @@
                                 <!-- 2. Clock Speed -->
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Clock" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_clock}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock Text="{x:Bind ViewModel.CpuClockStr, Mode=OneWay}" FontSize="14" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     </StackPanel>
                                 </Border>
@@ -575,7 +575,7 @@
                                 <!-- 3. Power Draw -->
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2" VerticalAlignment="Center">
-                                        <TextBlock Text="Power" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_power}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock Text="{x:Bind ViewModel.CpuPowerDrawStr, Mode=OneWay}" FontSize="14" FontWeight="Bold" FontFamily="Jura" TextTrimming="CharacterEllipsis"/>
                                     </StackPanel>
                                 </Border>
@@ -595,12 +595,13 @@
                                         Click="BtnOpenResmon_Click" Padding="8,0">
                                     <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                                         <FontIcon Glyph="&#xE9F5;" FontSize="13"/>
-                                        <TextBlock Text="ResMon"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_resmon}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
 
                         </StackPanel>
+
                     </Grid>
                 </Border>
             </GridViewItem>
@@ -647,7 +648,7 @@
                                     <ProgressRing Value="{x:Bind ViewModel.GpuUsageDisplay, Mode=OneWay}" Maximum="100" IsIndeterminate="False" Foreground="{ThemeResource MyDynamicAccentBrush}" Width="95" Height="95"/>
                                     <TextBlock Text="{x:Bind ViewModel.GpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontSize="20" FontWeight="Bold" FontFamily="Jura" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
-                                <TextBlock Text="Live Load" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_live_load}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Center"/>
                             </StackPanel>
 
                             <!-- Live Advanced Telemetry Mini Cards -->
@@ -655,7 +656,7 @@
                                 <!-- Temperature -->
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Temp" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_temp}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock Text="{x:Bind ViewModel.GpuTemperatureStr, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                     </StackPanel>
                                 </Border>
@@ -663,7 +664,7 @@
                                 <!-- VRAM Usage -->
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="VRAM Used" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_vram_used}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock Text="{x:Bind ViewModel.GpuVramUsedStr, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                                     </StackPanel>
                                 </Border>
@@ -671,7 +672,7 @@
                                 <!-- Power Draw -->
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Power Draw" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_power_draw}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock Text="{x:Bind ViewModel.GpuPowerDrawStr, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura" TextTrimming="CharacterEllipsis"/>
                                     </StackPanel>
                                 </Border>
@@ -682,14 +683,14 @@
                                 <Button x:Name="BtnOpenGraphicsSettings" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnOpenGraphicsSettings_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE713;" FontSize="13"/>
-                                        <TextBlock Text="Graphics Settings"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_graphics_settings}"/>
                                     </StackPanel>
                                 </Button>
 
                                 <Button x:Name="BtnRestartGpuDriver" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnRestartGpuDriver_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE72C;" FontSize="13"/>
-                                        <TextBlock Text="Reset Driver"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_reset_driver}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -722,7 +723,7 @@
                             <FontIcon Grid.Column="0" Glyph="&#xEDA2;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" helpers:Loc.Key="txt_header_disk_space_card" FontFamily="{ThemeResource Jura-SemiBold}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
-                            <Button x:Name="BtnOpenDiskCleanupPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDiskCleanupPage_Click" ToolTipService.ToolTip="Open Disk Cleanup">
+                            <Button x:Name="BtnOpenDiskCleanupPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenDiskCleanupPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_disk_cleanup}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
                             </Button>
 
@@ -774,7 +775,7 @@
                                                         <Run Text="{Binding VolumeLabel}"/>
                                                     </TextBlock>
                                                     <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                                        <TextBlock Style="{StaticResource InfoLabel}" Text="Free: " FontSize="10" VerticalAlignment="Center"/>
+                                                        <TextBlock Style="{StaticResource InfoLabel}" Text="{helpers:ResourceString Key=txt_free_space_colon}" FontSize="10" VerticalAlignment="Center"/>
                                                         <TextBlock Style="{StaticResource InfoValue}" FontSize="10" VerticalAlignment="Center" Text="{Binding FreeSpaceGB, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} GB'}"/>
                                                     </StackPanel>
                                                 </StackPanel>
@@ -788,19 +789,19 @@
                             <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Health" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
-                                        <TextBlock x:Name="TxtSmartHealth" Text="Checking..." FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_health}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock x:Name="TxtSmartHealth" Text="{helpers:ResourceString Key=txt_checking}" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Temp" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_temp}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock x:Name="TxtSmartTemp" Text="--" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Type" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_type}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock x:Name="TxtSmartType" Text="--" FontSize="13" FontWeight="Bold" FontFamily="Jura" TextTrimming="CharacterEllipsis"/>
                                     </StackPanel>
                                 </Border>
@@ -811,14 +812,14 @@
                                 <Button x:Name="BtnRunDiskCleanup" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnRunDiskCleanup_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE74C;" FontSize="13"/>
-                                        <TextBlock Text="Clean Junk"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_clean_junk}"/>
                                     </StackPanel>
                                 </Button>
 
                                 <Button x:Name="BtnOptimizeDrive" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnOptimizeDrive_Click">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <FontIcon Glyph="&#xE945;" FontSize="13"/>
-                                        <TextBlock Text="TRIM / Optimize"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_trim_optimize}"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -892,13 +893,13 @@
 
                             <!-- Preset Dropdown & Latency Benchmark Button -->
                             <StackPanel Spacing="4">
-                                <TextBlock Text="DNS Preset" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_dns_preset}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                 <Grid ColumnDefinitions="*, Auto" ColumnSpacing="8">
                                     <ComboBox x:Name="CmbDnsPresets" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectionChanged="CmbDnsPresets_SelectionChanged" FontFamily="Jura Medium"/>
-                                    <Button x:Name="BtnBenchmarkDns" Grid.Column="1" Click="BtnBenchmarkDns_Click" ToolTipService.ToolTip="Benchmark &amp; Pick Fastest" Padding="8,6">
+                                    <Button x:Name="BtnBenchmarkDns" Grid.Column="1" Click="BtnBenchmarkDns_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_benchmark_dns}" Padding="8,6">
                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                             <FontIcon x:Name="IconBenchmark" Glyph="&#xE9D9;" FontSize="12"/>
-                                            <TextBlock Text="Speed Test" FontSize="11" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=btn_speed_test}" FontSize="11" FontFamily="Jura Medium"/>
                                         </StackPanel>
                                     </Button>
                                 </Grid>
@@ -910,8 +911,8 @@
                                 <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="10,6" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <Grid ColumnDefinitions="*, Auto">
                                         <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="Family Safe" FontSize="11" FontWeight="SemiBold" FontFamily="Jura Medium"/>
-                                            <TextBlock Text="Block Adult/NSFW" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_family_safe}" FontSize="11" FontWeight="SemiBold" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_block_adult_nsfw}" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         </StackPanel>
                                         <ToggleSwitch x:Name="ToggleFamilySafe" Grid.Column="1" Margin="0,-6,-10,-6" MinWidth="0" OnContent="" OffContent="" Toggled="ToggleFamilySafe_Toggled"/>
                                     </Grid>
@@ -921,8 +922,8 @@
                                 <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="10,6" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <Grid ColumnDefinitions="*, Auto">
                                         <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="Ad / Malware" FontSize="11" FontWeight="SemiBold" FontFamily="Jura Medium"/>
-                                            <TextBlock Text="AdGuard Shield" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_ad_malware}" FontSize="11" FontWeight="SemiBold" FontFamily="Jura Medium"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_adguard_shield}" FontSize="9" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         </StackPanel>
                                         <ToggleSwitch x:Name="ToggleAdBlock" Grid.Column="1" Margin="0,-6,-10,-6" MinWidth="0" OnContent="" OffContent="" Toggled="ToggleAdBlock_Toggled"/>
                                     </Grid>
@@ -1065,7 +1066,7 @@
                         <Grid Grid.Row="0" Margin="0,0,0,16">
                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
                                 <FontIcon Glyph="&#xE950;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="CPU History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_cpu_history}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
@@ -1170,7 +1171,7 @@
                         <Grid Grid.Row="0" Margin="0,0,0,16">
                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
                                 <FontIcon Glyph="&#xE964;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="Memory History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_memory_history}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
@@ -1278,7 +1279,7 @@
 
                             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,2,0,0">
                                 <FontIcon Glyph="&#xE839;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="Network History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_network_history}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="2" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -1404,7 +1405,7 @@
                         <Grid Grid.Row="0" Margin="0,0,0,16">
                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
                                 <FontIcon Glyph="&#xECA5;" Margin="0,0,0,0" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="16"/>
-                                <TextBlock Text="GPU History" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_gpu_history}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
@@ -1516,13 +1517,13 @@
                             </Grid.ColumnDefinitions>
 
                             <FontIcon Grid.Column="0" Glyph="&#xE9A1;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="Memory Optimizer" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=txt_memory_optimizer}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
-                            <Button x:Name="BtnOpenRamBoostPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenRamBoostPage_Click" ToolTipService.ToolTip="Open Maintenance Center">
+                            <Button x:Name="BtnOpenRamBoostPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenRamBoostPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_maintenance}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
                             </Button>
 
-                            <Button x:Name="BtnRamBoostSettings" Grid.Column="3" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnRamBoostSettings_Click" ToolTipService.ToolTip="Optimizer Settings">
+                            <Button x:Name="BtnRamBoostSettings" Grid.Column="3" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnRamBoostSettings_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_optimizer_settings}">
                                 <FontIcon Glyph="&#xE713;" FontSize="14" Opacity="0.6"/>
                             </Button>
 
@@ -1549,14 +1550,14 @@
                                 <!-- 1. Total Installed -->
                                 <Border Grid.Row="0" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Total Physical" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_total_physical}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock Text="{x:Bind ViewModel.TotalRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
                                     </StackPanel>
                                 </Border>
                                 <!-- 2. In Use -->
                                 <Border Grid.Row="0" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="In Use" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_in_use}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Bottom">
                                             <TextBlock Text="{x:Bind ViewModel.UsedRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
                                             <TextBlock Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource MyDynamicAccentBrush}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
@@ -1566,7 +1567,7 @@
                                 <!-- 3. Available -->
                                 <Border Grid.Row="1" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="2">
-                                        <TextBlock Text="Available" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_available}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Bottom">
                                             <TextBlock Text="{x:Bind ViewModel.AvailableRamGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
                                             <TextBlock Text="{x:Bind ViewModel.AvailableRamPercentageText, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource SystemFillColorSuccessBrush}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
@@ -1576,9 +1577,9 @@
                                 <!-- 4. System Cache -->
                                 <Border Grid.Row="1" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                     <StackPanel Spacing="0">
-                                        <TextBlock Text="System Cache" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" Margin="0,0,0,2"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_system_cache}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" Margin="0,0,0,2"/>
                                         <TextBlock Text="{x:Bind ViewModel.SystemCacheGb, Mode=OneWay}" FontSize="15" FontWeight="Bold" FontFamily="Jura"/>
-                                        <TextBlock Text="Standby + Mapped" FontSize="9" Opacity="0.6" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,1,0,0" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="Standby + Mapped"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_standby_mapped}" FontSize="9" Opacity="0.6" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Margin="0,1,0,0" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{helpers:ResourceString Key=txt_standby_mapped}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -1591,7 +1592,7 @@
                             <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="12,10" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,0,0,12">
                                 <StackPanel Spacing="6">
                                     <Grid>
-                                        <TextBlock Text="Load - Last 5 Min" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_load_last_5_min}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
                                         <TextBlock Text="{x:Bind ViewModel.LastBoostFreedText, Mode=OneWay}" FontSize="11" FontWeight="Bold" FontFamily="Jura Medium" HorizontalAlignment="Right" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                     </Grid>
                                     <ProgressBar Value="{x:Bind ViewModel.AverageRamLoad, Mode=OneWay}" Maximum="100" Height="4" Foreground="{ThemeResource MyDynamicAccentBrush}" CornerRadius="2"/>
@@ -1605,7 +1606,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="BoostStatusText" Grid.Column="0" Text="Ready to optimize" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Left" Margin="0,0,10,0"/>
+                                    <TextBlock x:Name="BoostStatusText" Grid.Column="0" Text="{helpers:ResourceString Key=txt_ready_to_optimize}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" HorizontalAlignment="Left" Margin="0,0,10,0"/>
                                     <TextBlock x:Name="BoostResultsText" Grid.Column="1" Text="" FontSize="11" FontWeight="Bold" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontFamily="Jura Medium" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" MaxLines="1"/>
                                 </Grid>
 
@@ -1615,13 +1616,13 @@
                                     <Button x:Name="BtnOptimizeMemory" Grid.Column="0" HorizontalAlignment="Stretch" Click="BtnOptimizeMemory_Click" FontFamily="Jura Medium" Height="34">
                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                             <FontIcon Glyph="&#xE945;" FontSize="13"/>
-                                            <TextBlock Text="Optimize Now"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=btn_optimize_now}"/>
                                         </StackPanel>
                                     </Button>
 
                                     <Border Grid.Column="1" Height="36" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="10,0" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                         <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
-                                            <TextBlock Text="Auto" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" FontFamily="Jura Medium" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                            <TextBlock Text="{helpers:ResourceString Key=txt_auto}" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" FontFamily="Jura Medium" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                             <ToggleSwitch x:Name="ToggleAutoOptimize" IsOn="False" Toggled="ToggleAutoOptimize_Toggled" VerticalAlignment="Center" Margin="0,-4,-8,-4" MinWidth="0" OnContent="" OffContent=""/>
                                         </StackPanel>
                                     </Border>
@@ -1699,7 +1700,7 @@
                                 <ToggleSwitch Grid.Column="0" Grid.Row="2" Header="{helpers:ResourceString Key=txt_system_health}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardMaintenance" Toggled="ToggleCard_Toggled" x:Name="ToggleHealth"/>
                                 <ToggleSwitch Grid.Column="1" Grid.Row="2" Header="{helpers:ResourceString Key=txt_system_security}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardSecurity" Toggled="ToggleCard_Toggled" x:Name="ToggleSecurity"/>
 
-                                <ToggleSwitch Grid.Column="0" Grid.Row="3" Header="Memory Optimizer" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardRamBoost" Toggled="ToggleCard_Toggled" x:Name="ToggleRamBoost"/>
+                                <ToggleSwitch Grid.Column="0" Grid.Row="3" Header="{helpers:ResourceString Key=txt_memory_optimizer}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardRamBoost" Toggled="ToggleCard_Toggled" x:Name="ToggleRamBoost"/>
                             </Grid>
                         </StackPanel>
 
@@ -1744,14 +1745,14 @@
                             </StackPanel>
 
                             <StackPanel Spacing="6">
-                                <TextBlock Text="Card Expansion" Style="{StaticResource BodyTextBlockStyle}"/>
+                                <TextBlock Text="{helpers:ResourceString Key=txt_card_expansion}" Style="{StaticResource BodyTextBlockStyle}"/>
                                 <ToggleSwitch x:Name="ToggleSaveCardState"
-                                              OnContent="Remember state"
-                                              OffContent="Don't save"
+                                              OnContent="{helpers:ResourceString Key=txt_remember_state}"
+                                              OffContent="{helpers:ResourceString Key=txt_dont_save}"
                                               IsOn="{x:Bind ViewModel.SaveCardStates, Mode=TwoWay}"
                                               Margin="0,-4,0,0"/>
                             </StackPanel>
-                            
+
                         </StackPanel>
 
                     </StackPanel>
@@ -1764,7 +1765,7 @@
                             MinWidth="120" Height="32"/>
 
                     <Button x:Name="BtnCloseCustomizeLayout"
-                            Content="Close"
+                            Content="{helpers:ResourceString Key=btn_close}"
                             Click="BtnCloseCustomizeLayout_Click"
                             Style="{StaticResource AccentButtonStyle}"
                             MinWidth="120" Height="32"/>
@@ -1774,18 +1775,18 @@
         </ContentDialog>
 
         <ContentDialog x:Name="AutoOptimizeDialog"
-                       Title="Configure Auto-Optimization"
+                       Title="{helpers:ResourceString Key=txt_configure_auto_optimization}"
                        CornerRadius="8"
                        IsTabStop="False"
                        MaxWidth="400"
-                       PrimaryButtonText="Save"
-                       SecondaryButtonText="Cancel">
+                       PrimaryButtonText="{helpers:ResourceString Key=btn_save}"
+                       SecondaryButtonText="{helpers:ResourceString Key=btn_cancel}">
             <StackPanel Spacing="16" MinWidth="280">
-                <TextBlock Text="Set the memory usage percentage threshold to automatically trigger optimization:" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock Text="{helpers:ResourceString Key=txt_auto_optimize_desc}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
                 <StackPanel Spacing="8">
                     <Grid>
-                        <TextBlock Text="Trigger Threshold:" VerticalAlignment="Center" FontFamily="Jura Medium"/>
+                        <TextBlock Text="{helpers:ResourceString Key=txt_trigger_threshold}" VerticalAlignment="Center" FontFamily="Jura Medium"/>
                         <TextBlock x:Name="TxtDialogThresholdValue" Text="85%" HorizontalAlignment="Right" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource MyDynamicAccentBrush}"/>
                     </Grid>
                     <Slider x:Name="SliderRamThreshold" Minimum="50" Maximum="95" StepFrequency="1" Value="85" ValueChanged="SliderRamThreshold_ValueChanged"/>

@@ -542,6 +542,139 @@
     <sys:String x:Key="txt_60_seconds">60 seconden</sys:String>
     <sys:String x:Key="txt_5_minutes">5 minuten</sys:String>
     <sys:String x:Key="txt_15_minutes">15 minuten</sys:String>
+
+    <!-- DASHBOARD: CPU CARD -->
+    <sys:String x:Key="txt_live_load">Live belasting</sys:String>
+    <sys:String x:Key="txt_temp">Temp</sys:String>
+    <sys:String x:Key="txt_clock">Klok</sys:String>
+    <sys:String x:Key="txt_power">Stroom</sys:String>
+    <sys:String x:Key="btn_resmon">ResMon</sys:String>
+    <sys:String x:Key="txt_cpu_history">CPU-geschiedenis</sys:String>
+
+    <!-- DASHBOARD: GPU CARD -->
+    <sys:String x:Key="txt_vram_used">VRAM gebruikt</sys:String>
+    <sys:String x:Key="txt_power_draw">Stroomverbruik</sys:String>
+    <sys:String x:Key="btn_graphics_settings">Grafische instellingen</sys:String>
+    <sys:String x:Key="btn_reset_driver">Stuurprogramma resetten</sys:String>
+    <sys:String x:Key="txt_gpu_history">GPU-geschiedenis</sys:String>
+
+    <!-- DASHBOARD: RAM CARD -->
+    <sys:String x:Key="txt_memory_history">Geheugengeschiedenis</sys:String>
+
+    <!-- DASHBOARD: NETWORK CARD -->
+    <sys:String x:Key="txt_live_ping">Live Ping (8.8.8.8)</sys:String>
+    <sys:String x:Key="txt_testing">Testen...</sys:String>
+    <sys:String x:Key="txt_top_apps_connections">Top-apps (Actieve verbindingen)</sys:String>
+    <sys:String x:Key="btn_flush_dns">DNS flushen</sys:String>
+    <sys:String x:Key="btn_reset_adapter">Adapter resetten</sys:String>
+    <sys:String x:Key="txt_network_history">Netwerkgeschiedenis</sys:String>
+
+    <!-- DASHBOARD: DISK CARD -->
+    <sys:String x:Key="tooltip_open_disk_cleanup">Schijfopruiming openen</sys:String>
+    <sys:String x:Key="txt_free_space_colon">Vrij:</sys:String>
+    <sys:String x:Key="txt_health">Gezondheid</sys:String>
+    <sys:String x:Key="txt_checking">Controleren...</sys:String>
+    <sys:String x:Key="txt_type">Type</sys:String>
+    <sys:String x:Key="btn_clean_junk">Rommel opruimen</sys:String>
+    <sys:String x:Key="btn_trim_optimize">TRIM / Optimaliseren</sys:String>
+
+    <!-- DASHBOARD: DNS CARD -->
+    <sys:String x:Key="tooltip_open_dns_page">DNS Crypt openen</sys:String>
+    <sys:String x:Key="txt_dns_preset">DNS-voorinstelling</sys:String>
+    <sys:String x:Key="tooltip_benchmark_dns">Benchmarken &amp; Snelste kiezen</sys:String>
+    <sys:String x:Key="btn_speed_test">Snelheidstest</sys:String>
+    <sys:String x:Key="txt_family_safe">Gezinsvriendelijk</sys:String>
+    <sys:String x:Key="txt_block_adult_nsfw">Volwassen/NSFW blokkeren</sys:String>
+    <sys:String x:Key="txt_ad_malware">Advertenties / Malware</sys:String>
+    <sys:String x:Key="txt_adguard_shield">AdGuard-schild</sys:String>
+
+    <!-- DASHBOARD: RAM BOOST CARD -->
+    <sys:String x:Key="txt_memory_optimizer">Geheugenoptimalisatie</sys:String>
+    <sys:String x:Key="tooltip_optimizer_settings">Optimalisatie-instellingen</sys:String>
+    <sys:String x:Key="txt_total_physical">Totaal fysiek</sys:String>
+    <sys:String x:Key="txt_in_use">In gebruik</sys:String>
+    <sys:String x:Key="txt_available">Beschikbaar</sys:String>
+    <sys:String x:Key="txt_system_cache">Systeemcache</sys:String>
+    <sys:String x:Key="txt_standby_mapped">Stand-by + Toegewezen</sys:String>
+    <sys:String x:Key="txt_load_last_5_min">Belasting - Laatste 5 min</sys:String>
+    <sys:String x:Key="txt_ready_to_optimize">Klaar om te optimaliseren</sys:String>
+    <sys:String x:Key="btn_optimize_now">Nu optimaliseren</sys:String>
+    <sys:String x:Key="txt_auto">Auto</sys:String>
+
+    <!-- DASHBOARD: SETTINGS DIALOG-->
+    <sys:String x:Key="txt_card_expansion">Kaartuitbreiding</sys:String>
+    <sys:String x:Key="txt_remember_state">Status onthouden</sys:String>
+    <sys:String x:Key="txt_dont_save">Niet opslaan</sys:String>
+    <sys:String x:Key="btn_close">Sluiten</sys:String>
+
+    <!-- DASHBOARD: AUTO OPTIMIZE -->
+    <sys:String x:Key="txt_configure_auto_optimization">Automatische optimalisatie configureren</sys:String>
+    <sys:String x:Key="txt_auto_optimize_desc">Stel de drempelwaarde voor geheugengebruik in om de optimalisatie automatisch te starten:</sys:String>
+    <sys:String x:Key="txt_trigger_threshold">Activeringsdrempel:</sys:String>
+
+    <!-- WEATHER DROPDOWN WIDGET -->
+    <sys:String x:Key="txt_or_enter_custom">Of voer aangepast in:</sys:String>
+    <sys:String x:Key="txt_placeholder_city">Selecteer een stad...</sys:String>
+    <sys:String x:Key="txt_placeholder_location">Voer stadsnaam in...</sys:String>
+    <sys:String x:Key="btn_update_location">Locatie bijwerken</sys:String>
+
+    <!-- Code-Behind: Memory Optimizer -->
+    <sys:String x:Key="txt_running_memory_opt">Geheugenoptimalisatie uitvoeren...</sys:String>
+    <sys:String x:Key="txt_optimized">Geoptimaliseerd</sys:String>
+    <sys:String x:Key="txt_mb_freed">MB vrijgemaakt</sys:String>
+    <sys:String x:Key="txt_apps_trimmed">apps getrimd</sys:String>
+    <sys:String x:Key="title_memory_optimizer_settings">Instellingen voor geheugenoptimalisatie</sys:String>
+    <sys:String x:Key="msg_min_one_opt_feature">⚠️ Minimaal één optimalisatiefunctie moet ingeschakeld blijven.</sys:String>
+    <sys:String x:Key="setting_trim_ws_title">Process Working Sets trimmen</sys:String>
+    <sys:String x:Key="setting_trim_ws_desc">Wint fysiek RAM terug van achtergrondtoepassingen.</sys:String>
+    <sys:String x:Key="setting_standby_title">Stand-bycache wissen</sys:String>
+    <sys:String x:Key="setting_standby_desc">Verwijdert in de cache opgeslagen bestandssysteemgegevens uit het RAM.</sys:String>
+    <sys:String x:Key="setting_combo_title">Gecombineerde paginalijst optimaliseren</sys:String>
+    <sys:String x:Key="setting_combo_desc">Combineert identieke pagina's om fysiek geheugen vrij te maken.</sys:String>
+    <sys:String x:Key="setting_mod_title">Gewijzigde paginalijst optimaliseren</sys:String>
+    <sys:String x:Key="setting_mod_desc">Spoelt gewijzigde pagina's naar de schijf om actief RAM vrij te maken.</sys:String>
+    <sys:String x:Key="setting_reg_title">Registercache optimaliseren</sys:String>
+    <sys:String x:Key="setting_reg_desc">Verzoent en maakt geheugen vrij voor de systeemregister-hive.</sys:String>
+
+    <!-- Code-Behind: Disk Card -->
+    <sys:String x:Key="txt_cleaning">Opruimen...</sys:String>
+    <sys:String x:Key="txt_freed_mb">{0:0.##} MB vrijgemaakt</sys:String>
+    <sys:String x:Key="txt_already_clean">Al opgeruimd</sys:String>
+    <sys:String x:Key="title_shared_drive">Gedeeld fysiek station</sys:String>
+    <sys:String x:Key="title_optimize_drive">Station optimaliseren</sys:String>
+    <sys:String x:Key="msg_optimize_shared">Let op: Stations {0} bevinden zich op dezelfde fysieke schijf. Het optimaliseren van {1} zal de gehele fysieke hardware-eenheid optimaliseren. Doorgaan?</sys:String>
+    <sys:String x:Key="msg_optimize_single">Weet u zeker dat u TRIM / Optimaliseren wilt uitvoeren op het {0}-station?</sys:String>
+    <sys:String x:Key="txt_optimizing">Optimaliseren...</sys:String>
+
+    <!-- Code-Behind: Network Card -->
+    <sys:String x:Key="txt_offline">Offline</sys:String>
+    <sys:String x:Key="txt_idle_no_connections">Inactief / Geen actieve verbindingen</sys:String>
+    <sys:String x:Key="txt_flushing">Flushen...</sys:String>
+    <sys:String x:Key="txt_flushed">Geflushed!</sys:String>
+    <sys:String x:Key="txt_errors_occurred">Er zijn fouten opgetreden</sys:String>
+    <sys:String x:Key="txt_resetting">Resetten...</sys:String>
+    <sys:String x:Key="txt_restarted">Opnieuw opgestart!</sys:String>
+
+    <!-- Code-Behind: DNS Card -->
+    <sys:String x:Key="txt_dnscrypt_not_installed">DNSCrypt is niet geïnstalleerd.</sys:String>
+    <sys:String x:Key="txt_dnscrypt_running">DNSCrypt-service is actief.</sys:String>
+    <sys:String x:Key="btn_stop_service">Service stoppen</sys:String>
+    <sys:String x:Key="txt_nothing_running">Er draait niets op de achtergrond</sys:String>
+    <sys:String x:Key="btn_start_service">Service starten</sys:String>
+    <sys:String x:Key="txt_service_action_failed">Service-actie mislukt.</sys:String>
+    <sys:String x:Key="txt_connection_failed">Verbinding mislukt.</sys:String>
+    <sys:String x:Key="txt_testing_providers">Alle providers testen...</sys:String>
+    <sys:String x:Key="title_speed_test_complete">Snelheidstest voltooid</sys:String>
+    <sys:String x:Key="msg_fastest_dns">De snelste DNS-server voor uw verbinding is {0} met een latentie van {1} ms.&#x0a;&#x0a;Wilt u deze nu toepassen?</sys:String>
+    <sys:String x:Key="btn_apply_now">Nu toepassen</sys:String>
+    <sys:String x:Key="txt_latency_timeout">Time-out voor latentietest.</sys:String>
+    <sys:String x:Key="txt_applied_dns">Toegepast: {0} ({1} ms)</sys:String>
+    <sys:String x:Key="txt_fastest_dns_no_change">Snelste was {0} ({1} ms). Geen wijzigingen aangebracht.</sys:String>
+    <sys:String x:Key="txt_applied_dns_success">{0} toegepast!</sys:String>
+    <sys:String x:Key="txt_dns_update_failed">Bijwerken DNS-instellingen mislukt.</sys:String>
+
+    <!-- Code-Behind: Health / Security Cards -->
+    <sys:String x:Key="txt_scan_failed">Scan mislukt.</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->
