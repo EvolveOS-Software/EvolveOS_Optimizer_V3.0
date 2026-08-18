@@ -508,19 +508,14 @@
                                                                            Margin="4,0,12,0"/>
 
                                                                 <Border Grid.Column="2"
+                                                                        Style="{StaticResource DiskCleanupBadgePillStyle}" 
                                                                         Background="{x:Bind BadgeBackground, Mode=OneWay}"
-                                                                        BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                                                                        BorderThickness="1"
-                                                                        Opacity="0.85"
-                                                                        CornerRadius="4"
-                                                                        Padding="10,2"
-                                                                        Margin="0,0,8,0"
-                                                                        VerticalAlignment="Center">
+                                                                        BorderBrush="{Binding BadgeBorderBrush, FallbackValue=Transparent}"
+                                                                        Margin="0,0,8,0">
                                                                     <TextBlock Text="{x:Bind SelectionStateLabel, Mode=OneWay}"
-                                                                               FontSize="10"
+                                                                               Style="{StaticResource DiskCleanupBadgeTextStyle}" 
                                                                                FontFamily="{ThemeResource Jura-SemiBold}"
-                                                                               Foreground="{x:Bind BadgeForeground, Mode=OneWay}"
-                                                                               VerticalAlignment="Center"/>
+                                                                               Foreground="{x:Bind BadgeForeground, Mode=OneWay}"/>
                                                                 </Border>
 
                                                                 <Button Grid.Column="3"
@@ -557,68 +552,42 @@
                                                         <ItemsControl ItemsSource="{x:Bind Entries, Mode=OneWay}" Padding="4,0,0,4">
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate x:DataType="vm:DiskCleanupEntryViewModel">
-                                                                    <Grid Padding="2,1" Margin="16,0,0,0"
-                                                                          Background="Transparent"
-                                                                          MinHeight="32"
-                                                                          PointerEntered="EntryRow_PointerEntered"
-                                                                          PointerExited="EntryRow_PointerExited">
+                                                                    <Grid Padding="2,1" Margin="16,0,0,0" MinHeight="32" Background="Transparent" PointerEntered="EntryRow_PointerEntered" PointerExited="EntryRow_PointerExited">
                                                                         <Grid.ColumnDefinitions>
                                                                             <ColumnDefinition Width="*" />
                                                                             <ColumnDefinition Width="Auto" />
                                                                             <ColumnDefinition Width="Auto" />
                                                                         </Grid.ColumnDefinitions>
 
-                                                                        <CheckBox Grid.Column="0"
-                                                                                  IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
-                                                                                  ToolTipService.ToolTip="{x:Bind Warning}"
-                                                                                  MinWidth="0"
-                                                                                  Padding="6,3">
+                                                                        <CheckBox Grid.Column="0" IsChecked="{x:Bind IsSelected, Mode=TwoWay}" ToolTipService.ToolTip="{x:Bind Warning}" MinWidth="0" Padding="6,3">
                                                                             <StackPanel Orientation="Horizontal" Spacing="6">
                                                                                 <FontIcon Glyph="&#xE7BA;" FontSize="11" Foreground="OrangeRed" VerticalAlignment="Center" Visibility="{x:Bind HasWarning, Converter={StaticResource BoolToVisibilityConverter}}" />
                                                                                 <TextBlock Text="{x:Bind Name}" FontSize="12" FontFamily="{ThemeResource Jura}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind Name}" Margin="0,5,0,0" />
                                                                             </StackPanel>
                                                                         </CheckBox>
 
-                                                                        <TextBlock Grid.Column="1"
-                                                                                   Text="{x:Bind SizeText, Mode=OneWay}"
-                                                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                                                   FontFamily="{ThemeResource Jura}"
-                                                                                   FontSize="11"
-                                                                                   VerticalAlignment="Center"
-                                                                                   Margin="2,0,4,0" />
+                                                                        <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource Jura}" FontSize="11" VerticalAlignment="Center" Margin="2,0,4,0" />
 
                                                                         <Button Grid.Column="2" Width="22" Height="22" Padding="0" Margin="0,0,4,0" Opacity="0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_entry_actions_tooltip}">
                                                                             <FontIcon Glyph="&#xE712;" FontSize="10" />
                                                                             <Button.Flyout>
                                                                                 <MenuFlyout Placement="Bottom" Opened="ActionMenu_Opened" Closed="ActionMenu_Closed">
-
-                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_analyze_entry}"
-                                                                                                    Tag="{x:Bind}"
-                                                                                                    Click="EntryAnalyze_Click">
+                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_analyze_entry}" Tag="{x:Bind}" Click="EntryAnalyze_Click">
                                                                                         <MenuFlyoutItem.Icon>
                                                                                             <FontIcon Glyph="&#xE11A;" />
                                                                                         </MenuFlyoutItem.Icon>
                                                                                     </MenuFlyoutItem>
-
-                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_clean_entry}"
-                                                                                                    Tag="{x:Bind}"
-                                                                                                    Click="EntryClean_Click">
+                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_clean_entry}" Tag="{x:Bind}" Click="EntryClean_Click">
                                                                                         <MenuFlyoutItem.Icon>
                                                                                             <FontIcon Glyph="&#xE74D;" />
                                                                                         </MenuFlyoutItem.Icon>
                                                                                     </MenuFlyoutItem>
-
                                                                                     <MenuFlyoutSeparator />
-
-                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=ai_explainer_btn_text}"
-                                                                                                    Tag="{x:Bind}"
-                                                                                                    IsEnabled="{x:Bind IsAiEnabled(), Mode=OneWay}"
-                                                                                                    Click="EntryExplain_Click">
+                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=ai_explainer_btn_text}" Tag="{x:Bind}" IsEnabled="{x:Bind IsAiEnabled(), Mode=OneWay}" Click="EntryExplain_Click">
                                                                                         <MenuFlyoutItem.Icon>
                                                                                             <FontIcon Glyph="&#xE946;" />
                                                                                         </MenuFlyoutItem.Icon>
                                                                                     </MenuFlyoutItem>
-
                                                                                 </MenuFlyout>
                                                                             </Button.Flyout>
                                                                         </Button>
@@ -646,9 +615,7 @@
                                                     </Grid.ColumnDefinitions>
 
                                                     <FontIcon Grid.Column="0" Glyph="&#xE943;" FontSize="16" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
                                                     <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=cleanup_dev_title}" FontSize="13" FontFamily="{ThemeResource Jura-SemiBold}" VerticalAlignment="Center" Margin="4,0,12,0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_dev_desc}"/>
-
                                                     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="2" VerticalAlignment="Center" Margin="0,0,8,0">
                                                         <Button Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" Command="{x:Bind ViewModel.AnalyzeDevToolchainsCommand}" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_dev_btn_scan}">
                                                             <FontIcon Glyph="&#xE11A;" FontSize="14" />

@@ -128,6 +128,22 @@
         <Setter Property="Margin" Value="0,0,0,2"/>
     </Style>
 
+    <Style x:Key="DiskCleanupBadgePillStyle" TargetType="Border">
+        <Setter Property="Height" Value="22"/>
+        <Setter Property="CornerRadius" Value="11"/>
+        <Setter Property="Padding" Value="10,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style x:Key="DiskCleanupBadgeTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,0,0,1"/>
+    </Style>
+
     <converters:BadgeIconTemplateSelector x:Key="BadgeIconTemplateSelector">
         <converters:BadgeIconTemplateSelector.RecommendedTemplate>
             <DataTemplate>

@@ -1747,7 +1747,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _lastScan?.Clear();
             _loadedEntries?.Clear();
 
-            Debug.WriteLine("[DiskCleanupVM] Large collections zeroed for Search & Destroy Purge.");
+            System.Diagnostics.Debug.WriteLine("[DiskCleanupVM] Large collections zeroed for Search & Destroy Purge.");
         }
         #endregion
     }
@@ -1774,6 +1774,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             get => _badgeBackground;
             set => SetProperty(ref _badgeBackground, value);
+        }
+
+        private Brush? _badgeBorderBrush;
+        public Brush? BadgeBorderBrush
+        {
+            get => _badgeBorderBrush;
+            set => SetProperty(ref _badgeBorderBrush, value);
         }
 
         private Brush? _badgeForeground;
@@ -1803,8 +1810,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (Entries == null || !Entries.Any())
             {
                 SelectionStateLabel = ResourceString.GetString("cleanup_badge_none") ?? "None";
-                BadgeBackground = GetBrush("CardBackgroundFillColorSecondaryBrush");
-                BadgeForeground = GetBrush("TextFillColorSecondaryBrush");
+                BadgeBackground = GetBrush("BadgeDefaultBackground");
+                BadgeBorderBrush = GetBrush("BadgeDefaultBorder");
+                BadgeForeground = GetBrush("BadgeDefaultForeground");
                 return;
             }
 
@@ -1814,14 +1822,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (selectedCount == 0)
             {
                 SelectionStateLabel = ResourceString.GetString("cleanup_badge_none") ?? "None";
-                BadgeBackground = GetBrush("CardBackgroundFillColorSecondaryBrush");
-                BadgeForeground = GetBrush("TextFillColorSecondaryBrush");
+                BadgeBackground = GetBrush("BadgeDefaultBackground");
+                BadgeBorderBrush = GetBrush("BadgeDefaultBorder");
+                BadgeForeground = GetBrush("BadgeDefaultForeground");
             }
             else if (selectedCount == totalCount)
             {
                 SelectionStateLabel = ResourceString.GetString("cleanup_badge_all") ?? "All";
-                BadgeBackground = GetBrush("SystemFillColorSuccessBackgroundBrush");
-                BadgeForeground = GetBrush("SystemFillColorSuccessBrush");
+                BadgeBackground = GetBrush("BadgeRecommendedBackground");
+                BadgeBorderBrush = GetBrush("BadgeRecommendedBorder");
+                BadgeForeground = GetBrush("BadgeRecommendedForeground");
             }
             else
             {
@@ -1830,14 +1840,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (isExactlyDefault)
                 {
                     SelectionStateLabel = ResourceString.GetString("cleanup_badge_default") ?? "Default";
-                    BadgeBackground = GetBrush("AccentFillColorDefaultBrush");
-                    BadgeForeground = GetBrush("TextOnAccentFillColorPrimaryBrush");
+                    BadgeBackground = GetBrush("BadgePreferenceBackground");
+                    BadgeBorderBrush = GetBrush("BadgePreferenceBorder");
+                    BadgeForeground = GetBrush("BadgePreferenceForeground");
                 }
                 else
                 {
                     SelectionStateLabel = ResourceString.GetString("cleanup_badge_custom") ?? "Custom";
-                    BadgeBackground = GetBrush("SystemFillColorCautionBackgroundBrush");
-                    BadgeForeground = GetBrush("SystemFillColorCautionBrush");
+                    BadgeBackground = GetBrush("BadgeCustomBackground");
+                    BadgeBorderBrush = GetBrush("BadgeCustomBorder");
+                    BadgeForeground = GetBrush("BadgeCustomForeground");
                 }
             }
         }
