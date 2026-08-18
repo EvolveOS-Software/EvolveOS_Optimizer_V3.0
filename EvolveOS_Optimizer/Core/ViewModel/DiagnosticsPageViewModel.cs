@@ -134,6 +134,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly List<double> _diskTempLongTermBuffer = new();
 
         private int _telemetryTickCount = 0;
+        private int _uiRenderTick = 0;
         private const int TicksPerMinute = 300; // 5 polls/sec * 60 sec
         private const int MaxLongTermCapacity = 4320; // 72 hours * 60 mins
 
@@ -4087,71 +4088,88 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                 }
 
+                _uiRenderTick++;
+                bool isFullSecond = _uiRenderTick >= 5;
+                if (isFullSecond)
+                {
+                    _uiRenderTick = 0;
+                }
+
                 bool needsTrayUpdates = ShowCpuInTray || ShowRamInTray || ShowGpuInTray || ShowDiskInTray;
 
                 if ((_isUiActive || needsTrayUpdates) && !IsAfk)
                 {
-                    var cpuSnapshot = _cpuHistoryBuffer.ToList();
-                    var ramSnapshot = _ramHistoryBuffer.ToList();
-                    var gpuSnapshot = _gpuHistoryBuffer.ToList();
-                    var diskSnapshot = _diskHistoryBuffer.ToList();
+                    List<double>? cpuSnapshot = null, ramSnapshot = null, gpuSnapshot = null, diskSnapshot = null;
+                    if (isFullSecond && needsTrayUpdates)
+                    {
+                        cpuSnapshot = _cpuHistoryBuffer.ToList();
+                        ramSnapshot = _ramHistoryBuffer.ToList();
+                        gpuSnapshot = _gpuHistoryBuffer.ToList();
+                        diskSnapshot = _diskHistoryBuffer.ToList();
+                    }
 
                     var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                     dispatcher?.TryEnqueue(() =>
                     {
-                        int sparklinePoints = 20;
-                        double stepX = 3.0;
-                        double chartHeight = 15.0;
-
-                        if (ShowCpuInTray)
+                        if (_isUiActive)
                         {
-                            CpuTrayPoints = GenerateTrayPoints(cpuSnapshot, sparklinePoints, stepX, chartHeight);
-                            OnPropertyChanged(nameof(CpuTrayPoints));
-                        }
-                        if (ShowRamInTray)
-                        {
-                            RamTrayPoints = GenerateTrayPoints(ramSnapshot, sparklinePoints, stepX, chartHeight);
-                            OnPropertyChanged(nameof(RamTrayPoints));
-                        }
-                        if (ShowGpuInTray)
-                        {
-                            GpuTrayPoints = GenerateTrayPoints(gpuSnapshot, sparklinePoints, stepX, chartHeight);
-                            OnPropertyChanged(nameof(GpuTrayPoints));
-                        }
-                        if (ShowDiskInTray)
-                        {
-                            DiskTrayPoints = GenerateTrayPoints(diskSnapshot, sparklinePoints, stepX, chartHeight);
-                            OnPropertyChanged(nameof(DiskTrayPoints));
-                        }
+                            CpuTempStr = cpuTemp > 0 ? $"{(int)cpuTemp}°C" : "--°C";
+                            GpuTempStr = gpuTemp > 0 ? $"{(int)gpuTemp}°C" : "--°C";
+                            RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
+                            MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
+                            DiskTempStr = diskTemp > 0 ? $"{(int)diskTemp}°C" : "--°C";
 
-                        CpuTempStr = cpuTemp > 0 ? $"{(int)cpuTemp}°C" : "--°C";
-                        GpuTempStr = gpuTemp > 0 ? $"{(int)gpuTemp}°C" : "--°C";
-                        RamTempStr = memTemp > 0 ? $"{(int)memTemp}°C" : "--°C";
-                        MoboTempStr = moboTemp > 0 ? $"{(int)moboTemp}°C" : "--°C";
-                        DiskTempStr = diskTemp > 0 ? $"{(int)diskTemp}°C" : "--°C";
+                            CurrentCpuLoadStr = $"{(int)Math.Round(_displayCpuUsage)}%";
+                            CurrentRamLoadStr = $"{(int)ramUsage}%";
+                            CurrentIoLoadStr = $"{(int)Math.Round(_displayDiskUsage)}%";
+                            CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
+                            CurrentGpuLoadStr = $"{(int)Math.Round(_displayGpuUsage)}%";
 
-                        CurrentCpuLoadStr = $"{(int)Math.Round(_displayCpuUsage)}%";
-                        CurrentRamLoadStr = $"{(int)ramUsage}%";
-                        CurrentIoLoadStr = $"{(int)Math.Round(_displayDiskUsage)}%";
-                        CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
-                        CurrentGpuLoadStr = $"{(int)Math.Round(_displayGpuUsage)}%";
+                            CurrentNetworkDownLoadStr = $"{_displayDownMbps:0.#} ▼";
+                            CurrentNetworkUpLoadStr = $"{_displayUpMbps:0.#} ▲";
+                            CurrentNetworkLoadStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲ Mbps";
+                            CurrentNetworkLoadSecondaryStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲";
 
-                        CurrentNetworkDownLoadStr = $"{_displayDownMbps:0.#} ▼";
-                        CurrentNetworkUpLoadStr = $"{_displayUpMbps:0.#} ▲";
-                        CurrentNetworkLoadStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲ Mbps";
-                        CurrentNetworkLoadSecondaryStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲";
+                            OnPropertyChanged(nameof(ActivePrimaryValueStr));
+                            OnPropertyChanged(nameof(ActiveTemperatureStr));
+                            OnPropertyChanged(nameof(HeroStandardVisibility));
+                            OnPropertyChanged(nameof(ActiveTemperatureVisibility));
 
-                        OnPropertyChanged(nameof(ActivePrimaryValueStr));
-                        OnPropertyChanged(nameof(ActiveTemperatureStr));
-                        OnPropertyChanged(nameof(HeroStandardVisibility));
-                        OnPropertyChanged(nameof(ActiveTemperatureVisibility));
+                            if (IsGraphingTemperature && ActiveTemperatureVisibility == Visibility.Collapsed && ActiveGraphMetric != TelemetryMetric.Motherboard)
+                            {
+                                IsGraphingTemperature = false;
+                            }
 
-                        if (IsGraphingTemperature && ActiveTemperatureVisibility == Visibility.Collapsed && ActiveGraphMetric != TelemetryMetric.Motherboard)
-                        {
-                            IsGraphingTemperature = false;
+                            RebuildGraphFromHistory();
                         }
 
-                        RebuildGraphFromHistory();
+                        if (isFullSecond && needsTrayUpdates)
+                        {
+                            int sparklinePoints = 20;
+                            double stepX = 3.0;
+                            double chartHeight = 15.0;
+
+                            if (ShowCpuInTray && cpuSnapshot != null)
+                            {
+                                CpuTrayPoints = GenerateTrayPoints(cpuSnapshot, sparklinePoints, stepX, chartHeight);
+                                OnPropertyChanged(nameof(CpuTrayPoints));
+                            }
+                            if (ShowRamInTray && ramSnapshot != null)
+                            {
+                                RamTrayPoints = GenerateTrayPoints(ramSnapshot, sparklinePoints, stepX, chartHeight);
+                                OnPropertyChanged(nameof(RamTrayPoints));
+                            }
+                            if (ShowGpuInTray && gpuSnapshot != null)
+                            {
+                                GpuTrayPoints = GenerateTrayPoints(gpuSnapshot, sparklinePoints, stepX, chartHeight);
+                                OnPropertyChanged(nameof(GpuTrayPoints));
+                            }
+                            if (ShowDiskInTray && diskSnapshot != null)
+                            {
+                                DiskTrayPoints = GenerateTrayPoints(diskSnapshot, sparklinePoints, stepX, chartHeight);
+                                OnPropertyChanged(nameof(DiskTrayPoints));
+                            }
+                        }
                     });
                 }
             }
@@ -4161,7 +4179,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             finally
             {
-                _isUpdatingTelemetry = 0;
+                Interlocked.Exchange(ref _isUpdatingTelemetry, 0);
             }
         }
 
@@ -4591,6 +4609,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             int pointsToTake, double stepX, double height)
         {
             var data = buffer.Reverse().Take(pointsToTake).Reverse().ToList();
+            targetCollection.Clear();
             if (data.Count == 0) return;
 
             double startX = 60 - ((data.Count - 1) * stepX);
