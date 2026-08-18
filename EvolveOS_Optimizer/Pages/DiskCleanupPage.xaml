@@ -572,6 +572,7 @@
                                                                             <ColumnDefinition Width="*" />
                                                                             <ColumnDefinition Width="Auto" />
                                                                             <ColumnDefinition Width="Auto" />
+                                                                            <ColumnDefinition Width="Auto" />
                                                                         </Grid.ColumnDefinitions>
 
                                                                         <CheckBox Grid.Column="0" IsChecked="{x:Bind IsSelected, Mode=TwoWay}" ToolTipService.ToolTip="{x:Bind Warning}" MinWidth="0" Padding="6,3">
@@ -581,10 +582,16 @@
                                                                             </StackPanel>
                                                                         </CheckBox>
 
-                                                                        <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource Jura}" FontSize="11" VerticalAlignment="Center" Margin="2,0,4,0" />
+                                                                        <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource Jura}" FontSize="11" VerticalAlignment="Center" Margin="2,0,12,0" />
 
-                                                                        <Button Grid.Column="2" Width="22" Height="22" Padding="0" Margin="0,0,4,0" Opacity="0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_entry_actions_tooltip}">
-                                                                            <FontIcon Glyph="&#xE712;" FontSize="10" />
+                                                                        <Button Grid.Column="2" Width="26" Height="26" Padding="0" Margin="0,0,4,0" Background="Transparent" BorderThickness="0"
+                                                                                ToolTipService.ToolTip="{helpers:ResourceString Key=ai_explainer_btn_text}"
+                                                                                Tag="{x:Bind}" IsEnabled="{x:Bind IsAiEnabled(), Mode=OneWay}" Click="EntryExplain_Click">
+                                                                            <FontIcon Glyph="&#xED15;" FontSize="13" Foreground="{ThemeResource MyDynamicAccentBrush}" />
+                                                                        </Button>
+
+                                                                        <Button Grid.Column="3" Width="26" Height="26" Padding="0" Margin="0,0,4,0" Opacity="0" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_entry_actions_tooltip}">
+                                                                            <FontIcon Glyph="&#xE712;" FontSize="13" />
                                                                             <Button.Flyout>
                                                                                 <MenuFlyout Placement="Bottom" Opened="ActionMenu_Opened" Closed="ActionMenu_Closed">
                                                                                     <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_analyze_entry}" Tag="{x:Bind}" Click="EntryAnalyze_Click">
@@ -595,12 +602,6 @@
                                                                                     <MenuFlyoutItem Text="{helpers:ResourceString Key=cleanup_menu_clean_entry}" Tag="{x:Bind}" Click="EntryClean_Click">
                                                                                         <MenuFlyoutItem.Icon>
                                                                                             <FontIcon Glyph="&#xE74D;" />
-                                                                                        </MenuFlyoutItem.Icon>
-                                                                                    </MenuFlyoutItem>
-                                                                                    <MenuFlyoutSeparator />
-                                                                                    <MenuFlyoutItem Text="{helpers:ResourceString Key=ai_explainer_btn_text}" Tag="{x:Bind}" IsEnabled="{x:Bind IsAiEnabled(), Mode=OneWay}" Click="EntryExplain_Click">
-                                                                                        <MenuFlyoutItem.Icon>
-                                                                                            <FontIcon Glyph="&#xE946;" />
                                                                                         </MenuFlyoutItem.Icon>
                                                                                     </MenuFlyoutItem>
                                                                                 </MenuFlyout>
@@ -634,7 +635,7 @@
 
                                                     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="2" VerticalAlignment="Center" Margin="0,0,8,0">
                                                         <Button Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" 
-                                                                Command="{x:Bind ViewModel.DeepSweepProjectCommand}"
+                                                                Command="{x:Bind ViewModel.DeepSweepProjectCommand}" 
                                                                 ToolTipService.ToolTip="Deep Sweep Project Folder">
                                                             <FontIcon Glyph="&#xE838;" FontSize="14" Foreground="{ThemeResource SystemFillColorCautionBrush}" />
                                                         </Button>
@@ -642,12 +643,12 @@
                                                         <Rectangle Width="1" Height="16" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="4,0" />
 
                                                         <Button Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" 
-                                                                Command="{x:Bind ViewModel.AnalyzeDevToolchainsCommand}"
+                                                                Command="{x:Bind ViewModel.AnalyzeDevToolchainsCommand}" 
                                                                 ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_dev_btn_scan}">
                                                             <FontIcon Glyph="&#xE11A;" FontSize="14" />
                                                         </Button>
                                                         <Button Width="32" Height="32" Padding="0" Background="Transparent" BorderThickness="0" 
-                                                                Command="{x:Bind ViewModel.CleanDevToolchainsCommand}"
+                                                                Command="{x:Bind ViewModel.CleanDevToolchainsCommand}" 
                                                                 ToolTipService.ToolTip="{helpers:ResourceString Key=cleanup_dev_btn_clean}">
                                                             <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="OrangeRed" />
                                                         </Button>
@@ -658,9 +659,10 @@
                                             <ItemsControl ItemsSource="{x:Bind ViewModel.DevToolchains, Mode=OneWay}" Padding="4,0,0,4">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate x:DataType="vm:DevCleanupItemViewModel">
-                                                        <Grid Padding="2,1" Margin="16,0,0,0" MinHeight="32" Background="Transparent">
+                                                        <Grid Padding="2,1" Margin="16,0,0,0" MinHeight="32" Background="Transparent" PointerEntered="EntryRow_PointerEntered" PointerExited="EntryRow_PointerExited">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
                                                                 <ColumnDefinition Width="Auto" />
                                                             </Grid.ColumnDefinitions>
 
@@ -670,7 +672,13 @@
                                                                 </StackPanel>
                                                             </CheckBox>
 
-                                                            <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource Jura}" FontSize="11" VerticalAlignment="Center" Margin="2,0,16,0" />
+                                                            <TextBlock Grid.Column="1" Text="{x:Bind SizeText, Mode=OneWay}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{ThemeResource Jura}" FontSize="11" VerticalAlignment="Center" Margin="2,0,12,0" />
+
+                                                            <Button Grid.Column="2" Width="26" Height="26" Padding="0" Margin="0,0,4,0" Background="Transparent" BorderThickness="0"
+                                                                    ToolTipService.ToolTip="{helpers:ResourceString Key=ai_explainer_btn_text}"
+                                                                    Tag="{x:Bind}" IsEnabled="{x:Bind IsAiEnabled(), Mode=OneWay}" Click="DevEntryExplain_Click">
+                                                                <FontIcon Glyph="&#xED15;" FontSize="13" Foreground="{ThemeResource MyDynamicAccentBrush}" />
+                                                            </Button>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>

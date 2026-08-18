@@ -118,6 +118,17 @@ namespace EvolveOS_Optimizer.Utilities.Services
 
             return await FetchExplanationAsync($"{itemCategory}_{itemName}", sb.ToString());
         }
+
+        public static async Task<string> ExplainCustomPromptAsync(string promptText)
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine(promptText);
+            sb.AppendLine(ResourceString.GetString("ai_explainer_prompt_end") ?? "Answer in 2-3 sentences. Be specific and practical.");
+
+            string cacheKey = $"custom_{promptText.GetHashCode()}";
+
+            return await FetchExplanationAsync(cacheKey, sb.ToString());
+        }
         #endregion
 
         #region Groq Integration
@@ -127,11 +138,11 @@ namespace EvolveOS_Optimizer.Utilities.Services
             if (string.IsNullOrWhiteSpace(apiKey))
                 return ResourceString.GetString("ai_err_no_key_groq") ?? "No API key configured. Go to Settings to add your free Groq API key.";
 
-            return await ExecuteOpenAiCompatibleRequestAsync("https://api.groq.com/openai/v1/chat/completions", apiKey, "llama-3.3-70b-versatile", prompt);
+            return await ExecuteOpenAiCompatibleRequestAsync("https://api.groq.com/openai/v1/chat/completions", apiKey, "openai/gpt-oss-120b", prompt);
         }
 
         public static async Task<string> TestGroqKeyAsync(string apiKey) =>
-            await TestOpenAiCompatibleKeyAsync("https://api.groq.com/openai/v1/chat/completions", apiKey, "llama-3.3-70b-versatile");
+            await TestOpenAiCompatibleKeyAsync("https://api.groq.com/openai/v1/chat/completions", apiKey, "openai/gpt-oss-120b");
         #endregion
 
         #region OpenRouter Integration

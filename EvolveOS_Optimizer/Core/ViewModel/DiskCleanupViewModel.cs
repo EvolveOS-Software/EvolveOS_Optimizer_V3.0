@@ -2006,6 +2006,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             Rule = rule;
             IsSelected = rule.IsDefaultSelected;
         }
+
+        public bool IsAiEnabled()
+        {
+            var provider = LocalMachineSettingsEngine.ActiveAiProvider;
+
+            return provider switch
+            {
+                AiProvider.Groq => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GroqApiKey),
+                AiProvider.Gemini => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.GeminiApiKey),
+                AiProvider.OpenRouter => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.OpenRouterApiKey),
+                AiProvider.Cohere => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.CohereApiKey),
+                AiProvider.Mistral => !string.IsNullOrWhiteSpace(LocalMachineSettingsEngine.MistralApiKey),
+                _ => false,
+            };
+        }
     }
     #endregion
 }

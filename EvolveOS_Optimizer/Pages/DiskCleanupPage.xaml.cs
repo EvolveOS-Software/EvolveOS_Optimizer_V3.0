@@ -277,7 +277,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void EntryExplain_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is not MenuFlyoutItem { Tag: DiskCleanupEntryViewModel vm }) return;
+            if (sender is not Button { Tag: DiskCleanupEntryViewModel vm }) return;
 
             var textBlock = new TextBlock
             {
@@ -296,6 +296,34 @@ namespace EvolveOS_Optimizer.Pages
 
             var showTask = dialog.ShowAsync().AsTask();
             textBlock.Text = await AiExplainerService.ExplainAsync(vm.Entry);
+            await showTask;
+        }
+
+        private async void DevEntryExplain_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button { Tag: DevCleanupItemViewModel vm }) return;
+
+            var textBlock = new TextBlock
+            {
+                Text = ResourceString.GetString("ai_explainer_thinking") ?? "Thinking…",
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 400
+            };
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = XamlRoot,
+                Title = vm.Name,
+                CloseButtonText = "Close",
+                Content = textBlock
+            };
+
+            var showTask = dialog.ShowAsync().AsTask();
+
+            string promptContext = $"Explain what the developer cleanup rule '{vm.Name}' does. It targets: '{vm.Description}'. Is it safe to delete these caches?";
+
+            textBlock.Text = await AiExplainerService.ExplainCustomPromptAsync(promptContext);
+
             await showTask;
         }
 
@@ -523,8 +551,15 @@ namespace EvolveOS_Optimizer.Pages
         private void SetMenuButtonOpacity(object sender, double opacity)
         {
             if (sender is Grid g)
+            {
                 foreach (var btn in g.Children.OfType<Button>())
-                    btn.Opacity = opacity;
+                {
+                    if (btn.Flyout != null)
+                    {
+                        btn.Opacity = opacity;
+                    }
+                }
+            }
         }
 
         private void SetMenuButtonOpacityIfFlyoutClosed(object sender, double opacity)
@@ -533,7 +568,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 foreach (var btn in g.Children.OfType<Button>())
                 {
-                    if (!_buttonsWithOpenFlyouts.Contains(btn))
+                    if (btn.Flyout != null && !_buttonsWithOpenFlyouts.Contains(btn))
                     {
                         btn.Opacity = opacity;
                     }
