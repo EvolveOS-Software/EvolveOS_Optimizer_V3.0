@@ -36,7 +36,7 @@ public sealed partial class SettingTemplates : ResourceDictionary
 
         if (result == ContentDialogResult.Primary)
         {
-            System.Diagnostics.Process.Start("shutdown", "/r /f /t 0");
+            App.ExitApp(isRestart: true);
         }
     }
 }

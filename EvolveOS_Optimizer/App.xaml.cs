@@ -1041,7 +1041,7 @@ namespace EvolveOS_Optimizer
             }
         }
 
-        public static void ExitApp(string? customMessage = null)
+        public static void ExitApp(string? customMessage = null, bool isRestart = false)
         {
             if (_isExiting) return;
             _isExiting = true;
@@ -1052,15 +1052,15 @@ namespace EvolveOS_Optimizer
 
             if (UIThreadDispatcher != null && !UIThreadDispatcher.HasThreadAccess)
             {
-                UIThreadDispatcher.TryEnqueue(async () => await ExecuteExitSequenceAsync(finalMessage));
+                UIThreadDispatcher.TryEnqueue(async () => await ExecuteExitSequenceAsync(finalMessage, isRestart));
             }
             else
             {
-                _ = ExecuteExitSequenceAsync(finalMessage);
+                _ = ExecuteExitSequenceAsync(finalMessage, isRestart);
             }
         }
 
-        private static async Task ExecuteExitSequenceAsync(string displayTitle)
+        private static async Task ExecuteExitSequenceAsync(string displayTitle, bool isRestart = false)
         {
             try
             {
@@ -1094,11 +1094,29 @@ namespace EvolveOS_Optimizer
 
                 await Task.Delay(750);
 
+                if (isRestart)
+                {
+                    try
+                    {
+                        CommandExecutor.ExecuteCommand("shutdown", "/r /t 2 /f");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"System Restart Exception: {ex.Message}");
+                    }
+                }
+
                 Environment.Exit(0);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"ExitApp Exception: {ex.Message}");
+
+                if (isRestart)
+                {
+                    try { CommandExecutor.ExecuteCommand("shutdown", "/r /t 2 /f"); } catch { }
+                }
+
                 Environment.Exit(1);
             }
         }
