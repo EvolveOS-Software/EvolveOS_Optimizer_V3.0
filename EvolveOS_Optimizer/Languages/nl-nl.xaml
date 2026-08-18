@@ -3276,6 +3276,22 @@
     <sys:String x:Key="cleanup_dev_btn_scan">Ontwikkelaarscaches scannen</sys:String>
     <sys:String x:Key="cleanup_dev_btn_clean">Geselecteerde caches wissen</sys:String>
 
+    <!-- Selection Badges -->
+    <sys:String x:Key="cleanup_badge_none">Geen</sys:String>
+    <sys:String x:Key="cleanup_badge_all">Alles</sys:String>
+    <sys:String x:Key="cleanup_badge_default">Standaard</sys:String>
+    <sys:String x:Key="cleanup_badge_custom">Aangepast</sys:String>
+
+    <!-- Status Bar Updates for Developer Cleanup -->
+    <sys:String x:Key="cleanup_status_dev_scanning">Developer Workspaces scannen...</sys:String>
+    <sys:String x:Key="cleanup_status_dev_scan_complete">Developer scan voltooid. {0} aan artefacten gevonden.</sys:String>
+    <sys:String x:Key="cleanup_status_dev_cleaning">Developer caches wissen...</sys:String>
+    <sys:String x:Key="cleanup_status_dev_clean_complete">Developer opschoning voltooid. {0} vrijgemaakt.</sys:String>
+
+    <!-- AI Explainer -->
+    <sys:String x:Key="ai_explainer_btn_text">Leg deze regel uit met AI</sys:String>
+    <sys:String x:Key="ai_explainer_thinking">Nadenken...</sys:String>
+
     <!-- Developer Toolchains Categories & Microstates -->
     <sys:String x:Key="txt_scanning_dots">Scannen...</sys:String>
     <sys:String x:Key="txt_cleaning_dots">Wissen...</sys:String>

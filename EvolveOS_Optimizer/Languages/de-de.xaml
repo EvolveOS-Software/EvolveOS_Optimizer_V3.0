@@ -3254,6 +3254,22 @@
     <sys:String x:Key="cleanup_dev_btn_scan">Caches scannen</sys:String>
     <sys:String x:Key="cleanup_dev_btn_clean">Ausgewählte Caches leeren</sys:String>
 
+    <!-- Selection Badges -->
+    <sys:String x:Key="cleanup_badge_none">Keine</sys:String>
+    <sys:String x:Key="cleanup_badge_all">Alle</sys:String>
+    <sys:String x:Key="cleanup_badge_default">Standard</sys:String>
+    <sys:String x:Key="cleanup_badge_custom">Benutzerdefiniert</sys:String>
+
+    <!-- Status Bar Updates for Developer Cleanup -->
+    <sys:String x:Key="cleanup_status_dev_scanning">Entwickler-Workspaces werden gescannt...</sys:String>
+    <sys:String x:Key="cleanup_status_dev_scan_complete">Entwickler-Scan abgeschlossen. {0} an Artefakten gefunden.</sys:String>
+    <sys:String x:Key="cleanup_status_dev_cleaning">Entwickler-Caches werden bereinigt...</sys:String>
+    <sys:String x:Key="cleanup_status_dev_clean_complete">Entwickler-Bereinigung abgeschlossen. {0} freigegeben.</sys:String>
+
+    <!-- AI Explainer -->
+    <sys:String x:Key="ai_explainer_btn_text">Diese Regel mit KI erklären</sys:String>
+    <sys:String x:Key="ai_explainer_thinking">Nachdenken...</sys:String>
+
     <!-- Developer Toolchains Categories & Microstates -->
     <sys:String x:Key="txt_scanning_dots">Wird gescannt...</sys:String>
     <sys:String x:Key="txt_cleaning_dots">Wird bereinigt...</sys:String>

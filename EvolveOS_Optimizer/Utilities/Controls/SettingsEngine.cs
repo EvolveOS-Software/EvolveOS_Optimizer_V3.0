@@ -128,6 +128,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["IsScheduledCleanEnabled"] = false,
             ["ScheduledCleanDayIndex"] = 0,
             ["ScheduledCleanTimeStr"] = "12:00:00",
+
+            ["DevCacheRetentionIndex"] = 2,
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -224,6 +226,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static string? CustomWinapp2Path { get => string.IsNullOrEmpty((string)_cachedSettings["CustomWinapp2Path"]) ? null : (string)_cachedSettings["CustomWinapp2Path"]; set => ChangingParameters("CustomWinapp2Path", value ?? string.Empty); }
         internal static bool IsScheduledCleanEnabled { get => (bool)_cachedSettings["IsScheduledCleanEnabled"]; set => ChangingParameters("IsScheduledCleanEnabled", value); }
         internal static int ScheduledCleanDayIndex { get => (int)_cachedSettings["ScheduledCleanDayIndex"]; set => ChangingParameters("ScheduledCleanDayIndex", value); }
+        internal static int DevCacheRetentionIndex { get => (int)_cachedSettings["DevCacheRetentionIndex"]; set => ChangingParameters("DevCacheRetentionIndex", value); }
 
         internal static TimeSpan ScheduledCleanTime
         {

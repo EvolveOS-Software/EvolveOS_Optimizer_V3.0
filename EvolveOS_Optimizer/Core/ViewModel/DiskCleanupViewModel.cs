@@ -42,6 +42,36 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly DevCleanupEngine _devEngine = new();
 
         [ObservableProperty] public partial ObservableCollection<DevCleanupItemViewModel> DevToolchains { get; set; } = [];
+
+        private string _devSelectionStateLabel = "";
+        public string DevSelectionStateLabel
+        {
+            get => _devSelectionStateLabel;
+            set => SetProperty(ref _devSelectionStateLabel, value);
+        }
+
+        private Brush? _devBadgeBackground;
+        public Brush? DevBadgeBackground
+        {
+            get => _devBadgeBackground;
+            set => SetProperty(ref _devBadgeBackground, value);
+        }
+
+        private Brush? _devBadgeBorderBrush;
+        public Brush? DevBadgeBorderBrush
+        {
+            get => _devBadgeBorderBrush;
+            set => SetProperty(ref _devBadgeBorderBrush, value);
+        }
+
+        private Brush? _devBadgeForeground;
+        public Brush? DevBadgeForeground
+        {
+            get => _devBadgeForeground;
+            set => SetProperty(ref _devBadgeForeground, value);
+        }
+
+        public ObservableCollection<StorageInsight> DevInsights { get; } = new();
         #endregion
 
         #region Observable State (Cleaner)
@@ -128,8 +158,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             foreach (var rule in _devEngine.GetRules())
             {
-                DevToolchains.Add(new DevCleanupItemViewModel(rule));
+                var vm = new DevCleanupItemViewModel(rule);
+                vm.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName == nameof(DevCleanupItemViewModel.IsSelected))
+                        UpdateDevSelectionState();
+                };
+                DevToolchains.Add(vm);
             }
+
+            UpdateDevSelectionState();
         }
         #endregion
 
@@ -248,11 +286,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Developer Workspaces Advanced Features
 
-        private int _selectedRetentionIndex = 2; // Default to 30 Days
+        private int _selectedRetentionIndex = SettingsEngine.DevCacheRetentionIndex;
+
         public int SelectedRetentionIndex
         {
-            get => _selectedRetentionIndex;
-            set => SetProperty(ref _selectedRetentionIndex, value);
+            get => SettingsEngine.DevCacheRetentionIndex;
+            set
+            {
+                if (SetProperty(ref _selectedRetentionIndex, value))
+                {
+                    SettingsEngine.DevCacheRetentionIndex = value;
+
+                    OnPropertyChanged(nameof(DevToolchains));
+                }
+            }
         }
 
         public IReadOnlyList<string> RetentionOptions { get; } = new List<string>
@@ -263,6 +310,89 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             "90 Days",
             "Always purge (No safety net)"
         };
+
+        public void UpdateDevSelectionState()
+        {
+            Brush GetBrush(string key) =>
+                Application.Current.Resources.TryGetValue(key, out var res) && res is Brush b
+                    ? b
+                    : new SolidColorBrush(Colors.Transparent);
+
+            if (DevToolchains == null || !DevToolchains.Any())
+            {
+                DevSelectionStateLabel = ResourceString.GetString("cleanup_badge_none") ?? "None";
+                DevBadgeBackground = GetBrush("BadgeDefaultBackground");
+                DevBadgeBorderBrush = GetBrush("BadgeDefaultBorder");
+                DevBadgeForeground = GetBrush("BadgeDefaultForeground");
+                return;
+            }
+
+            int totalCount = DevToolchains.Count;
+            int selectedCount = DevToolchains.Count(e => e.IsSelected);
+
+            if (selectedCount == 0)
+            {
+                DevSelectionStateLabel = ResourceString.GetString("cleanup_badge_none") ?? "None";
+                DevBadgeBackground = GetBrush("BadgeDefaultBackground");
+                DevBadgeBorderBrush = GetBrush("BadgeDefaultBorder");
+                DevBadgeForeground = GetBrush("BadgeDefaultForeground");
+            }
+            else if (selectedCount == totalCount)
+            {
+                DevSelectionStateLabel = ResourceString.GetString("cleanup_badge_all") ?? "All";
+                DevBadgeBackground = GetBrush("BadgeRecommendedBackground");
+                DevBadgeBorderBrush = GetBrush("BadgeRecommendedBorder");
+                DevBadgeForeground = GetBrush("BadgeRecommendedForeground");
+            }
+            else
+            {
+                bool isExactlyDefault = DevToolchains.All(e => e.IsSelected == e.Rule.IsDefaultSelected);
+
+                if (isExactlyDefault)
+                {
+                    DevSelectionStateLabel = ResourceString.GetString("cleanup_badge_default") ?? "Default";
+                    DevBadgeBackground = GetBrush("BadgePreferenceBackground");
+                    DevBadgeBorderBrush = GetBrush("BadgePreferenceBorder");
+                    DevBadgeForeground = GetBrush("BadgePreferenceForeground");
+                }
+                else
+                {
+                    DevSelectionStateLabel = ResourceString.GetString("cleanup_badge_custom") ?? "Custom";
+                    DevBadgeBackground = GetBrush("BadgeCustomBackground");
+                    DevBadgeBorderBrush = GetBrush("BadgeCustomBorder");
+                    DevBadgeForeground = GetBrush("BadgeCustomForeground");
+                }
+            }
+        }
+
+        private void UpdateDevHeatmap()
+        {
+            DevInsights.Clear();
+            long totalBytes = DevToolchains.Sum(x => x.SizeBytes);
+            if (totalBytes == 0) return;
+
+            string[] palette = { "#0078D4", "#50E6FF", "#8E44AD", "#27AE60", "#F39C12", "#E74C3C" };
+            int colorIndex = 0;
+
+            double totalVisualWidth = 320.0;
+
+            foreach (var item in DevToolchains.OrderByDescending(r => r.SizeBytes).Take(6))
+            {
+                if (item.SizeBytes == 0) continue;
+                double pct = ((double)item.SizeBytes / totalBytes) * 100;
+                if (pct < 1) continue;
+
+                DevInsights.Add(new StorageInsight
+                {
+                    CategoryName = item.Name,
+                    Percentage = pct,
+                    ColorHex = palette[colorIndex % palette.Length],
+                    DynamicWidth = Math.Max(2, (pct / 100) * totalVisualWidth),
+                    TooltipText = $"{item.Name}: {pct:F1}%"
+                });
+                colorIndex++;
+            }
+        }
 
         [RelayCommand]
         private async Task DeepSweepProjectAsync()
@@ -290,10 +420,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     foreach (var rule in deepRules)
                     {
                         var vm = new DevCleanupItemViewModel(rule) { IsSelected = true };
+                        vm.PropertyChanged += (_, e) =>
+                        {
+                            if (e.PropertyName == nameof(DevCleanupItemViewModel.IsSelected))
+                                UpdateDevSelectionState();
+                        };
                         DevToolchains.Add(vm);
                     }
 
                     StatusText = $"Deep sweep scan complete. Found {deepRules.Count} heavy targets.";
+                    UpdateDevSelectionState();
                 });
 
                 _ = Task.Run(() => _devEngine.OptimizeGitRepositoriesAsync(folder.Path));
@@ -1130,6 +1266,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             });
 
+            App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+            {
+                UpdateDevHeatmap();
+            });
+
             StatusText = string.Format(ResourceString.GetString("cleanup_status_dev_scan_complete") ?? "Developer Scan Complete. Found {0} of artifacts.", totalDevBytes.FormatBytes());
             IsBusy = false;
             IsAnalyzing = false;
@@ -1164,6 +1305,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         item.IsSelected = false;
                     });
                 }
+            });
+
+            App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+            {
+                UpdateDevHeatmap();
             });
 
             await RecordCleaningSessionAsync(totalFreed);

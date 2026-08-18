@@ -3272,6 +3272,22 @@
     <sys:String x:Key="cleanup_dev_btn_scan">Scansiona cache</sys:String>
     <sys:String x:Key="cleanup_dev_btn_clean">Svuota cache selezionate</sys:String>
 
+    <!-- Selection Badges -->
+    <sys:String x:Key="cleanup_badge_none">Nessuno</sys:String>
+    <sys:String x:Key="cleanup_badge_all">Tutti</sys:String>
+    <sys:String x:Key="cleanup_badge_default">Predefinito</sys:String>
+    <sys:String x:Key="cleanup_badge_custom">Personalizzato</sys:String>
+
+    <!-- Status Bar Updates for Developer Cleanup -->
+    <sys:String x:Key="cleanup_status_dev_scanning">Scansione degli spazi di lavoro sviluppatori...</sys:String>
+    <sys:String x:Key="cleanup_status_dev_scan_complete">Scansione sviluppatori completata. Trovati {0} di artefatti.</sys:String>
+    <sys:String x:Key="cleanup_status_dev_cleaning">Svuotamento cache sviluppatori...</sys:String>
+    <sys:String x:Key="cleanup_status_dev_clean_complete">Pulizia sviluppatori completata. Recuperati {0}.</sys:String>
+
+    <!-- AI Explainer -->
+    <sys:String x:Key="ai_explainer_btn_text">Spiega questa regola con l'IA</sys:String>
+    <sys:String x:Key="ai_explainer_thinking">Elaborazione...</sys:String>
+
     <!-- Developer Toolchains Categories & Microstates -->
     <sys:String x:Key="txt_scanning_dots">Scansione in corso...</sys:String>
     <sys:String x:Key="txt_cleaning_dots">Pulizia in corso...</sys:String>

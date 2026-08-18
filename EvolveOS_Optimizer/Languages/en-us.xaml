@@ -3268,6 +3268,28 @@
     <sys:String x:Key="cleanup_dev_btn_scan">Scan Developer Caches</sys:String>
     <sys:String x:Key="cleanup_dev_btn_clean">Purge Selected Caches</sys:String>
 
+    <!-- Selection Badges -->
+    <sys:String x:Key="cleanup_badge_none">None</sys:String>
+    <sys:String x:Key="cleanup_badge_all">All</sys:String>
+    <sys:String x:Key="cleanup_badge_default">Default</sys:String>
+    <sys:String x:Key="cleanup_badge_custom">Custom</sys:String>
+
+    <!-- Status Bar Updates for Developer Cleanup -->
+    <sys:String x:Key="cleanup_status_dev_scanning">Scanning Developer Workspaces...</sys:String>
+    <sys:String x:Key="cleanup_status_dev_scan_complete">Developer Scan Complete. Found {0} of artifacts.</sys:String>
+    <sys:String x:Key="cleanup_status_dev_cleaning">Purging developer caches...</sys:String>
+    <sys:String x:Key="cleanup_status_dev_clean_complete">Developer Cleanup Complete. Recovered {0}.</sys:String>
+
+    <!-- AI Explainer -->
+    <sys:String x:Key="ai_explainer_btn_text">Explain this rule with AI</sys:String>
+    <sys:String x:Key="ai_explainer_thinking">Thinking...</sys:String>
+
+    <!-- Selection Badges -->
+    <sys:String x:Key="cleanup_badge_none">None</sys:String>
+    <sys:String x:Key="cleanup_badge_all">All</sys:String>
+    <sys:String x:Key="cleanup_badge_default">Default</sys:String>
+    <sys:String x:Key="cleanup_badge_custom">Custom</sys:String>
+
     <!-- Developer Toolchains Categories & Microstates -->
     <sys:String x:Key="txt_scanning_dots">Scanning...</sys:String>
     <sys:String x:Key="txt_cleaning_dots">Cleaning...</sys:String>

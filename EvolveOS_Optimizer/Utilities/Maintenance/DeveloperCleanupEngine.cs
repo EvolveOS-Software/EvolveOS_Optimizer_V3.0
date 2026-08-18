@@ -2,10 +2,13 @@
 // Licensed under the MIT License.
 
 using System.IO;
+using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 
 namespace EvolveOS_Optimizer.Utilities.Maintenance
 {
+    #region Core Interfaces & Base Class
+
     public interface IDevCleanupRule
     {
         string Name { get; }
@@ -13,7 +16,6 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         string Description { get; }
         bool IsDefaultSelected { get; }
 
-        // Smart "Age-Based" Pruning (Safe Deletion)
         TimeSpan? SafeRetentionPeriod { get; }
 
         Task<long> CalculateSizeAsync();
@@ -27,7 +29,36 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         public abstract string Description { get; }
         public virtual bool IsDefaultSelected => true;
 
-        public virtual TimeSpan? SafeRetentionPeriod => null;
+        protected int? GetRetentionDays()
+        {
+            int index = SettingsEngine.DevCacheRetentionIndex;
+
+            return index switch
+            {
+                0 => 7,
+                1 => 14,
+                2 => 30,
+                3 => 90,
+                _ => null // Always purge
+            };
+        }
+
+        protected string GetRetentionText()
+        {
+            var days = GetRetentionDays();
+            return days.HasValue
+                ? $"Retains artifacts used in the last {days} days."
+                : "Aggressively purges all artifacts regardless of age.";
+        }
+
+        public virtual TimeSpan? SafeRetentionPeriod
+        {
+            get
+            {
+                var days = GetRetentionDays();
+                return days.HasValue ? TimeSpan.FromDays(days.Value) : null;
+            }
+        }
 
         protected abstract string[] TargetPaths { get; }
 
@@ -133,14 +164,15 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         }
     }
 
+    #endregion
+
     #region Package Manager Ecosystem Rules (Updated with Feature 3)
 
     public class NodeJsRule : DevCleanupRuleBase
     {
         public override string Name => ResourceString.GetString("dev_node_name") ?? "Node.js (npm, Yarn, pnpm)";
         public override string Category => ResourceString.GetString("dev_cat_js") ?? "JavaScript Ecosystem";
-        public override string Description => ResourceString.GetString("dev_node_desc") ?? "Global package caches. Retains packages used in the last 30 days.";
-        public override TimeSpan? SafeRetentionPeriod => TimeSpan.FromDays(30);
+        public override string Description => $"Global package caches. {GetRetentionText()}";
         protected override string[] TargetPaths => new[] { @"%LocalAppData%\npm-cache", @"%LocalAppData%\Yarn\Cache", @"%LocalAppData%\pnpm\store" };
     }
 
@@ -148,8 +180,7 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
     {
         public override string Name => ResourceString.GetString("dev_rust_name") ?? "Rust (Cargo)";
         public override string Category => ResourceString.GetString("dev_cat_systems") ?? "Systems Programming";
-        public override string Description => ResourceString.GetString("dev_rust_desc") ?? "Cargo registry downloads. Retains packages used in the last 30 days.";
-        public override TimeSpan? SafeRetentionPeriod => TimeSpan.FromDays(30);
+        public override string Description => $"Cargo registry downloads. {GetRetentionText()}";
         protected override string[] TargetPaths => new[] { @"%USERPROFILE%\.cargo\registry\cache", @"%USERPROFILE%\.cargo\git\db" };
     }
 
@@ -158,7 +189,6 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         public override string Name => ResourceString.GetString("dev_python_name") ?? "Python (pip, uv)";
         public override string Category => ResourceString.GetString("dev_cat_python") ?? "Python Ecosystem";
         public override string Description => ResourceString.GetString("dev_python_desc") ?? "Downloaded whl/tar.gz caches. Retains packages used in the last 30 days.";
-        public override TimeSpan? SafeRetentionPeriod => TimeSpan.FromDays(30);
         protected override string[] TargetPaths => new[] { @"%LocalAppData%\pip\cache", @"%LocalAppData%\uv\cache" };
     }
 
@@ -167,7 +197,6 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         public override string Name => ResourceString.GetString("dev_dotnet_name") ?? ".NET (NuGet)";
         public override string Category => ResourceString.GetString("dev_cat_dotnet") ?? ".NET Ecosystem";
         public override string Description => ResourceString.GetString("dev_dotnet_desc") ?? "Global NuGet caches. Retains packages used in the last 30 days.";
-        public override TimeSpan? SafeRetentionPeriod => TimeSpan.FromDays(30);
         protected override string[] TargetPaths => new[] { @"%USERPROFILE%\.nuget\packages", @"%LocalAppData%\NuGet\v3-cache" };
     }
 
@@ -176,7 +205,6 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         public override string Name => ResourceString.GetString("dev_go_name") ?? "Go (Build & Mod)";
         public override string Category => ResourceString.GetString("dev_cat_systems") ?? "Systems Programming";
         public override string Description => ResourceString.GetString("dev_go_desc") ?? "Go compiler caches. Retains packages used in the last 30 days.";
-        public override TimeSpan? SafeRetentionPeriod => TimeSpan.FromDays(30);
         protected override string[] TargetPaths => new[] { @"%LocalAppData%\go-build", @"%USERPROFILE%\go\pkg\mod\cache" };
     }
 
@@ -185,7 +213,6 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         public override string Name => ResourceString.GetString("dev_cpp_name") ?? "C/C++ (vcpkg, ccache)";
         public override string Category => ResourceString.GetString("dev_cat_systems") ?? "Systems Programming";
         public override string Description => ResourceString.GetString("dev_cpp_desc") ?? "Build acceleration caches. Retains packages used in the last 30 days.";
-        public override TimeSpan? SafeRetentionPeriod => TimeSpan.FromDays(30);
         protected override string[] TargetPaths => new[] { @"%LocalAppData%\vcpkg\archives", @"%USERPROFILE%\.vcpkg\archives", @"%LocalAppData%\ccache", @"%LocalAppData%\Mozilla\sccache" };
     }
 
@@ -195,7 +222,6 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         public override string Category => ResourceString.GetString("dev_cat_jvm") ?? "JVM Ecosystem";
         public override string Description => ResourceString.GetString("dev_java_desc") ?? "Gradle/Maven caches. Retains artifacts used in the last 30 days.";
         public override bool IsDefaultSelected => false;
-        public override TimeSpan? SafeRetentionPeriod => TimeSpan.FromDays(30);
         protected override string[] TargetPaths => new[] { @"%USERPROFILE%\.gradle\caches", @"%USERPROFILE%\.m2\repository" };
     }
 
@@ -214,6 +240,7 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         public override string Description => ResourceString.GetString("dev_jb_desc") ?? "System caches and indexing data for Rider, IntelliJ, WebStorm, etc.";
         protected override string[] TargetPaths => new[] { @"%LocalAppData%\JetBrains\*\caches" };
     }
+
     #endregion
 
     #region Heavyweight Platforms
@@ -223,7 +250,6 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         public override string Name => "Visual Studio Code";
         public override string Category => "IDE & Tooling";
         public override string Description => "Clears old workspace storage, cached IntelliSense databases, and Chromium temp files.";
-        public override TimeSpan? SafeRetentionPeriod => TimeSpan.FromDays(30);
         protected override string[] TargetPaths => new[] { @"%AppData%\Code\User\workspaceStorage", @"%AppData%\Code\Cache" };
     }
 
@@ -233,7 +259,6 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
         public override string Category => "Mobile Ecosystem";
         public override string Description => "Cleans old Android Emulator (AVD) temp data, Android Studio caches, and Flutter Pub cache.";
         public override bool IsDefaultSelected => false;
-        public override TimeSpan? SafeRetentionPeriod => TimeSpan.FromDays(30);
         protected override string[] TargetPaths => new[] { @"%USERPROFILE%\.android\avd\*\*.lock", @"%USERPROFILE%\.android\cache", @"%LocalAppData%\Google\AndroidStudio*\caches", @"%LocalAppData%\Pub\Cache" };
     }
 
@@ -359,6 +384,8 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
 
     #endregion
 
+    #region Developer Cleanup Engine
+
     public class DevCleanupEngine
     {
         public IReadOnlyList<IDevCleanupRule> GetRules()
@@ -448,4 +475,6 @@ namespace EvolveOS_Optimizer.Utilities.Maintenance
             });
         }
     }
+
+    #endregion
 }
