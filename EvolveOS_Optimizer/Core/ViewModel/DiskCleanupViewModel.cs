@@ -246,6 +246,64 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
         #endregion
 
+        #region Developer Workspaces Advanced Features
+
+        private int _selectedRetentionIndex = 2; // Default to 30 Days
+        public int SelectedRetentionIndex
+        {
+            get => _selectedRetentionIndex;
+            set => SetProperty(ref _selectedRetentionIndex, value);
+        }
+
+        public IReadOnlyList<string> RetentionOptions { get; } = new List<string>
+        {
+            "7 Days",
+            "14 Days",
+            "30 Days",
+            "90 Days",
+            "Always purge (No safety net)"
+        };
+
+        [RelayCommand]
+        private async Task DeepSweepProjectAsync()
+        {
+            if (IsBusy) return;
+
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.ComputerFolder;
+            folderPicker.FileTypeFilter.Add("*");
+
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
+
+            var folder = await folderPicker.PickSingleFolderAsync();
+
+            if (folder != null)
+            {
+                IsBusy = true;
+                StatusText = $"Scanning {folder.Name} for deep project artifacts...";
+
+                var deepRules = await _devEngine.GetDeepProjectRulesAsync(folder.Path);
+
+                App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                {
+                    foreach (var rule in deepRules)
+                    {
+                        var vm = new DevCleanupItemViewModel(rule) { IsSelected = true };
+                        DevToolchains.Add(vm);
+                    }
+
+                    StatusText = $"Deep sweep scan complete. Found {deepRules.Count} heavy targets.";
+                });
+
+                _ = Task.Run(() => _devEngine.OptimizeGitRepositoriesAsync(folder.Path));
+
+                IsBusy = false;
+            }
+        }
+
+        #endregion
+
         #region Commands (Storage Analyzer)
 
         public List<DriveOption> GetAvailableDrives()
