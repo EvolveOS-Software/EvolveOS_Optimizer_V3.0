@@ -1655,118 +1655,134 @@
                                                                         </Ellipse>
                                                                     </Canvas>
                                                                 </Viewbox>
-                                                                <Viewbox HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,20,20" Canvas.ZIndex="10" Stretch="Uniform" StretchDirection="DownOnly">
-                                                                    <Border Padding="10,8" Background="{ThemeResource Brush_Overlay_Dim}" BorderBrush="{ThemeResource MyDynamicAccentBrush}" BorderThickness="1" CornerRadius="4" UseLayoutRounding="True">
-                                                                        <Grid ColumnSpacing="15">
+
+                                                                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,20,15" Canvas.ZIndex="10" MinHeight="36" MinWidth="36">
+
+                                                                    <Border x:Name="HudBackgroundBorder"
+                                                                            Background="{ThemeResource Brush_Overlay_Dim}"
+                                                                            BorderBrush="{ThemeResource MyDynamicAccentBrush}"
+                                                                            BorderThickness="1" CornerRadius="4" UseLayoutRounding="True" />
+
+                                                                    <Viewbox x:Name="HudViewbox" VerticalAlignment="Top" Stretch="Uniform" StretchDirection="Both" Width="120" Margin="15,8">
+
+                                                                        <Grid x:Name="HudContentContainer" ColumnSpacing="5" VerticalAlignment="Top">
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="Auto"/>
                                                                                 <ColumnDefinition Width="Auto"/>
                                                                             </Grid.ColumnDefinitions>
 
-                                                                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Width="100">
+                                                                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Width="120">
 
                                                                                 <TextBlock Text="{x:Bind ViewModel.ActivePrimaryValueStr, Mode=OneWay}"
-                                                                                   Visibility="{x:Bind ViewModel.HeroStandardVisibility, Mode=OneWay}"
-                                                                                   Foreground="White" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                                                           Visibility="{x:Bind ViewModel.HeroStandardVisibility, Mode=OneWay}"
+                                                                                           Foreground="White" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
 
                                                                                 <TextBlock Text="{x:Bind ViewModel.ActiveTemperatureStr, Mode=OneWay}"
                                                                                            Visibility="{x:Bind ViewModel.ActiveTemperatureVisibility, Mode=OneWay}"
-                                                                                           Foreground="#FFFF9900" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,-5,0,2"/>
+                                                                                           Foreground="#FFFF9900" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,-5,0,2"/>
 
                                                                                 <StackPanel Visibility="{x:Bind ViewModel.IsNetworkSelected, Mode=OneWay}" Spacing="-2">
                                                                                     <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay, TargetNullValue=0 ▼, FallbackValue=0 ▼}"
-                                                                                       Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                                                               Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
                                                                                     <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay, TargetNullValue=0 ▲, FallbackValue=0 ▲}"
-                                                                                       Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                                                                               Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
                                                                                     <TextBlock Text="Mbps" Foreground="Gray" FontSize="9" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                                                                 </StackPanel>
 
                                                                                 <TextBlock Text="{x:Bind ViewModel.ActivePrimaryLabel, Mode=OneWay}"
-                                                                                   Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="10"
-                                                                                   FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                                                                           Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="12"
+                                                                                           FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
 
                                                                             </StackPanel>
 
-                                                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="8">
+                                                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5">
 
-                                                                                <!-- CPU: Load & Temp -->
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.CpuSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock helpers:Loc.Key="diag_cpu_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentCpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_cpu_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentCpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CpuTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="11" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CpuTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
-                                                                                <!-- GPU: Load & Temp -->
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.GpuSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock helpers:Loc.Key="diag_gpu_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentGpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_gpu_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentGpuLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.GpuTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="11" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.GpuTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
-                                                                                <!-- RAM: Load & Temp -->
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.RamSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock helpers:Loc.Key="diag_ram_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentRamLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_ram_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentRamLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.RamTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="11" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.RamTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
-                                                                                <!-- MOBO (System): Temp Only -->
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.MoboSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Vertical" Spacing="0" Margin="0,0,35,0">
-                                                                                        <TextBlock Text="SYS:" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
+                                                                                        <TextBlock Text="SYS:" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.MoboTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="11" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.MoboTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
-                                                                                <!-- Network: Unchanged -->
                                                                                 <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.NetworkSecondaryVisibility, Mode=OneWay}" VerticalAlignment="Center">
-                                                                                    <TextBlock helpers:Loc.Key="diag_network_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30" VerticalAlignment="Center"/>
-                                                                                    <StackPanel Orientation="Vertical" Spacing="0" VerticalAlignment="Center">
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay, TargetNullValue=0 ▼, FallbackValue=0 ▼}" Foreground="White" FontSize="10" FontWeight="Bold"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay, TargetNullValue=0 ▲, FallbackValue=0 ▲}" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                                                                    <TextBlock helpers:Loc.Key="diag_network_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                    <StackPanel Orientation="Vertical" Spacing="0" VerticalAlignment="Center" Margin="0,-2,0,0">
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay, TargetNullValue=0 ▼, FallbackValue=0 ▼}" Foreground="White" FontSize="13" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay, TargetNullValue=0 ▲, FallbackValue=0 ▲}" Foreground="White" FontSize="13" FontWeight="Bold"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
-                                                                                <!-- Disk: Load & Temp -->
                                                                                 <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.DiskSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock helpers:Loc.Key="diag_io_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentIoLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                                                        <TextBlock helpers:Loc.Key="diag_io_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentIoLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.DiskTempStr, Mode=OneWay}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="11" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.DiskTempStr, Mode=OneWay}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
-                                                                                <!-- Pagefile: Unchanged -->
                                                                                 <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.PageSecondaryVisibility, Mode=OneWay}">
-                                                                                    <TextBlock helpers:Loc.Key="diag_pagefile_load_small" Foreground="Gray" FontSize="10" FontWeight="SemiBold" Width="30"/>
-                                                                                    <TextBlock Text="{x:Bind ViewModel.CurrentPagefileLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                                                                    <TextBlock helpers:Loc.Key="diag_pagefile_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                    <TextBlock Text="{x:Bind ViewModel.CurrentPagefileLoadStr, Mode=OneWay, TargetNullValue=0%, FallbackValue=0%}" Foreground="White" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                 </StackPanel>
 
                                                                             </StackPanel>
                                                                         </Grid>
-                                                                    </Border>
-                                                                </Viewbox>
+                                                                    </Viewbox>
+
+                                                                    <Button x:Name="HudCloseBtn" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                                                            Background="Transparent" BorderThickness="0" Padding="0"
+                                                                            Width="34" Height="34"
+                                                                            Click="HudToggleBtn_Click" ToolTipService.ToolTip="Hide HUD">
+                                                                        <FontIcon x:Name="HudToggleIcon" FontFamily="Segoe Fluent Icons" Glyph="&#xE70E;" FontSize="12" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Button>
+
+                                                                    <Button x:Name="HudOpenBtn" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-6,-15,0"
+                                                                            Background="Transparent" BorderThickness="0" Padding="0"
+                                                                            Width="34" Height="34" Visibility="Collapsed"
+                                                                            Click="HudToggleBtn_Click" ToolTipService.ToolTip="Show HUD">
+                                                                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE70D;" FontSize="12" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Button>
+                                                                    
+                                                                </Grid>
                                                             </Grid>
 
                                                             <Grid Grid.Row="1" Grid.Column="1" Margin="5,5,5,0">

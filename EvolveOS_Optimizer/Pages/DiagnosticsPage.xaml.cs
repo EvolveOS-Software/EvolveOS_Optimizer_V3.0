@@ -410,6 +410,26 @@ namespace EvolveOS_Optimizer.Pages
                 AnimationDesired = true
             });
         }
+
+        private void HudToggleBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (HudViewbox.Visibility == Visibility.Visible)
+            {
+                HudViewbox.Visibility = Visibility.Collapsed;
+                HudBackgroundBorder.Visibility = Visibility.Collapsed;
+                HudCloseBtn.Visibility = Visibility.Collapsed;
+
+                HudOpenBtn.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                HudViewbox.Visibility = Visibility.Visible;
+                HudBackgroundBorder.Visibility = Visibility.Visible;
+                HudCloseBtn.Visibility = Visibility.Visible;
+
+                HudOpenBtn.Visibility = Visibility.Collapsed;
+            }
+        }
         #endregion
 
         #region Callbacks (Maintenance)
