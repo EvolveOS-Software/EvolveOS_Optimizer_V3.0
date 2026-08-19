@@ -514,9 +514,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             FanControlEngine.Instance.Initialize();
 
-            Thread monitorThread = new Thread(MonitorLoop) { IsBackground = true };
-            monitorThread.Start();
-
             MonitorAsync();
 
             RefreshAllDrivesInfo();
@@ -2765,6 +2762,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (targetBuffer.Count == 0)
             {
+                var oldPerfGraph0 = PerformanceGraphPoints;
+                var oldPerfArea0 = PerformanceAreaPoints;
+                var oldPerfAltGraph0 = PerformanceGraphPointsAlt;
+                var oldPerfAltArea0 = PerformanceAreaPointsAlt;
+                var oldTempGraph0 = TemperatureGraphPoints;
+                var oldTempArea0 = TemperatureAreaPoints;
+
                 newPoints.Add(new Point(logicalWidth, 100));
                 PerformanceGraphPoints = newPoints;
                 PerformanceAreaPoints = areaPoints;
@@ -2782,6 +2786,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 TemperatureAreaPoints = newTempAreaPoints;
                 TemperatureDotX = logicalWidth - 6;
                 TemperatureDotY = 100 - 6;
+
+                oldPerfGraph0?.Clear();
+                oldPerfArea0?.Clear();
+                oldPerfAltGraph0?.Clear();
+                oldPerfAltArea0?.Clear();
+                oldTempGraph0?.Clear();
+                oldTempArea0?.Clear();
+
                 return;
             }
 
@@ -2910,6 +2922,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             }
 
+            var oldTempGraph = TemperatureGraphPoints;
+            var oldTempArea = TemperatureAreaPoints;
+            var oldPerfGraph = PerformanceGraphPoints;
+            var oldPerfArea = PerformanceAreaPoints;
+            var oldPerfAltGraph = PerformanceGraphPointsAlt;
+            var oldPerfAltArea = PerformanceAreaPointsAlt;
+
             TemperatureGraphPoints = newTempPoints;
             TemperatureAreaPoints = newTempAreaPoints;
             PerformanceGraphPoints = newPoints;
@@ -2950,6 +2969,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 PerformanceAltDotX = logicalWidth - 6;
                 PerformanceAltDotY = 100 - 6;
             }
+
+            oldTempGraph?.Clear();
+            oldTempArea?.Clear();
+            oldPerfGraph?.Clear();
+            oldPerfArea?.Clear();
+            oldPerfAltGraph?.Clear();
+            oldPerfAltArea?.Clear();
         }
 
         private List<double> DownsampleLTTB(List<double> data, int threshold)
@@ -4748,7 +4774,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _gpuCategory = new System.Diagnostics.PerformanceCounterCategory("GPU Engine");
                 }
 
-                if ((DateTime.Now - _lastGpuInstanceRefresh).TotalSeconds >= 10)
+                if ((DateTime.Now - _lastGpuInstanceRefresh).TotalSeconds >= 60)
                 {
                     var currentInstances = _gpuCategory.GetInstanceNames()
                         .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
