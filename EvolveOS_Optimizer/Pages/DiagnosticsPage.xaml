@@ -1950,9 +1950,9 @@
 
                                                                 <Canvas>
                                                                     <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150"
-                                                                          Stroke="{StaticResource SweepBrush}" StrokeThickness="18" Opacity="0.25" StrokeLineJoin="Round" />
+                                                                          Stroke="{StaticResource SweepBrush}" StrokeThickness="4" Opacity="0.25" StrokeLineJoin="Round" />
                                                                     <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150"
-                                                                          Stroke="{StaticResource SweepBrush}" StrokeThickness="8" Opacity="0.60" StrokeLineJoin="Round" />
+                                                                          Stroke="{StaticResource SweepBrush}" StrokeThickness="6" Opacity="0.60" StrokeLineJoin="Round" />
                                                                     <Path Data="M 0,150 L 400,150 L 415,100 L 430,180 L 445,150 L 455,150 L 475,10 L 505,290 L 535,150 L 1000,150"
                                                                           Stroke="{StaticResource SweepBrush}" StrokeThickness="2" StrokeLineJoin="Round" />
                                                                 </Canvas>
