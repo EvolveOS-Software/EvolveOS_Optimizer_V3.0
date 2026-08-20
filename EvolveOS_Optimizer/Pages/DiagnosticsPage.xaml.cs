@@ -449,6 +449,8 @@ namespace EvolveOS_Optimizer.Pages
 
             _isCurrentPageActive = true;
 
+            ViewModel?.ResumeUiUpdates();
+
             if (e.Parameter is string optionTag && !string.IsNullOrEmpty(optionTag))
             {
                 _pendingScrollTarget = optionTag;

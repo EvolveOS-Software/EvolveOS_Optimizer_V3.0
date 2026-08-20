@@ -2754,17 +2754,38 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             await _scannerEngine.ExecuteFullScanAsync();
         }
 
+        private void SyncPointCollection(PointCollection target, List<Point> source)
+        {
+            if (target == null) return;
+
+            if (target.Count != source.Count)
+            {
+                target.Clear();
+                foreach (var p in source) target.Add(p);
+            }
+            else
+            {
+                for (int i = 0; i < source.Count; i++)
+                {
+                    if (Math.Abs(target[i].X - source[i].X) > 0.01 || Math.Abs(target[i].Y - source[i].Y) > 0.01)
+                    {
+                        target[i] = source[i];
+                    }
+                }
+            }
+        }
+
         private void RebuildGraphFromHistory()
         {
             double logicalWidth = 400.0;
             bool useLongTerm = MaxGraphSeconds > 900;
 
-            var newPoints = new PointCollection();
-            var areaPoints = new PointCollection();
-            var newPointsAlt = new PointCollection();
-            var areaPointsAlt = new PointCollection();
-            var newTempPoints = new PointCollection();
-            var newTempAreaPoints = new PointCollection();
+            var newPoints = new List<Point>();
+            var areaPoints = new List<Point>();
+            var newPointsAlt = new List<Point>();
+            var areaPointsAlt = new List<Point>();
+            var newTempPoints = new List<Point>();
+            var newTempAreaPoints = new List<Point>();
 
             var targetBuffer = ActiveGraphMetric switch
             {
@@ -2778,37 +2799,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (targetBuffer.Count == 0)
             {
-                var oldPerfGraph0 = PerformanceGraphPoints;
-                var oldPerfArea0 = PerformanceAreaPoints;
-                var oldPerfAltGraph0 = PerformanceGraphPointsAlt;
-                var oldPerfAltArea0 = PerformanceAreaPointsAlt;
-                var oldTempGraph0 = TemperatureGraphPoints;
-                var oldTempArea0 = TemperatureAreaPoints;
-
                 newPoints.Add(new Point(logicalWidth, 100));
-                PerformanceGraphPoints = newPoints;
-                PerformanceAreaPoints = areaPoints;
                 PerformanceDotX = logicalWidth - 6;
                 PerformanceDotY = 100 - 6;
 
                 newPointsAlt.Add(new Point(logicalWidth, 100));
-                PerformanceGraphPointsAlt = newPointsAlt;
-                PerformanceAreaPointsAlt = areaPointsAlt;
                 PerformanceAltDotX = logicalWidth - 6;
                 PerformanceAltDotY = 100 - 6;
 
                 newTempPoints.Add(new Point(logicalWidth, 100));
-                TemperatureGraphPoints = newTempPoints;
-                TemperatureAreaPoints = newTempAreaPoints;
                 TemperatureDotX = logicalWidth - 6;
                 TemperatureDotY = 100 - 6;
 
-                oldPerfGraph0?.Clear();
-                oldPerfArea0?.Clear();
-                oldPerfAltGraph0?.Clear();
-                oldPerfAltArea0?.Clear();
-                oldTempGraph0?.Clear();
-                oldTempArea0?.Clear();
+                SyncPointCollection(PerformanceGraphPoints, newPoints);
+                SyncPointCollection(PerformanceAreaPoints, areaPoints);
+                SyncPointCollection(PerformanceGraphPointsAlt, newPointsAlt);
+                SyncPointCollection(PerformanceAreaPointsAlt, areaPointsAlt);
+                SyncPointCollection(TemperatureGraphPoints, newTempPoints);
+                SyncPointCollection(TemperatureAreaPoints, newTempAreaPoints);
 
                 return;
             }
@@ -2969,26 +2977,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 PerformanceAltDotY = 100 - 6;
             }
 
-            var oldTempGraph = TemperatureGraphPoints;
-            var oldTempArea = TemperatureAreaPoints;
-            var oldPerfGraph = PerformanceGraphPoints;
-            var oldPerfArea = PerformanceAreaPoints;
-            var oldPerfAltGraph = PerformanceGraphPointsAlt;
-            var oldPerfAltArea = PerformanceAreaPointsAlt;
-
-            TemperatureGraphPoints = newTempPoints;
-            TemperatureAreaPoints = newTempAreaPoints;
-            PerformanceGraphPoints = newPoints;
-            PerformanceAreaPoints = areaPoints;
-            PerformanceGraphPointsAlt = newPointsAlt;
-            PerformanceAreaPointsAlt = areaPointsAlt;
-
-            oldTempGraph?.Clear();
-            oldTempArea?.Clear();
-            oldPerfGraph?.Clear();
-            oldPerfArea?.Clear();
-            oldPerfAltGraph?.Clear();
-            oldPerfAltArea?.Clear();
+            SyncPointCollection(TemperatureGraphPoints, newTempPoints);
+            SyncPointCollection(TemperatureAreaPoints, newTempAreaPoints);
+            SyncPointCollection(PerformanceGraphPoints, newPoints);
+            SyncPointCollection(PerformanceAreaPoints, areaPoints);
+            SyncPointCollection(PerformanceGraphPointsAlt, newPointsAlt);
+            SyncPointCollection(PerformanceAreaPointsAlt, areaPointsAlt);
         }
 
         private List<double> DownsampleLTTB(List<double> data, int threshold)
@@ -4154,7 +4148,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     var dispatcher = _dispatcherQueue ?? MainWindow.Instance?.DispatcherQueue;
                     dispatcher?.TryEnqueue(() =>
                     {
-                        if (_isUiActive)
+                        if (_isUiActive || needsTrayUpdates)
                         {
                             CpuTempStr = cpuTemp > 0 ? $"{(int)cpuTemp}°C" : "--°C";
                             GpuTempStr = gpuTemp > 0 ? $"{(int)gpuTemp}°C" : "--°C";
@@ -4172,7 +4166,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             CurrentNetworkUpLoadStr = $"{_displayUpMbps:0.#} ▲";
                             CurrentNetworkLoadStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲ Mbps";
                             CurrentNetworkLoadSecondaryStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲";
+                        }
 
+                        if (_isUiActive)
+                        {
                             OnPropertyChanged(nameof(ActivePrimaryValueStr));
                             OnPropertyChanged(nameof(ActiveTemperatureStr));
                             OnPropertyChanged(nameof(HeroStandardVisibility));
@@ -4221,7 +4218,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[UpdateTelemetryGraph Error] {ex.Message}");
+                Debug.WriteLine($"[UpdateTelemetryGraph Error] {ex.Message}");
             }
             finally
             {
@@ -5487,6 +5484,16 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _telemetryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
                 Debug.WriteLine("[DiagnosticsPageVM] All background engines CRYO-FROZEN. Telemetry stopped.");
             }
+
+            _dispatcherQueue?.TryEnqueue(() =>
+            {
+                PerformanceGraphPoints = new PointCollection();
+                PerformanceAreaPoints = new PointCollection();
+                PerformanceGraphPointsAlt = new PointCollection();
+                PerformanceAreaPointsAlt = new PointCollection();
+                TemperatureGraphPoints = new PointCollection();
+                TemperatureAreaPoints = new PointCollection();
+            });
         }
 
         public void ResumeUiUpdates()
