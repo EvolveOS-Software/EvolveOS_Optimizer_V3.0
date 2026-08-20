@@ -2928,18 +2928,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             }
 
-            var oldTempGraph = TemperatureGraphPoints;
-            var oldTempArea = TemperatureAreaPoints;
-            var oldPerfGraph = PerformanceGraphPoints;
-            var oldPerfArea = PerformanceAreaPoints;
-            var oldPerfAltGraph = PerformanceGraphPointsAlt;
-            var oldPerfAltArea = PerformanceAreaPointsAlt;
-
-            TemperatureGraphPoints = newTempPoints;
-            TemperatureAreaPoints = newTempAreaPoints;
-            PerformanceGraphPoints = newPoints;
-            PerformanceAreaPoints = areaPoints;
-
             if (useAlt)
             {
                 double currentAltX = startX;
@@ -2963,18 +2951,27 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     PerformanceAltDotX = lastAltPoint.X - 6;
                     PerformanceAltDotY = lastAltPoint.Y - 6;
                 }
-                PerformanceGraphPointsAlt = newPointsAlt;
-                PerformanceAreaPointsAlt = areaPointsAlt;
             }
             else
             {
                 newPointsAlt.Add(new Point(logicalWidth, 100));
-                PerformanceGraphPointsAlt = newPointsAlt;
-                PerformanceAreaPointsAlt = areaPointsAlt;
-
                 PerformanceAltDotX = logicalWidth - 6;
                 PerformanceAltDotY = 100 - 6;
             }
+
+            var oldTempGraph = TemperatureGraphPoints;
+            var oldTempArea = TemperatureAreaPoints;
+            var oldPerfGraph = PerformanceGraphPoints;
+            var oldPerfArea = PerformanceAreaPoints;
+            var oldPerfAltGraph = PerformanceGraphPointsAlt;
+            var oldPerfAltArea = PerformanceAreaPointsAlt;
+
+            TemperatureGraphPoints = newTempPoints;
+            TemperatureAreaPoints = newTempAreaPoints;
+            PerformanceGraphPoints = newPoints;
+            PerformanceAreaPoints = areaPoints;
+            PerformanceGraphPointsAlt = newPointsAlt;
+            PerformanceAreaPointsAlt = areaPointsAlt;
 
             oldTempGraph?.Clear();
             oldTempArea?.Clear();
