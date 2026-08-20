@@ -64,34 +64,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private long _prevNetworkUpBytes;
         private DateTime _lastNetworkCheckTime = DateTime.MinValue;
 
-        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool GetSystemTimes(out FILETIME lpIdleTime, out FILETIME lpKernelTime, out FILETIME lpUserTime);
-
-        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-        private struct FILETIME
-        {
-            public uint dwLowDateTime;
-            public uint dwHighDateTime;
-        }
-
-        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
-        private struct MEMORYSTATUSEX
-        {
-            public uint dwLength;
-            public uint dwMemoryLoad;
-            public ulong ullTotalPhys;
-            public ulong ullAvailPhys;
-            public ulong ullTotalPageFile;
-            public ulong ullAvailPageFile;
-            public ulong ullTotalVirtual;
-            public ulong ullAvailVirtual;
-            public ulong ullAvailExtendedVirtual;
-        }
-
-        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
-        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
-
         private readonly List<double> _cpuHistoryBuffer = new List<double>();
         private readonly List<double> _ramHistoryBuffer = new List<double>();
         private readonly List<double> _diskHistoryBuffer = new List<double>();
@@ -778,6 +750,36 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #endregion
 
+        #region Native Interop (P/Invoke)
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetSystemTimes(out FILETIME lpIdleTime, out FILETIME lpKernelTime, out FILETIME lpUserTime);
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        private struct FILETIME
+        {
+            public uint dwLowDateTime;
+            public uint dwHighDateTime;
+        }
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        private struct MEMORYSTATUSEX
+        {
+            public uint dwLength;
+            public uint dwMemoryLoad;
+            public ulong ullTotalPhys;
+            public ulong ullAvailPhys;
+            public ulong ullTotalPageFile;
+            public ulong ullAvailPageFile;
+            public ulong ullTotalVirtual;
+            public ulong ullAvailVirtual;
+            public ulong ullAvailExtendedVirtual;
+        }
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+        #endregion
+
         #region Merged Core UI & State Properties (Maintenance)
         public Computer? Computer
         {
@@ -804,458 +806,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             get => _totalSpaceToFree;
             set { SetProperty(ref _totalSpaceToFree, value); }
         }
-        #endregion
-
-        #region Advanced Features Bridge (Diagnostics)
-
-        private ObservableCollection<string> _availableDisks = new ObservableCollection<string>();
-        public ObservableCollection<string> AvailableDisks { get => _availableDisks; set => SetProperty(ref _availableDisks, value); }
-
-        private int _selectedDiskIndex = 0;
-        public int SelectedDiskIndex { get => _selectedDiskIndex; set => SetProperty(ref _selectedDiskIndex, value); }
-
-        public Visibility DiskSelectorVisibility =>
-            (ActiveGraphMetric == TelemetryMetric.Disk && IsGraphingTemperature) ? Visibility.Visible : Visibility.Collapsed;
-
-        public enum TelemetryMetric { CPU, RAM, Disk, Pagefile, GPU, Network, Motherboard }
-
-        public Visibility TemperatureToggleVisibility =>
-            (ActiveGraphMetric == TelemetryMetric.Network ||
-            ActiveGraphMetric == TelemetryMetric.Pagefile)
-            ? Visibility.Collapsed : Visibility.Visible;
-
-        private TelemetryMetric _activeGraphMetric = TelemetryMetric.CPU;
-        public TelemetryMetric ActiveGraphMetric
-        {
-            get => _activeGraphMetric;
-            set
-            {
-                if (SetProperty(ref _activeGraphMetric, value))
-                {
-                    if (value != TelemetryMetric.Disk)
-                    {
-                        IsStorageInfoSelected = false;
-                    }
-
-                    if (value == TelemetryMetric.Motherboard)
-                    {
-                        IsGraphingTemperature = true;
-                    }
-                    else if (value == TelemetryMetric.Pagefile ||
-                             value == TelemetryMetric.Network)
-                    {
-                        IsGraphingTemperature = false;
-                    }
-
-                    OnPropertyChanged(nameof(DiskSelectorVisibility));
-                    OnPropertyChanged(nameof(TemperatureToggleVisibility));
-                    OnPropertyChanged(nameof(IsCpuSelected));
-                    OnPropertyChanged(nameof(IsRamSelected));
-                    OnPropertyChanged(nameof(IsDiskSelected));
-                    OnPropertyChanged(nameof(IsPageSelected));
-                    OnPropertyChanged(nameof(IsGpuSelected));
-                    OnPropertyChanged(nameof(IsNetworkSelected));
-                    OnPropertyChanged(nameof(IsMoboSelected));
-
-                    OnPropertyChanged(nameof(CpuSecondaryVisibility));
-                    OnPropertyChanged(nameof(RamSecondaryVisibility));
-                    OnPropertyChanged(nameof(DiskSecondaryVisibility));
-                    OnPropertyChanged(nameof(PageSecondaryVisibility));
-                    OnPropertyChanged(nameof(GpuSecondaryVisibility));
-                    OnPropertyChanged(nameof(NetworkSecondaryVisibility));
-                    OnPropertyChanged(nameof(MoboSecondaryVisibility));
-                    OnPropertyChanged(nameof(HeroStandardVisibility));
-                    OnPropertyChanged(nameof(NetworkGraphAltVisibility));
-
-                    OnPropertyChanged(nameof(ActivePrimaryLabel));
-                    OnPropertyChanged(nameof(ActivePrimaryValueStr));
-                    OnPropertyChanged(nameof(ActiveTemperatureStr));
-                    OnPropertyChanged(nameof(ActiveTemperatureVisibility));
-
-                    RebuildGraphFromHistory();
-                }
-            }
-        }
-
-        public bool IsCpuSelected
-        {
-            get => ActiveGraphMetric == TelemetryMetric.CPU;
-            set { if (value) ActiveGraphMetric = TelemetryMetric.CPU; }
-        }
-        public bool IsRamSelected
-        {
-            get => ActiveGraphMetric == TelemetryMetric.RAM;
-            set { if (value) ActiveGraphMetric = TelemetryMetric.RAM; }
-        }
-        public bool IsDiskSelected
-        {
-            get => ActiveGraphMetric == TelemetryMetric.Disk;
-            set { if (value) ActiveGraphMetric = TelemetryMetric.Disk; }
-        }
-        public bool IsPageSelected
-        {
-            get => ActiveGraphMetric == TelemetryMetric.Pagefile;
-            set { if (value) ActiveGraphMetric = TelemetryMetric.Pagefile; }
-        }
-
-        public bool IsGpuSelected
-        {
-            get => ActiveGraphMetric == TelemetryMetric.GPU;
-            set { if (value) ActiveGraphMetric = TelemetryMetric.GPU; }
-        }
-
-        public bool IsNetworkSelected
-        {
-            get => ActiveGraphMetric == TelemetryMetric.Network;
-            set { if (value) ActiveGraphMetric = TelemetryMetric.Network; }
-        }
-
-        public bool IsMoboSelected
-        {
-            get => ActiveGraphMetric == TelemetryMetric.Motherboard;
-            set { if (value) ActiveGraphMetric = TelemetryMetric.Motherboard; }
-        }
-
-        public Visibility CpuSecondaryVisibility => IsCpuSelected ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility RamSecondaryVisibility => IsRamSelected ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility DiskSecondaryVisibility => IsDiskSelected ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility PageSecondaryVisibility => IsPageSelected ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility GpuSecondaryVisibility => IsGpuSelected ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility NetworkSecondaryVisibility => IsNetworkSelected ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility MoboSecondaryVisibility => IsMoboSelected ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility HeroStandardVisibility => IsNetworkSelected ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility NetworkGraphAltVisibility => IsNetworkSelected ? Visibility.Visible : Visibility.Collapsed;
-
-        public string ActivePrimaryLabel => ActiveGraphMetric switch
-        {
-            TelemetryMetric.RAM => ResourceString.GetString("diag_ram_load") ?? "RAM LOAD",
-            TelemetryMetric.Disk => ResourceString.GetString("diag_io_load") ?? "DISK I/O",
-            TelemetryMetric.Pagefile => ResourceString.GetString("diag_pagefile_load") ?? "PAGEFILE",
-            TelemetryMetric.GPU => ResourceString.GetString("diag_gpu_load") ?? "GPU LOAD",
-            TelemetryMetric.Network => ResourceString.GetString("diag_network_load") ?? "NETWORK SPEED",
-            TelemetryMetric.Motherboard => "SYSTEM TEMP",
-            _ => ResourceString.GetString("diag_cpu_load") ?? "CPU LOAD"
-        };
-
-        public string ActivePrimaryValueStr => ActiveGraphMetric switch
-        {
-            TelemetryMetric.RAM => CurrentRamLoadStr,
-            TelemetryMetric.Disk => CurrentIoLoadStr,
-            TelemetryMetric.Pagefile => CurrentPagefileLoadStr,
-            TelemetryMetric.GPU => CurrentGpuLoadStr,
-            TelemetryMetric.Network => CurrentNetworkLoadStr,
-            TelemetryMetric.Motherboard => MoboTempStr,
-            _ => CurrentCpuLoadStr
-        };
-
-        public string ActiveTemperatureStr => ActiveGraphMetric switch
-        {
-            TelemetryMetric.RAM => RamTempStr,
-            TelemetryMetric.GPU => GpuTempStr,
-            TelemetryMetric.Motherboard => MoboTempStr,
-            TelemetryMetric.CPU => CpuTempStr,
-            TelemetryMetric.Disk => DiskTempStr,
-            _ => ""
-        };
-
-        public Visibility ActiveTemperatureVisibility
-        {
-            get
-            {
-                if (ActiveGraphMetric == TelemetryMetric.Pagefile ||
-                    ActiveGraphMetric == TelemetryMetric.Network ||
-                    ActiveGraphMetric == TelemetryMetric.Motherboard)
-                {
-                    return Visibility.Collapsed;
-                }
-
-                float currentTemp = ActiveGraphMetric switch
-                {
-                    TelemetryMetric.RAM => _cachedMemTemp,
-                    TelemetryMetric.GPU => _cachedGpuTemp,
-                    TelemetryMetric.CPU => _cachedCpuTemp,
-                    TelemetryMetric.Disk => _cachedDiskTemp,
-                    _ => -1f
-                };
-
-                return currentTemp > 0 ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-
-        private bool _isGraphingTemperature = false;
-        public bool IsGraphingTemperature
-        {
-            get => _isGraphingTemperature;
-            set
-            {
-                if (SetProperty(ref _isGraphingTemperature, value))
-                {
-                    OnPropertyChanged(nameof(IsGraphingLoad));
-                    OnPropertyChanged(nameof(DiskSelectorVisibility));
-                    RebuildGraphFromHistory();
-                }
-            }
-        }
-        public bool IsGraphingLoad => !IsGraphingTemperature;
-
-        public class GraphScaleOption
-        {
-            public string Title { get; set; } = "";
-            public int Seconds { get; set; }
-        }
-
-        public ObservableCollection<GraphScaleOption> TimeScaleOptions { get; } = new()
-        {
-            new GraphScaleOption { Title = ResourceString.GetString("diag_graph_60sec") ?? "60 Seconds", Seconds = 60 },
-            new GraphScaleOption { Title = ResourceString.GetString("diag_graph_5min") ?? "5 Minutes", Seconds = 300 },
-            new GraphScaleOption { Title = ResourceString.GetString("diag_graph_15min") ?? "15 Minutes", Seconds = 900 },
-            new GraphScaleOption { Title = "1 Hour", Seconds = 3600 },
-            new GraphScaleOption { Title = "6 Hours", Seconds = 21600 },
-            new GraphScaleOption { Title = "24 Hours", Seconds = 86400 },
-            new GraphScaleOption { Title = "72 Hours", Seconds = 259200 }
-        };
-
-        private int _maxGraphSeconds = LocalMachineSettingsEngine.DiagnosticsGraphTime;
-        public int MaxGraphSeconds
-        {
-            get => _maxGraphSeconds;
-            set
-            {
-                if (SetProperty(ref _maxGraphSeconds, value))
-                {
-                    LocalMachineSettingsEngine.DiagnosticsGraphTime = value;
-
-                    _peakNetworkSpeedMbps = 10f;
-
-                    OnPropertyChanged(nameof(XAxisLabelStart));
-                    OnPropertyChanged(nameof(XAxisLabelQ1));
-                    OnPropertyChanged(nameof(XAxisLabelMid));
-                    OnPropertyChanged(nameof(XAxisLabelQ3));
-
-                    RebuildGraphFromHistory();
-                }
-            }
-        }
-
-        public string XAxisLabelStart => MaxGraphSeconds >= 3600
-                    ? $"-{MaxGraphSeconds / 3600} HRS" : (MaxGraphSeconds >= 300 ? $"-{MaxGraphSeconds / 60} MIN" : $"-{MaxGraphSeconds} SEC");
-
-        public string XAxisLabelQ1 => MaxGraphSeconds >= 3600
-            ? $"-{(MaxGraphSeconds * 0.75) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.75) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.75:0} SEC");
-
-        public string XAxisLabelMid => MaxGraphSeconds >= 3600
-            ? $"-{(MaxGraphSeconds * 0.5) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.5) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.5:0} SEC");
-
-        public string XAxisLabelQ3 => MaxGraphSeconds >= 3600
-            ? $"-{(MaxGraphSeconds * 0.25) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.25) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.25:0} SEC");
-
-        private string _yAxis100 = "100";
-        public string YAxis100 { get => _yAxis100; set => SetProperty(ref _yAxis100, value); }
-
-        private string _yAxis75 = "75";
-        public string YAxis75 { get => _yAxis75; set => SetProperty(ref _yAxis75, value); }
-
-        private string _yAxis50 = "50";
-        public string YAxis50 { get => _yAxis50; set => SetProperty(ref _yAxis50, value); }
-
-        private string _yAxis25 = "25";
-        public string YAxis25 { get => _yAxis25; set => SetProperty(ref _yAxis25, value); }
-
-
-        private string _aiSummary = ResourceString.GetString("diag_ai_sleeping") ?? "AI Engine sleeping. Run a scan to generate a system health summary.";
-        public string AiSummary
-        {
-            get => _aiSummary;
-            set => SetProperty(ref _aiSummary, value);
-        }
-
-        public bool IsLiveMonitoringEnabled
-        {
-            get => LocalMachineSettingsEngine.EnableLiveDiagnostics;
-            set
-            {
-                if (LocalMachineSettingsEngine.EnableLiveDiagnostics != value)
-                {
-                    LocalMachineSettingsEngine.EnableLiveDiagnostics = value;
-                    OnPropertyChanged(nameof(IsLiveMonitoringEnabled));
-
-                    if (value)
-                    {
-                        StartLiveMonitoring();
-                        StartLiveTelemetry();
-                    }
-                    else
-                    {
-                        StopLiveMonitoring();
-                        StopLiveTelemetry();
-                    }
-                }
-            }
-        }
-
-        private string _stabilityScore = "100%";
-        public string StabilityScore
-        {
-            get => _stabilityScore;
-            set => SetProperty(ref _stabilityScore, value);
-        }
-
-        private string _activeHardwareCount = "68";
-        public string ActiveHardwareCount
-        {
-            get => _activeHardwareCount;
-            set => SetProperty(ref _activeHardwareCount, value);
-        }
-
-        private PointCollection _performanceGraphPoints = new();
-        public PointCollection PerformanceGraphPoints
-        {
-            get => _performanceGraphPoints;
-            set => SetProperty(ref _performanceGraphPoints, value);
-        }
-
-        private PointCollection _temperatureGraphPoints = new();
-        public PointCollection TemperatureGraphPoints
-        {
-            get => _temperatureGraphPoints;
-            set => SetProperty(ref _temperatureGraphPoints, value);
-        }
-
-        private PointCollection _temperatureAreaPoints = new();
-        public PointCollection TemperatureAreaPoints
-        {
-            get => _temperatureAreaPoints;
-            set { _temperatureAreaPoints = value; OnPropertyChanged(); }
-        }
-
-        private List<double> _cpuHistory = new();
-        private PointCollection _performanceAreaPoints = new();
-        public PointCollection PerformanceAreaPoints
-        {
-            get => _performanceAreaPoints;
-            set { _performanceAreaPoints = value; OnPropertyChanged(); }
-        }
-
-        private PointCollection _performanceGraphPointsAlt = new();
-        public PointCollection PerformanceGraphPointsAlt
-        {
-            get => _performanceGraphPointsAlt;
-            set => SetProperty(ref _performanceGraphPointsAlt, value);
-        }
-
-        private PointCollection _performanceAreaPointsAlt = new();
-        public PointCollection PerformanceAreaPointsAlt
-        {
-            get => _performanceAreaPointsAlt;
-            set => SetProperty(ref _performanceAreaPointsAlt, value);
-        }
-
-        private double _performanceDotX;
-        public double PerformanceDotX { get => _performanceDotX; set => SetProperty(ref _performanceDotX, value); }
-
-        private double _performanceDotY;
-        public double PerformanceDotY { get => _performanceDotY; set => SetProperty(ref _performanceDotY, value); }
-
-        private double _performanceAltDotX;
-        public double PerformanceAltDotX { get => _performanceAltDotX; set => SetProperty(ref _performanceAltDotX, value); }
-
-        private double _performanceAltDotY;
-        public double PerformanceAltDotY { get => _performanceAltDotY; set => SetProperty(ref _performanceAltDotY, value); }
-
-        private double _temperatureDotX;
-        public double TemperatureDotX { get => _temperatureDotX; set => SetProperty(ref _temperatureDotX, value); }
-
-        private double _temperatureDotY;
-        public double TemperatureDotY { get => _temperatureDotY; set => SetProperty(ref _temperatureDotY, value); }
-
-        private double _dotScaleX = 1.0;
-        public double DotScaleX { get => _dotScaleX; set => SetProperty(ref _dotScaleX, value); }
-
-        private double _dotScaleY = 1.0;
-        public double DotScaleY { get => _dotScaleY; set => SetProperty(ref _dotScaleY, value); }
-
-        private string _currentCpuLoadStr = "0%";
-        public string CurrentCpuLoadStr
-        {
-            get => _currentCpuLoadStr;
-            set => SetProperty(ref _currentCpuLoadStr, value);
-        }
-
-        private string _currentRamLoadStr = "0%";
-        public string CurrentRamLoadStr
-        {
-            get => _currentRamLoadStr;
-            set => SetProperty(ref _currentRamLoadStr, value);
-        }
-
-        private string _currentIoLoadStr = "0%";
-        public string CurrentIoLoadStr
-        {
-            get => _currentIoLoadStr;
-            set => SetProperty(ref _currentIoLoadStr, value);
-        }
-        public string CurrentDiskLoadStr => CurrentIoLoadStr;
-
-        private string _currentPagefileLoadStr = "0%";
-        public string CurrentPagefileLoadStr
-        {
-            get => _currentPagefileLoadStr;
-            set => SetProperty(ref _currentPagefileLoadStr, value);
-        }
-
-        private string _currentGpuLoadStr = "0%";
-        public string CurrentGpuLoadStr
-        {
-            get => _currentGpuLoadStr;
-            set => SetProperty(ref _currentGpuLoadStr, value);
-        }
-
-        private string _currentNetworkUpLoadStr = "0 Mbps";
-        public string CurrentNetworkUpLoadStr
-        {
-            get => _currentNetworkUpLoadStr;
-            set => SetProperty(ref _currentNetworkUpLoadStr, value);
-        }
-
-        private string _currentNetworkDownLoadStr = "0 Mbps";
-        public string CurrentNetworkDownLoadStr
-        {
-            get => _currentNetworkDownLoadStr;
-            set => SetProperty(ref _currentNetworkDownLoadStr, value);
-        }
-
-        private string _currentNetworkLoadStr = "0 / 0 Mbps";
-        public string CurrentNetworkLoadStr
-        {
-            get => _currentNetworkLoadStr;
-            set => SetProperty(ref _currentNetworkLoadStr, value);
-        }
-
-        private string _currentNetworkLoadSecondaryStr = "0 / 0";
-        public string CurrentNetworkLoadSecondaryStr
-        {
-            get => _currentNetworkLoadSecondaryStr;
-            set => SetProperty(ref _currentNetworkLoadSecondaryStr, value);
-        }
-
-        private string _cpuTempStr = "--°C";
-        public string CpuTempStr { get => _cpuTempStr; set => SetProperty(ref _cpuTempStr, value); }
-
-        private string _gpuTempStr = "--°C";
-        public string GpuTempStr { get => _gpuTempStr; set => SetProperty(ref _gpuTempStr, value); }
-
-        private string _ramTempStr = "--°C";
-        public string RamTempStr { get => _ramTempStr; set => SetProperty(ref _ramTempStr, value); }
-
-        private string _moboTempStr = "--°C";
-        public string MoboTempStr { get => _moboTempStr; set => SetProperty(ref _moboTempStr, value); }
-
-        private string _diskTempStr = "--°C";
-        public string DiskTempStr { get => _diskTempStr; set => SetProperty(ref _diskTempStr, value); }
-
-        public ObservableCollection<HourlyMetric> StabilityTrendData { get; } = new();
-        public ObservableCollection<HardwareIssue> DetectedHardwareIssues { get; } = new();
-        public ObservableCollection<SystemEventItem> MinedSystemEvents { get; } = new();
         #endregion
 
         #region Progress Properties (Maintenance)
@@ -1608,18 +1158,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 finally { IsBusy = false; }
             }
         }
-        #endregion
-
-        #region Process Exclusions (Maintenance)
-        public string? SelectedProcess
-        {
-            get => _selectedProcess;
-            set
-            {
-                if (SetProperty(ref _selectedProcess, value))
-                    OnPropertyChanged(nameof(CanAddProcessToExclusionList));
-            }
-        }
 
         public bool CanAddProcessToExclusionList => !string.IsNullOrWhiteSpace(SelectedProcess) && !LocalMachineSettingsEngine.ProcessExclusionList.Contains(SelectedProcess);
 
@@ -1648,6 +1186,478 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
 
         public ObservableCollection<string> ProcessExclusionList => new ObservableCollection<string>(LocalMachineSettingsEngine.ProcessExclusionList);
+        #endregion
+
+        #region Diagnostics - Enums & Classes
+        public enum TelemetryMetric { CPU, RAM, Disk, Pagefile, GPU, Network, Motherboard }
+
+        public class GraphScaleOption
+        {
+            public string Title { get; set; } = "";
+            public int Seconds { get; set; }
+        }
+        #endregion
+
+        #region Diagnostics - Graph State & Selections
+        private ObservableCollection<string> _availableDisks = new ObservableCollection<string>();
+        public ObservableCollection<string> AvailableDisks { get => _availableDisks; set => SetProperty(ref _availableDisks, value); }
+
+        private int _selectedDiskIndex = 0;
+        public int SelectedDiskIndex { get => _selectedDiskIndex; set => SetProperty(ref _selectedDiskIndex, value); }
+
+        public Visibility DiskSelectorVisibility =>
+            (ActiveGraphMetric == TelemetryMetric.Disk && IsGraphingTemperature) ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility TemperatureToggleVisibility =>
+            (ActiveGraphMetric == TelemetryMetric.Network ||
+            ActiveGraphMetric == TelemetryMetric.Pagefile)
+            ? Visibility.Collapsed : Visibility.Visible;
+
+        private TelemetryMetric _activeGraphMetric = TelemetryMetric.CPU;
+        public TelemetryMetric ActiveGraphMetric
+        {
+            get => _activeGraphMetric;
+            set
+            {
+                if (SetProperty(ref _activeGraphMetric, value))
+                {
+                    if (value != TelemetryMetric.Disk)
+                    {
+                        IsStorageInfoSelected = false;
+                    }
+
+                    if (value == TelemetryMetric.Motherboard)
+                    {
+                        IsGraphingTemperature = true;
+                    }
+                    else if (value == TelemetryMetric.Pagefile ||
+                             value == TelemetryMetric.Network)
+                    {
+                        IsGraphingTemperature = false;
+                    }
+
+                    OnPropertyChanged(nameof(DiskSelectorVisibility));
+                    OnPropertyChanged(nameof(TemperatureToggleVisibility));
+                    OnPropertyChanged(nameof(IsCpuSelected));
+                    OnPropertyChanged(nameof(IsRamSelected));
+                    OnPropertyChanged(nameof(IsDiskSelected));
+                    OnPropertyChanged(nameof(IsPageSelected));
+                    OnPropertyChanged(nameof(IsGpuSelected));
+                    OnPropertyChanged(nameof(IsNetworkSelected));
+                    OnPropertyChanged(nameof(IsMoboSelected));
+
+                    OnPropertyChanged(nameof(CpuSecondaryVisibility));
+                    OnPropertyChanged(nameof(RamSecondaryVisibility));
+                    OnPropertyChanged(nameof(DiskSecondaryVisibility));
+                    OnPropertyChanged(nameof(PageSecondaryVisibility));
+                    OnPropertyChanged(nameof(GpuSecondaryVisibility));
+                    OnPropertyChanged(nameof(NetworkSecondaryVisibility));
+                    OnPropertyChanged(nameof(MoboSecondaryVisibility));
+                    OnPropertyChanged(nameof(HeroStandardVisibility));
+                    OnPropertyChanged(nameof(NetworkGraphAltVisibility));
+
+                    OnPropertyChanged(nameof(ActivePrimaryLabel));
+                    OnPropertyChanged(nameof(ActivePrimaryValueStr));
+                    OnPropertyChanged(nameof(ActiveTemperatureStr));
+                    OnPropertyChanged(nameof(ActiveTemperatureVisibility));
+
+                    RebuildGraphFromHistory();
+                }
+            }
+        }
+
+        public bool IsCpuSelected
+        {
+            get => ActiveGraphMetric == TelemetryMetric.CPU;
+            set { if (value) ActiveGraphMetric = TelemetryMetric.CPU; }
+        }
+        public bool IsRamSelected
+        {
+            get => ActiveGraphMetric == TelemetryMetric.RAM;
+            set { if (value) ActiveGraphMetric = TelemetryMetric.RAM; }
+        }
+        public bool IsDiskSelected
+        {
+            get => ActiveGraphMetric == TelemetryMetric.Disk;
+            set { if (value) ActiveGraphMetric = TelemetryMetric.Disk; }
+        }
+        public bool IsPageSelected
+        {
+            get => ActiveGraphMetric == TelemetryMetric.Pagefile;
+            set { if (value) ActiveGraphMetric = TelemetryMetric.Pagefile; }
+        }
+
+        public bool IsGpuSelected
+        {
+            get => ActiveGraphMetric == TelemetryMetric.GPU;
+            set { if (value) ActiveGraphMetric = TelemetryMetric.GPU; }
+        }
+
+        public bool IsNetworkSelected
+        {
+            get => ActiveGraphMetric == TelemetryMetric.Network;
+            set { if (value) ActiveGraphMetric = TelemetryMetric.Network; }
+        }
+
+        public bool IsMoboSelected
+        {
+            get => ActiveGraphMetric == TelemetryMetric.Motherboard;
+            set { if (value) ActiveGraphMetric = TelemetryMetric.Motherboard; }
+        }
+
+        public Visibility CpuSecondaryVisibility => IsCpuSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility RamSecondaryVisibility => IsRamSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility DiskSecondaryVisibility => IsDiskSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility PageSecondaryVisibility => IsPageSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility GpuSecondaryVisibility => IsGpuSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility NetworkSecondaryVisibility => IsNetworkSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility MoboSecondaryVisibility => IsMoboSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility HeroStandardVisibility => IsNetworkSelected ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility NetworkGraphAltVisibility => IsNetworkSelected ? Visibility.Visible : Visibility.Collapsed;
+
+        public string ActivePrimaryLabel => ActiveGraphMetric switch
+        {
+            TelemetryMetric.RAM => ResourceString.GetString("diag_ram_load") ?? "RAM LOAD",
+            TelemetryMetric.Disk => ResourceString.GetString("diag_io_load") ?? "DISK I/O",
+            TelemetryMetric.Pagefile => ResourceString.GetString("diag_pagefile_load") ?? "PAGEFILE",
+            TelemetryMetric.GPU => ResourceString.GetString("diag_gpu_load") ?? "GPU LOAD",
+            TelemetryMetric.Network => ResourceString.GetString("diag_network_load") ?? "NETWORK SPEED",
+            TelemetryMetric.Motherboard => "SYSTEM TEMP",
+            _ => ResourceString.GetString("diag_cpu_load") ?? "CPU LOAD"
+        };
+
+        public string ActivePrimaryValueStr => ActiveGraphMetric switch
+        {
+            TelemetryMetric.RAM => CurrentRamLoadStr,
+            TelemetryMetric.Disk => CurrentIoLoadStr,
+            TelemetryMetric.Pagefile => CurrentPagefileLoadStr,
+            TelemetryMetric.GPU => CurrentGpuLoadStr,
+            TelemetryMetric.Network => CurrentNetworkLoadStr,
+            TelemetryMetric.Motherboard => MoboTempStr,
+            _ => CurrentCpuLoadStr
+        };
+
+        public string ActiveTemperatureStr => ActiveGraphMetric switch
+        {
+            TelemetryMetric.RAM => RamTempStr,
+            TelemetryMetric.GPU => GpuTempStr,
+            TelemetryMetric.Motherboard => MoboTempStr,
+            TelemetryMetric.CPU => CpuTempStr,
+            TelemetryMetric.Disk => DiskTempStr,
+            _ => ""
+        };
+
+        public Visibility ActiveTemperatureVisibility
+        {
+            get
+            {
+                if (ActiveGraphMetric == TelemetryMetric.Pagefile ||
+                    ActiveGraphMetric == TelemetryMetric.Network ||
+                    ActiveGraphMetric == TelemetryMetric.Motherboard)
+                {
+                    return Visibility.Collapsed;
+                }
+
+                float currentTemp = ActiveGraphMetric switch
+                {
+                    TelemetryMetric.RAM => _cachedMemTemp,
+                    TelemetryMetric.GPU => _cachedGpuTemp,
+                    TelemetryMetric.CPU => _cachedCpuTemp,
+                    TelemetryMetric.Disk => _cachedDiskTemp,
+                    _ => -1f
+                };
+
+                return currentTemp > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private bool _isGraphingTemperature = false;
+        public bool IsGraphingTemperature
+        {
+            get => _isGraphingTemperature;
+            set
+            {
+                if (SetProperty(ref _isGraphingTemperature, value))
+                {
+                    OnPropertyChanged(nameof(IsGraphingLoad));
+                    OnPropertyChanged(nameof(DiskSelectorVisibility));
+                    RebuildGraphFromHistory();
+                }
+            }
+        }
+        public bool IsGraphingLoad => !IsGraphingTemperature;
+        #endregion
+
+        #region Diagnostics - Chart Scales & Labels
+        public ObservableCollection<GraphScaleOption> TimeScaleOptions { get; } = new()
+        {
+            new GraphScaleOption { Title = ResourceString.GetString("diag_graph_60sec") ?? "60 Seconds", Seconds = 60 },
+            new GraphScaleOption { Title = ResourceString.GetString("diag_graph_5min") ?? "5 Minutes", Seconds = 300 },
+            new GraphScaleOption { Title = ResourceString.GetString("diag_graph_15min") ?? "15 Minutes", Seconds = 900 },
+            new GraphScaleOption { Title = "1 Hour", Seconds = 3600 },
+            new GraphScaleOption { Title = "6 Hours", Seconds = 21600 },
+            new GraphScaleOption { Title = "24 Hours", Seconds = 86400 },
+            new GraphScaleOption { Title = "72 Hours", Seconds = 259200 }
+        };
+
+        private int _maxGraphSeconds = LocalMachineSettingsEngine.DiagnosticsGraphTime;
+        public int MaxGraphSeconds
+        {
+            get => _maxGraphSeconds;
+            set
+            {
+                if (SetProperty(ref _maxGraphSeconds, value))
+                {
+                    LocalMachineSettingsEngine.DiagnosticsGraphTime = value;
+
+                    _peakNetworkSpeedMbps = 10f;
+
+                    OnPropertyChanged(nameof(XAxisLabelStart));
+                    OnPropertyChanged(nameof(XAxisLabelQ1));
+                    OnPropertyChanged(nameof(XAxisLabelMid));
+                    OnPropertyChanged(nameof(XAxisLabelQ3));
+
+                    RebuildGraphFromHistory();
+                }
+            }
+        }
+
+        public string XAxisLabelStart => MaxGraphSeconds >= 3600
+                    ? $"-{MaxGraphSeconds / 3600} HRS" : (MaxGraphSeconds >= 300 ? $"-{MaxGraphSeconds / 60} MIN" : $"-{MaxGraphSeconds} SEC");
+
+        public string XAxisLabelQ1 => MaxGraphSeconds >= 3600
+            ? $"-{(MaxGraphSeconds * 0.75) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.75) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.75:0} SEC");
+
+        public string XAxisLabelMid => MaxGraphSeconds >= 3600
+            ? $"-{(MaxGraphSeconds * 0.5) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.5) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.5:0} SEC");
+
+        public string XAxisLabelQ3 => MaxGraphSeconds >= 3600
+            ? $"-{(MaxGraphSeconds * 0.25) / 3600.0:0.#} HRS" : (MaxGraphSeconds >= 300 ? $"-{(MaxGraphSeconds * 0.25) / 60.0:0.#} MIN" : $"-{MaxGraphSeconds * 0.25:0} SEC");
+
+        private string _yAxis100 = "100";
+        public string YAxis100 { get => _yAxis100; set => SetProperty(ref _yAxis100, value); }
+
+        private string _yAxis75 = "75";
+        public string YAxis75 { get => _yAxis75; set => SetProperty(ref _yAxis75, value); }
+
+        private string _yAxis50 = "50";
+        public string YAxis50 { get => _yAxis50; set => SetProperty(ref _yAxis50, value); }
+
+        private string _yAxis25 = "25";
+        public string YAxis25 { get => _yAxis25; set => SetProperty(ref _yAxis25, value); }
+        #endregion
+
+        #region Diagnostics - Telemetry Summaries & Collections
+        private string _aiSummary = ResourceString.GetString("diag_ai_sleeping") ?? "AI Engine sleeping. Run a scan to generate a system health summary.";
+        public string AiSummary
+        {
+            get => _aiSummary;
+            set => SetProperty(ref _aiSummary, value);
+        }
+
+        public bool IsLiveMonitoringEnabled
+        {
+            get => LocalMachineSettingsEngine.EnableLiveDiagnostics;
+            set
+            {
+                if (LocalMachineSettingsEngine.EnableLiveDiagnostics != value)
+                {
+                    LocalMachineSettingsEngine.EnableLiveDiagnostics = value;
+                    OnPropertyChanged(nameof(IsLiveMonitoringEnabled));
+
+                    if (value)
+                    {
+                        StartLiveMonitoring();
+                        StartLiveTelemetry();
+                    }
+                    else
+                    {
+                        StopLiveMonitoring();
+                        StopLiveTelemetry();
+                    }
+                }
+            }
+        }
+
+        private string _stabilityScore = "100%";
+        public string StabilityScore
+        {
+            get => _stabilityScore;
+            set => SetProperty(ref _stabilityScore, value);
+        }
+
+        private string _activeHardwareCount = "68";
+        public string ActiveHardwareCount
+        {
+            get => _activeHardwareCount;
+            set => SetProperty(ref _activeHardwareCount, value);
+        }
+
+        public ObservableCollection<HourlyMetric> StabilityTrendData { get; } = new();
+        public ObservableCollection<HardwareIssue> DetectedHardwareIssues { get; } = new();
+        public ObservableCollection<SystemEventItem> MinedSystemEvents { get; } = new();
+        #endregion
+
+        #region Diagnostics - Graph Data Points
+        private PointCollection _performanceGraphPoints = new();
+        public PointCollection PerformanceGraphPoints
+        {
+            get => _performanceGraphPoints;
+            set => SetProperty(ref _performanceGraphPoints, value);
+        }
+
+        private PointCollection _temperatureGraphPoints = new();
+        public PointCollection TemperatureGraphPoints
+        {
+            get => _temperatureGraphPoints;
+            set => SetProperty(ref _temperatureGraphPoints, value);
+        }
+
+        private PointCollection _temperatureAreaPoints = new();
+        public PointCollection TemperatureAreaPoints
+        {
+            get => _temperatureAreaPoints;
+            set { _temperatureAreaPoints = value; OnPropertyChanged(); }
+        }
+
+        private List<double> _cpuHistory = new();
+        private PointCollection _performanceAreaPoints = new();
+        public PointCollection PerformanceAreaPoints
+        {
+            get => _performanceAreaPoints;
+            set { _performanceAreaPoints = value; OnPropertyChanged(); }
+        }
+
+        private PointCollection _performanceGraphPointsAlt = new();
+        public PointCollection PerformanceGraphPointsAlt
+        {
+            get => _performanceGraphPointsAlt;
+            set => SetProperty(ref _performanceGraphPointsAlt, value);
+        }
+
+        private PointCollection _performanceAreaPointsAlt = new();
+        public PointCollection PerformanceAreaPointsAlt
+        {
+            get => _performanceAreaPointsAlt;
+            set => SetProperty(ref _performanceAreaPointsAlt, value);
+        }
+
+        private double _performanceDotX;
+        public double PerformanceDotX { get => _performanceDotX; set => SetProperty(ref _performanceDotX, value); }
+
+        private double _performanceDotY;
+        public double PerformanceDotY { get => _performanceDotY; set => SetProperty(ref _performanceDotY, value); }
+
+        private double _performanceAltDotX;
+        public double PerformanceAltDotX { get => _performanceAltDotX; set => SetProperty(ref _performanceAltDotX, value); }
+
+        private double _performanceAltDotY;
+        public double PerformanceAltDotY { get => _performanceAltDotY; set => SetProperty(ref _performanceAltDotY, value); }
+
+        private double _temperatureDotX;
+        public double TemperatureDotX { get => _temperatureDotX; set => SetProperty(ref _temperatureDotX, value); }
+
+        private double _temperatureDotY;
+        public double TemperatureDotY { get => _temperatureDotY; set => SetProperty(ref _temperatureDotY, value); }
+
+        private double _dotScaleX = 1.0;
+        public double DotScaleX { get => _dotScaleX; set => SetProperty(ref _dotScaleX, value); }
+
+        private double _dotScaleY = 1.0;
+        public double DotScaleY { get => _dotScaleY; set => SetProperty(ref _dotScaleY, value); }
+        #endregion
+
+        #region Diagnostics - Telemetry Value Strings
+        private string _currentCpuLoadStr = "0%";
+        public string CurrentCpuLoadStr
+        {
+            get => _currentCpuLoadStr;
+            set => SetProperty(ref _currentCpuLoadStr, value);
+        }
+
+        private string _currentRamLoadStr = "0%";
+        public string CurrentRamLoadStr
+        {
+            get => _currentRamLoadStr;
+            set => SetProperty(ref _currentRamLoadStr, value);
+        }
+
+        private string _currentIoLoadStr = "0%";
+        public string CurrentIoLoadStr
+        {
+            get => _currentIoLoadStr;
+            set => SetProperty(ref _currentIoLoadStr, value);
+        }
+        public string CurrentDiskLoadStr => CurrentIoLoadStr;
+
+        private string _currentPagefileLoadStr = "0%";
+        public string CurrentPagefileLoadStr
+        {
+            get => _currentPagefileLoadStr;
+            set => SetProperty(ref _currentPagefileLoadStr, value);
+        }
+
+        private string _currentGpuLoadStr = "0%";
+        public string CurrentGpuLoadStr
+        {
+            get => _currentGpuLoadStr;
+            set => SetProperty(ref _currentGpuLoadStr, value);
+        }
+
+        private string _currentNetworkUpLoadStr = "0 Mbps";
+        public string CurrentNetworkUpLoadStr
+        {
+            get => _currentNetworkUpLoadStr;
+            set => SetProperty(ref _currentNetworkUpLoadStr, value);
+        }
+
+        private string _currentNetworkDownLoadStr = "0 Mbps";
+        public string CurrentNetworkDownLoadStr
+        {
+            get => _currentNetworkDownLoadStr;
+            set => SetProperty(ref _currentNetworkDownLoadStr, value);
+        }
+
+        private string _currentNetworkLoadStr = "0 / 0 Mbps";
+        public string CurrentNetworkLoadStr
+        {
+            get => _currentNetworkLoadStr;
+            set => SetProperty(ref _currentNetworkLoadStr, value);
+        }
+
+        private string _currentNetworkLoadSecondaryStr = "0 / 0";
+        public string CurrentNetworkLoadSecondaryStr
+        {
+            get => _currentNetworkLoadSecondaryStr;
+            set => SetProperty(ref _currentNetworkLoadSecondaryStr, value);
+        }
+
+        private string _cpuTempStr = "--°C";
+        public string CpuTempStr { get => _cpuTempStr; set => SetProperty(ref _cpuTempStr, value); }
+
+        private string _gpuTempStr = "--°C";
+        public string GpuTempStr { get => _gpuTempStr; set => SetProperty(ref _gpuTempStr, value); }
+
+        private string _ramTempStr = "--°C";
+        public string RamTempStr { get => _ramTempStr; set => SetProperty(ref _ramTempStr, value); }
+
+        private string _moboTempStr = "--°C";
+        public string MoboTempStr { get => _moboTempStr; set => SetProperty(ref _moboTempStr, value); }
+
+        private string _diskTempStr = "--°C";
+        public string DiskTempStr { get => _diskTempStr; set => SetProperty(ref _diskTempStr, value); }
+        #endregion
+
+        #region Process Exclusions (Maintenance)
+        public string? SelectedProcess
+        {
+            get => _selectedProcess;
+            set
+            {
+                if (SetProperty(ref _selectedProcess, value))
+                    OnPropertyChanged(nameof(CanAddProcessToExclusionList));
+            }
+        }
 
         private void AddProcessToExclusionList(string? process)
         {
