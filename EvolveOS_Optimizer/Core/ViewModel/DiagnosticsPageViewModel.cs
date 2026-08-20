@@ -138,6 +138,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private const int TicksPerMinute = 300; // 5 polls/sec * 60 sec
         private const int MaxLongTermCapacity = 4320; // 72 hours * 60 mins
 
+        private DateTime _lastSensorRefresh = DateTime.MinValue;
+
+        private static readonly SolidColorBrush _brushGood = new SolidColorBrush(ColorHelper.FromArgb(255, 0, 214, 232));
+        private static readonly SolidColorBrush _brushWarn = new SolidColorBrush(Colors.Gold);
+        private static readonly SolidColorBrush _brushCrit = new SolidColorBrush(Colors.Red);
+
         public class TelemetrySnapshot
         {
             public List<double> Cpu { get; set; } = new();
@@ -3941,7 +3947,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     {
                         try
                         {
-                            HardwareTemperatureService.Instance.UpdateSensors();
+                            if ((DateTime.Now - _lastSensorRefresh).TotalSeconds >= 1.0)
+                            {
+                                HardwareTemperatureService.Instance.UpdateSensors();
+                                _lastSensorRefresh = DateTime.Now;
+                            }
 
                             var diskNames = HardwareTemperatureService.Instance.GetStorageDriveNames();
                             _dispatcherQueue?.TryEnqueue(() =>
@@ -4177,22 +4187,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                             if (ShowCpuInTray && cpuSnapshot != null)
                             {
-                                CpuTrayPoints = GenerateTrayPoints(cpuSnapshot, sparklinePoints, stepX, chartHeight);
+                                UpdateTrayPointsInPlace(cpuSnapshot, CpuTrayPoints, sparklinePoints, stepX, chartHeight);
                                 OnPropertyChanged(nameof(CpuTrayPoints));
                             }
+
                             if (ShowRamInTray && ramSnapshot != null)
                             {
-                                RamTrayPoints = GenerateTrayPoints(ramSnapshot, sparklinePoints, stepX, chartHeight);
+                                UpdateTrayPointsInPlace(ramSnapshot, RamTrayPoints, sparklinePoints, stepX, chartHeight);
                                 OnPropertyChanged(nameof(RamTrayPoints));
                             }
+
                             if (ShowGpuInTray && gpuSnapshot != null)
                             {
-                                GpuTrayPoints = GenerateTrayPoints(gpuSnapshot, sparklinePoints, stepX, chartHeight);
+                                UpdateTrayPointsInPlace(gpuSnapshot, GpuTrayPoints, sparklinePoints, stepX, chartHeight);
                                 OnPropertyChanged(nameof(GpuTrayPoints));
                             }
+
                             if (ShowDiskInTray && diskSnapshot != null)
                             {
-                                DiskTrayPoints = GenerateTrayPoints(diskSnapshot, sparklinePoints, stepX, chartHeight);
+                                UpdateTrayPointsInPlace(diskSnapshot, DiskTrayPoints, sparklinePoints, stepX, chartHeight);
                                 OnPropertyChanged(nameof(DiskTrayPoints));
                             }
                         }
@@ -4374,33 +4387,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                 }
             }
-        }
-
-        private PointCollection GenerateTrayPoints(
-            IEnumerable<double> buffer,
-            int pointsToTake,
-            double stepX,
-            double height)
-        {
-            var newPoints = new PointCollection();
-            int pollsPerSecond = 5;
-
-            var rawData = buffer.Reverse().Take(pointsToTake * pollsPerSecond).Reverse().ToList();
-
-            if (rawData.Count == 0) return newPoints;
-
-            double startX = 60 - ((pointsToTake - 1) * stepX);
-
-            for (int i = 0; i < pointsToTake; i++)
-            {
-                int dataIndex = (int)Math.Round((double)i * (rawData.Count - 1) / Math.Max(1, pointsToTake - 1));
-                dataIndex = Math.Clamp(dataIndex, 0, rawData.Count - 1);
-
-                double y = (rawData[dataIndex] / 100.0) * height;
-                newPoints.Add(new Windows.Foundation.Point(startX + (i * stepX), y));
-            }
-
-            return newPoints;
         }
 
         private void StopLiveTelemetry()
@@ -4629,19 +4615,22 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             });
         }
 
-        private void GenerateTrayPointsInPlace(
-            IEnumerable<double> buffer,
-            PointCollection targetCollection,
-            int pointsToTake, double stepX, double height)
+        private void UpdateTrayPointsInPlace(IEnumerable<double> buffer, PointCollection targetCollection, int pointsToTake, double stepX, double height)
         {
-            var data = buffer.Reverse().Take(pointsToTake).Reverse().ToList();
-            targetCollection.Clear();
-            if (data.Count == 0) return;
+            int pollsPerSecond = 5;
+            var rawData = buffer.Reverse().Take(pointsToTake * pollsPerSecond).Reverse().ToList();
 
-            double startX = 60 - ((data.Count - 1) * stepX);
-            for (int i = 0; i < data.Count; i++)
+            targetCollection.Clear();
+            if (rawData.Count == 0) return;
+
+            double startX = 60 - ((pointsToTake - 1) * stepX);
+
+            for (int i = 0; i < pointsToTake; i++)
             {
-                double y = (data[i] / 100.0) * height;
+                int dataIndex = (int)Math.Round((double)i * (rawData.Count - 1) / Math.Max(1, pointsToTake - 1));
+                dataIndex = Math.Clamp(dataIndex, 0, rawData.Count - 1);
+
+                double y = (rawData[dataIndex] / 100.0) * height;
                 targetCollection.Add(new Point(startX + (i * stepX), y));
             }
         }
@@ -4700,9 +4689,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     BarHeight = finalScore,
                     BarColor = finalScore switch
                     {
-                        >= 80 => new SolidColorBrush(ColorHelper.FromArgb(255, 0, 214, 232)), // Evolve Blue
-                        >= 60 => new SolidColorBrush(Colors.Gold),                            // Warning
-                        _ => new SolidColorBrush(Colors.Red)                                  // Critical
+                        >= 80 => _brushGood,
+                        >= 60 => _brushWarn,
+                        _ => _brushCrit
                     }
                 });
             }
