@@ -1679,13 +1679,14 @@ namespace EvolveOS_Optimizer.Pages
                         {
                             if (ViewModel != null)
                             {
-                                ViewModel.PerformanceGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-                                ViewModel.PerformanceAreaPoints = new Microsoft.UI.Xaml.Media.PointCollection();
-                                ViewModel.PerformanceGraphPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
-                                ViewModel.PerformanceAreaPointsAlt = new Microsoft.UI.Xaml.Media.PointCollection();
-                                ViewModel.TemperatureGraphPoints = new Microsoft.UI.Xaml.Media.PointCollection();
+                                ViewModel.PerformanceGraphPath = "M 0,0";
+                                ViewModel.PerformanceAreaPath = "M 0,0";
+                                ViewModel.PerformanceGraphPathAlt = "M 0,0";
+                                ViewModel.PerformanceAreaPathAlt = "M 0,0";
+                                ViewModel.TemperatureGraphPath = "M 0,0";
+                                ViewModel.TemperatureAreaPath = "M 0,0";
 
-                                Debug.WriteLine("[DiagnosticsPage] Severed main window PointCollections. Tray collections preserved.");
+                                Debug.WriteLine("[DiagnosticsPage] Severed main window Graph Paths. Tray collections preserved.");
                             }
 
                             foreach (var result in _scanResults.Values)

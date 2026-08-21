@@ -1609,20 +1609,20 @@
                                                                 <Path Stroke="#1AFFFFFF" StrokeThickness="1" StrokeDashArray="4,4" Stretch="Fill" Data="M 0,25 L 100,25 M 0,50 L 100,50 M 0,75 L 100,75 M 25,0 L 25,100 M 50,0 L 50,100 M 75,0 L 75,100" />
                                                                 <Viewbox Stretch="Fill" Margin="5,15,5,5" Canvas.ZIndex="1" HorizontalAlignment="Right" SizeChanged="GraphViewbox_SizeChanged">
                                                                     <Canvas Width="400" Height="100">
-                                                                        <Polygon Points="{x:Bind ViewModel.PerformanceAreaPoints, Mode=OneWay}" Fill="{StaticResource Brush_GraphGradientFill}"
-                                                                                 Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                                                        <Polyline Points="{x:Bind ViewModel.PerformanceGraphPoints, Mode=OneWay}" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1"
-                                                                                  Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                        <Path Data="{x:Bind ViewModel.PerformanceAreaPath, Mode=OneWay}" Fill="{StaticResource Brush_GraphGradientFill}"
+                                                                              Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                        <Path Data="{x:Bind ViewModel.PerformanceGraphPath, Mode=OneWay}" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1"
+                                                                              Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-                                                                        <Polygon Points="{x:Bind ViewModel.PerformanceAreaPointsAlt, Mode=OneWay}" Fill="{StaticResource Brush_UploadGraphGradientFill}"
-                                                                                 Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}" />
-                                                                        <Polyline Points="{x:Bind ViewModel.PerformanceGraphPointsAlt, Mode=OneWay}" Stroke="#FFFF5555" StrokeThickness="1"
-                                                                                  Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}" />
+                                                                        <Path Data="{x:Bind ViewModel.PerformanceAreaPathAlt, Mode=OneWay}" Fill="{StaticResource Brush_UploadGraphGradientFill}"
+                                                                              Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}" />
+                                                                        <Path Data="{x:Bind ViewModel.PerformanceGraphPathAlt, Mode=OneWay}" Stroke="#FFFF5555" StrokeThickness="1"
+                                                                              Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}" />
 
-                                                                        <Polygon Points="{x:Bind ViewModel.TemperatureAreaPoints, Mode=OneWay}" Fill="{StaticResource Brush_TempGraphGradientFill}"
-                                                                                 Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                                                        <Polyline Points="{x:Bind ViewModel.TemperatureGraphPoints, Mode=OneWay}" Stroke="#FFFF9900" StrokeThickness="1"
-                                                                                  Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                        <Path Data="{x:Bind ViewModel.TemperatureAreaPath, Mode=OneWay}" Fill="{StaticResource Brush_TempGraphGradientFill}"
+                                                                              Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                        <Path Data="{x:Bind ViewModel.TemperatureGraphPath, Mode=OneWay}" Stroke="#FFFF9900" StrokeThickness="1"
+                                                                              Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                                                                         <Ellipse Width="12" Height="12" Fill="{ThemeResource MyDynamicAccentBrush}"
                                                                                  Canvas.Left="{x:Bind ViewModel.PerformanceDotX, Mode=OneWay}"

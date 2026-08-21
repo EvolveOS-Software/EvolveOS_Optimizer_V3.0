@@ -464,8 +464,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             LoadLongTermTelemetry();
 
-            PerformanceGraphPoints.Add(new Point(400, 100));
-            TemperatureGraphPoints.Add(new Point(400, 100));
+            PerformanceGraphPath = "M 400,100";
+            PerformanceAreaPath = "M 0,0";
+            TemperatureGraphPath = "M 400,100";
+            TemperatureAreaPath = "M 0,0";
+            PerformanceGraphPathAlt = "M 400,100";
+            PerformanceAreaPathAlt = "M 0,0";
 
             if (LocalMachineSettingsEngine.EnableLiveDiagnostics)
             {
@@ -1499,48 +1503,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Diagnostics - Graph Data Points
-        private PointCollection _performanceGraphPoints = new();
-        public PointCollection PerformanceGraphPoints
-        {
-            get => _performanceGraphPoints;
-            set => SetProperty(ref _performanceGraphPoints, value);
-        }
+        private string _performanceGraphPath = "";
+        public string PerformanceGraphPath { get => _performanceGraphPath; set => SetProperty(ref _performanceGraphPath, value); }
 
-        private PointCollection _temperatureGraphPoints = new();
-        public PointCollection TemperatureGraphPoints
-        {
-            get => _temperatureGraphPoints;
-            set => SetProperty(ref _temperatureGraphPoints, value);
-        }
+        private string _performanceAreaPath = "";
+        public string PerformanceAreaPath { get => _performanceAreaPath; set => SetProperty(ref _performanceAreaPath, value); }
 
-        private PointCollection _temperatureAreaPoints = new();
-        public PointCollection TemperatureAreaPoints
-        {
-            get => _temperatureAreaPoints;
-            set { _temperatureAreaPoints = value; OnPropertyChanged(); }
-        }
+        private string _performanceGraphPathAlt = "";
+        public string PerformanceGraphPathAlt { get => _performanceGraphPathAlt; set => SetProperty(ref _performanceGraphPathAlt, value); }
 
-        private List<double> _cpuHistory = new();
-        private PointCollection _performanceAreaPoints = new();
-        public PointCollection PerformanceAreaPoints
-        {
-            get => _performanceAreaPoints;
-            set { _performanceAreaPoints = value; OnPropertyChanged(); }
-        }
+        private string _performanceAreaPathAlt = "";
+        public string PerformanceAreaPathAlt { get => _performanceAreaPathAlt; set => SetProperty(ref _performanceAreaPathAlt, value); }
 
-        private PointCollection _performanceGraphPointsAlt = new();
-        public PointCollection PerformanceGraphPointsAlt
-        {
-            get => _performanceGraphPointsAlt;
-            set => SetProperty(ref _performanceGraphPointsAlt, value);
-        }
+        private string _temperatureGraphPath = "";
+        public string TemperatureGraphPath { get => _temperatureGraphPath; set => SetProperty(ref _temperatureGraphPath, value); }
 
-        private PointCollection _performanceAreaPointsAlt = new();
-        public PointCollection PerformanceAreaPointsAlt
-        {
-            get => _performanceAreaPointsAlt;
-            set => SetProperty(ref _performanceAreaPointsAlt, value);
-        }
+        private string _temperatureAreaPath = "";
+        public string TemperatureAreaPath { get => _temperatureAreaPath; set => SetProperty(ref _temperatureAreaPath, value); }
 
         private double _performanceDotX;
         public double PerformanceDotX { get => _performanceDotX; set => SetProperty(ref _performanceDotX, value); }
@@ -2754,25 +2733,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             await _scannerEngine.ExecuteFullScanAsync();
         }
 
-        private void SyncPointCollection(PointCollection target, List<Point> source)
+        private string GeneratePathString(List<Point> points, bool isArea)
         {
-            if (target == null) return;
+            if (points.Count == 0) return "M 0,0";
+            var sb = new System.Text.StringBuilder();
 
-            if (target.Count != source.Count)
+            sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "M {0:0.##},{1:0.##} ", points[0].X, points[0].Y);
+
+            for (int i = 1; i < points.Count; i++)
             {
-                target.Clear();
-                foreach (var p in source) target.Add(p);
+                sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "L {0:0.##},{1:0.##} ", points[i].X, points[i].Y);
             }
-            else
-            {
-                for (int i = 0; i < source.Count; i++)
-                {
-                    if (Math.Abs(target[i].X - source[i].X) > 0.01 || Math.Abs(target[i].Y - source[i].Y) > 0.01)
-                    {
-                        target[i] = source[i];
-                    }
-                }
-            }
+
+            if (isArea) sb.Append("Z");
+            return sb.ToString();
         }
 
         private void RebuildGraphFromHistory()
@@ -2799,24 +2773,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (targetBuffer.Count == 0)
             {
-                newPoints.Add(new Point(logicalWidth, 100));
+                PerformanceGraphPath = $"M {logicalWidth},100";
+                PerformanceAreaPath = "M 0,0"; // FIX
                 PerformanceDotX = logicalWidth - 6;
                 PerformanceDotY = 100 - 6;
 
-                newPointsAlt.Add(new Point(logicalWidth, 100));
+                PerformanceGraphPathAlt = $"M {logicalWidth},100";
+                PerformanceAreaPathAlt = "M 0,0"; // FIX
                 PerformanceAltDotX = logicalWidth - 6;
                 PerformanceAltDotY = 100 - 6;
 
-                newTempPoints.Add(new Point(logicalWidth, 100));
+                TemperatureGraphPath = $"M {logicalWidth},100";
+                TemperatureAreaPath = "M 0,0"; // FIX
                 TemperatureDotX = logicalWidth - 6;
                 TemperatureDotY = 100 - 6;
-
-                SyncPointCollection(PerformanceGraphPoints, newPoints);
-                SyncPointCollection(PerformanceAreaPoints, areaPoints);
-                SyncPointCollection(PerformanceGraphPointsAlt, newPointsAlt);
-                SyncPointCollection(PerformanceAreaPointsAlt, areaPointsAlt);
-                SyncPointCollection(TemperatureGraphPoints, newTempPoints);
-                SyncPointCollection(TemperatureAreaPoints, newTempAreaPoints);
 
                 return;
             }
@@ -2972,17 +2942,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             else
             {
-                newPointsAlt.Add(new Point(logicalWidth, 100));
                 PerformanceAltDotX = logicalWidth - 6;
                 PerformanceAltDotY = 100 - 6;
             }
 
-            SyncPointCollection(TemperatureGraphPoints, newTempPoints);
-            SyncPointCollection(TemperatureAreaPoints, newTempAreaPoints);
-            SyncPointCollection(PerformanceGraphPoints, newPoints);
-            SyncPointCollection(PerformanceAreaPoints, areaPoints);
-            SyncPointCollection(PerformanceGraphPointsAlt, newPointsAlt);
-            SyncPointCollection(PerformanceAreaPointsAlt, areaPointsAlt);
+            // Bind the new SVG strings to the XAML UI (Zero Unmanaged Leaks!)
+            PerformanceGraphPath = GeneratePathString(newPoints, false);
+            PerformanceAreaPath = GeneratePathString(areaPoints, true);
+
+            PerformanceGraphPathAlt = GeneratePathString(newPointsAlt, false);
+            PerformanceAreaPathAlt = GeneratePathString(areaPointsAlt, true);
+
+            TemperatureGraphPath = GeneratePathString(newTempPoints, false);
+            TemperatureAreaPath = GeneratePathString(newTempAreaPoints, true);
         }
 
         private List<double> DownsampleLTTB(List<double> data, int threshold)
@@ -4437,12 +4409,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         _ramTempHistoryBuffer.Clear();
                         _moboTempHistoryBuffer.Clear();
 
-                        PerformanceGraphPoints = new PointCollection();
-                        PerformanceAreaPoints = new PointCollection();
-                        TemperatureGraphPoints = new PointCollection();
-                        TemperatureAreaPoints = new PointCollection();
-                        PerformanceGraphPointsAlt = new PointCollection();
-                        PerformanceAreaPointsAlt = new PointCollection();
+                        // ZERO-ALLOCATION FIX: Clear the SVG strings instead of using PointCollections
+                        PerformanceGraphPath = "";
+                        PerformanceAreaPath = "";
+                        TemperatureGraphPath = "";
+                        TemperatureAreaPath = "";
+                        PerformanceGraphPathAlt = "";
+                        PerformanceAreaPathAlt = "";
 
                         CurrentCpuLoadStr = "0%";
                         CurrentRamLoadStr = "0%";
@@ -4465,7 +4438,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Telemetry Teardown Error] {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Telemetry Teardown Error] {ex.Message}");
             }
         }
 
@@ -5487,12 +5460,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _dispatcherQueue?.TryEnqueue(() =>
             {
-                PerformanceGraphPoints = new PointCollection();
-                PerformanceAreaPoints = new PointCollection();
-                PerformanceGraphPointsAlt = new PointCollection();
-                PerformanceAreaPointsAlt = new PointCollection();
-                TemperatureGraphPoints = new PointCollection();
-                TemperatureAreaPoints = new PointCollection();
+                PerformanceGraphPath = "M 0,0";
+                PerformanceAreaPath = "M 0,0";
+                PerformanceGraphPathAlt = "M 0,0";
+                PerformanceAreaPathAlt = "M 0,0";
+                TemperatureGraphPath = "M 0,0";
+                TemperatureAreaPath = "M 0,0";
             });
         }
 
