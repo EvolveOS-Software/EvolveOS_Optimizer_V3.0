@@ -679,6 +679,15 @@
 
     <!-- Code-Behind: Health / Security Cards -->
     <sys:String x:Key="txt_scan_failed">Scansione fallita.</sys:String>
+
+    <!-- Ambient Lighting -->
+    <sys:String x:Key="txt_lighting_mode">Modalità di illuminazione</sys:String>
+    <sys:String x:Key="txt_off">Spento</sys:String>
+    <sys:String x:Key="txt_day_mode">Modalità giorno</sys:String>
+    <sys:String x:Key="txt_night_mode">Modalità notte</sys:String>
+    <sys:String x:Key="txt_ambient_brightness">Luminosità ambientale</sys:String>
+    <sys:String x:Key="txt_glow_radius">Raggio del bagliore</sys:String>
+    <sys:String x:Key="txt_glow_color">Colore del bagliore</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->

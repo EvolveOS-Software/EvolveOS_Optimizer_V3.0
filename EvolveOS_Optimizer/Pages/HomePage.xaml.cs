@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using System.Management;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -118,6 +117,8 @@ namespace EvolveOS_Optimizer.Pages
                 LoadDashboardLayout();
                 DashboardDragCursor();
                 UpdateDnsCardUI();
+
+                ApplyLightingToCards();
 
                 if (ViewModel.SaveCardStates)
                 {
@@ -929,6 +930,8 @@ namespace EvolveOS_Optimizer.Pages
 
         private void BtnCloseCustomizeLayout_Click(object sender, RoutedEventArgs e)
         {
+            ApplyLightingToCards();
+
             CustomizeLayoutDialog.Hide();
         }
 
@@ -1015,6 +1018,14 @@ namespace EvolveOS_Optimizer.Pages
                 ComboGlobalTimeframe.SelectedIndex = SettingsEngine.Dashboard_GraphTimeframe;
             }
 
+            if (ComboLightingMode != null)
+            {
+                int savedMode = SettingsEngine.Dashboard_LightingMode;
+                ComboLightingMode.SelectedIndex = savedMode;
+
+                AdvancedLightingPanel.Visibility = (savedMode == 3) ? Visibility.Visible : Visibility.Collapsed;
+            }
+
             _isInternalToggle = false;
         }
 
@@ -1059,6 +1070,11 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardNetworkGraph = ToggleNetworkGraph.IsOn;
             SettingsEngine.Dashboard_CardGpuGraph = ToggleGpuGraph.IsOn;
             SettingsEngine.Dashboard_CardRamBoost = ToggleRamBoost.IsOn;
+
+            if (ComboLightingMode != null)
+            {
+                SettingsEngine.Dashboard_LightingMode = ComboLightingMode.SelectedIndex;
+            }
         }
 
         private void ToggleCard_Toggled(object sender, RoutedEventArgs e)
@@ -1161,6 +1177,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardNetworkGraph = true;
             SettingsEngine.Dashboard_GraphTimeframe = 0;
             SettingsEngine.Dashboard_CardGpuGraph = true;
+            SettingsEngine.Dashboard_LightingMode = 0;
 
             ToggleWeather.IsOn = true;
             ToggleNetwork.IsOn = true;
@@ -2714,6 +2731,120 @@ namespace EvolveOS_Optimizer.Pages
 
         #endregion
 
+        #region Ambient Lightning
+
+        private bool _isLightingUpdate = false;
+
+        private void ApplyLightingToCards()
+        {
+            try
+            {
+                var cards = new UIElement[]
+                {
+                    CardWeather, CardNetwork, CardRam, CardCpu, CardGpu, CardDisk,
+                    CardGamingMode, CardDns, CardMaintenance, CardSecurity,
+                    CardCpuGraph, CardRamGraph, CardNetworkGraph, CardGpuGraph, CardRamBoost
+                };
+
+                int lightingMode = SettingsEngine.Dashboard_LightingMode;
+
+                foreach (var card in cards)
+                {
+                    if (card != null)
+                    {
+                        card.Lights.Clear();
+
+                        if (lightingMode == 1) // Day Mode
+                        {
+                            card.Lights.Add(new AmbLightDay());
+                            card.Lights.Add(new HoverLightDay());
+                        }
+                        else if (lightingMode == 2) // Night Mode
+                        {
+                            card.Lights.Add(new AmbLightNight());
+                            card.Lights.Add(new HoverLightNight());
+                        }
+                        else if (lightingMode == 3) // Custom Mode
+                        {
+                            card.Lights.Add(new AmbLightCustom());
+                            card.Lights.Add(new HoverLightCustom());
+                        }
+                        // Mode 0 = Off.
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Lighting System Error] {ex.Message}");
+            }
+        }
+
+        private void ComboLightingMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isInternalToggle || _isLightingUpdate || ComboLightingMode == null || ComboLightingMode.SelectedIndex == -1) return;
+
+            int mode = ComboLightingMode.SelectedIndex;
+            SettingsEngine.Dashboard_LightingMode = mode;
+
+            _isLightingUpdate = true;
+
+            if (mode == 1) // Day Mode
+            {
+                SettingsEngine.Dashboard_AmbientIntensity = 95;
+                SettingsEngine.Dashboard_HoverRadius = 250;
+                SettingsEngine.Dashboard_HoverColor = "#FFFFFFFF";
+            }
+            else if (mode == 2) // Night Mode
+            {
+                SettingsEngine.Dashboard_AmbientIntensity = 30;
+                SettingsEngine.Dashboard_HoverRadius = 150;
+                SettingsEngine.Dashboard_HoverColor = "#FFFFFFFF";
+            }
+
+            SliderAmbient.Value = SettingsEngine.Dashboard_AmbientIntensity;
+            SliderRadius.Value = SettingsEngine.Dashboard_HoverRadius;
+
+            var c = HoverLightCustom.ParseSafeHex(SettingsEngine.Dashboard_HoverColor);
+            BtnGlowColor.Background = new SolidColorBrush(c);
+            GlowColorPicker.Color = c;
+
+            AdvancedLightingPanel.Visibility = mode == 3 ? Visibility.Collapsed : Visibility.Visible;
+
+            _isLightingUpdate = false;
+        }
+
+        private void LightingSetting_Changed(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            if (_isLightingUpdate) return;
+
+            if (sender is Slider slider)
+            {
+                if (slider == SliderAmbient) SettingsEngine.Dashboard_AmbientIntensity = (int)slider.Value;
+                if (slider == SliderRadius) SettingsEngine.Dashboard_HoverRadius = (int)slider.Value;
+            }
+
+            _isLightingUpdate = true;
+            ComboLightingMode.SelectedIndex = 3;
+            SettingsEngine.Dashboard_LightingMode = 3;
+            _isLightingUpdate = false;
+        }
+
+        private void GlowColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+        {
+            if (_isLightingUpdate) return;
+
+            var c = args.NewColor;
+            SettingsEngine.Dashboard_HoverColor = $"#{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2}";
+            BtnGlowColor.Background = new SolidColorBrush(c);
+
+            _isLightingUpdate = true;
+            ComboLightingMode.SelectedIndex = 3;
+            SettingsEngine.Dashboard_LightingMode = 3;
+            _isLightingUpdate = false;
+        }
+
+        #endregion
+
         #region Memory Optimization Engine
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -3233,7 +3364,10 @@ namespace EvolveOS_Optimizer.Pages
                         this.Content = null;
                     });
 
-                    DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                    if (DiagnosticsPageViewModel.Current != null)
+                    {
+                        DiagnosticsPageViewModel.Current.ForceImmediateMemoryCleanup();
+                    }
                 });
             }
             else

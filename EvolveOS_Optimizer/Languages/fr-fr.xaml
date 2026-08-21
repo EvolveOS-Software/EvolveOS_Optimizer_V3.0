@@ -675,6 +675,15 @@
 
     <!-- Code-Behind: Health / Security Cards -->
     <sys:String x:Key="txt_scan_failed">L'analyse a échoué.</sys:String>
+
+    <!-- Ambient Lighting -->
+    <sys:String x:Key="txt_lighting_mode">Mode d'éclairage</sys:String>
+    <sys:String x:Key="txt_off">Désactivé</sys:String>
+    <sys:String x:Key="txt_day_mode">Mode jour</sys:String>
+    <sys:String x:Key="txt_night_mode">Mode nuit</sys:String>
+    <sys:String x:Key="txt_ambient_brightness">Luminosité ambiante</sys:String>
+    <sys:String x:Key="txt_glow_radius">Rayon de l'éclat</sys:String>
+    <sys:String x:Key="txt_glow_color">Couleur de l'éclat</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->

@@ -1752,7 +1752,42 @@
                                               IsOn="{x:Bind ViewModel.SaveCardStates, Mode=TwoWay}"
                                               Margin="0,-4,0,0"/>
                             </StackPanel>
+                        </StackPanel>
 
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,5,0,5"/>
+
+                        <StackPanel Spacing="6" Margin="0,0,0,10">
+                            <TextBlock Text="{helpers:ResourceString Key=txt_lighting_mode}" Style="{StaticResource BodyTextBlockStyle}"/>
+                            <ComboBox x:Name="ComboLightingMode" SelectionChanged="ComboLightingMode_SelectionChanged" Width="150">
+                                <ComboBoxItem Content="{helpers:ResourceString Key=txt_off}"/>
+                                <ComboBoxItem Content="{helpers:ResourceString Key=txt_day_mode}"/>
+                                <ComboBoxItem Content="{helpers:ResourceString Key=txt_night_mode}"/>
+                                <ComboBoxItem Content="Custom"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel x:Name="AdvancedLightingPanel" Spacing="12" Visibility="Collapsed">
+                            <Grid ColumnDefinitions="*, *">
+                                <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,10,0">
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_ambient_brightness}" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                    <Slider x:Name="SliderAmbient" Minimum="0" Maximum="100" ValueChanged="LightingSetting_Changed"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Spacing="4" Margin="10,0,0,0">
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_glow_radius}" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                    <Slider x:Name="SliderRadius" Minimum="50" Maximum="500" ValueChanged="LightingSetting_Changed"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{helpers:ResourceString Key=txt_glow_color}" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                <Button x:Name="BtnGlowColor" Width="100" Height="32" Background="White" CornerRadius="4">
+                                    <Button.Flyout>
+                                        <Flyout>
+                                            <ColorPicker x:Name="GlowColorPicker" ColorChanged="GlowColorPicker_ColorChanged" IsColorChannelTextInputVisible="False" IsHexInputVisible="True"/>
+                                        </Flyout>
+                                    </Button.Flyout>
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
 
                     </StackPanel>

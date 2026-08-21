@@ -98,6 +98,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_BoostModifiedPageList"] = true,
             ["Dashboard_BoostRegistryCache"] = true,
 
+            ["Dashboard_LightingMode"] = 0,
+            ["Dashboard_AmbientIntensity"] = 30,
+            ["Dashboard_HoverRadius"] = 150,
+            ["Dashboard_HoverColor"] = "#FFFFFFFF",
+
             ["SaveCardExpandedStates"] = true,
             ["IsCpuCardExpanded"] = false,
             ["IsGpuCardExpanded"] = false,
@@ -129,7 +134,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["ScheduledCleanDayIndex"] = 0,
             ["ScheduledCleanTimeStr"] = "12:00:00",
 
-            ["DevCacheRetentionIndex"] = 2,
+            ["DevCacheRetentionIndex"] = 0,
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -209,7 +214,10 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool IsNetworkCardExpanded { get => (bool)_cachedSettings["IsNetworkCardExpanded"]; set => ChangingParameters("IsNetworkCardExpanded", value); }
         internal static bool IsDnsCardExpanded { get => (bool)_cachedSettings["IsDnsCardExpanded"]; set => ChangingParameters("IsDnsCardExpanded", value); }
         internal static bool IsRamBoostCardExpanded { get => (bool)_cachedSettings["IsRamBoostCardExpanded"]; set => ChangingParameters("IsRamBoostCardExpanded", value); }
-
+        internal static int Dashboard_LightingMode { get => (int)_cachedSettings["Dashboard_LightingMode"]; set => ChangingParameters("Dashboard_LightingMode", value); }
+        internal static int Dashboard_AmbientIntensity { get => (int)_cachedSettings["Dashboard_AmbientIntensity"]; set => ChangingParameters("Dashboard_AmbientIntensity", value); }
+        internal static int Dashboard_HoverRadius { get => (int)_cachedSettings["Dashboard_HoverRadius"]; set => ChangingParameters("Dashboard_HoverRadius", value); }
+        internal static string Dashboard_HoverColor { get => (string)_cachedSettings["Dashboard_HoverColor"]; set => ChangingParameters("Dashboard_HoverColor", value); }
 
         internal static bool IsAutoThemeEnabled { get => (bool)_cachedSettings["EnableAutoTheme"]; set => ChangingParameters("EnableAutoTheme", value); }
         internal static TimeSpan LightThemeTime { get => TimeSpan.TryParse((string)_cachedSettings["LightThemeTimeStr"], out TimeSpan result) ? result : new TimeSpan(8, 0, 0); set => ChangingParameters("LightThemeTimeStr", value.ToString(@"hh\:mm\:ss")); }

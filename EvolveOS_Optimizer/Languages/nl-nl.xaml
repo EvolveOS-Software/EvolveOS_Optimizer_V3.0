@@ -675,6 +675,15 @@
 
     <!-- Code-Behind: Health / Security Cards -->
     <sys:String x:Key="txt_scan_failed">Scan mislukt.</sys:String>
+
+    <!-- Ambient Lighting -->
+    <sys:String x:Key="txt_lighting_mode">Verlichtingsmodus</sys:String>
+    <sys:String x:Key="txt_off">Uit</sys:String>
+    <sys:String x:Key="txt_day_mode">Dagmodus</sys:String>
+    <sys:String x:Key="txt_night_mode">Nachtmodus</sys:String>
+    <sys:String x:Key="txt_ambient_brightness">Omgevingshelderheid</sys:String>
+    <sys:String x:Key="txt_glow_radius">Gloeiradius</sys:String>
+    <sys:String x:Key="txt_glow_color">Gloeikleur</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->
