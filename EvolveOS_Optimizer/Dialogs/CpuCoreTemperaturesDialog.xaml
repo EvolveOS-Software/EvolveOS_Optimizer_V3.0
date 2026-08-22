@@ -137,8 +137,7 @@
                                                 XAxes="{Binding XAxes}"
                                                 YAxes="{Binding YAxes}"
                                                 TooltipPosition="Hidden"
-                                                AnimationsSpeed="00:00:00.150"> <!-- Match the 250ms polling rate (*Previous logic) -->
-                            </lvc:CartesianChart>
+                                                Background="Transparent" />
                         </Grid>
                     </DataTemplate>
                 </GridView.ItemTemplate>

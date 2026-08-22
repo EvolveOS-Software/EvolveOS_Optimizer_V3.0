@@ -144,8 +144,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             {
                 while (_isPolling)
                 {
-                    var startTime = DateTime.UtcNow;
-
                     HardwareTemperatureService.Instance.UpdateCpuSensors();
 
                     bool fetchedAsTemp = _isShowingTemperatures;
@@ -171,21 +169,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             UpdateCoreUI(currentData);
                         }
                     });
-
-                    // Keep but disabled previous logic
-                    /* var elapsedMilliseconds = (DateTime.UtcNow - startTime).TotalMilliseconds;
- 
-                    // 250 = 4 updates per second (Set for smooth animations)
-                    // 333 = 3 updates per second
-                    // 500 = 2 updates per second
-                    // 1000 = 1 update per second (Default)
-
-                    var timeToWait = 250 - (int)elapsedMilliseconds;
-
-                    if (timeToWait > 0)
-                    {
-                        await Task.Delay(timeToWait);
-                    }*/
 
                     await Task.Delay(150);
                 }
@@ -256,7 +239,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             bool isLoadView = !_isShowingTemperatures;
 
-            // Update P-Cores
             if (GroupedCores.Count >= 1)
             {
                 for (int i = 0; i < pCoresRaw.Count; i++)
@@ -267,7 +249,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
             }
 
-            // Update E-Cores
             if (GroupedCores.Count >= 2)
             {
                 for (int i = 0; i < eCoresRaw.Count; i++)

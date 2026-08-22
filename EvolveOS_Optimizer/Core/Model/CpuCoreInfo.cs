@@ -15,6 +15,9 @@ namespace EvolveOS_Optimizer.Core.Model
     {
         private int _historyDuration;
 
+        private readonly List<(DateTime Time, ObservablePoint Point)> _activePoints = new();
+        private readonly LineSeries<ObservablePoint> _lineSeries;
+
         [ObservableProperty]
         public partial string CoreName { get; set; } = string.Empty;
 
@@ -41,26 +44,30 @@ namespace EvolveOS_Optimizer.Core.Model
             IsShowingLoad = isLoad;
             _historyDuration = historyDurationSeconds;
 
+            SKColor chartColor = GetActiveColor(isLoad);
+
+            TimeSpan animSpeed = TimeSpan.FromMilliseconds(isLoad ? 220 : 1000);
+
             XAxes = new Axis[]
             {
                 new Axis
                 {
                     IsVisible = true,
                     TextSize = 10,
-                    MinStep = 15,
-                    MinLimit = -_historyDuration,
-                    MaxLimit = 0,
-
+                    MinLimit = 0,
+                    MaxLimit = 400,
                     LabelsPaint = new SolidColorPaint(SKColors.Gray),
                     SeparatorsPaint = new SolidColorPaint(SKColors.Gray.WithAlpha(50)),
                     Labeler = value =>
                     {
-                        double secondsAgo = Math.Abs(value);
+                        double progress = Math.Clamp(value / 400.0, 0.0, 1.0);
+                        double secondsAgo = (1.0 - progress) * _historyDuration;
 
+                        if (secondsAgo < 1) return "0s";
                         if (_historyDuration >= 300 && secondsAgo >= 60)
-                            return $"{(int)secondsAgo / 60}m";
+                            return $"-{(int)(secondsAgo / 60)}m";
 
-                        return $"{(int)secondsAgo}s";
+                        return $"-{(int)secondsAgo}s";
                     }
                 }
             };
@@ -80,35 +87,49 @@ namespace EvolveOS_Optimizer.Core.Model
                 }
             };
 
-            Series = new ISeries[]
+            _lineSeries = new LineSeries<ObservablePoint>
             {
-                new LineSeries<ObservablePoint>
-                {
-                    Values = SensorHistory,
-                    Fill = null,
-                    Stroke = new SolidColorPaint(SKColors.OrangeRed) { StrokeThickness = 2 },
-                    GeometrySize = 0,
-                    LineSmoothness = 0.5,
-                    EasingFunction = t => t, 
-                    
-                    // Keep but disabled previous logic
-                    // Match this to the polling loop delay in the CpuCoreTemperaturesViewModel (e.g., 250ms or 333ms)
-                    // AnimationsSpeed = TimeSpan.FromMilliseconds(250)
-                    AnimationsSpeed = TimeSpan.FromMilliseconds(150)
-                }
+                Values = SensorHistory,
+                Fill = new LinearGradientPaint(new[] { chartColor.WithAlpha(100), chartColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)),
+                Stroke = new SolidColorPaint(chartColor) { StrokeThickness = 2 },
+
+                GeometrySize = 0,
+                LineSmoothness = 0,
+                AnimationsSpeed = animSpeed,
+                EasingFunction = LiveChartsCore.EasingFunctions.Lineal,
+                DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
             };
+
+            Series = new ISeries[] { _lineSeries };
+            UpdateHistoryDuration(historyDurationSeconds);
+        }
+
+        private SKColor GetActiveColor(bool isLoad)
+        {
+            if (!isLoad) return SKColor.Parse("#FF9900");
+
+            SKColor accentColor = SKColor.Parse("#00FFFF");
+            try
+            {
+                if (Application.Current.Resources.TryGetValue("MyDynamicAccentBrush", out object resource) &&
+                    resource is SolidColorBrush customBrush)
+                {
+                    var winColor = customBrush.Color;
+                    accentColor = new SKColor(winColor.R, winColor.G, winColor.B, winColor.A);
+                }
+            }
+            catch { }
+            return accentColor;
         }
 
         public void UpdateHistoryDuration(int seconds)
         {
             _historyDuration = seconds;
 
-            if (seconds <= 60) XAxes[0].MinStep = 15;
-            else if (seconds <= 300) XAxes[0].MinStep = 60;
-            else if (seconds <= 600) XAxes[0].MinStep = 120;
-            else XAxes[0].MinStep = 180;
-
-            XAxes[0].MinLimit = -_historyDuration;
+            if (seconds <= 60) XAxes[0].MinStep = 400.0 / (seconds / 15.0);
+            else if (seconds <= 300) XAxes[0].MinStep = 400.0 / (seconds / 60.0);
+            else if (seconds <= 600) XAxes[0].MinStep = 400.0 / (seconds / 120.0);
+            else XAxes[0].MinStep = 400.0 / (seconds / 180.0);
         }
 
         public void SwitchMode(bool isLoad, string newHardwareName, float initialValue)
@@ -120,6 +141,13 @@ namespace EvolveOS_Optimizer.Core.Model
             YAxes[0].MaxLimit = isLoad ? 100 : 115;
             YAxes[0].Labeler = value => isLoad ? $"{value}%" : $"{value}°C";
 
+            SKColor newColor = GetActiveColor(isLoad);
+            TimeSpan newAnimSpeed = TimeSpan.FromMilliseconds(isLoad ? 220 : 1000);
+
+            _lineSeries.Stroke = new SolidColorPaint(newColor) { StrokeThickness = 2 };
+            _lineSeries.Fill = new LinearGradientPaint(new[] { newColor.WithAlpha(100), newColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1));
+            _lineSeries.AnimationsSpeed = newAnimSpeed;
+
             ClearHistory();
             AddSensorRecord(initialValue);
         }
@@ -127,22 +155,50 @@ namespace EvolveOS_Optimizer.Core.Model
         public void AddSensorRecord(float val)
         {
             SensorValue = val;
+            DateTime now = DateTime.UtcNow;
 
-            foreach (var point in SensorHistory)
+            if (_activePoints.Count == 0)
             {
-                if (point.X.HasValue) point.X = point.X.Value - 1;
+                var newPoint = new ObservablePoint(400.0, val);
+                _activePoints.Add((now, newPoint));
+                SensorHistory.Add(newPoint);
+            }
+            else
+            {
+                double thresholdSeconds = _historyDuration / 100.0;
+                var last = _activePoints.Last();
+
+                if ((now - last.Time).TotalSeconds >= thresholdSeconds)
+                {
+                    var newPoint = new ObservablePoint(400.0, val);
+                    _activePoints.Add((now, newPoint));
+                    SensorHistory.Add(newPoint);
+                }
+                else
+                {
+                    last.Point.Y = val;
+                }
             }
 
-            SensorHistory.Add(new ObservablePoint(0, val));
-
-            while (SensorHistory.Count > 0 && SensorHistory[0].X < -900)
+            for (int i = 0; i < _activePoints.Count; i++)
             {
-                SensorHistory.RemoveAt(0);
+                double secondsBehind = (now - _activePoints[i].Time).TotalSeconds;
+                double newX = 400.0 - ((secondsBehind / (double)_historyDuration) * 400.0);
+
+                _activePoints[i].Point.X = newX;
+            }
+
+            DateTime cutoff = now.AddSeconds(-_historyDuration - 10.0);
+            while (_activePoints.Count > 0 && _activePoints[0].Time < cutoff)
+            {
+                SensorHistory.Remove(_activePoints[0].Point);
+                _activePoints.RemoveAt(0);
             }
         }
 
         public void ClearHistory()
         {
+            _activePoints.Clear();
             SensorHistory.Clear();
         }
     }
