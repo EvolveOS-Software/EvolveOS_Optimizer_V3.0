@@ -27,6 +27,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.Win32;
 using Windows.Foundation;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -1023,7 +1024,10 @@ namespace EvolveOS_Optimizer.Pages
                 int savedMode = SettingsEngine.Dashboard_LightingMode;
                 ComboLightingMode.SelectedIndex = savedMode;
 
-                AdvancedLightingPanel.Visibility = (savedMode == 3) ? Visibility.Visible : Visibility.Collapsed;
+                Visibility customVisibility = (savedMode == 3) ? Visibility.Visible : Visibility.Collapsed;
+
+                if (AmbientPanel != null) AmbientPanel.Visibility = customVisibility;
+                if (CustomColorPanel != null) CustomColorPanel.Visibility = customVisibility;
             }
 
             _isInternalToggle = false;
@@ -1913,21 +1917,11 @@ namespace EvolveOS_Optimizer.Pages
 
                 TxtHealthStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning System...";
 
-                await Task.Delay(1000);
-
                 double ramPercentage = SystemDiagnostics.GetMemoryUsagePercentage();
                 double totalRamGb = SystemDiagnostics.GetTotalPhysicalMemoryGigabytes();
 
                 double vRamPercentage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
                 double totalVRamGb = SystemDiagnostics.GetTotalVirtualMemoryGigabytes();
-
-                if (DiagnosticsPageViewModel.Current?.Computer?.Memory != null)
-                {
-                    ramPercentage = DiagnosticsPageViewModel.Current.Computer.Memory.Physical?.Used?.Percentage ?? ramPercentage;
-                    totalRamGb = DiagnosticsPageViewModel.Current.Computer.Memory.Physical?.Total?.Gigabytes ?? totalRamGb;
-                    vRamPercentage = DiagnosticsPageViewModel.Current.Computer.Memory.Virtual?.Used?.Percentage ?? vRamPercentage;
-                    totalVRamGb = DiagnosticsPageViewModel.Current.Computer.Memory.Virtual?.Total?.Gigabytes ?? totalVRamGb;
-                }
 
                 double junkGigabytes = 0.0;
 
@@ -1937,8 +1931,7 @@ namespace EvolveOS_Optimizer.Pages
                 }
                 else
                 {
-                    double rawQuickJunk = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
-                    junkGigabytes = Math.Max(0, rawQuickJunk / 2.5);
+                    junkGigabytes = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
                 }
 
                 var healthResult = SystemHealthHelper.EvaluateHealth(
@@ -1967,19 +1960,25 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private double ParseSizeToGigabytes(string sizeText)
+        private double ParseSizeToGigabytes(string sizeString)
         {
-            if (string.IsNullOrWhiteSpace(sizeText)) return 0;
+            if (string.IsNullOrWhiteSpace(sizeString)) return 0;
 
-            sizeText = sizeText.ToUpper();
-            string numericPart = new string(sizeText.Where(c => char.IsDigit(c) || c == '.' || c == ',').ToArray()).Replace(",", ".");
+            string cleanString = sizeString.ToUpper().Replace(",", ".");
+            var match = System.Text.RegularExpressions.Regex.Match(cleanString, @"([\d\.]+)\s*(TB|GB|MB|KB|B)");
 
-            if (double.TryParse(numericPart, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double value))
+            if (match.Success && double.TryParse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture, out double value))
             {
-                if (sizeText.Contains("GB")) return value;
-                if (sizeText.Contains("MB")) return value / 1024.0;
-                if (sizeText.Contains("KB")) return value / (1024.0 * 1024.0);
-                if (sizeText.Contains("TB")) return value * 1024.0;
+                string unit = match.Groups[2].Value;
+                return unit switch
+                {
+                    "TB" => value * 1024.0,
+                    "GB" => value,
+                    "MB" => value / 1024.0,
+                    "KB" => value / 1048576.0,
+                    "B" => value / 1073741824.0,
+                    _ => 0
+                };
             }
             return 0;
         }
@@ -2791,7 +2790,7 @@ namespace EvolveOS_Optimizer.Pages
             if (mode == 1) // Day Mode
             {
                 SettingsEngine.Dashboard_AmbientIntensity = 95;
-                SettingsEngine.Dashboard_HoverRadius = 250;
+                SettingsEngine.Dashboard_HoverRadius = 50;
                 SettingsEngine.Dashboard_HoverColor = "#FFFFFFFF";
             }
             else if (mode == 2) // Night Mode
@@ -2808,7 +2807,10 @@ namespace EvolveOS_Optimizer.Pages
             BtnGlowColor.Background = new SolidColorBrush(c);
             GlowColorPicker.Color = c;
 
-            AdvancedLightingPanel.Visibility = mode == 3 ? Visibility.Collapsed : Visibility.Visible;
+            Visibility customVisibility = (mode == 3) ? Visibility.Visible : Visibility.Collapsed;
+
+            if (AmbientPanel != null) AmbientPanel.Visibility = customVisibility;
+            if (CustomColorPanel != null) CustomColorPanel.Visibility = customVisibility;
 
             _isLightingUpdate = false;
         }

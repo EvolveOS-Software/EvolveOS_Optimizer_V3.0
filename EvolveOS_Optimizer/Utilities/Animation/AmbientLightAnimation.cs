@@ -67,7 +67,9 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             if (_spotLight != null && _targetElement != null)
             {
                 var pos = e.GetCurrentPoint(_targetElement).Position;
-                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, 150f);
+
+                float radius = (float)SettingsEngine.Dashboard_HoverRadius;
+                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, radius);
             }
         }
 
@@ -150,7 +152,9 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             if (_spotLight != null && _targetElement != null)
             {
                 var pos = e.GetCurrentPoint(_targetElement).Position;
-                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, 200f);
+
+                float radius = (float)SettingsEngine.Dashboard_HoverRadius;
+                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, radius);
             }
         }
 

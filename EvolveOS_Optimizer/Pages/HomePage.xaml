@@ -1766,28 +1766,36 @@
                             </ComboBox>
                         </StackPanel>
 
-                        <StackPanel x:Name="AdvancedLightingPanel" Spacing="12" Visibility="Collapsed">
-                            <Grid ColumnDefinitions="*, *">
-                                <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,10,0">
-                                    <TextBlock Text="{helpers:ResourceString Key=txt_ambient_brightness}" Style="{StaticResource CaptionTextBlockStyle}"/>
-                                    <Slider x:Name="SliderAmbient" Minimum="0" Maximum="100" ValueChanged="LightingSetting_Changed"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Spacing="4" Margin="10,0,0,0">
-                                    <TextBlock Text="{helpers:ResourceString Key=txt_glow_radius}" Style="{StaticResource CaptionTextBlockStyle}"/>
-                                    <Slider x:Name="SliderRadius" Minimum="50" Maximum="500" ValueChanged="LightingSetting_Changed"/>
-                                </StackPanel>
-                            </Grid>
+                        <!-- Grid keeps them side-by-side at 50% width each -->
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                            <StackPanel Spacing="4">
-                                <TextBlock Text="{helpers:ResourceString Key=txt_glow_color}" Style="{StaticResource CaptionTextBlockStyle}"/>
-                                <Button x:Name="BtnGlowColor" Width="100" Height="32" Background="White" CornerRadius="4">
-                                    <Button.Flyout>
-                                        <Flyout>
-                                            <ColorPicker x:Name="GlowColorPicker" ColorChanged="GlowColorPicker_ColorChanged" IsColorChannelTextInputVisible="False" IsHexInputVisible="True"/>
-                                        </Flyout>
-                                    </Button.Flyout>
-                                </Button>
+                            <!-- Always Visible: Glow Radius (Moved to left) -->
+                            <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,10,0">
+                                <TextBlock Text="{helpers:ResourceString Key=txt_glow_radius}" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                <Slider x:Name="SliderRadius" Minimum="50" Maximum="500" ValueChanged="LightingSetting_Changed"/>
                             </StackPanel>
+
+                            <!-- Custom Only: Ambient Brightness (Moved to right) -->
+                            <StackPanel x:Name="AmbientPanel" Grid.Column="1" Spacing="4" Margin="10,0,0,0" Visibility="Collapsed">
+                                <TextBlock Text="{helpers:ResourceString Key=txt_ambient_brightness}" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                <Slider x:Name="SliderAmbient" Minimum="0" Maximum="100" ValueChanged="LightingSetting_Changed"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Custom Only: Glow Color -->
+                        <StackPanel x:Name="CustomColorPanel" Spacing="4" Visibility="Collapsed">
+                            <TextBlock Text="{helpers:ResourceString Key=txt_glow_color}" Style="{StaticResource CaptionTextBlockStyle}"/>
+                            <Button x:Name="BtnGlowColor" Width="100" Height="32" Background="White" CornerRadius="4">
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <ColorPicker x:Name="GlowColorPicker" ColorChanged="GlowColorPicker_ColorChanged" IsColorChannelTextInputVisible="False" IsHexInputVisible="True"/>
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
                         </StackPanel>
 
                     </StackPanel>
