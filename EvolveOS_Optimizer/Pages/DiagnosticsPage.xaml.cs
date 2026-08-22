@@ -1109,18 +1109,6 @@ namespace EvolveOS_Optimizer.Pages
 
             UpdateDriverButtonStates();
         }
-
-        private void GraphViewbox_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (sender is FrameworkElement fe && fe.ActualWidth > 0 && fe.ActualHeight > 0)
-            {
-                double sx = fe.ActualWidth / 400.0;
-                double sy = fe.ActualHeight / 100.0;
-
-                DiagnosticsPageViewModel.Current.DotScaleX = sx > 0 ? 1.0 / sx : 1.0;
-                DiagnosticsPageViewModel.Current.DotScaleY = sy > 0 ? 1.0 / sy : 1.0;
-            }
-        }
         #endregion
 
         #region AI Event Log Explainer
@@ -1679,12 +1667,12 @@ namespace EvolveOS_Optimizer.Pages
                         {
                             if (ViewModel != null)
                             {
-                                ViewModel.PerformanceGraphPath = null;
-                                ViewModel.PerformanceAreaPath = null;
-                                ViewModel.PerformanceGraphPathAlt = null;
-                                ViewModel.PerformanceAreaPathAlt = null;
-                                ViewModel.TemperatureGraphPath = null;
-                                ViewModel.TemperatureAreaPath = null;
+                                ViewModel.MainGraphValues.Clear();
+                                ViewModel.MainGraphDot.Clear();
+                                ViewModel.AltGraphValues.Clear();
+                                ViewModel.AltGraphDot.Clear();
+                                ViewModel.TempGraphValues.Clear();
+                                ViewModel.TempGraphDot.Clear();
 
                                 Debug.WriteLine("[DiagnosticsPage] Severed main window Graph Paths. Tray collections preserved.");
                             }

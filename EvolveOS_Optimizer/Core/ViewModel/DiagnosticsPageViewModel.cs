@@ -18,7 +18,14 @@ using EvolveOS_Optimizer.Utilities.Extensions;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.Measure;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
 using Microsoft.Windows.System.Power;
+using SkiaSharp;
 using Windows.Foundation;
 using Windows.System;
 
@@ -463,12 +470,91 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             LoadLongTermTelemetry();
 
-            PerformanceGraphPath = null;
-            PerformanceAreaPath = null;
-            TemperatureGraphPath = null;
-            TemperatureAreaPath = null;
-            PerformanceGraphPathAlt = null;
-            PerformanceAreaPathAlt = null;
+            SKColor accentColor = SKColor.Parse("#00FFFF");
+            try
+            {
+                if (Application.Current.Resources.TryGetValue("MyDynamicAccentBrush", out object resource) &&
+                    resource is SolidColorBrush customBrush)
+                {
+                    var winColor = customBrush.Color;
+                    accentColor = new SKColor(winColor.R, winColor.G, winColor.B, winColor.A);
+                }
+            }
+            catch { /* Keep fallback if resource isn't found */ }
+            var redColor = SKColor.Parse("#FF5555");
+            var orangeColor = SKColor.Parse("#FF9900");
+
+            MainGraphSeries = new ISeries[]
+            {
+                new LineSeries<ObservablePoint>
+                {
+                    Values = MainGraphValues,
+                    Fill = new LinearGradientPaint(new[] { accentColor.WithAlpha(100), accentColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)),
+                    Stroke = new SolidColorPaint(accentColor) { StrokeThickness = 2 },
+                    GeometrySize = 0,
+                    LineSmoothness = 0,
+                    AnimationsSpeed = TimeSpan.FromMilliseconds(220),
+                    EasingFunction = LiveChartsCore.EasingFunctions.Lineal,
+                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
+                },
+                new ScatterSeries<ObservablePoint>
+                {
+                    Values = MainGraphDot,
+                    Fill = new SolidColorPaint(accentColor),
+                    GeometrySize = 12,
+                    AnimationsSpeed = TimeSpan.FromMilliseconds(220),
+                    EasingFunction = LiveChartsCore.EasingFunctions.Lineal,
+                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
+                }
+            };
+
+            AltGraphSeries = new ISeries[]
+            {
+                new LineSeries<ObservablePoint>
+                {
+                    Values = AltGraphValues,
+                    Fill = new LinearGradientPaint(new[] { redColor.WithAlpha(100), redColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)),
+                    Stroke = new SolidColorPaint(redColor) { StrokeThickness = 2 },
+                    GeometrySize = 0,
+                    LineSmoothness = 0,
+                    AnimationsSpeed = TimeSpan.FromMilliseconds(220),
+                    EasingFunction = LiveChartsCore.EasingFunctions.Lineal,
+                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
+                },
+                new ScatterSeries<ObservablePoint>
+                {
+                    Values = AltGraphDot,
+                    Fill = new SolidColorPaint(redColor),
+                    GeometrySize = 12,
+                    AnimationsSpeed = TimeSpan.FromMilliseconds(220),
+                    EasingFunction = LiveChartsCore.EasingFunctions.Lineal,
+                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
+                }
+            };
+
+            TempGraphSeries = new ISeries[]
+            {
+                new LineSeries<ObservablePoint>
+                {
+                    Values = TempGraphValues,
+                    Fill = new LinearGradientPaint(new[] { orangeColor.WithAlpha(100), orangeColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)),
+                    Stroke = new SolidColorPaint(orangeColor) { StrokeThickness = 2 },
+                    GeometrySize = 0,
+                    LineSmoothness = 0,
+                    AnimationsSpeed = TimeSpan.FromMilliseconds(1000),
+                    EasingFunction = LiveChartsCore.EasingFunctions.Lineal,
+                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
+                },
+                new ScatterSeries<ObservablePoint>
+                {
+                    Values = TempGraphDot,
+                    Fill = new SolidColorPaint(orangeColor),
+                    GeometrySize = 12,
+                    AnimationsSpeed = TimeSpan.FromMilliseconds(1000),
+                    EasingFunction = LiveChartsCore.EasingFunctions.Lineal,
+                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
+                }
+            };
 
             if (LocalMachineSettingsEngine.EnableLiveDiagnostics)
             {
@@ -1502,47 +1588,26 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Diagnostics - Graph Data Points
-        private Geometry? _performanceGraphPath;
-        public Geometry? PerformanceGraphPath { get => _performanceGraphPath; set => SetProperty(ref _performanceGraphPath, value); }
+        public ISeries[] MainGraphSeries { get; set; }
+        public ISeries[] AltGraphSeries { get; set; }
+        public ISeries[] TempGraphSeries { get; set; }
 
-        private Geometry? _performanceAreaPath;
-        public Geometry? PerformanceAreaPath { get => _performanceAreaPath; set => SetProperty(ref _performanceAreaPath, value); }
+        public Margin GraphDrawMargin { get; set; } = new Margin(0);
 
-        private Geometry? _performanceGraphPathAlt;
-        public Geometry? PerformanceGraphPathAlt { get => _performanceGraphPathAlt; set => SetProperty(ref _performanceGraphPathAlt, value); }
+        public IEnumerable<LiveChartsCore.Kernel.Sketches.ICartesianAxis> HiddenXAxes { get; set; } =
+            new ICartesianAxis[] { new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 400 } };
 
-        private Geometry? _performanceAreaPathAlt;
-        public Geometry? PerformanceAreaPathAlt { get => _performanceAreaPathAlt; set => SetProperty(ref _performanceAreaPathAlt, value); }
+        public IEnumerable<LiveChartsCore.Kernel.Sketches.ICartesianAxis> HiddenYAxes { get; set; } =
+            new ICartesianAxis[] { new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 100 } };
 
-        private Geometry? _temperatureGraphPath;
-        public Geometry? TemperatureGraphPath { get => _temperatureGraphPath; set => SetProperty(ref _temperatureGraphPath, value); }
+        public ObservableCollection<ObservablePoint> MainGraphValues { get; } = new();
+        public ObservableCollection<ObservablePoint> MainGraphDot { get; } = new();
 
-        private Geometry? _temperatureAreaPath;
-        public Geometry? TemperatureAreaPath { get => _temperatureAreaPath; set => SetProperty(ref _temperatureAreaPath, value); }
+        public ObservableCollection<ObservablePoint> AltGraphValues { get; } = new();
+        public ObservableCollection<ObservablePoint> AltGraphDot { get; } = new();
 
-        private double _performanceDotX;
-        public double PerformanceDotX { get => _performanceDotX; set => SetProperty(ref _performanceDotX, value); }
-
-        private double _performanceDotY;
-        public double PerformanceDotY { get => _performanceDotY; set => SetProperty(ref _performanceDotY, value); }
-
-        private double _performanceAltDotX;
-        public double PerformanceAltDotX { get => _performanceAltDotX; set => SetProperty(ref _performanceAltDotX, value); }
-
-        private double _performanceAltDotY;
-        public double PerformanceAltDotY { get => _performanceAltDotY; set => SetProperty(ref _performanceAltDotY, value); }
-
-        private double _temperatureDotX;
-        public double TemperatureDotX { get => _temperatureDotX; set => SetProperty(ref _temperatureDotX, value); }
-
-        private double _temperatureDotY;
-        public double TemperatureDotY { get => _temperatureDotY; set => SetProperty(ref _temperatureDotY, value); }
-
-        private double _dotScaleX = 1.0;
-        public double DotScaleX { get => _dotScaleX; set => SetProperty(ref _dotScaleX, value); }
-
-        private double _dotScaleY = 1.0;
-        public double DotScaleY { get => _dotScaleY; set => SetProperty(ref _dotScaleY, value); }
+        public ObservableCollection<ObservablePoint> TempGraphValues { get; } = new();
+        public ObservableCollection<ObservablePoint> TempGraphDot { get; } = new();
         #endregion
 
         #region Diagnostics - Telemetry Value Strings
@@ -2732,22 +2797,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             await _scannerEngine.ExecuteFullScanAsync();
         }
 
-        private Geometry GeneratePathGeometry(List<Point> points, bool isArea)
-        {
-            return GraphGeometryHelper.CreatePathGeometry(points, isArea);
-        }
-
         private void RebuildGraphFromHistory()
         {
-            double logicalWidth = 400.0;
             bool useLongTerm = MaxGraphSeconds > 900;
-
-            var newPoints = new List<Point>();
-            var areaPoints = new List<Point>();
-            var newPointsAlt = new List<Point>();
-            var areaPointsAlt = new List<Point>();
-            var newTempPoints = new List<Point>();
-            var newTempAreaPoints = new List<Point>();
 
             var targetBuffer = ActiveGraphMetric switch
             {
@@ -2761,24 +2813,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (targetBuffer.Count == 0)
             {
-                var emptyPointList = new List<Point> { new Point(logicalWidth, 100) };
-                var emptyAreaList = new List<Point> { new Point(0, 0) };
-
-                PerformanceGraphPath = GeneratePathGeometry(emptyPointList, false);
-                PerformanceAreaPath = GeneratePathGeometry(emptyAreaList, true);
-                PerformanceDotX = logicalWidth - 6;
-                PerformanceDotY = 100 - 6;
-
-                PerformanceGraphPathAlt = GeneratePathGeometry(emptyPointList, false);
-                PerformanceAreaPathAlt = GeneratePathGeometry(emptyAreaList, true);
-                PerformanceAltDotX = logicalWidth - 6;
-                PerformanceAltDotY = 100 - 6;
-
-                TemperatureGraphPath = GeneratePathGeometry(emptyPointList, false);
-                TemperatureAreaPath = GeneratePathGeometry(emptyAreaList, true);
-                TemperatureDotX = logicalWidth - 6;
-                TemperatureDotY = 100 - 6;
-
+                MainGraphValues.Clear(); MainGraphDot.Clear();
+                AltGraphValues.Clear(); AltGraphDot.Clear();
+                TempGraphValues.Clear(); TempGraphDot.Clear();
                 return;
             }
 
@@ -2830,14 +2867,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 double maxUp = altPointsToProcess.Count > 0 ? altPointsToProcess.Max() : 0;
                 double absoluteMax = Math.Max(maxDown, maxUp);
 
-                if (absoluteMax > _peakNetworkSpeedMbps)
-                {
-                    _peakNetworkSpeedMbps = (float)(absoluteMax * 1.1);
-                }
-                else if (_peakNetworkSpeedMbps > 10f && absoluteMax < (_peakNetworkSpeedMbps * 0.1f))
-                {
-                    _peakNetworkSpeedMbps = Math.Max(10f, (float)(_peakNetworkSpeedMbps * 0.995));
-                }
+                if (absoluteMax > _peakNetworkSpeedMbps) _peakNetworkSpeedMbps = (float)(absoluteMax * 1.1);
+                else if (_peakNetworkSpeedMbps > 10f && absoluteMax < (_peakNetworkSpeedMbps * 0.1f)) _peakNetworkSpeedMbps = Math.Max(10f, (float)(_peakNetworkSpeedMbps * 0.995));
 
                 maxNetScale = Math.Max(10.0, Math.Ceiling(_peakNetworkSpeedMbps));
             }
@@ -2849,102 +2880,72 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             int intervals = Math.Max(0, pointsToShow - 1);
             double equivalentSeconds = intervals / pollsPerSecond;
-            double occupiedWidth = MaxGraphSeconds > 0 ? logicalWidth * (equivalentSeconds / MaxGraphSeconds) : logicalWidth;
-            double startX = logicalWidth - occupiedWidth;
-
+            double occupiedWidth = MaxGraphSeconds > 0 ? 400.0 * (equivalentSeconds / MaxGraphSeconds) : 400.0;
+            double startX = 400.0 - occupiedWidth;
             double pixelsPerStep = pointsToProcess.Count > 1 ? occupiedWidth / (pointsToProcess.Count - 1) : 0;
 
             if (!IsGraphingTemperature)
             {
+                MainGraphValues.Clear();
                 double currentX = startX;
-                foreach (var yVal in pointsToProcess)
+                for (int i = 0; i < pointsToProcess.Count; i++)
                 {
-                    double finalY = isNetwork
-                        ? 100.0 - (Math.Clamp(yVal / maxNetScale, 0.0, 1.0) * 100.0)
-                        : yVal;
-
-                    newPoints.Add(new Point(currentX, finalY));
+                    double val = isNetwork ? (Math.Clamp(pointsToProcess[i] / maxNetScale, 0.0, 1.0) * 100.0) : (100.0 - pointsToProcess[i]);
+                    MainGraphValues.Add(new ObservablePoint(currentX, val));
                     currentX += pixelsPerStep;
                 }
 
-                if (newPoints.Count > 0)
+                if (MainGraphValues.Count > 0)
                 {
-                    areaPoints.Add(new Point(newPoints.First().X, 100));
-                    foreach (var p in newPoints) areaPoints.Add(p);
-                    areaPoints.Add(new Point(newPoints.Last().X, 100));
-
-                    var lastPoint = newPoints.Last();
-                    PerformanceDotX = lastPoint.X - 6;
-                    PerformanceDotY = lastPoint.Y - 6;
+                    var lastPoint = MainGraphValues.Last();
+                    if (MainGraphDot.Count == 0) MainGraphDot.Add(new ObservablePoint(lastPoint.X, lastPoint.Y));
+                    else { MainGraphDot[0].X = lastPoint.X; MainGraphDot[0].Y = lastPoint.Y; }
                 }
+                else MainGraphDot.Clear();
             }
             else
             {
-                double currentTempX = startX;
-                foreach (var tVal in tempPointsToProcess)
+                TempGraphValues.Clear();
+                double currentX = startX;
+                for (int i = 0; i < tempPointsToProcess.Count; i++)
                 {
-                    if (tVal > 0)
-                    {
-                        double yValTemp = Math.Clamp(100 - tVal, 0, 100);
-                        newTempPoints.Add(new Point(currentTempX, yValTemp));
-                    }
-                    else
-                    {
-                        newTempPoints.Add(new Point(currentTempX, 100));
-                    }
-                    currentTempX += pixelsPerStep;
+                    TempGraphValues.Add(new ObservablePoint(currentX, tempPointsToProcess[i] > 0 ? tempPointsToProcess[i] : 0));
+                    currentX += pixelsPerStep;
                 }
 
-                if (newTempPoints.Count > 0)
+                if (TempGraphValues.Count > 0)
                 {
-                    newTempAreaPoints.Add(new Point(newTempPoints.First().X, 100));
-                    foreach (var p in newTempPoints) newTempAreaPoints.Add(p);
-                    newTempAreaPoints.Add(new Point(newTempPoints.Last().X, 100));
-
-                    var lastPoint = newTempPoints.Last();
-                    TemperatureDotX = lastPoint.X - 6;
-                    TemperatureDotY = lastPoint.Y - 6;
+                    var lastPoint = TempGraphValues.Last();
+                    if (TempGraphDot.Count == 0) TempGraphDot.Add(new ObservablePoint(lastPoint.X, lastPoint.Y));
+                    else { TempGraphDot[0].X = lastPoint.X; TempGraphDot[0].Y = lastPoint.Y; }
                 }
+                else TempGraphDot.Clear();
             }
 
             if (useAlt)
             {
-                double currentAltX = startX;
-                foreach (var yVal in altPointsToProcess)
+                AltGraphValues.Clear();
+                double currentX = startX;
+                for (int i = 0; i < altPointsToProcess.Count; i++)
                 {
-                    double finalY = isNetwork
-                        ? 100.0 - (Math.Clamp(yVal / maxNetScale, 0.0, 1.0) * 100.0)
-                        : yVal;
-
-                    newPointsAlt.Add(new Point(currentAltX, finalY));
-                    currentAltX += pixelsPerStep;
+                    double val = isNetwork ? (Math.Clamp(altPointsToProcess[i] / maxNetScale, 0.0, 1.0) * 100.0) : (100.0 - altPointsToProcess[i]);
+                    AltGraphValues.Add(new ObservablePoint(currentX, val));
+                    currentX += pixelsPerStep;
                 }
 
-                if (newPointsAlt.Count > 0)
+                if (AltGraphValues.Count > 0)
                 {
-                    areaPointsAlt.Add(new Point(newPointsAlt.First().X, 100));
-                    foreach (var p in newPointsAlt) areaPointsAlt.Add(p);
-                    areaPointsAlt.Add(new Point(newPointsAlt.Last().X, 100));
-
-                    var lastAltPoint = newPointsAlt.Last();
-                    PerformanceAltDotX = lastAltPoint.X - 6;
-                    PerformanceAltDotY = lastAltPoint.Y - 6;
+                    var lastPoint = AltGraphValues.Last();
+                    if (AltGraphDot.Count == 0) AltGraphDot.Add(new ObservablePoint(lastPoint.X, lastPoint.Y));
+                    else { AltGraphDot[0].X = lastPoint.X; AltGraphDot[0].Y = lastPoint.Y; }
                 }
+                else AltGraphDot.Clear();
             }
             else
             {
-                PerformanceAltDotX = logicalWidth - 6;
-                PerformanceAltDotY = 100 - 6;
+                AltGraphValues.Clear();
+                AltGraphDot.Clear();
             }
-
-            PerformanceGraphPath = GeneratePathGeometry(newPoints, false);
-            PerformanceAreaPath = GeneratePathGeometry(areaPoints, true);
-
-            PerformanceGraphPathAlt = GeneratePathGeometry(newPointsAlt, false);
-            PerformanceAreaPathAlt = GeneratePathGeometry(areaPointsAlt, true);
-
-            TemperatureGraphPath = GeneratePathGeometry(newTempPoints, false);
-            TemperatureAreaPath = GeneratePathGeometry(newTempAreaPoints, true);
         }
 
         private List<double> DownsampleLTTB(List<double> data, int threshold)
@@ -4399,12 +4400,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         _ramTempHistoryBuffer.Clear();
                         _moboTempHistoryBuffer.Clear();
 
-                        PerformanceGraphPath = null;
-                        PerformanceAreaPath = null;
-                        TemperatureGraphPath = null;
-                        TemperatureAreaPath = null;
-                        PerformanceGraphPathAlt = null;
-                        PerformanceAreaPathAlt = null;
+                        MainGraphValues.Clear();
+                        MainGraphDot.Clear();
+                        AltGraphValues.Clear();
+                        AltGraphDot.Clear();
+                        TempGraphValues.Clear();
+                        TempGraphDot.Clear();
 
                         CurrentCpuLoadStr = "0%";
                         CurrentRamLoadStr = "0%";
@@ -5449,12 +5450,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _dispatcherQueue?.TryEnqueue(() =>
             {
-                PerformanceGraphPath = null;
-                PerformanceAreaPath = null;
-                PerformanceGraphPathAlt = null;
-                PerformanceAreaPathAlt = null;
-                TemperatureGraphPath = null;
-                TemperatureAreaPath = null;
+                MainGraphValues.Clear();
+                MainGraphDot.Clear();
+                AltGraphValues.Clear();
+                AltGraphDot.Clear();
+                TempGraphValues.Clear();
+                TempGraphDot.Clear();
             });
         }
 

@@ -13,6 +13,7 @@
     xmlns:converters="using:EvolveOS_Optimizer.Utilities.Converters"
     xmlns:helpers="using:EvolveOS_Optimizer.Utilities.Helpers"
     xmlns:panels="using:EvolveOS_Optimizer.Assets.Panels"
+    xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
     xmlns:fluentIcons="using:FluentIcons.WinUI"
     mc:Ignorable="d"
     Background="Transparent">
@@ -1607,54 +1608,37 @@
 
                                                             <Grid Grid.Row="0" Grid.Column="1" Background="#0500D6E8" BorderBrush="#1A00D6E8" BorderThickness="1" CornerRadius="4">
                                                                 <Path Stroke="#1AFFFFFF" StrokeThickness="1" StrokeDashArray="4,4" Stretch="Fill" Data="M 0,25 L 100,25 M 0,50 L 100,50 M 0,75 L 100,75 M 25,0 L 25,100 M 50,0 L 50,100 M 75,0 L 75,100" />
-                                                                <Viewbox Stretch="Fill" Margin="5,15,5,5" Canvas.ZIndex="1" HorizontalAlignment="Right" SizeChanged="GraphViewbox_SizeChanged">
-                                                                    <Canvas Width="400" Height="100">
-                                                                        <Path Data="{x:Bind ViewModel.PerformanceAreaPath, Mode=OneWay}" Fill="{StaticResource Brush_GraphGradientFill}"
-                                                                              Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                                                        <Path Data="{x:Bind ViewModel.PerformanceGraphPath, Mode=OneWay}" Stroke="{ThemeResource MyDynamicAccentBrush}" StrokeThickness="1"
-                                                                              Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                <Grid Margin="5,15,5,5" Canvas.ZIndex="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                                    <!-- 1. Main Performance Graph -->
+                                                                    <lvc:CartesianChart
+                                                                        Series="{x:Bind ViewModel.MainGraphSeries, Mode=OneWay}"
+                                                                        XAxes="{x:Bind ViewModel.HiddenXAxes, Mode=OneWay}"
+                                                                        YAxes="{x:Bind ViewModel.HiddenYAxes, Mode=OneWay}"
+                                                                        DrawMargin="{x:Bind ViewModel.GraphDrawMargin, Mode=OneWay}"
+                                                                        TooltipPosition="Hidden"
+                                                                        Background="Transparent"
+                                                                        Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-                                                                        <Path Data="{x:Bind ViewModel.PerformanceAreaPathAlt, Mode=OneWay}" Fill="{StaticResource Brush_UploadGraphGradientFill}"
-                                                                              Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}" />
-                                                                        <Path Data="{x:Bind ViewModel.PerformanceGraphPathAlt, Mode=OneWay}" Stroke="#FFFF5555" StrokeThickness="1"
-                                                                              Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}" />
+                                                                    <!-- 2. Alt Performance Graph -->
+                                                                    <lvc:CartesianChart
+                                                                        Series="{x:Bind ViewModel.AltGraphSeries, Mode=OneWay}"
+                                                                        XAxes="{x:Bind ViewModel.HiddenXAxes, Mode=OneWay}"
+                                                                        YAxes="{x:Bind ViewModel.HiddenYAxes, Mode=OneWay}"
+                                                                        DrawMargin="{x:Bind ViewModel.GraphDrawMargin, Mode=OneWay}"
+                                                                        TooltipPosition="Hidden"
+                                                                        Background="Transparent"
+                                                                        Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}" />
 
-                                                                        <Path Data="{x:Bind ViewModel.TemperatureAreaPath, Mode=OneWay}" Fill="{StaticResource Brush_TempGraphGradientFill}"
-                                                                              Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                                                        <Path Data="{x:Bind ViewModel.TemperatureGraphPath, Mode=OneWay}" Stroke="#FFFF9900" StrokeThickness="1"
-                                                                              Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
-
-                                                                        <Ellipse Width="12" Height="12" Fill="{ThemeResource MyDynamicAccentBrush}"
-                                                                                 Canvas.Left="{x:Bind ViewModel.PerformanceDotX, Mode=OneWay}"
-                                                                                 Canvas.Top="{x:Bind ViewModel.PerformanceDotY, Mode=OneWay}"
-                                                                                 RenderTransformOrigin="0.5,0.5"
-                                                                                 Visibility="{x:Bind ViewModel.IsGraphingLoad, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                                            <Ellipse.RenderTransform>
-                                                                                <ScaleTransform ScaleX="{x:Bind ViewModel.DotScaleX, Mode=OneWay}" ScaleY="{x:Bind ViewModel.DotScaleY, Mode=OneWay}" />
-                                                                            </Ellipse.RenderTransform>
-                                                                        </Ellipse>
-
-                                                                        <Ellipse Width="12" Height="12" Fill="#FFFF5555"
-                                                                                 Canvas.Left="{x:Bind ViewModel.PerformanceAltDotX, Mode=OneWay}"
-                                                                                 Canvas.Top="{x:Bind ViewModel.PerformanceAltDotY, Mode=OneWay}"
-                                                                                 RenderTransformOrigin="0.5,0.5"
-                                                                                 Visibility="{x:Bind ViewModel.NetworkGraphAltVisibility, Mode=OneWay}">
-                                                                            <Ellipse.RenderTransform>
-                                                                                <ScaleTransform ScaleX="{x:Bind ViewModel.DotScaleX, Mode=OneWay}" ScaleY="{x:Bind ViewModel.DotScaleY, Mode=OneWay}" />
-                                                                            </Ellipse.RenderTransform>
-                                                                        </Ellipse>
-
-                                                                        <Ellipse Width="12" Height="12" Fill="#FFFF9900"
-                                                                                 Canvas.Left="{x:Bind ViewModel.TemperatureDotX, Mode=OneWay}"
-                                                                                 Canvas.Top="{x:Bind ViewModel.TemperatureDotY, Mode=OneWay}"
-                                                                                 RenderTransformOrigin="0.5,0.5"
-                                                                                 Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                                            <Ellipse.RenderTransform>
-                                                                                <ScaleTransform ScaleX="{x:Bind ViewModel.DotScaleX, Mode=OneWay}" ScaleY="{x:Bind ViewModel.DotScaleY, Mode=OneWay}" />
-                                                                            </Ellipse.RenderTransform>
-                                                                        </Ellipse>
-                                                                    </Canvas>
-                                                                </Viewbox>
+                                                                    <!-- 3. Temperature Graph -->
+                                                                    <lvc:CartesianChart
+                                                                        Series="{x:Bind ViewModel.TempGraphSeries, Mode=OneWay}"
+                                                                        XAxes="{x:Bind ViewModel.HiddenXAxes, Mode=OneWay}"
+                                                                        YAxes="{x:Bind ViewModel.HiddenYAxes, Mode=OneWay}"
+                                                                        DrawMargin="{x:Bind ViewModel.GraphDrawMargin, Mode=OneWay}"
+                                                                        TooltipPosition="Hidden"
+                                                                        Background="Transparent"
+                                                                        Visibility="{x:Bind ViewModel.IsGraphingTemperature, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                </Grid>
 
                                                                 <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,20,15" Canvas.ZIndex="10" MinHeight="36" MinWidth="36">
 
