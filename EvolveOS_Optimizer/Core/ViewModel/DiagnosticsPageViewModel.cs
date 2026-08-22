@@ -455,7 +455,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _uiBatchTimer.Tick += ProcessEventQueue;
             _uiBatchTimer.Start();
 
-            // Notification logic for testing purpose
             _memoryGuardian = new MemoryGuardian();
 
             LocalMachineSettingsEngine.SettingChanged += OnGlobalSettingChanged;
@@ -464,12 +463,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             LoadLongTermTelemetry();
 
-            PerformanceGraphPath = "M 400,100";
-            PerformanceAreaPath = "M 0,0";
-            TemperatureGraphPath = "M 400,100";
-            TemperatureAreaPath = "M 0,0";
-            PerformanceGraphPathAlt = "M 400,100";
-            PerformanceAreaPathAlt = "M 0,0";
+            PerformanceGraphPath = null;
+            PerformanceAreaPath = null;
+            TemperatureGraphPath = null;
+            TemperatureAreaPath = null;
+            PerformanceGraphPathAlt = null;
+            PerformanceAreaPathAlt = null;
 
             if (LocalMachineSettingsEngine.EnableLiveDiagnostics)
             {
@@ -1503,23 +1502,23 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region Diagnostics - Graph Data Points
-        private string _performanceGraphPath = "";
-        public string PerformanceGraphPath { get => _performanceGraphPath; set => SetProperty(ref _performanceGraphPath, value); }
+        private Geometry? _performanceGraphPath;
+        public Geometry? PerformanceGraphPath { get => _performanceGraphPath; set => SetProperty(ref _performanceGraphPath, value); }
 
-        private string _performanceAreaPath = "";
-        public string PerformanceAreaPath { get => _performanceAreaPath; set => SetProperty(ref _performanceAreaPath, value); }
+        private Geometry? _performanceAreaPath;
+        public Geometry? PerformanceAreaPath { get => _performanceAreaPath; set => SetProperty(ref _performanceAreaPath, value); }
 
-        private string _performanceGraphPathAlt = "";
-        public string PerformanceGraphPathAlt { get => _performanceGraphPathAlt; set => SetProperty(ref _performanceGraphPathAlt, value); }
+        private Geometry? _performanceGraphPathAlt;
+        public Geometry? PerformanceGraphPathAlt { get => _performanceGraphPathAlt; set => SetProperty(ref _performanceGraphPathAlt, value); }
 
-        private string _performanceAreaPathAlt = "";
-        public string PerformanceAreaPathAlt { get => _performanceAreaPathAlt; set => SetProperty(ref _performanceAreaPathAlt, value); }
+        private Geometry? _performanceAreaPathAlt;
+        public Geometry? PerformanceAreaPathAlt { get => _performanceAreaPathAlt; set => SetProperty(ref _performanceAreaPathAlt, value); }
 
-        private string _temperatureGraphPath = "";
-        public string TemperatureGraphPath { get => _temperatureGraphPath; set => SetProperty(ref _temperatureGraphPath, value); }
+        private Geometry? _temperatureGraphPath;
+        public Geometry? TemperatureGraphPath { get => _temperatureGraphPath; set => SetProperty(ref _temperatureGraphPath, value); }
 
-        private string _temperatureAreaPath = "";
-        public string TemperatureAreaPath { get => _temperatureAreaPath; set => SetProperty(ref _temperatureAreaPath, value); }
+        private Geometry? _temperatureAreaPath;
+        public Geometry? TemperatureAreaPath { get => _temperatureAreaPath; set => SetProperty(ref _temperatureAreaPath, value); }
 
         private double _performanceDotX;
         public double PerformanceDotX { get => _performanceDotX; set => SetProperty(ref _performanceDotX, value); }
@@ -2733,20 +2732,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             await _scannerEngine.ExecuteFullScanAsync();
         }
 
-        private string GeneratePathString(List<Point> points, bool isArea)
+        private Geometry GeneratePathGeometry(List<Point> points, bool isArea)
         {
-            if (points.Count == 0) return "M 0,0";
-            var sb = new System.Text.StringBuilder();
-
-            sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "M {0:0.##},{1:0.##} ", points[0].X, points[0].Y);
-
-            for (int i = 1; i < points.Count; i++)
-            {
-                sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "L {0:0.##},{1:0.##} ", points[i].X, points[i].Y);
-            }
-
-            if (isArea) sb.Append("Z");
-            return sb.ToString();
+            return GraphGeometryHelper.CreatePathGeometry(points, isArea);
         }
 
         private void RebuildGraphFromHistory()
@@ -2773,18 +2761,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (targetBuffer.Count == 0)
             {
-                PerformanceGraphPath = $"M {logicalWidth},100";
-                PerformanceAreaPath = "M 0,0"; // FIX
+                var emptyPointList = new List<Point> { new Point(logicalWidth, 100) };
+                var emptyAreaList = new List<Point> { new Point(0, 0) };
+
+                PerformanceGraphPath = GeneratePathGeometry(emptyPointList, false);
+                PerformanceAreaPath = GeneratePathGeometry(emptyAreaList, true);
                 PerformanceDotX = logicalWidth - 6;
                 PerformanceDotY = 100 - 6;
 
-                PerformanceGraphPathAlt = $"M {logicalWidth},100";
-                PerformanceAreaPathAlt = "M 0,0"; // FIX
+                PerformanceGraphPathAlt = GeneratePathGeometry(emptyPointList, false);
+                PerformanceAreaPathAlt = GeneratePathGeometry(emptyAreaList, true);
                 PerformanceAltDotX = logicalWidth - 6;
                 PerformanceAltDotY = 100 - 6;
 
-                TemperatureGraphPath = $"M {logicalWidth},100";
-                TemperatureAreaPath = "M 0,0"; // FIX
+                TemperatureGraphPath = GeneratePathGeometry(emptyPointList, false);
+                TemperatureAreaPath = GeneratePathGeometry(emptyAreaList, true);
                 TemperatureDotX = logicalWidth - 6;
                 TemperatureDotY = 100 - 6;
 
@@ -2946,15 +2937,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 PerformanceAltDotY = 100 - 6;
             }
 
-            // Bind the new SVG strings to the XAML UI (Zero Unmanaged Leaks!)
-            PerformanceGraphPath = GeneratePathString(newPoints, false);
-            PerformanceAreaPath = GeneratePathString(areaPoints, true);
+            PerformanceGraphPath = GeneratePathGeometry(newPoints, false);
+            PerformanceAreaPath = GeneratePathGeometry(areaPoints, true);
 
-            PerformanceGraphPathAlt = GeneratePathString(newPointsAlt, false);
-            PerformanceAreaPathAlt = GeneratePathString(areaPointsAlt, true);
+            PerformanceGraphPathAlt = GeneratePathGeometry(newPointsAlt, false);
+            PerformanceAreaPathAlt = GeneratePathGeometry(areaPointsAlt, true);
 
-            TemperatureGraphPath = GeneratePathString(newTempPoints, false);
-            TemperatureAreaPath = GeneratePathString(newTempAreaPoints, true);
+            TemperatureGraphPath = GeneratePathGeometry(newTempPoints, false);
+            TemperatureAreaPath = GeneratePathGeometry(newTempAreaPoints, true);
         }
 
         private List<double> DownsampleLTTB(List<double> data, int threshold)
@@ -4409,13 +4399,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         _ramTempHistoryBuffer.Clear();
                         _moboTempHistoryBuffer.Clear();
 
-                        // ZERO-ALLOCATION FIX: Clear the SVG strings instead of using PointCollections
-                        PerformanceGraphPath = "";
-                        PerformanceAreaPath = "";
-                        TemperatureGraphPath = "";
-                        TemperatureAreaPath = "";
-                        PerformanceGraphPathAlt = "";
-                        PerformanceAreaPathAlt = "";
+                        PerformanceGraphPath = null;
+                        PerformanceAreaPath = null;
+                        TemperatureGraphPath = null;
+                        TemperatureAreaPath = null;
+                        PerformanceGraphPathAlt = null;
+                        PerformanceAreaPathAlt = null;
 
                         CurrentCpuLoadStr = "0%";
                         CurrentRamLoadStr = "0%";
@@ -4438,7 +4427,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[Telemetry Teardown Error] {ex.Message}");
+                Debug.WriteLine($"[Telemetry Teardown Error] {ex.Message}");
             }
         }
 
@@ -5460,12 +5449,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             _dispatcherQueue?.TryEnqueue(() =>
             {
-                PerformanceGraphPath = "M 0,0";
-                PerformanceAreaPath = "M 0,0";
-                PerformanceGraphPathAlt = "M 0,0";
-                PerformanceAreaPathAlt = "M 0,0";
-                TemperatureGraphPath = "M 0,0";
-                TemperatureAreaPath = "M 0,0";
+                PerformanceGraphPath = null;
+                PerformanceAreaPath = null;
+                PerformanceGraphPathAlt = null;
+                PerformanceAreaPathAlt = null;
+                TemperatureGraphPath = null;
+                TemperatureAreaPath = null;
             });
         }
 

@@ -1679,12 +1679,12 @@ namespace EvolveOS_Optimizer.Pages
                         {
                             if (ViewModel != null)
                             {
-                                ViewModel.PerformanceGraphPath = "M 0,0";
-                                ViewModel.PerformanceAreaPath = "M 0,0";
-                                ViewModel.PerformanceGraphPathAlt = "M 0,0";
-                                ViewModel.PerformanceAreaPathAlt = "M 0,0";
-                                ViewModel.TemperatureGraphPath = "M 0,0";
-                                ViewModel.TemperatureAreaPath = "M 0,0";
+                                ViewModel.PerformanceGraphPath = null;
+                                ViewModel.PerformanceAreaPath = null;
+                                ViewModel.PerformanceGraphPathAlt = null;
+                                ViewModel.PerformanceAreaPathAlt = null;
+                                ViewModel.TemperatureGraphPath = null;
+                                ViewModel.TemperatureAreaPath = null;
 
                                 Debug.WriteLine("[DiagnosticsPage] Severed main window Graph Paths. Tray collections preserved.");
                             }
