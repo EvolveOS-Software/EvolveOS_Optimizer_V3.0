@@ -1211,7 +1211,6 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is Border card && !_isTrackingDrag)
             {
-                card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorSecondaryBrush"];
                 FactoryAnimation.AnimateCardScale(card, 1.01);
             }
         }
@@ -1220,7 +1219,6 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is Border card && !_isTrackingDrag)
             {
-                card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"];
                 FactoryAnimation.AnimateCardScale(card, 1.0);
             }
         }
@@ -1229,10 +1227,8 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is Border card)
             {
-                if (Application.Current.Resources.TryGetValue("CardBackgroundFillColorTertiaryBrush", out object tertiaryBrush))
-                {
-                    card.Background = (Brush)tertiaryBrush;
-                }
+                FactoryAnimation.AnimateCardScale(card, 0.97);
+                card.Opacity = 0.85;
 
                 var container = DashboardGridView.Items.OfType<GridViewItem>()
                     .FirstOrDefault(i => (i.Content as Border) == card);
@@ -1252,10 +1248,7 @@ namespace EvolveOS_Optimizer.Pages
                         var bounds = transform.TransformBounds(new Rect(0, 0, item.ActualWidth, item.ActualHeight));
                         _logicalBounds[item] = bounds;
 
-                        if (item.Content is Border b)
-                        {
-                            b.TranslationTransition = new Vector3Transition { Duration = TimeSpan.FromMilliseconds(250) };
-                        }
+                        item.TranslationTransition = new Vector3Transition { Duration = TimeSpan.FromMilliseconds(250) };
                     }
 
                     if (_logicalBounds.TryGetValue(container, out var draggedBounds))
@@ -1281,7 +1274,7 @@ namespace EvolveOS_Optimizer.Pages
             {
                 _isTrackingDrag = true;
 
-                _activeDraggedCard.TranslationTransition = null;
+                _activeDraggedItem.TranslationTransition = null;
 
                 if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
                 {
@@ -1291,8 +1284,8 @@ namespace EvolveOS_Optimizer.Pages
 
             if (_isTrackingDrag)
             {
-                _activeDraggedCard.Translation = new System.Numerics.Vector3((float)deltaX, (float)deltaY, 10f);
-                _activeDraggedCard.Opacity = 0.8f;
+                _activeDraggedItem.Translation = new System.Numerics.Vector3((float)deltaX, (float)deltaY, 10f);
+                _activeDraggedItem.Opacity = 0.8f;
 
                 GridViewItem? newHoveredItem = null;
 
@@ -1312,21 +1305,21 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (newHoveredItem != _hoveredTargetItem)
                 {
-                    if (_hoveredTargetItem != null && _hoveredTargetItem.Content is Border oldBorder)
+                    if (_hoveredTargetItem != null)
                     {
-                        oldBorder.Translation = System.Numerics.Vector3.Zero;
+                        _hoveredTargetItem.Translation = System.Numerics.Vector3.Zero;
                     }
 
                     _hoveredTargetItem = newHoveredItem;
 
-                    if (_hoveredTargetItem != null && _hoveredTargetItem.Content is Border targetBorder)
+                    if (_hoveredTargetItem != null)
                     {
                         var targetRect = _logicalBounds[_hoveredTargetItem];
 
                         float offsetX = (float)(_draggedItemBasePos.X - targetRect.X);
                         float offsetY = (float)(_draggedItemBasePos.Y - targetRect.Y);
 
-                        targetBorder.Translation = new System.Numerics.Vector3(offsetX, offsetY, 0);
+                        _hoveredTargetItem.Translation = new System.Numerics.Vector3(offsetX, offsetY, 0);
                     }
                 }
             }
@@ -1336,7 +1329,9 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (sender is Border card)
             {
-                card.Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"];
+                FactoryAnimation.AnimateCardScale(card, 1.0);
+                card.Opacity = 1.0;
+
                 card.ReleasePointerCapture(e.Pointer);
             }
 
@@ -1344,12 +1339,9 @@ namespace EvolveOS_Optimizer.Pages
             {
                 foreach (var item in DashboardGridView.Items.OfType<GridViewItem>())
                 {
-                    if (item.Content is Border b)
-                    {
-                        b.TranslationTransition = null;
-                        b.Translation = System.Numerics.Vector3.Zero;
-                        b.Opacity = 1.0f;
-                    }
+                    item.TranslationTransition = null;
+                    item.Translation = System.Numerics.Vector3.Zero;
+                    item.Opacity = 1.0f;
                     Canvas.SetZIndex(item, 0);
                 }
 
@@ -1388,12 +1380,12 @@ namespace EvolveOS_Optimizer.Pages
                     DashboardGridView.ItemContainerTransitions = originalTransitions;
                 }
             }
-            else if (_activeDraggedCard != null)
+            else if (_activeDraggedItem != null)
             {
-                _activeDraggedCard.TranslationTransition = null;
-                _activeDraggedCard.Translation = System.Numerics.Vector3.Zero;
-                _activeDraggedCard.Opacity = 1.0f;
-                if (_activeDraggedItem != null) Canvas.SetZIndex(_activeDraggedItem, 0);
+                _activeDraggedItem.TranslationTransition = null;
+                _activeDraggedItem.Translation = System.Numerics.Vector3.Zero;
+                _activeDraggedItem.Opacity = 1.0f;
+                Canvas.SetZIndex(_activeDraggedItem, 0);
             }
 
             _activeDraggedCard = null;
@@ -2600,7 +2592,6 @@ namespace EvolveOS_Optimizer.Pages
         private async void BtnExpandGpu_Click(object sender, RoutedEventArgs e)
         {
             bool isExpanded = GpuExpandedContent.Visibility == Visibility.Collapsed;
-
 
             double targetHeight = isExpanded ? 450 : 220;
 
