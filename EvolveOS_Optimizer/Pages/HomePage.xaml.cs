@@ -1918,53 +1918,88 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                DashMaintenanceLoadingRing.Visibility = Visibility.Visible;
-                DashMaintenanceStatusImage.Visibility = Visibility.Collapsed;
-                TxtLastRefreshed.Visibility = Visibility.Collapsed;
-                BtnRefreshHealth.IsEnabled = false;
+                if (DashMaintenanceLoadingRing != null) DashMaintenanceLoadingRing.Visibility = Visibility.Visible;
+                if (DashMaintenanceStatusImage != null) DashMaintenanceStatusImage.Visibility = Visibility.Collapsed;
+                if (TxtLastRefreshed != null) TxtLastRefreshed.Visibility = Visibility.Collapsed;
+                if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = false;
 
-                TxtHealthStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning System...";
+                if (TxtHealthStatus != null)
+                    TxtHealthStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning System...";
 
-                double ramPercentage = SystemDiagnostics.GetMemoryUsagePercentage();
-                double totalRamGb = SystemDiagnostics.GetTotalPhysicalMemoryGigabytes();
+                await Task.Delay(250);
 
-                double vRamPercentage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
-                double totalVRamGb = SystemDiagnostics.GetTotalVirtualMemoryGigabytes();
-
+                // Variables to hold background data
+                double ramPercentage = 0;
+                double totalRamGb = 0;
+                double vRamPercentage = 0;
+                double totalVRamGb = 0;
                 double junkGigabytes = 0.0;
 
-                if (DiagnosticsPageViewModel.Current != null && !string.IsNullOrEmpty(DiagnosticsPageViewModel.Current.TotalSpaceToFree))
+                dynamic? healthResult = null;
+
+                await Task.Run(async () =>
                 {
-                    junkGigabytes = ParseSizeToGigabytes(DiagnosticsPageViewModel.Current.TotalSpaceToFree);
-                }
-                else
+                    ramPercentage = SystemDiagnostics.GetMemoryUsagePercentage();
+                    totalRamGb = SystemDiagnostics.GetTotalPhysicalMemoryGigabytes();
+
+                    vRamPercentage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
+                    totalVRamGb = SystemDiagnostics.GetTotalVirtualMemoryGigabytes();
+
+                    if (DiagnosticsPageViewModel.Current != null && !string.IsNullOrEmpty(DiagnosticsPageViewModel.Current.TotalSpaceToFree))
+                    {
+                        junkGigabytes = ParseSizeToGigabytes(DiagnosticsPageViewModel.Current.TotalSpaceToFree);
+                    }
+                    else
+                    {
+                        junkGigabytes = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
+                    }
+
+                    healthResult = SystemHealthHelper.EvaluateHealth(
+                        ramPercentage, totalRamGb,
+                        vRamPercentage, totalVRamGb,
+                        junkGigabytes);
+                });
+
+                DispatcherQueue.TryEnqueue(() =>
                 {
-                    junkGigabytes = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
-                }
+                    if (healthResult != null)
+                    {
+                        if (DashMaintenanceStatusImage != null)
+                        {
+                            DashMaintenanceStatusImage.Source = new BitmapImage(new Uri((string)healthResult.ImagePath));
+                            DashMaintenanceStatusImage.Visibility = Visibility.Visible;
+                        }
 
-                var healthResult = SystemHealthHelper.EvaluateHealth(
-                    ramPercentage, totalRamGb,
-                    vRamPercentage, totalVRamGb,
-                    junkGigabytes);
+                        if (TxtHealthStatus != null)
+                        {
+                            TxtHealthStatus.Text = (string)healthResult.StatusText;
+                        }
+                    }
 
-                DashMaintenanceStatusImage.Source = new BitmapImage(new Uri(healthResult.ImagePath));
-                TxtHealthStatus.Text = healthResult.StatusText;
-
-                string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
-                TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
-
-                DashMaintenanceStatusImage.Visibility = Visibility.Visible;
-                TxtLastRefreshed.Visibility = Visibility.Visible;
+                    if (TxtLastRefreshed != null)
+                    {
+                        string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
+                        TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
+                        TxtLastRefreshed.Visibility = Visibility.Visible;
+                    }
+                });
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
-                TxtHealthStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (TxtHealthStatus != null)
+                        TxtHealthStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
+                });
             }
             finally
             {
-                DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
-                BtnRefreshHealth.IsEnabled = true;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (DashMaintenanceLoadingRing != null) DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
+                    if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = true;
+                });
             }
         }
 
