@@ -601,6 +601,17 @@
     <sys:String x:Key="btn_optimize_now">Jetzt optimieren</sys:String>
     <sys:String x:Key="txt_auto">Auto</sys:String>
 
+    <!-- DASHBOARD: PRIVACY CARD -->
+    <sys:String x:Key="title_privacy_check">Datenschutzprüfung</sys:String>
+    <sys:String x:Key="tooltip_open_privacy_center">Datenschutzcenter öffnen</sys:String>
+    <sys:String x:Key="tooltip_view_privacy_leaks">Datenschutzlecks anzeigen</sys:String>
+    <sys:String x:Key="txt_privacy_app_perms">App-Rechte</sys:String>
+    <sys:String x:Key="txt_privacy_edge_web">Edge &amp; Web</sys:String>
+    <sys:String x:Key="txt_privacy_windows_ai">Windows KI</sys:String>
+    <sys:String x:Key="txt_secure">Sicher</sys:String>
+    <sys:String x:Key="btn_apply_fixes">Korrekturen anwenden</sys:String>
+    <sys:String x:Key="btn_undo_fixes">Korrekturen rückgängig</sys:String>
+
     <!-- DASHBOARD: SETTINGS DIALOG-->
     <sys:String x:Key="txt_card_expansion">Kartenerweiterung</sys:String>
     <sys:String x:Key="txt_remember_state">Status merken</sys:String>
@@ -635,6 +646,16 @@
     <sys:String x:Key="setting_mod_desc">Schreibt geänderte Seiten auf die Festplatte, um aktiven RAM freizugeben.</sys:String>
     <sys:String x:Key="setting_reg_title">Registrierungs-Cache optimieren</sys:String>
     <sys:String x:Key="setting_reg_desc">Gleicht den Speicher der Systemregistrierungsstruktur ab und gibt ihn frei.</sys:String>
+
+    <!-- CODE-BEHIND: PRIVACY CARD -->
+    <sys:String x:Key="text_privacy_critical">Datenschutzlecks gefunden</sys:String>
+    <sys:String x:Key="text_privacy_warning">Optimierungen verfügbar</sys:String>
+    <sys:String x:Key="text_privacy_good">Datenschutz ist optimiert</sys:String>
+    <sys:String x:Key="txt_ai_blocked">KI blockiert</sys:String>
+    <sys:String x:Key="txt_ai_active">KI aktiv</sys:String>
+    <sys:String x:Key="txt_leaks">Lecks</sys:String>
+    <sys:String x:Key="txt_applying_fixes">Korrekturen anwenden...</sys:String>
+    <sys:String x:Key="txt_restoring_defaults">Standardeinstellungen wiederherstellen...</sys:String>
 
     <!-- Code-Behind: Disk Card -->
     <sys:String x:Key="txt_cleaning">Wird bereinigt...</sys:String>

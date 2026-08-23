@@ -605,6 +605,17 @@
     <sys:String x:Key="btn_optimize_now">Ottimizza ora</sys:String>
     <sys:String x:Key="txt_auto">Auto</sys:String>
 
+    <!-- DASHBOARD: PRIVACY CARD -->
+    <sys:String x:Key="title_privacy_check">Controllo della privacy</sys:String>
+    <sys:String x:Key="tooltip_open_privacy_center">Apri il Centro Privacy</sys:String>
+    <sys:String x:Key="tooltip_view_privacy_leaks">Visualizza problemi di privacy</sys:String>
+    <sys:String x:Key="txt_privacy_app_perms">Permessi app</sys:String>
+    <sys:String x:Key="txt_privacy_edge_web">Edge &amp; Web</sys:String>
+    <sys:String x:Key="txt_privacy_windows_ai">Windows AI</sys:String>
+    <sys:String x:Key="txt_secure">Sicuro</sys:String>
+    <sys:String x:Key="btn_apply_fixes">Applica correzioni</sys:String>
+    <sys:String x:Key="btn_undo_fixes">Annulla correzioni</sys:String>
+
     <!-- DASHBOARD: SETTINGS DIALOG-->
     <sys:String x:Key="txt_card_expansion">Espansione scheda</sys:String>
     <sys:String x:Key="txt_remember_state">Ricorda stato</sys:String>
@@ -639,6 +650,16 @@
     <sys:String x:Key="setting_mod_desc">Scarica le pagine modificate sul disco per liberare RAM attiva.</sys:String>
     <sys:String x:Key="setting_reg_title">Ottimizza cache di registro</sys:String>
     <sys:String x:Key="setting_reg_desc">Riconcilia e libera la memoria dell'hive del registro di sistema.</sys:String>
+
+    <!-- CODE-BEHIND: PRIVACY CARD -->
+    <sys:String x:Key="text_privacy_critical">Problemi di privacy rilevati</sys:String>
+    <sys:String x:Key="text_privacy_warning">Ottimizzazioni disponibili</sys:String>
+    <sys:String x:Key="text_privacy_good">La privacy è ottimizzata</sys:String>
+    <sys:String x:Key="txt_ai_blocked">IA bloccata</sys:String>
+    <sys:String x:Key="txt_ai_active">IA attiva</sys:String>
+    <sys:String x:Key="txt_leaks">Problemi</sys:String>
+    <sys:String x:Key="txt_applying_fixes">Applicazione correzioni...</sys:String>
+    <sys:String x:Key="txt_restoring_defaults">Ripristino impostazioni predefinite...</sys:String>
 
     <!-- Code-Behind: Disk Card -->
     <sys:String x:Key="txt_cleaning">Pulizia in corso...</sys:String>

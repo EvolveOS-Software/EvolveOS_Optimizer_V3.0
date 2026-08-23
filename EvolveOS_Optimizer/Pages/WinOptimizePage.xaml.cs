@@ -56,6 +56,10 @@ public sealed partial class WinOptimizePage : Page, IPurgeable
     private bool _isInfoBadgesVisible = true;
     private bool _isNewBadgesVisible = true;
 
+    public static string? RequestedSectionOnLoad { get; set; }
+    public static string? RequestedSearchOnLoad { get; set; }
+    public static Action<string>? ExternalSectionRequest;
+
     public OptimizeViewModel ViewModel { get; }
     #endregion
 
@@ -76,6 +80,13 @@ public sealed partial class WinOptimizePage : Page, IPurgeable
             _userPreferencesService = App.Services.GetService<IUserPreferencesService>();
             _localizationService = App.Services.GetService<ILocalizationService>();
             _bulkSettingsActionService = App.Services.GetService<IBulkSettingsActionService>();
+
+            ExternalSectionRequest = (section) =>
+            {
+                string? search = RequestedSearchOnLoad;
+                RequestedSearchOnLoad = null;
+                DispatcherQueue?.TryEnqueue(() => NavigateToSection(section));
+            };
 
             ErrorLogging.LogDebug("OptimizePage", "ViewModel obtained, constructor complete");
         }
@@ -156,6 +167,21 @@ public sealed partial class WinOptimizePage : Page, IPurgeable
             UpdateOverviewBadgePills();
             UpdateOverviewNewBadges();
 
+            if (!string.IsNullOrEmpty(RequestedSectionOnLoad))
+            {
+                string section = RequestedSectionOnLoad;
+                string? search = RequestedSearchOnLoad;
+
+                RequestedSectionOnLoad = null;
+                RequestedSearchOnLoad = null;
+
+                NavigateToSection(section, search);
+            }
+            else if (e.Parameter is string sectionKey && !string.IsNullOrWhiteSpace(sectionKey))
+            {
+                NavigateToSection(sectionKey);
+            }
+
             ErrorLogging.LogDebug("OptimizePage", "OnNavigatedTo complete");
         }
         catch (Exception ex)
@@ -168,8 +194,9 @@ public sealed partial class WinOptimizePage : Page, IPurgeable
     {
         base.OnNavigatedFrom(e);
 
-        await Purge();
+        ExternalSectionRequest = null;
 
+        await Purge();
         ViewModel.OnNavigatedFrom();
     }
 

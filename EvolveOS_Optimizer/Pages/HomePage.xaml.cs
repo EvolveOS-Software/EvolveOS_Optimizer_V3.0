@@ -17,6 +17,7 @@ using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Managers;
 using EvolveOS_Optimizer.Utilities.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Text;
@@ -129,10 +130,12 @@ namespace EvolveOS_Optimizer.Pages
                     if (SettingsEngine.IsNetworkCardExpanded) BtnExpandNetwork_Click(this, new RoutedEventArgs());
                     if (SettingsEngine.IsDnsCardExpanded) BtnExpandDns_Click(this, new RoutedEventArgs());
                     if (SettingsEngine.IsRamBoostCardExpanded) BtnExpandRamBoost_Click(this, new RoutedEventArgs());
+                    if (SettingsEngine.IsPrivacyCardExpanded) BtnExpandPrivacy_Click(this, new RoutedEventArgs());
                 }
 
                 _ = CalculateSystemHealthAsync();
                 _ = CalculateSecurityHealthAsync();
+                _ = CalculatePrivacyHealthAsync();
 
                 StartShimmer(IpShimmerBrush, "Stop2");
                 StartShimmer(LocalIpShimmerBrush, "LocalStop2");
@@ -950,6 +953,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleDns.IsOn = SettingsEngine.Dashboard_CardDns;
             ToggleHealth.IsOn = SettingsEngine.Dashboard_CardHealth;
             ToggleSecurity.IsOn = SettingsEngine.Dashboard_CardSecurity;
+            TogglePrivacy.IsOn = SettingsEngine.Dashboard_CardPrivacy;
             ToggleCpuGraph.IsOn = SettingsEngine.Dashboard_CardCpuGraph;
             ToggleRamGraph.IsOn = SettingsEngine.Dashboard_CardRamGraph;
             ToggleNetworkGraph.IsOn = SettingsEngine.Dashboard_CardNetworkGraph;
@@ -965,6 +969,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCardVisibility("CardDns", ToggleDns.IsOn);
             SetCardVisibility("CardMaintenance", ToggleHealth.IsOn);
             SetCardVisibility("CardSecurity", ToggleSecurity.IsOn);
+            SetCardVisibility("CardPrivacy", TogglePrivacy.IsOn);
             SetCardVisibility("CardCpuGraph", ToggleCpuGraph.IsOn);
             SetCardVisibility("CardRamGraph", ToggleRamGraph.IsOn);
             SetCardVisibility("CardNetworkGraph", ToggleNetworkGraph.IsOn);
@@ -1069,6 +1074,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardDns = ToggleDns.IsOn;
             SettingsEngine.Dashboard_CardHealth = ToggleHealth.IsOn;
             SettingsEngine.Dashboard_CardSecurity = ToggleSecurity.IsOn;
+            SettingsEngine.Dashboard_CardPrivacy = TogglePrivacy.IsOn;
             SettingsEngine.Dashboard_CardCpuGraph = ToggleCpuGraph.IsOn;
             SettingsEngine.Dashboard_CardRamGraph = ToggleRamGraph.IsOn;
             SettingsEngine.Dashboard_CardNetworkGraph = ToggleNetworkGraph.IsOn;
@@ -1123,6 +1129,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CardNetworkGraph, InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardGpuGraph, InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardRamBoost, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardPrivacy, InputSystemCursorShape.SizeAll);
 
             SetCustomCursor(RefreshWeatherButton, InputSystemCursorShape.Arrow);
             SetCustomCursor(LocationButton, InputSystemCursorShape.Arrow);
@@ -1158,13 +1165,20 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CmbPowerPlan, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenResmon, InputSystemCursorShape.Arrow);
 
+            SetCustomCursor(BtnExpandPrivacy, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenPrivacyPage, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnPrivacyViewIssues, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRefreshPrivacy, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnApplyRecommendedPrivacy, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRestorePrivacyDefaults, InputSystemCursorShape.Arrow);
+
             SetCustomCursor(IpAddress, InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, InputSystemCursorShape.Hand);
         }
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsEngine.DashboardCardOrder = "CardSecurity,CardWeather,CardMaintenance,CardDns,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardDisk,CardNetwork,CardRam,CardGamingMode";
+            SettingsEngine.DashboardCardOrder = "CardSecurity,CardPrivacy,CardWeather,CardMaintenance,CardDns,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardDisk,CardNetwork,CardRam,CardGamingMode";
             SettingsEngine.Dashboard_CardWeather = true;
             SettingsEngine.Dashboard_CardNetwork = true;
             SettingsEngine.Dashboard_CardRam = false;
@@ -1175,6 +1189,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardDns = true;
             SettingsEngine.Dashboard_CardHealth = true;
             SettingsEngine.Dashboard_CardSecurity = true;
+            SettingsEngine.Dashboard_CardPrivacy = true;
             SettingsEngine.Dashboard_CardRamBoost = true;
             SettingsEngine.Dashboard_CardCpuGraph = true;
             SettingsEngine.Dashboard_CardRamGraph = true;
@@ -1193,6 +1208,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleDns.IsOn = true;
             ToggleHealth.IsOn = true;
             ToggleSecurity.IsOn = true;
+            TogglePrivacy.IsOn = true;
             ToggleRamBoost.IsOn = true;
             ToggleCpuGraph.IsOn = true;
             ToggleRamGraph.IsOn = true;
@@ -2110,6 +2126,371 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
+        #region Privacy Card
+
+        private void BtnOpenPrivacyPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWindow.Instance != null)
+            {
+                MainWindow.Instance.SwitchPage("Optimize", "Privacy");
+            }
+        }
+
+        private async void BtnExpandPrivacy_Click(object sender, RoutedEventArgs e)
+        {
+            bool isExpanded = PrivacyExpandedContent.Visibility == Visibility.Collapsed;
+            double targetHeight = isExpanded ? 450 : 220;
+
+            GviPrivacy.Height = targetHeight;
+            CardPrivacy.Height = targetHeight;
+
+            if (isExpanded)
+            {
+                PrivacyExpandedContent.Visibility = Visibility.Visible;
+                if (IconExpandPrivacy != null) IconExpandPrivacy.Glyph = "\uE70E"; // Chevron Up
+            }
+            else
+            {
+                PrivacyExpandedContent.Visibility = Visibility.Collapsed;
+                if (IconExpandPrivacy != null) IconExpandPrivacy.Glyph = "\uE70D"; // Chevron Down
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
+            }
+
+            if (ViewModel.SaveCardStates) SettingsEngine.IsPrivacyCardExpanded = isExpanded;
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+                GviPrivacy.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true });
+            }
+        }
+
+        private async void BtnRefreshPrivacy_Click(object sender, RoutedEventArgs e)
+        {
+            await CalculatePrivacyHealthAsync();
+        }
+
+        private async Task CalculatePrivacyHealthAsync()
+        {
+            try
+            {
+                if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Visible;
+                if (DashPrivacyStatusImage != null) DashPrivacyStatusImage.Visibility = Visibility.Collapsed;
+                if (TxtPrivacyLastRefreshed != null) TxtPrivacyLastRefreshed.Visibility = Visibility.Collapsed;
+                if (BtnRefreshPrivacy != null) BtnRefreshPrivacy.IsEnabled = false;
+                if (BtnPrivacyViewIssues != null) BtnPrivacyViewIssues.Visibility = Visibility.Collapsed;
+                if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
+
+                int issuesCount = 0;
+                int aiIssuesCount = 0;
+                int appPermIssuesCount = 0;
+                int edgeWebIssuesCount = 0;
+
+                List<string> privacyIssues = new List<string>();
+
+                await Task.Run(() =>
+                {
+                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                    var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+
+                    foreach (var setting in privacyGroup.Settings)
+                    {
+                        if (setting.IsWindows11Only && !isWin11) continue;
+                        if (setting.IsWindows10Only && isWin11) continue;
+
+                        bool isOptimal = true;
+
+                        if (setting.ComboBox != null)
+                        {
+                            var recommendedOption = setting.ComboBox.Options?.FirstOrDefault(o => o.IsRecommended);
+                            if (recommendedOption != null && recommendedOption.ValueMappings != null)
+                            {
+                                foreach (var mapping in recommendedOption.ValueMappings)
+                                {
+                                    var regDef = setting.RegistrySettings?.FirstOrDefault(rs => rs.ValueName == mapping.Key);
+                                    if (regDef != null && regDef.KeyPath != null && regDef.ValueName != null)
+                                    {
+                                        object? currentValue = ReadRegistryValue(regDef.KeyPath, regDef.ValueName) ?? regDef.DefaultValue;
+
+                                        if (currentValue?.ToString() != mapping.Value?.ToString())
+                                        {
+                                            isOptimal = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (setting.RegistrySettings != null)
+                        {
+                            foreach (var reg in setting.RegistrySettings)
+                            {
+                                if (reg.RecommendedValue != null && reg.KeyPath != null && reg.ValueName != null)
+                                {
+                                    object? currentValue = ReadRegistryValue(reg.KeyPath, reg.ValueName) ?? reg.DefaultValue;
+
+                                    if (currentValue?.ToString() != reg.RecommendedValue.ToString())
+                                    {
+                                        isOptimal = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!isOptimal)
+                        {
+                            issuesCount++;
+                            privacyIssues.Add(setting.Name ?? "Unknown Privacy Setting");
+
+                            if (setting.GroupName == "Windows AI" || setting.GroupName == "Microsoft Office AI")
+                                aiIssuesCount++;
+                            else if (setting.GroupName == "App Permissions")
+                                appPermIssuesCount++;
+                            else if (setting.GroupName == "Microsoft Edge AI" || setting.GroupName == "Content Delivery & Advertising")
+                                edgeWebIssuesCount++;
+                        }
+                    }
+                });
+
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (DashPrivacyStatusImage != null)
+                    {
+                        if (issuesCount >= 5)
+                        {
+                            DashPrivacyStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/unsecure.png"));
+                            DashPrivacyStatusImage.Opacity = 1.0;
+                        }
+                        else if (issuesCount > 0)
+                        {
+                            DashPrivacyStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
+                            DashPrivacyStatusImage.Opacity = 0.5;
+                        }
+                        else
+                        {
+                            DashPrivacyStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
+                            DashPrivacyStatusImage.Opacity = 1.0;
+                        }
+                        DashPrivacyStatusImage.Visibility = Visibility.Visible;
+                    }
+
+                    if (TxtPrivacyStatus != null)
+                    {
+                        if (issuesCount >= 5) TxtPrivacyStatus.Text = $"{issuesCount} {(ResourceString.GetString("text_privacy_critical") ?? "Privacy Leaks Found")}";
+                        else if (issuesCount > 0) TxtPrivacyStatus.Text = $"{issuesCount} {(ResourceString.GetString("text_privacy_warning") ?? "Optimizations Available")}";
+                        else TxtPrivacyStatus.Text = ResourceString.GetString("text_privacy_good") ?? "Privacy is Optimized";
+                    }
+
+                    if (AiShieldBadge != null && TxtAiShieldStatus != null && IconAiShield != null)
+                    {
+                        AiShieldBadge.Visibility = Visibility.Visible;
+                        if (aiIssuesCount == 0)
+                        {
+                            if (Application.Current.Resources.TryGetValue("BadgeRecommendedStyle", out var style))
+                                AiShieldBadge.Style = (Style)style;
+
+                            if (Application.Current.Resources.TryGetValue("BadgeRecommendedForeground", out var brush))
+                            {
+                                IconAiShield.Foreground = (Brush)brush;
+                                TxtAiShieldStatus.Foreground = (Brush)brush;
+                            }
+
+                            TxtAiShieldStatus.Text = ResourceString.GetString("txt_ai_blocked") ?? "AI Blocked";
+                            IconAiShield.Glyph = "\uE83F";
+                        }
+                        else
+                        {
+                            if (Application.Current.Resources.TryGetValue("BadgeWarningStyle", out var style))
+                                AiShieldBadge.Style = (Style)style;
+
+                            if (Application.Current.Resources.TryGetValue("BadgeCustomForeground", out var brush))
+                            {
+                                IconAiShield.Foreground = (Brush)brush;
+                                TxtAiShieldStatus.Foreground = (Brush)brush;
+                            }
+
+                            TxtAiShieldStatus.Text = ResourceString.GetString("txt_ai_active") ?? "AI Active";
+                            IconAiShield.Glyph = "\uE814";
+                        }
+                    }
+
+                    string secureText = ResourceString.GetString("txt_secure") ?? "Secure";
+                    string leaksText = ResourceString.GetString("txt_leaks") ?? "Leaks";
+
+                    if (TxtAppPermIssues != null)
+                    {
+                        TxtAppPermIssues.Text = appPermIssuesCount > 0 ? $"{appPermIssuesCount} {leaksText}" : secureText;
+                        TxtAppPermIssues.Foreground = appPermIssuesCount > 0 ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.SeaGreen);
+                    }
+                    if (TxtEdgeWebIssues != null)
+                    {
+                        TxtEdgeWebIssues.Text = edgeWebIssuesCount > 0 ? $"{edgeWebIssuesCount} {leaksText}" : secureText;
+                        TxtEdgeWebIssues.Foreground = edgeWebIssuesCount > 0 ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.SeaGreen);
+                    }
+                    if (TxtAiIssues != null)
+                    {
+                        TxtAiIssues.Text = aiIssuesCount > 0 ? $"{aiIssuesCount} {leaksText}" : secureText;
+                        TxtAiIssues.Foreground = aiIssuesCount > 0 ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.SeaGreen);
+                    }
+
+                    if (issuesCount > 0 && BtnPrivacyViewIssues != null)
+                    {
+                        BtnPrivacyViewIssues.Visibility = Visibility.Visible;
+                        var flyout = new MenuFlyout();
+                        foreach (var issue in privacyIssues)
+                        {
+                            var menuItem = new MenuFlyoutItem
+                            {
+                                Text = issue,
+                                Icon = new FontIcon { Glyph = "\uE7BA", FontSize = 14 },
+                                IsEnabled = true
+                            };
+
+                            menuItem.Click += (s, e) =>
+                            {
+                                if (MainWindow.Instance != null)
+                                {
+                                    WinOptimizePage.RequestedSearchOnLoad = issue;
+                                    MainWindow.Instance.SwitchPage("Optimize", "Privacy");
+                                }
+                            };
+
+                            flyout.Items.Add(menuItem);
+                        }
+                        FlyoutBase.SetAttachedFlyout(BtnPrivacyViewIssues, flyout);
+                    }
+
+                    if (TxtPrivacyLastRefreshed != null)
+                    {
+                        string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
+                        TxtPrivacyLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
+                        TxtPrivacyLastRefreshed.Visibility = Visibility.Visible;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ [Privacy Check Error] {ex.Message}");
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
+                });
+            }
+            finally
+            {
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Collapsed;
+                    if (BtnRefreshPrivacy != null) BtnRefreshPrivacy.IsEnabled = true;
+                });
+            }
+        }
+
+        private async void BtnApplyRecommendedPrivacy_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn) btn.IsEnabled = false;
+
+            try
+            {
+                if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("txt_applying_fixes") ?? "Applying Fixes...";
+                if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Visible;
+                if (DashPrivacyStatusImage != null) DashPrivacyStatusImage.Visibility = Visibility.Collapsed;
+
+                var bulkService = App.Services.GetService<IBulkSettingsActionService>();
+                if (bulkService != null)
+                {
+                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                    var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+
+                    var settingIds = privacyGroup.Settings
+                        .Where(s => !(s.IsWindows11Only && !isWin11) && !(s.IsWindows10Only && isWin11))
+                        .Select(s => s.Id)
+                        .Where(id => !string.IsNullOrEmpty(id))
+                        .ToList();
+
+                    await bulkService.ApplyRecommendedAsync(settingIds!);
+                }
+
+                await CalculatePrivacyHealthAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Apply Privacy Error] {ex.Message}");
+            }
+            finally
+            {
+                if (sender is Button b) b.IsEnabled = true;
+            }
+        }
+
+        private async void BtnRestorePrivacyDefaults_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn) btn.IsEnabled = false;
+
+            try
+            {
+                if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("txt_restoring_defaults") ?? "Restoring Defaults...";
+                if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Visible;
+                if (DashPrivacyStatusImage != null) DashPrivacyStatusImage.Visibility = Visibility.Collapsed;
+
+                var bulkService = App.Services.GetService<IBulkSettingsActionService>();
+                if (bulkService != null)
+                {
+                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                    var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+
+                    var settingIds = privacyGroup.Settings
+                        .Where(s => !(s.IsWindows11Only && !isWin11) && !(s.IsWindows10Only && isWin11))
+                        .Select(s => s.Id)
+                        .Where(id => !string.IsNullOrEmpty(id))
+                        .ToList();
+
+                    await bulkService.ResetToDefaultsAsync(settingIds!);
+                }
+
+                await CalculatePrivacyHealthAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Restore Privacy Error] {ex.Message}");
+            }
+            finally
+            {
+                if (sender is Button b) b.IsEnabled = true;
+            }
+        }
+
+        private object? ReadRegistryValue(string keyPath, string valueName)
+        {
+            try
+            {
+                using var baseKey = keyPath.StartsWith("HKEY_LOCAL_MACHINE") ? Registry.LocalMachine : Registry.CurrentUser;
+                string subKey = keyPath.Substring(keyPath.IndexOf('\\') + 1);
+                using var key = baseKey.OpenSubKey(subKey);
+                return key?.GetValue(valueName);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private void BtnPrivacyViewIssues_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element)
+            {
+                FlyoutBase.ShowAttachedFlyout(element);
+            }
+        }
+
+        #endregion
+
         #region Disk Card
 
         private string _selectedSmartDrive = "C:";
@@ -2732,7 +3113,7 @@ namespace EvolveOS_Optimizer.Pages
                 var cards = new UIElement[]
                 {
                     CardWeather, CardNetwork, CardRam, CardCpu, CardGpu, CardDisk,
-                    CardGamingMode, CardDns, CardMaintenance, CardSecurity,
+                    CardGamingMode, CardDns, CardMaintenance, CardSecurity, CardPrivacy,
                     CardCpuGraph, CardRamGraph, CardNetworkGraph, CardGpuGraph, CardRamBoost
                 };
 

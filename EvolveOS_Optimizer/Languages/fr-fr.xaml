@@ -601,6 +601,17 @@
     <sys:String x:Key="btn_optimize_now">Optimiser maintenant</sys:String>
     <sys:String x:Key="txt_auto">Auto</sys:String>
 
+    <!-- DASHBOARD: PRIVACY CARD -->
+    <sys:String x:Key="title_privacy_check">Vérification de la confidentialité</sys:String>
+    <sys:String x:Key="tooltip_open_privacy_center">Ouvrir le centre de confidentialité</sys:String>
+    <sys:String x:Key="tooltip_view_privacy_leaks">Afficher les fuites de confidentialité</sys:String>
+    <sys:String x:Key="txt_privacy_app_perms">Autoris. apps</sys:String>
+    <sys:String x:Key="txt_privacy_edge_web">Edge &amp; Web</sys:String>
+    <sys:String x:Key="txt_privacy_windows_ai">Windows IA</sys:String>
+    <sys:String x:Key="txt_secure">Sécurisé</sys:String>
+    <sys:String x:Key="btn_apply_fixes">Appliquer correctifs</sys:String>
+    <sys:String x:Key="btn_undo_fixes">Annuler correctifs</sys:String>
+
     <!-- DASHBOARD: SETTINGS DIALOG-->
     <sys:String x:Key="txt_card_expansion">Expansion de la carte</sys:String>
     <sys:String x:Key="txt_remember_state">Mémoriser l'état</sys:String>
@@ -635,6 +646,16 @@
     <sys:String x:Key="setting_mod_desc">Vide les pages modifiées sur le disque pour libérer la RAM active.</sys:String>
     <sys:String x:Key="setting_reg_title">Optimiser le cache du registre</sys:String>
     <sys:String x:Key="setting_reg_desc">Réconcilie et libère la mémoire de la ruche du registre système.</sys:String>
+
+    <!-- CODE-BEHIND: PRIVACY CARD -->
+    <sys:String x:Key="text_privacy_critical">Fuites de confidentialité détectées</sys:String>
+    <sys:String x:Key="text_privacy_warning">Optimisations disponibles</sys:String>
+    <sys:String x:Key="text_privacy_good">La confidentialité est optimisée</sys:String>
+    <sys:String x:Key="txt_ai_blocked">IA bloquée</sys:String>
+    <sys:String x:Key="txt_ai_active">IA active</sys:String>
+    <sys:String x:Key="txt_leaks">Fuites</sys:String>
+    <sys:String x:Key="txt_applying_fixes">Application des correctifs...</sys:String>
+    <sys:String x:Key="txt_restoring_defaults">Restauration des valeurs par défaut...</sys:String>
 
     <!-- Code-Behind: Disk Card -->
     <sys:String x:Key="txt_cleaning">Nettoyage en cours...</sys:String>

@@ -1643,6 +1643,119 @@
                 </Border>
             </GridViewItem>
 
+            <GridViewItem x:Name="GviPrivacy">
+                <Border x:Name="CardPrivacy" Style="{StaticResource DashCard}" Padding="16" Margin="0" MinWidth="340"
+            PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerCanceled">
+
+                    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+
+                        <!-- Row 0: Header with Arrow Navigation & Expand Chevron -->
+                        <Grid Grid.Row="0" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <FontIcon Grid.Column="0" Glyph="&#xE72E;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_privacy_check}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+
+                            <Button x:Name="BtnOpenPrivacyPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenPrivacyPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_privacy_center}">
+                                <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
+                            </Button>
+
+                            <Button x:Name="BtnExpandPrivacy" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandPrivacy_Click" Margin="4,0,0,0">
+                                <FontIcon x:Name="IconExpandPrivacy" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </Button>
+                        </Grid>
+
+                        <!-- Row 1: Image, Spinner & AI Shield -->
+                        <Grid Grid.Row="1" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ProgressRing x:Name="DashPrivacyLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <Image x:Name="DashPrivacyStatusImage" Source="ms-appx:///Assets/PngImages/secure.png" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                            <!-- AI Shield Mini-Indicator -->
+                            <Border x:Name="AiShieldBadge" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-20,-10" Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <FontIcon x:Name="IconAiShield" Glyph="&#xE8B9;" FontSize="11" VerticalAlignment="Center" Margin="0,0,0,1"/>
+                                    <TextBlock x:Name="TxtAiShieldStatus" Text="{helpers:ResourceString Key=txt_ai_blocked}" Style="{StaticResource BadgeTextStyle}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Row 2: Status Texts & View Issues Button -->
+                        <StackPanel Grid.Row="2" Spacing="0" Margin="0,4,0,8">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                <TextBlock x:Name="TxtPrivacyStatus" Text="{helpers:ResourceString Key=txt_scanning}" FontFamily="Jura Medium" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+
+                                <Button x:Name="BtnPrivacyViewIssues" Background="Transparent" BorderThickness="0" Padding="6,4" MinHeight="0" MinWidth="0" VerticalAlignment="Center" Visibility="Collapsed" Click="BtnPrivacyViewIssues_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_view_privacy_leaks}">
+                                    <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
+                                </Button>
+                            </StackPanel>
+
+                            <TextBlock x:Name="TxtPrivacyLastRefreshed" Text="{helpers:ResourceString Key=text_never_updated}" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Row 3: Expanded Section (Hidden by default) -->
+                        <StackPanel x:Name="PrivacyExpandedContent" Grid.Row="3" Visibility="Collapsed" VerticalAlignment="Bottom" Margin="0,16,0,0" Spacing="12">
+
+                            <!-- Categorized Leak Breakdown -->
+                            <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
+                                <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_privacy_app_perms}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtAppPermIssues" Text="{helpers:ResourceString Key=txt_secure}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_privacy_edge_web}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtEdgeWebIssues" Text="{helpers:ResourceString Key=txt_secure}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_privacy_windows_ai}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtAiIssues" Text="{helpers:ResourceString Key=txt_secure}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <!-- Action Buttons: Apply & Restore -->
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                                <Button x:Name="BtnApplyRecommendedPrivacy" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnApplyRecommendedPrivacy_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                                        <FontIcon Glyph="&#xE73E;" FontSize="13"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_apply_fixes}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button x:Name="BtnRestorePrivacyDefaults" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnRestorePrivacyDefaults_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                                        <FontIcon Glyph="&#xE777;" FontSize="13"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_undo_fixes}"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Row 4: Refresh Bottom Action -->
+                        <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
+                            <Button x:Name="BtnRefreshPrivacy" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshPrivacy_Click" BorderThickness="0" FontFamily="Jura Medium">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE72C;" FontSize="14"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_quick_scan}"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
         </GridView>
 
         <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,10">
@@ -1701,6 +1814,7 @@
                                 <ToggleSwitch Grid.Column="1" Grid.Row="2" Header="{helpers:ResourceString Key=txt_system_security}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardSecurity" Toggled="ToggleCard_Toggled" x:Name="ToggleSecurity"/>
 
                                 <ToggleSwitch Grid.Column="0" Grid.Row="3" Header="{helpers:ResourceString Key=txt_memory_optimizer}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardRamBoost" Toggled="ToggleCard_Toggled" x:Name="ToggleRamBoost"/>
+                                <ToggleSwitch Grid.Column="1" Grid.Row="3" Header="Privacy Status" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardPrivacy" Toggled="ToggleCard_Toggled" x:Name="TogglePrivacy"/>
                             </Grid>
                         </StackPanel>
 

@@ -462,7 +462,8 @@
                             <FontIcon Glyph="&#xE74C;" FontSize="20"/>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}"
+                        <RadioButton x:Name="BtnNavOptimize"
+                                     Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Optimize"
                                      IsTabStop="False"

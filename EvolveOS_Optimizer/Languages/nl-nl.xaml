@@ -601,6 +601,17 @@
     <sys:String x:Key="btn_optimize_now">Nu optimaliseren</sys:String>
     <sys:String x:Key="txt_auto">Auto</sys:String>
 
+    <!-- DASHBOARD: PRIVACY CARD -->
+    <sys:String x:Key="title_privacy_check">Privacycontrole</sys:String>
+    <sys:String x:Key="tooltip_open_privacy_center">Privacycentrum openen</sys:String>
+    <sys:String x:Key="tooltip_view_privacy_leaks">Privacylekken weergeven</sys:String>
+    <sys:String x:Key="txt_privacy_app_perms">App-rechten</sys:String>
+    <sys:String x:Key="txt_privacy_edge_web">Edge &amp; Web</sys:String>
+    <sys:String x:Key="txt_privacy_windows_ai">Windows AI</sys:String>
+    <sys:String x:Key="txt_secure">Veilig</sys:String>
+    <sys:String x:Key="btn_apply_fixes">Fixes toepassen</sys:String>
+    <sys:String x:Key="btn_undo_fixes">Fixes ongedaan maken</sys:String>
+
     <!-- DASHBOARD: SETTINGS DIALOG-->
     <sys:String x:Key="txt_card_expansion">Kaartuitbreiding</sys:String>
     <sys:String x:Key="txt_remember_state">Status onthouden</sys:String>
@@ -635,6 +646,16 @@
     <sys:String x:Key="setting_mod_desc">Spoelt gewijzigde pagina's naar de schijf om actief RAM vrij te maken.</sys:String>
     <sys:String x:Key="setting_reg_title">Registercache optimaliseren</sys:String>
     <sys:String x:Key="setting_reg_desc">Verzoent en maakt geheugen vrij voor de systeemregister-hive.</sys:String>
+
+    <!-- CODE-BEHIND: PRIVACY CARD -->
+    <sys:String x:Key="text_privacy_critical">Privacylekken gevonden</sys:String>
+    <sys:String x:Key="text_privacy_warning">Optimalisaties beschikbaar</sys:String>
+    <sys:String x:Key="text_privacy_good">Privacy is geoptimaliseerd</sys:String>
+    <sys:String x:Key="txt_ai_blocked">AI geblokkeerd</sys:String>
+    <sys:String x:Key="txt_ai_active">AI actief</sys:String>
+    <sys:String x:Key="txt_leaks">Lekken</sys:String>
+    <sys:String x:Key="txt_applying_fixes">Fixes toepassen...</sys:String>
+    <sys:String x:Key="txt_restoring_defaults">Standaardwaarden herstellen...</sys:String>
 
     <!-- Code-Behind: Disk Card -->
     <sys:String x:Key="txt_cleaning">Opruimen...</sys:String>

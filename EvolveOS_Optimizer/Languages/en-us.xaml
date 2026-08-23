@@ -580,6 +580,17 @@
     <sys:String x:Key="btn_optimize_now">Optimize Now</sys:String>
     <sys:String x:Key="txt_auto">Auto</sys:String>
 
+    <!-- DASHBOARD: PRIVACY CARD -->
+    <sys:String x:Key="title_privacy_check">Privacy Check</sys:String>
+    <sys:String x:Key="tooltip_open_privacy_center">Open Privacy Center</sys:String>
+    <sys:String x:Key="tooltip_view_privacy_leaks">View Privacy Leaks</sys:String>
+    <sys:String x:Key="txt_privacy_app_perms">App Perms</sys:String>
+    <sys:String x:Key="txt_privacy_edge_web">Edge &amp; Web</sys:String>
+    <sys:String x:Key="txt_privacy_windows_ai">Windows AI</sys:String>
+    <sys:String x:Key="txt_secure">Secure</sys:String>
+    <sys:String x:Key="btn_apply_fixes">Apply Fixes</sys:String>
+    <sys:String x:Key="btn_undo_fixes">Undo Fixes</sys:String>
+
     <!-- DASHBOARD: SETTINGS DIALOG-->
     <sys:String x:Key="txt_card_expansion">Card Expansion</sys:String>
     <sys:String x:Key="txt_remember_state">Remember state</sys:String>
@@ -615,6 +626,16 @@
     <sys:String x:Key="setting_mod_desc">Flushes modified pages to disk to free active RAM.</sys:String>
     <sys:String x:Key="setting_reg_title">Optimize Registry Cache</sys:String>
     <sys:String x:Key="setting_reg_desc">Reconciles and frees system registry hive memory.</sys:String>
+
+    <!-- Code-Behind: Privacy Card -->
+    <sys:String x:Key="text_privacy_critical">Privacy Leaks Found</sys:String>
+    <sys:String x:Key="text_privacy_warning">Optimizations Available</sys:String>
+    <sys:String x:Key="text_privacy_good">Privacy is Optimized</sys:String>
+    <sys:String x:Key="txt_ai_blocked">AI Blocked</sys:String>
+    <sys:String x:Key="txt_ai_active">AI Active</sys:String>
+    <sys:String x:Key="txt_leaks">Leaks</sys:String>
+    <sys:String x:Key="txt_applying_fixes">Applying Fixes...</sys:String>
+    <sys:String x:Key="txt_restoring_defaults">Restoring Defaults...</sys:String>
 
     <!-- Code-Behind: Disk Card -->
     <sys:String x:Key="txt_cleaning">Cleaning...</sys:String>
