@@ -2771,7 +2771,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ComboLightingMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_isInternalToggle || _isLightingUpdate || ComboLightingMode == null || ComboLightingMode.SelectedIndex == -1) return;
+            if (_isInternalToggle || _isLightingUpdate || !_isInitialized || ComboLightingMode == null || ComboLightingMode.SelectedIndex == -1) return;
 
             int mode = ComboLightingMode.SelectedIndex;
             SettingsEngine.Dashboard_LightingMode = mode;
@@ -2808,7 +2808,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void LightingSetting_Changed(object sender, RangeBaseValueChangedEventArgs e)
         {
-            if (_isLightingUpdate) return;
+            if (_isInternalToggle || _isLightingUpdate || !_isInitialized) return;
 
             if (sender is Slider slider)
             {
@@ -2824,7 +2824,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void GlowColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
         {
-            if (_isLightingUpdate) return;
+            if (_isInternalToggle || _isLightingUpdate || !_isInitialized) return;
 
             var c = args.NewColor;
             SettingsEngine.Dashboard_HoverColor = $"#{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2}";
