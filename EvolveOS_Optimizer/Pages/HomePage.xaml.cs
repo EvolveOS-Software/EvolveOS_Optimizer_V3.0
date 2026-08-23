@@ -1181,7 +1181,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardNetworkGraph = true;
             SettingsEngine.Dashboard_GraphTimeframe = 0;
             SettingsEngine.Dashboard_CardGpuGraph = true;
-            SettingsEngine.Dashboard_LightingMode = 0;
+            SettingsEngine.Dashboard_LightingMode = 1;
 
             ToggleWeather.IsOn = true;
             ToggleNetwork.IsOn = true;

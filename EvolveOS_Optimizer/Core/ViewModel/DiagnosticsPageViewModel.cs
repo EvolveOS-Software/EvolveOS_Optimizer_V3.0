@@ -4125,10 +4125,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             CurrentPagefileLoadStr = $"{(int)pagefileUsage}%";
                             CurrentGpuLoadStr = $"{(int)Math.Round(_displayGpuUsage)}%";
 
-                            CurrentNetworkDownLoadStr = $"{_displayDownMbps:0.#} ▼";
-                            CurrentNetworkUpLoadStr = $"{_displayUpMbps:0.#} ▲";
-                            CurrentNetworkLoadStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲ Mbps";
-                            CurrentNetworkLoadSecondaryStr = $"{_displayDownMbps:0.#} ▼ / {_displayUpMbps:0.#} ▲";
+                            CurrentNetworkDownLoadStr = $"▼ {_displayDownMbps:0.#}";
+                            CurrentNetworkUpLoadStr = $"▲ {_displayUpMbps:0.#}";
+                            CurrentNetworkLoadStr = $"▼ {_displayDownMbps:0.#} / ▲ {_displayUpMbps:0.#} Mbps";
+                            CurrentNetworkLoadSecondaryStr = $"▼ {_displayDownMbps:0.#} / ▲ {_displayUpMbps:0.#}";
                         }
 
                         if (_isUiActive)

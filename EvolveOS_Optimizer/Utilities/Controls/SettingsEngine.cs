@@ -98,7 +98,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_BoostModifiedPageList"] = true,
             ["Dashboard_BoostRegistryCache"] = true,
 
-            ["Dashboard_LightingMode"] = 0,
+            ["Dashboard_LightingMode"] = 1,
             ["Dashboard_AmbientIntensity"] = 30,
             ["Dashboard_HoverRadius"] = 150,
             ["Dashboard_HoverColor"] = "#FFFFFFFF",

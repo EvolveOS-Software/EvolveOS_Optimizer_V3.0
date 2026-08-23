@@ -1649,13 +1649,13 @@
 
                                                                     <Viewbox x:Name="HudViewbox" VerticalAlignment="Top" Stretch="Uniform" StretchDirection="Both" Width="120" Margin="15,8">
 
-                                                                        <Grid x:Name="HudContentContainer" ColumnSpacing="5" VerticalAlignment="Top">
+                                                                        <Grid x:Name="HudContentContainer" ColumnSpacing="2" VerticalAlignment="Top">
                                                                             <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="Auto"/>
-                                                                                <ColumnDefinition Width="Auto"/>
+                                                                                <ColumnDefinition Width="100"/>
+                                                                                <ColumnDefinition Width="95"/>
                                                                             </Grid.ColumnDefinitions>
 
-                                                                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Width="120">
+                                                                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Width="120" Margin="-15,0,0,0">
 
                                                                                 <TextBlock Text="{x:Bind ViewModel.ActivePrimaryValueStr, Mode=OneWay}"
                                                                                            Visibility="{x:Bind ViewModel.HeroStandardVisibility, Mode=OneWay}"
@@ -1714,12 +1714,12 @@
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
-                                                                                <StackPanel Orientation="Vertical" Spacing="2" Visibility="{x:Bind ViewModel.MoboSecondaryVisibility, Mode=OneWay}">
+                                                                                <StackPanel Orientation="Vertical" Spacing="0" Visibility="{x:Bind ViewModel.MoboSecondaryVisibility, Mode=OneWay}">
                                                                                     <StackPanel Orientation="Vertical" Spacing="0" Margin="0,0,35,0">
-                                                                                        <TextBlock Text="SYS:" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="SYS" Foreground="Gray" Margin="0,0,25,0" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
                                                                                     </StackPanel>
                                                                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                                                                        <TextBlock Text="TEMP" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
+                                                                                        <TextBlock Text="TEMP:" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
                                                                                         <TextBlock Text="{x:Bind ViewModel.MoboTempStr, Mode=OneWay, FallbackValue='--°C'}" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
@@ -1727,8 +1727,8 @@
                                                                                 <StackPanel Orientation="Horizontal" Spacing="5" Visibility="{x:Bind ViewModel.NetworkSecondaryVisibility, Mode=OneWay}" VerticalAlignment="Center">
                                                                                     <TextBlock helpers:Loc.Key="diag_network_load_small" Foreground="Gray" FontSize="12" FontWeight="SemiBold" Width="36" VerticalAlignment="Center"/>
                                                                                     <StackPanel Orientation="Vertical" Spacing="0" VerticalAlignment="Center" Margin="0,-2,0,0">
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay, TargetNullValue=0 ▼, FallbackValue=0 ▼}" Foreground="White" FontSize="13" FontWeight="Bold"/>
-                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay, TargetNullValue=0 ▲, FallbackValue=0 ▲}" Foreground="White" FontSize="13" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkDownLoadStr, Mode=OneWay, TargetNullValue=▼ 0, FallbackValue=▼ 0}" Foreground="White" FontSize="13" FontWeight="Bold"/>
+                                                                                        <TextBlock Text="{x:Bind ViewModel.CurrentNetworkUpLoadStr, Mode=OneWay, TargetNullValue=▲ 0, FallbackValue=▲ 0}" Foreground="White" FontSize="13" FontWeight="Bold"/>
                                                                                     </StackPanel>
                                                                                 </StackPanel>
 
