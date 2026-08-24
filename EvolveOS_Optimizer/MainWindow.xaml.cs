@@ -707,6 +707,18 @@ namespace EvolveOS_Optimizer
                 }
             }
 
+            if (tag == "Customize" && !string.IsNullOrEmpty(requestedPane))
+            {
+                if (WinCustomizePage.ExternalSectionRequest != null)
+                {
+                    WinCustomizePage.ExternalSectionRequest?.Invoke(requestedPane);
+                }
+                else
+                {
+                    WinCustomizePage.RequestedSectionOnLoad = requestedPane;
+                }
+            }
+
             if (this.RootGrid.DataContext is MainWinViewModel vm)
             {
                 vm.CurrentViewTag = tag;
@@ -728,6 +740,7 @@ namespace EvolveOS_Optimizer
             else if (tag == "RegistryEditor") BtnNavRegEditor.IsChecked = true;
             else if (tag == "ProfileBuilder" && BtnNavProfileBuilder != null) BtnNavProfileBuilder.IsChecked = true;
             else if (tag == "Optimize" && BtnNavOptimize != null) BtnNavOptimize.IsChecked = true;
+            else if (tag == "Customize" && BtnNavCustomize != null) BtnNavCustomize.IsChecked = true;
         }
 
         private void SidebarContainer_PointerEntered(object sender, PointerRoutedEventArgs e)

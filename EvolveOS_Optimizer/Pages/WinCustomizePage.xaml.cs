@@ -50,6 +50,10 @@ public sealed partial class WinCustomizePage : Page, IPurgeable
     private ISubscriptionToken? _settingAppliedSubscription;
     private ISubscriptionToken? _settingsRefreshedSubscription;
 
+    public static string? RequestedSectionOnLoad { get; set; }
+    public static string? RequestedSearchOnLoad { get; set; }
+    public static Action<string>? ExternalSectionRequest;
+
     public CustomizeViewModel ViewModel { get; }
     #endregion
 
@@ -70,6 +74,13 @@ public sealed partial class WinCustomizePage : Page, IPurgeable
             _userPreferencesService = App.Services.GetService<IUserPreferencesService>();
             _localizationService = App.Services.GetService<ILocalizationService>();
             _bulkSettingsActionService = App.Services.GetService<IBulkSettingsActionService>();
+
+            ExternalSectionRequest = (section) =>
+            {
+                string? search = RequestedSearchOnLoad;
+                RequestedSearchOnLoad = null;
+                DispatcherQueue?.TryEnqueue(() => NavigateToSection(section, search));
+            };
 
             ErrorLogging.LogDebug("CustomizePage", "ViewModel obtained, constructor complete");
         }
@@ -148,6 +159,21 @@ public sealed partial class WinCustomizePage : Page, IPurgeable
             UpdateOverviewBadgePills();
             UpdateOverviewNewBadges();
 
+            if (!string.IsNullOrEmpty(RequestedSectionOnLoad))
+            {
+                string section = RequestedSectionOnLoad;
+                string? search = RequestedSearchOnLoad;
+
+                RequestedSectionOnLoad = null;
+                RequestedSearchOnLoad = null;
+
+                NavigateToSection(section, search);
+            }
+            else if (e.Parameter is string sectionKey && !string.IsNullOrWhiteSpace(sectionKey))
+            {
+                NavigateToSection(sectionKey);
+            }
+
             ErrorLogging.LogDebug("CustomizePage", "OnNavigatedTo complete");
         }
         catch (Exception ex)
@@ -159,6 +185,8 @@ public sealed partial class WinCustomizePage : Page, IPurgeable
     protected override async void OnNavigatedFrom(NavigationEventArgs e)
     {
         base.OnNavigatedFrom(e);
+
+        ExternalSectionRequest = null;
 
         await Purge();
 

@@ -473,7 +473,8 @@
                             </Viewbox>
                         </RadioButton>
 
-                        <RadioButton Style="{StaticResource BtnNavigation}"
+                        <RadioButton x:Name="BtnNavCustomize"
+                                     Style="{StaticResource BtnNavigation}"
                                      Command="{Binding ExecuteNavigateCommand}"
                                      CommandParameter="Customize"
                                      IsTabStop="False"
