@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.Threading;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
@@ -33,18 +36,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
                         timeout++;
                     }
 
-                    double ramPercentage = sharedViewModel.Computer?.Memory?.Physical?.Used?.Percentage ?? 0;
-                    double totalRamGb = sharedViewModel.Computer?.Memory?.Physical?.Total?.Gigabytes ?? 16.0;
-
-                    double vRamPercentage = sharedViewModel.Computer?.Memory?.Virtual?.Used?.Percentage ?? 0;
-                    double totalVRamGb = sharedViewModel.Computer?.Memory?.Virtual?.Total?.Gigabytes ?? 16.0;
-
-                    double junkGigabytes = ParseSizeToGigabytes(sharedViewModel.TotalSpaceToFree);
-
-                    var healthResult = SystemHealthHelper.EvaluateHealth(
-                        ramPercentage, totalRamGb,
-                        vRamPercentage, totalVRamGb,
-                        junkGigabytes);
+                    var healthResult = await SystemHealthHelper.EvaluateHealthAsync();
 
                     if (healthResult.PenaltyScore >= 4 && (DateTime.Now - _lastCriticalNotificationTime).TotalHours >= 4)
                     {

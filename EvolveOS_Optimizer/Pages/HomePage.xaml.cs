@@ -1918,61 +1918,73 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                if (DashMaintenanceLoadingRing != null) DashMaintenanceLoadingRing.Visibility = Visibility.Visible;
+                if (DashMaintenanceLoadingRing != null)
+                {
+                    DashMaintenanceLoadingRing.IsActive = true;
+                    DashMaintenanceLoadingRing.Visibility = Visibility.Visible;
+                }
                 if (DashMaintenanceStatusImage != null) DashMaintenanceStatusImage.Visibility = Visibility.Collapsed;
                 if (TxtLastRefreshed != null) TxtLastRefreshed.Visibility = Visibility.Collapsed;
                 if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = false;
 
                 if (TxtHealthStatus != null)
-                    TxtHealthStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning System...";
-
-                await Task.Delay(250);
-
-                // Variables to hold background data
-                double ramPercentage = 0;
-                double totalRamGb = 0;
-                double vRamPercentage = 0;
-                double totalVRamGb = 0;
-                double junkGigabytes = 0.0;
-
-                dynamic? healthResult = null;
-
-                await Task.Run(async () =>
                 {
-                    ramPercentage = SystemDiagnostics.GetMemoryUsagePercentage();
-                    totalRamGb = SystemDiagnostics.GetTotalPhysicalMemoryGigabytes();
+                    TxtHealthStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning System...";
+                    if (Application.Current.Resources.TryGetValue("TextFillColorPrimaryBrush", out object textBrush))
+                        TxtHealthStatus.Foreground = (Brush)textBrush;
+                }
 
-                    vRamPercentage = SystemDiagnostics.GetVirtualMemoryUsagePercentage();
-                    totalVRamGb = SystemDiagnostics.GetTotalVirtualMemoryGigabytes();
+                await Task.Delay(150);
 
-                    if (DiagnosticsPageViewModel.Current != null && !string.IsNullOrEmpty(DiagnosticsPageViewModel.Current.TotalSpaceToFree))
+                if (DiagnosticsPageViewModel.Current != null)
+                {
+                    if (DiagnosticsPageViewModel.Current.RefreshCleanupSpaceCommand.CanExecute(null) && !DiagnosticsPageViewModel.Current.IsScanning)
                     {
-                        junkGigabytes = ParseSizeToGigabytes(DiagnosticsPageViewModel.Current.TotalSpaceToFree);
-                    }
-                    else
-                    {
-                        junkGigabytes = await SystemDiagnostics.GetQuickJunkSizeGigabytesAsync();
+                        DiagnosticsPageViewModel.Current.RefreshCleanupSpaceCommand.Execute(null);
+                        await Task.Delay(400);
                     }
 
-                    healthResult = SystemHealthHelper.EvaluateHealth(
-                        ramPercentage, totalRamGb,
-                        vRamPercentage, totalVRamGb,
-                        junkGigabytes);
-                });
+                    while (DiagnosticsPageViewModel.Current.IsScanning)
+                    {
+                        await Task.Delay(250);
+                    }
+                }
+
+                var healthResult = await SystemHealthHelper.EvaluateHealthAsync();
 
                 DispatcherQueue.TryEnqueue(() =>
                 {
                     if (healthResult != null)
                     {
-                        if (DashMaintenanceStatusImage != null)
+                        var statusImage = DashMaintenanceStatusImage;
+                        if (statusImage != null && !string.IsNullOrEmpty(healthResult.ImagePath))
                         {
-                            DashMaintenanceStatusImage.Source = new BitmapImage(new Uri((string)healthResult.ImagePath));
-                            DashMaintenanceStatusImage.Visibility = Visibility.Visible;
+                            try
+                            {
+                                string pathStr = healthResult.ImagePath;
+                                Uri imageUri = pathStr.StartsWith("ms-appx://", StringComparison.OrdinalIgnoreCase) ||
+                                               pathStr.StartsWith("ms-appdata://", StringComparison.OrdinalIgnoreCase)
+                                    ? new Uri(pathStr)
+                                    : new Uri($"ms-appx:///{pathStr.TrimStart('/')}");
+
+                                statusImage!.Source = null;
+                                statusImage.Source = new BitmapImage(imageUri);
+                                statusImage.Visibility = Visibility.Visible;
+
+                                statusImage.InvalidateMeasure();
+                                statusImage.InvalidateArrange();
+                            }
+                            catch (Exception imgEx)
+                            {
+                                Debug.WriteLine($"❌ [Health Image Error] {imgEx.Message}");
+                            }
                         }
 
                         if (TxtHealthStatus != null)
                         {
-                            TxtHealthStatus.Text = (string)healthResult.StatusText;
+                            TxtHealthStatus.Text = healthResult.StatusText;
+                            TxtHealthStatus.InvalidateMeasure();
+                            TxtHealthStatus.InvalidateArrange();
                         }
                     }
 
@@ -1982,48 +1994,34 @@ namespace EvolveOS_Optimizer.Pages
                         TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
                         TxtLastRefreshed.Visibility = Visibility.Visible;
                     }
+
+                    FrameworkElement? curr = CardMaintenance;
+                    while (curr != null)
+                    {
+                        curr.InvalidateMeasure();
+                        curr.InvalidateArrange();
+                        if (curr is GridViewItem || curr is GridView) break;
+                        curr = VisualTreeHelper.GetParent(curr) as FrameworkElement;
+                    }
+                    CardMaintenance?.UpdateLayout();
                 });
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    if (TxtHealthStatus != null)
-                        TxtHealthStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
-                });
             }
             finally
             {
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    if (DashMaintenanceLoadingRing != null) DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
+                    if (DashMaintenanceLoadingRing != null)
+                    {
+                        DashMaintenanceLoadingRing.IsActive = false;
+                        DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
+                    }
                     if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = true;
                 });
             }
-        }
-
-        private double ParseSizeToGigabytes(string sizeString)
-        {
-            if (string.IsNullOrWhiteSpace(sizeString)) return 0;
-
-            string cleanString = sizeString.ToUpper().Replace(",", ".");
-            var match = System.Text.RegularExpressions.Regex.Match(cleanString, @"([\d\.]+)\s*(TB|GB|MB|KB|B)");
-
-            if (match.Success && double.TryParse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture, out double value))
-            {
-                string unit = match.Groups[2].Value;
-                return unit switch
-                {
-                    "TB" => value * 1024.0,
-                    "GB" => value,
-                    "MB" => value / 1024.0,
-                    "KB" => value / 1048576.0,
-                    "B" => value / 1073741824.0,
-                    _ => 0
-                };
-            }
-            return 0;
         }
 
         #endregion
@@ -3303,6 +3301,8 @@ namespace EvolveOS_Optimizer.Pages
                 if (SettingsEngine.Dashboard_BoostCombinedPageList) ClearingMemory.OptimizeCombinedPageList();
                 if (SettingsEngine.Dashboard_BoostModifiedPageList) ClearingMemory.OptimizeModifiedPageList();
                 if (SettingsEngine.Dashboard_BoostRegistryCache) ClearingMemory.OptimizeRegistryCache();
+
+                ClearingMemory.SafeCleanTempFolders();
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();

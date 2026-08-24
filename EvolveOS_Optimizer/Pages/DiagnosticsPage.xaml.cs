@@ -455,6 +455,8 @@ namespace EvolveOS_Optimizer.Pages
             {
                 _pendingScrollTarget = optionTag;
             }
+
+            await CalculateSystemHealthAsync();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -1558,14 +1560,21 @@ namespace EvolveOS_Optimizer.Pages
         {
             if (ViewModel == null) return;
 
-            if (MaintenanceStatusLoadingRing != null) MaintenanceStatusLoadingRing.Visibility = Visibility.Visible;
+            if (MaintenanceStatusLoadingRing != null)
+            {
+                MaintenanceStatusLoadingRing.IsActive = true;
+                MaintenanceStatusLoadingRing.Visibility = Visibility.Visible;
+            }
             if (MaintenanceStatusImage != null) MaintenanceStatusImage.Visibility = Visibility.Collapsed;
             if (this.FindName("LastRefreshedText") is TextBlock text) text.Text = string.Empty;
             if (this.FindName("RefreshButton") is Button refreshBtn) refreshBtn.IsEnabled = false;
 
-            if (ViewModel.RefreshCleanupSpaceCommand.CanExecute(null))
+            await Task.Delay(150);
+
+            if (ViewModel.RefreshCleanupSpaceCommand.CanExecute(null) && !ViewModel.IsScanning)
             {
                 ViewModel.RefreshCleanupSpaceCommand.Execute(null);
+                await Task.Delay(400);
             }
 
             while (ViewModel.IsScanning)
@@ -1573,24 +1582,19 @@ namespace EvolveOS_Optimizer.Pages
                 await Task.Delay(250);
             }
 
-            double ramPercentage = ViewModel.Computer?.Memory?.Physical?.Used?.Percentage ?? 0;
-            double totalRamGb = ViewModel.Computer?.Memory?.Physical?.Total?.Gigabytes ?? 16.0;
-
-            double vRamPercentage = ViewModel.Computer?.Memory?.Virtual?.Used?.Percentage ?? 0;
-            double totalVRamGb = ViewModel.Computer?.Memory?.Virtual?.Total?.Gigabytes ?? 16.0;
-
-            double junkGigabytes = ParseSizeToGigabytes(ViewModel.TotalSpaceToFree);
-
-            var healthResult = SystemHealthHelper.EvaluateHealth(
-                ramPercentage, totalRamGb,
-                vRamPercentage, totalVRamGb,
-                junkGigabytes);
+            var healthResult = await SystemHealthHelper.EvaluateHealthAsync();
 
             try
             {
                 if (MaintenanceStatusImage != null)
                 {
-                    MaintenanceStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(healthResult.ImagePath));
+                    string pathStr = healthResult.ImagePath;
+                    Uri imageUri = pathStr.StartsWith("ms-appx://", StringComparison.OrdinalIgnoreCase) ||
+                                   pathStr.StartsWith("ms-appdata://", StringComparison.OrdinalIgnoreCase)
+                        ? new Uri(pathStr)
+                        : new Uri($"ms-appx:///{pathStr.TrimStart('/')}");
+
+                    MaintenanceStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(imageUri);
                 }
             }
             catch (Exception ex)
@@ -1604,35 +1608,15 @@ namespace EvolveOS_Optimizer.Pages
                 lbl.Visibility = Visibility.Visible;
             }
 
-            if (MaintenanceStatusLoadingRing != null) MaintenanceStatusLoadingRing.Visibility = Visibility.Collapsed;
+            if (MaintenanceStatusLoadingRing != null)
+            {
+                MaintenanceStatusLoadingRing.IsActive = false;
+                MaintenanceStatusLoadingRing.Visibility = Visibility.Collapsed;
+            }
             if (MaintenanceStatusImage != null) MaintenanceStatusImage.Visibility = Visibility.Visible;
             if (this.FindName("RefreshButton") is Button rBtn) rBtn.IsEnabled = true;
         }
 
-        private double ParseSizeToGigabytes(string sizeString)
-        {
-            if (string.IsNullOrWhiteSpace(sizeString)) return 0;
-
-            string cleanString = sizeString.ToUpper().Replace(",", ".");
-            var match = Regex.Match(cleanString, @"([\d\.]+)\s*(GB|MB|KB|B)");
-
-            if (match.Success)
-            {
-                if (double.TryParse(match.Groups[1].Value, CultureInfo.InvariantCulture, out double value))
-                {
-                    string unit = match.Groups[2].Value;
-                    return unit switch
-                    {
-                        "GB" => value,
-                        "MB" => value / 1024.0,
-                        "KB" => value / 1048576.0,
-                        "B" => value / 1073741824.0,
-                        _ => 0
-                    };
-                }
-            }
-            return 0;
-        }
         #endregion
 
         #region Purge Page
