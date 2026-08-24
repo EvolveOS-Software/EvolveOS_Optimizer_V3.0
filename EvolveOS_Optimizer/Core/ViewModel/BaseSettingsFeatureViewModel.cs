@@ -127,7 +127,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
         {
             setting.UpdateStateFromEvent(evt.IsEnabled, evt.Value);
 
-            // Update children's ParentIsEnabled if this setting has any children
             if (_childrenByParentId.TryGetValue(evt.SettingId, out var children))
             {
                 bool parentEnabled = setting.InputType switch
@@ -158,10 +157,8 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
         try
         {
             _settingsLoaded = false;
-
             OnPropertyChanged(nameof(DisplayName));
             await LoadSettingsAsync();
-
             _eventBus.Publish(new SettingsRefreshedEvent(DisplayName));
         }
         catch (Exception ex)
@@ -180,7 +177,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
         try
         {
             _logService.Log(LogLevel.Info, $"Refreshing settings for {DisplayName} due to filter change");
-
             _settingsLoaded = false;
 
             if (Settings?.Any() == true)
@@ -193,9 +189,7 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
             }
 
             await LoadSettingsAsync();
-
             _logService.Log(LogLevel.Info, $"Successfully refreshed {Settings!.Count} settings for {DisplayName}");
-
             _eventBus.Publish(new SettingsRefreshedEvent(DisplayName));
         }
         catch (Exception ex)
@@ -217,7 +211,7 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
         oldCts?.Dispose();
         var token = newCts.Token;
 
-        Task.Run(async () =>
+        Task.Run(() =>
         {
             try
             {
@@ -260,6 +254,8 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
                             }
                         }
                     }
+
+                    RebuildGroupedSettings();
 
                     OnPropertyChanged(nameof(HasVisibleSettings));
                     OnPropertyChanged(nameof(IsVisibleInSearch));
@@ -376,7 +372,6 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
             }
 
             await LoadSettingsAsync();
-
             _logService.Log(LogLevel.Info, $"Successfully refreshed {Settings!.Count} settings for {DisplayName}");
         }
         catch (Exception ex)
@@ -458,6 +453,9 @@ public abstract partial class BaseSettingsFeatureViewModel : BaseViewModel, ISet
         foreach (var setting in Settings)
         {
             if (setting.IsSubSetting)
+                continue;
+
+            if (!setting.IsVisible)
                 continue;
 
             var groupName = string.IsNullOrEmpty(setting.GroupName) ? otherGroupName : setting.GroupName;

@@ -11,6 +11,7 @@ namespace EvolveOS_Optimizer.Pages;
 public sealed partial class SoundOptimizePage : Page, IPurgeable
 {
     public OptimizeViewModel ViewModel { get; }
+    private int _searchRevision = 0;
 
     public SoundOptimizePage()
     {
@@ -32,17 +33,87 @@ public sealed partial class SoundOptimizePage : Page, IPurgeable
     {
         base.OnNavigatedTo(e);
 
+        ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+        ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
         if (e.Parameter is string searchText && !string.IsNullOrWhiteSpace(searchText))
         {
             ViewModel.SearchText = searchText;
+            ForceScrollToSearchedItem(searchText);
+        }
+        else if (!string.IsNullOrWhiteSpace(ViewModel.SearchText))
+        {
+            ForceScrollToSearchedItem(ViewModel.SearchText);
         }
 
         _ = ViewModel.SoundViewModel.RefreshSettingStatesAsync();
     }
 
+    private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ViewModel.SearchText))
+        {
+            string text = ViewModel.SearchText;
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                ForceScrollToSearchedItem(text);
+            }
+        }
+    }
+
+    private async void ForceScrollToSearchedItem(string searchText)
+    {
+        int currentRevision = ++_searchRevision;
+
+        await Task.Delay(250);
+        if (currentRevision != _searchRevision) return;
+
+        var targetElement = FindElementBySettingName(this.Content, searchText);
+        if (targetElement != null)
+        {
+            targetElement.StartBringIntoView(new BringIntoViewOptions
+            {
+                AnimationDesired = true,
+                VerticalAlignmentRatio = 0.0f,
+                VerticalOffset = -40
+            });
+        }
+    }
+
+    private FrameworkElement? FindElementBySettingName(DependencyObject parent, string searchText)
+    {
+        if (parent == null) return null;
+
+        int childCount = VisualTreeHelper.GetChildrenCount(parent);
+        for (int i = 0; i < childCount; i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is FrameworkElement element)
+            {
+                if (element.DataContext != null)
+                {
+                    var nameProp = element.DataContext.GetType().GetProperty("Name");
+                    if (nameProp != null)
+                    {
+                        var nameValue = nameProp.GetValue(element.DataContext) as string;
+                        if (!string.IsNullOrEmpty(nameValue) && nameValue.Equals(searchText, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return element;
+                        }
+                    }
+                }
+
+                var found = FindElementBySettingName(element, searchText);
+                if (found != null) return found;
+            }
+        }
+        return null;
+    }
+
     protected override void OnNavigatedFrom(NavigationEventArgs e)
     {
         base.OnNavigatedFrom(e);
+        ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
         if (!SettingsEngine.IsHighPerformanceModeEnabled)
         {
