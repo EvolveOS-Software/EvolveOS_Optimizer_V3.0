@@ -137,6 +137,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["ScheduledCleanTimeStr"] = "12:00:00",
 
             ["DevCacheRetentionIndex"] = 0,
+
+            ["HideFanControlWarningDialog"] = false,
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -239,6 +241,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool IsScheduledCleanEnabled { get => (bool)_cachedSettings["IsScheduledCleanEnabled"]; set => ChangingParameters("IsScheduledCleanEnabled", value); }
         internal static int ScheduledCleanDayIndex { get => (int)_cachedSettings["ScheduledCleanDayIndex"]; set => ChangingParameters("ScheduledCleanDayIndex", value); }
         internal static int DevCacheRetentionIndex { get => (int)_cachedSettings["DevCacheRetentionIndex"]; set => ChangingParameters("DevCacheRetentionIndex", value); }
+        internal static bool HideFanControlWarningDialog { get => (bool)_cachedSettings["HideFanControlWarningDialog"]; set => ChangingParameters("HideFanControlWarningDialog", value); }
 
         internal static TimeSpan ScheduledCleanTime
         {

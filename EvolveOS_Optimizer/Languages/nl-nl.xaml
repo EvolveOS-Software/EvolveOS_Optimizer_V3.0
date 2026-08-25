@@ -5576,6 +5576,12 @@
     <sys:String x:Key="fan_calib_starts_at">Start op {0}%</sys:String>
     <sys:String x:Key="fan_calib_failed">Mislukt</sys:String>
 
+    <!-- Fan Control Requirements Dialog -->
+    <sys:String x:Key="fan_warning_title">Vereisten voor ventilatorregeling</sys:String>
+    <sys:String x:Key="fan_warning_desc">Om EvolveOS Optimizer uw ventilatoren te laten regelen, moet u voor het volgende zorgen:&#x0a;&#x0a;• Ventilatoren moeten in de BIOS van uw moederbord op PWM-modus zijn ingesteld.&#x0a;• Voor propriëtaire ventilatorhubs (bijv. Lian Li) moet u de optie 'MB Sync' (Motherboard Sync) inschakelen in hun officiële software (zoals L-Connect).&#x0a;&#x0a;Zonder deze instellingen zal de hardwarecontroller aangepaste ventilatorcurves negeren.</sys:String>
+    <sys:String x:Key="fan_warning_dont_show">Dit bericht niet meer weergeven</sys:String>
+    <sys:String x:Key="txt_understood">Begrepen</sys:String>
+
     <!-- endregion Diagnostics Fan Control -->
 
     <!-- region Context Menu Editor -->

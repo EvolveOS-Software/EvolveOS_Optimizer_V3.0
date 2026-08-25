@@ -60,10 +60,12 @@ namespace EvolveOS_Optimizer.Dialogs
             RootGrid.Loaded += RootElement_Loaded;
         }
 
-        private void RootElement_Loaded(object sender, RoutedEventArgs e)
+        private async void RootElement_Loaded(object sender, RoutedEventArgs e)
         {
             UIHelper.ApplyBackdrop(this, SettingsEngine.Backdrop);
             FanControlEngine.Instance.Initialize();
+
+            await ShowFanWarningDialogAsync();
         }
 
         private void PresetSilent_Click(object sender, RoutedEventArgs e) { ApplyGlobalPreset(0); }
@@ -511,6 +513,51 @@ namespace EvolveOS_Optimizer.Dialogs
                 element = VisualTreeHelper.GetParent(element);
             }
             return null;
+        }
+
+        private async Task ShowFanWarningDialogAsync()
+        {
+            if (SettingsEngine.HideFanControlWarningDialog) return;
+
+            var checkBox = new CheckBox
+            {
+                Content = ResourceString.GetString("fan_warning_dont_show") ?? "Don't show this message again",
+                Margin = new Thickness(0, 16, 0, 0)
+            };
+
+            var stackPanel = new StackPanel { Spacing = 8 };
+            stackPanel.Children.Add(new TextBlock
+            {
+                Text = ResourceString.GetString("fan_warning_desc") ??
+                       "To allow EvolveOS Optimizer to control your fans, please ensure the following:\n\n" +
+                       "• Fans must be set to PWM mode in your motherboard's BIOS.\n" +
+                       "• For proprietary fan hubs (e.g., Lian Li), you must enable the 'MB Sync' (Motherboard Sync) option in their official software (like L-Connect).\n\n" +
+                       "Without these settings, the hardware controller will ignore custom fan curves.",
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            stackPanel.Children.Add(checkBox);
+
+            var dialog = new ContentDialog
+            {
+                Title = ResourceString.GetString("fan_warning_title") ?? "Fan Control Requirements",
+                Content = stackPanel,
+                CloseButtonText = ResourceString.GetString("txt_understood") ?? "Understood",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.RootGrid.XamlRoot
+            };
+
+            if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+            {
+                dialog.Style = (Style)style;
+            }
+
+            await dialog.ShowAsync();
+
+            if (checkBox.IsChecked == true)
+            {
+                SettingsEngine.HideFanControlWarningDialog = true;
+            }
         }
     }
 

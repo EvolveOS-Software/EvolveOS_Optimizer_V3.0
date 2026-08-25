@@ -5551,7 +5551,13 @@
     <sys:String x:Key="fan_calib_testing_val">Teste {0}%...</sys:String>
     <sys:String x:Key="fan_calib_starts_at">Startet bei {0}%</sys:String>
     <sys:String x:Key="fan_calib_failed">Fehlgeschlagen</sys:String>
-    
+
+    <!-- Fan Control Requirements Dialog -->
+    <sys:String x:Key="fan_warning_title">Anforderungen für die Lüftersteuerung</sys:String>
+    <sys:String x:Key="fan_warning_desc">Damit EvolveOS Optimizer Ihre Lüfter steuern kann, stellen Sie bitte Folgendes sicher:&#x0a;&#x0a;• Die Lüfter müssen im BIOS Ihres Mainboards auf den PWM-Modus eingestellt sein.&#x0a;• Für proprietäre Lüfter-Hubs (z. B. Lian Li) müssen Sie die Option „MB Sync“ (Mainboard-Synchronisierung) in deren offizieller Software (wie L-Connect) aktivieren.&#x0a;&#x0a;Ohne diese Einstellungen ignoriert der Hardware-Controller benutzerdefinierte Lüfterkurven.</sys:String>
+    <sys:String x:Key="fan_warning_dont_show">Diese Meldung nicht mehr anzeigen</sys:String>
+    <sys:String x:Key="txt_understood">Verstanden</sys:String>
+
     <!-- endregion Diagnostics Fan Control -->
 
     <!-- region Context Menu Editor -->

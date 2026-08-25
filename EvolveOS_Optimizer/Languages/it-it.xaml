@@ -5573,6 +5573,12 @@
     <sys:String x:Key="fan_calib_starts_at">Inizia a {0}%</sys:String>
     <sys:String x:Key="fan_calib_failed">Fallito</sys:String>
 
+    <!-- Fan Control Requirements Dialog -->
+    <sys:String x:Key="fan_warning_title">Requisiti per il controllo delle ventole</sys:String>
+    <sys:String x:Key="fan_warning_desc">Per consentire a EvolveOS Optimizer di controllare le ventole, assicurati di quanto segue:&#x0a;&#x0a;• Le ventole devono essere impostate in modalità PWM nel BIOS della scheda madre.&#x0a;• Per gli hub delle ventole proprietari (es. Lian Li), devi abilitare l'opzione 'MB Sync' (Sincronizzazione Scheda Madre) nel loro software ufficiale (come L-Connect).&#x0a;&#x0a;Senza queste impostazioni, il controller hardware ignorerà le curve personalizzate delle ventole.</sys:String>
+    <sys:String x:Key="fan_warning_dont_show">Non mostrare più questo messaggio</sys:String>
+    <sys:String x:Key="txt_understood">Capito</sys:String>
+
     <!-- endregion Diagnostics Fan Control -->
 
     <!-- region Context Menu Editor -->

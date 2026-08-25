@@ -5676,6 +5676,12 @@
     <sys:String x:Key="fan_calib_starts_at">Starts at {0}%</sys:String>
     <sys:String x:Key="fan_calib_failed">Failed</sys:String>
 
+    <!-- Fan Control Requirements Dialog -->
+    <sys:String x:Key="fan_warning_title">Fan Control Requirements</sys:String>
+    <sys:String x:Key="fan_warning_desc">To allow EvolveOS Optimizer to control your fans, please ensure the following:&#x0a;&#x0a;• Fans must be set to PWM mode in your motherboard's BIOS.&#x0a;• For proprietary fan hubs (e.g., Lian Li), you must enable the 'MB Sync' (Motherboard Sync) option in their official software (like L-Connect).&#x0a;&#x0a;Without these settings, the hardware controller will ignore custom fan curves.</sys:String>
+    <sys:String x:Key="fan_warning_dont_show">Don't show this message again</sys:String>
+    <sys:String x:Key="txt_understood">Understood</sys:String>
+
     <!-- endregion Diagnostics Fan Control -->
 
     <!-- region Context Menu Editor -->

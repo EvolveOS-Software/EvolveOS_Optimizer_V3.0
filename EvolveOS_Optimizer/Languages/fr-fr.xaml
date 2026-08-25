@@ -5562,6 +5562,12 @@
     <sys:String x:Key="fan_calib_starts_at">Démarre à {0} %</sys:String>
     <sys:String x:Key="fan_calib_failed">Échec</sys:String>
 
+    <!-- Fan Control Requirements Dialog -->
+    <sys:String x:Key="fan_warning_title">Exigences pour le contrôle des ventilateurs</sys:String>
+    <sys:String x:Key="fan_warning_desc">Pour permettre à EvolveOS Optimizer de contrôler vos ventilateurs, veuillez vous assurer de ce qui suit :&#x0a;&#x0a;• Les ventilateurs doivent être réglés sur le mode PWM dans le BIOS de votre carte mère.&#x0a;• Pour les hubs de ventilateurs propriétaires (par ex. Lian Li), vous devez activer l'option « MB Sync » (Synchronisation de la carte mère) dans leur logiciel officiel (comme L-Connect).&#x0a;&#x0a;Sans ces paramètres, le contrôleur matériel ignorera les courbes de ventilateur personnalisées.</sys:String>
+    <sys:String x:Key="fan_warning_dont_show">Ne plus afficher ce message</sys:String>
+    <sys:String x:Key="txt_understood">Compris</sys:String>
+
     <!-- endregion Diagnostics Fan Control -->
 
     <!-- region Context Menu Editor -->
