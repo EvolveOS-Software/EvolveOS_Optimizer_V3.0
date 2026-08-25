@@ -25,7 +25,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.Win32;
 using Windows.Foundation;
@@ -2578,126 +2577,12 @@ namespace EvolveOS_Optimizer.Pages
         {
             _cachedLastPrivacyScore = targetPercentage;
             bool isExpanded = PrivacyExpandedContent.Visibility == Visibility.Visible;
-
-            if (PrivacyGlowPulseAnimation != null) PrivacyGlowPulseAnimation.Stop();
-
-            double currentPercentage = 0;
-            double animationDurationMs = 800;
-            double fps = 60;
-            double steps = animationDurationMs / (1000 / fps);
-            double stepValue = targetPercentage / steps;
-
-            for (int i = 0; i <= steps; i++)
-            {
-                currentPercentage = i * stepValue;
-                UpdatePrivacyGaugeVisuals(currentPercentage, isExpanded);
-                await Task.Delay((int)(1000 / fps));
-            }
-
-            UpdatePrivacyGaugeVisuals(targetPercentage, isExpanded);
-
-            if (PrivacyGlowPulseAnimation != null)
-            {
-                PrivacyGlowPulseAnimation.Begin();
-            }
+            await GaugeHelper.AnimateAsync(targetPercentage, isExpanded, PrivacyGlowPulseAnimation, (p, exp) => UpdatePrivacyGaugeVisuals(p, exp));
         }
 
         private void UpdatePrivacyGaugeVisuals(double percentage, bool isExpanded)
         {
-            double startAngle = -135;
-            double totalSweep = 270;
-            double currentAngle = startAngle + (totalSweep * percentage);
-
-            if (Math.Abs(currentAngle - startAngle) < 0.1) currentAngle = startAngle + 0.1;
-
-            double canvasCenter = isExpanded ? 60 : 40;
-            double radius = isExpanded ? 44 : 29;
-
-            if (PrivacyAmbientGlow != null)
-            {
-                double glowRadius = radius - (isExpanded ? 7 : 5);
-                double glowSize = glowRadius * 2;
-                PrivacyAmbientGlow.Width = glowSize;
-                PrivacyAmbientGlow.Height = glowSize;
-                Canvas.SetLeft(PrivacyAmbientGlow, canvasCenter - glowRadius);
-                Canvas.SetTop(PrivacyAmbientGlow, canvasCenter - glowRadius);
-
-                var baseColor = percentage < 0.5 ? Color.FromArgb(255, 255, 69, 0) :
-                                percentage < 0.8 ? Color.FromArgb(255, 255, 140, 0) :
-                                Color.FromArgb(255, 46, 139, 87);
-
-                var radialBrush = new Microsoft.UI.Xaml.Media.RadialGradientBrush
-                {
-                    Center = new Point(0.5, 0.5),
-                    RadiusX = 0.5,
-                    RadiusY = 0.5,
-                    GradientOrigin = new Point(0.5, 0.5)
-                };
-                radialBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(50, baseColor.R, baseColor.G, baseColor.B), Offset = 0.0 });
-                radialBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(0, baseColor.R, baseColor.G, baseColor.B), Offset = 1.0 });
-
-                PrivacyAmbientGlow.Fill = radialBrush;
-            }
-
-            if (PrivacyGaugeNeedle != null && PrivacyNeedleRotation != null)
-            {
-                PrivacyNeedleRotation.CenterX = canvasCenter;
-                PrivacyNeedleRotation.CenterY = canvasCenter;
-                PrivacyNeedleRotation.Angle = currentAngle;
-                PrivacyGaugeNeedle.Data = isExpanded
-                    ? XamlBindingHelper.ConvertValue(typeof(Geometry), "M 58,60 L 62,60 L 60,16 Z") as Geometry
-                    : XamlBindingHelper.ConvertValue(typeof(Geometry), "M 38,40 L 42,40 L 40,11 Z") as Geometry;
-            }
-
-            if (PrivacyPinOuter != null && PrivacyPinInner != null)
-            {
-                double pinOuterSize = isExpanded ? 14 : 10;
-                double pinInnerSize = isExpanded ? 6 : 4;
-
-                if (PrivacyPinShadow != null)
-                {
-                    PrivacyPinShadow.Width = pinOuterSize;
-                    PrivacyPinShadow.Height = pinOuterSize;
-                    Canvas.SetLeft(PrivacyPinShadow, canvasCenter - (pinOuterSize / 2) + 1);
-                    Canvas.SetTop(PrivacyPinShadow, canvasCenter - (pinOuterSize / 2) + 2);
-                }
-
-                PrivacyPinOuter.Width = pinOuterSize; PrivacyPinOuter.Height = pinOuterSize;
-                Canvas.SetLeft(PrivacyPinOuter, canvasCenter - (pinOuterSize / 2));
-                Canvas.SetTop(PrivacyPinOuter, canvasCenter - (pinOuterSize / 2));
-
-                PrivacyPinInner.Width = pinInnerSize; PrivacyPinInner.Height = pinInnerSize;
-                Canvas.SetLeft(PrivacyPinInner, canvasCenter - (pinInnerSize / 2));
-                Canvas.SetTop(PrivacyPinInner, canvasCenter - (pinInnerSize / 2));
-            }
-
-            if (PrivacyGaugeBackgroundPath != null && PrivacyGaugeForegroundPath != null)
-            {
-                double strokeThick = isExpanded ? 10 : 7;
-                PrivacyGaugeBackgroundPath.StrokeThickness = strokeThick;
-                PrivacyGaugeForegroundPath.StrokeThickness = strokeThick;
-            }
-
-            DrawGaugeArc(PrivacyGaugeBackgroundPath, -135, 135, radius, new Point(canvasCenter, canvasCenter));
-            DrawGaugeArc(PrivacyGaugeForegroundPath, startAngle, currentAngle, radius, new Point(canvasCenter, canvasCenter));
-
-            if (TxtPrivacyScore != null) TxtPrivacyScore.Text = $"{(int)(percentage * 100)}%";
-
-            if (PrivacyGaugeForegroundPath != null)
-            {
-                var gradientBrush = new LinearGradientBrush
-                {
-                    MappingMode = BrushMappingMode.Absolute,
-                    StartPoint = new Point(canvasCenter - radius, canvasCenter),
-                    EndPoint = new Point(canvasCenter + radius, canvasCenter)
-                };
-
-                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 255, 69, 0), Offset = 0.0 });   // Red
-                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 255, 140, 0), Offset = 0.5 });  // Orange
-                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 46, 139, 87), Offset = 1.0 });    // Green
-
-                PrivacyGaugeForegroundPath.Stroke = gradientBrush;
-            }
+            GaugeHelper.UpdateVisuals(percentage, isExpanded, PrivacyAmbientGlow, PrivacyGaugeNeedle, PrivacyNeedleRotation, PrivacyPinShadow, PrivacyPinOuter, PrivacyPinInner, PrivacyGaugeBackgroundPath, PrivacyGaugeForegroundPath, TxtPrivacyScore);
         }
 
         #endregion
@@ -3044,158 +2929,12 @@ namespace EvolveOS_Optimizer.Pages
         {
             _cachedLastPerformanceScore = targetPercentage;
             bool isExpanded = PerformanceExpandedContent.Visibility == Visibility.Visible;
-
-            if (GlowPulseAnimation != null) GlowPulseAnimation.Stop();
-
-            double currentPercentage = 0;
-            double animationDurationMs = 800;
-            double fps = 60;
-            double steps = animationDurationMs / (1000 / fps);
-            double stepValue = targetPercentage / steps;
-
-            for (int i = 0; i <= steps; i++)
-            {
-                currentPercentage = i * stepValue;
-                UpdateGaugeVisuals(currentPercentage, isExpanded);
-                await Task.Delay((int)(1000 / fps));
-            }
-
-            UpdateGaugeVisuals(targetPercentage, isExpanded);
-
-            if (GlowPulseAnimation != null)
-            {
-                GlowPulseAnimation.Begin();
-            }
+            await GaugeHelper.AnimateAsync(targetPercentage, isExpanded, GlowPulseAnimation, (p, exp) => UpdateGaugeVisuals(p, exp));
         }
 
         private void UpdateGaugeVisuals(double percentage, bool isExpanded)
         {
-            double startAngle = -135;
-            double totalSweep = 270;
-            double currentAngle = startAngle + (totalSweep * percentage);
-
-            if (Math.Abs(currentAngle - startAngle) < 0.1) currentAngle = startAngle + 0.1;
-
-            double canvasCenter = isExpanded ? 60 : 40;
-            double radius = isExpanded ? 44 : 29;
-
-            if (AmbientGlow != null)
-            {
-                double glowRadius = radius - (isExpanded ? 7 : 5);
-                double glowSize = glowRadius * 2;
-                AmbientGlow.Width = glowSize;
-                AmbientGlow.Height = glowSize;
-                Canvas.SetLeft(AmbientGlow, canvasCenter - glowRadius);
-                Canvas.SetTop(AmbientGlow, canvasCenter - glowRadius);
-
-                var baseColor = percentage < 0.5 ? Color.FromArgb(255, 255, 69, 0) :
-                                percentage < 0.8 ? Color.FromArgb(255, 255, 140, 0) :
-                                Color.FromArgb(255, 46, 139, 87);
-
-                var radialBrush = new Microsoft.UI.Xaml.Media.RadialGradientBrush
-                {
-                    Center = new Point(0.5, 0.5),
-                    RadiusX = 0.5,
-                    RadiusY = 0.5,
-                    GradientOrigin = new Point(0.5, 0.5)
-                };
-                radialBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(50, baseColor.R, baseColor.G, baseColor.B), Offset = 0.0 });
-                radialBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(0, baseColor.R, baseColor.G, baseColor.B), Offset = 1.0 });
-
-                AmbientGlow.Fill = radialBrush;
-            }
-
-            if (GaugeNeedle != null && NeedleRotation != null)
-            {
-                NeedleRotation.CenterX = canvasCenter;
-                NeedleRotation.CenterY = canvasCenter;
-                NeedleRotation.Angle = currentAngle;
-                GaugeNeedle.Data = isExpanded
-                    ? XamlBindingHelper.ConvertValue(typeof(Geometry), "M 58,60 L 62,60 L 60,16 Z") as Geometry
-                    : XamlBindingHelper.ConvertValue(typeof(Geometry), "M 38,40 L 42,40 L 40,11 Z") as Geometry;
-            }
-
-            if (PinOuter != null && PinInner != null)
-            {
-                double pinOuterSize = isExpanded ? 14 : 10;
-                double pinInnerSize = isExpanded ? 6 : 4;
-
-                if (PinShadow != null)
-                {
-                    PinShadow.Width = pinOuterSize;
-                    PinShadow.Height = pinOuterSize;
-                    Canvas.SetLeft(PinShadow, canvasCenter - (pinOuterSize / 2) + 1);
-                    Canvas.SetTop(PinShadow, canvasCenter - (pinOuterSize / 2) + 2);
-                }
-
-                PinOuter.Width = pinOuterSize; PinOuter.Height = pinOuterSize;
-                Canvas.SetLeft(PinOuter, canvasCenter - (pinOuterSize / 2));
-                Canvas.SetTop(PinOuter, canvasCenter - (pinOuterSize / 2));
-
-                PinInner.Width = pinInnerSize; PinInner.Height = pinInnerSize;
-                Canvas.SetLeft(PinInner, canvasCenter - (pinInnerSize / 2));
-                Canvas.SetTop(PinInner, canvasCenter - (pinInnerSize / 2));
-            }
-
-            if (GaugeBackgroundPath != null && GaugeForegroundPath != null)
-            {
-                double strokeThick = isExpanded ? 10 : 7;
-                GaugeBackgroundPath.StrokeThickness = strokeThick;
-                GaugeForegroundPath.StrokeThickness = strokeThick;
-            }
-
-            DrawGaugeArc(GaugeBackgroundPath, -135, 135, radius, new Point(canvasCenter, canvasCenter));
-            DrawGaugeArc(GaugeForegroundPath, startAngle, currentAngle, radius, new Point(canvasCenter, canvasCenter));
-
-            if (TxtPerformanceScore != null) TxtPerformanceScore.Text = $"{(int)(percentage * 100)}%";
-
-            if (GaugeForegroundPath != null)
-            {
-                var gradientBrush = new LinearGradientBrush
-                {
-                    MappingMode = BrushMappingMode.Absolute,
-                    StartPoint = new Point(canvasCenter - radius, canvasCenter),
-                    EndPoint = new Point(canvasCenter + radius, canvasCenter)
-                };
-
-                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 255, 69, 0), Offset = 0.0 });   // Red
-                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 255, 140, 0), Offset = 0.5 });  // Orange
-                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 46, 139, 87), Offset = 1.0 });    // Green
-
-                GaugeForegroundPath.Stroke = gradientBrush;
-            }
-        }
-
-        private void DrawGaugeArc(Microsoft.UI.Xaml.Shapes.Path? path, double startAngle, double endAngle, double radius, Point center)
-        {
-            if (path == null) return;
-
-            double startRad = (startAngle - 90) * Math.PI / 180.0;
-            double endRad = (endAngle - 90) * Math.PI / 180.0;
-
-            Point startPoint = new Point(
-                center.X + radius * Math.Cos(startRad),
-                center.Y + radius * Math.Sin(startRad));
-
-            Point endPoint = new Point(
-                center.X + radius * Math.Cos(endRad),
-                center.Y + radius * Math.Sin(endRad));
-
-            bool largeArc = Math.Abs(endAngle - startAngle) > 180.0;
-
-            var geometry = new PathGeometry();
-            var figure = new PathFigure { StartPoint = startPoint, IsClosed = false };
-
-            figure.Segments.Add(new ArcSegment
-            {
-                Point = endPoint,
-                Size = new Size(radius, radius),
-                IsLargeArc = largeArc,
-                SweepDirection = SweepDirection.Clockwise
-            });
-
-            geometry.Figures.Add(figure);
-            path.Data = geometry;
+            GaugeHelper.UpdateVisuals(percentage, isExpanded, AmbientGlow, GaugeNeedle, NeedleRotation, PinShadow, PinOuter, PinInner, GaugeBackgroundPath, GaugeForegroundPath, TxtPerformanceScore);
         }
 
         #endregion
