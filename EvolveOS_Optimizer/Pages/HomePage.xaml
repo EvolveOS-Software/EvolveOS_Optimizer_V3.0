@@ -1647,7 +1647,14 @@
                 <Border x:Name="CardPrivacy" Style="{StaticResource DashCard}" Padding="16" Margin="0" MinWidth="340"
                         PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerCanceled">
 
-                    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+                    <Grid x:Name="PrivacyCardRootGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition x:Name="PrivacyRowGauge" Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
                         <!-- Row 0: Header with Arrow Navigation & Expand Chevron -->
                         <Grid Grid.Row="0" Margin="0,0,0,10">
@@ -1670,12 +1677,62 @@
                             </Button>
                         </Grid>
 
-                        <!-- Row 1: Image, Spinner & AI Shield -->
-                        <Grid Grid.Row="1" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <ProgressRing x:Name="DashPrivacyLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <Image x:Name="DashPrivacyStatusImage" Source="ms-appx:///Assets/PngImages/secure.png" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <!-- Row 1: Gauge, Spinner & AI Shield -->
+                        <Grid x:Name="PrivacyGaugeContainerGrid" Grid.Row="1" Height="80" Width="140" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                            <ProgressRing x:Name="DashPrivacyLoadingRing" Canvas.ZIndex="10" IsActive="True" Width="50" Height="50" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-                            <!-- AI Shield Mini-Indicator -->
+                            <!-- The Dynamic Code-Drawn Gauge -->
+                            <Canvas x:Name="PrivacyGaugeCanvas" Height="80" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+
+                                <Canvas.Resources>
+                                    <Storyboard x:Name="PrivacyGlowPulseAnimation" RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="PrivacyAmbientGlow"
+                                             Storyboard.TargetProperty="Opacity"
+                                             From="0.2" To="1.0"
+                                             Duration="0:0:2.5"
+                                             AutoReverse="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </Canvas.Resources>
+
+                                <!-- Inner Ambient Light Glow -->
+                                <Ellipse x:Name="PrivacyAmbientGlow" IsHitTestVisible="False"/>
+
+                                <!-- Background Track -->
+                                <Path x:Name="PrivacyGaugeBackgroundPath" Stroke="{ThemeResource SurfaceStrokeColorDefaultBrush}" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+
+                                <!-- Active Fill Track -->
+                                <Path x:Name="PrivacyGaugeForegroundPath" Stroke="{ThemeResource SystemAccentColor}" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+
+                                <!-- Frosted/Semi-Transparent Needle -->
+                                <Path x:Name="PrivacyGaugeNeedle" Data="M 38,40 L 42,40 L 40,11 Z" Fill="{ThemeResource TextFillColorPrimaryBrush}" Opacity="0.85">
+                                    <Path.RenderTransform>
+                                        <RotateTransform x:Name="PrivacyNeedleRotation" CenterX="40" CenterY="40" Angle="-135"/>
+                                    </Path.RenderTransform>
+                                </Path>
+
+                                <!-- Elevated Pin (Fake Drop Shadow) -->
+                                <Ellipse x:Name="PrivacyPinShadow" Canvas.Left="36" Canvas.Top="37" Width="10" Height="10" Fill="#50000000"/>
+
+                                <!-- Center Pin -->
+                                <Ellipse x:Name="PrivacyPinOuter" Canvas.Left="35" Canvas.Top="35" Width="10" Height="10" Fill="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                <Ellipse x:Name="PrivacyPinInner" Canvas.Left="38" Canvas.Top="38" Width="4" Height="4" Fill="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+                            </Canvas>
+
+                            <!-- Premium Gradient Text -->
+                            <TextBlock x:Name="TxtPrivacyScore" Text="0%" FontFamily="Jura Medium" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4" Visibility="Collapsed">
+                                <TextBlock.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFFFFFF" Offset="0.0"/>
+                                        <GradientStop Color="#88FFFFFF" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+
+                            <!-- AI Shield Mini-Indicator (Floats over the bottom right) -->
                             <Border x:Name="AiShieldBadge" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-20,-10" Visibility="Collapsed">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <FontIcon x:Name="IconAiShield" Glyph="&#xE8B9;" FontSize="11" VerticalAlignment="Center" Margin="0,0,0,1"/>
@@ -1685,7 +1742,7 @@
                         </Grid>
 
                         <!-- Row 2: Status Texts & View Issues Button -->
-                        <StackPanel Grid.Row="2" Spacing="0" Margin="0,4,0,8">
+                        <StackPanel x:Name="PrivacyStatusPanel" Grid.Row="2" Spacing="0" Margin="0,0,0,0">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
                                 <TextBlock x:Name="TxtPrivacyStatus" Text="{helpers:ResourceString Key=txt_scanning}" FontFamily="Jura Medium" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
 

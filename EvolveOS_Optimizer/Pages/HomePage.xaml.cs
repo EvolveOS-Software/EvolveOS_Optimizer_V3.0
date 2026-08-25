@@ -2211,6 +2211,8 @@ namespace EvolveOS_Optimizer.Pages
 
             if (ViewModel.SaveCardStates) SettingsEngine.IsPrivacyCardExpanded = isExpanded;
 
+            RefreshPrivacyGaugeLayoutSize(isExpanded);
+
             if (isExpanded)
             {
                 await Task.Delay(50);
@@ -2228,12 +2230,14 @@ namespace EvolveOS_Optimizer.Pages
             try
             {
                 if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Visible;
-                if (DashPrivacyStatusImage != null) DashPrivacyStatusImage.Visibility = Visibility.Collapsed;
+                if (PrivacyGaugeCanvas != null) PrivacyGaugeCanvas.Visibility = Visibility.Collapsed;
+                if (TxtPrivacyScore != null) TxtPrivacyScore.Visibility = Visibility.Collapsed;
                 if (TxtPrivacyLastRefreshed != null) TxtPrivacyLastRefreshed.Visibility = Visibility.Collapsed;
                 if (BtnRefreshPrivacy != null) BtnRefreshPrivacy.IsEnabled = false;
                 if (BtnPrivacyViewIssues != null) BtnPrivacyViewIssues.Visibility = Visibility.Collapsed;
                 if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
 
+                int totalApplicableSettings = 0;
                 int issuesCount = 0;
                 int aiIssuesCount = 0;
                 int appPermIssuesCount = 0;
@@ -2251,6 +2255,7 @@ namespace EvolveOS_Optimizer.Pages
                         if (setting.IsWindows11Only && !isWin11) continue;
                         if (setting.IsWindows10Only && isWin11) continue;
 
+                        totalApplicableSettings++;
                         bool isOptimal = true;
 
                         if (setting.ComboBox != null)
@@ -2306,28 +2311,14 @@ namespace EvolveOS_Optimizer.Pages
                     }
                 });
 
+                await Task.Delay(800);
+
+                double privacyScore = totalApplicableSettings > 0
+                    ? (double)(totalApplicableSettings - issuesCount) / totalApplicableSettings
+                    : 1.0;
+
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    if (DashPrivacyStatusImage != null)
-                    {
-                        if (issuesCount >= 5)
-                        {
-                            DashPrivacyStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/unsecure.png"));
-                            DashPrivacyStatusImage.Opacity = 1.0;
-                        }
-                        else if (issuesCount > 0)
-                        {
-                            DashPrivacyStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
-                            DashPrivacyStatusImage.Opacity = 0.5;
-                        }
-                        else
-                        {
-                            DashPrivacyStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
-                            DashPrivacyStatusImage.Opacity = 1.0;
-                        }
-                        DashPrivacyStatusImage.Visibility = Visibility.Visible;
-                    }
-
                     if (TxtPrivacyStatus != null)
                     {
                         if (issuesCount >= 5) TxtPrivacyStatus.Text = $"{issuesCount} {(ResourceString.GetString("text_privacy_critical") ?? "Privacy Leaks Found")}";
@@ -2337,7 +2328,6 @@ namespace EvolveOS_Optimizer.Pages
 
                     if (AiShieldBadge != null && TxtAiShieldStatus != null && IconAiShield != null)
                     {
-                        AiShieldBadge.Visibility = Visibility.Visible;
                         if (aiIssuesCount == 0)
                         {
                             if (Application.Current.Resources.TryGetValue("BadgeRecommendedStyle", out var style))
@@ -2421,6 +2411,15 @@ namespace EvolveOS_Optimizer.Pages
                         TxtPrivacyLastRefreshed.Visibility = Visibility.Visible;
                     }
                 });
+
+                if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Collapsed;
+                if (PrivacyGaugeCanvas != null) PrivacyGaugeCanvas.Visibility = Visibility.Visible;
+                if (TxtPrivacyScore != null) TxtPrivacyScore.Visibility = Visibility.Visible;
+
+                bool isCurrentlyExpanded = PrivacyExpandedContent.Visibility == Visibility.Visible;
+                RefreshPrivacyGaugeLayoutSize(isCurrentlyExpanded);
+
+                await AnimatePrivacyGaugeAsync(privacyScore);
             }
             catch (Exception ex)
             {
@@ -2448,7 +2447,8 @@ namespace EvolveOS_Optimizer.Pages
             {
                 if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("txt_applying_fixes") ?? "Applying Fixes...";
                 if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Visible;
-                if (DashPrivacyStatusImage != null) DashPrivacyStatusImage.Visibility = Visibility.Collapsed;
+                if (PrivacyGaugeCanvas != null) PrivacyGaugeCanvas.Visibility = Visibility.Collapsed;
+                if (TxtPrivacyScore != null) TxtPrivacyScore.Visibility = Visibility.Collapsed;
 
                 var bulkService = App.Services.GetService<IBulkSettingsActionService>();
                 if (bulkService != null)
@@ -2485,7 +2485,8 @@ namespace EvolveOS_Optimizer.Pages
             {
                 if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("txt_restoring_defaults") ?? "Restoring Defaults...";
                 if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Visible;
-                if (DashPrivacyStatusImage != null) DashPrivacyStatusImage.Visibility = Visibility.Collapsed;
+                if (PrivacyGaugeCanvas != null) PrivacyGaugeCanvas.Visibility = Visibility.Collapsed;
+                if (TxtPrivacyScore != null) TxtPrivacyScore.Visibility = Visibility.Collapsed;
 
                 var bulkService = App.Services.GetService<IBulkSettingsActionService>();
                 if (bulkService != null)
@@ -2534,6 +2535,168 @@ namespace EvolveOS_Optimizer.Pages
             if (sender is FrameworkElement element)
             {
                 FlyoutBase.ShowAttachedFlyout(element);
+            }
+        }
+
+        private void RefreshPrivacyGaugeLayoutSize(bool isExpanded)
+        {
+            if (PrivacyGaugeCanvas == null) return;
+
+            double size = isExpanded ? 120 : 80;
+
+            PrivacyGaugeContainerGrid.Height = size;
+            PrivacyGaugeCanvas.Width = size;
+            PrivacyGaugeCanvas.Height = size;
+
+            if (PrivacyGaugeContainerGrid != null)
+            {
+                PrivacyGaugeContainerGrid.Margin = new Thickness(0);
+            }
+
+            if (PrivacyStatusPanel != null)
+            {
+                PrivacyStatusPanel.Margin = isExpanded ? new Thickness(0, 4, 0, 8) : new Thickness(0, 0, 0, 0);
+            }
+
+            if (TxtPrivacyScore != null)
+            {
+                TxtPrivacyScore.FontSize = isExpanded ? 20 : 15;
+                TxtPrivacyScore.Margin = isExpanded ? new Thickness(0, 0, 0, 12) : new Thickness(0, 0, 0, 4);
+            }
+
+            if (AiShieldBadge != null)
+            {
+                AiShieldBadge.Visibility = isExpanded ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            UpdatePrivacyGaugeVisuals(_cachedLastPrivacyScore, isExpanded);
+        }
+
+        private double _cachedLastPrivacyScore = 1.0;
+
+        private async Task AnimatePrivacyGaugeAsync(double targetPercentage)
+        {
+            _cachedLastPrivacyScore = targetPercentage;
+            bool isExpanded = PrivacyExpandedContent.Visibility == Visibility.Visible;
+
+            if (PrivacyGlowPulseAnimation != null) PrivacyGlowPulseAnimation.Stop();
+
+            double currentPercentage = 0;
+            double animationDurationMs = 800;
+            double fps = 60;
+            double steps = animationDurationMs / (1000 / fps);
+            double stepValue = targetPercentage / steps;
+
+            for (int i = 0; i <= steps; i++)
+            {
+                currentPercentage = i * stepValue;
+                UpdatePrivacyGaugeVisuals(currentPercentage, isExpanded);
+                await Task.Delay((int)(1000 / fps));
+            }
+
+            UpdatePrivacyGaugeVisuals(targetPercentage, isExpanded);
+
+            if (PrivacyGlowPulseAnimation != null)
+            {
+                PrivacyGlowPulseAnimation.Begin();
+            }
+        }
+
+        private void UpdatePrivacyGaugeVisuals(double percentage, bool isExpanded)
+        {
+            double startAngle = -135;
+            double totalSweep = 270;
+            double currentAngle = startAngle + (totalSweep * percentage);
+
+            if (Math.Abs(currentAngle - startAngle) < 0.1) currentAngle = startAngle + 0.1;
+
+            double canvasCenter = isExpanded ? 60 : 40;
+            double radius = isExpanded ? 44 : 29;
+
+            if (PrivacyAmbientGlow != null)
+            {
+                double glowRadius = radius - (isExpanded ? 7 : 5);
+                double glowSize = glowRadius * 2;
+                PrivacyAmbientGlow.Width = glowSize;
+                PrivacyAmbientGlow.Height = glowSize;
+                Canvas.SetLeft(PrivacyAmbientGlow, canvasCenter - glowRadius);
+                Canvas.SetTop(PrivacyAmbientGlow, canvasCenter - glowRadius);
+
+                var baseColor = percentage < 0.5 ? Color.FromArgb(255, 255, 69, 0) :
+                                percentage < 0.8 ? Color.FromArgb(255, 255, 140, 0) :
+                                Color.FromArgb(255, 46, 139, 87);
+
+                var radialBrush = new Microsoft.UI.Xaml.Media.RadialGradientBrush
+                {
+                    Center = new Point(0.5, 0.5),
+                    RadiusX = 0.5,
+                    RadiusY = 0.5,
+                    GradientOrigin = new Point(0.5, 0.5)
+                };
+                radialBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(50, baseColor.R, baseColor.G, baseColor.B), Offset = 0.0 });
+                radialBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(0, baseColor.R, baseColor.G, baseColor.B), Offset = 1.0 });
+
+                PrivacyAmbientGlow.Fill = radialBrush;
+            }
+
+            if (PrivacyGaugeNeedle != null && PrivacyNeedleRotation != null)
+            {
+                PrivacyNeedleRotation.CenterX = canvasCenter;
+                PrivacyNeedleRotation.CenterY = canvasCenter;
+                PrivacyNeedleRotation.Angle = currentAngle;
+                PrivacyGaugeNeedle.Data = isExpanded
+                    ? XamlBindingHelper.ConvertValue(typeof(Geometry), "M 58,60 L 62,60 L 60,16 Z") as Geometry
+                    : XamlBindingHelper.ConvertValue(typeof(Geometry), "M 38,40 L 42,40 L 40,11 Z") as Geometry;
+            }
+
+            if (PrivacyPinOuter != null && PrivacyPinInner != null)
+            {
+                double pinOuterSize = isExpanded ? 14 : 10;
+                double pinInnerSize = isExpanded ? 6 : 4;
+
+                if (PrivacyPinShadow != null)
+                {
+                    PrivacyPinShadow.Width = pinOuterSize;
+                    PrivacyPinShadow.Height = pinOuterSize;
+                    Canvas.SetLeft(PrivacyPinShadow, canvasCenter - (pinOuterSize / 2) + 1);
+                    Canvas.SetTop(PrivacyPinShadow, canvasCenter - (pinOuterSize / 2) + 2);
+                }
+
+                PrivacyPinOuter.Width = pinOuterSize; PrivacyPinOuter.Height = pinOuterSize;
+                Canvas.SetLeft(PrivacyPinOuter, canvasCenter - (pinOuterSize / 2));
+                Canvas.SetTop(PrivacyPinOuter, canvasCenter - (pinOuterSize / 2));
+
+                PrivacyPinInner.Width = pinInnerSize; PrivacyPinInner.Height = pinInnerSize;
+                Canvas.SetLeft(PrivacyPinInner, canvasCenter - (pinInnerSize / 2));
+                Canvas.SetTop(PrivacyPinInner, canvasCenter - (pinInnerSize / 2));
+            }
+
+            if (PrivacyGaugeBackgroundPath != null && PrivacyGaugeForegroundPath != null)
+            {
+                double strokeThick = isExpanded ? 10 : 7;
+                PrivacyGaugeBackgroundPath.StrokeThickness = strokeThick;
+                PrivacyGaugeForegroundPath.StrokeThickness = strokeThick;
+            }
+
+            DrawGaugeArc(PrivacyGaugeBackgroundPath, -135, 135, radius, new Point(canvasCenter, canvasCenter));
+            DrawGaugeArc(PrivacyGaugeForegroundPath, startAngle, currentAngle, radius, new Point(canvasCenter, canvasCenter));
+
+            if (TxtPrivacyScore != null) TxtPrivacyScore.Text = $"{(int)(percentage * 100)}%";
+
+            if (PrivacyGaugeForegroundPath != null)
+            {
+                var gradientBrush = new LinearGradientBrush
+                {
+                    MappingMode = BrushMappingMode.Absolute,
+                    StartPoint = new Point(canvasCenter - radius, canvasCenter),
+                    EndPoint = new Point(canvasCenter + radius, canvasCenter)
+                };
+
+                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 255, 69, 0), Offset = 0.0 });   // Red
+                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 255, 140, 0), Offset = 0.5 });  // Orange
+                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 46, 139, 87), Offset = 1.0 });    // Green
+
+                PrivacyGaugeForegroundPath.Stroke = gradientBrush;
             }
         }
 
