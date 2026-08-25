@@ -1645,7 +1645,7 @@
 
             <GridViewItem x:Name="GviPrivacy">
                 <Border x:Name="CardPrivacy" Style="{StaticResource DashCard}" Padding="16" Margin="0" MinWidth="340"
-            PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerCanceled">
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerCanceled">
 
                     <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
 
@@ -1756,6 +1756,167 @@
                 </Border>
             </GridViewItem>
 
+            <GridViewItem x:Name="GviPerformance">
+                <Border x:Name="CardPerformance" Style="{StaticResource DashCard}" Padding="16" Margin="0" MinWidth="340"
+                        PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerCanceled">
+
+                    <Grid x:Name="PerformanceCardRootGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition x:Name="RowGauge" Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Row 0: Header with Arrow Navigation & Expand Chevron -->
+                        <Grid Grid.Row="0" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <FontIcon Grid.Column="0" Glyph="&#xE9D9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{helpers:ResourceString Key=title_performance_check}" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+
+                            <Button x:Name="BtnOpenPerformancePage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenPerformancePage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_performance_center}">
+                                <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
+                            </Button>
+
+                            <Button x:Name="BtnExpandPerformance" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandPerformance_Click" Margin="4,0,0,0">
+                                <FontIcon x:Name="IconExpandPerformance" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </Button>
+                        </Grid>
+
+                        <!-- Row 1: Gauge & Spinner -->
+                        <Grid x:Name="GaugeContainerGrid" Grid.Row="1" Height="80" Width="140" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                            <ProgressRing x:Name="DashPerformanceLoadingRing" Canvas.ZIndex="10" IsActive="True" Width="50" Height="50" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                            <!-- The Dynamic Code-Drawn Gauge -->
+                            <Canvas x:Name="PerformanceGaugeCanvas" Height="80" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+
+                                <!-- Pulse Animation -->
+                                <Canvas.Resources>
+                                    <Storyboard x:Name="GlowPulseAnimation" RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="AmbientGlow"
+                                             Storyboard.TargetProperty="Opacity"
+                                             From="0.3" To="1.0"
+                                             Duration="0:0:2.5"
+                                             AutoReverse="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </Canvas.Resources>
+
+                                <!-- 1. Inner Ambient Light Glow -->
+                                <Ellipse x:Name="AmbientGlow" IsHitTestVisible="False"/>
+
+                                <!-- Background Track -->
+                                <Path x:Name="GaugeBackgroundPath" Stroke="{ThemeResource SurfaceStrokeColorDefaultBrush}" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+
+                                <!-- Active Fill Track -->
+                                <Path x:Name="GaugeForegroundPath" Stroke="{ThemeResource SystemAccentColor}" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+
+                                <!-- 2. Frosted/Semi-Transparent Needle -->
+                                <Path x:Name="GaugeNeedle" Data="M 38,40 L 42,40 L 40,11 Z" Fill="{ThemeResource TextFillColorPrimaryBrush}" Opacity="0.85">
+                                    <Path.RenderTransform>
+                                        <RotateTransform x:Name="NeedleRotation" CenterX="40" CenterY="40" Angle="-135"/>
+                                    </Path.RenderTransform>
+                                </Path>
+
+                                <!-- 3. Elevated Pin (Fake Drop Shadow) -->
+                                <Ellipse x:Name="PinShadow" Canvas.Left="36" Canvas.Top="37" Width="10" Height="10" Fill="#50000000"/>
+
+                                <!-- Center Pin -->
+                                <Ellipse x:Name="PinOuter" Canvas.Left="35" Canvas.Top="35" Width="10" Height="10" Fill="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                <Ellipse x:Name="PinInner" Canvas.Left="38" Canvas.Top="38" Width="4" Height="4" Fill="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+                            </Canvas>
+
+                            <!-- 4. Premium Gradient Text -->
+                            <TextBlock x:Name="TxtPerformanceScore" Text="0%" FontFamily="Jura Medium" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4" Visibility="Collapsed">
+                                <TextBlock.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFFFFFF" Offset="0.0"/>
+                                        <GradientStop Color="#88FFFFFF" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </Grid>
+
+                        <!-- Row 2: Status Texts & View Issues Button -->
+                        <StackPanel x:Name="PerformanceStatusPanel" Grid.Row="2" Spacing="0" Margin="0,0,0,0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                <TextBlock x:Name="TxtPerformanceStatus" Text="{helpers:ResourceString Key=txt_scanning}" FontFamily="Jura Medium" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                                <Button x:Name="BtnPerformanceViewIssues" Background="Transparent" BorderThickness="0" Padding="6,4" MinHeight="0" MinWidth="0" VerticalAlignment="Center" Visibility="Collapsed" Click="BtnPerformanceViewIssues_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_view_performance_issues}">
+                                    <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock x:Name="TxtPerformanceLastRefreshed" Text="{helpers:ResourceString Key=text_never_updated}" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Row 3: Expanded Section (Hidden by default) -->
+                        <StackPanel x:Name="PerformanceExpandedContent" Grid.Row="3" Visibility="Collapsed" VerticalAlignment="Bottom" Margin="0,16,0,0" Spacing="12">
+
+                            <!-- Categorized Leak Breakdown -->
+                            <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
+                                <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_perf_services}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtPerfServicesIssues" Text="{helpers:ResourceString Key=txt_optimized}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_perf_visuals}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtPerfVisualIssues" Text="{helpers:ResourceString Key=txt_optimized}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{helpers:ResourceString Key=txt_perf_hardware}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtPerfHardwareIssues" Text="{helpers:ResourceString Key=txt_optimized}" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <!-- Action Buttons: Apply & Restore -->
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                                <Button x:Name="BtnApplyRecommendedPerformance" Grid.Column="0" HorizontalAlignment="Stretch" FontFamily="Jura Medium" Height="34" Click="BtnApplyRecommendedPerformance_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                                        <FontIcon Glyph="&#xE73E;" FontSize="13"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_apply_optimizations}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button x:Name="BtnRestorePerformanceDefaults" Grid.Column="1" HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}" FontFamily="Jura Medium" Height="34" Click="BtnRestorePerformanceDefaults_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                                        <FontIcon Glyph="&#xE777;" FontSize="13"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_undo_optimizations}"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Row 4: Refresh Bottom Action -->
+                        <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
+                            <Button x:Name="BtnRefreshPerformance" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshPerformance_Click" BorderThickness="0" FontFamily="Jura Medium">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE72C;" FontSize="14"/>
+                                        <TextBlock Text="{helpers:ResourceString Key=btn_quick_scan}"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+
+                    </Grid>
+                </Border>
+            </GridViewItem>
+
         </GridView>
 
         <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,10">
@@ -1815,6 +1976,8 @@
 
                                 <ToggleSwitch Grid.Column="0" Grid.Row="3" Header="{helpers:ResourceString Key=txt_memory_optimizer}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardRamBoost" Toggled="ToggleCard_Toggled" x:Name="ToggleRamBoost"/>
                                 <ToggleSwitch Grid.Column="1" Grid.Row="3" Header="Privacy Status" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardPrivacy" Toggled="ToggleCard_Toggled" x:Name="TogglePrivacy"/>
+
+                                <ToggleSwitch Grid.Column="0" Grid.Row="4" Header="{helpers:ResourceString Key=title_performance_check}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardPerformance" Toggled="ToggleCard_Toggled" x:Name="TogglePerformance"/>
                             </Grid>
                         </StackPanel>
 

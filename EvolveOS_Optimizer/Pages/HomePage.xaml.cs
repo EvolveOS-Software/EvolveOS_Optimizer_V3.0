@@ -25,6 +25,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.Win32;
 using Windows.Foundation;
@@ -131,11 +132,13 @@ namespace EvolveOS_Optimizer.Pages
                     if (SettingsEngine.IsDnsCardExpanded) BtnExpandDns_Click(this, new RoutedEventArgs());
                     if (SettingsEngine.IsRamBoostCardExpanded) BtnExpandRamBoost_Click(this, new RoutedEventArgs());
                     if (SettingsEngine.IsPrivacyCardExpanded) BtnExpandPrivacy_Click(this, new RoutedEventArgs());
+                    if (SettingsEngine.IsPerformanceCardExpanded) BtnExpandPerformance_Click(this, new RoutedEventArgs());
                 }
 
                 _ = CalculateSystemHealthAsync();
                 _ = CalculateSecurityHealthAsync();
                 _ = CalculatePrivacyHealthAsync();
+                _ = CalculatePerformanceHealthAsync();
 
                 StartShimmer(IpShimmerBrush, "Stop2");
                 StartShimmer(LocalIpShimmerBrush, "LocalStop2");
@@ -954,6 +957,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleHealth.IsOn = SettingsEngine.Dashboard_CardHealth;
             ToggleSecurity.IsOn = SettingsEngine.Dashboard_CardSecurity;
             TogglePrivacy.IsOn = SettingsEngine.Dashboard_CardPrivacy;
+            TogglePerformance.IsOn = SettingsEngine.Dashboard_CardPerformance;
             ToggleCpuGraph.IsOn = SettingsEngine.Dashboard_CardCpuGraph;
             ToggleRamGraph.IsOn = SettingsEngine.Dashboard_CardRamGraph;
             ToggleNetworkGraph.IsOn = SettingsEngine.Dashboard_CardNetworkGraph;
@@ -970,6 +974,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCardVisibility("CardMaintenance", ToggleHealth.IsOn);
             SetCardVisibility("CardSecurity", ToggleSecurity.IsOn);
             SetCardVisibility("CardPrivacy", TogglePrivacy.IsOn);
+            SetCardVisibility("CardPerformance", TogglePerformance.IsOn);
             SetCardVisibility("CardCpuGraph", ToggleCpuGraph.IsOn);
             SetCardVisibility("CardRamGraph", ToggleRamGraph.IsOn);
             SetCardVisibility("CardNetworkGraph", ToggleNetworkGraph.IsOn);
@@ -1075,6 +1080,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardHealth = ToggleHealth.IsOn;
             SettingsEngine.Dashboard_CardSecurity = ToggleSecurity.IsOn;
             SettingsEngine.Dashboard_CardPrivacy = TogglePrivacy.IsOn;
+            SettingsEngine.Dashboard_CardPerformance = TogglePerformance.IsOn;
             SettingsEngine.Dashboard_CardCpuGraph = ToggleCpuGraph.IsOn;
             SettingsEngine.Dashboard_CardRamGraph = ToggleRamGraph.IsOn;
             SettingsEngine.Dashboard_CardNetworkGraph = ToggleNetworkGraph.IsOn;
@@ -1124,12 +1130,13 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(CardDns, InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardMaintenance, InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardSecurity, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardPrivacy, InputSystemCursorShape.SizeAll);
+            SetCustomCursor(CardPerformance, InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardCpuGraph, InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardRamGraph, InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardNetworkGraph, InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardGpuGraph, InputSystemCursorShape.SizeAll);
             SetCustomCursor(CardRamBoost, InputSystemCursorShape.SizeAll);
-            SetCustomCursor(CardPrivacy, InputSystemCursorShape.SizeAll);
 
             SetCustomCursor(RefreshWeatherButton, InputSystemCursorShape.Arrow);
             SetCustomCursor(LocationButton, InputSystemCursorShape.Arrow);
@@ -1160,7 +1167,6 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnExpandGpu, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenGraphicsSettings, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRestartGpuDriver, InputSystemCursorShape.Arrow);
-
             SetCustomCursor(BtnExpandCpu, InputSystemCursorShape.Arrow);
             SetCustomCursor(CmbPowerPlan, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenResmon, InputSystemCursorShape.Arrow);
@@ -1172,13 +1178,20 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnApplyRecommendedPrivacy, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRestorePrivacyDefaults, InputSystemCursorShape.Arrow);
 
+            SetCustomCursor(BtnExpandPerformance, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnOpenPerformancePage, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnPerformanceViewIssues, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRefreshPerformance, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnApplyRecommendedPerformance, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnRestorePerformanceDefaults, InputSystemCursorShape.Arrow);
+
             SetCustomCursor(IpAddress, InputSystemCursorShape.Hand);
             SetCustomCursor(LocalIpAddress, InputSystemCursorShape.Hand);
         }
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsEngine.DashboardCardOrder = "CardSecurity,CardPrivacy,CardWeather,CardMaintenance,CardDns,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardDisk,CardNetwork,CardRam,CardGamingMode";
+            SettingsEngine.DashboardCardOrder = "CardSecurity,CardPrivacy,CardPerformance,CardWeather,CardMaintenance,CardDns,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardDisk,CardNetwork,CardRam,CardGamingMode";
             SettingsEngine.Dashboard_CardWeather = true;
             SettingsEngine.Dashboard_CardNetwork = true;
             SettingsEngine.Dashboard_CardRam = false;
@@ -1190,6 +1203,7 @@ namespace EvolveOS_Optimizer.Pages
             SettingsEngine.Dashboard_CardHealth = true;
             SettingsEngine.Dashboard_CardSecurity = true;
             SettingsEngine.Dashboard_CardPrivacy = true;
+            SettingsEngine.Dashboard_CardPerformance = true;
             SettingsEngine.Dashboard_CardRamBoost = true;
             SettingsEngine.Dashboard_CardCpuGraph = true;
             SettingsEngine.Dashboard_CardRamGraph = true;
@@ -1209,6 +1223,7 @@ namespace EvolveOS_Optimizer.Pages
             ToggleHealth.IsOn = true;
             ToggleSecurity.IsOn = true;
             TogglePrivacy.IsOn = true;
+            TogglePerformance.IsOn = true;
             ToggleRamBoost.IsOn = true;
             ToggleCpuGraph.IsOn = true;
             ToggleRamGraph.IsOn = true;
@@ -2524,6 +2539,504 @@ namespace EvolveOS_Optimizer.Pages
 
         #endregion
 
+        #region Performance Optimizations Card
+
+        private void BtnOpenPerformancePage_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWindow.Instance != null)
+            {
+                MainWindow.Instance.SwitchPage("Optimize", "Gaming");
+            }
+        }
+
+        private async void BtnExpandPerformance_Click(object sender, RoutedEventArgs e)
+        {
+            bool isExpanded = PerformanceExpandedContent.Visibility == Visibility.Collapsed;
+
+            double targetHeight = isExpanded ? 450 : 220;
+
+            GviPerformance.Height = targetHeight;
+            CardPerformance.Height = targetHeight;
+
+            if (isExpanded)
+            {
+                PerformanceExpandedContent.Visibility = Visibility.Visible;
+                if (IconExpandPerformance != null) IconExpandPerformance.Glyph = "\uE70E"; // Chevron Up
+            }
+            else
+            {
+                PerformanceExpandedContent.Visibility = Visibility.Collapsed;
+                if (IconExpandPerformance != null) IconExpandPerformance.Glyph = "\uE70D"; // Chevron Down
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
+            }
+
+            if (ViewModel.SaveCardStates) SettingsEngine.IsPerformanceCardExpanded = isExpanded;
+
+            RefreshGaugeLayoutSize(isExpanded);
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+                GviPerformance.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true });
+            }
+        }
+
+        private async void BtnRefreshPerformance_Click(object sender, RoutedEventArgs e)
+        {
+            await CalculatePerformanceHealthAsync();
+        }
+
+        private async Task CalculatePerformanceHealthAsync()
+        {
+            try
+            {
+                if (DashPerformanceLoadingRing != null) DashPerformanceLoadingRing.Visibility = Visibility.Visible;
+                if (PerformanceGaugeCanvas != null) PerformanceGaugeCanvas.Visibility = Visibility.Collapsed;
+                if (TxtPerformanceScore != null) TxtPerformanceScore.Visibility = Visibility.Collapsed;
+                if (TxtPerformanceLastRefreshed != null) TxtPerformanceLastRefreshed.Visibility = Visibility.Collapsed;
+                if (BtnRefreshPerformance != null) BtnRefreshPerformance.IsEnabled = false;
+                if (BtnPerformanceViewIssues != null) BtnPerformanceViewIssues.Visibility = Visibility.Collapsed;
+                if (TxtPerformanceStatus != null) TxtPerformanceStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
+
+                int totalApplicableSettings = 0;
+                int issuesCount = 0;
+                int servicesIssuesCount = 0;
+                int visualIssuesCount = 0;
+                int hardwareIssuesCount = 0;
+
+                List<string> performanceIssues = new List<string>();
+
+                await Task.Run(() =>
+                {
+                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                    var performanceGroup = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
+
+                    foreach (var setting in performanceGroup.Settings)
+                    {
+                        if (setting.IsWindows11Only && !isWin11) continue;
+                        if (setting.IsWindows10Only && isWin11) continue;
+
+                        totalApplicableSettings++;
+                        bool isOptimal = true;
+
+                        if (setting.ComboBox != null)
+                        {
+                            var recommendedOption = setting.ComboBox.Options?.FirstOrDefault(o => o.IsRecommended);
+                            if (recommendedOption != null && recommendedOption.ValueMappings != null)
+                            {
+                                foreach (var mapping in recommendedOption.ValueMappings)
+                                {
+                                    var regDef = setting.RegistrySettings?.FirstOrDefault(rs => rs.ValueName == mapping.Key);
+                                    if (regDef != null && regDef.KeyPath != null && regDef.ValueName != null)
+                                    {
+                                        object? currentValue = ReadRegistryValue(regDef.KeyPath, regDef.ValueName) ?? regDef.DefaultValue;
+
+                                        if (currentValue?.ToString() != mapping.Value?.ToString())
+                                        {
+                                            isOptimal = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (setting.RegistrySettings != null)
+                        {
+                            foreach (var reg in setting.RegistrySettings)
+                            {
+                                if (reg.RecommendedValue != null && reg.KeyPath != null && reg.ValueName != null)
+                                {
+                                    object? currentValue = ReadRegistryValue(reg.KeyPath, reg.ValueName) ?? reg.DefaultValue;
+
+                                    if (currentValue?.ToString() != reg.RecommendedValue.ToString())
+                                    {
+                                        isOptimal = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!isOptimal)
+                        {
+                            issuesCount++;
+                            performanceIssues.Add(setting.Name ?? "Unknown Performance Setting");
+
+                            if (setting.GroupName == "System Services" || setting.GroupName == "Scheduled Tasks")
+                                servicesIssuesCount++;
+                            else if (setting.GroupName == "Visual Effects")
+                                visualIssuesCount++;
+                            else
+                                hardwareIssuesCount++;
+                        }
+                    }
+                });
+
+                await Task.Delay(800);
+
+                double performanceScore = totalApplicableSettings > 0
+                    ? (double)(totalApplicableSettings - issuesCount) / totalApplicableSettings
+                    : 1.0;
+
+                if (TxtPerformanceStatus != null)
+                {
+                    if (issuesCount > 0) TxtPerformanceStatus.Text = $"{issuesCount} {(ResourceString.GetString("text_optimizations_available") ?? "Optimizations Available")}";
+                    else TxtPerformanceStatus.Text = ResourceString.GetString("text_performance_good") ?? "System is Optimized";
+                }
+
+                string optimizedText = ResourceString.GetString("txt_optimized") ?? "Optimized";
+                string issuesText = ResourceString.GetString("txt_issues") ?? "Issues";
+
+                if (TxtPerfServicesIssues != null)
+                {
+                    TxtPerfServicesIssues.Text = servicesIssuesCount > 0 ? $"{servicesIssuesCount} {issuesText}" : optimizedText;
+                    TxtPerfServicesIssues.Foreground = servicesIssuesCount > 0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                }
+                if (TxtPerfVisualIssues != null)
+                {
+                    TxtPerfVisualIssues.Text = visualIssuesCount > 0 ? $"{visualIssuesCount} {issuesText}" : optimizedText;
+                    TxtPerfVisualIssues.Foreground = visualIssuesCount > 0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                }
+                if (TxtPerfHardwareIssues != null)
+                {
+                    TxtPerfHardwareIssues.Text = hardwareIssuesCount > 0 ? $"{hardwareIssuesCount} {issuesText}" : optimizedText;
+                    TxtPerfHardwareIssues.Foreground = hardwareIssuesCount > 0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                }
+
+                if (issuesCount > 0 && BtnPerformanceViewIssues != null)
+                {
+                    BtnPerformanceViewIssues.Visibility = Visibility.Visible;
+                    var flyout = new MenuFlyout();
+                    foreach (var issue in performanceIssues)
+                    {
+                        var menuItem = new MenuFlyoutItem
+                        {
+                            Text = issue,
+                            Icon = new FontIcon { Glyph = "\uE9D9", FontSize = 14 },
+                            IsEnabled = true
+                        };
+
+                        menuItem.Click += (s, e) =>
+                        {
+                            if (MainWindow.Instance != null)
+                            {
+                                WinOptimizePage.RequestedSearchOnLoad = issue;
+                                MainWindow.Instance.SwitchPage("Optimize", "Gaming");
+                            }
+                        };
+                        flyout.Items.Add(menuItem);
+                    }
+                    FlyoutBase.SetAttachedFlyout(BtnPerformanceViewIssues, flyout);
+                }
+
+                if (TxtPerformanceLastRefreshed != null)
+                {
+                    string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
+                    TxtPerformanceLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
+                    TxtPerformanceLastRefreshed.Visibility = Visibility.Visible;
+                }
+
+                if (DashPerformanceLoadingRing != null) DashPerformanceLoadingRing.Visibility = Visibility.Collapsed;
+                if (PerformanceGaugeCanvas != null) PerformanceGaugeCanvas.Visibility = Visibility.Visible;
+                if (TxtPerformanceScore != null) TxtPerformanceScore.Visibility = Visibility.Visible;
+
+                bool isCurrentlyExpanded = PerformanceExpandedContent.Visibility == Visibility.Visible;
+                RefreshGaugeLayoutSize(isCurrentlyExpanded);
+
+                await AnimatePerformanceGaugeAsync(performanceScore);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ [Performance Check Error] {ex.Message}");
+                if (TxtPerformanceStatus != null) TxtPerformanceStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
+            }
+            finally
+            {
+                if (DashPerformanceLoadingRing != null) DashPerformanceLoadingRing.Visibility = Visibility.Collapsed;
+                if (BtnRefreshPerformance != null) BtnRefreshPerformance.IsEnabled = true;
+            }
+        }
+
+        private async void BtnApplyRecommendedPerformance_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn) btn.IsEnabled = false;
+
+            try
+            {
+                if (TxtPerformanceStatus != null) TxtPerformanceStatus.Text = ResourceString.GetString("txt_applying_optimizations") ?? "Applying Optimizations...";
+                if (DashPerformanceLoadingRing != null) DashPerformanceLoadingRing.Visibility = Visibility.Visible;
+                if (PerformanceGaugeCanvas != null) PerformanceGaugeCanvas.Visibility = Visibility.Collapsed;
+                if (TxtPerformanceScore != null) TxtPerformanceScore.Visibility = Visibility.Collapsed;
+
+                var bulkService = App.Services.GetService<IBulkSettingsActionService>();
+                if (bulkService != null)
+                {
+                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                    var performanceGroup = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
+
+                    var settingIds = performanceGroup.Settings
+                        .Where(s => !(s.IsWindows11Only && !isWin11) && !(s.IsWindows10Only && isWin11))
+                        .Select(s => s.Id)
+                        .Where(id => !string.IsNullOrEmpty(id))
+                        .ToList();
+
+                    await bulkService.ApplyRecommendedAsync(settingIds!);
+                }
+
+                await CalculatePerformanceHealthAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Apply Performance Error] {ex.Message}");
+            }
+            finally
+            {
+                if (sender is Button b) b.IsEnabled = true;
+            }
+        }
+
+        private async void BtnRestorePerformanceDefaults_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn) btn.IsEnabled = false;
+
+            try
+            {
+                if (TxtPerformanceStatus != null) TxtPerformanceStatus.Text = ResourceString.GetString("txt_restoring_defaults") ?? "Restoring Defaults...";
+                if (DashPerformanceLoadingRing != null) DashPerformanceLoadingRing.Visibility = Visibility.Visible;
+                if (PerformanceGaugeCanvas != null) PerformanceGaugeCanvas.Visibility = Visibility.Collapsed;
+                if (TxtPerformanceScore != null) TxtPerformanceScore.Visibility = Visibility.Collapsed;
+
+                var bulkService = App.Services.GetService<IBulkSettingsActionService>();
+                if (bulkService != null)
+                {
+                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                    var performanceGroup = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
+
+                    var settingIds = performanceGroup.Settings
+                        .Where(s => !(s.IsWindows11Only && !isWin11) && !(s.IsWindows10Only && isWin11))
+                        .Select(s => s.Id)
+                        .Where(id => !string.IsNullOrEmpty(id))
+                        .ToList();
+
+                    await bulkService.ResetToDefaultsAsync(settingIds!);
+                }
+
+                await CalculatePerformanceHealthAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[Restore Performance Error] {ex.Message}");
+            }
+            finally
+            {
+                if (sender is Button b) b.IsEnabled = true;
+            }
+        }
+
+        private void BtnPerformanceViewIssues_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element)
+            {
+                FlyoutBase.ShowAttachedFlyout(element);
+            }
+        }
+
+        private void RefreshGaugeLayoutSize(bool isExpanded)
+        {
+            if (PerformanceGaugeCanvas == null) return;
+
+            double size = isExpanded ? 120 : 80;
+
+            GaugeContainerGrid.Height = size;
+            PerformanceGaugeCanvas.Width = size;
+            PerformanceGaugeCanvas.Height = size;
+
+            if (GaugeContainerGrid != null)
+            {
+                GaugeContainerGrid.Margin = new Thickness(0);
+            }
+
+            if (PerformanceStatusPanel != null)
+            {
+                PerformanceStatusPanel.Margin = isExpanded ? new Thickness(0, 4, 0, 8) : new Thickness(0, 0, 0, 0);
+            }
+
+            if (TxtPerformanceScore != null)
+            {
+                TxtPerformanceScore.FontSize = isExpanded ? 20 : 15;
+                TxtPerformanceScore.Margin = isExpanded ? new Thickness(0, 0, 0, 12) : new Thickness(0, 0, 0, 4);
+            }
+
+            UpdateGaugeVisuals(_cachedLastPerformanceScore, isExpanded);
+        }
+
+        private double _cachedLastPerformanceScore = 1.0;
+
+        private async Task AnimatePerformanceGaugeAsync(double targetPercentage)
+        {
+            _cachedLastPerformanceScore = targetPercentage;
+            bool isExpanded = PerformanceExpandedContent.Visibility == Visibility.Visible;
+
+            if (GlowPulseAnimation != null) GlowPulseAnimation.Stop();
+
+            double currentPercentage = 0;
+            double animationDurationMs = 800;
+            double fps = 60;
+            double steps = animationDurationMs / (1000 / fps);
+            double stepValue = targetPercentage / steps;
+
+            for (int i = 0; i <= steps; i++)
+            {
+                currentPercentage = i * stepValue;
+                UpdateGaugeVisuals(currentPercentage, isExpanded);
+                await Task.Delay((int)(1000 / fps));
+            }
+
+            UpdateGaugeVisuals(targetPercentage, isExpanded);
+
+            if (GlowPulseAnimation != null)
+            {
+                GlowPulseAnimation.Begin();
+            }
+        }
+
+        private void UpdateGaugeVisuals(double percentage, bool isExpanded)
+        {
+            double startAngle = -135;
+            double totalSweep = 270;
+            double currentAngle = startAngle + (totalSweep * percentage);
+
+            if (Math.Abs(currentAngle - startAngle) < 0.1) currentAngle = startAngle + 0.1;
+
+            double canvasCenter = isExpanded ? 60 : 40;
+            double radius = isExpanded ? 44 : 29;
+
+            if (AmbientGlow != null)
+            {
+                double glowRadius = radius - (isExpanded ? 7 : 5);
+                double glowSize = glowRadius * 2;
+                AmbientGlow.Width = glowSize;
+                AmbientGlow.Height = glowSize;
+                Canvas.SetLeft(AmbientGlow, canvasCenter - glowRadius);
+                Canvas.SetTop(AmbientGlow, canvasCenter - glowRadius);
+
+                var baseColor = percentage < 0.5 ? Color.FromArgb(255, 255, 69, 0) :
+                                percentage < 0.8 ? Color.FromArgb(255, 255, 140, 0) :
+                                Color.FromArgb(255, 46, 139, 87);
+
+                var radialBrush = new Microsoft.UI.Xaml.Media.RadialGradientBrush
+                {
+                    Center = new Point(0.5, 0.5),
+                    RadiusX = 0.5,
+                    RadiusY = 0.5,
+                    GradientOrigin = new Point(0.5, 0.5)
+                };
+                radialBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(50, baseColor.R, baseColor.G, baseColor.B), Offset = 0.0 });
+                radialBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(0, baseColor.R, baseColor.G, baseColor.B), Offset = 1.0 });
+
+                AmbientGlow.Fill = radialBrush;
+            }
+
+            if (GaugeNeedle != null && NeedleRotation != null)
+            {
+                NeedleRotation.CenterX = canvasCenter;
+                NeedleRotation.CenterY = canvasCenter;
+                NeedleRotation.Angle = currentAngle;
+                GaugeNeedle.Data = isExpanded
+                    ? XamlBindingHelper.ConvertValue(typeof(Geometry), "M 58,60 L 62,60 L 60,16 Z") as Geometry
+                    : XamlBindingHelper.ConvertValue(typeof(Geometry), "M 38,40 L 42,40 L 40,11 Z") as Geometry;
+            }
+
+            if (PinOuter != null && PinInner != null)
+            {
+                double pinOuterSize = isExpanded ? 14 : 10;
+                double pinInnerSize = isExpanded ? 6 : 4;
+
+                if (PinShadow != null)
+                {
+                    PinShadow.Width = pinOuterSize;
+                    PinShadow.Height = pinOuterSize;
+                    Canvas.SetLeft(PinShadow, canvasCenter - (pinOuterSize / 2) + 1);
+                    Canvas.SetTop(PinShadow, canvasCenter - (pinOuterSize / 2) + 2);
+                }
+
+                PinOuter.Width = pinOuterSize; PinOuter.Height = pinOuterSize;
+                Canvas.SetLeft(PinOuter, canvasCenter - (pinOuterSize / 2));
+                Canvas.SetTop(PinOuter, canvasCenter - (pinOuterSize / 2));
+
+                PinInner.Width = pinInnerSize; PinInner.Height = pinInnerSize;
+                Canvas.SetLeft(PinInner, canvasCenter - (pinInnerSize / 2));
+                Canvas.SetTop(PinInner, canvasCenter - (pinInnerSize / 2));
+            }
+
+            if (GaugeBackgroundPath != null && GaugeForegroundPath != null)
+            {
+                double strokeThick = isExpanded ? 10 : 7;
+                GaugeBackgroundPath.StrokeThickness = strokeThick;
+                GaugeForegroundPath.StrokeThickness = strokeThick;
+            }
+
+            DrawGaugeArc(GaugeBackgroundPath, -135, 135, radius, new Point(canvasCenter, canvasCenter));
+            DrawGaugeArc(GaugeForegroundPath, startAngle, currentAngle, radius, new Point(canvasCenter, canvasCenter));
+
+            if (TxtPerformanceScore != null) TxtPerformanceScore.Text = $"{(int)(percentage * 100)}%";
+
+            if (GaugeForegroundPath != null)
+            {
+                var gradientBrush = new LinearGradientBrush
+                {
+                    MappingMode = BrushMappingMode.Absolute,
+                    StartPoint = new Point(canvasCenter - radius, canvasCenter),
+                    EndPoint = new Point(canvasCenter + radius, canvasCenter)
+                };
+
+                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 255, 69, 0), Offset = 0.0 });   // Red
+                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 255, 140, 0), Offset = 0.5 });  // Orange
+                gradientBrush.GradientStops.Add(new GradientStop { Color = Color.FromArgb(255, 46, 139, 87), Offset = 1.0 });    // Green
+
+                GaugeForegroundPath.Stroke = gradientBrush;
+            }
+        }
+
+        private void DrawGaugeArc(Microsoft.UI.Xaml.Shapes.Path? path, double startAngle, double endAngle, double radius, Point center)
+        {
+            if (path == null) return;
+
+            double startRad = (startAngle - 90) * Math.PI / 180.0;
+            double endRad = (endAngle - 90) * Math.PI / 180.0;
+
+            Point startPoint = new Point(
+                center.X + radius * Math.Cos(startRad),
+                center.Y + radius * Math.Sin(startRad));
+
+            Point endPoint = new Point(
+                center.X + radius * Math.Cos(endRad),
+                center.Y + radius * Math.Sin(endRad));
+
+            bool largeArc = Math.Abs(endAngle - startAngle) > 180.0;
+
+            var geometry = new PathGeometry();
+            var figure = new PathFigure { StartPoint = startPoint, IsClosed = false };
+
+            figure.Segments.Add(new ArcSegment
+            {
+                Point = endPoint,
+                Size = new Size(radius, radius),
+                IsLargeArc = largeArc,
+                SweepDirection = SweepDirection.Clockwise
+            });
+
+            geometry.Figures.Add(figure);
+            path.Data = geometry;
+        }
+
+        #endregion
+
         #region Disk Card
 
         private string _selectedSmartDrive = "C:";
@@ -3147,7 +3660,8 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     CardWeather, CardNetwork, CardRam, CardCpu, CardGpu, CardDisk,
                     CardGamingMode, CardDns, CardMaintenance, CardSecurity, CardPrivacy,
-                    CardCpuGraph, CardRamGraph, CardNetworkGraph, CardGpuGraph, CardRamBoost
+                    CardPerformance, CardCpuGraph, CardRamGraph, CardNetworkGraph,
+                    CardGpuGraph, CardRamBoost
                 };
 
                 int lightingMode = SettingsEngine.Dashboard_LightingMode;

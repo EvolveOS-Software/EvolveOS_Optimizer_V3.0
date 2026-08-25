@@ -709,6 +709,23 @@
     <sys:String x:Key="txt_ambient_brightness">Luminosità ambientale</sys:String>
     <sys:String x:Key="txt_glow_radius">Raggio del bagliore</sys:String>
     <sys:String x:Key="txt_glow_color">Colore del bagliore</sys:String>
+
+    <!-- Performance Optimizations Card Strings -->
+    <sys:String x:Key="title_performance_check">Ottimizzazioni delle prestazioni</sys:String>
+    <sys:String x:Key="tooltip_open_performance_center">Apri centro prestazioni</sys:String>
+    <sys:String x:Key="tooltip_view_performance_issues">Visualizza problemi di performance</sys:String>
+    <sys:String x:Key="txt_perf_services">Servizi di sistema</sys:String>
+    <sys:String x:Key="txt_perf_visuals">Effetti visivi</sys:String>
+    <sys:String x:Key="txt_perf_hardware">Hardware &amp; Tweaks</sys:String>
+    <sys:String x:Key="btn_apply_optimizations">Applica ottimizzazioni</sys:String>
+    <sys:String x:Key="btn_undo_optimizations">Ripristina predefiniti</sys:String>
+
+    <!-- Code-Behind Status & Fallback Strings -->
+    <sys:String x:Key="text_optimizations_available">Ottimizzazioni disponibili</sys:String>
+    <sys:String x:Key="text_performance_good">Il sistema è ottimizzato</sys:String>
+    <sys:String x:Key="txt_issues">Problemi</sys:String>
+    <sys:String x:Key="txt_applying_optimizations">Applicazione ottimizzazioni...</sys:String>
+    <sys:String x:Key="txt_restoring_defaults">Ripristino predefiniti...</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->

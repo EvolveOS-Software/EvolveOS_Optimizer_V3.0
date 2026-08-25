@@ -687,6 +687,22 @@
     <sys:String x:Key="txt_glow_radius">Glow Radius</sys:String>
     <sys:String x:Key="txt_glow_color">Glow Color</sys:String>
 
+    <!-- Performance Optimizations Card Strings -->
+    <sys:String x:Key="title_performance_check">Performance Optimizations</sys:String>
+    <sys:String x:Key="tooltip_open_performance_center">Open Performance Center</sys:String>
+    <sys:String x:Key="tooltip_view_performance_issues">View performance issues</sys:String>
+    <sys:String x:Key="txt_perf_services">System Services</sys:String>
+    <sys:String x:Key="txt_perf_visuals">Visual Effects</sys:String>
+    <sys:String x:Key="txt_perf_hardware">Hardware &amp; Tweaks</sys:String>
+    <sys:String x:Key="btn_apply_optimizations">Apply Optimizations</sys:String>
+    <sys:String x:Key="btn_undo_optimizations">Restore Defaults</sys:String>
+
+    <!-- Code-Behind Status & Fallback Strings -->
+    <sys:String x:Key="text_optimizations_available">Optimizations Available</sys:String>
+    <sys:String x:Key="text_performance_good">System is Optimized</sys:String>
+    <sys:String x:Key="txt_issues">Issues</sys:String>
+    <sys:String x:Key="txt_applying_optimizations">Applying Optimizations...</sys:String>
+    <sys:String x:Key="txt_restoring_defaults">Restoring Defaults...</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->

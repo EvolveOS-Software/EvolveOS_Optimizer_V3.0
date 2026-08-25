@@ -705,6 +705,23 @@
     <sys:String x:Key="txt_ambient_brightness">Omgevingshelderheid</sys:String>
     <sys:String x:Key="txt_glow_radius">Gloeiradius</sys:String>
     <sys:String x:Key="txt_glow_color">Gloeikleur</sys:String>
+
+    <!-- Performance Optimizations Card Strings -->
+    <sys:String x:Key="title_performance_check">Prestatie optimalisaties</sys:String>
+    <sys:String x:Key="tooltip_open_performance_center">Open Prestatiecentrum</sys:String>
+    <sys:String x:Key="tooltip_view_performance_issues">Bekijk prestatieproblemen</sys:String>
+    <sys:String x:Key="txt_perf_services">Systeemdiensten</sys:String>
+    <sys:String x:Key="txt_perf_visuals">Visuele Effecten</sys:String>
+    <sys:String x:Key="txt_perf_hardware">Hardware &amp; Tweaks</sys:String>
+    <sys:String x:Key="btn_apply_optimizations">Optimalisaties toepassen</sys:String>
+    <sys:String x:Key="btn_undo_optimizations">Standaardwaarden herstellen</sys:String>
+
+    <!-- Code-Behind Status & Fallback Strings -->
+    <sys:String x:Key="text_optimizations_available">Optimalisaties beschikbaar</sys:String>
+    <sys:String x:Key="text_performance_good">Systeem is geoptimaliseerd</sys:String>
+    <sys:String x:Key="txt_issues">Problemen</sys:String>
+    <sys:String x:Key="txt_applying_optimizations">Optimalisaties toepassen...</sys:String>
+    <sys:String x:Key="txt_restoring_defaults">Standaardwaarden herstellen...</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->

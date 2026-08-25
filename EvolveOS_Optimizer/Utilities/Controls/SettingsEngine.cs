@@ -71,7 +71,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["EnableStartMinimized"] = false,
             ["EncryptionMode"] = KeyDerivationMode.Balanced.ToString(),
 
-            ["DashboardCardOrder"] = "CardSecurity,CardPrivacy,CardWeather,CardMaintenance,CardDns,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardDisk,CardNetwork,CardRam,CardGamingMode",
+            ["DashboardCardOrder"] = "CardSecurity,CardPrivacy,,CardPerformance,CardWeather,CardMaintenance,CardDns,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardDisk,CardNetwork,CardRam,CardGamingMode",
             ["Dashboard_CardWeather"] = true,
             ["Dashboard_CardNetwork"] = true,
             ["Dashboard_CardRam"] = false,
@@ -83,6 +83,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_CardHealth"] = true,
             ["Dashboard_CardSecurity"] = true,
             ["Dashboard_CardPrivacy"] = true,
+            ["Dashboard_CardPerformance"] = true,
             ["Dashboard_CardRamBoost"] = true,
             ["Dashboard_CardCpuGraph"] = true,
             ["Dashboard_CardRamGraph"] = true,
@@ -112,6 +113,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["IsDnsCardExpanded"] = false,
             ["IsRamBoostCardExpanded"] = false,
             ["IsPrivacyCardExpanded"] = false,
+            ["IsPerformanceCardExpanded"] = false,
 
             ["IsPasswordGenHotkeyEnabled"] = false,
             ["PasswordGenHotkeyModifier"] = 1,
@@ -199,6 +201,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_CardHealth { get => (bool)_cachedSettings["Dashboard_CardHealth"]; set => ChangingParameters("Dashboard_CardHealth", value); }
         internal static bool Dashboard_CardSecurity { get => (bool)_cachedSettings["Dashboard_CardSecurity"]; set => ChangingParameters("Dashboard_CardSecurity", value); }
         internal static bool Dashboard_CardPrivacy { get => (bool)_cachedSettings["Dashboard_CardPrivacy"]; set => ChangingParameters("Dashboard_CardPrivacy", value); }
+        internal static bool Dashboard_CardPerformance { get => (bool)_cachedSettings["Dashboard_CardPerformance"]; set => ChangingParameters("Dashboard_CardPerformance", value); }
         internal static bool Dashboard_CardRamBoost { get => (bool)_cachedSettings["Dashboard_CardRamBoost"]; set => ChangingParameters("Dashboard_CardRamBoost", value); }
         internal static bool Dashboard_CardCpuGraph { get => (bool)_cachedSettings["Dashboard_CardCpuGraph"]; set => ChangingParameters("Dashboard_CardCpuGraph", value); }
         internal static bool Dashboard_CardRamGraph { get => (bool)_cachedSettings["Dashboard_CardRamGraph"]; set => ChangingParameters("Dashboard_CardRamGraph", value); }
@@ -220,6 +223,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool IsDnsCardExpanded { get => (bool)_cachedSettings["IsDnsCardExpanded"]; set => ChangingParameters("IsDnsCardExpanded", value); }
         internal static bool IsRamBoostCardExpanded { get => (bool)_cachedSettings["IsRamBoostCardExpanded"]; set => ChangingParameters("IsRamBoostCardExpanded", value); }
         internal static bool IsPrivacyCardExpanded { get => (bool)_cachedSettings["IsPrivacyCardExpanded"]; set => ChangingParameters("IsPrivacyCardExpanded", value); }
+        internal static bool IsPerformanceCardExpanded { get => (bool)_cachedSettings["IsPerformanceCardExpanded"]; set => ChangingParameters("IsPerformanceCardExpanded", value); }
         internal static int Dashboard_LightingMode { get => (int)_cachedSettings["Dashboard_LightingMode"]; set => ChangingParameters("Dashboard_LightingMode", value); }
         internal static int Dashboard_AmbientIntensity { get => (int)_cachedSettings["Dashboard_AmbientIntensity"]; set => ChangingParameters("Dashboard_AmbientIntensity", value); }
         internal static int Dashboard_HoverRadius { get => (int)_cachedSettings["Dashboard_HoverRadius"]; set => ChangingParameters("Dashboard_HoverRadius", value); }
