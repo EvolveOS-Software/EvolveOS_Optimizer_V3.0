@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -16,8 +15,6 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Utilities.Services;
-using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Text;
@@ -165,25 +162,30 @@ namespace EvolveOS_Optimizer.Pages
             Debug.WriteLine("[HomePage] Live monitoring RESUMED.");
         }
 
-        private void ViewModel_OnWallpaperUpdated(byte[] imageBytes)
+        private async void ViewModel_OnWallpaperUpdated(byte[] imageBytes)
         {
             try
             {
                 using var memStream = new MemoryStream(imageBytes);
-                var randomAccessStream = memStream.AsRandomAccessStream();
+                using var randomAccessStream = memStream.AsRandomAccessStream();
 
                 var bitmap = new BitmapImage();
                 bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                var _ = bitmap.SetSourceAsync(randomAccessStream);
+
+                bitmap.DecodePixelWidth = 1920;
+                await bitmap.SetSourceAsync(randomAccessStream);
 
                 if (WallpaperBrush != null) WallpaperBrush.ImageSource = bitmap;
 
                 var visual = ElementCompositionPreview.GetElementVisual(LogoPath);
-                var fadeAnimation = visual.Compositor.CreateScalarKeyFrameAnimation();
-                fadeAnimation.InsertKeyFrame(0.0f, 0.5f);
-                fadeAnimation.InsertKeyFrame(1.0f, 1.0f);
-                fadeAnimation.Duration = TimeSpan.FromMilliseconds(500);
-                visual.StartAnimation("Opacity", fadeAnimation);
+                if (visual != null)
+                {
+                    var fadeAnimation = visual.Compositor.CreateScalarKeyFrameAnimation();
+                    fadeAnimation.InsertKeyFrame(0.0f, 0.5f);
+                    fadeAnimation.InsertKeyFrame(1.0f, 1.0f);
+                    fadeAnimation.Duration = TimeSpan.FromMilliseconds(500);
+                    visual.StartAnimation("Opacity", fadeAnimation);
+                }
             }
             catch { }
         }
@@ -1422,7 +1424,6 @@ namespace EvolveOS_Optimizer.Pages
                     }
                 }
 
-                // Call the ViewModel instead!
                 var healthResult = await ViewModel.CalculateSystemHealthAsync();
 
                 if (healthResult != null)

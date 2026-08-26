@@ -69,6 +69,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+
+        [DllImport("iphlpapi.dll", SetLastError = true)]
+        private static extern uint GetExtendedTcpTable(IntPtr pTcpTable, ref int dwOutBufLen, bool sort, int ipVersion, int tcpTableType, int reserved);
+
+        private const int AF_INET = 2; // IPv4
+        private const int TCP_TABLE_OWNER_PID_ALL = 5;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MIB_TCPROW_OWNER_PID
+        {
+            public uint state;
+            public uint localAddr;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            public byte[] localPort;
+            public uint remoteAddr;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            public byte[] remotePort;
+            public uint owningPid;
+        }
         #endregion
 
         #region Fields
@@ -654,42 +673,82 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         public async Task<List<NetworkProcessInfo>> GetTopNetworkProcessesAsync()
         {
-            return await Task.Run(async () =>
+            return await Task.Run(() =>
             {
                 var results = new List<NetworkProcessInfo>();
                 try
                 {
-                    string output = await CommandExecutor.StartTask("netstat -ano");
-                    var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    var pidCounts = new Dictionary<int, int>();
+                    int bufferSize = 0;
 
-                    foreach (var line in lines.Skip(4))
+                    // First call gets the required buffer size
+                    GetExtendedTcpTable(IntPtr.Zero, ref bufferSize, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
+
+                    IntPtr tcpTablePtr = Marshal.AllocHGlobal(bufferSize);
+                    try
                     {
-                        var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                        if (parts.Length >= 5 && parts[0] == "TCP" && parts[3] == "ESTABLISHED")
+                        // Second call actually fetches the table
+                        uint ret = GetExtendedTcpTable(tcpTablePtr, ref bufferSize, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
+                        if (ret == 0) // NO_ERROR
                         {
-                            if (int.TryParse(parts[4], out int pid) && pid > 0 && pid != 4)
+                            var pidCounts = new Dictionary<int, int>();
+
+                            // First 4 bytes indicate the number of entries
+                            int numEntries = Marshal.ReadInt32(tcpTablePtr);
+                            IntPtr rowPtr = IntPtr.Add(tcpTablePtr, 4);
+
+                            int rowSize = Marshal.SizeOf(typeof(MIB_TCPROW_OWNER_PID));
+
+                            for (int i = 0; i < numEntries; i++)
                             {
-                                if (!pidCounts.ContainsKey(pid)) pidCounts[pid] = 0;
-                                pidCounts[pid]++;
+                                var tcpRow = Marshal.PtrToStructure<MIB_TCPROW_OWNER_PID>(rowPtr);
+
+                                // 5 == MIB_TCP_STATE_ESTAB (Established Connection)
+                                if (tcpRow.state == 5)
+                                {
+                                    int pid = (int)tcpRow.owningPid;
+                                    if (pid > 0 && pid != 4) // Skip System Idle Process (0) and System (4)
+                                    {
+                                        if (!pidCounts.ContainsKey(pid)) pidCounts[pid] = 0;
+                                        pidCounts[pid]++;
+                                    }
+                                }
+                                rowPtr = IntPtr.Add(rowPtr, rowSize);
+                            }
+
+                            // Sort by connection count and take top 3
+                            var topPids = pidCounts.OrderByDescending(kv => kv.Value).Take(3);
+                            foreach (var kv in topPids)
+                            {
+                                try
+                                {
+                                    using var proc = Process.GetProcessById(kv.Key);
+                                    results.Add(new NetworkProcessInfo
+                                    {
+                                        ProcessName = proc.ProcessName + ".exe",
+                                        ConnectionCount = $"{kv.Value} connections"
+                                    });
+                                }
+                                catch { } // Process might have exited between scan and here, just skip
                             }
                         }
                     }
-
-                    var topPids = pidCounts.OrderByDescending(kv => kv.Value).Take(3);
-                    foreach (var kv in topPids)
+                    finally
                     {
-                        try
-                        {
-                            using var proc = Process.GetProcessById(kv.Key);
-                            results.Add(new NetworkProcessInfo { ProcessName = proc.ProcessName + ".exe", ConnectionCount = $"{kv.Value} connections" });
-                        }
-                        catch { }
+                        // ALWAYS free unmanaged memory to prevent memory leaks
+                        Marshal.FreeHGlobal(tcpTablePtr);
                     }
                 }
                 catch { }
 
-                if (results.Count == 0) results.Add(new NetworkProcessInfo { ProcessName = ResourceString.GetString("txt_idle_no_connections") ?? "Idle / No active connections", ConnectionCount = "" });
+                if (results.Count == 0)
+                {
+                    results.Add(new NetworkProcessInfo
+                    {
+                        ProcessName = ResourceString.GetString("txt_idle_no_connections") ?? "Idle / No active connections",
+                        ConnectionCount = ""
+                    });
+                }
+
                 return results;
             });
         }
