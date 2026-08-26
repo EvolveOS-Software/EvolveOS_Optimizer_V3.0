@@ -13,6 +13,7 @@
     xmlns:num="using:System.Numerics" 
     xmlns:uc="using:EvolveOS_Optimizer.Assets.UserControl"
     xmlns:ui="using:CommunityToolkit.WinUI.Controls"
+    xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
     mc:Ignorable="d" Background="Transparent">
 
     <Page.Resources>
@@ -1070,7 +1071,7 @@
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                <TextBlock x:Name="TxtCurrentCpu" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#0078D7" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                                <TextBlock x:Name="TxtCurrentCpu" Text="{x:Bind ViewModel.CpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#0078D7" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
                             </StackPanel>
                         </Grid>
 
@@ -1105,10 +1106,10 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock x:Name="TxtAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
                                 <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
                             </Grid>
 
@@ -1137,21 +1138,12 @@
                                     <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
                                 </Grid>
 
-                                <Canvas x:Name="CpuGraphCanvas" SizeChanged="CpuGraphCanvas_SizeChanged">
-
-                                    <Path x:Name="CpuGraphFill" Opacity="0.15">
-                                        <Path.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                <GradientStop Color="#0078D7" Offset="0.0" />
-                                                <GradientStop Color="Transparent" Offset="1.0" />
-                                            </LinearGradientBrush>
-                                        </Path.Fill>
-                                    </Path>
-
-                                    <Path x:Name="CpuGraphLine" Stroke="#0078D7" StrokeThickness="2.5" StrokeLineJoin="Round"/>
-
-                                    <Ellipse x:Name="CpuGraphDot" Width="10" Height="10" Fill="#0078D7" Margin="-5,-5,0,0" Visibility="Collapsed"/>
-                                </Canvas>
+                                <lvc:CartesianChart Series="{x:Bind ViewModel.CpuGraphSeries, Mode=OneWay}"
+                                                    XAxes="{x:Bind ViewModel.HiddenXAxes, Mode=OneWay}"
+                                                    YAxes="{x:Bind ViewModel.HiddenYAxes, Mode=OneWay}"
+                                                    TooltipPosition="Hidden"
+                                                    Margin="0"
+                                                    Background="Transparent"/>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -1175,7 +1167,7 @@
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                <TextBlock x:Name="TxtCurrentRam" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#881798" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                                <TextBlock x:Name="TxtCurrentRam" Text="{x:Bind ViewModel.RamUsagePercentageText, Mode=OneWay}" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#881798" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
                             </StackPanel>
                         </Grid>
 
@@ -1210,10 +1202,10 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock x:Name="TxtRamAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtRamAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtRamAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtRamAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
                                 <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
                             </Grid>
 
@@ -1241,20 +1233,12 @@
                                     <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
                                 </Grid>
 
-                                <Canvas x:Name="RamGraphCanvas" SizeChanged="RamGraphCanvas_SizeChanged">
-                                    <Path x:Name="RamGraphFill" Opacity="0.15">
-                                        <Path.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                <GradientStop Color="#881798" Offset="0.0" />
-                                                <GradientStop Color="Transparent" Offset="1.0" />
-                                            </LinearGradientBrush>
-                                        </Path.Fill>
-                                    </Path>
-
-                                    <Path x:Name="RamGraphLine" Stroke="#881798" StrokeThickness="2.5" StrokeLineJoin="Round"/>
-
-                                    <Ellipse x:Name="RamGraphDot" Width="10" Height="10" Fill="#881798" Margin="-5,-5,0,0" Visibility="Collapsed"/>
-                                </Canvas>
+                                <lvc:CartesianChart Series="{x:Bind ViewModel.RamGraphSeries, Mode=OneWay}"
+                                                    XAxes="{x:Bind ViewModel.HiddenXAxes, Mode=OneWay}"
+                                                    YAxes="{x:Bind ViewModel.HiddenYAxes, Mode=OneWay}"
+                                                    TooltipPosition="Hidden"
+                                                    Margin="0"
+                                                    Background="Transparent"/>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -1286,12 +1270,12 @@
 
                                 <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
                                     <FontIcon Glyph="&#xE896;" FontSize="12" Foreground="#0078D7" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="TxtCurrentDown" Text="0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#0078D7" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtCurrentDown" Text="{x:Bind DownLoadText.Text, Mode=OneWay}" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#0078D7" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
                                     <FontIcon Glyph="&#xE898;" FontSize="12" Foreground="#881798" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="TxtCurrentUp" Text="0 Mbps" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#881798" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtCurrentUp" Text="{x:Bind UpLoadText.Text, Mode=OneWay}" FontFamily="Jura" FontWeight="Bold" FontSize="12" Foreground="#881798" Width="65" TextAlignment="Right" VerticalAlignment="Center"/>
                                 </StackPanel>
 
                             </StackPanel>
@@ -1314,11 +1298,11 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <TextBlock x:Name="TxtNetY4" Grid.Row="0" Text="100" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock x:Name="TxtNetY3" Grid.Row="1" Text="75" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock x:Name="TxtNetY2" Grid.Row="2" Text="50" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock x:Name="TxtNetY1" Grid.Row="3" Text="25" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
-                                <TextBlock x:Name="TxtNetY0" Grid.Row="3" Text="0" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
+                                <TextBlock Grid.Row="0" Text="{x:Bind ViewModel.NetYAxis100, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.NetYAxis75, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="2" Text="{x:Bind ViewModel.NetYAxis50, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="{x:Bind ViewModel.NetYAxis25, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-7,0,0"/>
+                                <TextBlock Grid.Row="3" Text="0" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,-7"/>
                             </Grid>
 
                             <Grid Grid.Row="1" Grid.Column="1" Margin="0,8,0,0">
@@ -1328,10 +1312,10 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock x:Name="TxtNetAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtNetAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtNetAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtNetAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
                                 <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
                             </Grid>
 
@@ -1359,33 +1343,12 @@
                                     <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
                                 </Grid>
 
-                                <Canvas x:Name="NetGraphCanvas" SizeChanged="NetGraphCanvas_SizeChanged">
-
-                                    <Path x:Name="NetGraphFillUp" Opacity="0.15">
-                                        <Path.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                <GradientStop Color="#881798" Offset="0.0" />
-                                                <GradientStop Color="Transparent" Offset="1.0" />
-                                            </LinearGradientBrush>
-                                        </Path.Fill>
-                                    </Path>
-
-                                    <Path x:Name="NetGraphFillDown" Opacity="0.15">
-                                        <Path.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                <GradientStop Color="#0078D7" Offset="0.0" />
-                                                <GradientStop Color="Transparent" Offset="1.0" />
-                                            </LinearGradientBrush>
-                                        </Path.Fill>
-                                    </Path>
-
-                                    <Path x:Name="NetGraphLineUp" Stroke="#881798" StrokeThickness="2" StrokeLineJoin="Round"/>
-                                    <Ellipse x:Name="NetGraphDotUp" Width="8" Height="8" Fill="#881798" Margin="-4,-4,0,0" Visibility="Collapsed"/>
-
-                                    <Path x:Name="NetGraphLineDown" Stroke="#0078D7" StrokeThickness="2.5" StrokeLineJoin="Round"/>
-                                    <Ellipse x:Name="NetGraphDotDown" Width="10" Height="10" Fill="#0078D7" Margin="-5,-5,0,0" Visibility="Collapsed"/>
-
-                                </Canvas>
+                                <lvc:CartesianChart Series="{x:Bind ViewModel.NetGraphSeries, Mode=OneWay}"
+                                                    XAxes="{x:Bind ViewModel.HiddenXAxes, Mode=OneWay}"
+                                                    YAxes="{x:Bind ViewModel.DynamicNetYAxes, Mode=OneWay}"
+                                                    TooltipPosition="Hidden"
+                                                    Margin="0"
+                                                    Background="Transparent"/>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -1409,7 +1372,7 @@
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                <TextBlock x:Name="TxtCurrentGpu" Text="0%" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#107C10" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
+                                <TextBlock x:Name="TxtCurrentGpu" Text="{x:Bind ViewModel.GpuUsageDisplay, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0}%'}" FontFamily="Jura" FontWeight="Bold" FontSize="16" Foreground="#107C10" VerticalAlignment="Center" Width="45" TextAlignment="Right"/>
                             </StackPanel>
                         </Grid>
 
@@ -1444,10 +1407,10 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock x:Name="TxtGpuAxis4" Grid.Column="0" Text="60s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtGpuAxis3" Grid.Column="1" Text="45s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtGpuAxis2" Grid.Column="2" Text="30s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
-                                <TextBlock x:Name="TxtGpuAxis1" Grid.Column="3" Text="15s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.XAxisLabelStart, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.XAxisLabelQ1, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.XAxisLabelMid, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
+                                <TextBlock Grid.Column="3" Text="{x:Bind ViewModel.XAxisLabelQ3, Mode=OneWay}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-8,0,0,0"/>
                                 <TextBlock Grid.Column="3" Text="0s" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,-6,0"/>
                             </Grid>
 
@@ -1475,20 +1438,12 @@
                                     <Border Grid.ColumnSpan="4" Grid.Row="3" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="0,1,0,0"/>
                                 </Grid>
 
-                                <Canvas x:Name="GpuGraphCanvas" SizeChanged="GpuGraphCanvas_SizeChanged">
-                                    <Path x:Name="GpuGraphFill" Opacity="0.15">
-                                        <Path.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                <GradientStop Color="#107C10" Offset="0.0" />
-                                                <GradientStop Color="Transparent" Offset="1.0" />
-                                            </LinearGradientBrush>
-                                        </Path.Fill>
-                                    </Path>
-
-                                    <Path x:Name="GpuGraphLine" Stroke="#107C10" StrokeThickness="2.5" StrokeLineJoin="Round"/>
-
-                                    <Ellipse x:Name="GpuGraphDot" Width="10" Height="10" Fill="#107C10" Margin="-5,-5,0,0" Visibility="Collapsed"/>
-                                </Canvas>
+                                <lvc:CartesianChart Series="{x:Bind ViewModel.GpuGraphSeries, Mode=OneWay}"
+                                                    XAxes="{x:Bind ViewModel.HiddenXAxes, Mode=OneWay}"
+                                                    YAxes="{x:Bind ViewModel.HiddenYAxes, Mode=OneWay}"
+                                                    TooltipPosition="Hidden"
+                                                    Margin="0"
+                                                    Background="Transparent"/>
                             </Grid>
                         </Grid>
                     </Grid>

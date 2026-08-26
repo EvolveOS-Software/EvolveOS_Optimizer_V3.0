@@ -57,16 +57,6 @@ namespace EvolveOS_Optimizer.Pages
         private bool _isCurrentPageActive = false;
         private bool _isInitialized = false;
 
-        private List<double> _cpuHistory = new List<double>();
-        private List<double> _ramHistory = new List<double>();
-        private List<double> _netDownHistory = new List<double>();
-        private List<double> _netUpHistory = new List<double>();
-        private List<double> _gpuHistory = new List<double>();
-
-        private int _maxCpuDataPoints = 300;
-        private int _maxRamDataPoints = 300;
-        private int _maxNetDataPoints = 300;
-        private int _maxGpuDataPoints = 300;
         #endregion
 
         public HomePageViewModel ViewModel { get; } = new();
@@ -216,459 +206,6 @@ namespace EvolveOS_Optimizer.Pages
 
             DownLoadText.Text = payload.NetDown.ToString("F2");
             UpLoadText.Text = payload.NetUp.ToString("F2");
-
-            UpdateCpuGraph(payload.Cpu);
-            UpdateRamGraph(payload.Ram);
-            UpdateNetworkGraph(payload.NetDown, payload.NetUp);
-            UpdateGpuGraph(payload.Gpu);
-        }
-        #endregion
-
-        #region GPU Graph Logic
-        private void UpdateGpuAxisLabels(int totalSeconds)
-        {
-            if (TxtGpuAxis1 == null || TxtGpuAxis2 == null || TxtGpuAxis3 == null || TxtGpuAxis4 == null) return;
-
-            double step = totalSeconds / 4.0;
-            TxtGpuAxis4.Text = FormatTime(totalSeconds);
-            TxtGpuAxis3.Text = FormatTime(totalSeconds - step);
-            TxtGpuAxis2.Text = FormatTime(totalSeconds - (step * 2));
-            TxtGpuAxis1.Text = FormatTime(totalSeconds - (step * 3));
-        }
-
-        private void UpdateGpuGraph(double currentGpuUsage)
-        {
-            _gpuHistory.Add(currentGpuUsage);
-
-            while (_gpuHistory.Count > _maxGpuDataPoints)
-            {
-                _gpuHistory.RemoveAt(0);
-            }
-
-            if (TxtCurrentGpu != null)
-                TxtCurrentGpu.Text = $"{Math.Round(currentGpuUsage)}%";
-
-            DrawGpuGraph();
-        }
-
-        private void GpuGraphCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            DrawGpuGraph();
-        }
-
-        private void DrawGpuGraph()
-        {
-            if (GpuGraphCanvas == null || GpuGraphLine == null || GpuGraphFill == null || GpuGraphDot == null) return;
-            if (_gpuHistory.Count < 2 || GpuGraphCanvas.ActualWidth == 0 || GpuGraphCanvas.ActualHeight == 0) return;
-
-            double width = GpuGraphCanvas.ActualWidth;
-            double height = GpuGraphCanvas.ActualHeight;
-            double maxGpu = 100.0;
-            double stepX = width / Math.Max(1, _maxGpuDataPoints - 1);
-            double startX = width - ((_gpuHistory.Count - 1) * stepX);
-            double startY = height - (_gpuHistory[0] / maxGpu * height);
-
-            Point startPoint = new Point(startX, startY);
-            Point lastPoint = startPoint;
-
-            if (GpuGraphLine.Data is not PathGeometry lineGeo)
-            {
-                lineGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                lineGeo.Figures.Add(fig);
-                GpuGraphLine.Data = lineGeo;
-            }
-            var lineFigure = (PathFigure)lineGeo.Figures[0];
-            lineFigure.StartPoint = startPoint;
-            var linePoints = ((PolyLineSegment)lineFigure.Segments[0]).Points;
-            linePoints.Clear();
-
-            if (GpuGraphFill.Data is not PathGeometry fillGeo)
-            {
-                fillGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                fillGeo.Figures.Add(fig);
-                GpuGraphFill.Data = fillGeo;
-            }
-            var fillFigure = (PathFigure)fillGeo.Figures[0];
-            fillFigure.StartPoint = new Point(startX, height);
-            var fillPoints = ((PolyLineSegment)fillFigure.Segments[0]).Points;
-            fillPoints.Clear();
-            fillPoints.Add(startPoint);
-
-            for (int i = 1; i < _gpuHistory.Count; i++)
-            {
-                double x = startX + (i * stepX);
-                double y = Math.Max(0, Math.Min(height, height - (_gpuHistory[i] / maxGpu * height)));
-                lastPoint = new Point(x, y);
-
-                linePoints.Add(lastPoint);
-                fillPoints.Add(lastPoint);
-            }
-            fillPoints.Add(new Point(width, height));
-
-            GpuGraphDot.Visibility = Visibility.Visible;
-            Canvas.SetLeft(GpuGraphDot, lastPoint.X);
-            Canvas.SetTop(GpuGraphDot, lastPoint.Y);
-        }
-        #endregion
-
-        #region Network Graph Logic
-        private void UpdateNetAxisLabels(int totalSeconds)
-        {
-            if (TxtNetAxis1 == null || TxtNetAxis2 == null || TxtNetAxis3 == null || TxtNetAxis4 == null) return;
-
-            double step = totalSeconds / 4.0;
-
-            TxtNetAxis4.Text = FormatTime(totalSeconds);
-            TxtNetAxis3.Text = FormatTime(totalSeconds - step);
-            TxtNetAxis2.Text = FormatTime(totalSeconds - (step * 2));
-            TxtNetAxis1.Text = FormatTime(totalSeconds - (step * 3));
-        }
-
-        private void UpdateNetworkGraph(double dlMbps, double ulMbps)
-        {
-            _netDownHistory.Add(dlMbps);
-            _netUpHistory.Add(ulMbps);
-
-            while (_netDownHistory.Count > _maxNetDataPoints) _netDownHistory.RemoveAt(0);
-            while (_netUpHistory.Count > _maxNetDataPoints) _netUpHistory.RemoveAt(0);
-
-            if (TxtCurrentDown != null) TxtCurrentDown.Text = $"{Math.Round(dlMbps, 1)} Mbps";
-            if (TxtCurrentUp != null) TxtCurrentUp.Text = $"{Math.Round(ulMbps, 1)} Mbps";
-
-            DrawNetGraph();
-        }
-
-        private void NetGraphCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            DrawNetGraph();
-        }
-
-        private void DrawNetGraph()
-        {
-            if (NetGraphCanvas == null || NetGraphLineDown == null || NetGraphLineUp == null || NetGraphFillDown == null || NetGraphFillUp == null) return;
-            if (_netDownHistory.Count < 2 || NetGraphCanvas.ActualWidth == 0 || NetGraphCanvas.ActualHeight == 0) return;
-
-            double width = NetGraphCanvas.ActualWidth;
-            double height = NetGraphCanvas.ActualHeight;
-
-            double maxDown = _netDownHistory.Count > 0 ? _netDownHistory.Max() : 0;
-            double maxUp = _netUpHistory.Count > 0 ? _netUpHistory.Max() : 0;
-            double absoluteMax = Math.Max(maxDown, maxUp);
-            double maxNetScale = Math.Max(10.0, Math.Ceiling(absoluteMax * 1.2));
-
-            if (TxtNetY4 != null)
-            {
-                TxtNetY4.Text = Math.Round(maxNetScale).ToString();
-                TxtNetY3.Text = Math.Round(maxNetScale * 0.75).ToString();
-                TxtNetY2.Text = Math.Round(maxNetScale * 0.50).ToString();
-                TxtNetY1.Text = Math.Round(maxNetScale * 0.25).ToString();
-            }
-
-            double stepX = width / Math.Max(1, _maxNetDataPoints - 1);
-            double startX = width - ((_netDownHistory.Count - 1) * stepX);
-
-            double startYDown = height - (_netDownHistory[0] / maxNetScale * height);
-            double startYUp = height - (_netUpHistory[0] / maxNetScale * height);
-
-            Point startPointDown = new Point(startX, Math.Max(0, Math.Min(height, startYDown)));
-            Point startPointUp = new Point(startX, Math.Max(0, Math.Min(height, startYUp)));
-
-            Point lastDownPoint = startPointDown;
-            Point lastUpPoint = startPointUp;
-
-            if (NetGraphLineDown.Data is not PathGeometry downGeo)
-            {
-                downGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                downGeo.Figures.Add(fig);
-                NetGraphLineDown.Data = downGeo;
-            }
-            var downFig = (PathFigure)downGeo.Figures[0];
-            downFig.StartPoint = startPointDown;
-            var downPoints = ((PolyLineSegment)downFig.Segments[0]).Points;
-            downPoints.Clear();
-
-            if (NetGraphFillDown.Data is not PathGeometry downFillGeo)
-            {
-                downFillGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                downFillGeo.Figures.Add(fig);
-                NetGraphFillDown.Data = downFillGeo;
-            }
-            var downFillFig = (PathFigure)downFillGeo.Figures[0];
-            downFillFig.StartPoint = new Point(startX, height);
-            var downFillPoints = ((PolyLineSegment)downFillFig.Segments[0]).Points;
-            downFillPoints.Clear();
-            downFillPoints.Add(startPointDown);
-
-            if (NetGraphLineUp.Data is not PathGeometry upGeo)
-            {
-                upGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                upGeo.Figures.Add(fig);
-                NetGraphLineUp.Data = upGeo;
-            }
-            var upFig = (PathFigure)upGeo.Figures[0];
-            upFig.StartPoint = startPointUp;
-            var upPoints = ((PolyLineSegment)upFig.Segments[0]).Points;
-            upPoints.Clear();
-
-            if (NetGraphFillUp.Data is not PathGeometry upFillGeo)
-            {
-                upFillGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                upFillGeo.Figures.Add(fig);
-                NetGraphFillUp.Data = upFillGeo;
-            }
-            var upFillFig = (PathFigure)upFillGeo.Figures[0];
-            upFillFig.StartPoint = new Point(startX, height);
-            var upFillPoints = ((PolyLineSegment)upFillFig.Segments[0]).Points;
-            upFillPoints.Clear();
-            upFillPoints.Add(startPointUp);
-
-            for (int i = 1; i < _netDownHistory.Count; i++)
-            {
-                double x = startX + (i * stepX);
-                double yDown = Math.Max(0, Math.Min(height, height - (_netDownHistory[i] / maxNetScale * height)));
-                double yUp = Math.Max(0, Math.Min(height, height - (_netUpHistory[i] / maxNetScale * height)));
-
-                lastDownPoint = new Point(x, yDown);
-                lastUpPoint = new Point(x, yUp);
-
-                downPoints.Add(lastDownPoint);
-                upPoints.Add(lastUpPoint);
-                downFillPoints.Add(lastDownPoint);
-                upFillPoints.Add(lastUpPoint);
-            }
-
-            downFillPoints.Add(new Point(width, height));
-            upFillPoints.Add(new Point(width, height));
-
-            NetGraphDotDown.Visibility = Visibility.Visible;
-            NetGraphDotUp.Visibility = Visibility.Visible;
-            Canvas.SetLeft(NetGraphDotDown, lastDownPoint.X);
-            Canvas.SetTop(NetGraphDotDown, lastDownPoint.Y);
-            Canvas.SetLeft(NetGraphDotUp, lastUpPoint.X);
-            Canvas.SetTop(NetGraphDotUp, lastUpPoint.Y);
-        }
-        #endregion
-
-        #region RAM Graph Logic
-        private void UpdateRamAxisLabels(int totalSeconds)
-        {
-            if (TxtRamAxis1 == null || TxtRamAxis2 == null || TxtRamAxis3 == null || TxtRamAxis4 == null) return;
-
-            double step = totalSeconds / 4.0;
-
-            TxtRamAxis4.Text = FormatTime(totalSeconds);
-            TxtRamAxis3.Text = FormatTime(totalSeconds - step);
-            TxtRamAxis2.Text = FormatTime(totalSeconds - (step * 2));
-            TxtRamAxis1.Text = FormatTime(totalSeconds - (step * 3));
-        }
-
-        private void UpdateRamGraph(double currentRamUsage)
-        {
-            _ramHistory.Add(currentRamUsage);
-
-            while (_ramHistory.Count > _maxRamDataPoints)
-            {
-                _ramHistory.RemoveAt(0);
-            }
-
-            if (TxtCurrentRam != null)
-                TxtCurrentRam.Text = $"{Math.Round(currentRamUsage)}%";
-
-            if (_ramHistory.Count > 0)
-            {
-                ViewModel.AverageRamLoad = _ramHistory.Average();
-            }
-
-            DrawRamGraph();
-        }
-
-        private void RamGraphCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            DrawRamGraph();
-        }
-
-        private void DrawRamGraph()
-        {
-            if (RamGraphCanvas == null || RamGraphLine == null || RamGraphFill == null || RamGraphDot == null) return;
-            if (_ramHistory.Count < 2 || RamGraphCanvas.ActualWidth == 0 || RamGraphCanvas.ActualHeight == 0) return;
-
-            double width = RamGraphCanvas.ActualWidth;
-            double height = RamGraphCanvas.ActualHeight;
-            double maxRam = 100.0;
-            double stepX = width / Math.Max(1, _maxRamDataPoints - 1);
-            double startX = width - ((_ramHistory.Count - 1) * stepX);
-            double startY = height - (_ramHistory[0] / maxRam * height);
-
-            Point startPoint = new Point(startX, startY);
-            Point lastPoint = startPoint;
-
-            if (RamGraphLine.Data is not PathGeometry lineGeo)
-            {
-                lineGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                lineGeo.Figures.Add(fig);
-                RamGraphLine.Data = lineGeo;
-            }
-            var lineFigure = (PathFigure)lineGeo.Figures[0];
-            lineFigure.StartPoint = startPoint;
-            var linePoints = ((PolyLineSegment)lineFigure.Segments[0]).Points;
-            linePoints.Clear();
-
-            if (RamGraphFill.Data is not PathGeometry fillGeo)
-            {
-                fillGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                fillGeo.Figures.Add(fig);
-                RamGraphFill.Data = fillGeo;
-            }
-            var fillFigure = (PathFigure)fillGeo.Figures[0];
-            fillFigure.StartPoint = new Point(startX, height);
-            var fillPoints = ((PolyLineSegment)fillFigure.Segments[0]).Points;
-            fillPoints.Clear();
-            fillPoints.Add(startPoint);
-
-            for (int i = 1; i < _ramHistory.Count; i++)
-            {
-                double x = startX + (i * stepX);
-                double y = Math.Max(0, Math.Min(height, height - (_ramHistory[i] / maxRam * height)));
-                lastPoint = new Point(x, y);
-
-                linePoints.Add(lastPoint);
-                fillPoints.Add(lastPoint);
-            }
-            fillPoints.Add(new Point(width, height));
-
-            RamGraphDot.Visibility = Visibility.Visible;
-            Canvas.SetLeft(RamGraphDot, lastPoint.X);
-            Canvas.SetTop(RamGraphDot, lastPoint.Y);
-        }
-        #endregion
-
-        #region CPU Graph Logic
-        private void UpdateAxisLabels(int totalSeconds)
-        {
-            if (TxtAxis1 == null || TxtAxis2 == null || TxtAxis3 == null || TxtAxis4 == null) return;
-
-            double step = totalSeconds / 4.0;
-
-            TxtAxis4.Text = FormatTime(totalSeconds);
-            TxtAxis3.Text = FormatTime(totalSeconds - step);
-            TxtAxis2.Text = FormatTime(totalSeconds - (step * 2));
-            TxtAxis1.Text = FormatTime(totalSeconds - (step * 3));
-        }
-
-        private string FormatTime(double seconds)
-        {
-            if (seconds < 60)
-                return $"{Math.Round(seconds)}s";
-
-            return TimeSpan.FromSeconds(seconds).ToString(@"m\:ss");
-        }
-
-        private void UpdateCpuGraph(double currentCpuUsage)
-        {
-            _cpuHistory.Add(currentCpuUsage);
-
-            while (_cpuHistory.Count > _maxCpuDataPoints)
-            {
-                _cpuHistory.RemoveAt(0);
-            }
-
-            if (TxtCurrentCpu != null)
-                TxtCurrentCpu.Text = $"{Math.Round(currentCpuUsage)}%";
-
-            DrawCpuGraph();
-        }
-
-        private void CpuGraphCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            DrawCpuGraph();
-        }
-
-        private void DrawCpuGraph()
-        {
-            if (CpuGraphCanvas == null || CpuGraphLine == null || CpuGraphFill == null || CpuGraphDot == null) return;
-            if (_cpuHistory.Count < 2 || CpuGraphCanvas.ActualWidth == 0 || CpuGraphCanvas.ActualHeight == 0) return;
-
-            double width = CpuGraphCanvas.ActualWidth;
-            double height = CpuGraphCanvas.ActualHeight;
-            double maxCpu = 100.0;
-            double stepX = width / Math.Max(1, _maxCpuDataPoints - 1);
-            double startX = width - ((_cpuHistory.Count - 1) * stepX);
-            double startY = height - (_cpuHistory[0] / maxCpu * height);
-
-            Point startPoint = new Point(startX, startY);
-            Point lastPoint = startPoint;
-
-            if (CpuGraphLine.Data is not PathGeometry lineGeo)
-            {
-                lineGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                lineGeo.Figures.Add(fig);
-                CpuGraphLine.Data = lineGeo;
-            }
-
-            var lineFigure = (PathFigure)lineGeo.Figures[0];
-            lineFigure.StartPoint = startPoint;
-            var lineSegment = (PolyLineSegment)lineFigure.Segments[0];
-
-            var linePoints = lineSegment.Points;
-            linePoints.Clear();
-
-            if (CpuGraphFill.Data is not PathGeometry fillGeo)
-            {
-                fillGeo = new PathGeometry();
-                var fig = new PathFigure();
-                fig.Segments.Add(new PolyLineSegment { Points = new PointCollection() });
-                fillGeo.Figures.Add(fig);
-                CpuGraphFill.Data = fillGeo;
-            }
-
-            var fillFigure = (PathFigure)fillGeo.Figures[0];
-            fillFigure.StartPoint = new Point(startX, height);
-            var fillSegment = (PolyLineSegment)fillFigure.Segments[0];
-
-            var fillPoints = fillSegment.Points;
-            fillPoints.Clear();
-            fillPoints.Add(startPoint);
-
-            for (int i = 1; i < _cpuHistory.Count; i++)
-            {
-                double x = startX + (i * stepX);
-                double y = Math.Max(0, Math.Min(height, height - (_cpuHistory[i] / maxCpu * height)));
-                lastPoint = new Point(x, y);
-
-                linePoints.Add(lastPoint);
-                fillPoints.Add(lastPoint);
-            }
-            fillPoints.Add(new Point(width, height));
-
-            CpuGraphDot.Visibility = Visibility.Visible;
-            Canvas.SetLeft(CpuGraphDot, lastPoint.X);
-            Canvas.SetTop(CpuGraphDot, lastPoint.Y);
-        }
-
-        private void CmbPowerPlan_DropDownClosed(object sender, object e)
-        {
-            if (ViewModel != null && e != null)
-            {
-                ViewModel.ApplySelectedPowerPlan(e);
-            }
         }
         #endregion
 
@@ -688,21 +225,10 @@ namespace EvolveOS_Optimizer.Pages
                 case 2: totalSeconds = 900; break;
             }
 
-            int pollsPerSecond = 5;
-            _maxCpuDataPoints = totalSeconds * pollsPerSecond;
-            _maxRamDataPoints = totalSeconds * pollsPerSecond;
-            _maxNetDataPoints = totalSeconds * pollsPerSecond;
-            _maxGpuDataPoints = totalSeconds * pollsPerSecond;
-
-            UpdateAxisLabels(totalSeconds);    // CPU
-            UpdateRamAxisLabels(totalSeconds); // RAM
-            UpdateNetAxisLabels(totalSeconds); // Network
-            UpdateGpuAxisLabels(totalSeconds); // GPU
-
-            DrawCpuGraph();
-            DrawRamGraph();
-            DrawNetGraph();
-            DrawGpuGraph();
+            if (ViewModel != null)
+            {
+                ViewModel.MaxGraphSeconds = totalSeconds;
+            }
         }
         #endregion
 
@@ -1791,7 +1317,7 @@ namespace EvolveOS_Optimizer.Pages
             if (ToggleAdBlock.IsOn)
             {
                 var adguardPreset = DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "AdGuard DNS (Default)")
-                                    ?? DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "Quad9 (Security)");
+                                   ?? DnsPreset.DefaultPresets.FirstOrDefault(p => p.Name == "Quad9 (Security)");
 
                 if (adguardPreset != null)
                 {
@@ -3548,6 +3074,14 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        private void CmbPowerPlan_DropDownClosed(object sender, object e)
+        {
+            if (ViewModel != null && e != null)
+            {
+                ViewModel.ApplySelectedPowerPlan(e);
+            }
+        }
+
         #endregion
 
         #region Ambient Lightning
@@ -4167,12 +3701,6 @@ namespace EvolveOS_Optimizer.Pages
             {
                 Debug.WriteLine($"[{this.GetType().Name}] Low Resource Mode: Nuking UI and Graph Histories...");
 
-                _cpuHistory.Clear();
-                _ramHistory.Clear();
-                _netDownHistory.Clear();
-                _netUpHistory.Clear();
-                _gpuHistory.Clear();
-
                 MainWinViewModel.AppHidden -= PauseLiveMonitoring;
                 MainWinViewModel.AppRestored -= ResumeLiveMonitoring;
                 this.Loaded -= HomePage_Loaded;
@@ -4184,7 +3712,6 @@ namespace EvolveOS_Optimizer.Pages
 
                     DispatcherQueue?.TryEnqueue(() =>
                     {
-                        //this.Bindings?.StopTracking();
                         this.DataContext = null;
                         this.Content = null;
                     });

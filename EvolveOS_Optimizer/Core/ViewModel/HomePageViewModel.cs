@@ -12,6 +12,12 @@ using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Services;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -60,12 +66,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private int _isUpdatingTelemetry = 0;
         private int _monitoringTick = 0;
+        private int _sensorTickCounter = 0;
         private int _isUpdatingGpuSensors = 0;
         private double _displayCpuUsage = 0;
         private double _displayGpuUsage = 0;
         private double _displayDownMbps = 0;
         private double _displayUpMbps = 0;
         private double _lastRamPercentage = 0;
+        private double _cachedRawGpu = 0;
         private string _lastPCount = "0";
         private string _lastSCount = "0";
 
@@ -98,6 +106,108 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private double _uploadSpeed;
 
         private readonly object _gpuLock = new object();
+        #endregion
+
+        #region LiveCharts2 Engine Variables
+        private readonly List<double> _cpuHistory = new();
+        private readonly List<double> _ramHistory = new();
+        private readonly List<double> _netDownHistory = new();
+        private readonly List<double> _netUpHistory = new();
+        private readonly List<double> _gpuHistory = new();
+
+        private int _maxCpuDataPoints = 300;
+        private int _maxGraphSeconds = 60;
+        private double _peakNetworkSpeedMbps = 10.0;
+        private const int MaxVisualPoints = 120; // Hard clamp for LTTB to prevent UI render lag
+        #endregion
+
+        #region LiveCharts2 Graphing Properties
+
+        public ObservableCollection<ObservablePoint> CpuGraphValues { get; } = new();
+        public ObservableCollection<ObservablePoint> CpuGraphDot { get; } = new();
+
+        public ObservableCollection<ObservablePoint> RamGraphValues { get; } = new();
+        public ObservableCollection<ObservablePoint> RamGraphDot { get; } = new();
+
+        public ObservableCollection<ObservablePoint> GpuGraphValues { get; } = new();
+        public ObservableCollection<ObservablePoint> GpuGraphDot { get; } = new();
+
+        public ObservableCollection<ObservablePoint> NetDownGraphValues { get; } = new();
+        public ObservableCollection<ObservablePoint> NetDownGraphDot { get; } = new();
+
+        public ObservableCollection<ObservablePoint> NetUpGraphValues { get; } = new();
+        public ObservableCollection<ObservablePoint> NetUpGraphDot { get; } = new();
+
+        public ISeries[] CpuGraphSeries { get; set; } = Array.Empty<ISeries>();
+        public ISeries[] RamGraphSeries { get; set; } = Array.Empty<ISeries>();
+        public ISeries[] GpuGraphSeries { get; set; } = Array.Empty<ISeries>();
+        public ISeries[] NetGraphSeries { get; set; } = Array.Empty<ISeries>();
+
+        public IEnumerable<ICartesianAxis> HiddenXAxes { get; set; } = Array.Empty<ICartesianAxis>();
+        public IEnumerable<ICartesianAxis> HiddenYAxes { get; set; } = Array.Empty<ICartesianAxis>();
+        public IEnumerable<ICartesianAxis> DynamicNetYAxes { get; set; } = Array.Empty<ICartesianAxis>();
+
+        // Dynamic Axis Strings
+        private string _xAxisLabelStart = "-60 SEC";
+        public string XAxisLabelStart { get => _xAxisLabelStart; set => SetProperty(ref _xAxisLabelStart, value); }
+
+        private string _xAxisLabelQ1 = "-45 SEC";
+        public string XAxisLabelQ1 { get => _xAxisLabelQ1; set => SetProperty(ref _xAxisLabelQ1, value); }
+
+        private string _xAxisLabelMid = "-30 SEC";
+        public string XAxisLabelMid { get => _xAxisLabelMid; set => SetProperty(ref _xAxisLabelMid, value); }
+
+        private string _xAxisLabelQ3 = "-15 SEC";
+        public string XAxisLabelQ3 { get => _xAxisLabelQ3; set => SetProperty(ref _xAxisLabelQ3, value); }
+
+        private string _netYAxis100 = "10";
+        public string NetYAxis100 { get => _netYAxis100; set => SetProperty(ref _netYAxis100, value); }
+
+        private string _netYAxis75 = "7.5";
+        public string NetYAxis75 { get => _netYAxis75; set => SetProperty(ref _netYAxis75, value); }
+
+        private string _netYAxis50 = "5";
+        public string NetYAxis50 { get => _netYAxis50; set => SetProperty(ref _netYAxis50, value); }
+
+        private string _netYAxis25 = "2.5";
+        public string NetYAxis25 { get => _netYAxis25; set => SetProperty(ref _netYAxis25, value); }
+
+        public int SelectedGraphTimeframeIndex
+        {
+            get => SettingsEngine.Dashboard_GraphTimeframe;
+            set
+            {
+                if (SettingsEngine.Dashboard_GraphTimeframe != value)
+                {
+                    SettingsEngine.Dashboard_GraphTimeframe = value;
+                    OnPropertyChanged();
+
+                    MaxGraphSeconds = value switch
+                    {
+                        1 => 300,
+                        2 => 900,
+                        _ => 60
+                    };
+                }
+            }
+        }
+
+        public int MaxGraphSeconds
+        {
+            get => _maxGraphSeconds;
+            set
+            {
+                if (_maxGraphSeconds != value)
+                {
+                    _maxGraphSeconds = value;
+                    _maxCpuDataPoints = value * 5; // 5 polls per sec
+
+                    UpdateAxisLabels(value);
+                    RebuildGraphs();
+                }
+            }
+        }
+
         #endregion
 
         #region Dashboard Settings
@@ -143,7 +253,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public double AverageRamLoad { get => _averageRamLoad; set { _averageRamLoad = value; OnPropertyChanged(); } }
 
         private string _lastBoostFreedText = "Last run: -- MB";
-        public string LastBoostFreedText { get => _lastBoostFreedText; set { _lastBoostFreedText = value; OnPropertyChanged(); }
+        public string LastBoostFreedText
+        {
+            get => _lastBoostFreedText; set { _lastBoostFreedText = value; OnPropertyChanged(); }
         }
         #endregion
 
@@ -423,10 +535,56 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             LoadDisplayData();
             LoadDiskData();
 
+            InitializeLiveCharts();
+
             _ = FetchWeatherAsync(_weatherLocation, _cts.Token);
 
             InitHardwareState();
+
+            // Set initial scale from settings without overriding unnecessarily
+            MaxGraphSeconds = SettingsEngine.Dashboard_GraphTimeframe switch
+            {
+                1 => 300,
+                2 => 900,
+                _ => 60
+            };
+
             SetupWeatherTimer();
+        }
+
+        private void InitializeLiveCharts()
+        {
+            var cpuColor = SKColor.Parse("#00D6E8");
+            var ramColor = SKColor.Parse("#B142F5");
+            var gpuColor = SKColor.Parse("#F54242");
+            var netDownColor = SKColor.Parse("#00E84A");
+            var netUpColor = SKColor.Parse("#FFA500");
+
+            HiddenXAxes = new ICartesianAxis[] { new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 400 } };
+            HiddenYAxes = new ICartesianAxis[] { new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 100 } };
+            DynamicNetYAxes = new ICartesianAxis[] { new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 10 } }; // Scales dynamically
+
+            CpuGraphSeries = new ISeries[] {
+                new LineSeries<ObservablePoint> { Values = CpuGraphValues, Fill = new LinearGradientPaint(new[] { cpuColor.WithAlpha(100), cpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(cpuColor) { StrokeThickness = 2 }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) },
+                new ScatterSeries<ObservablePoint> { Values = CpuGraphDot, Fill = new SolidColorPaint(cpuColor), GeometrySize = 12, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) }
+            };
+
+            RamGraphSeries = new ISeries[] {
+                new LineSeries<ObservablePoint> { Values = RamGraphValues, Fill = new LinearGradientPaint(new[] { ramColor.WithAlpha(100), ramColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(ramColor) { StrokeThickness = 2 }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) },
+                new ScatterSeries<ObservablePoint> { Values = RamGraphDot, Fill = new SolidColorPaint(ramColor), GeometrySize = 12, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) }
+            };
+
+            GpuGraphSeries = new ISeries[] {
+                new LineSeries<ObservablePoint> { Values = GpuGraphValues, Fill = new LinearGradientPaint(new[] { gpuColor.WithAlpha(100), gpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(gpuColor) { StrokeThickness = 2 }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) },
+                new ScatterSeries<ObservablePoint> { Values = GpuGraphDot, Fill = new SolidColorPaint(gpuColor), GeometrySize = 12, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) }
+            };
+
+            NetGraphSeries = new ISeries[] {
+                new LineSeries<ObservablePoint> { Values = NetDownGraphValues, Fill = new LinearGradientPaint(new[] { netDownColor.WithAlpha(100), netDownColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netDownColor) { StrokeThickness = 2 }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) },
+                new ScatterSeries<ObservablePoint> { Values = NetDownGraphDot, Fill = new SolidColorPaint(netDownColor), GeometrySize = 12, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) },
+                new LineSeries<ObservablePoint> { Values = NetUpGraphValues, Fill = new LinearGradientPaint(new[] { netUpColor.WithAlpha(100), netUpColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netUpColor) { StrokeThickness = 2 }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) },
+                new ScatterSeries<ObservablePoint> { Values = NetUpGraphDot, Fill = new SolidColorPaint(netUpColor), GeometrySize = 12, AnimationsSpeed = TimeSpan.FromMilliseconds(220), DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0) }
+            };
         }
 
         private void InitHardwareState()
@@ -585,14 +743,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
 
             _weatherTimer?.Start();
-            Debug.WriteLine("[HomePageVM] Background timers RESUMED.");
+            System.Diagnostics.Debug.WriteLine("[HomePageVM] Background timers RESUMED.");
         }
 
         public void PauseUpdates()
         {
             _telemetryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
             _weatherTimer?.Stop();
-            Debug.WriteLine("[HomePageVM] Background timers PAUSED.");
+            System.Diagnostics.Debug.WriteLine("[HomePageVM] Background timers PAUSED.");
         }
 
         private void TelemetryTimer_Tick(object? state)
@@ -604,6 +762,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _monitoringTick++;
                 bool isFullSecond = _monitoringTick >= 5;
                 if (isFullSecond) _monitoringTick = 0;
+
+                _sensorTickCounter++;
+                bool isSensorTick = _sensorTickCounter >= 15;
+                if (isSensorTick) _sensorTickCounter = 0;
 
                 double rawCpu = 0;
                 if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
@@ -676,7 +838,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _lastNetworkCheckTime = now;
                 _isFirstTick = false;
 
-                double rawGpu = GetGpuUsage();
+                if (isFullSecond)
+                {
+                    _cachedRawGpu = GetGpuUsage();
+                }
+                double rawGpu = _cachedRawGpu;
 
                 _displayCpuUsage = (_displayCpuUsage * 0.8) + (rawCpu * 0.2);
                 _displayGpuUsage = (_displayGpuUsage * 0.8) + (rawGpu * 0.2);
@@ -684,7 +850,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _displayUpMbps = (_displayUpMbps * 0.8) + (rawUlMbps * 0.2);
                 _lastRamPercentage = rawRam;
 
-                if (isFullSecond)
+                // Push to history buffers safely
+                _cpuHistory.Add(_displayCpuUsage);
+                _ramHistory.Add(_lastRamPercentage);
+                _gpuHistory.Add(_displayGpuUsage);
+                _netDownHistory.Add(_displayDownMbps);
+                _netUpHistory.Add(_displayUpMbps);
+
+                while (_cpuHistory.Count > _maxCpuDataPoints) _cpuHistory.RemoveAt(0);
+                while (_ramHistory.Count > _maxCpuDataPoints) _ramHistory.RemoveAt(0);
+                while (_gpuHistory.Count > _maxCpuDataPoints) _gpuHistory.RemoveAt(0);
+                while (_netDownHistory.Count > _maxCpuDataPoints) _netDownHistory.RemoveAt(0);
+                while (_netUpHistory.Count > _maxCpuDataPoints) _netUpHistory.RemoveAt(0);
+
+                if (isSensorTick)
                 {
                     _ = Task.Run(async () =>
                     {
@@ -754,7 +933,14 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
                 {
-                    if (isFullSecond) UpdateDateTime();
+                    if (isFullSecond)
+                    {
+                        UpdateDateTime();
+                        AverageRamLoad = _ramHistory.Count > 0 ? _ramHistory.Average() : 0;
+                    }
+
+                    RebuildGraphs(); 
+
                     OnTelemetryTicked?.Invoke(payload);
 
                     GpuUsageDisplay = (int)Math.Round(_displayGpuUsage);
@@ -819,7 +1005,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _gpuCategory = new PerformanceCounterCategory("GPU Engine");
                 }
 
-                if ((DateTime.Now - _lastGpuInstanceRefresh).TotalSeconds >= 10)
+                if ((DateTime.Now - _lastGpuInstanceRefresh).TotalSeconds >= 60)
                 {
                     var currentInstances = _gpuCategory.GetInstanceNames()
                         .Where(i => i.EndsWith("engtype_3D", StringComparison.OrdinalIgnoreCase))
@@ -864,6 +1050,146 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
         #endregion
 
+        #region LiveCharts2 Graph Builders & LTTB
+
+        private void RebuildGraphs()
+        {
+            // Apply DownsampleLTTB if history exceeds visible clamp
+            var cpuProc = DownsampleLTTB(_cpuHistory, MaxVisualPoints);
+            var ramProc = DownsampleLTTB(_ramHistory, MaxVisualPoints);
+            var gpuProc = DownsampleLTTB(_gpuHistory, MaxVisualPoints);
+            var netDownProc = DownsampleLTTB(_netDownHistory, MaxVisualPoints);
+            var netUpProc = DownsampleLTTB(_netUpHistory, MaxVisualPoints);
+
+            // In-place updates to avoid rendering lag
+            UpdateSeriesData(cpuProc, CpuGraphValues, CpuGraphDot);
+            UpdateSeriesData(ramProc, RamGraphValues, RamGraphDot);
+            UpdateSeriesData(gpuProc, GpuGraphValues, GpuGraphDot);
+
+            double maxDown = netDownProc.Count > 0 ? netDownProc.Max() : 0;
+            double maxUp = netUpProc.Count > 0 ? netUpProc.Max() : 0;
+            double absoluteMax = Math.Max(maxDown, maxUp);
+
+            if (absoluteMax > _peakNetworkSpeedMbps) _peakNetworkSpeedMbps = absoluteMax * 1.1;
+            else if (_peakNetworkSpeedMbps > 10.0 && absoluteMax < (_peakNetworkSpeedMbps * 0.1))
+                _peakNetworkSpeedMbps = Math.Max(10.0, _peakNetworkSpeedMbps * 0.995);
+
+            double netScale = Math.Max(10.0, Math.Ceiling(_peakNetworkSpeedMbps));
+
+            NetYAxis100 = Math.Round(netScale).ToString();
+            NetYAxis75 = Math.Round(netScale * 0.75).ToString();
+            NetYAxis50 = Math.Round(netScale * 0.50).ToString();
+            NetYAxis25 = Math.Round(netScale * 0.25).ToString();
+
+            if (DynamicNetYAxes.FirstOrDefault() is Axis dynamicAxis)
+            {
+                dynamicAxis.MaxLimit = netScale;
+            }
+
+            UpdateSeriesData(netDownProc, NetDownGraphValues, NetDownGraphDot);
+            UpdateSeriesData(netUpProc, NetUpGraphValues, NetUpGraphDot);
+        }
+
+        private void UpdateSeriesData(List<double> rawData, ObservableCollection<ObservablePoint> seriesValues, ObservableCollection<ObservablePoint> dotValue)
+        {
+            if (rawData.Count < 2)
+            {
+                seriesValues.Clear();
+                dotValue.Clear();
+                return;
+            }
+
+            int maxPoints = Math.Max(1, rawData.Count - 1);
+            double stepX = 400.0 / maxPoints;
+            double currentX = 400.0 - (rawData.Count - 1) * stepX;
+
+            // Trim excess values from the collection
+            while (seriesValues.Count > rawData.Count)
+            {
+                seriesValues.RemoveAt(seriesValues.Count - 1);
+            }
+
+            // In-place UI update loop
+            for (int i = 0; i < rawData.Count; i++)
+            {
+                if (i < seriesValues.Count)
+                {
+                    seriesValues[i].X = currentX;
+                    seriesValues[i].Y = rawData[i];
+                }
+                else
+                {
+                    seriesValues.Add(new ObservablePoint(currentX, rawData[i]));
+                }
+                currentX += stepX;
+            }
+
+            var lastPoint = seriesValues.Last();
+            if (dotValue.Count == 0) dotValue.Add(new ObservablePoint(lastPoint.X, lastPoint.Y));
+            else { dotValue[0].X = lastPoint.X; dotValue[0].Y = lastPoint.Y; }
+        }
+
+        private List<double> DownsampleLTTB(List<double> data, int threshold)
+        {
+            if (data.Count <= threshold || threshold <= 2) return data;
+
+            var sampled = new List<double>(threshold);
+            double every = (double)(data.Count - 2) / (threshold - 2);
+
+            int a = 0;
+            sampled.Add(data[a]);
+
+            for (int i = 0; i < threshold - 2; i++)
+            {
+                int avgRangeStart = (int)(Math.Floor((i + 1) * every) + 1);
+                int avgRangeEnd = (int)(Math.Floor((i + 2) * every) + 1);
+                avgRangeEnd = Math.Min(avgRangeEnd, data.Count);
+
+                double avgY = 0;
+                for (int j = avgRangeStart; j < avgRangeEnd; j++) avgY += data[j];
+                avgY /= Math.Max(1, avgRangeEnd - avgRangeStart);
+
+                int rangeOffs = (int)(Math.Floor(i * every) + 1);
+                int rangeTo = (int)(Math.Floor((i + 1) * every) + 1);
+
+                double maxArea = -1;
+                int nextA = rangeOffs;
+
+                for (int j = rangeOffs; j < rangeTo; j++)
+                {
+                    double area = Math.Abs((a - j) * (data[j] - avgY) - (a - (i + 1)) * (data[a] - avgY)) * 0.5;
+                    if (area > maxArea)
+                    {
+                        maxArea = area;
+                        nextA = j;
+                    }
+                }
+
+                sampled.Add(data[nextA]);
+                a = nextA;
+            }
+
+            sampled.Add(data[data.Count - 1]);
+            return sampled;
+        }
+
+        private void UpdateAxisLabels(int totalSeconds)
+        {
+            double step = totalSeconds / 4.0;
+            XAxisLabelStart = FormatTime(totalSeconds);
+            XAxisLabelQ1 = FormatTime(totalSeconds - step);
+            XAxisLabelMid = FormatTime(totalSeconds - (step * 2));
+            XAxisLabelQ3 = FormatTime(totalSeconds - (step * 3));
+        }
+
+        private string FormatTime(double seconds)
+        {
+            if (seconds < 60) return $"-{Math.Round(seconds)} SEC";
+            return $"-{TimeSpan.FromSeconds(seconds).ToString(@"m\:ss")} MIN";
+        }
+
+        #endregion
+
         #region System Data Management
         public void LoadDisplayData()
         {
@@ -880,7 +1206,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _displayData.Add(new HomePageModel { Name = "GPU", Data = HardwareData.Gpu.Data });
             _displayData.Add(new HomePageModel { Name = "Storage", Data = HardwareData.Storage });
 
-            LocalIP = new IPWrapper { Data = HardwareData.LocalIPAddress };
+            LocalIP = new IPWrapper { Data = _monitoringService.GetDefaultLocalIP() };
         }
 
         public void RefreshStats(string processCount, string servicesCount)
@@ -918,7 +1244,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[Disk Data Error] Failed to load disk drives: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Disk Data Error] Failed to load disk drives: {ex.Message}");
             }
         }
         #endregion
@@ -967,7 +1293,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 });
             }
             catch (OperationCanceledException) { }
-            catch (Exception ex) { Debug.WriteLine($"[Weather UI Error] {ex.Message}"); }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Weather UI Error] {ex.Message}"); }
         }
 
         private static string LoadLocationFromRegistry()
@@ -1055,7 +1381,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 ClearPropertyChangedListeners();
 
-                Debug.WriteLine("[HomePageVM] Purge: All models and delegates unrooted.");
+                System.Diagnostics.Debug.WriteLine("[HomePageVM] Purge: All models and delegates unrooted.");
             }
 
             base.Dispose(disposing);
