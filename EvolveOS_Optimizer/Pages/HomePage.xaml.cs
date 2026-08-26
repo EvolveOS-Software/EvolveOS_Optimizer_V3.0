@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -16,8 +15,6 @@ using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Managers;
-using EvolveOS_Optimizer.Utilities.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Input;
 using Microsoft.UI.Text;
@@ -28,7 +25,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.Win32;
 using Windows.Foundation;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace EvolveOS_Optimizer.Pages
 {
@@ -46,16 +42,13 @@ namespace EvolveOS_Optimizer.Pages
 
         private readonly DispatcherQueue _dispatcherQueue;
 
-        private DispatcherTimer? _wallpaperTimer;
-
-        private string _currentWallpaperPath = string.Empty;
-        private DateTime _currentWallpaperWriteTime = DateTime.MinValue;
-
         private const string RegistryPath = @"Software\EvolveOS_Optimizer";
         private const string RegistryValueName = "LastLocation";
 
         private bool _isCurrentPageActive = false;
         private bool _isInitialized = false;
+
+        private CancellationTokenSource? _networkMonitorCts;
 
         #endregion
 
@@ -84,6 +77,7 @@ namespace EvolveOS_Optimizer.Pages
             this.Unloaded += Page_Unloaded;
 
             ViewModel.OnTelemetryTicked += ViewModel_OnTelemetryTicked;
+            ViewModel.OnWallpaperUpdated += ViewModel_OnWallpaperUpdated;
         }
 
         private void HomePage_Loaded(object sender, RoutedEventArgs e)
@@ -91,8 +85,8 @@ namespace EvolveOS_Optimizer.Pages
             if (_isCurrentPageActive) return;
             _isCurrentPageActive = true;
 
-            StartWallpaperMonitor();
-            ResumeLiveMonitoring();
+            ViewModel.StartWallpaperMonitor();
+            ViewModel.ResumeUpdates();
 
             MainWinViewModel.AppHidden += PauseLiveMonitoring;
             MainWinViewModel.AppRestored += ResumeLiveMonitoring;
@@ -105,7 +99,6 @@ namespace EvolveOS_Optimizer.Pages
             if (!_isInitialized)
             {
                 ApplyElevationUI();
-                LoadWeather();
                 LoadDashboardLayout();
                 DashboardDragCursor();
                 UpdateDnsCardUI();
@@ -124,10 +117,10 @@ namespace EvolveOS_Optimizer.Pages
                     if (SettingsEngine.IsPerformanceCardExpanded) BtnExpandPerformance_Click(this, new RoutedEventArgs());
                 }
 
-                _ = CalculateSystemHealthAsync();
-                _ = CalculateSecurityHealthAsync();
-                _ = CalculatePrivacyHealthAsync();
-                _ = CalculatePerformanceHealthAsync();
+                _ = UpdateSystemHealthUIAsync();
+                _ = UpdateSecurityUIAsync();
+                _ = UpdatePrivacyUIAsync();
+                _ = UpdatePerformanceUIAsync();
 
                 StartShimmer(IpShimmerBrush, "Stop2");
                 StartShimmer(LocalIpShimmerBrush, "LocalStop2");
@@ -158,40 +151,72 @@ namespace EvolveOS_Optimizer.Pages
 
         private void PauseLiveMonitoring()
         {
-            _wallpaperTimer?.Stop();
-
-            if (this.DataContext is HomePageViewModel vm)
-            {
-                vm.PauseUpdates();
-            }
-
+            ViewModel.PauseUpdates();
             Debug.WriteLine("[HomePage] Live monitoring PAUSED for System Tray/Cache.");
         }
 
         private void ResumeLiveMonitoring()
         {
-            _wallpaperTimer?.Start();
-
-            if (this.DataContext is HomePageViewModel vm)
-            {
-                vm.ResumeUpdates();
-            }
-
+            ViewModel.StartWallpaperMonitor();
+            ViewModel.ResumeUpdates();
             Debug.WriteLine("[HomePage] Live monitoring RESUMED.");
+        }
+
+        private async void ViewModel_OnWallpaperUpdated(byte[] imageBytes)
+        {
+            try
+            {
+                using var memStream = new MemoryStream(imageBytes);
+                using var randomAccessStream = memStream.AsRandomAccessStream();
+
+                var bitmap = new BitmapImage();
+                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+
+                bitmap.DecodePixelWidth = 1920;
+                await bitmap.SetSourceAsync(randomAccessStream);
+
+                if (WallpaperBrush != null) WallpaperBrush.ImageSource = bitmap;
+
+                var visual = ElementCompositionPreview.GetElementVisual(LogoPath);
+                if (visual != null)
+                {
+                    var fadeAnimation = visual.Compositor.CreateScalarKeyFrameAnimation();
+                    fadeAnimation.InsertKeyFrame(0.0f, 0.5f);
+                    fadeAnimation.InsertKeyFrame(1.0f, 1.0f);
+                    fadeAnimation.Duration = TimeSpan.FromMilliseconds(500);
+                    visual.StartAnimation("Opacity", fadeAnimation);
+                }
+            }
+            catch { }
         }
         #endregion
 
-        #region View/UI Telemetry Updates (Linked to ViewModel)
+        #region View/UI Telemetry Updates
+
+        private int _lastRenderedCpu = -1;
+        private int _lastRenderedRam = -1;
+
         private void ViewModel_OnTelemetryTicked(TelemetryDataPayload payload)
         {
             if (!_isCurrentPageActive) return;
 
-            CPULoad.Value = Math.Clamp(payload.Cpu, 0, 100);
-            RAMLoad.Value = Math.Clamp(payload.Ram, 0, 100);
-            CPUText.Text = ((int)Math.Round(payload.Cpu)).ToString();
-            RAMText.Text = ((int)Math.Round(payload.Ram)).ToString();
+            int currentCpu = (int)Math.Round(Math.Clamp(payload.Cpu, 0, 100));
+            int currentRam = (int)Math.Round(Math.Clamp(payload.Ram, 0, 100));
 
-            if (BoostRamRing != null) BoostRamRing.Value = Math.Clamp(payload.Ram, 0, 100);
+            if (currentCpu != _lastRenderedCpu)
+            {
+                CPULoad.Value = currentCpu;
+                CPUText.Text = currentCpu.ToString();
+                _lastRenderedCpu = currentCpu;
+            }
+
+            if (currentRam != _lastRenderedRam)
+            {
+                RAMLoad.Value = currentRam;
+                RAMText.Text = currentRam.ToString();
+                if (BoostRamRing != null) BoostRamRing.Value = currentRam;
+                _lastRenderedRam = currentRam;
+            }
 
             CheckAutoMemoryOptimization(payload.Ram);
 
@@ -228,113 +253,6 @@ namespace EvolveOS_Optimizer.Pages
             if (ViewModel != null)
             {
                 ViewModel.MaxGraphSeconds = totalSeconds;
-            }
-        }
-        #endregion
-
-        #region Direct Wallpaper Injection Logic
-        private void StartWallpaperMonitor()
-        {
-            if (_wallpaperTimer == null)
-            {
-                _wallpaperTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-                _wallpaperTimer.Tick += CheckWallpaperTimer_Tick;
-            }
-
-            _wallpaperTimer.Start();
-
-            CheckWallpaperTimer_Tick(null, null);
-        }
-
-        private void CheckWallpaperTimer_Tick(object? sender, object? e)
-        {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Windows\Themes\TranscodedWallpaper");
-
-            Task.Run(async () =>
-            {
-                if (!File.Exists(path)) return;
-
-                try
-                {
-                    DateTime writeTime = File.GetLastWriteTime(path);
-
-                    if (writeTime > _currentWallpaperWriteTime)
-                    {
-                        _currentWallpaperWriteTime = writeTime;
-
-                        byte[] imageBytes;
-                        using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                        using (var ms = new MemoryStream())
-                        {
-                            await fs.CopyToAsync(ms);
-                            imageBytes = ms.ToArray();
-                        }
-
-                        _dispatcherQueue.TryEnqueue(async () =>
-                        {
-                            try
-                            {
-                                using var memStream = new MemoryStream(imageBytes);
-                                var randomAccessStream = memStream.AsRandomAccessStream();
-
-                                var bitmap = new BitmapImage();
-                                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                                await bitmap.SetSourceAsync(randomAccessStream);
-
-                                if (WallpaperBrush != null) WallpaperBrush.ImageSource = bitmap;
-
-                                var visual = ElementCompositionPreview.GetElementVisual(LogoPath);
-                                var fadeAnimation = visual.Compositor.CreateScalarKeyFrameAnimation();
-                                fadeAnimation.InsertKeyFrame(0.0f, 0.5f);
-                                fadeAnimation.InsertKeyFrame(1.0f, 1.0f);
-                                fadeAnimation.Duration = TimeSpan.FromMilliseconds(500);
-                                visual.StartAnimation("Opacity", fadeAnimation);
-                            }
-                            catch { }
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[Direct Wallpaper Update Failed] {ex.Message}");
-                }
-            });
-        }
-
-        private async Task LoadWallpaperIntoBrushAsync(string path)
-        {
-            try
-            {
-                byte[] imageBytes;
-                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (var ms = new MemoryStream())
-                {
-                    await fs.CopyToAsync(ms);
-                    imageBytes = ms.ToArray();
-                }
-
-                using var memStream = new MemoryStream(imageBytes);
-                var randomAccessStream = memStream.AsRandomAccessStream();
-
-                var bitmap = new BitmapImage();
-                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                await bitmap.SetSourceAsync(randomAccessStream);
-
-                if (WallpaperBrush != null)
-                {
-                    WallpaperBrush.ImageSource = bitmap;
-                }
-
-                var visual = ElementCompositionPreview.GetElementVisual(LogoPath);
-                var fadeAnimation = visual.Compositor.CreateScalarKeyFrameAnimation();
-                fadeAnimation.InsertKeyFrame(0.0f, 0.5f);
-                fadeAnimation.InsertKeyFrame(1.0f, 1.0f);
-                fadeAnimation.Duration = TimeSpan.FromMilliseconds(500);
-                visual.StartAnimation("Opacity", fadeAnimation);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[Direct Wallpaper Update Failed] {ex.Message}");
             }
         }
         #endregion
@@ -394,7 +312,6 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
         }
-
         #endregion
 
         #region Registry & Location Logic
@@ -499,7 +416,6 @@ namespace EvolveOS_Optimizer.Pages
         private void BtnCloseCustomizeLayout_Click(object sender, RoutedEventArgs e)
         {
             ApplyLightingToCards();
-
             CustomizeLayoutDialog.Hide();
         }
 
@@ -1127,10 +1043,6 @@ namespace EvolveOS_Optimizer.Pages
 
                 DiagnosticsPageViewModel.Current.IsManualDnsViewOpen = true;
             }
-            else
-            {
-                Debug.WriteLine("❌ MainWindow.Instance is null!");
-            }
         }
 
         private void UpdateDnsCardUI()
@@ -1384,14 +1296,7 @@ namespace EvolveOS_Optimizer.Pages
 
             var pingTasks = benchmarkTargets.Select(async target =>
             {
-                long latency = -1;
-                try
-                {
-                    using Ping ping = new Ping();
-                    var reply = await ping.SendPingAsync(target.Ipv4Primary!, 1200);
-                    if (reply.Status == IPStatus.Success) latency = reply.RoundtripTime;
-                }
-                catch { }
+                long latency = await ViewModel.PingDnsAsync(target.Ipv4Primary!);
 
                 return new DnsBenchmarkingItem
                 {
@@ -1476,21 +1381,14 @@ namespace EvolveOS_Optimizer.Pages
             {
                 MainWindow.Instance.SwitchPage("Diagnostics", "Maintenance");
             }
-            else
-            {
-                Debug.WriteLine("❌ MainWindow.Instance is null!");
-            }
         }
 
         private async void BtnRefreshHealth_Click(object sender, RoutedEventArgs e)
         {
-            DashMaintenanceLoadingRing.Visibility = Visibility.Visible;
-            DashMaintenanceStatusImage.Visibility = Visibility.Collapsed;
-
-            await CalculateSystemHealthAsync();
+            await UpdateSystemHealthUIAsync();
         }
 
-        private async Task CalculateSystemHealthAsync()
+        private async Task UpdateSystemHealthUIAsync()
         {
             try
             {
@@ -1526,61 +1424,59 @@ namespace EvolveOS_Optimizer.Pages
                     }
                 }
 
-                var healthResult = await SystemHealthHelper.EvaluateHealthAsync();
+                var healthResult = await ViewModel.CalculateSystemHealthAsync();
 
-                DispatcherQueue.TryEnqueue(() =>
+                if (healthResult != null)
                 {
-                    if (healthResult != null)
+                    var statusImage = DashMaintenanceStatusImage;
+                    if (statusImage != null && !string.IsNullOrEmpty((string)healthResult.ImagePath))
                     {
-                        var statusImage = DashMaintenanceStatusImage;
-                        if (statusImage != null && !string.IsNullOrEmpty(healthResult.ImagePath))
+                        try
                         {
-                            try
-                            {
-                                string pathStr = healthResult.ImagePath;
-                                Uri imageUri = pathStr.StartsWith("ms-appx://", StringComparison.OrdinalIgnoreCase) ||
-                                               pathStr.StartsWith("ms-appdata://", StringComparison.OrdinalIgnoreCase)
-                                    ? new Uri(pathStr)
-                                    : new Uri($"ms-appx:///{pathStr.TrimStart('/')}");
+                            string pathStr = healthResult.ImagePath;
+                            Uri imageUri = pathStr.StartsWith("ms-appx://", StringComparison.OrdinalIgnoreCase) ||
+                                           pathStr.StartsWith("ms-appdata://", StringComparison.OrdinalIgnoreCase)
+                                ? new Uri(pathStr)
+                                : new Uri($"ms-appx:///{pathStr.TrimStart('/')}");
 
-                                statusImage!.Source = null;
-                                statusImage.Source = new BitmapImage(imageUri);
-                                statusImage.Visibility = Visibility.Visible;
+                            statusImage.Source = null;
+                            statusImage.Source = new BitmapImage(imageUri);
+                            statusImage.Visibility = Visibility.Visible;
 
-                                statusImage.InvalidateMeasure();
-                                statusImage.InvalidateArrange();
-                            }
-                            catch (Exception imgEx)
-                            {
-                                Debug.WriteLine($"❌ [Health Image Error] {imgEx.Message}");
-                            }
+                            statusImage.InvalidateMeasure();
+                            statusImage.InvalidateArrange();
                         }
-
-                        if (TxtHealthStatus != null)
+                        catch (Exception imgEx)
                         {
-                            TxtHealthStatus.Text = healthResult.StatusText;
-                            TxtHealthStatus.InvalidateMeasure();
-                            TxtHealthStatus.InvalidateArrange();
+                            Debug.WriteLine($"❌ [Health Image Error] {imgEx.Message}");
                         }
                     }
 
-                    if (TxtLastRefreshed != null)
+                    if (TxtHealthStatus != null)
                     {
-                        string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
-                        TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
-                        TxtLastRefreshed.Visibility = Visibility.Visible;
+                        TxtHealthStatus.Text = healthResult.StatusText;
+                        TxtHealthStatus.InvalidateMeasure();
+                        TxtHealthStatus.InvalidateArrange();
                     }
+                }
 
-                    FrameworkElement? curr = CardMaintenance;
-                    while (curr != null)
-                    {
-                        curr.InvalidateMeasure();
-                        curr.InvalidateArrange();
-                        if (curr is GridViewItem || curr is GridView) break;
-                        curr = VisualTreeHelper.GetParent(curr) as FrameworkElement;
-                    }
-                    CardMaintenance?.UpdateLayout();
-                });
+                if (TxtLastRefreshed != null)
+                {
+                    string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
+                    TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
+                    TxtLastRefreshed.Visibility = Visibility.Visible;
+                }
+
+                FrameworkElement? curr = CardMaintenance;
+                while (curr != null)
+                {
+                    curr.InvalidateMeasure();
+                    curr.InvalidateArrange();
+                    if (curr is GridViewItem || curr is GridView) break;
+                    curr = VisualTreeHelper.GetParent(curr) as FrameworkElement;
+                }
+                CardMaintenance?.UpdateLayout();
+
             }
             catch (Exception ex)
             {
@@ -1588,15 +1484,12 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
-                DispatcherQueue.TryEnqueue(() =>
+                if (DashMaintenanceLoadingRing != null)
                 {
-                    if (DashMaintenanceLoadingRing != null)
-                    {
-                        DashMaintenanceLoadingRing.IsActive = false;
-                        DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
-                    }
-                    if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = true;
-                });
+                    DashMaintenanceLoadingRing.IsActive = false;
+                    DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
+                }
+                if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = true;
             }
         }
 
@@ -1609,18 +1502,14 @@ namespace EvolveOS_Optimizer.Pages
             {
                 MainWindow.Instance.SwitchPage("Diagnostics", "Security");
             }
-            else
-            {
-                Debug.WriteLine("❌ MainWindow.Instance is null!");
-            }
         }
 
         private async void BtnRefreshSecurity_Click(object sender, RoutedEventArgs e)
         {
-            await CalculateSecurityHealthAsync();
+            await UpdateSecurityUIAsync();
         }
 
-        private async Task CalculateSecurityHealthAsync()
+        private async Task UpdateSecurityUIAsync()
         {
             try
             {
@@ -1633,57 +1522,19 @@ namespace EvolveOS_Optimizer.Pages
 
                 TxtSecurityStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
 
-                int issuesCount = 0;
-                bool isCoreProtected = false;
-                List<string> securityIssues = new List<string>();
+                var result = await ViewModel.CalculateSecurityHealthAsync();
 
-                await Task.Run(async () =>
-                {
-                    var antivirusInfo = await SecurityDiagnostics.GetAntivirusInfoAsync();
-                    bool isAvEnabled = antivirusInfo.IsEnabled;
-                    bool isFwEnabled = await SecurityDiagnostics.IsFirewallEnabledAsync();
-                    bool isRtEnabled = await SecurityDiagnostics.IsRealTimeProtectionEnabledAsync();
-                    bool isUacEnabled = await SecurityDiagnostics.IsUACEnabledAsync();
-                    bool isWuEnabled = await SecurityDiagnostics.IsWindowsUpdateEnabledAsync();
-                    bool isTpEnabled = await SecurityDiagnostics.IsTamperProtectionEnabledAsync();
-                    bool isLsaEnabled = await SecurityDiagnostics.IsLsaProtectionEnabledAsync();
-                    bool isRdpEnabled = await SecurityDiagnostics.IsRdpEnabledAsync();
-                    bool isRaEnabled = await SecurityDiagnostics.IsRemoteAssistanceEnabledAsync();
-                    bool isDevModeEnabled = await SecurityDiagnostics.IsDeveloperModeEnabledAsync();
-
-                    int sacState = await SecurityDiagnostics.GetSmartAppControlStateAsync();
-                    bool isSmartAppControlSecure = sacState != 0;
-
-                    string psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync();
-                    bool isPsPolicySecure = psPolicy != "Unrestricted" && psPolicy != "Bypass" && psPolicy != "Error";
-
-                    if (!isAvEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_VirusThreatProtection") ?? "Virus & Threat Protection"); }
-                    if (!isFwEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_FirewallNetworkProtection") ?? "Firewall is disabled"); }
-                    if (!isRtEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RealTimeProtection") ?? "Real-Time Protection"); }
-                    if (!isUacEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_UAC") ?? "UAC Level"); }
-                    if (!isWuEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_WindowsUpdate") ?? "Windows Update"); }
-                    if (!isTpEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_TamperProtection") ?? "Tamper Protection"); }
-                    if (!isSmartAppControlSecure) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_SmartAppControl") ?? "Smart App Control"); }
-                    if (!isPsPolicySecure) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_PSExecutionPolicy") ?? "PowerShell Policy"); }
-                    if (!isLsaEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_LSAProtection") ?? "LSA Protection"); }
-                    if (isRdpEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RemoteDesktop") ?? "Remote Desktop"); }
-                    if (isRaEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance"); }
-                    if (isDevModeEnabled) { issuesCount++; securityIssues.Add(ResourceString.GetString("SecurityPage_DeveloperMode") ?? "Developer Mode"); }
-
-                    isCoreProtected = isAvEnabled && isFwEnabled && isRtEnabled;
-                });
-
-                if (!isCoreProtected)
+                if (!result.IsCoreProtected)
                 {
                     DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/unsecure.png"));
                     DashSecurityStatusImage.Opacity = 1.0;
-                    TxtSecurityStatus.Text = $"{issuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
+                    TxtSecurityStatus.Text = $"{result.IssuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
                 }
-                else if (issuesCount > 0)
+                else if (result.IssuesCount > 0)
                 {
                     DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
                     DashSecurityStatusImage.Opacity = 0.5;
-                    TxtSecurityStatus.Text = $"{issuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
+                    TxtSecurityStatus.Text = $"{result.IssuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
                 }
                 else
                 {
@@ -1692,12 +1543,12 @@ namespace EvolveOS_Optimizer.Pages
                     TxtSecurityStatus.Text = ResourceString.GetString("text_security_good") ?? "System is Secure";
                 }
 
-                if (issuesCount > 0)
+                if (result.IssuesCount > 0)
                 {
                     BtnDashViewIssues.Visibility = Visibility.Visible;
 
                     var flyout = new MenuFlyout();
-                    foreach (var issue in securityIssues)
+                    foreach (var issue in result.Issues)
                     {
                         flyout.Items.Add(new MenuFlyoutItem
                         {
@@ -1783,10 +1634,10 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void BtnRefreshPrivacy_Click(object sender, RoutedEventArgs e)
         {
-            await CalculatePrivacyHealthAsync();
+            await UpdatePrivacyUIAsync();
         }
 
-        private async Task CalculatePrivacyHealthAsync()
+        private async Task UpdatePrivacyUIAsync()
         {
             try
             {
@@ -1798,180 +1649,99 @@ namespace EvolveOS_Optimizer.Pages
                 if (BtnPrivacyViewIssues != null) BtnPrivacyViewIssues.Visibility = Visibility.Collapsed;
                 if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
 
-                int totalApplicableSettings = 0;
-                int issuesCount = 0;
-                int aiIssuesCount = 0;
-                int appPermIssuesCount = 0;
-                int edgeWebIssuesCount = 0;
+                var result = await ViewModel.CalculatePrivacyHealthAsync();
 
-                List<string> privacyIssues = new List<string>();
-
-                await Task.Run(() =>
+                if (TxtPrivacyStatus != null)
                 {
-                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
-                    var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+                    if (result.IssuesCount >= 5) TxtPrivacyStatus.Text = $"{result.IssuesCount} {(ResourceString.GetString("text_privacy_critical") ?? "Privacy Leaks Found")}";
+                    else if (result.IssuesCount > 0) TxtPrivacyStatus.Text = $"{result.IssuesCount} {(ResourceString.GetString("text_privacy_warning") ?? "Optimizations Available")}";
+                    else TxtPrivacyStatus.Text = ResourceString.GetString("text_privacy_good") ?? "Privacy is Optimized";
+                }
 
-                    foreach (var setting in privacyGroup.Settings)
-                    {
-                        if (setting.IsWindows11Only && !isWin11) continue;
-                        if (setting.IsWindows10Only && isWin11) continue;
-
-                        totalApplicableSettings++;
-                        bool isOptimal = true;
-
-                        if (setting.ComboBox != null)
-                        {
-                            var recommendedOption = setting.ComboBox.Options?.FirstOrDefault(o => o.IsRecommended);
-                            if (recommendedOption != null && recommendedOption.ValueMappings != null)
-                            {
-                                foreach (var mapping in recommendedOption.ValueMappings)
-                                {
-                                    var regDef = setting.RegistrySettings?.FirstOrDefault(rs => rs.ValueName == mapping.Key);
-                                    if (regDef != null && regDef.KeyPath != null && regDef.ValueName != null)
-                                    {
-                                        object? currentValue = ReadRegistryValue(regDef.KeyPath, regDef.ValueName) ?? regDef.DefaultValue;
-
-                                        if (currentValue?.ToString() != mapping.Value?.ToString())
-                                        {
-                                            isOptimal = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else if (setting.RegistrySettings != null)
-                        {
-                            foreach (var reg in setting.RegistrySettings)
-                            {
-                                if (reg.RecommendedValue != null && reg.KeyPath != null && reg.ValueName != null)
-                                {
-                                    object? currentValue = ReadRegistryValue(reg.KeyPath, reg.ValueName) ?? reg.DefaultValue;
-
-                                    if (currentValue?.ToString() != reg.RecommendedValue.ToString())
-                                    {
-                                        isOptimal = false;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!isOptimal)
-                        {
-                            issuesCount++;
-                            privacyIssues.Add(setting.Name ?? "Unknown Privacy Setting");
-
-                            if (setting.GroupName == "Windows AI" || setting.GroupName == "Microsoft Office AI")
-                                aiIssuesCount++;
-                            else if (setting.GroupName == "App Permissions")
-                                appPermIssuesCount++;
-                            else if (setting.GroupName == "Microsoft Edge AI" || setting.GroupName == "Content Delivery & Advertising")
-                                edgeWebIssuesCount++;
-                        }
-                    }
-                });
-
-                await Task.Delay(800);
-
-                double privacyScore = totalApplicableSettings > 0
-                    ? (double)(totalApplicableSettings - issuesCount) / totalApplicableSettings
-                    : 1.0;
-
-                DispatcherQueue.TryEnqueue(() =>
+                if (AiShieldBadge != null && TxtAiShieldStatus != null && IconAiShield != null)
                 {
-                    if (TxtPrivacyStatus != null)
+                    if (result.AiIssuesCount == 0)
                     {
-                        if (issuesCount >= 5) TxtPrivacyStatus.Text = $"{issuesCount} {(ResourceString.GetString("text_privacy_critical") ?? "Privacy Leaks Found")}";
-                        else if (issuesCount > 0) TxtPrivacyStatus.Text = $"{issuesCount} {(ResourceString.GetString("text_privacy_warning") ?? "Optimizations Available")}";
-                        else TxtPrivacyStatus.Text = ResourceString.GetString("text_privacy_good") ?? "Privacy is Optimized";
-                    }
+                        if (Application.Current.Resources.TryGetValue("BadgeRecommendedStyle", out var style))
+                            AiShieldBadge.Style = (Style)style;
 
-                    if (AiShieldBadge != null && TxtAiShieldStatus != null && IconAiShield != null)
-                    {
-                        if (aiIssuesCount == 0)
+                        if (Application.Current.Resources.TryGetValue("BadgeRecommendedForeground", out var brush))
                         {
-                            if (Application.Current.Resources.TryGetValue("BadgeRecommendedStyle", out var style))
-                                AiShieldBadge.Style = (Style)style;
+                            IconAiShield.Foreground = (Brush)brush;
+                            TxtAiShieldStatus.Foreground = (Brush)brush;
+                        }
 
-                            if (Application.Current.Resources.TryGetValue("BadgeRecommendedForeground", out var brush))
+                        TxtAiShieldStatus.Text = ResourceString.GetString("txt_ai_blocked") ?? "AI Blocked";
+                        IconAiShield.Glyph = "\uE83F";
+                    }
+                    else
+                    {
+                        if (Application.Current.Resources.TryGetValue("BadgeWarningStyle", out var style))
+                            AiShieldBadge.Style = (Style)style;
+
+                        if (Application.Current.Resources.TryGetValue("BadgeCustomForeground", out var brush))
+                        {
+                            IconAiShield.Foreground = (Brush)brush;
+                            TxtAiShieldStatus.Foreground = (Brush)brush;
+                        }
+
+                        TxtAiShieldStatus.Text = ResourceString.GetString("txt_ai_active") ?? "AI Active";
+                        IconAiShield.Glyph = "\uE814";
+                    }
+                }
+
+                string secureText = ResourceString.GetString("txt_secure") ?? "Secure";
+                string leaksText = ResourceString.GetString("txt_leaks") ?? "Leaks";
+
+                if (TxtAppPermIssues != null)
+                {
+                    TxtAppPermIssues.Text = result.AppPermIssuesCount > 0 ? $"{result.AppPermIssuesCount} {leaksText}" : secureText;
+                    TxtAppPermIssues.Foreground = result.AppPermIssuesCount > 0 ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.SeaGreen);
+                }
+                if (TxtEdgeWebIssues != null)
+                {
+                    TxtEdgeWebIssues.Text = result.EdgeWebIssuesCount > 0 ? $"{result.EdgeWebIssuesCount} {leaksText}" : secureText;
+                    TxtEdgeWebIssues.Foreground = result.EdgeWebIssuesCount > 0 ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.SeaGreen);
+                }
+                if (TxtAiIssues != null)
+                {
+                    TxtAiIssues.Text = result.AiIssuesCount > 0 ? $"{result.AiIssuesCount} {leaksText}" : secureText;
+                    TxtAiIssues.Foreground = result.AiIssuesCount > 0 ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.SeaGreen);
+                }
+
+                if (result.IssuesCount > 0 && BtnPrivacyViewIssues != null)
+                {
+                    BtnPrivacyViewIssues.Visibility = Visibility.Visible;
+                    var flyout = new MenuFlyout();
+                    foreach (var issue in result.Issues)
+                    {
+                        var menuItem = new MenuFlyoutItem
+                        {
+                            Text = issue,
+                            Icon = new FontIcon { Glyph = "\uE7BA", FontSize = 14 },
+                            IsEnabled = true
+                        };
+
+                        menuItem.Click += (s, e) =>
+                        {
+                            if (MainWindow.Instance != null)
                             {
-                                IconAiShield.Foreground = (Brush)brush;
-                                TxtAiShieldStatus.Foreground = (Brush)brush;
+                                WinOptimizePage.RequestedSearchOnLoad = issue;
+                                MainWindow.Instance.SwitchPage("Optimize", "Privacy");
                             }
+                        };
 
-                            TxtAiShieldStatus.Text = ResourceString.GetString("txt_ai_blocked") ?? "AI Blocked";
-                            IconAiShield.Glyph = "\uE83F";
-                        }
-                        else
-                        {
-                            if (Application.Current.Resources.TryGetValue("BadgeWarningStyle", out var style))
-                                AiShieldBadge.Style = (Style)style;
-
-                            if (Application.Current.Resources.TryGetValue("BadgeCustomForeground", out var brush))
-                            {
-                                IconAiShield.Foreground = (Brush)brush;
-                                TxtAiShieldStatus.Foreground = (Brush)brush;
-                            }
-
-                            TxtAiShieldStatus.Text = ResourceString.GetString("txt_ai_active") ?? "AI Active";
-                            IconAiShield.Glyph = "\uE814";
-                        }
+                        flyout.Items.Add(menuItem);
                     }
+                    FlyoutBase.SetAttachedFlyout(BtnPrivacyViewIssues, flyout);
+                }
 
-                    string secureText = ResourceString.GetString("txt_secure") ?? "Secure";
-                    string leaksText = ResourceString.GetString("txt_leaks") ?? "Leaks";
-
-                    if (TxtAppPermIssues != null)
-                    {
-                        TxtAppPermIssues.Text = appPermIssuesCount > 0 ? $"{appPermIssuesCount} {leaksText}" : secureText;
-                        TxtAppPermIssues.Foreground = appPermIssuesCount > 0 ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.SeaGreen);
-                    }
-                    if (TxtEdgeWebIssues != null)
-                    {
-                        TxtEdgeWebIssues.Text = edgeWebIssuesCount > 0 ? $"{edgeWebIssuesCount} {leaksText}" : secureText;
-                        TxtEdgeWebIssues.Foreground = edgeWebIssuesCount > 0 ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.SeaGreen);
-                    }
-                    if (TxtAiIssues != null)
-                    {
-                        TxtAiIssues.Text = aiIssuesCount > 0 ? $"{aiIssuesCount} {leaksText}" : secureText;
-                        TxtAiIssues.Foreground = aiIssuesCount > 0 ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.SeaGreen);
-                    }
-
-                    if (issuesCount > 0 && BtnPrivacyViewIssues != null)
-                    {
-                        BtnPrivacyViewIssues.Visibility = Visibility.Visible;
-                        var flyout = new MenuFlyout();
-                        foreach (var issue in privacyIssues)
-                        {
-                            var menuItem = new MenuFlyoutItem
-                            {
-                                Text = issue,
-                                Icon = new FontIcon { Glyph = "\uE7BA", FontSize = 14 },
-                                IsEnabled = true
-                            };
-
-                            menuItem.Click += (s, e) =>
-                            {
-                                if (MainWindow.Instance != null)
-                                {
-                                    WinOptimizePage.RequestedSearchOnLoad = issue;
-                                    MainWindow.Instance.SwitchPage("Optimize", "Privacy");
-                                }
-                            };
-
-                            flyout.Items.Add(menuItem);
-                        }
-                        FlyoutBase.SetAttachedFlyout(BtnPrivacyViewIssues, flyout);
-                    }
-
-                    if (TxtPrivacyLastRefreshed != null)
-                    {
-                        string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
-                        TxtPrivacyLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
-                        TxtPrivacyLastRefreshed.Visibility = Visibility.Visible;
-                    }
-                });
+                if (TxtPrivacyLastRefreshed != null)
+                {
+                    string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
+                    TxtPrivacyLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
+                    TxtPrivacyLastRefreshed.Visibility = Visibility.Visible;
+                }
 
                 if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Collapsed;
                 if (PrivacyGaugeCanvas != null) PrivacyGaugeCanvas.Visibility = Visibility.Visible;
@@ -1980,23 +1750,17 @@ namespace EvolveOS_Optimizer.Pages
                 bool isCurrentlyExpanded = PrivacyExpandedContent.Visibility == Visibility.Visible;
                 RefreshPrivacyGaugeLayoutSize(isCurrentlyExpanded);
 
-                await AnimatePrivacyGaugeAsync(privacyScore);
+                await AnimatePrivacyGaugeAsync(result.Score);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"❌ [Privacy Check Error] {ex.Message}");
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
-                });
+                if (TxtPrivacyStatus != null) TxtPrivacyStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
             }
             finally
             {
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Collapsed;
-                    if (BtnRefreshPrivacy != null) BtnRefreshPrivacy.IsEnabled = true;
-                });
+                if (DashPrivacyLoadingRing != null) DashPrivacyLoadingRing.Visibility = Visibility.Collapsed;
+                if (BtnRefreshPrivacy != null) BtnRefreshPrivacy.IsEnabled = true;
             }
         }
 
@@ -2011,22 +1775,14 @@ namespace EvolveOS_Optimizer.Pages
                 if (PrivacyGaugeCanvas != null) PrivacyGaugeCanvas.Visibility = Visibility.Collapsed;
                 if (TxtPrivacyScore != null) TxtPrivacyScore.Visibility = Visibility.Collapsed;
 
-                var bulkService = App.Services.GetService<IBulkSettingsActionService>();
-                if (bulkService != null)
-                {
-                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
-                    var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+                var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+                var settingIds = privacyGroup.Settings
+                    .Where(s => !string.IsNullOrEmpty(s.Id))
+                    .Select(s => s.Id)
+                    .ToList();
 
-                    var settingIds = privacyGroup.Settings
-                        .Where(s => !(s.IsWindows11Only && !isWin11) && !(s.IsWindows10Only && isWin11))
-                        .Select(s => s.Id)
-                        .Where(id => !string.IsNullOrEmpty(id))
-                        .ToList();
-
-                    await bulkService.ApplyRecommendedAsync(settingIds!);
-                }
-
-                await CalculatePrivacyHealthAsync();
+                await ViewModel.ApplyBulkSettingsAsync(settingIds!);
+                await UpdatePrivacyUIAsync();
             }
             catch (Exception ex)
             {
@@ -2049,22 +1805,14 @@ namespace EvolveOS_Optimizer.Pages
                 if (PrivacyGaugeCanvas != null) PrivacyGaugeCanvas.Visibility = Visibility.Collapsed;
                 if (TxtPrivacyScore != null) TxtPrivacyScore.Visibility = Visibility.Collapsed;
 
-                var bulkService = App.Services.GetService<IBulkSettingsActionService>();
-                if (bulkService != null)
-                {
-                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
-                    var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+                var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+                var settingIds = privacyGroup.Settings
+                    .Where(s => !string.IsNullOrEmpty(s.Id))
+                    .Select(s => s.Id)
+                    .ToList();
 
-                    var settingIds = privacyGroup.Settings
-                        .Where(s => !(s.IsWindows11Only && !isWin11) && !(s.IsWindows10Only && isWin11))
-                        .Select(s => s.Id)
-                        .Where(id => !string.IsNullOrEmpty(id))
-                        .ToList();
-
-                    await bulkService.ResetToDefaultsAsync(settingIds!);
-                }
-
-                await CalculatePrivacyHealthAsync();
+                await ViewModel.RestoreBulkSettingsAsync(settingIds!);
+                await UpdatePrivacyUIAsync();
             }
             catch (Exception ex)
             {
@@ -2073,21 +1821,6 @@ namespace EvolveOS_Optimizer.Pages
             finally
             {
                 if (sender is Button b) b.IsEnabled = true;
-            }
-        }
-
-        private object? ReadRegistryValue(string keyPath, string valueName)
-        {
-            try
-            {
-                using var baseKey = keyPath.StartsWith("HKEY_LOCAL_MACHINE") ? Registry.LocalMachine : Registry.CurrentUser;
-                string subKey = keyPath.Substring(keyPath.IndexOf('\\') + 1);
-                using var key = baseKey.OpenSubKey(subKey);
-                return key?.GetValue(valueName);
-            }
-            catch
-            {
-                return null;
             }
         }
 
@@ -2198,10 +1931,10 @@ namespace EvolveOS_Optimizer.Pages
 
         private async void BtnRefreshPerformance_Click(object sender, RoutedEventArgs e)
         {
-            await CalculatePerformanceHealthAsync();
+            await UpdatePerformanceUIAsync();
         }
 
-        private async Task CalculatePerformanceHealthAsync()
+        private async Task UpdatePerformanceUIAsync()
         {
             try
             {
@@ -2213,89 +1946,11 @@ namespace EvolveOS_Optimizer.Pages
                 if (BtnPerformanceViewIssues != null) BtnPerformanceViewIssues.Visibility = Visibility.Collapsed;
                 if (TxtPerformanceStatus != null) TxtPerformanceStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
 
-                int totalApplicableSettings = 0;
-                int issuesCount = 0;
-                int servicesIssuesCount = 0;
-                int visualIssuesCount = 0;
-                int hardwareIssuesCount = 0;
-
-                List<string> performanceIssues = new List<string>();
-
-                await Task.Run(() =>
-                {
-                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
-                    var performanceGroup = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
-
-                    foreach (var setting in performanceGroup.Settings)
-                    {
-                        if (setting.IsWindows11Only && !isWin11) continue;
-                        if (setting.IsWindows10Only && isWin11) continue;
-
-                        totalApplicableSettings++;
-                        bool isOptimal = true;
-
-                        if (setting.ComboBox != null)
-                        {
-                            var recommendedOption = setting.ComboBox.Options?.FirstOrDefault(o => o.IsRecommended);
-                            if (recommendedOption != null && recommendedOption.ValueMappings != null)
-                            {
-                                foreach (var mapping in recommendedOption.ValueMappings)
-                                {
-                                    var regDef = setting.RegistrySettings?.FirstOrDefault(rs => rs.ValueName == mapping.Key);
-                                    if (regDef != null && regDef.KeyPath != null && regDef.ValueName != null)
-                                    {
-                                        object? currentValue = ReadRegistryValue(regDef.KeyPath, regDef.ValueName) ?? regDef.DefaultValue;
-
-                                        if (currentValue?.ToString() != mapping.Value?.ToString())
-                                        {
-                                            isOptimal = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else if (setting.RegistrySettings != null)
-                        {
-                            foreach (var reg in setting.RegistrySettings)
-                            {
-                                if (reg.RecommendedValue != null && reg.KeyPath != null && reg.ValueName != null)
-                                {
-                                    object? currentValue = ReadRegistryValue(reg.KeyPath, reg.ValueName) ?? reg.DefaultValue;
-
-                                    if (currentValue?.ToString() != reg.RecommendedValue.ToString())
-                                    {
-                                        isOptimal = false;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!isOptimal)
-                        {
-                            issuesCount++;
-                            performanceIssues.Add(setting.Name ?? "Unknown Performance Setting");
-
-                            if (setting.GroupName == "System Services" || setting.GroupName == "Scheduled Tasks")
-                                servicesIssuesCount++;
-                            else if (setting.GroupName == "Visual Effects")
-                                visualIssuesCount++;
-                            else
-                                hardwareIssuesCount++;
-                        }
-                    }
-                });
-
-                await Task.Delay(800);
-
-                double performanceScore = totalApplicableSettings > 0
-                    ? (double)(totalApplicableSettings - issuesCount) / totalApplicableSettings
-                    : 1.0;
+                var result = await ViewModel.CalculatePerformanceHealthAsync();
 
                 if (TxtPerformanceStatus != null)
                 {
-                    if (issuesCount > 0) TxtPerformanceStatus.Text = $"{issuesCount} {(ResourceString.GetString("text_optimizations_available") ?? "Optimizations Available")}";
+                    if (result.IssuesCount > 0) TxtPerformanceStatus.Text = $"{result.IssuesCount} {(ResourceString.GetString("text_optimizations_available") ?? "Optimizations Available")}";
                     else TxtPerformanceStatus.Text = ResourceString.GetString("text_performance_good") ?? "System is Optimized";
                 }
 
@@ -2304,25 +1959,25 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (TxtPerfServicesIssues != null)
                 {
-                    TxtPerfServicesIssues.Text = servicesIssuesCount > 0 ? $"{servicesIssuesCount} {issuesText}" : optimizedText;
-                    TxtPerfServicesIssues.Foreground = servicesIssuesCount > 0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                    TxtPerfServicesIssues.Text = result.ServicesIssuesCount > 0 ? $"{result.ServicesIssuesCount} {issuesText}" : optimizedText;
+                    TxtPerfServicesIssues.Foreground = result.ServicesIssuesCount > 0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
                 }
                 if (TxtPerfVisualIssues != null)
                 {
-                    TxtPerfVisualIssues.Text = visualIssuesCount > 0 ? $"{visualIssuesCount} {issuesText}" : optimizedText;
-                    TxtPerfVisualIssues.Foreground = visualIssuesCount > 0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                    TxtPerfVisualIssues.Text = result.VisualIssuesCount > 0 ? $"{result.VisualIssuesCount} {issuesText}" : optimizedText;
+                    TxtPerfVisualIssues.Foreground = result.VisualIssuesCount > 0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
                 }
                 if (TxtPerfHardwareIssues != null)
                 {
-                    TxtPerfHardwareIssues.Text = hardwareIssuesCount > 0 ? $"{hardwareIssuesCount} {issuesText}" : optimizedText;
-                    TxtPerfHardwareIssues.Foreground = hardwareIssuesCount > 0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                    TxtPerfHardwareIssues.Text = result.HardwareIssuesCount > 0 ? $"{result.HardwareIssuesCount} {issuesText}" : optimizedText;
+                    TxtPerfHardwareIssues.Foreground = result.HardwareIssuesCount > 0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
                 }
 
-                if (issuesCount > 0 && BtnPerformanceViewIssues != null)
+                if (result.IssuesCount > 0 && BtnPerformanceViewIssues != null)
                 {
                     BtnPerformanceViewIssues.Visibility = Visibility.Visible;
                     var flyout = new MenuFlyout();
-                    foreach (var issue in performanceIssues)
+                    foreach (var issue in result.Issues)
                     {
                         var menuItem = new MenuFlyoutItem
                         {
@@ -2358,7 +2013,7 @@ namespace EvolveOS_Optimizer.Pages
                 bool isCurrentlyExpanded = PerformanceExpandedContent.Visibility == Visibility.Visible;
                 RefreshGaugeLayoutSize(isCurrentlyExpanded);
 
-                await AnimatePerformanceGaugeAsync(performanceScore);
+                await AnimatePerformanceGaugeAsync(result.Score);
             }
             catch (Exception ex)
             {
@@ -2383,22 +2038,14 @@ namespace EvolveOS_Optimizer.Pages
                 if (PerformanceGaugeCanvas != null) PerformanceGaugeCanvas.Visibility = Visibility.Collapsed;
                 if (TxtPerformanceScore != null) TxtPerformanceScore.Visibility = Visibility.Collapsed;
 
-                var bulkService = App.Services.GetService<IBulkSettingsActionService>();
-                if (bulkService != null)
-                {
-                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
-                    var performanceGroup = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
+                var performanceGroup = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
+                var settingIds = performanceGroup.Settings
+                    .Where(s => !string.IsNullOrEmpty(s.Id))
+                    .Select(s => s.Id)
+                    .ToList();
 
-                    var settingIds = performanceGroup.Settings
-                        .Where(s => !(s.IsWindows11Only && !isWin11) && !(s.IsWindows10Only && isWin11))
-                        .Select(s => s.Id)
-                        .Where(id => !string.IsNullOrEmpty(id))
-                        .ToList();
-
-                    await bulkService.ApplyRecommendedAsync(settingIds!);
-                }
-
-                await CalculatePerformanceHealthAsync();
+                await ViewModel.ApplyBulkSettingsAsync(settingIds!);
+                await UpdatePerformanceUIAsync();
             }
             catch (Exception ex)
             {
@@ -2421,22 +2068,14 @@ namespace EvolveOS_Optimizer.Pages
                 if (PerformanceGaugeCanvas != null) PerformanceGaugeCanvas.Visibility = Visibility.Collapsed;
                 if (TxtPerformanceScore != null) TxtPerformanceScore.Visibility = Visibility.Collapsed;
 
-                var bulkService = App.Services.GetService<IBulkSettingsActionService>();
-                if (bulkService != null)
-                {
-                    bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
-                    var performanceGroup = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
+                var performanceGroup = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
+                var settingIds = performanceGroup.Settings
+                    .Where(s => !string.IsNullOrEmpty(s.Id))
+                    .Select(s => s.Id)
+                    .ToList();
 
-                    var settingIds = performanceGroup.Settings
-                        .Where(s => !(s.IsWindows11Only && !isWin11) && !(s.IsWindows10Only && isWin11))
-                        .Select(s => s.Id)
-                        .Where(id => !string.IsNullOrEmpty(id))
-                        .ToList();
-
-                    await bulkService.ResetToDefaultsAsync(settingIds!);
-                }
-
-                await CalculatePerformanceHealthAsync();
+                await ViewModel.RestoreBulkSettingsAsync(settingIds!);
+                await UpdatePerformanceUIAsync();
             }
             catch (Exception ex)
             {
@@ -2521,7 +2160,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 DiskScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 
-                _ = FetchSmartDataAsync();
+                _ = UpdateSmartDataUIAsync();
             }
             else
             {
@@ -2643,7 +2282,7 @@ namespace EvolveOS_Optimizer.Pages
 
                 await CommandExecutor.RunCommand($"defrag.exe {targetDrive} /O", isPowerShell: false, waitForExit: true);
 
-                _ = FetchSmartDataAsync();
+                _ = UpdateSmartDataUIAsync();
             }
             catch (Exception ex)
             {
@@ -2661,10 +2300,6 @@ namespace EvolveOS_Optimizer.Pages
             {
                 MainWindow.Instance.SwitchPage("SystemCleaner");
             }
-            else
-            {
-                Debug.WriteLine("❌ MainWindow.Instance is null!");
-            }
         }
 
         private void DriveItem_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -2681,7 +2316,7 @@ namespace EvolveOS_Optimizer.Pages
                     TxtSmartTemp.Text = "--";
                     TxtSmartHealth.Foreground = new SolidColorBrush(Colors.Gray);
 
-                    _ = FetchSmartDataAsync();
+                    _ = UpdateSmartDataUIAsync();
                 }
             }
         }
@@ -2726,84 +2361,40 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private async Task FetchSmartDataAsync()
+        private async Task UpdateSmartDataUIAsync()
         {
             string healthResult = ResourceString.GetString("txt_checking") ?? "Checking...";
             string typeResult = "--";
             string tempResult = "--";
             Color healthColor = Colors.Gray;
 
-            int driveIndex = 0;
-            if (ViewModel != null && ViewModel.DiskDrives != null)
+            try
             {
-                var selectedDrive = ViewModel.DiskDrives.FirstOrDefault(d => d.Name == _selectedSmartDrive);
-                if (selectedDrive != null)
-                {
-                    driveIndex = ViewModel.DiskDrives.IndexOf(selectedDrive);
-                }
+                var result = await ViewModel.FetchSmartDataAsync(_selectedSmartDrive);
+                healthResult = result.Health;
+                typeResult = result.Type;
+                tempResult = result.Temp;
+                healthColor = result.IsGood ? Colors.SeaGreen : Colors.Orange;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SMART Fetch Error] {ex.Message}");
+                healthResult = "Error";
+                healthColor = Colors.Red;
             }
 
-            await Task.Run(() =>
+            if (TxtSmartHealth != null)
             {
-                try
-                {
-                    var smartData = SystemDiagnostics.GetDriveSmartInfo(_selectedSmartDrive);
-
-                    healthResult = smartData.Health;
-                    typeResult = smartData.Type;
-                    tempResult = smartData.Temp;
-
-                    if (tempResult == "--" || string.IsNullOrEmpty(tempResult))
-                    {
-                        float specificDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperatureByIndex(driveIndex);
-
-                        if (specificDiskTemp > 0)
-                        {
-                            tempResult = $"{(int)specificDiskTemp}°C";
-                        }
-                        else
-                        {
-                            float maxDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperature();
-                            if (maxDiskTemp > 0)
-                            {
-                                tempResult = $"{(int)maxDiskTemp}°C";
-                            }
-                        }
-                    }
-
-                    healthColor = healthResult == "Good" ? Colors.SeaGreen : Colors.Orange;
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[SMART Fetch Error] {ex.Message}");
-                    healthResult = "Error";
-                    healthColor = Colors.Red;
-                }
-            });
-
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                if (TxtSmartHealth != null)
-                {
-                    TxtSmartHealth.Text = healthResult;
-                    TxtSmartHealth.Foreground = new SolidColorBrush(healthColor);
-                    TxtSmartType.Text = typeResult;
-                    TxtSmartTemp.Text = tempResult;
-                }
-            });
+                TxtSmartHealth.Text = healthResult;
+                TxtSmartHealth.Foreground = new SolidColorBrush(healthColor);
+                TxtSmartType.Text = typeResult;
+                TxtSmartTemp.Text = tempResult;
+            }
         }
 
         #endregion
 
         #region Network Card
-
-        public class NetworkProcessInfo
-        {
-            public string ProcessName { get; set; } = string.Empty;
-            public string ConnectionCount { get; set; } = string.Empty;
-        }
-
-        private CancellationTokenSource? _networkMonitorCts;
 
         private async void BtnExpandNetwork_Click(object sender, RoutedEventArgs e)
         {
@@ -2819,7 +2410,7 @@ namespace EvolveOS_Optimizer.Pages
                 IconExpandNetwork.Glyph = "\uE70E"; // Chevron Up
 
                 _networkMonitorCts = new CancellationTokenSource();
-                _ = MonitorNetworkExpandedAsync(_networkMonitorCts.Token);
+                _ = MonitorNetworkUIAsync(_networkMonitorCts.Token);
             }
             else
             {
@@ -2844,21 +2435,19 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
-        private async Task MonitorNetworkExpandedAsync(CancellationToken token)
+        private async Task MonitorNetworkUIAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
                 try
                 {
-                    using Ping ping = new Ping();
-                    PingReply reply = await ping.SendPingAsync("8.8.8.8", 2000);
-
-                    DispatcherQueue.TryEnqueue(() =>
+                    long latency = await ViewModel.PingDnsAsync("8.8.8.8");
+                    _dispatcherQueue.TryEnqueue(() =>
                     {
-                        if (reply.Status == IPStatus.Success)
+                        if (latency >= 0)
                         {
-                            TxtPingValue.Text = $"{reply.RoundtripTime} ms";
-                            TxtPingValue.Foreground = new SolidColorBrush(reply.RoundtripTime < 50 ? Colors.SeaGreen : (reply.RoundtripTime < 100 ? Colors.Orange : Colors.Red));
+                            TxtPingValue.Text = $"{latency} ms";
+                            TxtPingValue.Foreground = new SolidColorBrush(latency < 50 ? Colors.SeaGreen : (latency < 100 ? Colors.Orange : Colors.Red));
                         }
                         else
                         {
@@ -2871,8 +2460,8 @@ namespace EvolveOS_Optimizer.Pages
 
                 try
                 {
-                    var activeConnections = await Task.Run(() => GetTopNetworkProcesses());
-                    DispatcherQueue.TryEnqueue(() =>
+                    var activeConnections = await ViewModel.GetNetworkHogsAsync();
+                    _dispatcherQueue.TryEnqueue(() =>
                     {
                         NetworkHogsList.ItemsSource = activeConnections;
                     });
@@ -2881,57 +2470,6 @@ namespace EvolveOS_Optimizer.Pages
 
                 await Task.Delay(3000, token);
             }
-        }
-
-        private List<NetworkProcessInfo> GetTopNetworkProcesses()
-        {
-            var results = new List<NetworkProcessInfo>();
-            try
-            {
-                var output = CommandExecutor.StartTask("netstat -ano").GetAwaiter().GetResult();
-                var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                var pidCounts = new Dictionary<int, int>();
-
-                foreach (var line in lines.Skip(4))
-                {
-                    var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length >= 5 && parts[0] == "TCP" && parts[3] == "ESTABLISHED")
-                    {
-                        if (int.TryParse(parts[4], out int pid) && pid > 0 && pid != 4)
-                        {
-                            if (!pidCounts.ContainsKey(pid)) pidCounts[pid] = 0;
-                            pidCounts[pid]++;
-                        }
-                    }
-                }
-
-                var topPids = pidCounts.OrderByDescending(kv => kv.Value).Take(3);
-                foreach (var kv in topPids)
-                {
-                    try
-                    {
-                        using var proc = Process.GetProcessById(kv.Key);
-                        results.Add(new NetworkProcessInfo
-                        {
-                            ProcessName = proc.ProcessName + ".exe",
-                            ConnectionCount = $"{kv.Value} connections"
-                        });
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-
-            if (results.Count == 0)
-            {
-                results.Add(new NetworkProcessInfo
-                {
-                    ProcessName = ResourceString.GetString("txt_idle_no_connections") ?? "Idle / No active connections",
-                    ConnectionCount = ""
-                });
-            }
-
-            return results;
         }
 
         private async void BtnFlushDns_Click(object sender, RoutedEventArgs e)
@@ -3319,7 +2857,8 @@ namespace EvolveOS_Optimizer.Pages
                 BoostStatusText.Foreground = (Brush)successBrush;
             }
 
-            await CalculateSystemHealthAsync();
+            _ = UpdateSystemHealthUIAsync();
+
             await Task.Delay(5000);
 
             BoostStatusText.Text = ResourceString.GetString("txt_ready_to_optimize") ?? "Ready to optimize";
@@ -3728,8 +3267,9 @@ namespace EvolveOS_Optimizer.Pages
             Debug.WriteLine($"[{this.GetType().Name}] Purge requested...");
 
             ViewModel.OnTelemetryTicked -= ViewModel_OnTelemetryTicked;
+            ViewModel.OnWallpaperUpdated -= ViewModel_OnWallpaperUpdated;
 
-            _wallpaperTimer?.Stop();
+            _networkMonitorCts?.Cancel();
 
             ViewModel?.PauseUpdates();
 
@@ -3746,7 +3286,7 @@ namespace EvolveOS_Optimizer.Pages
                 {
                     await Task.Delay(350);
 
-                    DispatcherQueue?.TryEnqueue(() =>
+                    _dispatcherQueue?.TryEnqueue(() =>
                     {
                         this.DataContext = null;
                         this.Content = null;

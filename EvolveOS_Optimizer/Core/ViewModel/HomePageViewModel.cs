@@ -1,26 +1,43 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Services;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 using SkiaSharp;
+using Windows.UI;
+using Microsoft.UI.Xaml;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
+    public class SecurityScanResult { public int IssuesCount { get; set; } public bool IsCoreProtected { get; set; } public List<string> Issues { get; set; } = new(); }
+    public class PrivacyScanResult { public int IssuesCount { get; set; } public int AiIssuesCount { get; set; } public int AppPermIssuesCount { get; set; } public int EdgeWebIssuesCount { get; set; } public double Score { get; set; } public List<string> Issues { get; set; } = new(); }
+    public class PerformanceScanResult { public int IssuesCount { get; set; } public int ServicesIssuesCount { get; set; } public int VisualIssuesCount { get; set; } public int HardwareIssuesCount { get; set; } public double Score { get; set; } public List<string> Issues { get; set; } = new(); }
+    public class SmartScanResult { public string Health { get; set; } = "Unknown"; public string Type { get; set; } = "--"; public string Temp { get; set; } = "--"; public bool IsGood { get; set; } }
+    public class NetworkProcessInfo { public string ProcessName { get; set; } = string.Empty; public string ConnectionCount { get; set; } = string.Empty; }
+
     public partial class HomePageViewModel : ViewModelBase, IDisposable
     {
         #region Native Methods & Structs
@@ -51,6 +68,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+
+        [DllImport("iphlpapi.dll", SetLastError = true)]
+        private static extern uint GetExtendedTcpTable(IntPtr pTcpTable, ref int dwOutBufLen, bool sort, int ipVersion, int tcpTableType, int reserved);
+
+        private const int AF_INET = 2; // IPv4
+        private const int TCP_TABLE_OWNER_PID_ALL = 5;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MIB_TCPROW_OWNER_PID
+        {
+            public uint state;
+            public uint localAddr;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            public byte[] localPort;
+            public uint remoteAddr;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            public byte[] remotePort;
+            public uint owningPid;
+        }
         #endregion
 
         #region Fields
@@ -58,12 +94,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly SystemDiagnostics _monitoringService = new SystemDiagnostics();
         private readonly WeatherService _weatherService = new WeatherService();
 
-        private System.Threading.Timer? _telemetryTimer; // 200ms - Fast graph rendering
-        private System.Threading.Timer? _hardwareTimer;  // 1000ms - Heavy hardware polling
+        private System.Threading.Timer? _telemetryTimer;
+        private System.Threading.Timer? _hardwareTimer;
         private DispatcherTimer? _weatherTimer;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
+        private CancellationTokenSource? _wallpaperCts;
+
         public event Action<TelemetryDataPayload>? OnTelemetryTicked;
+        public event Action<byte[]>? OnWallpaperUpdated;
 
         private int _isUpdatingTelemetry = 0;
         private int _isUpdatingHardware = 0;
@@ -79,9 +118,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private string _lastPCount = "0";
         private string _lastSCount = "0";
 
-        private ulong _prevIdleTime;
-        private ulong _prevKernelTime;
-        private ulong _prevUserTime;
+        private static ulong _prevIdleTime;
+        private static ulong _prevKernelTime;
+        private static ulong _prevUserTime;
+        private static DateTime _lastCpuCheckTime = DateTime.MinValue;
+        private static float _lastCalculatedCpuUsage = 0f;
+        private static readonly object _cpuLock = new object();
+
         private long _prevNetworkDownBytes;
         private long _prevNetworkUpBytes;
         private DateTime _lastNetworkCheckTime = DateTime.MinValue;
@@ -114,10 +157,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region LiveCharts2 Engine Variables
         private int _maxGraphSeconds = 60;
-        private int _maxDataPoints = 300; // 60s * 5 ticks per sec
+        private int _maxDataPoints = 60;
         private double _peakNetworkSpeedMbps = 10.0;
-        private long _currentTick = 0; // Absolute X axis point
-        private int _secondTickCounter = 0;
+        private long _currentTick = 0;
         #endregion
 
         #region LiveCharts2 Graphing Properties
@@ -198,10 +240,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (_maxGraphSeconds != value)
                 {
                     _maxGraphSeconds = value;
-                    _maxDataPoints = value * 5; // 5Hz graph tick rate
+                    _maxDataPoints = value;
 
                     UpdateAxisLabels(value);
-                    ResetGraphBuffers(); // Flush history so it properly rescales to new size
+                    ResetGraphBuffers();
                 }
             }
         }
@@ -555,31 +597,33 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             HiddenYAxes.Clear();
             DynamicNetYAxes.Clear();
 
-            // The 'AnimationsSpeed' matching the timer exactly (200ms) guarantees a continuous treadmill scroll.
-            HiddenXAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 300, AnimationsSpeed = TimeSpan.FromMilliseconds(200) });
+            var animSpeed = TimeSpan.FromMilliseconds(1000);
+            var easing = LiveChartsCore.EasingFunctions.Lineal;
+
+            HiddenXAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 300, AnimationsSpeed = animSpeed, EasingFunction = easing });
             HiddenYAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 100 });
             DynamicNetYAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 10 });
 
             CpuGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = CpuGraphValues, Fill = new LinearGradientPaint(new[] { cpuColor.WithAlpha(100), cpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(cpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = CpuGraphDot, Fill = new SolidColorPaint(cpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
+                new LineSeries<ObservablePoint> { Values = CpuGraphValues, Fill = new LinearGradientPaint(new[] { cpuColor.WithAlpha(100), cpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(cpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed, EasingFunction = easing },
+                new ScatterSeries<ObservablePoint> { Values = CpuGraphDot, Fill = new SolidColorPaint(cpuColor), GeometrySize = 10, AnimationsSpeed = animSpeed, EasingFunction = easing }
             };
 
             RamGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = RamGraphValues, Fill = new LinearGradientPaint(new[] { ramColor.WithAlpha(100), ramColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(ramColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = RamGraphDot, Fill = new SolidColorPaint(ramColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
+                new LineSeries<ObservablePoint> { Values = RamGraphValues, Fill = new LinearGradientPaint(new[] { ramColor.WithAlpha(100), ramColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(ramColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed, EasingFunction = easing },
+                new ScatterSeries<ObservablePoint> { Values = RamGraphDot, Fill = new SolidColorPaint(ramColor), GeometrySize = 10, AnimationsSpeed = animSpeed, EasingFunction = easing }
             };
 
             GpuGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = GpuGraphValues, Fill = new LinearGradientPaint(new[] { gpuColor.WithAlpha(100), gpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(gpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = GpuGraphDot, Fill = new SolidColorPaint(gpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
+                new LineSeries<ObservablePoint> { Values = GpuGraphValues, Fill = new LinearGradientPaint(new[] { gpuColor.WithAlpha(100), gpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(gpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed, EasingFunction = easing },
+                new ScatterSeries<ObservablePoint> { Values = GpuGraphDot, Fill = new SolidColorPaint(gpuColor), GeometrySize = 10, AnimationsSpeed = animSpeed, EasingFunction = easing }
             };
 
             NetGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = NetDownGraphValues, Fill = new LinearGradientPaint(new[] { netDownColor.WithAlpha(100), netDownColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netDownColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = NetDownGraphDot, Fill = new SolidColorPaint(netDownColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new LineSeries<ObservablePoint> { Values = NetUpGraphValues, Fill = new LinearGradientPaint(new[] { netUpColor.WithAlpha(100), netUpColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netUpColor) { StrokeThickness = 2f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = NetUpGraphDot, Fill = new SolidColorPaint(netUpColor), GeometrySize = 8, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
+                new LineSeries<ObservablePoint> { Values = NetDownGraphValues, Fill = new LinearGradientPaint(new[] { netDownColor.WithAlpha(100), netDownColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netDownColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed, EasingFunction = easing },
+                new ScatterSeries<ObservablePoint> { Values = NetDownGraphDot, Fill = new SolidColorPaint(netDownColor), GeometrySize = 10, AnimationsSpeed = animSpeed, EasingFunction = easing },
+                new LineSeries<ObservablePoint> { Values = NetUpGraphValues, Fill = new LinearGradientPaint(new[] { netUpColor.WithAlpha(100), netUpColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netUpColor) { StrokeThickness = 2f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed, EasingFunction = easing },
+                new ScatterSeries<ObservablePoint> { Values = NetUpGraphDot, Fill = new SolidColorPaint(netUpColor), GeometrySize = 8, AnimationsSpeed = animSpeed, EasingFunction = easing }
             };
         }
 
@@ -592,9 +636,401 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _prevUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
             }
 
-            // Warm up network cache immediately
             Task.Run(() => GetNetworkUsage());
         }
+        #endregion
+
+        #region Scanners & Diagnostics (Moved from Code-Behind)
+
+        public void StartWallpaperMonitor()
+        {
+            _wallpaperCts?.Cancel();
+            _wallpaperCts = new CancellationTokenSource();
+            Task.Run(() => MonitorWallpaperAsync(_wallpaperCts.Token));
+        }
+
+        private async Task MonitorWallpaperAsync(CancellationToken token)
+        {
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Windows\Themes\TranscodedWallpaper");
+            DateTime lastWrite = DateTime.MinValue;
+
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    if (File.Exists(path))
+                    {
+                        var writeTime = File.GetLastWriteTime(path);
+                        if (writeTime > lastWrite)
+                        {
+                            lastWrite = writeTime;
+                            byte[] bytes = await File.ReadAllBytesAsync(path, token);
+                            App.MainWindow?.DispatcherQueue?.TryEnqueue(() => OnWallpaperUpdated?.Invoke(bytes));
+                        }
+                    }
+                }
+                catch { }
+                await Task.Delay(2000, token);
+            }
+        }
+
+        public async Task<List<NetworkProcessInfo>> GetTopNetworkProcessesAsync()
+        {
+            return await Task.Run(() =>
+            {
+                var results = new List<NetworkProcessInfo>();
+                try
+                {
+                    int bufferSize = 0;
+
+                    GetExtendedTcpTable(IntPtr.Zero, ref bufferSize, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
+
+                    IntPtr tcpTablePtr = Marshal.AllocHGlobal(bufferSize);
+                    try
+                    {
+                        uint ret = GetExtendedTcpTable(tcpTablePtr, ref bufferSize, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
+                        if (ret == 0)
+                        {
+                            var pidCounts = new Dictionary<int, int>();
+
+                            int numEntries = Marshal.ReadInt32(tcpTablePtr);
+                            IntPtr rowPtr = IntPtr.Add(tcpTablePtr, 4);
+
+                            int rowSize = Marshal.SizeOf(typeof(MIB_TCPROW_OWNER_PID));
+
+                            for (int i = 0; i < numEntries; i++)
+                            {
+                                var tcpRow = Marshal.PtrToStructure<MIB_TCPROW_OWNER_PID>(rowPtr);
+
+                                if (tcpRow.state == 5)
+                                {
+                                    int pid = (int)tcpRow.owningPid;
+                                    if (pid > 0 && pid != 4)
+                                    {
+                                        if (!pidCounts.ContainsKey(pid)) pidCounts[pid] = 0;
+                                        pidCounts[pid]++;
+                                    }
+                                }
+                                rowPtr = IntPtr.Add(rowPtr, rowSize);
+                            }
+
+                            var topPids = pidCounts.OrderByDescending(kv => kv.Value).Take(3);
+                            foreach (var kv in topPids)
+                            {
+                                try
+                                {
+                                    using var proc = Process.GetProcessById(kv.Key);
+                                    results.Add(new NetworkProcessInfo
+                                    {
+                                        ProcessName = proc.ProcessName + ".exe",
+                                        ConnectionCount = $"{kv.Value} connections"
+                                    });
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        Marshal.FreeHGlobal(tcpTablePtr);
+                    }
+                }
+                catch { }
+
+                if (results.Count == 0)
+                {
+                    results.Add(new NetworkProcessInfo
+                    {
+                        ProcessName = ResourceString.GetString("txt_idle_no_connections") ?? "Idle / No active connections",
+                        ConnectionCount = ""
+                    });
+                }
+
+                return results;
+            });
+        }
+
+        public async Task<dynamic> CalculateSystemHealthAsync()
+        {
+            return await SystemHealthHelper.EvaluateHealthAsync();
+        }
+
+        public async Task<SecurityScanResult> CalculateSecurityHealthAsync()
+        {
+            return await Task.Run(async () =>
+            {
+                var result = new SecurityScanResult();
+                var antivirusInfo = await SecurityDiagnostics.GetAntivirusInfoAsync();
+
+                bool isAvEnabled = antivirusInfo.IsEnabled;
+                bool isFwEnabled = await SecurityDiagnostics.IsFirewallEnabledAsync();
+                bool isRtEnabled = await SecurityDiagnostics.IsRealTimeProtectionEnabledAsync();
+
+                if (!isAvEnabled) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_VirusThreatProtection") ?? "Virus Protection"); }
+                if (!isFwEnabled) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_FirewallNetworkProtection") ?? "Firewall"); }
+                if (!isRtEnabled) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_RealTimeProtection") ?? "Real-Time Protection"); }
+                if (!await SecurityDiagnostics.IsUACEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_UAC") ?? "UAC"); }
+                if (!await SecurityDiagnostics.IsWindowsUpdateEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_WindowsUpdate") ?? "Windows Update"); }
+                if (!await SecurityDiagnostics.IsTamperProtectionEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_TamperProtection") ?? "Tamper Protection"); }
+                if (await SecurityDiagnostics.GetSmartAppControlStateAsync() == 0) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_SmartAppControl") ?? "Smart App Control"); }
+
+                string psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync();
+                if (psPolicy == "Unrestricted" || psPolicy == "Bypass" || psPolicy == "Error") { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_PSExecutionPolicy") ?? "PowerShell Policy"); }
+
+                if (!await SecurityDiagnostics.IsLsaProtectionEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_LSAProtection") ?? "LSA Protection"); }
+                if (await SecurityDiagnostics.IsRdpEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_RemoteDesktop") ?? "Remote Desktop"); }
+                if (await SecurityDiagnostics.IsRemoteAssistanceEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance"); }
+                if (await SecurityDiagnostics.IsDeveloperModeEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_DeveloperMode") ?? "Developer Mode"); }
+
+                result.IsCoreProtected = isAvEnabled && isFwEnabled && isRtEnabled;
+                return result;
+            });
+        }
+
+        private object? ReadRegistryValue(string keyPath, string valueName)
+        {
+            try
+            {
+                using var baseKey = keyPath.StartsWith("HKEY_LOCAL_MACHINE") ? Registry.LocalMachine : Registry.CurrentUser;
+                string subKey = keyPath.Substring(keyPath.IndexOf('\\') + 1);
+                using var key = baseKey.OpenSubKey(subKey);
+                return key?.GetValue(valueName);
+            }
+            catch { return null; }
+        }
+
+        public async Task<PrivacyScanResult> CalculatePrivacyHealthAsync()
+        {
+            return await Task.Run(() =>
+            {
+                var res = new PrivacyScanResult();
+                bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+                int totalApplicable = 0;
+
+                foreach (var setting in privacyGroup.Settings)
+                {
+                    if (setting.IsWindows11Only && !isWin11) continue;
+                    if (setting.IsWindows10Only && isWin11) continue;
+
+                    totalApplicable++;
+                    bool isOptimal = true;
+
+                    if (setting.ComboBox != null)
+                    {
+                        var rec = setting.ComboBox.Options?.FirstOrDefault(o => o.IsRecommended);
+                        if (rec?.ValueMappings != null)
+                        {
+                            foreach (var map in rec.ValueMappings)
+                            {
+                                var regDef = setting.RegistrySettings?.FirstOrDefault(rs => rs.ValueName == map.Key);
+                                if (regDef != null && regDef.KeyPath != null && regDef.ValueName != null)
+                                {
+                                    object? current = ReadRegistryValue(regDef.KeyPath, regDef.ValueName) ?? regDef.DefaultValue;
+                                    if (current?.ToString() != map.Value?.ToString()) { isOptimal = false; break; }
+                                }
+                            }
+                        }
+                    }
+                    else if (setting.RegistrySettings != null)
+                    {
+                        foreach (var reg in setting.RegistrySettings)
+                        {
+                            if (reg.RecommendedValue != null && reg.KeyPath != null && reg.ValueName != null)
+                            {
+                                object? current = ReadRegistryValue(reg.KeyPath, reg.ValueName) ?? reg.DefaultValue;
+                                if (current?.ToString() != reg.RecommendedValue.ToString()) { isOptimal = false; break; }
+                            }
+                        }
+                    }
+
+                    if (!isOptimal)
+                    {
+                        res.IssuesCount++;
+                        res.Issues.Add(setting.Name ?? "Unknown");
+
+                        if (setting.GroupName == "Windows AI" || setting.GroupName == "Microsoft Office AI") res.AiIssuesCount++;
+                        else if (setting.GroupName == "App Permissions") res.AppPermIssuesCount++;
+                        else if (setting.GroupName == "Microsoft Edge AI" || setting.GroupName == "Content Delivery & Advertising") res.EdgeWebIssuesCount++;
+                    }
+                }
+
+                res.Score = totalApplicable > 0 ? (double)(totalApplicable - res.IssuesCount) / totalApplicable : 1.0;
+                return res;
+            });
+        }
+
+        public async Task<PerformanceScanResult> CalculatePerformanceHealthAsync()
+        {
+            return await Task.Run(() =>
+            {
+                var res = new PerformanceScanResult();
+                bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                var group = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
+                int totalApplicable = 0;
+
+                foreach (var setting in group.Settings)
+                {
+                    if (setting.IsWindows11Only && !isWin11) continue;
+                    if (setting.IsWindows10Only && isWin11) continue;
+
+                    totalApplicable++;
+                    bool isOptimal = true;
+
+                    if (setting.ComboBox != null)
+                    {
+                        var rec = setting.ComboBox.Options?.FirstOrDefault(o => o.IsRecommended);
+                        if (rec?.ValueMappings != null)
+                        {
+                            foreach (var map in rec.ValueMappings)
+                            {
+                                var regDef = setting.RegistrySettings?.FirstOrDefault(rs => rs.ValueName == map.Key);
+                                if (regDef != null && regDef.KeyPath != null && regDef.ValueName != null)
+                                {
+                                    object? current = ReadRegistryValue(regDef.KeyPath, regDef.ValueName) ?? regDef.DefaultValue;
+                                    if (current?.ToString() != map.Value?.ToString()) { isOptimal = false; break; }
+                                }
+                            }
+                        }
+                    }
+                    else if (setting.RegistrySettings != null)
+                    {
+                        foreach (var reg in setting.RegistrySettings)
+                        {
+                            if (reg.RecommendedValue != null && reg.KeyPath != null && reg.ValueName != null)
+                            {
+                                object? current = ReadRegistryValue(reg.KeyPath, reg.ValueName) ?? reg.DefaultValue;
+                                if (current?.ToString() != reg.RecommendedValue.ToString()) { isOptimal = false; break; }
+                            }
+                        }
+                    }
+
+                    if (!isOptimal)
+                    {
+                        res.IssuesCount++;
+                        res.Issues.Add(setting.Name ?? "Unknown");
+
+                        if (setting.GroupName == "System Services" || setting.GroupName == "Scheduled Tasks") res.ServicesIssuesCount++;
+                        else if (setting.GroupName == "Visual Effects") res.VisualIssuesCount++;
+                        else res.HardwareIssuesCount++;
+                    }
+                }
+
+                res.Score = totalApplicable > 0 ? (double)(totalApplicable - res.IssuesCount) / totalApplicable : 1.0;
+                return res;
+            });
+        }
+
+        public async Task<SmartScanResult> FetchSmartDataAsync(string driveLetter)
+        {
+            return await Task.Run(() =>
+            {
+                var result = new SmartScanResult();
+                try
+                {
+                    var data = SystemDiagnostics.GetDriveSmartInfo(driveLetter);
+                    result.Health = data.Health;
+                    result.Type = data.Type;
+                    result.Temp = data.Temp;
+
+                    if (result.Temp == "--" || string.IsNullOrEmpty(result.Temp))
+                    {
+                        float maxDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperature();
+                        if (maxDiskTemp > 0) result.Temp = $"{(int)maxDiskTemp}°C";
+                    }
+
+                    result.IsGood = result.Health == "Good";
+                }
+                catch
+                {
+                    result.Health = "Error";
+                    result.IsGood = false;
+                }
+                return result;
+            });
+        }
+
+        public async Task<long> PingDnsAsync(string ip)
+        {
+            return await Task.Run(async () =>
+            {
+                try
+                {
+                    using Ping ping = new Ping();
+                    PingReply reply = await ping.SendPingAsync(ip, 2000);
+                    return reply.Status == IPStatus.Success ? reply.RoundtripTime : -1;
+                }
+                catch { return -1; }
+            });
+        }
+
+        public async Task<List<NetworkProcessInfo>> GetNetworkHogsAsync()
+        {
+            return await Task.Run(async () =>
+            {
+                var results = new List<NetworkProcessInfo>();
+                try
+                {
+                    string output = await CommandExecutor.StartTask("netstat -ano");
+                    var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    var pidCounts = new Dictionary<int, int>();
+
+                    foreach (var line in lines.Skip(4))
+                    {
+                        var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length >= 5 && parts[0] == "TCP" && parts[3] == "ESTABLISHED")
+                        {
+                            if (int.TryParse(parts[4], out int pid) && pid > 0 && pid != 4)
+                            {
+                                if (!pidCounts.ContainsKey(pid)) pidCounts[pid] = 0;
+                                pidCounts[pid]++;
+                            }
+                        }
+                    }
+
+                    var topPids = pidCounts.OrderByDescending(kv => kv.Value).Take(3);
+                    foreach (var kv in topPids)
+                    {
+                        try
+                        {
+                            using var proc = Process.GetProcessById(kv.Key);
+                            results.Add(new NetworkProcessInfo { ProcessName = proc.ProcessName + ".exe", ConnectionCount = $"{kv.Value} connections" });
+                        }
+                        catch { }
+                    }
+                }
+                catch { }
+
+                if (results.Count == 0)
+                {
+                    results.Add(new NetworkProcessInfo
+                    {
+                        ProcessName = ResourceString.GetString("txt_idle_no_connections") ?? "Idle / No active connections",
+                        ConnectionCount = ""
+                    });
+                }
+                return results;
+            });
+        }
+
+        public async Task ApplyBulkSettingsAsync(List<string> settingIds)
+        {
+            var bulkService = App.Services.GetService<IBulkSettingsActionService>();
+            if (bulkService != null)
+            {
+                await bulkService.ApplyRecommendedAsync(settingIds);
+            }
+        }
+
+        public async Task RestoreBulkSettingsAsync(List<string> settingIds)
+        {
+            var bulkService = App.Services.GetService<IBulkSettingsActionService>();
+            if (bulkService != null)
+            {
+                await bulkService.ResetToDefaultsAsync(settingIds);
+            }
+        }
+
         #endregion
 
         #region Powerplan
@@ -695,13 +1131,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Background Engine (High-Performance Telemetry)
         public void ResumeUpdates()
         {
-            // FAST Graph polling timer (200ms)
-            if (_telemetryTimer == null) _telemetryTimer = new Timer(TelemetryTimer_Tick, null, 0, 200);
-            else _telemetryTimer.Change(0, 200);
+            if (_telemetryTimer == null) _telemetryTimer = new System.Threading.Timer(TelemetryTimer_Tick, null, 0, 1000);
+            else _telemetryTimer.Change(0, 1000);
 
-            // SLOW Hardware polling timer (1000ms) to fix micro-freezes!
-            if (_hardwareTimer == null) _hardwareTimer = new Timer(HardwareTimer_Tick, null, 0, 1000);
-            else _hardwareTimer.Change(0, 1000);
+            if (_hardwareTimer == null) _hardwareTimer = new System.Threading.Timer(HardwareTimer_Tick, null, 0, 3000);
+            else _hardwareTimer.Change(0, 3000);
 
             _weatherTimer?.Start();
         }
@@ -713,9 +1147,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             _weatherTimer?.Stop();
         }
 
-        // ==========================================
-        // FAST LOOP (200ms) - Only runs CPU, RAM, Network, and LiveCharts updates. 
-        // ==========================================
         private void TelemetryTimer_Tick(object? state)
         {
             if (Interlocked.CompareExchange(ref _isUpdatingTelemetry, 1, 0) != 0) return;
@@ -723,30 +1154,37 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             try
             {
                 _currentTick++;
-                _secondTickCounter++;
-                bool isFullSecond = _secondTickCounter >= 5;
-                if (isFullSecond) _secondTickCounter = 0;
 
                 double rawCpu = 0;
-                if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+                lock (_cpuLock)
                 {
-                    ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
-                    ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
-                    ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
-
-                    ulong idleDiff = curIdleTime - _prevIdleTime;
-                    ulong kernelDiff = curKernelTime - _prevKernelTime;
-                    ulong userDiff = curUserTime - _prevUserTime;
-                    ulong totalSystemTime = kernelDiff + userDiff;
-
-                    _prevIdleTime = curIdleTime;
-                    _prevKernelTime = curKernelTime;
-                    _prevUserTime = curUserTime;
-
-                    if (totalSystemTime > 0)
+                    if ((DateTime.Now - _lastCpuCheckTime).TotalMilliseconds < 150)
                     {
-                        rawCpu = (double)((totalSystemTime - idleDiff) * 100.0 / totalSystemTime);
-                        rawCpu = Math.Clamp(rawCpu, 0, 100);
+                        rawCpu = _lastCalculatedCpuUsage;
+                    }
+                    else if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+                    {
+                        ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                        ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                        ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+
+                        ulong idleDiff = curIdleTime - _prevIdleTime;
+                        ulong kernelDiff = curKernelTime - _prevKernelTime;
+                        ulong userDiff = curUserTime - _prevUserTime;
+                        ulong totalSystemTime = kernelDiff + userDiff;
+
+                        _prevIdleTime = curIdleTime;
+                        _prevKernelTime = curKernelTime;
+                        _prevUserTime = curUserTime;
+                        _lastCpuCheckTime = DateTime.Now;
+
+                        if (totalSystemTime > 0)
+                        {
+                            rawCpu = (double)((totalSystemTime - idleDiff) * 100.0 / totalSystemTime);
+                            _lastCalculatedCpuUsage = (float)Math.Clamp(rawCpu, 0, 100);
+                        }
+
+                        rawCpu = _lastCalculatedCpuUsage;
                     }
                 }
 
@@ -757,24 +1195,21 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 {
                     rawRam = memStatus.dwMemoryLoad;
 
-                    if (isFullSecond)
-                    {
-                        double totalGb = memStatus.ullTotalPhys / 1073741824.0;
-                        double availGb = memStatus.ullAvailPhys / 1073741824.0;
-                        double usedGb = totalGb - availGb;
-                        double cacheGb = (memStatus.ullTotalPageFile - memStatus.ullAvailPageFile) / 1073741824.0 * 0.4;
+                    double totalGb = memStatus.ullTotalPhys / 1073741824.0;
+                    double availGb = memStatus.ullAvailPhys / 1073741824.0;
+                    double usedGb = totalGb - availGb;
+                    double cacheGb = (memStatus.ullTotalPageFile - memStatus.ullAvailPageFile) / 1073741824.0 * 0.4;
 
-                        App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
-                        {
-                            TotalRamGb = $"{totalGb:F1} GB";
-                            UsedRamGb = $"{usedGb:F1} GB";
-                            AvailableRamGb = $"{availGb:F1} GB";
-                            SystemCacheGb = $"{Math.Max(0.1, cacheGb):F1} GB";
-                            RamUsageGbText = $"{usedGb:F1} / {totalGb:F1} GB";
-                            RamUsagePercentageText = $"{rawRam}%";
-                            AvailableRamPercentageText = $"{100 - rawRam}%";
-                        });
-                    }
+                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                    {
+                        TotalRamGb = $"{totalGb:F1} GB";
+                        UsedRamGb = $"{usedGb:F1} GB";
+                        AvailableRamGb = $"{availGb:F1} GB";
+                        SystemCacheGb = $"{Math.Max(0.1, cacheGb):F1} GB";
+                        RamUsageGbText = $"{usedGb:F1} / {totalGb:F1} GB";
+                        RamUsagePercentageText = $"{rawRam}%";
+                        AvailableRamPercentageText = $"{100 - rawRam}%";
+                    });
                 }
 
                 var netUsage = GetNetworkUsage();
@@ -797,7 +1232,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _isFirstTick = false;
 
                 _displayCpuUsage = (_displayCpuUsage * 0.7) + (rawCpu * 0.3);
-                _displayGpuUsage = (_displayGpuUsage * 0.8) + (_cachedRawGpu * 0.2); // Uses cached GPU read from slow thread!
+                _displayGpuUsage = (_displayGpuUsage * 0.8) + (_cachedRawGpu * 0.2);
                 _displayDownMbps = (_displayDownMbps * 0.7) + (rawDlMbps * 0.3);
                 _displayUpMbps = (_displayUpMbps * 0.7) + (rawUlMbps * 0.3);
                 _lastRamPercentage = rawRam;
@@ -818,38 +1253,33 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     NetUp = _displayUpMbps,
                     ProcCount = _lastPCount,
                     SvcCount = _lastSCount,
-                    IsFullSecond = isFullSecond
+                    IsFullSecond = true
                 };
 
-                // Send fast UI point appends exactly every 200ms
                 App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
                 {
-                    // The magic that makes it a continuous scroll (Treadmill)
                     if (HiddenXAxes.Count > 0)
                     {
                         HiddenXAxes[0].MaxLimit = _currentTick;
                         HiddenXAxes[0].MinLimit = _currentTick - _maxDataPoints;
                     }
 
-                    AppendToGraph(CpuGraphValues, CpuGraphDot, _displayCpuUsage, 100.0);
-                    AppendToGraph(RamGraphValues, RamGraphDot, _lastRamPercentage, 100.0);
-                    AppendToGraph(GpuGraphValues, GpuGraphDot, _displayGpuUsage, 100.0);
-                    AppendToGraph(NetDownGraphValues, NetDownGraphDot, _displayDownMbps, netScale);
-                    AppendToGraph(NetUpGraphValues, NetUpGraphDot, _displayUpMbps, netScale);
+                    AppendToGraph(CpuGraphValues, CpuGraphDot, _displayCpuUsage);
+                    AppendToGraph(RamGraphValues, RamGraphDot, _lastRamPercentage);
+                    AppendToGraph(GpuGraphValues, GpuGraphDot, _displayGpuUsage);
+                    AppendToGraph(NetDownGraphValues, NetDownGraphDot, _displayDownMbps);
+                    AppendToGraph(NetUpGraphValues, NetUpGraphDot, _displayUpMbps);
 
-                    if (isFullSecond)
-                    {
-                        UpdateDateTime();
-                        AverageRamLoad = RamGraphValues.Count > 0 ? RamGraphValues.Average(p => p.Y ?? 0) : 0;
+                    UpdateDateTime();
+                    AverageRamLoad = RamGraphValues.Count > 0 ? RamGraphValues.Average(p => p.Y ?? 0) : 0;
 
-                        if (DynamicNetYAxes.FirstOrDefault() is Axis dynamicAxis)
-                            dynamicAxis.MaxLimit = netScale;
+                    if (DynamicNetYAxes.FirstOrDefault() is Axis dynamicAxis)
+                        dynamicAxis.MaxLimit = netScale;
 
-                        NetYAxis100 = Math.Round(netScale).ToString();
-                        NetYAxis75 = Math.Round(netScale * 0.75).ToString();
-                        NetYAxis50 = Math.Round(netScale * 0.50).ToString();
-                        NetYAxis25 = Math.Round(netScale * 0.25).ToString();
-                    }
+                    NetYAxis100 = Math.Round(netScale).ToString();
+                    NetYAxis75 = Math.Round(netScale * 0.75).ToString();
+                    NetYAxis50 = Math.Round(netScale * 0.50).ToString();
+                    NetYAxis25 = Math.Round(netScale * 0.25).ToString();
 
                     OnTelemetryTicked?.Invoke(payload);
 
@@ -864,9 +1294,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        // ==========================================
-        // SLOW LOOP (1000ms) - Blocks here won't affect the graphs!
-        // ==========================================
         private void HardwareTimer_Tick(object? state)
         {
             if (Interlocked.CompareExchange(ref _isUpdatingHardware, 1, 0) != 0) return;
@@ -1032,27 +1459,25 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region LiveCharts2 Continuous Scroll Logic
 
-        private void AppendToGraph(ObservableCollection<ObservablePoint> series, ObservableCollection<ObservablePoint> dot, double newValue, double maxScale)
+        private void AppendToGraph(ObservableCollection<ObservablePoint> series, ObservableCollection<ObservablePoint> dot, double newValue)
         {
-            double scaledValue = (newValue / maxScale) * 100.0;
-            series.Add(new ObservablePoint(_currentTick, scaledValue));
+            series.Add(new ObservablePoint(_currentTick, newValue));
 
             if (series.Count > _maxDataPoints)
             {
-                series.RemoveAt(0); // Standard queue behavior, drops oldest point natively
+                series.RemoveAt(0);
             }
 
-            if (dot.Count == 0) dot.Add(new ObservablePoint(_currentTick, scaledValue));
+            if (dot.Count == 0) dot.Add(new ObservablePoint(_currentTick, newValue));
             else
             {
                 dot[0].X = _currentTick;
-                dot[0].Y = scaledValue;
+                dot[0].Y = newValue;
             }
         }
 
         private void ResetGraphBuffers()
         {
-            // Triggers when user changes Timeframe in UI, simply wiping it forces it to rescale immediately
             CpuGraphValues.Clear();
             RamGraphValues.Clear();
             GpuGraphValues.Clear();
@@ -1266,6 +1691,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 try
                 {
+                    _wallpaperCts?.Cancel();
+                    _wallpaperCts?.Dispose();
+
                     if (!_cts.IsCancellationRequested) _cts.Cancel();
                     _cts.Dispose();
                 }
@@ -1281,7 +1709,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 ClearPropertyChangedListeners();
 
-                System.Diagnostics.Debug.WriteLine("[HomePageVM] Purge: All models and delegates unrooted.");
+                Debug.WriteLine("[HomePageVM] Purge: All models and delegates unrooted.");
             }
 
             base.Dispose(disposing);

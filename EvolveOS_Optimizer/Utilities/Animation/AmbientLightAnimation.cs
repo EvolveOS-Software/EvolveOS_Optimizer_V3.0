@@ -39,6 +39,7 @@ namespace EvolveOS_Optimizer.Utilities.Animation
     {
         private SpotLight? _spotLight;
         private UIElement? _targetElement;
+        private float _cachedRadius;
 
         protected override string GetId() => typeof(HoverLightNight).FullName!;
 
@@ -47,13 +48,15 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             _targetElement = newElement;
             var compositor = ElementCompositionPreview.GetElementVisual(newElement).Compositor;
 
+            _cachedRadius = Math.Max(50f, (float)SettingsEngine.Dashboard_HoverRadius);
+
             _spotLight = compositor.CreateSpotLight();
             _spotLight.InnerConeColor = Colors.White;
             _spotLight.OuterConeColor = Colors.Transparent;
 
             _spotLight.InnerConeAngleInDegrees = 30f;
             _spotLight.OuterConeAngleInDegrees = 60f;
-            _spotLight.Offset = new Vector3(-1000, -1000, 150f);
+            _spotLight.Offset = new Vector3(-1000, -1000, _cachedRadius);
 
             CompositionLight = _spotLight;
             XamlLight.AddTargetElement(GetId(), newElement);
@@ -67,15 +70,13 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             if (_spotLight != null && _targetElement != null)
             {
                 var pos = e.GetCurrentPoint(_targetElement).Position;
-
-                float radius = (float)SettingsEngine.Dashboard_HoverRadius;
-                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, radius);
+                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, _cachedRadius);
             }
         }
 
         private void OnPointerExited(object sender, PointerRoutedEventArgs e)
         {
-            if (_spotLight != null) _spotLight.Offset = new Vector3(-1000, -1000, 150f);
+            if (_spotLight != null) _spotLight.Offset = new Vector3(-1000, -1000, _cachedRadius);
         }
 
         protected override void OnDisconnected(UIElement oldElement)
@@ -124,6 +125,7 @@ namespace EvolveOS_Optimizer.Utilities.Animation
     {
         private SpotLight? _spotLight;
         private UIElement? _targetElement;
+        private float _cachedRadius;
 
         protected override string GetId() => typeof(HoverLightDay).FullName!;
 
@@ -132,13 +134,15 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             _targetElement = newElement;
             var compositor = ElementCompositionPreview.GetElementVisual(newElement).Compositor;
 
+            _cachedRadius = Math.Max(50f, (float)SettingsEngine.Dashboard_HoverRadius);
+
             _spotLight = compositor.CreateSpotLight();
             _spotLight.InnerConeColor = ColorHelper.FromArgb(255, 200, 200, 200);
             _spotLight.OuterConeColor = Colors.Transparent;
 
             _spotLight.InnerConeAngleInDegrees = 45f;
             _spotLight.OuterConeAngleInDegrees = 90f;
-            _spotLight.Offset = new Vector3(-1000, -1000, 200f);
+            _spotLight.Offset = new Vector3(-1000, -1000, _cachedRadius);
 
             CompositionLight = _spotLight;
             XamlLight.AddTargetElement(GetId(), newElement);
@@ -152,15 +156,13 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             if (_spotLight != null && _targetElement != null)
             {
                 var pos = e.GetCurrentPoint(_targetElement).Position;
-
-                float radius = (float)SettingsEngine.Dashboard_HoverRadius;
-                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, radius);
+                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, _cachedRadius);
             }
         }
 
         private void OnPointerExited(object sender, PointerRoutedEventArgs e)
         {
-            if (_spotLight != null) _spotLight.Offset = new Vector3(-1000, -1000, 200f);
+            if (_spotLight != null) _spotLight.Offset = new Vector3(-1000, -1000, _cachedRadius);
         }
 
         protected override void OnDisconnected(UIElement oldElement)
@@ -211,6 +213,7 @@ namespace EvolveOS_Optimizer.Utilities.Animation
     {
         private SpotLight? _spotLight;
         private UIElement? _targetElement;
+        private float _cachedRadius;
 
         public static Color ParseSafeHex(string hex)
         {
@@ -237,6 +240,8 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             _targetElement = newElement;
             var compositor = ElementCompositionPreview.GetElementVisual(newElement).Compositor;
 
+            _cachedRadius = Math.Max(50f, SettingsEngine.Dashboard_HoverRadius);
+
             _spotLight = compositor.CreateSpotLight();
             _spotLight.InnerConeColor = ParseSafeHex(SettingsEngine.Dashboard_HoverColor);
             _spotLight.OuterConeColor = Colors.Transparent;
@@ -244,8 +249,7 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             _spotLight.InnerConeAngleInDegrees = 40f;
             _spotLight.OuterConeAngleInDegrees = 80f;
 
-            float radius = Math.Max(50f, SettingsEngine.Dashboard_HoverRadius);
-            _spotLight.Offset = new Vector3(-1000, -1000, radius);
+            _spotLight.Offset = new Vector3(-1000, -1000, _cachedRadius);
 
             CompositionLight = _spotLight;
             XamlLight.AddTargetElement(GetId(), newElement);
@@ -259,8 +263,7 @@ namespace EvolveOS_Optimizer.Utilities.Animation
             if (_spotLight != null && _targetElement != null)
             {
                 var pos = e.GetCurrentPoint(_targetElement).Position;
-                float radius = Math.Max(50f, SettingsEngine.Dashboard_HoverRadius);
-                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, radius);
+                _spotLight.Offset = new Vector3((float)pos.X, (float)pos.Y, _cachedRadius);
             }
         }
 
@@ -268,8 +271,7 @@ namespace EvolveOS_Optimizer.Utilities.Animation
         {
             if (_spotLight != null)
             {
-                float radius = Math.Max(50f, SettingsEngine.Dashboard_HoverRadius);
-                _spotLight.Offset = new Vector3(-1000, -1000, radius);
+                _spotLight.Offset = new Vector3(-1000, -1000, _cachedRadius);
             }
         }
 

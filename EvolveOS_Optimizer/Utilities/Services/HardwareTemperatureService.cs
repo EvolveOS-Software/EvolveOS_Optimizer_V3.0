@@ -43,7 +43,19 @@ namespace EvolveOS_Optimizer.Utilities.Services
         {
             lock (_hardwareLock)
             {
-                _computer?.Accept(_updateVisitor);
+                if (_computer == null) return;
+
+                foreach (var hw in _computer.Hardware)
+                {
+                    if (hw.HardwareType == HardwareType.Cpu ||
+                        hw.HardwareType == HardwareType.Memory ||
+                        hw.HardwareType == HardwareType.GpuNvidia ||
+                        hw.HardwareType == HardwareType.GpuAmd ||
+                        hw.HardwareType == HardwareType.GpuIntel)
+                    {
+                        hw.Update();
+                    }
+                }
             }
         }
 
@@ -429,6 +441,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
                     if (index >= 0 && index < storageDrives.Count)
                     {
                         var hardware = storageDrives[index];
+
                         hardware.Update();
 
                         var allSensors = new List<ISensor>();
@@ -475,7 +488,7 @@ namespace EvolveOS_Optimizer.Utilities.Services
                         var storageHardware = _computer.Hardware.Where(h => h.HardwareType == HardwareType.Storage).ToList();
                         foreach (var hw in storageHardware)
                         {
-                            driveNames.Add(hw.Name); // E.g., "Samsung SSD 970 EVO"
+                            driveNames.Add(hw.Name);
                         }
                     }
                 }
