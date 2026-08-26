@@ -1,26 +1,44 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
+using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Services;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 using SkiaSharp;
+using Windows.UI;
+using Microsoft.UI.Xaml;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
+    // --- Result Classes for Background Data Transfers ---
+    public class SecurityScanResult { public int IssuesCount { get; set; } public bool IsCoreProtected { get; set; } public List<string> Issues { get; set; } = new(); }
+    public class PrivacyScanResult { public int IssuesCount { get; set; } public int AiIssuesCount { get; set; } public int AppPermIssuesCount { get; set; } public int EdgeWebIssuesCount { get; set; } public double Score { get; set; } public List<string> Issues { get; set; } = new(); }
+    public class PerformanceScanResult { public int IssuesCount { get; set; } public int ServicesIssuesCount { get; set; } public int VisualIssuesCount { get; set; } public int HardwareIssuesCount { get; set; } public double Score { get; set; } public List<string> Issues { get; set; } = new(); }
+    public class SmartScanResult { public string Health { get; set; } = "Unknown"; public string Type { get; set; } = "--"; public string Temp { get; set; } = "--"; public bool IsGood { get; set; } }
+    public class NetworkProcessInfo { public string ProcessName { get; set; } = string.Empty; public string ConnectionCount { get; set; } = string.Empty; }
+
     public partial class HomePageViewModel : ViewModelBase, IDisposable
     {
         #region Native Methods & Structs
@@ -58,12 +76,15 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly SystemDiagnostics _monitoringService = new SystemDiagnostics();
         private readonly WeatherService _weatherService = new WeatherService();
 
-        private System.Threading.Timer? _telemetryTimer; // 200ms - Fast graph rendering
-        private System.Threading.Timer? _hardwareTimer;  // 1000ms - Heavy hardware polling
+        private System.Threading.Timer? _telemetryTimer;
+        private System.Threading.Timer? _hardwareTimer;
         private DispatcherTimer? _weatherTimer;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
+        private CancellationTokenSource? _wallpaperCts;
+
         public event Action<TelemetryDataPayload>? OnTelemetryTicked;
+        public event Action<byte[]>? OnWallpaperUpdated;
 
         private int _isUpdatingTelemetry = 0;
         private int _isUpdatingHardware = 0;
@@ -114,9 +135,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region LiveCharts2 Engine Variables
         private int _maxGraphSeconds = 60;
-        private int _maxDataPoints = 300; // 60s * 5 ticks per sec
+        private int _maxDataPoints = 300;
         private double _peakNetworkSpeedMbps = 10.0;
-        private long _currentTick = 0; // Absolute X axis point
+        private long _currentTick = 0;
         private int _secondTickCounter = 0;
         #endregion
 
@@ -198,10 +219,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (_maxGraphSeconds != value)
                 {
                     _maxGraphSeconds = value;
-                    _maxDataPoints = value * 5; // 5Hz graph tick rate
+                    _maxDataPoints = value * 5;
 
                     UpdateAxisLabels(value);
-                    ResetGraphBuffers(); // Flush history so it properly rescales to new size
+                    ResetGraphBuffers();
                 }
             }
         }
@@ -597,6 +618,365 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         }
         #endregion
 
+        #region Scanners & Diagnostics (Moved from Code-Behind)
+
+        public void StartWallpaperMonitor()
+        {
+            _wallpaperCts?.Cancel();
+            _wallpaperCts = new CancellationTokenSource();
+            Task.Run(() => MonitorWallpaperAsync(_wallpaperCts.Token));
+        }
+
+        private async Task MonitorWallpaperAsync(CancellationToken token)
+        {
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Windows\Themes\TranscodedWallpaper");
+            DateTime lastWrite = DateTime.MinValue;
+
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    if (File.Exists(path))
+                    {
+                        var writeTime = File.GetLastWriteTime(path);
+                        if (writeTime > lastWrite)
+                        {
+                            lastWrite = writeTime;
+                            byte[] bytes = await File.ReadAllBytesAsync(path, token);
+                            App.MainWindow?.DispatcherQueue?.TryEnqueue(() => OnWallpaperUpdated?.Invoke(bytes));
+                        }
+                    }
+                }
+                catch { }
+                await Task.Delay(2000, token);
+            }
+        }
+
+        public async Task<List<NetworkProcessInfo>> GetTopNetworkProcessesAsync()
+        {
+            return await Task.Run(async () =>
+            {
+                var results = new List<NetworkProcessInfo>();
+                try
+                {
+                    string output = await CommandExecutor.StartTask("netstat -ano");
+                    var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    var pidCounts = new Dictionary<int, int>();
+
+                    foreach (var line in lines.Skip(4))
+                    {
+                        var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length >= 5 && parts[0] == "TCP" && parts[3] == "ESTABLISHED")
+                        {
+                            if (int.TryParse(parts[4], out int pid) && pid > 0 && pid != 4)
+                            {
+                                if (!pidCounts.ContainsKey(pid)) pidCounts[pid] = 0;
+                                pidCounts[pid]++;
+                            }
+                        }
+                    }
+
+                    var topPids = pidCounts.OrderByDescending(kv => kv.Value).Take(3);
+                    foreach (var kv in topPids)
+                    {
+                        try
+                        {
+                            using var proc = Process.GetProcessById(kv.Key);
+                            results.Add(new NetworkProcessInfo { ProcessName = proc.ProcessName + ".exe", ConnectionCount = $"{kv.Value} connections" });
+                        }
+                        catch { }
+                    }
+                }
+                catch { }
+
+                if (results.Count == 0) results.Add(new NetworkProcessInfo { ProcessName = ResourceString.GetString("txt_idle_no_connections") ?? "Idle / No active connections", ConnectionCount = "" });
+                return results;
+            });
+        }
+
+        public async Task<dynamic> CalculateSystemHealthAsync()
+        {
+            return await SystemHealthHelper.EvaluateHealthAsync();
+        }
+
+        public async Task<SecurityScanResult> CalculateSecurityHealthAsync()
+        {
+            return await Task.Run(async () =>
+            {
+                var result = new SecurityScanResult();
+                var antivirusInfo = await SecurityDiagnostics.GetAntivirusInfoAsync();
+
+                bool isAvEnabled = antivirusInfo.IsEnabled;
+                bool isFwEnabled = await SecurityDiagnostics.IsFirewallEnabledAsync();
+                bool isRtEnabled = await SecurityDiagnostics.IsRealTimeProtectionEnabledAsync();
+
+                if (!isAvEnabled) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_VirusThreatProtection") ?? "Virus Protection"); }
+                if (!isFwEnabled) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_FirewallNetworkProtection") ?? "Firewall"); }
+                if (!isRtEnabled) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_RealTimeProtection") ?? "Real-Time Protection"); }
+                if (!await SecurityDiagnostics.IsUACEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_UAC") ?? "UAC"); }
+                if (!await SecurityDiagnostics.IsWindowsUpdateEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_WindowsUpdate") ?? "Windows Update"); }
+                if (!await SecurityDiagnostics.IsTamperProtectionEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_TamperProtection") ?? "Tamper Protection"); }
+                if (await SecurityDiagnostics.GetSmartAppControlStateAsync() == 0) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_SmartAppControl") ?? "Smart App Control"); }
+
+                string psPolicy = await SecurityDiagnostics.GetPowerShellExecutionPolicyAsync();
+                if (psPolicy == "Unrestricted" || psPolicy == "Bypass" || psPolicy == "Error") { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_PSExecutionPolicy") ?? "PowerShell Policy"); }
+
+                if (!await SecurityDiagnostics.IsLsaProtectionEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_LSAProtection") ?? "LSA Protection"); }
+                if (await SecurityDiagnostics.IsRdpEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_RemoteDesktop") ?? "Remote Desktop"); }
+                if (await SecurityDiagnostics.IsRemoteAssistanceEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_RemoteAssistance") ?? "Remote Assistance"); }
+                if (await SecurityDiagnostics.IsDeveloperModeEnabledAsync()) { result.IssuesCount++; result.Issues.Add(ResourceString.GetString("SecurityPage_DeveloperMode") ?? "Developer Mode"); }
+
+                result.IsCoreProtected = isAvEnabled && isFwEnabled && isRtEnabled;
+                return result;
+            });
+        }
+
+        private object? ReadRegistryValue(string keyPath, string valueName)
+        {
+            try
+            {
+                using var baseKey = keyPath.StartsWith("HKEY_LOCAL_MACHINE") ? Registry.LocalMachine : Registry.CurrentUser;
+                string subKey = keyPath.Substring(keyPath.IndexOf('\\') + 1);
+                using var key = baseKey.OpenSubKey(subKey);
+                return key?.GetValue(valueName);
+            }
+            catch { return null; }
+        }
+
+        public async Task<PrivacyScanResult> CalculatePrivacyHealthAsync()
+        {
+            return await Task.Run(() =>
+            {
+                var res = new PrivacyScanResult();
+                bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                var privacyGroup = PrivacyAndSecurityOptimizations.GetPrivacyAndSecurityOptimizations();
+                int totalApplicable = 0;
+
+                foreach (var setting in privacyGroup.Settings)
+                {
+                    if (setting.IsWindows11Only && !isWin11) continue;
+                    if (setting.IsWindows10Only && isWin11) continue;
+
+                    totalApplicable++;
+                    bool isOptimal = true;
+
+                    if (setting.ComboBox != null)
+                    {
+                        var rec = setting.ComboBox.Options?.FirstOrDefault(o => o.IsRecommended);
+                        if (rec?.ValueMappings != null)
+                        {
+                            foreach (var map in rec.ValueMappings)
+                            {
+                                var regDef = setting.RegistrySettings?.FirstOrDefault(rs => rs.ValueName == map.Key);
+                                if (regDef != null && regDef.KeyPath != null && regDef.ValueName != null)
+                                {
+                                    object? current = ReadRegistryValue(regDef.KeyPath, regDef.ValueName) ?? regDef.DefaultValue;
+                                    if (current?.ToString() != map.Value?.ToString()) { isOptimal = false; break; }
+                                }
+                            }
+                        }
+                    }
+                    else if (setting.RegistrySettings != null)
+                    {
+                        foreach (var reg in setting.RegistrySettings)
+                        {
+                            if (reg.RecommendedValue != null && reg.KeyPath != null && reg.ValueName != null)
+                            {
+                                object? current = ReadRegistryValue(reg.KeyPath, reg.ValueName) ?? reg.DefaultValue;
+                                if (current?.ToString() != reg.RecommendedValue.ToString()) { isOptimal = false; break; }
+                            }
+                        }
+                    }
+
+                    if (!isOptimal)
+                    {
+                        res.IssuesCount++;
+                        res.Issues.Add(setting.Name ?? "Unknown");
+
+                        if (setting.GroupName == "Windows AI" || setting.GroupName == "Microsoft Office AI") res.AiIssuesCount++;
+                        else if (setting.GroupName == "App Permissions") res.AppPermIssuesCount++;
+                        else if (setting.GroupName == "Microsoft Edge AI" || setting.GroupName == "Content Delivery & Advertising") res.EdgeWebIssuesCount++;
+                    }
+                }
+
+                res.Score = totalApplicable > 0 ? (double)(totalApplicable - res.IssuesCount) / totalApplicable : 1.0;
+                return res;
+            });
+        }
+
+        public async Task<PerformanceScanResult> CalculatePerformanceHealthAsync()
+        {
+            return await Task.Run(() =>
+            {
+                var res = new PerformanceScanResult();
+                bool isWin11 = Environment.OSVersion.Version.Build >= 22000;
+                var group = GamingAndPerformanceOptimizations.GetGamingAndPerformanceOptimizations();
+                int totalApplicable = 0;
+
+                foreach (var setting in group.Settings)
+                {
+                    if (setting.IsWindows11Only && !isWin11) continue;
+                    if (setting.IsWindows10Only && isWin11) continue;
+
+                    totalApplicable++;
+                    bool isOptimal = true;
+
+                    if (setting.ComboBox != null)
+                    {
+                        var rec = setting.ComboBox.Options?.FirstOrDefault(o => o.IsRecommended);
+                        if (rec?.ValueMappings != null)
+                        {
+                            foreach (var map in rec.ValueMappings)
+                            {
+                                var regDef = setting.RegistrySettings?.FirstOrDefault(rs => rs.ValueName == map.Key);
+                                if (regDef != null && regDef.KeyPath != null && regDef.ValueName != null)
+                                {
+                                    object? current = ReadRegistryValue(regDef.KeyPath, regDef.ValueName) ?? regDef.DefaultValue;
+                                    if (current?.ToString() != map.Value?.ToString()) { isOptimal = false; break; }
+                                }
+                            }
+                        }
+                    }
+                    else if (setting.RegistrySettings != null)
+                    {
+                        foreach (var reg in setting.RegistrySettings)
+                        {
+                            if (reg.RecommendedValue != null && reg.KeyPath != null && reg.ValueName != null)
+                            {
+                                object? current = ReadRegistryValue(reg.KeyPath, reg.ValueName) ?? reg.DefaultValue;
+                                if (current?.ToString() != reg.RecommendedValue.ToString()) { isOptimal = false; break; }
+                            }
+                        }
+                    }
+
+                    if (!isOptimal)
+                    {
+                        res.IssuesCount++;
+                        res.Issues.Add(setting.Name ?? "Unknown");
+
+                        if (setting.GroupName == "System Services" || setting.GroupName == "Scheduled Tasks") res.ServicesIssuesCount++;
+                        else if (setting.GroupName == "Visual Effects") res.VisualIssuesCount++;
+                        else res.HardwareIssuesCount++;
+                    }
+                }
+
+                res.Score = totalApplicable > 0 ? (double)(totalApplicable - res.IssuesCount) / totalApplicable : 1.0;
+                return res;
+            });
+        }
+
+        public async Task<SmartScanResult> FetchSmartDataAsync(string driveLetter)
+        {
+            return await Task.Run(() =>
+            {
+                var result = new SmartScanResult();
+                try
+                {
+                    var data = SystemDiagnostics.GetDriveSmartInfo(driveLetter);
+                    result.Health = data.Health;
+                    result.Type = data.Type;
+                    result.Temp = data.Temp;
+
+                    if (result.Temp == "--" || string.IsNullOrEmpty(result.Temp))
+                    {
+                        float maxDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperature();
+                        if (maxDiskTemp > 0) result.Temp = $"{(int)maxDiskTemp}°C";
+                    }
+
+                    result.IsGood = result.Health == "Good";
+                }
+                catch
+                {
+                    result.Health = "Error";
+                    result.IsGood = false;
+                }
+                return result;
+            });
+        }
+
+        public async Task<long> PingDnsAsync(string ip)
+        {
+            return await Task.Run(async () =>
+            {
+                try
+                {
+                    using Ping ping = new Ping();
+                    PingReply reply = await ping.SendPingAsync(ip, 2000);
+                    return reply.Status == IPStatus.Success ? reply.RoundtripTime : -1;
+                }
+                catch { return -1; }
+            });
+        }
+
+        public async Task<List<NetworkProcessInfo>> GetNetworkHogsAsync()
+        {
+            return await Task.Run(async () =>
+            {
+                var results = new List<NetworkProcessInfo>();
+                try
+                {
+                    string output = await CommandExecutor.StartTask("netstat -ano");
+                    var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    var pidCounts = new Dictionary<int, int>();
+
+                    foreach (var line in lines.Skip(4))
+                    {
+                        var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length >= 5 && parts[0] == "TCP" && parts[3] == "ESTABLISHED")
+                        {
+                            if (int.TryParse(parts[4], out int pid) && pid > 0 && pid != 4)
+                            {
+                                if (!pidCounts.ContainsKey(pid)) pidCounts[pid] = 0;
+                                pidCounts[pid]++;
+                            }
+                        }
+                    }
+
+                    var topPids = pidCounts.OrderByDescending(kv => kv.Value).Take(3);
+                    foreach (var kv in topPids)
+                    {
+                        try
+                        {
+                            using var proc = Process.GetProcessById(kv.Key);
+                            results.Add(new NetworkProcessInfo { ProcessName = proc.ProcessName + ".exe", ConnectionCount = $"{kv.Value} connections" });
+                        }
+                        catch { }
+                    }
+                }
+                catch { }
+
+                if (results.Count == 0)
+                {
+                    results.Add(new NetworkProcessInfo
+                    {
+                        ProcessName = ResourceString.GetString("txt_idle_no_connections") ?? "Idle / No active connections",
+                        ConnectionCount = ""
+                    });
+                }
+                return results;
+            });
+        }
+
+        public async Task ApplyBulkSettingsAsync(List<string> settingIds)
+        {
+            var bulkService = App.Services.GetService<IBulkSettingsActionService>();
+            if (bulkService != null)
+            {
+                await bulkService.ApplyRecommendedAsync(settingIds);
+            }
+        }
+
+        public async Task RestoreBulkSettingsAsync(List<string> settingIds)
+        {
+            var bulkService = App.Services.GetService<IBulkSettingsActionService>();
+            if (bulkService != null)
+            {
+                await bulkService.ResetToDefaultsAsync(settingIds);
+            }
+        }
+
+        #endregion
+
         #region Powerplan
         private void InitializePowerPlans()
         {
@@ -696,11 +1076,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public void ResumeUpdates()
         {
             // FAST Graph polling timer (200ms)
-            if (_telemetryTimer == null) _telemetryTimer = new Timer(TelemetryTimer_Tick, null, 0, 200);
+            if (_telemetryTimer == null) _telemetryTimer = new System.Threading.Timer(TelemetryTimer_Tick, null, 0, 200);
             else _telemetryTimer.Change(0, 200);
 
             // SLOW Hardware polling timer (1000ms) to fix micro-freezes!
-            if (_hardwareTimer == null) _hardwareTimer = new Timer(HardwareTimer_Tick, null, 0, 1000);
+            if (_hardwareTimer == null) _hardwareTimer = new System.Threading.Timer(HardwareTimer_Tick, null, 0, 1000);
             else _hardwareTimer.Change(0, 1000);
 
             _weatherTimer?.Start();
@@ -797,7 +1177,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _isFirstTick = false;
 
                 _displayCpuUsage = (_displayCpuUsage * 0.7) + (rawCpu * 0.3);
-                _displayGpuUsage = (_displayGpuUsage * 0.8) + (_cachedRawGpu * 0.2); // Uses cached GPU read from slow thread!
+                _displayGpuUsage = (_displayGpuUsage * 0.8) + (_cachedRawGpu * 0.2);
                 _displayDownMbps = (_displayDownMbps * 0.7) + (rawDlMbps * 0.3);
                 _displayUpMbps = (_displayUpMbps * 0.7) + (rawUlMbps * 0.3);
                 _lastRamPercentage = rawRam;
@@ -1266,6 +1646,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 try
                 {
+                    _wallpaperCts?.Cancel();
+                    _wallpaperCts?.Dispose();
+
                     if (!_cts.IsCancellationRequested) _cts.Cancel();
                     _cts.Dispose();
                 }

@@ -1976,7 +1976,7 @@
                         <!-- Section 1: General Widgets -->
                         <StackPanel Spacing="12">
                             <TextBlock helpers:Loc.Key="txt_general_widgets" Style="{StaticResource BodyStrongTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                            <Grid ColumnDefinitions="*, *" ColumnSpacing="30" RowDefinitions="Auto, Auto, Auto, Auto" RowSpacing="10">
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="30" RowDefinitions="Auto, Auto, Auto, Auto, Auto" RowSpacing="10">
                                 <ToggleSwitch Grid.Column="0" Grid.Row="0" Header="{helpers:ResourceString Key=txt_weather}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardWeather" Toggled="ToggleCard_Toggled" x:Name="ToggleWeather"/>
                                 <ToggleSwitch Grid.Column="1" Grid.Row="0" Header="{helpers:ResourceString Key=txt_disk_space}" IsOn="True" OffContent="{helpers:ResourceString Key=txt_off}" OnContent="{helpers:ResourceString Key=txt_on}" Tag="CardDisk" Toggled="ToggleCard_Toggled" x:Name="ToggleDisk"/>
 
