@@ -246,23 +246,59 @@ namespace EvolveOS_Optimizer.Pages
             CheckWallpaperTimer_Tick(null, null);
         }
 
-        private async void CheckWallpaperTimer_Tick(object? sender, object? e)
+        private void CheckWallpaperTimer_Tick(object? sender, object? e)
         {
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Windows\Themes\TranscodedWallpaper");
 
-            if (!File.Exists(path)) return;
-
-            try
+            Task.Run(async () =>
             {
-                DateTime writeTime = File.GetLastWriteTime(path);
+                if (!File.Exists(path)) return;
 
-                if (writeTime > _currentWallpaperWriteTime)
+                try
                 {
-                    _currentWallpaperWriteTime = writeTime;
-                    await LoadWallpaperIntoBrushAsync(path);
+                    DateTime writeTime = File.GetLastWriteTime(path);
+
+                    if (writeTime > _currentWallpaperWriteTime)
+                    {
+                        _currentWallpaperWriteTime = writeTime;
+
+                        byte[] imageBytes;
+                        using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        using (var ms = new MemoryStream())
+                        {
+                            await fs.CopyToAsync(ms);
+                            imageBytes = ms.ToArray();
+                        }
+
+                        _dispatcherQueue.TryEnqueue(async () =>
+                        {
+                            try
+                            {
+                                using var memStream = new MemoryStream(imageBytes);
+                                var randomAccessStream = memStream.AsRandomAccessStream();
+
+                                var bitmap = new BitmapImage();
+                                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                                await bitmap.SetSourceAsync(randomAccessStream);
+
+                                if (WallpaperBrush != null) WallpaperBrush.ImageSource = bitmap;
+
+                                var visual = ElementCompositionPreview.GetElementVisual(LogoPath);
+                                var fadeAnimation = visual.Compositor.CreateScalarKeyFrameAnimation();
+                                fadeAnimation.InsertKeyFrame(0.0f, 0.5f);
+                                fadeAnimation.InsertKeyFrame(1.0f, 1.0f);
+                                fadeAnimation.Duration = TimeSpan.FromMilliseconds(500);
+                                visual.StartAnimation("Opacity", fadeAnimation);
+                            }
+                            catch { }
+                        });
+                    }
                 }
-            }
-            catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Direct Wallpaper Update Failed] {ex.Message}");
+                }
+            });
         }
 
         private async Task LoadWallpaperIntoBrushAsync(string path)
