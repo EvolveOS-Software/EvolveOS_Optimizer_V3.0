@@ -1,15 +1,10 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
@@ -20,11 +15,8 @@ using EvolveOS_Optimizer.Utilities.Services;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
-using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
@@ -66,22 +58,24 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private readonly SystemDiagnostics _monitoringService = new SystemDiagnostics();
         private readonly WeatherService _weatherService = new WeatherService();
 
-        private System.Threading.Timer? _telemetryTimer;
+        private System.Threading.Timer? _telemetryTimer; // 200ms - Fast graph rendering
+        private System.Threading.Timer? _hardwareTimer;  // 1000ms - Heavy hardware polling
         private DispatcherTimer? _weatherTimer;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         public event Action<TelemetryDataPayload>? OnTelemetryTicked;
 
         private int _isUpdatingTelemetry = 0;
-        private int _monitoringTick = 0;
-        private int _sensorTickCounter = 0;
-        private int _isUpdatingGpuSensors = 0;
+        private int _isUpdatingHardware = 0;
+
         private double _displayCpuUsage = 0;
         private double _displayGpuUsage = 0;
         private double _displayDownMbps = 0;
         private double _displayUpMbps = 0;
         private double _lastRamPercentage = 0;
+
         private double _cachedRawGpu = 0;
+
         private string _lastPCount = "0";
         private string _lastSCount = "0";
 
@@ -98,7 +92,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private DateTime _lastGpuInstanceRefresh = DateTime.MinValue;
         private NetworkInterface[]? _cachedNetworkInterfaces;
         private DateTime _lastNetworkInterfaceRefresh = DateTime.MinValue;
-
         private bool _isRefreshingNetworkInterfaces = false;
         private bool _isRefreshingGpuInstances = false;
 
@@ -120,18 +113,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region LiveCharts2 Engine Variables
-        private readonly List<(long Time, double Value)> _cpuHistory = new();
-        private readonly List<(long Time, double Value)> _ramHistory = new();
-        private readonly List<(long Time, double Value)> _netDownHistory = new();
-        private readonly List<(long Time, double Value)> _netUpHistory = new();
-        private readonly List<(long Time, double Value)> _gpuHistory = new();
-
-        private int _maxCpuDataPoints = 300;
         private int _maxGraphSeconds = 60;
+        private int _maxDataPoints = 300; // 60s * 5 ticks per sec
         private double _peakNetworkSpeedMbps = 10.0;
-        private const int MaxHistoryPoints = 4500; // Store up to 15 mins at 5Hz in background
-        private const int MaxVisualPoints = 120;
-        private long _currentTick = 0;
+        private long _currentTick = 0; // Absolute X axis point
+        private int _secondTickCounter = 0;
         #endregion
 
         #region LiveCharts2 Graphing Properties
@@ -212,14 +198,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (_maxGraphSeconds != value)
                 {
                     _maxGraphSeconds = value;
-                    _maxCpuDataPoints = value * 5;
+                    _maxDataPoints = value * 5; // 5Hz graph tick rate
 
                     UpdateAxisLabels(value);
-
-                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
-                    {
-                        RebuildGraphsFromHistory();
-                    });
+                    ResetGraphBuffers(); // Flush history so it properly rescales to new size
                 }
             }
         }
@@ -276,7 +258,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #endregion
 
         #region GPU Card Properties
-
         private int _gpuUsageDisplay;
         public int GpuUsageDisplay { get => _gpuUsageDisplay; set { _gpuUsageDisplay = value; OnPropertyChanged(); } }
 
@@ -288,11 +269,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private string _gpuPowerDrawStr = "-- W";
         public string GpuPowerDrawStr { get => _gpuPowerDrawStr; set { _gpuPowerDrawStr = value; OnPropertyChanged(); } }
-
         #endregion
 
         #region CPU Card Properties
-
         private int _cpuUsageDisplay;
         public int CpuUsageDisplay { get => _cpuUsageDisplay; set { _cpuUsageDisplay = value; OnPropertyChanged(); } }
 
@@ -304,7 +283,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         private string _cpuPowerDrawStr = "-- W";
         public string CpuPowerDrawStr { get => _cpuPowerDrawStr; set { _cpuPowerDrawStr = value; OnPropertyChanged(); } }
-
         #endregion
 
         #region CPU Card Power Plan Properties
@@ -540,9 +518,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             Task.Run(() =>
             {
                 _monitoringService.GetHardwareData();
-
                 HardwareTemperatureService.Instance.Initialize();
-
                 InitializePowerPlans();
             });
 
@@ -579,30 +555,31 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             HiddenYAxes.Clear();
             DynamicNetYAxes.Clear();
 
-            HiddenXAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 300, AnimationsSpeed = TimeSpan.FromMilliseconds(220) });
+            // The 'AnimationsSpeed' matching the timer exactly (200ms) guarantees a continuous treadmill scroll.
+            HiddenXAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 300, AnimationsSpeed = TimeSpan.FromMilliseconds(200) });
             HiddenYAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 100 });
             DynamicNetYAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 10 });
 
             CpuGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = CpuGraphValues, Fill = new LinearGradientPaint(new[] { cpuColor.WithAlpha(100), cpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(cpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220) },
-                new ScatterSeries<ObservablePoint> { Values = CpuGraphDot, Fill = new SolidColorPaint(cpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(220) }
+                new LineSeries<ObservablePoint> { Values = CpuGraphValues, Fill = new LinearGradientPaint(new[] { cpuColor.WithAlpha(100), cpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(cpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
+                new ScatterSeries<ObservablePoint> { Values = CpuGraphDot, Fill = new SolidColorPaint(cpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
             };
 
             RamGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = RamGraphValues, Fill = new LinearGradientPaint(new[] { ramColor.WithAlpha(100), ramColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(ramColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220) },
-                new ScatterSeries<ObservablePoint> { Values = RamGraphDot, Fill = new SolidColorPaint(ramColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(220) }
+                new LineSeries<ObservablePoint> { Values = RamGraphValues, Fill = new LinearGradientPaint(new[] { ramColor.WithAlpha(100), ramColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(ramColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
+                new ScatterSeries<ObservablePoint> { Values = RamGraphDot, Fill = new SolidColorPaint(ramColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
             };
 
             GpuGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = GpuGraphValues, Fill = new LinearGradientPaint(new[] { gpuColor.WithAlpha(100), gpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(gpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220) },
-                new ScatterSeries<ObservablePoint> { Values = GpuGraphDot, Fill = new SolidColorPaint(gpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(220) }
+                new LineSeries<ObservablePoint> { Values = GpuGraphValues, Fill = new LinearGradientPaint(new[] { gpuColor.WithAlpha(100), gpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(gpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
+                new ScatterSeries<ObservablePoint> { Values = GpuGraphDot, Fill = new SolidColorPaint(gpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
             };
 
             NetGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = NetDownGraphValues, Fill = new LinearGradientPaint(new[] { netDownColor.WithAlpha(100), netDownColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netDownColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220) },
-                new ScatterSeries<ObservablePoint> { Values = NetDownGraphDot, Fill = new SolidColorPaint(netDownColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(220) },
-                new LineSeries<ObservablePoint> { Values = NetUpGraphValues, Fill = new LinearGradientPaint(new[] { netUpColor.WithAlpha(100), netUpColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netUpColor) { StrokeThickness = 2f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(220) },
-                new ScatterSeries<ObservablePoint> { Values = NetUpGraphDot, Fill = new SolidColorPaint(netUpColor), GeometrySize = 8, AnimationsSpeed = TimeSpan.FromMilliseconds(220) }
+                new LineSeries<ObservablePoint> { Values = NetDownGraphValues, Fill = new LinearGradientPaint(new[] { netDownColor.WithAlpha(100), netDownColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netDownColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
+                new ScatterSeries<ObservablePoint> { Values = NetDownGraphDot, Fill = new SolidColorPaint(netDownColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
+                new LineSeries<ObservablePoint> { Values = NetUpGraphValues, Fill = new LinearGradientPaint(new[] { netUpColor.WithAlpha(100), netUpColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netUpColor) { StrokeThickness = 2f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
+                new ScatterSeries<ObservablePoint> { Values = NetUpGraphDot, Fill = new SolidColorPaint(netUpColor), GeometrySize = 8, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
             };
         }
 
@@ -614,11 +591,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _prevKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
                 _prevUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
             }
+
+            // Warm up network cache immediately
+            Task.Run(() => GetNetworkUsage());
         }
         #endregion
 
         #region Powerplan
-
         private void InitializePowerPlans()
         {
             Task.Run(async () =>
@@ -655,19 +634,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                             bool isActive = line.Contains("*");
 
-                            var uiState = new PowerPlanComboBoxOption
-                            {
-                                ExistsOnSystem = true,
-                                IsActive = isActive
-                            };
-
+                            var uiState = new PowerPlanComboBoxOption { ExistsOnSystem = true, IsActive = isActive };
                             var displayOption = new ComboBoxDisplayOption(name, guid, null, uiState);
                             options.Add(displayOption);
 
-                            if (isActive)
-                            {
-                                activeOption = displayOption;
-                            }
+                            if (isActive) activeOption = displayOption;
                         }
                     }
 
@@ -675,11 +646,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     {
                         if (!installedGuids.Contains(kvp.Key))
                         {
-                            var uiState = new PowerPlanComboBoxOption
-                            {
-                                ExistsOnSystem = false,
-                                IsActive = false
-                            };
+                            var uiState = new PowerPlanComboBoxOption { ExistsOnSystem = false, IsActive = false };
                             options.Add(new ComboBoxDisplayOption(kvp.Value, kvp.Key, null, uiState));
                         }
                     }
@@ -687,11 +654,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
                     {
                         AvailablePowerPlans.Clear();
-                        foreach (var opt in options)
-                        {
-                            AvailablePowerPlans.Add(opt);
-                        }
-
+                        foreach (var opt in options) AvailablePowerPlans.Add(opt);
                         SelectedPowerPlan = activeOption?.Value;
                     });
                 }
@@ -706,86 +669,63 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         {
             string? guid = null;
 
-            if (selectedItem is string s)
-            {
-                guid = s;
-            }
-            else if (selectedItem is ComboBoxDisplayOption option)
-            {
-                guid = option.Value?.ToString();
-            }
+            if (selectedItem is string s) guid = s;
+            else if (selectedItem is ComboBoxDisplayOption option) guid = option.Value?.ToString();
 
             if (!string.IsNullOrEmpty(guid))
             {
                 var match = AvailablePowerPlans.FirstOrDefault(p => p.Value?.ToString() == guid);
-                bool needsInstall = false;
-
-                if (match != null && match.Tag is PowerPlanComboBoxOption state)
-                {
-                    needsInstall = !state.ExistsOnSystem;
-                }
+                bool needsInstall = match != null && match.Tag is PowerPlanComboBoxOption state && !state.ExistsOnSystem;
 
                 Task.Run(async () =>
                 {
                     try
                     {
-                        if (needsInstall)
-                        {
-                            await CommandExecutor.StartTask($"powercfg -duplicatescheme {guid}");
-                        }
-
+                        if (needsInstall) await CommandExecutor.StartTask($"powercfg -duplicatescheme {guid}");
                         await CommandExecutor.StartTask($"powercfg /setactive {guid}");
-
                         await Task.Delay(200);
                         InitializePowerPlans();
                     }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[Power Plan Apply Error] {ex.Message}");
-                    }
+                    catch { }
                 });
             }
         }
-
         #endregion
 
         #region Background Engine (High-Performance Telemetry)
         public void ResumeUpdates()
         {
-            if (_telemetryTimer == null)
-            {
-                _telemetryTimer = new System.Threading.Timer(TelemetryTimer_Tick, null, 0, 200);
-            }
-            else
-            {
-                _telemetryTimer.Change(0, 200);
-            }
+            // FAST Graph polling timer (200ms)
+            if (_telemetryTimer == null) _telemetryTimer = new Timer(TelemetryTimer_Tick, null, 0, 200);
+            else _telemetryTimer.Change(0, 200);
+
+            // SLOW Hardware polling timer (1000ms) to fix micro-freezes!
+            if (_hardwareTimer == null) _hardwareTimer = new Timer(HardwareTimer_Tick, null, 0, 1000);
+            else _hardwareTimer.Change(0, 1000);
 
             _weatherTimer?.Start();
-            System.Diagnostics.Debug.WriteLine("[HomePageVM] Background timers RESUMED.");
         }
 
         public void PauseUpdates()
         {
             _telemetryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+            _hardwareTimer?.Change(Timeout.Infinite, Timeout.Infinite);
             _weatherTimer?.Stop();
-            System.Diagnostics.Debug.WriteLine("[HomePageVM] Background timers PAUSED.");
         }
 
+        // ==========================================
+        // FAST LOOP (200ms) - Only runs CPU, RAM, Network, and LiveCharts updates. 
+        // ==========================================
         private void TelemetryTimer_Tick(object? state)
         {
             if (Interlocked.CompareExchange(ref _isUpdatingTelemetry, 1, 0) != 0) return;
 
             try
             {
-                _monitoringTick++;
                 _currentTick++;
-                bool isFullSecond = _monitoringTick >= 5;
-                if (isFullSecond) _monitoringTick = 0;
-
-                _sensorTickCounter++;
-                bool isSensorTick = _sensorTickCounter >= 15;
-                if (isSensorTick) _sensorTickCounter = 0;
+                _secondTickCounter++;
+                bool isFullSecond = _secondTickCounter >= 5;
+                if (isFullSecond) _secondTickCounter = 0;
 
                 double rawCpu = 0;
                 if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
@@ -822,7 +762,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         double totalGb = memStatus.ullTotalPhys / 1073741824.0;
                         double availGb = memStatus.ullAvailPhys / 1073741824.0;
                         double usedGb = totalGb - availGb;
-
                         double cacheGb = (memStatus.ullTotalPageFile - memStatus.ullAvailPageFile) / 1073741824.0 * 0.4;
 
                         App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
@@ -831,7 +770,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             UsedRamGb = $"{usedGb:F1} GB";
                             AvailableRamGb = $"{availGb:F1} GB";
                             SystemCacheGb = $"{Math.Max(0.1, cacheGb):F1} GB";
-
                             RamUsageGbText = $"{usedGb:F1} / {totalGb:F1} GB";
                             RamUsagePercentageText = $"{rawRam}%";
                             AvailableRamPercentageText = $"{100 - rawRam}%";
@@ -858,80 +796,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _lastNetworkCheckTime = now;
                 _isFirstTick = false;
 
-                if (isFullSecond)
-                {
-                    _cachedRawGpu = GetGpuUsage();
-                }
-                double rawGpu = _cachedRawGpu;
-
-                _displayCpuUsage = (_displayCpuUsage * 0.8) + (rawCpu * 0.2);
-                _displayGpuUsage = (_displayGpuUsage * 0.8) + (rawGpu * 0.2);
-                _displayDownMbps = (_displayDownMbps * 0.8) + (rawDlMbps * 0.2);
-                _displayUpMbps = (_displayUpMbps * 0.8) + (rawUlMbps * 0.2);
+                _displayCpuUsage = (_displayCpuUsage * 0.7) + (rawCpu * 0.3);
+                _displayGpuUsage = (_displayGpuUsage * 0.8) + (_cachedRawGpu * 0.2); // Uses cached GPU read from slow thread!
+                _displayDownMbps = (_displayDownMbps * 0.7) + (rawDlMbps * 0.3);
+                _displayUpMbps = (_displayUpMbps * 0.7) + (rawUlMbps * 0.3);
                 _lastRamPercentage = rawRam;
 
-                _cpuHistory.Add((_currentTick, _displayCpuUsage));
-                _ramHistory.Add((_currentTick, _lastRamPercentage));
-                _gpuHistory.Add((_currentTick, _displayGpuUsage));
-                _netDownHistory.Add((_currentTick, _displayDownMbps));
-                _netUpHistory.Add((_currentTick, _displayUpMbps));
+                double maxNet = Math.Max(_displayDownMbps, _displayUpMbps);
+                if (maxNet > _peakNetworkSpeedMbps) _peakNetworkSpeedMbps = maxNet * 1.1;
+                else if (_peakNetworkSpeedMbps > 10.0 && maxNet < (_peakNetworkSpeedMbps * 0.1))
+                    _peakNetworkSpeedMbps = Math.Max(10.0, _peakNetworkSpeedMbps * 0.995);
 
-                while (_cpuHistory.Count > MaxHistoryPoints) _cpuHistory.RemoveAt(0);
-                while (_ramHistory.Count > MaxHistoryPoints) _ramHistory.RemoveAt(0);
-                while (_gpuHistory.Count > MaxHistoryPoints) _gpuHistory.RemoveAt(0);
-                while (_netDownHistory.Count > MaxHistoryPoints) _netDownHistory.RemoveAt(0);
-                while (_netUpHistory.Count > MaxHistoryPoints) _netUpHistory.RemoveAt(0);
-
-                if (isSensorTick)
-                {
-                    _ = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            var pCount = await _monitoringService.GetProcessCountAsync();
-                            var sCount = await _monitoringService.GetServicesCount();
-
-                            float gpuTemp = 0, gpuPower = 0, gpuVram = 0;
-                            float cpuTemp = 0, cpuPower = 0, cpuClock = 0;
-
-                            if (Interlocked.CompareExchange(ref _isUpdatingGpuSensors, 1, 0) == 0)
-                            {
-                                try
-                                {
-                                    HardwareTemperatureService.Instance.UpdateSensors();
-                                    gpuTemp = HardwareTemperatureService.Instance.GetGpuTemperature();
-                                    gpuPower = HardwareTemperatureService.Instance.GetGpuPower();
-                                    gpuVram = HardwareTemperatureService.Instance.GetGpuVramUsedGb();
-
-                                    cpuTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
-                                    cpuPower = HardwareTemperatureService.Instance.GetCpuPower();
-                                    cpuClock = HardwareTemperatureService.Instance.GetCpuClock();
-                                }
-                                catch { }
-                                finally
-                                {
-                                    Volatile.Write(ref _isUpdatingGpuSensors, 0);
-                                }
-                            }
-
-                            App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
-                            {
-                                _lastPCount = pCount;
-                                _lastSCount = sCount;
-                                RefreshStats(pCount, sCount);
-
-                                if (gpuTemp > 0) GpuTemperatureStr = $"{(int)gpuTemp}°C";
-                                if (gpuPower > 0) GpuPowerDrawStr = $"{(int)gpuPower} W";
-                                if (gpuVram > 0) GpuVramUsedStr = $"{gpuVram:F1} GB";
-
-                                if (cpuTemp > 0) CpuTempStr = $"{(int)cpuTemp}°C";
-                                if (cpuPower > 0) CpuPowerDrawStr = $"{(int)cpuPower} W";
-                                if (cpuClock > 0) CpuClockStr = $"{(int)cpuClock} MHz";
-                            });
-                        }
-                        catch { }
-                    });
-                }
+                double netScale = Math.Max(10.0, Math.Ceiling(_peakNetworkSpeedMbps));
 
                 var payload = new TelemetryDataPayload
                 {
@@ -945,42 +821,26 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     IsFullSecond = isFullSecond
                 };
 
-                if (isFullSecond)
+                // Send fast UI point appends exactly every 200ms
+                App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
                 {
-                    int takeCount = _maxCpuDataPoints;
-
-                    var cpuSlice = _cpuHistory.Skip(Math.Max(0, _cpuHistory.Count - takeCount)).ToList();
-                    var ramSlice = _ramHistory.Skip(Math.Max(0, _ramHistory.Count - takeCount)).ToList();
-                    var gpuSlice = _gpuHistory.Skip(Math.Max(0, _gpuHistory.Count - takeCount)).ToList();
-                    var netDownSlice = _netDownHistory.Skip(Math.Max(0, _netDownHistory.Count - takeCount)).ToList();
-                    var netUpSlice = _netUpHistory.Skip(Math.Max(0, _netUpHistory.Count - takeCount)).ToList();
-
-                    var cpuProc = DownsampleLTTB(cpuSlice, MaxVisualPoints);
-                    var ramProc = DownsampleLTTB(ramSlice, MaxVisualPoints);
-                    var gpuProc = DownsampleLTTB(gpuSlice, MaxVisualPoints);
-                    var netDownProc = DownsampleLTTB(netDownSlice, MaxVisualPoints);
-                    var netUpProc = DownsampleLTTB(netUpSlice, MaxVisualPoints);
-
-                    double maxDown = netDownProc.Count > 0 ? netDownProc.Max(p => p.Value) : 0;
-                    double maxUp = netUpProc.Count > 0 ? netUpProc.Max(p => p.Value) : 0;
-                    double absoluteMax = Math.Max(maxDown, maxUp);
-
-                    if (absoluteMax > _peakNetworkSpeedMbps) _peakNetworkSpeedMbps = absoluteMax * 1.1;
-                    else if (_peakNetworkSpeedMbps > 10.0 && absoluteMax < (_peakNetworkSpeedMbps * 0.1))
-                        _peakNetworkSpeedMbps = Math.Max(10.0, _peakNetworkSpeedMbps * 0.995);
-
-                    double netScale = Math.Max(10.0, Math.Ceiling(_peakNetworkSpeedMbps));
-
-                    App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                    // The magic that makes it a continuous scroll (Treadmill)
+                    if (HiddenXAxes.Count > 0)
                     {
-                        if (HiddenXAxes.Count > 0)
-                        {
-                            HiddenXAxes[0].MaxLimit = _currentTick;
-                            HiddenXAxes[0].MinLimit = _currentTick - _maxCpuDataPoints;
-                        }
+                        HiddenXAxes[0].MaxLimit = _currentTick;
+                        HiddenXAxes[0].MinLimit = _currentTick - _maxDataPoints;
+                    }
 
+                    AppendToGraph(CpuGraphValues, CpuGraphDot, _displayCpuUsage, 100.0);
+                    AppendToGraph(RamGraphValues, RamGraphDot, _lastRamPercentage, 100.0);
+                    AppendToGraph(GpuGraphValues, GpuGraphDot, _displayGpuUsage, 100.0);
+                    AppendToGraph(NetDownGraphValues, NetDownGraphDot, _displayDownMbps, netScale);
+                    AppendToGraph(NetUpGraphValues, NetUpGraphDot, _displayUpMbps, netScale);
+
+                    if (isFullSecond)
+                    {
                         UpdateDateTime();
-                        AverageRamLoad = _ramHistory.Count > 0 ? _ramHistory.Average(x => x.Value) : 0;
+                        AverageRamLoad = RamGraphValues.Count > 0 ? RamGraphValues.Average(p => p.Y ?? 0) : 0;
 
                         if (DynamicNetYAxes.FirstOrDefault() is Axis dynamicAxis)
                             dynamicAxis.MaxLimit = netScale;
@@ -989,17 +849,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                         NetYAxis75 = Math.Round(netScale * 0.75).ToString();
                         NetYAxis50 = Math.Round(netScale * 0.50).ToString();
                         NetYAxis25 = Math.Round(netScale * 0.25).ToString();
+                    }
 
-                        UpdateSeriesData(cpuProc, CpuGraphValues, CpuGraphDot, 100.0);
-                        UpdateSeriesData(ramProc, RamGraphValues, RamGraphDot, 100.0);
-                        UpdateSeriesData(gpuProc, GpuGraphValues, GpuGraphDot, 100.0);
-                        UpdateSeriesData(netDownProc, NetDownGraphValues, NetDownGraphDot, netScale);
-                        UpdateSeriesData(netUpProc, NetUpGraphValues, NetUpGraphDot, netScale);
-                    });
-                }
-
-                App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
-                {
                     OnTelemetryTicked?.Invoke(payload);
 
                     GpuUsageDisplay = (int)Math.Round(_displayGpuUsage);
@@ -1010,6 +861,58 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             finally
             {
                 _isUpdatingTelemetry = 0;
+            }
+        }
+
+        // ==========================================
+        // SLOW LOOP (1000ms) - Blocks here won't affect the graphs!
+        // ==========================================
+        private void HardwareTimer_Tick(object? state)
+        {
+            if (Interlocked.CompareExchange(ref _isUpdatingHardware, 1, 0) != 0) return;
+
+            try
+            {
+                _cachedRawGpu = GetGpuUsage();
+
+                var pCount = _monitoringService.GetProcessCountAsync().GetAwaiter().GetResult();
+                var sCount = _monitoringService.GetServicesCount().GetAwaiter().GetResult();
+
+                float gpuTemp = 0, gpuPower = 0, gpuVram = 0;
+                float cpuTemp = 0, cpuPower = 0, cpuClock = 0;
+
+                try
+                {
+                    HardwareTemperatureService.Instance.UpdateSensors();
+                    gpuTemp = HardwareTemperatureService.Instance.GetGpuTemperature();
+                    gpuPower = HardwareTemperatureService.Instance.GetGpuPower();
+                    gpuVram = HardwareTemperatureService.Instance.GetGpuVramUsedGb();
+
+                    cpuTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
+                    cpuPower = HardwareTemperatureService.Instance.GetCpuPower();
+                    cpuClock = HardwareTemperatureService.Instance.GetCpuClock();
+                }
+                catch { }
+
+                App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
+                {
+                    _lastPCount = pCount;
+                    _lastSCount = sCount;
+                    RefreshStats(pCount, sCount);
+
+                    if (gpuTemp > 0) GpuTemperatureStr = $"{(int)gpuTemp}°C";
+                    if (gpuPower > 0) GpuPowerDrawStr = $"{(int)gpuPower} W";
+                    if (gpuVram > 0) GpuVramUsedStr = $"{gpuVram:F1} GB";
+
+                    if (cpuTemp > 0) CpuTempStr = $"{(int)cpuTemp}°C";
+                    if (cpuPower > 0) CpuPowerDrawStr = $"{(int)cpuPower} W";
+                    if (cpuClock > 0) CpuClockStr = $"{(int)cpuClock} MHz";
+                });
+            }
+            catch { }
+            finally
+            {
+                _isUpdatingHardware = 0;
             }
         }
 
@@ -1129,117 +1032,32 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region LiveCharts2 Continuous Scroll Logic
 
-        private void UpdateSeriesData(List<(long Time, double Value)> rawData, ObservableCollection<ObservablePoint> seriesValues, ObservableCollection<ObservablePoint> dotValue, double maxScale)
+        private void AppendToGraph(ObservableCollection<ObservablePoint> series, ObservableCollection<ObservablePoint> dot, double newValue, double maxScale)
         {
-            if (rawData.Count < 2) return;
+            double scaledValue = (newValue / maxScale) * 100.0;
+            series.Add(new ObservablePoint(_currentTick, scaledValue));
 
-            while (seriesValues.Count > rawData.Count) seriesValues.RemoveAt(seriesValues.Count - 1);
-            while (seriesValues.Count < rawData.Count) seriesValues.Add(new ObservablePoint(0, 0));
-
-            for (int i = 0; i < rawData.Count; i++)
+            if (series.Count > _maxDataPoints)
             {
-                var pt = seriesValues[i];
-                double targetX = rawData[i].Time;
-                double targetY = (rawData[i].Value / maxScale) * 100.0;
-
-                if (pt.X != targetX) pt.X = targetX;
-                if (pt.Y != targetY) pt.Y = targetY;
+                series.RemoveAt(0); // Standard queue behavior, drops oldest point natively
             }
 
-            var lastPoint = seriesValues.Last();
-            if (dotValue.Count == 0) dotValue.Add(new ObservablePoint(lastPoint.X, lastPoint.Y));
+            if (dot.Count == 0) dot.Add(new ObservablePoint(_currentTick, scaledValue));
             else
             {
-                if (dotValue[0].X != lastPoint.X) dotValue[0].X = lastPoint.X;
-                if (dotValue[0].Y != lastPoint.Y) dotValue[0].Y = lastPoint.Y;
+                dot[0].X = _currentTick;
+                dot[0].Y = scaledValue;
             }
         }
 
-        private List<(long Time, double Value)> DownsampleLTTB(List<(long Time, double Value)> data, int threshold)
+        private void ResetGraphBuffers()
         {
-            int dataCount = data.Count;
-            if (dataCount <= threshold || threshold <= 2) return data;
-
-            var sampled = new List<(long Time, double Value)>(threshold);
-            double every = (double)(dataCount - 2) / (threshold - 2);
-
-            int a = 0;
-            sampled.Add(data[a]);
-
-            for (int i = 0; i < threshold - 2; i++)
-            {
-                int avgRangeStart = (int)(Math.Floor((i + 1) * every) + 1);
-                int avgRangeEnd = (int)(Math.Floor((i + 2) * every) + 1);
-                avgRangeEnd = Math.Min(avgRangeEnd, dataCount);
-
-                double avgY = 0, avgX = 0;
-                for (int j = avgRangeStart; j < avgRangeEnd; j++)
-                {
-                    avgY += data[j].Value;
-                    avgX += data[j].Time;
-                }
-                int rangeLen = Math.Max(1, avgRangeEnd - avgRangeStart);
-                avgY /= rangeLen;
-                avgX /= rangeLen;
-
-                int rangeOffs = (int)(Math.Floor(i * every) + 1);
-                int rangeTo = (int)(Math.Floor((i + 1) * every) + 1);
-
-                double maxArea = -1;
-                int nextA = rangeOffs;
-
-                double pointAX = data[a].Time;
-                double pointAY = data[a].Value;
-
-                for (int j = rangeOffs; j < rangeTo; j++)
-                {
-                    double curX = data[j].Time;
-                    double curY = data[j].Value;
-                    double area = Math.Abs((pointAX - avgX) * (curY - pointAY) - (pointAX - curX) * (avgY - pointAY)) * 0.5;
-                    if (area > maxArea)
-                    {
-                        maxArea = area;
-                        nextA = j;
-                    }
-                }
-
-                sampled.Add(data[nextA]);
-                a = nextA;
-            }
-
-            sampled.Add(data[dataCount - 1]);
-            return sampled;
-        }
-
-        private void RebuildGraphsFromHistory()
-        {
-            if (HiddenXAxes.Count > 0)
-            {
-                HiddenXAxes[0].MaxLimit = _currentTick;
-                HiddenXAxes[0].MinLimit = _currentTick - _maxCpuDataPoints;
-            }
-
-            int takeCount = _maxCpuDataPoints;
-
-            var cpuSlice = _cpuHistory.Skip(Math.Max(0, _cpuHistory.Count - takeCount)).ToList();
-            var ramSlice = _ramHistory.Skip(Math.Max(0, _ramHistory.Count - takeCount)).ToList();
-            var gpuSlice = _gpuHistory.Skip(Math.Max(0, _gpuHistory.Count - takeCount)).ToList();
-
-            double netScale = Math.Max(10.0, Math.Ceiling(_peakNetworkSpeedMbps));
-            var netDownSlice = _netDownHistory.Skip(Math.Max(0, _netDownHistory.Count - takeCount)).ToList();
-            var netUpSlice = _netUpHistory.Skip(Math.Max(0, _netUpHistory.Count - takeCount)).ToList();
-
-            var cpuProc = DownsampleLTTB(cpuSlice, MaxVisualPoints);
-            var ramProc = DownsampleLTTB(ramSlice, MaxVisualPoints);
-            var gpuProc = DownsampleLTTB(gpuSlice, MaxVisualPoints);
-            var netDownProc = DownsampleLTTB(netDownSlice, MaxVisualPoints);
-            var netUpProc = DownsampleLTTB(netUpSlice, MaxVisualPoints);
-
-            UpdateSeriesData(cpuProc, CpuGraphValues, CpuGraphDot, 100.0);
-            UpdateSeriesData(ramProc, RamGraphValues, RamGraphDot, 100.0);
-            UpdateSeriesData(gpuProc, GpuGraphValues, GpuGraphDot, 100.0);
-            UpdateSeriesData(netDownProc, NetDownGraphValues, NetDownGraphDot, netScale);
-            UpdateSeriesData(netUpProc, NetUpGraphValues, NetUpGraphDot, netScale);
+            // Triggers when user changes Timeframe in UI, simply wiping it forces it to rescale immediately
+            CpuGraphValues.Clear();
+            RamGraphValues.Clear();
+            GpuGraphValues.Clear();
+            NetDownGraphValues.Clear();
+            NetUpGraphValues.Clear();
         }
 
         private void UpdateAxisLabels(int totalSeconds)
@@ -1318,7 +1136,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[Disk Data Error] Failed to load disk drives: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"[Disk Data Error] Failed to load disk drives: {ex.Message}");
                 }
             });
         }
@@ -1368,7 +1186,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 });
             }
             catch (OperationCanceledException) { }
-            catch (Exception ex) { Debug.WriteLine($"[Weather UI Error] {ex.Message}"); }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Weather UI Error] {ex.Message}"); }
         }
 
         private static string LoadLocationFromRegistry()
@@ -1420,6 +1238,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _telemetryTimer = null;
                 }
 
+                if (_hardwareTimer != null)
+                {
+                    _hardwareTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    _hardwareTimer.Dispose();
+                    _hardwareTimer = null;
+                }
+
                 if (_weatherTimer != null)
                 {
                     _weatherTimer.Stop();
@@ -1456,7 +1281,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 ClearPropertyChangedListeners();
 
-                Debug.WriteLine("[HomePageVM] Purge: All models and delegates unrooted.");
+                System.Diagnostics.Debug.WriteLine("[HomePageVM] Purge: All models and delegates unrooted.");
             }
 
             base.Dispose(disposing);
