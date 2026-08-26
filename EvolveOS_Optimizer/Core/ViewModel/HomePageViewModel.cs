@@ -595,31 +595,31 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             HiddenYAxes.Clear();
             DynamicNetYAxes.Clear();
 
-            // The 'AnimationsSpeed' matching the timer exactly (200ms) guarantees a continuous treadmill scroll.
-            HiddenXAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 300, AnimationsSpeed = TimeSpan.FromMilliseconds(200) });
+            // FIX: AnimationsSpeed set to Zero. Constantly animating the axes and lines every tick chokes the UI thread.
+            HiddenXAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 300, AnimationsSpeed = TimeSpan.Zero });
             HiddenYAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 100 });
             DynamicNetYAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 10 });
 
             CpuGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = CpuGraphValues, Fill = new LinearGradientPaint(new[] { cpuColor.WithAlpha(100), cpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(cpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = CpuGraphDot, Fill = new SolidColorPaint(cpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
+                new LineSeries<ObservablePoint> { Values = CpuGraphValues, Fill = new LinearGradientPaint(new[] { cpuColor.WithAlpha(100), cpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(cpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
+                new ScatterSeries<ObservablePoint> { Values = CpuGraphDot, Fill = new SolidColorPaint(cpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.Zero }
             };
 
             RamGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = RamGraphValues, Fill = new LinearGradientPaint(new[] { ramColor.WithAlpha(100), ramColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(ramColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = RamGraphDot, Fill = new SolidColorPaint(ramColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
+                new LineSeries<ObservablePoint> { Values = RamGraphValues, Fill = new LinearGradientPaint(new[] { ramColor.WithAlpha(100), ramColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(ramColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
+                new ScatterSeries<ObservablePoint> { Values = RamGraphDot, Fill = new SolidColorPaint(ramColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.Zero }
             };
 
             GpuGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = GpuGraphValues, Fill = new LinearGradientPaint(new[] { gpuColor.WithAlpha(100), gpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(gpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = GpuGraphDot, Fill = new SolidColorPaint(gpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
+                new LineSeries<ObservablePoint> { Values = GpuGraphValues, Fill = new LinearGradientPaint(new[] { gpuColor.WithAlpha(100), gpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(gpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
+                new ScatterSeries<ObservablePoint> { Values = GpuGraphDot, Fill = new SolidColorPaint(gpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.Zero }
             };
 
             NetGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = NetDownGraphValues, Fill = new LinearGradientPaint(new[] { netDownColor.WithAlpha(100), netDownColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netDownColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = NetDownGraphDot, Fill = new SolidColorPaint(netDownColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new LineSeries<ObservablePoint> { Values = NetUpGraphValues, Fill = new LinearGradientPaint(new[] { netUpColor.WithAlpha(100), netUpColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netUpColor) { StrokeThickness = 2f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.FromMilliseconds(200) },
-                new ScatterSeries<ObservablePoint> { Values = NetUpGraphDot, Fill = new SolidColorPaint(netUpColor), GeometrySize = 8, AnimationsSpeed = TimeSpan.FromMilliseconds(200) }
+                new LineSeries<ObservablePoint> { Values = NetDownGraphValues, Fill = new LinearGradientPaint(new[] { netDownColor.WithAlpha(100), netDownColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netDownColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
+                new ScatterSeries<ObservablePoint> { Values = NetDownGraphDot, Fill = new SolidColorPaint(netDownColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.Zero },
+                new LineSeries<ObservablePoint> { Values = NetUpGraphValues, Fill = new LinearGradientPaint(new[] { netUpColor.WithAlpha(100), netUpColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netUpColor) { StrokeThickness = 2f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
+                new ScatterSeries<ObservablePoint> { Values = NetUpGraphDot, Fill = new SolidColorPaint(netUpColor), GeometrySize = 8, AnimationsSpeed = TimeSpan.Zero }
             };
         }
 
@@ -1134,13 +1134,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Background Engine (High-Performance Telemetry)
         public void ResumeUpdates()
         {
-            // FAST Graph polling timer (200ms)
-            if (_telemetryTimer == null) _telemetryTimer = new System.Threading.Timer(TelemetryTimer_Tick, null, 0, 200);
-            else _telemetryTimer.Change(0, 200);
+            // FAST Graph polling timer: Changed from 200ms to 1000ms
+            if (_telemetryTimer == null) _telemetryTimer = new System.Threading.Timer(TelemetryTimer_Tick, null, 0, 1000);
+            else _telemetryTimer.Change(0, 1000);
 
-            // SLOW Hardware polling timer (1000ms) to fix micro-freezes!
-            if (_hardwareTimer == null) _hardwareTimer = new System.Threading.Timer(HardwareTimer_Tick, null, 0, 1000);
-            else _hardwareTimer.Change(0, 1000);
+            // SLOW Hardware polling timer (LHM Ring0): Changed from 1000ms to 3000ms
+            if (_hardwareTimer == null) _hardwareTimer = new System.Threading.Timer(HardwareTimer_Tick, null, 0, 3000);
+            else _hardwareTimer.Change(0, 3000);
 
             _weatherTimer?.Start();
         }
