@@ -112,6 +112,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private double _displayGpuUsage = 0;
         private double _displayDownMbps = 0;
         private double _displayUpMbps = 0;
+        private double _cachedRawDlMbps = 0;
+        private double _cachedRawUlMbps = 0;
         private double _lastRamPercentage = 0;
 
         private double _cachedRawGpu = 0;
@@ -119,9 +121,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private string _lastPCount = "0";
         private string _lastSCount = "0";
 
-        private ulong _prevIdleTime;
-        private ulong _prevKernelTime;
-        private ulong _prevUserTime;
+        private static ulong _prevIdleTime;
+        private static ulong _prevKernelTime;
+        private static ulong _prevUserTime;
+        private static DateTime _lastCpuCheckTime = DateTime.MinValue;
+        private static float _lastCalculatedCpuUsage = 0f;
+        private static readonly object _cpuLock = new object();
+
         private long _prevNetworkDownBytes;
         private long _prevNetworkUpBytes;
         private DateTime _lastNetworkCheckTime = DateTime.MinValue;
@@ -1168,25 +1174,39 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 if (isFullSecond) _secondTickCounter = 0;
 
                 double rawCpu = 0;
-                if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+
+                // ✅ FIX: Lock the thread so multiple ViewModels don't collide
+                lock (_cpuLock)
                 {
-                    ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
-                    ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
-                    ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
-
-                    ulong idleDiff = curIdleTime - _prevIdleTime;
-                    ulong kernelDiff = curKernelTime - _prevKernelTime;
-                    ulong userDiff = curUserTime - _prevUserTime;
-                    ulong totalSystemTime = kernelDiff + userDiff;
-
-                    _prevIdleTime = curIdleTime;
-                    _prevKernelTime = curKernelTime;
-                    _prevUserTime = curUserTime;
-
-                    if (totalSystemTime > 0)
+                    // If another thread or ViewModel just calculated the CPU in the last 150ms, 
+                    // instantly reuse the cached result instead of locking up the Windows Kernel again!
+                    if ((DateTime.Now - _lastCpuCheckTime).TotalMilliseconds < 150)
                     {
-                        rawCpu = (double)((totalSystemTime - idleDiff) * 100.0 / totalSystemTime);
-                        rawCpu = Math.Clamp(rawCpu, 0, 100);
+                        rawCpu = _lastCalculatedCpuUsage;
+                    }
+                    else if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+                    {
+                        ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                        ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                        ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+
+                        ulong idleDiff = curIdleTime - _prevIdleTime;
+                        ulong kernelDiff = curKernelTime - _prevKernelTime;
+                        ulong userDiff = curUserTime - _prevUserTime;
+                        ulong totalSystemTime = kernelDiff + userDiff;
+
+                        _prevIdleTime = curIdleTime;
+                        _prevKernelTime = curKernelTime;
+                        _prevUserTime = curUserTime;
+                        _lastCpuCheckTime = DateTime.Now;
+
+                        if (totalSystemTime > 0)
+                        {
+                            rawCpu = (double)((totalSystemTime - idleDiff) * 100.0 / totalSystemTime);
+                            _lastCalculatedCpuUsage = (float)Math.Clamp(rawCpu, 0, 100);
+                        }
+
+                        rawCpu = _lastCalculatedCpuUsage;
                     }
                 }
 
@@ -1217,29 +1237,38 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                 }
 
-                var netUsage = GetNetworkUsage();
-                DateTime now = DateTime.Now;
-                double timeDiff = (now - _lastNetworkCheckTime).TotalSeconds;
-
-                double rawDlMbps = 0, rawUlMbps = 0;
-                if (timeDiff > 0 && !_isFirstTick)
+                // ✅ FIX: Only query the heavy OS network stack once per second!
+                // This stops .NET from generating thousands of garbage objects.
+                if (isFullSecond || _isFirstTick)
                 {
-                    if (netUsage.Down >= _prevNetworkDownBytes)
-                        rawDlMbps = ((netUsage.Down - _prevNetworkDownBytes) * 8.0) / timeDiff / 1_000_000.0;
+                    var netUsage = GetNetworkUsage();
+                    DateTime now = DateTime.Now;
 
-                    if (netUsage.Up >= _prevNetworkUpBytes)
-                        rawUlMbps = ((netUsage.Up - _prevNetworkUpBytes) * 8.0) / timeDiff / 1_000_000.0;
+                    if (_lastNetworkCheckTime != DateTime.MinValue)
+                    {
+                        double timeDiff = (now - _lastNetworkCheckTime).TotalSeconds;
+                        if (timeDiff > 0 && !_isFirstTick)
+                        {
+                            if (netUsage.Down >= _prevNetworkDownBytes)
+                                _cachedRawDlMbps = ((netUsage.Down - _prevNetworkDownBytes) * 8.0) / timeDiff / 1_000_000.0;
+
+                            if (netUsage.Up >= _prevNetworkUpBytes)
+                                _cachedRawUlMbps = ((netUsage.Up - _prevNetworkUpBytes) * 8.0) / timeDiff / 1_000_000.0;
+                        }
+                    }
+
+                    _prevNetworkDownBytes = netUsage.Down;
+                    _prevNetworkUpBytes = netUsage.Up;
+                    _lastNetworkCheckTime = now;
+                    _isFirstTick = false;
                 }
-
-                _prevNetworkDownBytes = netUsage.Down;
-                _prevNetworkUpBytes = netUsage.Up;
-                _lastNetworkCheckTime = now;
-                _isFirstTick = false;
 
                 _displayCpuUsage = (_displayCpuUsage * 0.7) + (rawCpu * 0.3);
                 _displayGpuUsage = (_displayGpuUsage * 0.8) + (_cachedRawGpu * 0.2);
-                _displayDownMbps = (_displayDownMbps * 0.7) + (rawDlMbps * 0.3);
-                _displayUpMbps = (_displayUpMbps * 0.7) + (rawUlMbps * 0.3);
+
+                // The graph smoothly animates every 200ms using the cached 1-second values
+                _displayDownMbps = (_displayDownMbps * 0.7) + (_cachedRawDlMbps * 0.3);
+                _displayUpMbps = (_displayUpMbps * 0.7) + (_cachedRawUlMbps * 0.3);
                 _lastRamPercentage = rawRam;
 
                 double maxNet = Math.Max(_displayDownMbps, _displayUpMbps);

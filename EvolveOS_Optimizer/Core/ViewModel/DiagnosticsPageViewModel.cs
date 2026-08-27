@@ -62,11 +62,18 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         private float _displayGpuUsage = 0f;
         private float _displayDownMbps = 0f;
         private float _displayUpMbps = 0f;
+        private float _cachedRawDlMbps = 0f;
+        private float _cachedRawUlMbps = 0f;
         private float _peakNetworkSpeedMbps = 10f;
 
-        private ulong _prevIdleTime;
-        private ulong _prevKernelTime;
-        private ulong _prevUserTime;
+        // ✅ FIX: Made static so all threads share the exact same time delta
+        private static ulong _prevIdleTime;
+        private static ulong _prevKernelTime;
+        private static ulong _prevUserTime;
+        private static DateTime _lastCpuCheckTime = DateTime.MinValue;
+        private static float _lastCalculatedCpuUsage = 0f;
+        private static readonly object _cpuLock = new object();
+
         private long _prevNetworkDownBytes;
         private long _prevNetworkUpBytes;
         private DateTime _lastNetworkCheckTime = DateTime.MinValue;
@@ -3958,25 +3965,39 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _diskTempHistoryBuffer.Add(diskTemp <= 0f ? -1 : diskTemp);
 
                 float cpuUsage = 0;
-                if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+
+                // ✅ FIX: Lock the thread so multiple ViewModels don't collide
+                lock (_cpuLock)
                 {
-                    ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
-                    ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
-                    ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
-
-                    ulong idleDiff = curIdleTime - _prevIdleTime;
-                    ulong kernelDiff = curKernelTime - _prevKernelTime;
-                    ulong userDiff = curUserTime - _prevUserTime;
-                    ulong totalSystemTime = kernelDiff + userDiff;
-
-                    _prevIdleTime = curIdleTime;
-                    _prevKernelTime = curKernelTime;
-                    _prevUserTime = curUserTime;
-
-                    if (totalSystemTime > 0)
+                    // If another thread or ViewModel just calculated the CPU in the last 150ms, 
+                    // instantly reuse the cached result instead of locking up the Windows Kernel again!
+                    if ((DateTime.Now - _lastCpuCheckTime).TotalMilliseconds < 150)
                     {
-                        cpuUsage = (float)((totalSystemTime - idleDiff) * 100.0 / totalSystemTime);
-                        cpuUsage = Math.Clamp(cpuUsage, 0f, 100f);
+                        cpuUsage = _lastCalculatedCpuUsage;
+                    }
+                    else if (GetSystemTimes(out FILETIME idleTime, out FILETIME kernelTime, out FILETIME userTime))
+                    {
+                        ulong curIdleTime = ((ulong)idleTime.dwHighDateTime << 32) | idleTime.dwLowDateTime;
+                        ulong curKernelTime = ((ulong)kernelTime.dwHighDateTime << 32) | kernelTime.dwLowDateTime;
+                        ulong curUserTime = ((ulong)userTime.dwHighDateTime << 32) | userTime.dwLowDateTime;
+
+                        ulong idleDiff = curIdleTime - _prevIdleTime;
+                        ulong kernelDiff = curKernelTime - _prevKernelTime;
+                        ulong userDiff = curUserTime - _prevUserTime;
+                        ulong totalSystemTime = kernelDiff + userDiff;
+
+                        _prevIdleTime = curIdleTime;
+                        _prevKernelTime = curKernelTime;
+                        _prevUserTime = curUserTime;
+                        _lastCpuCheckTime = DateTime.Now;
+
+                        if (totalSystemTime > 0)
+                        {
+                            cpuUsage = (float)((totalSystemTime - idleDiff) * 100.0 / totalSystemTime);
+                            _lastCalculatedCpuUsage = Math.Clamp(cpuUsage, 0f, 100f);
+                        }
+
+                        cpuUsage = _lastCalculatedCpuUsage;
                     }
                 }
 
@@ -3997,18 +4018,34 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                 }
 
-                float diskUsage = GetDiskUsage();
-                float gpuUsage = GetGpuUsage();
+                // ✅ MOVE: Calculate isFullSecond HERE so we can use it to throttle the Network request
+                bool isFullSecond = false;
+                if (!_isUiActive)
+                {
+                    isFullSecond = true; // In the background, the timer runs at 1000ms, so every tick is a full second.
+                }
+                else
+                {
+                    _uiRenderTick++;
+                    isFullSecond = _uiRenderTick >= 5;
+                    if (isFullSecond) _uiRenderTick = 0;
+                }
 
-                var netUsage = GetNetworkUsage();
-                float downMbps = netUsage.downMbps;
-                float upMbps = netUsage.upMbps;
+                // ✅ FIX: Query network stats ONLY on the full second tick
+                if (isFullSecond)
+                {
+                    var netUsage = GetNetworkUsage();
+                    _cachedRawDlMbps = netUsage.downMbps;
+                    _cachedRawUlMbps = netUsage.upMbps;
+                }
 
                 _displayCpuUsage = (_displayCpuUsage * 0.8f) + (cpuUsage * 0.2f);
-                _displayDiskUsage = (_displayDiskUsage * 0.8f) + (diskUsage * 0.2f);
-                _displayGpuUsage = (_displayGpuUsage * 0.8f) + (gpuUsage * 0.2f);
-                _displayDownMbps = (_displayDownMbps * 0.8f) + (downMbps * 0.2f);
-                _displayUpMbps = (_displayUpMbps * 0.8f) + (upMbps * 0.2f);
+                _displayDiskUsage = (_displayDiskUsage * 0.8f) + (GetDiskUsage() * 0.2f);
+                _displayGpuUsage = (_displayGpuUsage * 0.8f) + (GetGpuUsage() * 0.2f);
+
+                // Animate smoothly across the 200ms ticks using the cached 1-second values
+                _displayDownMbps = (_displayDownMbps * 0.8f) + (_cachedRawDlMbps * 0.2f);
+                _displayUpMbps = (_displayUpMbps * 0.8f) + (_cachedRawUlMbps * 0.2f);
 
                 _cpuHistoryBuffer.Add(100 - _displayCpuUsage);
                 _ramHistoryBuffer.Add(100 - ramUsage);
@@ -4032,6 +4069,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _gpuTempHistoryBuffer.RemoveAt(0);
                     _ramTempHistoryBuffer.RemoveAt(0);
                     _moboTempHistoryBuffer.RemoveAt(0);
+                    _diskTempHistoryBuffer.RemoveAt(0);
                 }
 
                 if (++_telemetryTickCount >= TicksPerMinute)
@@ -4086,13 +4124,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                             ResourceString.GetString("diag_pf_saturation_title") ?? "Pagefile Warning",
                             string.Format(ResourceString.GetString("diag_pf_saturation_msg") ?? "Usage at {0}%.", Math.Round(pagefileUsage)));
                     }
-                }
-
-                _uiRenderTick++;
-                bool isFullSecond = _uiRenderTick >= 5;
-                if (isFullSecond)
-                {
-                    _uiRenderTick = 0;
                 }
 
                 bool needsTrayUpdates = ShowCpuInTray || ShowRamInTray || ShowGpuInTray || ShowDiskInTray;
@@ -5441,6 +5472,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             if (ShowHardwarePanelInTray || ShowCpuInTray || ShowRamInTray || ShowGpuInTray || ShowDiskInTray)
             {
                 Debug.WriteLine("[DiagnosticsPageVM] Heavy engines frozen. Lightweight Telemetry kept alive for Tray/Taskbar.");
+
+                // ❌ CRITICAL FIX: Throttle the invisible background polling to 1000ms 
+                // instead of 200ms so it doesn't stutter the HomePage!
+                _telemetryTimer?.Change(1000, 1000);
             }
             else
             {
@@ -5468,6 +5503,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
             if (LocalMachineSettingsEngine.EnableLiveDiagnostics)
             {
+                // ✅ CRITICAL FIX: Restore the buttery-smooth 200ms timer only when 
+                // the Diagnostics Page is actively visible on the screen.
                 _telemetryTimer?.Change(0, 200);
 
                 StartLiveMonitoring();
