@@ -697,10 +697,51 @@
                                             <Border Style="{StaticResource MaintenanceCardStyle}" Padding="16,20" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
                                                 <StackPanel HorizontalAlignment="Center" Spacing="10">
                                                     <TextBlock helpers:Loc.Key="diag_health_status_label" Style="{StaticResource TechnicalLabelStyle}" HorizontalAlignment="Center" FontSize="10"/>
-                                                    <Grid Width="64" Height="64">
-                                                        <ProgressRing x:Name="MaintenanceStatusLoadingRing" IsActive="True" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                        <Image x:Name="MaintenanceStatusImage" Width="64" Height="64" Stretch="Uniform"/>
+
+                                                    <!-- Fixed height container for the gauge -->
+                                                    <Grid Width="140" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Canvas x:Name="DiagHealthGaugeCanvas" Height="80" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Canvas.Resources>
+                                                                <Storyboard x:Name="DiagHealthGlowPulseAnimation" RepeatBehavior="Forever">
+                                                                    <DoubleAnimation Storyboard.TargetName="DiagHealthAmbientGlow"
+                                                                                     Storyboard.TargetProperty="Opacity"
+                                                                                     From="0.3" To="1.0"
+                                                                                     Duration="0:0:2.5"
+                                                                                     AutoReverse="True">
+                                                                        <DoubleAnimation.EasingFunction>
+                                                                            <SineEase EasingMode="EaseInOut"/>
+                                                                        </DoubleAnimation.EasingFunction>
+                                                                    </DoubleAnimation>
+                                                                </Storyboard>
+                                                            </Canvas.Resources>
+
+                                                            <Ellipse x:Name="DiagHealthAmbientGlow" IsHitTestVisible="False"/>
+                                                            <Path x:Name="DiagHealthGaugeBackgroundPath" Stroke="{ThemeResource SurfaceStrokeColorDefaultBrush}" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                            <Path x:Name="DiagHealthGaugeForegroundPath" Stroke="{ThemeResource SystemAccentColor}" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+
+                                                            <Path x:Name="DiagHealthGaugeNeedle" Data="M 38,40 L 42,40 L 40,11 Z" Fill="{ThemeResource TextFillColorPrimaryBrush}" Opacity="0.85">
+                                                                <Path.RenderTransform>
+                                                                    <RotateTransform x:Name="DiagHealthNeedleRotation" CenterX="40" CenterY="40" Angle="-135"/>
+                                                                </Path.RenderTransform>
+                                                            </Path>
+
+                                                            <Ellipse x:Name="DiagHealthPinShadow" Canvas.Left="36" Canvas.Top="37" Width="10" Height="10" Fill="#50000000"/>
+                                                            <Ellipse x:Name="DiagHealthPinOuter" Canvas.Left="35" Canvas.Top="35" Width="10" Height="10" Fill="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                                            <Ellipse x:Name="DiagHealthPinInner" Canvas.Left="38" Canvas.Top="38" Width="4" Height="4" Fill="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+                                                        </Canvas>
+
+                                                        <TextBlock x:Name="TxtDiagHealthScore" Text="0%" FontFamily="Jura Medium" FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4">
+                                                            <TextBlock.Foreground>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Color="#FFFFFFFF" Offset="0.0"/>
+                                                                    <GradientStop Color="#88FFFFFF" Offset="1.0"/>
+                                                                </LinearGradientBrush>
+                                                            </TextBlock.Foreground>
+                                                        </TextBlock>
                                                     </Grid>
+
+                                                    <TextBlock x:Name="LastRefreshedText" Text="" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+
                                                     <Button x:Name="RefreshButton" Content="{helpers:ResourceString Key=diag_btn_refresh_data}" Click="RefreshButton_Click" HorizontalAlignment="Center" FontSize="11" Padding="15,5"/>
                                                 </StackPanel>
                                             </Border>

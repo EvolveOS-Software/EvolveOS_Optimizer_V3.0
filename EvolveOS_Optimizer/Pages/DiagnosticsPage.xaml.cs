@@ -1556,65 +1556,82 @@ namespace EvolveOS_Optimizer.Pages
             await CalculateSystemHealthAsync();
         }
 
+        private bool _isUpdatingDiagHealth = false;
+        private double _cachedDiagHealthScore = 1.0;
+
         private async Task CalculateSystemHealthAsync()
         {
-            if (ViewModel == null) return;
+            if (ViewModel == null || _isUpdatingDiagHealth) return;
 
-            if (MaintenanceStatusLoadingRing != null)
-            {
-                MaintenanceStatusLoadingRing.IsActive = true;
-                MaintenanceStatusLoadingRing.Visibility = Visibility.Visible;
-            }
-            if (MaintenanceStatusImage != null) MaintenanceStatusImage.Visibility = Visibility.Collapsed;
-            if (this.FindName("LastRefreshedText") is TextBlock text) text.Text = string.Empty;
-            if (this.FindName("RefreshButton") is Button refreshBtn) refreshBtn.IsEnabled = false;
-
-            await Task.Delay(150);
-
-            if (ViewModel.RefreshCleanupSpaceCommand.CanExecute(null) && !ViewModel.IsScanning)
-            {
-                ViewModel.RefreshCleanupSpaceCommand.Execute(null);
-                await Task.Delay(400);
-            }
-
-            while (ViewModel.IsScanning)
-            {
-                await Task.Delay(250);
-            }
-
-            var healthResult = await SystemHealthHelper.EvaluateHealthAsync();
+            _isUpdatingDiagHealth = true;
 
             try
             {
-                if (MaintenanceStatusImage != null)
-                {
-                    string pathStr = healthResult.ImagePath;
-                    Uri imageUri = pathStr.StartsWith("ms-appx://", StringComparison.OrdinalIgnoreCase) ||
-                                   pathStr.StartsWith("ms-appdata://", StringComparison.OrdinalIgnoreCase)
-                        ? new Uri(pathStr)
-                        : new Uri($"ms-appx:///{pathStr.TrimStart('/')}");
+                if (this.FindName("RefreshButton") is Button refreshBtn) refreshBtn.IsEnabled = false;
 
-                    MaintenanceStatusImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(imageUri);
+                UpdateDiagHealthGaugeVisuals(0, false);
+
+                if (this.FindName("LastRefreshedText") is TextBlock text) text.Text = string.Empty;
+
+                await Task.Delay(150);
+
+                if (ViewModel.RefreshCleanupSpaceCommand.CanExecute(null) && !ViewModel.IsScanning)
+                {
+                    ViewModel.RefreshCleanupSpaceCommand.Execute(null);
+                    await Task.Delay(400);
                 }
+
+                while (ViewModel.IsScanning)
+                {
+                    await Task.Delay(250);
+                }
+
+                var healthResult = await SystemHealthHelper.EvaluateHealthAsync();
+
+                var dispatcher = this.DispatcherQueue ?? Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+                var tcs = new TaskCompletionSource();
+
+                dispatcher.TryEnqueue(async () =>
+                {
+                    try
+                    {
+                        if (this.FindName("LastRefreshedText") is TextBlock lbl)
+                        {
+                            lbl.Text = $"{healthResult.StatusText} • Last checked: {DateTime.Now:t}";
+                        }
+
+                        await AnimateDiagHealthGaugeAsync(healthResult.Score);
+                    }
+                    finally
+                    {
+                        if (this.FindName("RefreshButton") is Button rBtn) rBtn.IsEnabled = true;
+                        tcs.SetResult();
+                    }
+                });
+
+                await tcs.Task;
             }
             catch (Exception ex)
             {
-                ErrorLogging.LogDebug($"Failed to load health image: {ex.Message}");
+                ErrorLogging.LogDebug($"[Diagnostics] Health Eval Error: {ex.Message}");
+                if (this.FindName("RefreshButton") is Button rBtn) rBtn.IsEnabled = true;
             }
-
-            if (this.FindName("LastRefreshedText") is TextBlock lbl)
+            finally
             {
-                lbl.Text = $"{healthResult.StatusText} • Last checked: {DateTime.Now:t}";
-                lbl.Visibility = Visibility.Visible;
+                _isUpdatingDiagHealth = false;
             }
+        }
 
-            if (MaintenanceStatusLoadingRing != null)
-            {
-                MaintenanceStatusLoadingRing.IsActive = false;
-                MaintenanceStatusLoadingRing.Visibility = Visibility.Collapsed;
-            }
-            if (MaintenanceStatusImage != null) MaintenanceStatusImage.Visibility = Visibility.Visible;
-            if (this.FindName("RefreshButton") is Button rBtn) rBtn.IsEnabled = true;
+        private async Task AnimateDiagHealthGaugeAsync(double targetPercentage)
+        {
+            _cachedDiagHealthScore = targetPercentage;
+            await GaugeHelper.AnimateAsync(targetPercentage, false, DiagHealthGlowPulseAnimation, (p, exp) => UpdateDiagHealthGaugeVisuals(p, exp));
+        }
+
+        private void UpdateDiagHealthGaugeVisuals(double percentage, bool isExpanded)
+        {
+            GaugeHelper.UpdateVisuals(percentage, isExpanded, DiagHealthAmbientGlow, DiagHealthGaugeNeedle, DiagHealthNeedleRotation, DiagHealthPinShadow, DiagHealthPinOuter, DiagHealthPinInner, DiagHealthGaugeBackgroundPath, DiagHealthGaugeForegroundPath, TxtDiagHealthScore);
         }
 
         #endregion

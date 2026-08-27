@@ -938,33 +938,121 @@
                 </Border>
             </GridViewItem>
 
-            <GridViewItem>
-                <Border x:Name="CardMaintenance" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+            <GridViewItem x:Name="GviMaintenance">
+                <Border x:Name="CardMaintenance" Style="{StaticResource DashCard}" Padding="16" Margin="0" MinWidth="340"
                         PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerCanceled">
-                    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+
+                    <Grid x:Name="MaintenanceCardRootGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Row 0: Header with Arrow Navigation & Expand Chevron -->
                         <Grid Grid.Row="0" Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <FontIcon Glyph="&#xE9D9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+
+                            <FontIcon Grid.Column="0" Glyph="&#xE9D9;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" helpers:Loc.Key="title_system_health_status" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
-                            <Button x:Name="BtnOpenMaintenancePage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenMaintenancePage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_maintenance}">
+
+                            <Button x:Name="BtnOpenMaintenancePage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenMaintenancePage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_maintenance}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
                             </Button>
+
+                            <Button x:Name="BtnExpandHealth" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandHealth_Click" Margin="4,0,0,0">
+                                <FontIcon x:Name="IconExpandHealth" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </Button>
                         </Grid>
-                        <Grid Grid.Row="1" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <ProgressRing x:Name="DashMaintenanceLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Visible" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <Image x:Name="DashMaintenanceStatusImage" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+
+                        <!-- Row 1: Gauge -->
+                        <Grid x:Name="HealthGaugeContainerGrid" Grid.Row="1" Height="80" Width="140" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                            <Grid.RenderTransform>
+                                <TranslateTransform Y="-3"/>
+                            </Grid.RenderTransform>
+
+                            <Canvas x:Name="HealthGaugeCanvas" Height="80" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Canvas.Resources>
+                                    <Storyboard x:Name="HealthGlowPulseAnimation" RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="HealthAmbientGlow"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         From="0.3" To="1.0"
+                                                         Duration="0:0:2.5"
+                                                         AutoReverse="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </Canvas.Resources>
+
+                                <Ellipse x:Name="HealthAmbientGlow" IsHitTestVisible="False"/>
+                                <Path x:Name="HealthGaugeBackgroundPath" Stroke="{ThemeResource SurfaceStrokeColorDefaultBrush}" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                <Path x:Name="HealthGaugeForegroundPath" Stroke="{ThemeResource SystemAccentColor}" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+
+                                <Path x:Name="HealthGaugeNeedle" Data="M 38,40 L 42,40 L 40,11 Z" Fill="{ThemeResource TextFillColorPrimaryBrush}" Opacity="0.85">
+                                    <Path.RenderTransform>
+                                        <RotateTransform x:Name="HealthNeedleRotation" CenterX="40" CenterY="40" Angle="-135"/>
+                                    </Path.RenderTransform>
+                                </Path>
+
+                                <Ellipse x:Name="HealthPinShadow" Canvas.Left="36" Canvas.Top="37" Width="10" Height="10" Fill="#50000000"/>
+                                <Ellipse x:Name="HealthPinOuter" Canvas.Left="35" Canvas.Top="35" Width="10" Height="10" Fill="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                <Ellipse x:Name="HealthPinInner" Canvas.Left="38" Canvas.Top="38" Width="4" Height="4" Fill="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+                            </Canvas>
+
+                            <!-- Premium Gradient Text -->
+                            <TextBlock x:Name="TxtHealthScore" Text="0%" FontFamily="Jura Medium" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4">
+                                <TextBlock.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFFFFFF" Offset="0.0"/>
+                                        <GradientStop Color="#88FFFFFF" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </TextBlock.Foreground>
+                            </TextBlock>
                         </Grid>
-                        <StackPanel Grid.Row="2" Spacing="2" Margin="0,8">
-                            <TextBlock x:Name="TxtHealthStatus" helpers:Loc.Key="text_scanning_system" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
-                            <TextBlock x:Name="TxtLastRefreshed" helpers:Loc.Key="text_never_updated" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="1" FontSize="11"/>
+
+                        <!-- Row 2: Status Texts -->
+                        <StackPanel x:Name="HealthStatusPanel" Grid.Row="2" Height="32" VerticalAlignment="Top" Spacing="0" Margin="0,0,0,0">
+                            <TextBlock x:Name="TxtHealthStatus" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" helpers:Loc.Key="text_scanning_system" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="TxtLastRefreshed" Text="" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="1" FontSize="11" Margin="0,2,0,0"/>
                         </StackPanel>
-                        <ProgressBar x:Name="MaintenanceProgressBar" Grid.Row="3" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8" Visibility="Collapsed"/>
-                        <Grid Grid.Row="4" VerticalAlignment="Bottom">
-                            <Button x:Name="BtnRefreshHealth" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshHealth_Click" FontFamily="Jura Medium">
+
+                        <!-- Row 3: Expanded Section -->
+                        <StackPanel x:Name="HealthExpandedContent" Grid.Row="3" Visibility="Collapsed" VerticalAlignment="Bottom" Margin="0,16,0,0" Spacing="12">
+                            <!-- Accurate Live Breakdown -->
+                            <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
+                                <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Temp Files" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtHealthTempFiles" Text="-- GB" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Memory Usage" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtHealthRamUsage" Text="--%" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Pagefile" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtHealthPagefileUsage" Text="--%" FontSize="13" FontWeight="Bold" FontFamily="Jura"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Row 4: Refresh Bottom Action -->
+                        <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
+                            <Button x:Name="BtnRefreshHealth" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshHealth_Click" FontFamily="Jura Medium" BorderThickness="0">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <FontIcon Glyph="&#xE72C;" FontSize="14"/>

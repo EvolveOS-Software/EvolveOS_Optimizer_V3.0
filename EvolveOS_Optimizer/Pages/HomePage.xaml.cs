@@ -623,6 +623,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnStartService, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnDebug, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenMaintenancePage, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnExpandHealth, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRefreshHealth, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenSecurityPage, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOptimizeMemory, InputSystemCursorShape.Arrow);
@@ -1375,11 +1376,46 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Health Card
+
         private void BtnOpenMaintenancePage_Click(object sender, RoutedEventArgs e)
         {
             if (MainWindow.Instance != null)
             {
                 MainWindow.Instance.SwitchPage("Diagnostics", "Maintenance");
+            }
+        }
+
+        private async void BtnExpandHealth_Click(object sender, RoutedEventArgs e)
+        {
+            bool isExpanded = HealthExpandedContent.Visibility == Visibility.Collapsed;
+            double targetHeight = isExpanded ? 450 : 220;
+
+            GviMaintenance.Height = targetHeight;
+            CardMaintenance.Height = targetHeight;
+
+            if (isExpanded)
+            {
+                HealthExpandedContent.Visibility = Visibility.Visible;
+                if (IconExpandHealth != null) IconExpandHealth.Glyph = "\uE70E"; // Chevron Up
+            }
+            else
+            {
+                HealthExpandedContent.Visibility = Visibility.Collapsed;
+                if (IconExpandHealth != null) IconExpandHealth.Glyph = "\uE70D"; // Chevron Down
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
+            }
+
+            RefreshHealthGaugeLayoutSize(isExpanded);
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+                GviMaintenance.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true });
             }
         }
 
@@ -1392,14 +1428,9 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                if (DashMaintenanceLoadingRing != null)
-                {
-                    DashMaintenanceLoadingRing.IsActive = true;
-                    DashMaintenanceLoadingRing.Visibility = Visibility.Visible;
-                }
-                if (DashMaintenanceStatusImage != null) DashMaintenanceStatusImage.Visibility = Visibility.Collapsed;
-                if (TxtLastRefreshed != null) TxtLastRefreshed.Visibility = Visibility.Collapsed;
                 if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = false;
+
+                if (TxtLastRefreshed != null) TxtLastRefreshed.Text = string.Empty;
 
                 if (TxtHealthStatus != null)
                 {
@@ -1408,7 +1439,8 @@ namespace EvolveOS_Optimizer.Pages
                         TxtHealthStatus.Foreground = (Brush)textBrush;
                 }
 
-                await Task.Delay(150);
+                bool isCurrentlyExpanded = HealthExpandedContent?.Visibility == Visibility.Visible;
+                UpdateHealthGaugeVisuals(0, isCurrentlyExpanded);
 
                 if (DiagnosticsPageViewModel.Current != null)
                 {
@@ -1424,78 +1456,104 @@ namespace EvolveOS_Optimizer.Pages
                     }
                 }
 
-                var healthResult = await ViewModel.CalculateSystemHealthAsync();
+                var healthResult = await SystemHealthHelper.EvaluateHealthAsync();
 
-                DispatcherQueue.TryEnqueue(() =>
+                var tcs = new TaskCompletionSource();
+
+                DispatcherQueue.TryEnqueue(async () =>
                 {
-                    if (healthResult != null)
+                    try
                     {
-                        var statusImage = DashMaintenanceStatusImage;
-                        if (statusImage != null && !string.IsNullOrEmpty(healthResult.ImagePath))
+                        if (healthResult != null)
                         {
-                            try
+                            if (TxtHealthStatus != null)
                             {
-                                string pathStr = healthResult.ImagePath;
-                                Uri imageUri = pathStr.StartsWith("ms-appx://", StringComparison.OrdinalIgnoreCase) ||
-                                               pathStr.StartsWith("ms-appdata://", StringComparison.OrdinalIgnoreCase)
-                                    ? new Uri(pathStr)
-                                    : new Uri($"ms-appx:///{pathStr.TrimStart('/')}");
-
-                                statusImage!.Source = null;
-                                statusImage.Source = new BitmapImage(imageUri);
-                                statusImage.Visibility = Visibility.Visible;
-
-                                statusImage.InvalidateMeasure();
-                                statusImage.InvalidateArrange();
+                                TxtHealthStatus.Text = healthResult.StatusText;
                             }
-                            catch (Exception imgEx)
+
+                            if (TxtHealthTempFiles != null)
                             {
-                                Debug.WriteLine($"❌ [Health Image Error] {imgEx.Message}");
+                                TxtHealthTempFiles.Text = healthResult.JunkGb > 0 ? $"{healthResult.JunkGb:F1} GB" : "Clean";
+                                TxtHealthTempFiles.Foreground = healthResult.JunkGb >= 10.0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                            }
+                            if (TxtHealthRamUsage != null)
+                            {
+                                TxtHealthRamUsage.Text = $"{healthResult.RamUsage:F0}%";
+                                TxtHealthRamUsage.Foreground = healthResult.RamUsage >= 80.0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                            }
+                            if (TxtHealthPagefileUsage != null)
+                            {
+                                TxtHealthPagefileUsage.Text = $"{healthResult.PagefileUsage:F0}%";
+                                TxtHealthPagefileUsage.Foreground = healthResult.PagefileUsage >= 90.0 ? new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
                             }
                         }
 
-                        if (TxtHealthStatus != null)
+                        if (TxtLastRefreshed != null)
                         {
-                            TxtHealthStatus.Text = healthResult.StatusText;
-                            TxtHealthStatus.InvalidateMeasure();
-                            TxtHealthStatus.InvalidateArrange();
+                            string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
+                            TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
                         }
-                    }
 
-                    if (TxtLastRefreshed != null)
-                    {
-                        string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
-                        TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
-                        TxtLastRefreshed.Visibility = Visibility.Visible;
-                    }
+                        RefreshHealthGaugeLayoutSize(isCurrentlyExpanded);
 
-                    FrameworkElement? curr = CardMaintenance;
-                    while (curr != null)
-                    {
-                        curr.InvalidateMeasure();
-                        curr.InvalidateArrange();
-                        if (curr is GridViewItem || curr is GridView) break;
-                        curr = VisualTreeHelper.GetParent(curr) as FrameworkElement;
+                        await AnimateHealthGaugeAsync(healthResult?.Score ?? 1.0);
                     }
-                    CardMaintenance?.UpdateLayout();
+                    finally
+                    {
+                        if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = true;
+                        tcs.SetResult();
+                    }
                 });
+
+                await tcs.Task;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"❌ [Health Check Error] {ex.Message}");
+                if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = true;
             }
-            finally
+        }
+
+        private void RefreshHealthGaugeLayoutSize(bool isExpanded)
+        {
+            if (HealthGaugeCanvas == null) return;
+
+            double size = isExpanded ? 120 : 80;
+
+            HealthGaugeContainerGrid.Height = size;
+            HealthGaugeCanvas.Width = size;
+            HealthGaugeCanvas.Height = size;
+
+            if (HealthGaugeContainerGrid != null)
             {
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    if (DashMaintenanceLoadingRing != null)
-                    {
-                        DashMaintenanceLoadingRing.IsActive = false;
-                        DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
-                    }
-                    if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = true;
-                });
+                HealthGaugeContainerGrid.Margin = new Thickness(0);
             }
+
+            if (HealthStatusPanel != null)
+            {
+                HealthStatusPanel.Margin = isExpanded ? new Thickness(0, 4, 0, 8) : new Thickness(0, 0, 0, 0);
+            }
+
+            if (TxtHealthScore != null)
+            {
+                TxtHealthScore.FontSize = isExpanded ? 20 : 15;
+                TxtHealthScore.Margin = isExpanded ? new Thickness(0, 0, 0, 12) : new Thickness(0, 0, 0, 4);
+            }
+
+            UpdateHealthGaugeVisuals(_cachedLastHealthScore, isExpanded);
+        }
+
+        private double _cachedLastHealthScore = 1.0;
+        private async Task AnimateHealthGaugeAsync(double targetPercentage)
+        {
+            _cachedLastHealthScore = targetPercentage;
+            bool isExpanded = HealthExpandedContent.Visibility == Visibility.Visible;
+            await GaugeHelper.AnimateAsync(targetPercentage, isExpanded, HealthGlowPulseAnimation, (p, exp) => UpdateHealthGaugeVisuals(p, exp));
+        }
+
+        private void UpdateHealthGaugeVisuals(double percentage, bool isExpanded)
+        {
+            GaugeHelper.UpdateVisuals(percentage, isExpanded, HealthAmbientGlow, HealthGaugeNeedle, HealthNeedleRotation, HealthPinShadow, HealthPinOuter, HealthPinInner, HealthGaugeBackgroundPath, HealthGaugeForegroundPath, TxtHealthScore);
         }
 
         #endregion

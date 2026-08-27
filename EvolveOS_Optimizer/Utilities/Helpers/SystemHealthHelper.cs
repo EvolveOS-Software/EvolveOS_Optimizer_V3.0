@@ -2,15 +2,13 @@
 // Licensed under the MIT License.
 
 using System.Globalization;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using EvolveOS_Optimizer.Core.ViewModel;
-using EvolveOS_Optimizer.Utilities.Controls;
 
 namespace EvolveOS_Optimizer.Utilities.Helpers
 {
-    public record SystemHealthResult(string ImagePath, string StatusText, int PenaltyScore);
+    public record SystemHealthResult(string StatusText, int PenaltyScore, double Score, double RamUsage, double PagefileUsage, double JunkGb);
 
     public static class SystemHealthHelper
     {
@@ -35,9 +33,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         public static async Task<SystemHealthResult> EvaluateHealthAsync()
         {
             double ramPercentage = 0;
-            double totalRamGb = 0;
             double vRamPercentage = 0;
-            double totalVRamGb = 0;
             double junkGigabytes = 0.0;
 
             await Task.Run(() =>
@@ -47,14 +43,21 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 if (GlobalMemoryStatusEx(ref memInfo))
                 {
                     ramPercentage = memInfo.dwMemoryLoad;
-                    totalRamGb = memInfo.ullTotalPhys / (1024.0 * 1024.0 * 1024.0);
 
-                    if (memInfo.ullTotalPageFile > 0)
+                    ulong trueTotalPageFile = memInfo.ullTotalPageFile - memInfo.ullTotalPhys;
+
+                    if (trueTotalPageFile > 0)
                     {
-                        double usedVram = memInfo.ullTotalPageFile - memInfo.ullAvailPageFile;
-                        vRamPercentage = (usedVram / memInfo.ullTotalPageFile) * 100.0;
+                        ulong usedPhysical = memInfo.ullTotalPhys - memInfo.ullAvailPhys;
+                        ulong usedCommit = memInfo.ullTotalPageFile - memInfo.ullAvailPageFile;
+                        ulong usedPageFile = usedCommit > usedPhysical ? usedCommit - usedPhysical : 0;
+
+                        vRamPercentage = ((double)usedPageFile / trueTotalPageFile) * 100.0;
                     }
-                    totalVRamGb = memInfo.ullTotalPageFile / (1024.0 * 1024.0 * 1024.0);
+                    else
+                    {
+                        vRamPercentage = 0;
+                    }
                 }
 
                 if (DiagnosticsPageViewModel.Current != null && !string.IsNullOrEmpty(DiagnosticsPageViewModel.Current.TotalSpaceToFree))
@@ -68,31 +71,37 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             if (ramPercentage >= 90.0) penaltyScore += 2;
             else if (ramPercentage >= 80.0) penaltyScore += 1;
 
-            if (vRamPercentage >= 98.0) penaltyScore += 1;
+            if (vRamPercentage >= 90.0) penaltyScore += 1;
 
             if (junkGigabytes >= 20.0) penaltyScore += 2;
             else if (junkGigabytes >= 10.0) penaltyScore += 1;
+            else if (junkGigabytes >= 2.0) penaltyScore += 1;
 
-            string imagePath;
             string statusText;
+            double healthScore = 1.0;
 
             if (penaltyScore >= 4)
             {
-                imagePath = "ms-appx:///Assets/PngImages/health_critical.png";
                 statusText = ResourceString.GetString("Health_Poor") ?? "Poor - Action Required";
+                healthScore = 0.25;
             }
             else if (penaltyScore >= 2)
             {
-                imagePath = "ms-appx:///Assets/PngImages/health_warning.png";
                 statusText = ResourceString.GetString("Health_Warning") ?? "Fair - Optimization Recommended";
+                healthScore = 0.65;
+            }
+            else if (penaltyScore == 1)
+            {
+                statusText = ResourceString.GetString("Health_Good") ?? "Good - Minor Cleanup Needed";
+                healthScore = 0.85;
             }
             else
             {
-                imagePath = "ms-appx:///Assets/PngImages/health_good.png";
-                statusText = ResourceString.GetString("Health_Good") ?? "Good - System is Healthy";
+                statusText = ResourceString.GetString("Health_Good") ?? "Excellent - System is Healthy";
+                healthScore = 1.0;
             }
 
-            return new SystemHealthResult(imagePath, statusText, penaltyScore);
+            return new SystemHealthResult(statusText, penaltyScore, healthScore, ramPercentage, vRamPercentage, junkGigabytes);
         }
 
         public static double ParseSizeToGigabytes(string sizeString)
