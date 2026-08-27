@@ -595,31 +595,32 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             HiddenYAxes.Clear();
             DynamicNetYAxes.Clear();
 
-            // FIX: AnimationsSpeed set to Zero. Constantly animating the axes and lines every tick chokes the UI thread.
-            HiddenXAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 300, AnimationsSpeed = TimeSpan.Zero });
+            var animSpeed = TimeSpan.Zero;
+
+            HiddenXAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 300, AnimationsSpeed = animSpeed });
             HiddenYAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 100 });
             DynamicNetYAxes.Add(new Axis { IsVisible = false, MinLimit = 0, MaxLimit = 10 });
 
             CpuGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = CpuGraphValues, Fill = new LinearGradientPaint(new[] { cpuColor.WithAlpha(100), cpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(cpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
-                new ScatterSeries<ObservablePoint> { Values = CpuGraphDot, Fill = new SolidColorPaint(cpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.Zero }
+                new LineSeries<ObservablePoint> { Values = CpuGraphValues, Fill = new LinearGradientPaint(new[] { cpuColor.WithAlpha(100), cpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(cpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed },
+                new ScatterSeries<ObservablePoint> { Values = CpuGraphDot, Fill = new SolidColorPaint(cpuColor), GeometrySize = 10, AnimationsSpeed = animSpeed }
             };
 
             RamGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = RamGraphValues, Fill = new LinearGradientPaint(new[] { ramColor.WithAlpha(100), ramColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(ramColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
-                new ScatterSeries<ObservablePoint> { Values = RamGraphDot, Fill = new SolidColorPaint(ramColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.Zero }
+                new LineSeries<ObservablePoint> { Values = RamGraphValues, Fill = new LinearGradientPaint(new[] { ramColor.WithAlpha(100), ramColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(ramColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed },
+                new ScatterSeries<ObservablePoint> { Values = RamGraphDot, Fill = new SolidColorPaint(ramColor), GeometrySize = 10, AnimationsSpeed = animSpeed }
             };
 
             GpuGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = GpuGraphValues, Fill = new LinearGradientPaint(new[] { gpuColor.WithAlpha(100), gpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(gpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
-                new ScatterSeries<ObservablePoint> { Values = GpuGraphDot, Fill = new SolidColorPaint(gpuColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.Zero }
+                new LineSeries<ObservablePoint> { Values = GpuGraphValues, Fill = new LinearGradientPaint(new[] { gpuColor.WithAlpha(100), gpuColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(gpuColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed },
+                new ScatterSeries<ObservablePoint> { Values = GpuGraphDot, Fill = new SolidColorPaint(gpuColor), GeometrySize = 10, AnimationsSpeed = animSpeed }
             };
 
             NetGraphSeries = new ISeries[] {
-                new LineSeries<ObservablePoint> { Values = NetDownGraphValues, Fill = new LinearGradientPaint(new[] { netDownColor.WithAlpha(100), netDownColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netDownColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
-                new ScatterSeries<ObservablePoint> { Values = NetDownGraphDot, Fill = new SolidColorPaint(netDownColor), GeometrySize = 10, AnimationsSpeed = TimeSpan.Zero },
-                new LineSeries<ObservablePoint> { Values = NetUpGraphValues, Fill = new LinearGradientPaint(new[] { netUpColor.WithAlpha(100), netUpColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netUpColor) { StrokeThickness = 2f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = TimeSpan.Zero },
-                new ScatterSeries<ObservablePoint> { Values = NetUpGraphDot, Fill = new SolidColorPaint(netUpColor), GeometrySize = 8, AnimationsSpeed = TimeSpan.Zero }
+                new LineSeries<ObservablePoint> { Values = NetDownGraphValues, Fill = new LinearGradientPaint(new[] { netDownColor.WithAlpha(100), netDownColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netDownColor) { StrokeThickness = 2.5f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed },
+                new ScatterSeries<ObservablePoint> { Values = NetDownGraphDot, Fill = new SolidColorPaint(netDownColor), GeometrySize = 10, AnimationsSpeed = animSpeed },
+                new LineSeries<ObservablePoint> { Values = NetUpGraphValues, Fill = new LinearGradientPaint(new[] { netUpColor.WithAlpha(100), netUpColor.WithAlpha(0) }, new SKPoint(0.5f, 0), new SKPoint(0.5f, 1)), Stroke = new SolidColorPaint(netUpColor) { StrokeThickness = 2f }, GeometrySize = 0, LineSmoothness = 0, AnimationsSpeed = animSpeed },
+                new ScatterSeries<ObservablePoint> { Values = NetUpGraphDot, Fill = new SolidColorPaint(netUpColor), GeometrySize = 8, AnimationsSpeed = animSpeed }
             };
         }
 
@@ -1134,13 +1135,13 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         #region Background Engine (High-Performance Telemetry)
         public void ResumeUpdates()
         {
-            // FAST Graph polling timer: Changed from 200ms to 1000ms
-            if (_telemetryTimer == null) _telemetryTimer = new System.Threading.Timer(TelemetryTimer_Tick, null, 0, 1000);
-            else _telemetryTimer.Change(0, 1000);
+            // Restore FAST Graph polling timer (200ms) for the smooth treadmill
+            if (_telemetryTimer == null) _telemetryTimer = new System.Threading.Timer(TelemetryTimer_Tick, null, 0, 200);
+            else _telemetryTimer.Change(0, 200);
 
-            // SLOW Hardware polling timer (LHM Ring0): Changed from 1000ms to 3000ms
-            if (_hardwareTimer == null) _hardwareTimer = new System.Threading.Timer(HardwareTimer_Tick, null, 0, 3000);
-            else _hardwareTimer.Change(0, 3000);
+            // Keep SLOW Hardware polling timer (1000ms) to prevent WMI hardware freezes
+            if (_hardwareTimer == null) _hardwareTimer = new System.Threading.Timer(HardwareTimer_Tick, null, 0, 1000);
+            else _hardwareTimer.Change(0, 1000);
 
             _weatherTimer?.Start();
         }
@@ -1260,21 +1261,19 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     IsFullSecond = isFullSecond
                 };
 
-                // Send fast UI point appends exactly every 200ms
                 App.MainWindow?.DispatcherQueue?.TryEnqueue(() =>
                 {
-                    // The magic that makes it a continuous scroll (Treadmill)
                     if (HiddenXAxes.Count > 0)
                     {
                         HiddenXAxes[0].MaxLimit = _currentTick;
                         HiddenXAxes[0].MinLimit = _currentTick - _maxDataPoints;
                     }
 
-                    AppendToGraph(CpuGraphValues, CpuGraphDot, _displayCpuUsage, 100.0);
-                    AppendToGraph(RamGraphValues, RamGraphDot, _lastRamPercentage, 100.0);
-                    AppendToGraph(GpuGraphValues, GpuGraphDot, _displayGpuUsage, 100.0);
-                    AppendToGraph(NetDownGraphValues, NetDownGraphDot, _displayDownMbps, netScale);
-                    AppendToGraph(NetUpGraphValues, NetUpGraphDot, _displayUpMbps, netScale);
+                    AppendToGraph(CpuGraphValues, CpuGraphDot, _displayCpuUsage);
+                    AppendToGraph(RamGraphValues, RamGraphDot, _lastRamPercentage);
+                    AppendToGraph(GpuGraphValues, GpuGraphDot, _displayGpuUsage);
+                    AppendToGraph(NetDownGraphValues, NetDownGraphDot, _displayDownMbps);
+                    AppendToGraph(NetUpGraphValues, NetUpGraphDot, _displayUpMbps);
 
                     if (isFullSecond)
                     {
@@ -1471,21 +1470,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region LiveCharts2 Continuous Scroll Logic
 
-        private void AppendToGraph(ObservableCollection<ObservablePoint> series, ObservableCollection<ObservablePoint> dot, double newValue, double maxScale)
+        private void AppendToGraph(ObservableCollection<ObservablePoint> series, ObservableCollection<ObservablePoint> dot, double newValue)
         {
-            double scaledValue = (newValue / maxScale) * 100.0;
-            series.Add(new ObservablePoint(_currentTick, scaledValue));
+            series.Add(new ObservablePoint(_currentTick, newValue));
 
             if (series.Count > _maxDataPoints)
             {
-                series.RemoveAt(0); // Standard queue behavior, drops oldest point natively
+                series.RemoveAt(0);
             }
 
-            if (dot.Count == 0) dot.Add(new ObservablePoint(_currentTick, scaledValue));
+            if (dot.Count == 0) dot.Add(new ObservablePoint(_currentTick, newValue));
             else
             {
                 dot[0].X = _currentTick;
-                dot[0].Y = scaledValue;
+                dot[0].Y = newValue;
             }
         }
 

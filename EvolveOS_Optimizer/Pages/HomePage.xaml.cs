@@ -2857,6 +2857,8 @@ namespace EvolveOS_Optimizer.Pages
                 BoostStatusText.Foreground = (Brush)successBrush;
             }
 
+            _ = UpdateSystemHealthUIAsync();
+
             await Task.Delay(5000);
 
             BoostStatusText.Text = ResourceString.GetString("txt_ready_to_optimize") ?? "Ready to optimize";
