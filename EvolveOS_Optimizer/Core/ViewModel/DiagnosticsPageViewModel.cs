@@ -3918,32 +3918,37 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     {
                         try
                         {
-                            if ((DateTime.Now - _lastSensorRefresh).TotalSeconds >= 1.0)
+                            // ✅ FIX: Completely block LibreHardwareMonitor from allocating garbage objects 
+                            // and locking threads when the Diagnostics page is hidden.
+                            if (_isUiActive)
                             {
-                                HardwareTemperatureService.Instance.UpdateSensors();
-                                _lastSensorRefresh = DateTime.Now;
-                            }
-
-                            var diskNames = HardwareTemperatureService.Instance.GetStorageDriveNames();
-                            _dispatcherQueue?.TryEnqueue(() =>
-                            {
-                                if (AvailableDisks.Count != diskNames.Count)
+                                if ((DateTime.Now - _lastSensorRefresh).TotalSeconds >= 1.0)
                                 {
-                                    int currentIndex = SelectedDiskIndex;
-                                    AvailableDisks.Clear();
-                                    foreach (var disk in diskNames) AvailableDisks.Add(disk);
-
-                                    SelectedDiskIndex = (currentIndex >= 0 && currentIndex < AvailableDisks.Count) ? currentIndex : 0;
+                                    HardwareTemperatureService.Instance.UpdateSensors();
+                                    _lastSensorRefresh = DateTime.Now;
                                 }
-                            });
 
-                            _cachedCpuTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
-                            _cachedGpuTemp = HardwareTemperatureService.Instance.GetGpuTemperature();
-                            _cachedMemTemp = HardwareTemperatureService.Instance.GetMemoryTemperature();
-                            _cachedMoboTemp = HardwareTemperatureService.Instance.GetMotherboardTemperature();
+                                var diskNames = HardwareTemperatureService.Instance.GetStorageDriveNames();
+                                _dispatcherQueue?.TryEnqueue(() =>
+                                {
+                                    if (AvailableDisks.Count != diskNames.Count)
+                                    {
+                                        int currentIndex = SelectedDiskIndex;
+                                        AvailableDisks.Clear();
+                                        foreach (var disk in diskNames) AvailableDisks.Add(disk);
 
-                            int targetDiskIndex = _selectedDiskIndex >= 0 ? _selectedDiskIndex : 0;
-                            _cachedDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperatureByIndex(targetDiskIndex);
+                                        SelectedDiskIndex = (currentIndex >= 0 && currentIndex < AvailableDisks.Count) ? currentIndex : 0;
+                                    }
+                                });
+
+                                _cachedCpuTemp = HardwareTemperatureService.Instance.GetCpuTemperature();
+                                _cachedGpuTemp = HardwareTemperatureService.Instance.GetGpuTemperature();
+                                _cachedMemTemp = HardwareTemperatureService.Instance.GetMemoryTemperature();
+                                _cachedMoboTemp = HardwareTemperatureService.Instance.GetMotherboardTemperature();
+
+                                int targetDiskIndex = _selectedDiskIndex >= 0 ? _selectedDiskIndex : 0;
+                                _cachedDiskTemp = HardwareTemperatureService.Instance.GetDiskTemperatureByIndex(targetDiskIndex);
+                            }
                         }
                         catch { }
                         finally { _isRefreshingTemperatures = false; }
@@ -3956,7 +3961,11 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float moboTemp = _cachedMoboTemp;
                 float diskTemp = _cachedDiskTemp;
 
-                EvaluateThermalLimits((int)cpuTemp, (int)gpuTemp, (int)memTemp, (int)moboTemp);
+                // ✅ FIX: Only evaluate limits if we actually have fresh data (UI is active)
+                if (_isUiActive)
+                {
+                    EvaluateThermalLimits((int)cpuTemp, (int)gpuTemp, (int)memTemp, (int)moboTemp);
+                }
 
                 _cpuTempHistoryBuffer.Add(cpuTemp <= 0f ? -1 : cpuTemp);
                 _gpuTempHistoryBuffer.Add(gpuTemp <= 0f ? -1 : gpuTemp);
