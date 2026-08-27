@@ -66,6 +66,7 @@
     <!-- Closing/Restart Sequence Steps -->
     <sys:String x:Key="status_init_backup">Databaseback-up initialiseren...</sys:String>
     <sys:String x:Key="status_closing_db">Database engine afsluiten...</sys:String>
+    <sys:String x:Key="status_cleaning_temp">Tijdelijke bestanden opschonen...</sys:String>
     <sys:String x:Key="status_securing_files">Bestanden beveiligen...</sys:String>
     <sys:String x:Key="status_writing_backup">Backup wegschrijven...</sys:String>
     <sys:String x:Key="status_encrypting_backup">Backupkopie versleutelen...</sys:String>

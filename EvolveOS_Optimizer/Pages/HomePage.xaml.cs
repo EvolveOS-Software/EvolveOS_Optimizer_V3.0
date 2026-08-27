@@ -1426,57 +1426,59 @@ namespace EvolveOS_Optimizer.Pages
 
                 var healthResult = await ViewModel.CalculateSystemHealthAsync();
 
-                if (healthResult != null)
+                DispatcherQueue.TryEnqueue(() =>
                 {
-                    var statusImage = DashMaintenanceStatusImage;
-                    if (statusImage != null && !string.IsNullOrEmpty((string)healthResult.ImagePath))
+                    if (healthResult != null)
                     {
-                        try
+                        var statusImage = DashMaintenanceStatusImage;
+                        if (statusImage != null && !string.IsNullOrEmpty(healthResult.ImagePath))
                         {
-                            string pathStr = healthResult.ImagePath;
-                            Uri imageUri = pathStr.StartsWith("ms-appx://", StringComparison.OrdinalIgnoreCase) ||
-                                           pathStr.StartsWith("ms-appdata://", StringComparison.OrdinalIgnoreCase)
-                                ? new Uri(pathStr)
-                                : new Uri($"ms-appx:///{pathStr.TrimStart('/')}");
+                            try
+                            {
+                                string pathStr = healthResult.ImagePath;
+                                Uri imageUri = pathStr.StartsWith("ms-appx://", StringComparison.OrdinalIgnoreCase) ||
+                                               pathStr.StartsWith("ms-appdata://", StringComparison.OrdinalIgnoreCase)
+                                    ? new Uri(pathStr)
+                                    : new Uri($"ms-appx:///{pathStr.TrimStart('/')}");
 
-                            statusImage.Source = null;
-                            statusImage.Source = new BitmapImage(imageUri);
-                            statusImage.Visibility = Visibility.Visible;
+                                statusImage!.Source = null;
+                                statusImage.Source = new BitmapImage(imageUri);
+                                statusImage.Visibility = Visibility.Visible;
 
-                            statusImage.InvalidateMeasure();
-                            statusImage.InvalidateArrange();
+                                statusImage.InvalidateMeasure();
+                                statusImage.InvalidateArrange();
+                            }
+                            catch (Exception imgEx)
+                            {
+                                Debug.WriteLine($"❌ [Health Image Error] {imgEx.Message}");
+                            }
                         }
-                        catch (Exception imgEx)
+
+                        if (TxtHealthStatus != null)
                         {
-                            Debug.WriteLine($"❌ [Health Image Error] {imgEx.Message}");
+                            TxtHealthStatus.Text = healthResult.StatusText;
+                            TxtHealthStatus.InvalidateMeasure();
+                            TxtHealthStatus.InvalidateArrange();
                         }
                     }
 
-                    if (TxtHealthStatus != null)
+                    if (TxtLastRefreshed != null)
                     {
-                        TxtHealthStatus.Text = healthResult.StatusText;
-                        TxtHealthStatus.InvalidateMeasure();
-                        TxtHealthStatus.InvalidateArrange();
+                        string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
+                        TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
+                        TxtLastRefreshed.Visibility = Visibility.Visible;
                     }
-                }
 
-                if (TxtLastRefreshed != null)
-                {
-                    string lastCheckedStr = ResourceString.GetString("text_last_checked") ?? "Last checked";
-                    TxtLastRefreshed.Text = $"{lastCheckedStr}: {DateTime.Now:t}";
-                    TxtLastRefreshed.Visibility = Visibility.Visible;
-                }
-
-                FrameworkElement? curr = CardMaintenance;
-                while (curr != null)
-                {
-                    curr.InvalidateMeasure();
-                    curr.InvalidateArrange();
-                    if (curr is GridViewItem || curr is GridView) break;
-                    curr = VisualTreeHelper.GetParent(curr) as FrameworkElement;
-                }
-                CardMaintenance?.UpdateLayout();
-
+                    FrameworkElement? curr = CardMaintenance;
+                    while (curr != null)
+                    {
+                        curr.InvalidateMeasure();
+                        curr.InvalidateArrange();
+                        if (curr is GridViewItem || curr is GridView) break;
+                        curr = VisualTreeHelper.GetParent(curr) as FrameworkElement;
+                    }
+                    CardMaintenance?.UpdateLayout();
+                });
             }
             catch (Exception ex)
             {
@@ -1484,12 +1486,15 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
-                if (DashMaintenanceLoadingRing != null)
+                DispatcherQueue.TryEnqueue(() =>
                 {
-                    DashMaintenanceLoadingRing.IsActive = false;
-                    DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
-                }
-                if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = true;
+                    if (DashMaintenanceLoadingRing != null)
+                    {
+                        DashMaintenanceLoadingRing.IsActive = false;
+                        DashMaintenanceLoadingRing.Visibility = Visibility.Collapsed;
+                    }
+                    if (BtnRefreshHealth != null) BtnRefreshHealth.IsEnabled = true;
+                });
             }
         }
 

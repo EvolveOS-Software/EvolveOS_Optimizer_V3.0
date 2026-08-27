@@ -66,6 +66,7 @@
     <!-- Closing/Restart Sequence Steps -->
     <sys:String x:Key="status_init_backup">Datenbank-Backup initialisieren...</sys:String>
     <sys:String x:Key="status_closing_db">Datenbank Engine schließen...</sys:String>
+    <sys:String x:Key="status_cleaning_temp">Temporäre Dateien werden bereinigt...</sys:String>
     <sys:String x:Key="status_securing_files">Dateien absichern...</sys:String>
     <sys:String x:Key="status_writing_backup">Backup auf Laufwerk schreiben...</sys:String>
     <sys:String x:Key="status_encrypting_backup">Backup Kopie verschlüsseln...</sys:String>

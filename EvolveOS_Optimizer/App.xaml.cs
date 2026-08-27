@@ -878,6 +878,32 @@ namespace EvolveOS_Optimizer
             }
             catch { /* Log error */ }
 
+            try
+            {
+                shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
+                    shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_cleaning_temp") ?? "Cleaning temporary files..."));
+
+                string appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name ?? "EvolveOS_Optimizer";
+                string netTempPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Temp", ".net", appName);
+
+                if (Directory.Exists(netTempPath))
+                {
+                    var directories = Directory.GetDirectories(netTempPath);
+                    foreach (var dir in directories)
+                    {
+                        try
+                        {
+                            Directory.Delete(dir, true);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[App Temp Cleanup Error] {ex.Message}");
+            }
+
             shutdownWindow?.DispatcherQueue.TryEnqueue(() =>
                 shutdownWindow.UpdateShutdownText(ResourceString.GetString("status_securing_files") ?? "Securing files..."));
 

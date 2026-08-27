@@ -66,6 +66,7 @@
     <!-- Closing/Restart Sequence Steps -->
     <sys:String x:Key="status_init_backup">Initializing database backup...</sys:String>
     <sys:String x:Key="status_closing_db">Closing database engine...</sys:String>
+    <sys:String x:Key="status_cleaning_temp">Cleaning temporary files...</sys:String>
     <sys:String x:Key="status_securing_files">Securing files...</sys:String>
     <sys:String x:Key="status_writing_backup">Writing backup to disk...</sys:String>
     <sys:String x:Key="status_encrypting_backup">Encrypting backup copy...</sys:String>

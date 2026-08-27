@@ -66,6 +66,7 @@
     <!-- Closing/Restart Sequence Steps -->
     <sys:String x:Key="status_init_backup">Inizializzazione backup...</sys:String>
     <sys:String x:Key="status_closing_db">Chiusura motore database...</sys:String>
+    <sys:String x:Key="status_cleaning_temp">Pulizia dei file temporanei...</sys:String>
     <sys:String x:Key="status_securing_files">Messa in sicurezza file...</sys:String>
     <sys:String x:Key="status_writing_backup">Scrittura backup su disco...</sys:String>
     <sys:String x:Key="status_encrypting_backup">Crittografia della copia...</sys:String>
