@@ -13,11 +13,6 @@ using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using System.Diagnostics;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
 using Microsoft.Win32;
@@ -71,7 +66,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             public uint dwHighDateTime;
         }
 
-        // --- NATIVE PROCESS & SERVICE APIs TO PREVENT UI STUTTER ---
         [DllImport("psapi.dll", SetLastError = true)]
         private static extern bool EnumProcesses([Out] int[] lpidProcess, int cb, out int cbNeeded);
 
@@ -97,7 +91,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
 
         private const uint SC_MANAGER_ENUMERATE_SERVICE = 0x0004;
         private const int SC_ENUM_PROCESS_INFO = 0;
-        private const uint SERVICE_WIN32 = 0x00000030; // Covers Win32OwnProcess and Win32ShareProcess
+        private const uint SERVICE_WIN32 = 0x00000030;
         private const uint SERVICE_ACTIVE = 0x00000001;
 
         #endregion
@@ -1079,8 +1073,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             return $"{Math.Round(bytes, 2)} {units[unitIndex]}";
         }
 
-        // ❌ FIXED: Rewritten with instant Native Windows APIs. 
-        // Zero object allocations, Zero GC pressure, Zero UI stutter.
         internal async Task<string> GetProcessCountAsync()
         {
             return await Task.Run(() =>
@@ -1101,8 +1093,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
             });
         }
 
-        // ❌ FIXED: Replaced massive `ServiceController.GetServices()` loop.
-        // It previously made over 300+ synchronous RPC calls a second which stalled the entire UI thread.
         internal new async Task<string> GetServicesCount()
         {
             return await Task.Run(() =>
@@ -1116,7 +1106,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                     uint servicesReturned = 0;
                     uint resumeHandle = 0;
 
-                    // First pass gets required buffer size
                     EnumServicesStatusEx(scm, SC_ENUM_PROCESS_INFO, SERVICE_WIN32, SERVICE_ACTIVE, IntPtr.Zero, 0, out bytesNeeded, out servicesReturned, ref resumeHandle, null);
 
                     if (bytesNeeded > 0)
@@ -1124,7 +1113,6 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         IntPtr buffer = Marshal.AllocHGlobal((int)bytesNeeded);
                         try
                         {
-                            // Second pass fills the buffer and gives us the exact count instantly
                             if (EnumServicesStatusEx(scm, SC_ENUM_PROCESS_INFO, SERVICE_WIN32, SERVICE_ACTIVE, buffer, bytesNeeded, out bytesNeeded, out servicesReturned, ref resumeHandle, null))
                             {
                                 return servicesReturned.ToString();
@@ -1132,7 +1120,7 @@ namespace EvolveOS_Optimizer.Utilities.Configuration
                         }
                         finally
                         {
-                            Marshal.FreeHGlobal(buffer); // Clean up native memory
+                            Marshal.FreeHGlobal(buffer);
                         }
                     }
                     return "0";

@@ -3918,8 +3918,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     {
                         try
                         {
-                            // ✅ FIX: Completely block LibreHardwareMonitor from allocating garbage objects 
-                            // and locking threads when the Diagnostics page is hidden.
                             if (_isUiActive)
                             {
                                 if ((DateTime.Now - _lastSensorRefresh).TotalSeconds >= 1.0)
@@ -3961,7 +3959,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 float moboTemp = _cachedMoboTemp;
                 float diskTemp = _cachedDiskTemp;
 
-                // ✅ FIX: Only evaluate limits if we actually have fresh data (UI is active)
                 if (_isUiActive)
                 {
                     EvaluateThermalLimits((int)cpuTemp, (int)gpuTemp, (int)memTemp, (int)moboTemp);
@@ -3975,11 +3972,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                 float cpuUsage = 0;
 
-                // ✅ FIX: Lock the thread so multiple ViewModels don't collide
                 lock (_cpuLock)
                 {
-                    // If another thread or ViewModel just calculated the CPU in the last 150ms, 
-                    // instantly reuse the cached result instead of locking up the Windows Kernel again!
                     if ((DateTime.Now - _lastCpuCheckTime).TotalMilliseconds < 150)
                     {
                         cpuUsage = _lastCalculatedCpuUsage;
@@ -4027,11 +4021,10 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     }
                 }
 
-                // ✅ MOVE: Calculate isFullSecond HERE so we can use it to throttle the Network request
                 bool isFullSecond = false;
                 if (!_isUiActive)
                 {
-                    isFullSecond = true; // In the background, the timer runs at 1000ms, so every tick is a full second.
+                    isFullSecond = true;
                 }
                 else
                 {
@@ -4040,7 +4033,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     if (isFullSecond) _uiRenderTick = 0;
                 }
 
-                // ✅ FIX: Query network stats ONLY on the full second tick
                 if (isFullSecond)
                 {
                     var netUsage = GetNetworkUsage();
@@ -4052,7 +4044,6 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _displayDiskUsage = (_displayDiskUsage * 0.8f) + (GetDiskUsage() * 0.2f);
                 _displayGpuUsage = (_displayGpuUsage * 0.8f) + (GetGpuUsage() * 0.2f);
 
-                // Animate smoothly across the 200ms ticks using the cached 1-second values
                 _displayDownMbps = (_displayDownMbps * 0.8f) + (_cachedRawDlMbps * 0.2f);
                 _displayUpMbps = (_displayUpMbps * 0.8f) + (_cachedRawUlMbps * 0.2f);
 
