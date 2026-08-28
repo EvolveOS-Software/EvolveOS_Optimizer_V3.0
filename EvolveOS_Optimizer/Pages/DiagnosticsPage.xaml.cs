@@ -247,7 +247,14 @@ namespace EvolveOS_Optimizer.Pages
                 }
 
                 await CalculateSystemHealthAsync();
+
+                if (DnsShieldCanvas != null)
+                {
+                    _dnsShieldHelper.Initialize(DnsShieldCanvas);
+                }
+
                 UpdateDnsCryptControls();
+
                 AnimateInstallButton();
                 ValidateButtonStates();
 
@@ -1733,6 +1740,7 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region DNSCrypt Logic
+        private DnsShieldHelper _dnsShieldHelper = new();
 
         public async void UpdateDnsCryptControls()
         {
@@ -1746,10 +1754,8 @@ namespace EvolveOS_Optimizer.Pages
                 BtnStartService.Content = "Start service";
                 BtnStartService.IsEnabled = true;
                 statusLabel.Text = "Nothing is running in the background";
-                ProgressRingRunServices.Visibility = Visibility.Collapsed;
                 TxtServicesRunning.Text = "";
-                IconServiceStopped.Visibility = Visibility.Visible;
-                ImgServiceRunning.Visibility = Visibility.Collapsed;
+
                 BtnOpenConfigFile.IsEnabled = true;
                 BtnDebug.IsEnabled = true;
 
@@ -1778,6 +1784,9 @@ namespace EvolveOS_Optimizer.Pages
                     IconDownloadInstall.Glyph = "\uE896";
                     IconDownloadInstall.ClearValue(FontIcon.ForegroundProperty);
                     AnimateInstallButton();
+
+                    // Set shield to Red / Stopped
+                    _dnsShieldHelper.SetState(isConnecting: false, isRunning: false);
                 }
                 else
                 {
@@ -1791,11 +1800,7 @@ namespace EvolveOS_Optimizer.Pages
                     if (isRunning)
                     {
                         statusLabel.Text = "DNSCrypt Service is running.";
-                        ProgressRingRunServices.Visibility = Visibility.Visible;
                         TxtServicesRunning.Text = ResourceString.GetString("text_services_running") ?? "Running";
-
-                        IconServiceStopped.Visibility = Visibility.Collapsed;
-                        ImgServiceRunning.Visibility = Visibility.Visible;
 
                         BtnDownloadInstall.IsEnabled = false;
                         BtnStartService.Content = "Stop service";
@@ -1808,6 +1813,14 @@ namespace EvolveOS_Optimizer.Pages
                         BtnPrivacy.IsEnabled = false;
                         BtnSaveConfig.IsEnabled = false;
                         BtnLoadConfig.IsEnabled = false;
+
+                        // Set shield to Green / Running
+                        _dnsShieldHelper.SetState(isConnecting: false, isRunning: true);
+                    }
+                    else
+                    {
+                        // Set shield to Red / Stopped
+                        _dnsShieldHelper.SetState(isConnecting: false, isRunning: false);
                     }
 
                     if (!string.IsNullOrEmpty(config))
@@ -1851,6 +1864,9 @@ namespace EvolveOS_Optimizer.Pages
 
             BtnDownloadInstall.IsEnabled = false;
 
+            // Trigger the connecting sweep animation during install/uninstall operations
+            _dnsShieldHelper.SetState(isConnecting: true, isRunning: false);
+
             try
             {
                 if (!isInstalled)
@@ -1864,12 +1880,12 @@ namespace EvolveOS_Optimizer.Pages
 
                 if (isInstalled)
                 {
-                    DNSCryptHelper.Uninstall(progressBar, statusLabel);
+                    DNSCryptHelper.Uninstall(null, statusLabel);
                     ClearComboBoxes();
                 }
                 else
                 {
-                    await DNSCryptHelper.Install(progressBar, statusLabel);
+                    await DNSCryptHelper.Install(null, statusLabel);
                 }
             }
             catch (Exception ex)
@@ -1895,29 +1911,19 @@ namespace EvolveOS_Optimizer.Pages
         {
             BtnStartService.IsEnabled = false;
 
+            // Trigger the connecting sweep animation
+            _dnsShieldHelper.SetState(isConnecting: true, isRunning: false);
+
             try
             {
                 if (DNSCryptHelper.IsRunning())
                 {
-                    await DNSCryptHelper.StopService(progressBar, statusLabel);
-                    ProgressRingRunServices.Visibility = Visibility.Collapsed;
-                    TxtServicesRunning.Text = "";
-
-                    IconServiceStopped.Visibility = Visibility.Visible;
-                    ImgServiceRunning.Visibility = Visibility.Collapsed;
+                    await DNSCryptHelper.StopService(null, statusLabel);
                 }
                 else
                 {
-                    UpdateDnsCryptControls();
-
                     BtnSaveConfig_Click(BtnSaveConfig, null!);
-
-                    await DNSCryptHelper.StartService(progressBar, statusLabel);
-                    ProgressRingRunServices.Visibility = Visibility.Visible;
-                    TxtServicesRunning.Text = ResourceString.GetString("text_services_running");
-
-                    IconServiceStopped.Visibility = Visibility.Collapsed;
-                    ImgServiceRunning.Visibility = Visibility.Visible;
+                    await DNSCryptHelper.StartService(null, statusLabel);
                 }
             }
             catch (Exception ex)
@@ -1927,6 +1933,7 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
+                // Resets the shield and UI back to the correct finalized state
                 UpdateDnsCryptControls();
                 BtnStartService.IsEnabled = true;
             }
@@ -1946,7 +1953,10 @@ namespace EvolveOS_Optimizer.Pages
                     return;
                 }
 
-                await DNSCryptHelper.DebugProcess(progressBar, statusLabel);
+                // Trigger the connecting sweep animation while debugging
+                _dnsShieldHelper.SetState(isConnecting: true, isRunning: false);
+
+                await DNSCryptHelper.DebugProcess(null, statusLabel);
             }
             catch (Exception ex)
             {
@@ -1954,6 +1964,8 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
+                // Restore shield state to match service reality once debug finishes
+                UpdateDnsCryptControls();
                 BtnDebug.IsEnabled = true;
             }
         }

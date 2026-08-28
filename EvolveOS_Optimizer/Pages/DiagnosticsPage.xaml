@@ -1215,41 +1215,23 @@
 
                                                         <StackPanel Spacing="14" HorizontalAlignment="Stretch">
                                                             <StackPanel HorizontalAlignment="Center" Spacing="12">
+
                                                                 <Grid Width="150" Height="150" Margin="0,8">
-                                                                    <FontIcon x:Name="IconServiceStopped"
-                                                                              Glyph="&#xE7E8;"
-                                                                              FontSize="60"
-                                                                              Margin="0,30,0,0"
-                                                                              Foreground="{ThemeResource Brush_Error}"
-                                                                              Opacity="0.5"/>
-
-                                                                    <Image x:Name="ImgServiceRunning"
-                                                                           Source="ms-appx:///Assets/PngImages/dns_secure.png"
-                                                                           Width="160" Height="160"
-                                                                           Margin="0,0,0,-20"
-                                                                           HorizontalAlignment="Center"
-                                                                           VerticalAlignment="Center"
-                                                                           Visibility="Collapsed"/>
-
-                                                                    <ProgressRing x:Name="ProgressRingRunServices"
-                                                                                  IsActive="True" 
-                                                                                  Margin="100,120,0,0"
-                                                                                  Width="24" Height="24"
-                                                                                  Visibility="Collapsed"
-                                                                                  Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                                                    <Viewbox Height="120" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                        <Canvas x:Name="DnsShieldCanvas" Width="70" Height="80" />
+                                                                    </Viewbox>
                                                                 </Grid>
 
                                                                 <TextBlock x:Name="TxtServicesRunning"
                                                                            Text="{helpers:ResourceString Key=text_services_running}"
                                                                            FontFamily="{ThemeResource Jura}"
-                                                                           FontSize="12" 
+                                                                           FontSize="12"
                                                                            Margin="0,-10,0,-10"
                                                                            HorizontalAlignment="Center"
                                                                            Visibility="Visible"
                                                                            Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
 
                                                                 <TextBlock x:Name="statusLabel" Text="{helpers:ResourceString Key=text_status}" HorizontalAlignment="Center" FontFamily="{ThemeResource Jura}" Opacity="0.7"/>
-                                                                <ProgressBar x:Name="progressBar" HorizontalAlignment="Stretch" Width="280" Height="4" IsEnabled="False"/>
 
                                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,12,0,0">
                                                                     <Button x:Name="BtnDebug" Content="{helpers:ResourceString Key=btn_debug_process}" Width="130" Click="BtnDebug_Click" FontFamily="{ThemeResource Jura}"/>

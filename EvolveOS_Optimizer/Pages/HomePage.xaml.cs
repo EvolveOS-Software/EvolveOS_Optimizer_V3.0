@@ -652,6 +652,8 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnExpandDns, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnBenchmarkDns, InputSystemCursorShape.Arrow);
             SetCustomCursor(CmbDnsPresets, InputSystemCursorShape.Arrow);
+            SetCustomCursor(ToggleFamilySafe, InputSystemCursorShape.Arrow);
+            SetCustomCursor(ToggleAdBlock, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnExpandGpu, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenGraphicsSettings, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRestartGpuDriver, InputSystemCursorShape.Arrow);
