@@ -101,7 +101,14 @@ namespace EvolveOS_Optimizer.Pages
                 ApplyElevationUI();
                 LoadDashboardLayout();
                 DashboardDragCursor();
+
+                if (DnsShieldCanvas != null)
+                {
+                    _dnsShieldHelper.Initialize(DnsShieldCanvas);
+                }
+
                 UpdateDnsCardUI();
+
                 ApplyLightingToCards();
                 InitializeSecurityCard();
 
@@ -1035,9 +1042,10 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region DNS Card
-
         private readonly DnsManager _dnsManager = new();
         private bool _isDnsInternalChange = false;
+
+        private DnsShieldHelper _dnsShieldHelper = new();
 
         private void BtnOpenDnsPage_Click(object sender, RoutedEventArgs e)
         {
@@ -1057,10 +1065,9 @@ namespace EvolveOS_Optimizer.Pages
                 BtnDebug.IsEnabled = false;
                 statusLabel.Text = ResourceString.GetString("txt_dnscrypt_not_installed") ?? "DNSCrypt is not installed.";
 
-                IconServiceStopped.Visibility = Visibility.Visible;
-                ImgServiceRunning.Visibility = Visibility.Collapsed;
                 TxtServicesRunning.Visibility = Visibility.Collapsed;
-                ProgressRingRunServices.Visibility = Visibility.Collapsed;
+
+                _dnsShieldHelper.SetState(isConnecting: false, isRunning: false);
 
                 return;
             }
@@ -1072,29 +1079,27 @@ namespace EvolveOS_Optimizer.Pages
 
             if (isServiceRunning)
             {
-                IconServiceStopped.Visibility = Visibility.Collapsed;
-                ImgServiceRunning.Visibility = Visibility.Visible;
                 TxtServicesRunning.Visibility = Visibility.Visible;
-                ProgressRingRunServices.Visibility = Visibility.Visible;
 
                 statusLabel.Text = ResourceString.GetString("txt_dnscrypt_running") ?? "DNSCrypt Service is running.";
                 statusLabel.Opacity = 1.0;
 
                 BtnStartService.Content = ResourceString.GetString("btn_stop_service") ?? "Stop service";
                 BtnStartService.Style = (Style)Application.Current.Resources["DefaultButtonStyle"];
+
+                _dnsShieldHelper.SetState(isConnecting: false, isRunning: true);
             }
             else
             {
-                IconServiceStopped.Visibility = Visibility.Visible;
-                ImgServiceRunning.Visibility = Visibility.Collapsed;
                 TxtServicesRunning.Visibility = Visibility.Collapsed;
-                ProgressRingRunServices.Visibility = Visibility.Collapsed;
 
                 statusLabel.Text = ResourceString.GetString("txt_nothing_running") ?? "Nothing is running in the background";
                 statusLabel.Opacity = 0.7;
 
                 BtnStartService.Content = ResourceString.GetString("btn_start_service") ?? "Start service";
                 BtnStartService.Style = (Style)Application.Current.Resources["AccentButtonStyle"];
+
+                _dnsShieldHelper.SetState(isConnecting: false, isRunning: false);
             }
         }
 
@@ -1102,15 +1107,17 @@ namespace EvolveOS_Optimizer.Pages
         {
             BtnStartService.IsEnabled = false;
 
+            _dnsShieldHelper.SetState(isConnecting: true, isRunning: false);
+
             try
             {
                 if (DNSCryptHelper.IsRunning())
                 {
-                    await DNSCryptHelper.StopService(progressBar, statusLabel);
+                    await DNSCryptHelper.StopService(null, statusLabel);
                 }
                 else
                 {
-                    await DNSCryptHelper.StartService(progressBar, statusLabel);
+                    await DNSCryptHelper.StartService(null, statusLabel);
                 }
             }
             catch (Exception ex)
@@ -1139,7 +1146,9 @@ namespace EvolveOS_Optimizer.Pages
                     return;
                 }
 
-                await DNSCryptHelper.DebugProcess(progressBar, statusLabel);
+                _dnsShieldHelper.SetState(isConnecting: true, isRunning: false);
+
+                await DNSCryptHelper.DebugProcess(null, statusLabel);
             }
             catch (Exception ex)
             {
@@ -1147,6 +1156,7 @@ namespace EvolveOS_Optimizer.Pages
             }
             finally
             {
+                UpdateDnsCardUI();
                 BtnDebug.IsEnabled = true;
             }
         }
@@ -1171,6 +1181,8 @@ namespace EvolveOS_Optimizer.Pages
                 DnsExpandedContent.Visibility = Visibility.Collapsed;
                 IconExpandDns.Glyph = "\uE70D"; // Chevron Down
             }
+
+            _dnsShieldHelper.UpdateSize(isExpanded);
 
             if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
             {

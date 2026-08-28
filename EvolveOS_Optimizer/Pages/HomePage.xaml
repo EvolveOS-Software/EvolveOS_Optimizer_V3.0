@@ -839,6 +839,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Row 0: Header with Expand Chevron and Navigation Button -->
@@ -861,36 +863,23 @@
                             </Button>
                         </Grid>
 
-                        <!-- Row 1: Default Summary & Service Controls -->
-                        <Grid Grid.Row="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0" Height="120" Width="120" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <FontIcon x:Name="IconServiceStopped" Glyph="&#xE7E8;" FontSize="50" Foreground="{ThemeResource Brush_Error}" Opacity="0.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <Image x:Name="ImgServiceRunning" Source="ms-appx:///Assets/PngImages/secure.png" Width="80" Height="80" Margin="0,0,0,3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
-                                <ProgressRing x:Name="ProgressRingRunServices" IsActive="True" Width="15" Height="15" Canvas.ZIndex="10" Margin="0,0,16,28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="Collapsed" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
-                            </Grid>
-
-                            <StackPanel Grid.Row="1" Spacing="2" Margin="0,0">
-                                <TextBlock x:Name="TxtServicesRunning" helpers:Loc.Key="text_services_running" FontFamily="Jura Medium" FontSize="13" HorizontalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="statusLabel" helpers:Loc.Key="text_status" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
-                            </StackPanel>
-
-                            <ProgressBar x:Name="progressBar" Grid.Row="2" HorizontalAlignment="Stretch" Height="4" IsEnabled="False" Margin="4,8"/>
-
-                            <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12" VerticalAlignment="Bottom">
-                                <Button x:Name="BtnDebug" IsTabStop="False" Grid.Column="0" Content="{helpers:ResourceString Key=btn_debug_process}" HorizontalAlignment="Stretch" Click="BtnDebug_Click" FontFamily="Jura Medium"/>
-                                <Button x:Name="BtnStartService" IsTabStop="False" Grid.Column="1" Content="{helpers:ResourceString Key=btn_start_service}" HorizontalAlignment="Stretch" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="Jura Medium"/>
-                            </Grid>
+                        <!-- Row 1: Graphic Container -->
+                        <Grid Grid.Row="1" Height="80" Width="140" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                            <Viewbox Height="80" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Canvas x:Name="DnsShieldCanvas" Width="70" Height="80" />
+                            </Viewbox>
                         </Grid>
 
-                        <!-- Row 2: Expanded DNS Features -->
-                        <StackPanel x:Name="DnsExpandedContent" Grid.Row="2" Visibility="Collapsed" VerticalAlignment="Bottom" Margin="0,16,0,0" Spacing="10">
+                        <!-- Row 2: Status Texts -->
+                        <StackPanel Grid.Row="2" Height="36" VerticalAlignment="Top" Spacing="4" Margin="0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                <TextBlock x:Name="TxtServicesRunning" helpers:Loc.Key="text_services_running" FontFamily="Jura Medium" FontSize="13" VerticalAlignment="Center" Visibility="Visible" Foreground="{ThemeResource SystemFillColorSuccessBrush}" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <TextBlock x:Name="statusLabel" helpers:Loc.Key="text_status" HorizontalAlignment="Center" Foreground="{ThemeResource Brush_Inactive}" FontFamily="Jura Medium" Opacity="0.6" FontSize="11" TextWrapping="Wrap" Margin="0,-4,0,0"/>
+                        </StackPanel>
+
+                        <!-- Row 3: Expanded DNS Features -->
+                        <StackPanel x:Name="DnsExpandedContent" Grid.Row="3" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,16,0,0" Spacing="10">
 
                             <!-- Preset Dropdown & Latency Benchmark Button -->
                             <StackPanel Spacing="4">
@@ -934,6 +923,15 @@
                             <!-- Status Feedback Label -->
                             <TextBlock x:Name="TxtDnsFeedback" Text="" FontSize="11" FontFamily="Jura Medium" HorizontalAlignment="Center" Foreground="{ThemeResource SystemFillColorSuccessBrush}" Visibility="Collapsed"/>
                         </StackPanel>
+
+                        <!-- Row 4: Button Actions -->
+                        <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <Button x:Name="BtnDebug" IsTabStop="False" Grid.Column="0" Content="{helpers:ResourceString Key=btn_debug_process}" HorizontalAlignment="Stretch" Click="BtnDebug_Click" FontFamily="Jura Medium" BorderThickness="0"/>
+                                <Button x:Name="BtnStartService" IsTabStop="False" Grid.Column="1" Content="{helpers:ResourceString Key=btn_start_service}" HorizontalAlignment="Stretch" Click="BtnStartService_Click" Style="{StaticResource AccentButtonStyle}" FontFamily="Jura Medium"/>
+                            </Grid>
+                        </Grid>
+
                     </Grid>
                 </Border>
             </GridViewItem>
