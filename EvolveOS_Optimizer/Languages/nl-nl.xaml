@@ -5292,6 +5292,9 @@
     <sys:String x:Key="Setting_defender-realtime-protection_Name">Realtime beveiliging</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Description">Indien ingeschakeld, scant Defender actief bestanden op bedreigingen. Het uitschakelen hiervan levert extreme prestatiewinst op.</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Warning">WAARSCHUWING: U MOET eerst handmatig 'Bescherming tegen manipulatie' uitschakelen in Windows beveiliging, anders zal Windows deze wijziging blokkeren.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Name">Geplande systeem scans uitschakelen</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Description">Schakelt de automatische, periodieke achtergrondscans van Windows Defender uit om plotseling hoog CPU-gebruik en haperingen te voorkomen, terwijl realtimebeveiliging actief blijft.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Warning">WAARSCHUWING: U MOET eerst handmatig 'Manipulatiebescherming' uitschakelen in Windows-beveiliging, anders blokkeert Windows deze wijziging.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Opnieuw opstarten vereist</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">De wijzigingen zijn toegepast. Een herstart van het systeem is vereist om deze van kracht te laten worden. Wilt u nu opnieuw opstarten?</sys:String>

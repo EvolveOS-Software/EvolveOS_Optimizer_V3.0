@@ -287,6 +287,33 @@ public static class AdvancedOptimizations
                 },
                 new SettingDefinition
                 {
+                    Id = "defender-scheduled-scan",
+                    IsSubjectivePreference = true,
+                    AddedInVersion = "1.2.4.413",
+                    Name = "Disable Scheduled System Scans",
+                    Description = "Disables Windows Defender's automatic periodic background system scans to prevent sudden high CPU usage and stutters while keeping real-time protection active.",
+                    Warning = "WARNING: You MUST manually turn off 'Tamper Protection' in Windows Security first, or Windows will block this change.",
+                    GroupName = "Windows Defender (Security)",
+                    InputType = InputType.Toggle,
+                    Icon = "CalendarRemove",
+                    RecommendedToggleState = true,
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Scan",
+                            ValueName = "ScheduleScanDay",
+                            RecommendedValue = 8,
+                            EnabledValue = [8],
+                            DisabledValue = [0, null],
+                            DefaultValue = 0,
+                            ValueType = RegistryValueKind.DWord,
+                            IsGroupPolicy = true
+                        }
+                    }
+                },
+                new SettingDefinition
+                {
                     Id = "defender-cloud-sample",
                     IsSubjectivePreference = true,
                     AddedInVersion = "1.1.9.376",

@@ -5388,6 +5388,9 @@
     <sys:String x:Key="Setting_defender-realtime-protection_Name">Real-Time Protection</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Description">When enabled, Defender actively scans files for threats. Disabling this provides extreme performance gains.</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Warning">WARNING: You MUST manually turn off 'Tamper Protection' in Windows Security first, or Windows will block this change.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Name">Disable Scheduled System Scans</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Description">Disables Windows Defender's automatic periodic background system scans to prevent sudden high CPU usage and stutters while keeping real-time protection active.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Warning">WARNING: You MUST manually turn off 'Tamper Protection' in Windows Security first, or Windows will block this change.</sys:String>
     
     <sys:String x:Key="RestartRequired_DialogTitle">Restart Required</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Changes have been applied. A system restart is required for them to take effect. Would you like to restart now?</sys:String>

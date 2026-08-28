@@ -5278,6 +5278,9 @@
     <sys:String x:Key="Setting_defender-realtime-protection_Name">Protection en temps réel</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Description">Si activé, Defender analyse activement les fichiers à la recherche de menaces. La désactivation offre des gains de performances extrêmes.</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Warning">AVERTISSEMENT : Vous DEVEZ d'abord désactiver manuellement la « Protection contre les falsifications » dans Sécurité Windows, sinon Windows bloquera cette modification.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Name">Désactiver les analyses système planifiées</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Description">Désactive les analyses système périodiques automatiques en arrière-plan de Windows Defender pour éviter les pics soudains d'utilisation du processeur et les ralentissements, tout en maintenant la protection en temps réel active.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Warning">AVERTISSEMENT : Vous DEVEZ d'abord désactiver manuellement la « Protection contre les falsifications » dans Sécurité Windows, sinon Windows bloquera cette modification.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Redémarrage requis</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Les modifications ont été appliquées. Un redémarrage du système est nécessaire pour qu'elles soient prises en compte. Voulez-vous redémarrer maintenant ?</sys:String>

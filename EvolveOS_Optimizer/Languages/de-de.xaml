@@ -5268,6 +5268,9 @@
     <sys:String x:Key="Setting_defender-realtime-protection_Name">Echtzeitschutz</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Description">Wenn aktiviert, scannt Defender Dateien aktiv auf Bedrohungen. Die Deaktivierung sorgt für extreme Leistungssteigerungen.</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Warning">WARNUNG: Sie MÜSSEN zuerst den „Manipulationsschutz“ in der Windows Sicherheit manuell deaktivieren, da Windows diese Änderung sonst blockiert.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Name">Geplante System scans deaktivieren</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Description">Deaktiviert die automatischen, regelmäßigen Hintergrund-Systemscans von Windows Defender, um plötzliche hohe CPU-Auslastung und Ruckler zu vermeiden, während der Echtzeitschutz aktiv bleibt.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Warning">WARNUNG: Sie MÜSSEN zuerst den 'Manipulationsschutz' in der Windows-Sicherheit manuell deaktivieren, da Windows diese Änderung sonst blockiert.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Neustart erforderlich</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Die Änderungen wurden angewendet. Ein Systemneustart ist erforderlich, damit sie wirksam werden. Möchten Sie jetzt neu starten?</sys:String>

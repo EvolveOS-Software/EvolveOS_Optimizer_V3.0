@@ -5289,6 +5289,9 @@
     <sys:String x:Key="Setting_defender-realtime-protection_Name">Protezione in tempo reale</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Description">Se abilitata, Defender analizza attivamente i file alla ricerca di minacce. La disabilitazione offre vantaggi prestazionali estremi.</sys:String>
     <sys:String x:Key="Setting_defender-realtime-protection_Warning">AVVERTENZA: DEVI prima disattivare manualmente la "Protezione antimanomissione" in Sicurezza di Windows, altrimenti Windows bloccherà questa modifica.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Name">Disabilita le scansioni di sistema pianificate</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Description">Disabilita le scansioni di sistema periodiche automatiche in background di Windows Defender per prevenire picchi improvvisi di utilizzo della CPU e rallentamenti, mantenendo attiva la protezione in tempo reale.</sys:String>
+    <sys:String x:Key="Setting_defender-scheduled-scan_Warning">AVVISO: DEVI prima disattivare manualmente la 'Protezione antimanomissione' in Sicurezza di Windows, altrimenti Windows bloccherà questa modifica.</sys:String>
 
     <sys:String x:Key="RestartRequired_DialogTitle">Riavvio richiesto</sys:String>
     <sys:String x:Key="RestartRequired_DialogContent">Le modifiche sono state applicate. È necessario un riavvio del sistema affinché abbiano effetto. Vuoi riavviare ora?</sys:String>
