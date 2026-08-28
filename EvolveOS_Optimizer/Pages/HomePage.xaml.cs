@@ -102,8 +102,8 @@ namespace EvolveOS_Optimizer.Pages
                 LoadDashboardLayout();
                 DashboardDragCursor();
                 UpdateDnsCardUI();
-
                 ApplyLightingToCards();
+                InitializeSecurityCard();
 
                 if (ViewModel.SaveCardStates)
                 {
@@ -115,13 +115,15 @@ namespace EvolveOS_Optimizer.Pages
                     if (SettingsEngine.IsRamBoostCardExpanded) BtnExpandRamBoost_Click(this, new RoutedEventArgs());
                     if (SettingsEngine.IsPrivacyCardExpanded) BtnExpandPrivacy_Click(this, new RoutedEventArgs());
                     if (SettingsEngine.IsPerformanceCardExpanded) BtnExpandPerformance_Click(this, new RoutedEventArgs());
+                    if (SettingsEngine.IsHealthCardExpanded) BtnExpandHealth_Click(this, new RoutedEventArgs());
+                    if (SettingsEngine.IsSecurityCardExpanded) BtnExpandSecurity_Click(this, new RoutedEventArgs());
                 }
 
                 _ = UpdateSystemHealthUIAsync();
                 _ = UpdateSecurityUIAsync();
                 _ = UpdatePrivacyUIAsync();
                 _ = UpdatePerformanceUIAsync();
-
+                
                 StartShimmer(IpShimmerBrush, "Stop2");
                 StartShimmer(LocalIpShimmerBrush, "LocalStop2");
 
@@ -631,6 +633,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnRamBoostSettings, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenRamBoostPage, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRefreshSecurity, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnExpandSecurity, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnDashViewIssues, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnGamingMode, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnExpandDisk, InputSystemCursorShape.Arrow);
@@ -1412,6 +1415,11 @@ namespace EvolveOS_Optimizer.Pages
 
             RefreshHealthGaugeLayoutSize(isExpanded);
 
+            if (ViewModel.SaveCardStates)
+            {
+                SettingsEngine.IsHealthCardExpanded = isExpanded;
+            }
+
             if (isExpanded)
             {
                 await Task.Delay(50);
@@ -1559,11 +1567,88 @@ namespace EvolveOS_Optimizer.Pages
         #endregion
 
         #region Security Card
+
+        private SecurityShieldHelper _securityShieldHelper = new SecurityShieldHelper();
+
+        private void InitializeSecurityCard()
+        {
+            try
+            {
+                if (SecurityShieldCanvas != null)
+                {
+                    _securityShieldHelper.Initialize(SecurityShieldCanvas);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ [Security Shield Init Error] {ex.Message}");
+            }
+        }
+
         private void BtnOpenSecurityPage_Click(object sender, RoutedEventArgs e)
         {
             if (MainWindow.Instance != null)
             {
                 MainWindow.Instance.SwitchPage("Diagnostics", "Security");
+            }
+        }
+
+        private void RefreshSecurityGraphicLayoutSize(bool isExpanded)
+        {
+            if (SecurityShieldCanvas == null) return;
+
+            double size = isExpanded ? 120 : 80;
+
+            if (SecurityGraphicContainer != null)
+            {
+                SecurityGraphicContainer.Height = size;
+            }
+
+            if (SecurityStatusPanel != null)
+            {
+                SecurityStatusPanel.Margin = isExpanded ? new Thickness(0, 4, 0, 8) : new Thickness(0, 0, 0, 0);
+            }
+
+            _securityShieldHelper.UpdateSize(isExpanded);
+        }
+
+        private async void BtnExpandSecurity_Click(object sender, RoutedEventArgs e)
+        {
+            bool isExpanded = SecurityExpandedContent.Visibility == Visibility.Collapsed;
+
+            double targetHeight = isExpanded ? 450 : 220;
+
+            if (GviSecurity != null) GviSecurity.Height = targetHeight;
+            if (CardSecurity != null) CardSecurity.Height = targetHeight;
+
+            if (isExpanded)
+            {
+                SecurityExpandedContent.Visibility = Visibility.Visible;
+                if (IconExpandSecurity != null) IconExpandSecurity.Glyph = "\uE70E"; // Chevron Up
+            }
+            else
+            {
+                SecurityExpandedContent.Visibility = Visibility.Collapsed;
+                if (IconExpandSecurity != null) IconExpandSecurity.Glyph = "\uE70D"; // Chevron Down
+            }
+
+            if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+            {
+                panel.InvalidateMeasure();
+                panel.InvalidateArrange();
+            }
+
+            RefreshSecurityGraphicLayoutSize(isExpanded);
+
+            if (ViewModel.SaveCardStates)
+            {
+                SettingsEngine.IsSecurityCardExpanded = isExpanded;
+            }
+
+            if (isExpanded)
+            {
+                await Task.Delay(50);
+                GviSecurity?.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true });
             }
         }
 
@@ -1576,66 +1661,137 @@ namespace EvolveOS_Optimizer.Pages
         {
             try
             {
-                DashSecurityLoadingRing.Visibility = Visibility.Visible;
-                DashSecurityStatusImage.Visibility = Visibility.Collapsed;
-                TxtSecurityLastRefreshed.Visibility = Visibility.Collapsed;
                 BtnRefreshSecurity.IsEnabled = false;
-
                 BtnDashViewIssues.Visibility = Visibility.Collapsed;
 
+                _securityShieldHelper.SetState(isScanning: true, isCoreProtected: true, issuesCount: 0);
+
+                if (string.IsNullOrEmpty(TxtSecurityLastRefreshed.Text)) TxtSecurityLastRefreshed.Text = " ";
                 TxtSecurityStatus.Text = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
 
-                var result = await ViewModel.CalculateSecurityHealthAsync();
+                if (Application.Current.Resources.TryGetValue("TextFillColorPrimaryBrush", out object textBrush))
+                    TxtSecurityStatus.Foreground = (Brush)textBrush;
+
+                var result = await SecurityHealthHelper.EvaluateSecurityAsync();
+
+                _securityShieldHelper.SetState(isScanning: false, isCoreProtected: result.IsCoreProtected, issuesCount: result.IsWarningState ? 1 : 0);
 
                 if (!result.IsCoreProtected)
                 {
-                    DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/unsecure.png"));
-                    DashSecurityStatusImage.Opacity = 1.0;
-                    TxtSecurityStatus.Text = $"{result.IssuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
+                    TxtSecurityStatus.Foreground = new SolidColorBrush(Color.FromArgb(255, 232, 17, 35)); // Red
+                    TxtSecurityStatus.Text = $"{result.IssuesCount} {result.StatusText}";
                 }
-                else if (result.IssuesCount > 0)
+                else if (result.IsWarningState)
                 {
-                    DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
-                    DashSecurityStatusImage.Opacity = 0.5;
-                    TxtSecurityStatus.Text = $"{result.IssuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
+                    TxtSecurityStatus.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 140, 0)); // Orange
+                    TxtSecurityStatus.Text = $"{result.IssuesCount} {result.StatusText}";
                 }
                 else
                 {
-                    DashSecurityStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/secure.png"));
-                    DashSecurityStatusImage.Opacity = 1.0;
-                    TxtSecurityStatus.Text = ResourceString.GetString("text_security_good") ?? "System is Secure";
+                    TxtSecurityStatus.Foreground = new SolidColorBrush(Color.FromArgb(255, 46, 139, 87)); // Green
+                    TxtSecurityStatus.Text = result.StatusText;
                 }
 
-                if (result.IssuesCount > 0)
+                if (TxtSecFirewall != null)
+                {
+                    TxtSecFirewall.Text = result.FirewallStatus;
+                    TxtSecFirewall.Foreground = result.FirewallStatus == "Disabled" ? new SolidColorBrush(Color.FromArgb(255, 232, 17, 35)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                }
+
+                if (TxtSecDefender != null)
+                {
+                    TxtSecDefender.Text = result.DefenderStatus;
+                    TxtSecDefender.Foreground = result.DefenderStatus == "Disabled" ? new SolidColorBrush(Color.FromArgb(255, 232, 17, 35)) : new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                }
+
+                if (TxtSecUAC != null)
+                {
+                    TxtSecUAC.Text = result.UacStatus;
+                    if (result.UacStatus == "Disabled")
+                        TxtSecUAC.Foreground = new SolidColorBrush(Color.FromArgb(255, 232, 17, 35));
+                    else if (result.UacStatus == "Never Notify")
+                        TxtSecUAC.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 140, 0));
+                    else
+                        TxtSecUAC.Foreground = new SolidColorBrush(Color.FromArgb(255, 46, 139, 87));
+                }
+
+                var ignoredIssues = LocalMachineSettingsEngine.IgnoredSecurityIssues;
+                var ignoredIssuesCount = ignoredIssues.Count;
+
+                if (result.IssuesCount > 0 || ignoredIssuesCount > 0)
                 {
                     BtnDashViewIssues.Visibility = Visibility.Visible;
-
                     var flyout = new MenuFlyout();
+
                     foreach (var issue in result.Issues)
                     {
-                        flyout.Items.Add(new MenuFlyoutItem
+                        var item = new MenuFlyoutItem
                         {
                             Text = issue,
-                            Icon = new FontIcon { Glyph = "\uE7BA", FontSize = 14 },
-                            IsEnabled = false
-                        });
+                            Icon = new FontIcon { Glyph = "\uE711", FontSize = 14 },
+                            IsEnabled = true
+                        };
+
+                        ToolTipService.SetToolTip(item, ResourceString.GetString("tooltip_ignore_warning") ?? "Click to ignore this warning");
+
+                        item.Click += async (s, e) =>
+                        {
+                            var currentIgnored = LocalMachineSettingsEngine.IgnoredSecurityIssues;
+                            currentIgnored.Add(issue);
+                            LocalMachineSettingsEngine.IgnoredSecurityIssues = currentIgnored;
+                            await UpdateSecurityUIAsync();
+                        };
+
+                        flyout.Items.Add(item);
+                    }
+
+                    if (result.IssuesCount > 0 && ignoredIssuesCount > 0)
+                    {
+                        flyout.Items.Add(new MenuFlyoutSeparator());
+                    }
+
+                    string ignoredText = ResourceString.GetString("txt_ignored") ?? "Ignored";
+
+                    foreach (var ignoredIssue in ignoredIssues)
+                    {
+                        var item = new MenuFlyoutItem
+                        {
+                            Text = $"[{ignoredText}] {ignoredIssue}",
+                            Icon = new FontIcon { Glyph = "\uE777", FontSize = 14 },
+                            IsEnabled = true
+                        };
+
+                        ToolTipService.SetToolTip(item, ResourceString.GetString("tooltip_restore_warning") ?? "Click to restore this warning");
+
+                        item.Click += async (s, e) =>
+                        {
+                            var currentIgnored = LocalMachineSettingsEngine.IgnoredSecurityIssues;
+                            currentIgnored.Remove(ignoredIssue);
+                            LocalMachineSettingsEngine.IgnoredSecurityIssues = currentIgnored;
+                            await UpdateSecurityUIAsync();
+                        };
+
+                        flyout.Items.Add(item);
                     }
 
                     FlyoutBase.SetAttachedFlyout(BtnDashViewIssues, flyout);
                 }
+                else
+                {
+                    BtnDashViewIssues.Visibility = Visibility.Collapsed;
+                }
 
                 TxtSecurityLastRefreshed.Text = $"{ResourceString.GetString("text_last_checked") ?? "Last checked"}: {DateTime.Now:t}";
-                DashSecurityStatusImage.Visibility = Visibility.Visible;
-                TxtSecurityLastRefreshed.Visibility = Visibility.Visible;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"❌ [Security Check Error] {ex.Message}");
                 TxtSecurityStatus.Text = ResourceString.GetString("txt_scan_failed") ?? "Scan failed.";
+
+                _securityShieldHelper.SetState(isScanning: false, isCoreProtected: false, issuesCount: 1);
             }
             finally
             {
-                DashSecurityLoadingRing.Visibility = Visibility.Collapsed;
                 BtnRefreshSecurity.IsEnabled = true;
             }
         }

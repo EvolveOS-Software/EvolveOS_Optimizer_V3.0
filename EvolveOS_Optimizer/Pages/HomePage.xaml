@@ -1066,68 +1066,83 @@
                 </Border>
             </GridViewItem>
 
-            <GridViewItem>
-                <Border x:Name="CardSecurity" Style="{StaticResource DashCard}" Padding="16" Margin="0"
+            <GridViewItem x:Name="GviSecurity">
+                <Border x:Name="CardSecurity" Style="{StaticResource DashCard}" Padding="16" Margin="0" MinWidth="340"
                         PointerMoved="DashCard_PointerMoved" PointerEntered="DashCard_PointerEntered" PointerExited="DashCard_PointerExited" PointerPressed="DashCard_PointerPressed" PointerReleased="DashCard_PointerReleased" PointerCanceled="DashCard_PointerCanceled">
-                    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
+                    <Grid x:Name="SecurityCardRootGrid">
 
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Row 0: Header with Expand Chevron -->
                         <Grid Grid.Row="0" Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <FontIcon Glyph="&#xE773;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <FontIcon Grid.Column="0" Glyph="&#xE773;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" helpers:Loc.Key="title_security_card" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
-                            <Button x:Name="BtnOpenSecurityPage" IsTabStop="False" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenSecurityPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_security}">
+                            <Button x:Name="BtnOpenSecurityPage" Grid.Column="2" IsTabStop="False" Background="Transparent" BorderThickness="0" Padding="6" Click="BtnOpenSecurityPage_Click" ToolTipService.ToolTip="{helpers:ResourceString Key=tooltip_open_security}">
                                 <FontIcon Glyph="&#xE8A7;" FontSize="14" Opacity="0.6"/>
+                            </Button>
+
+                            <!-- Expand Button -->
+                            <Button x:Name="BtnExpandSecurity" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandSecurity_Click" Margin="4,0,0,0">
+                                <FontIcon x:Name="IconExpandSecurity" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             </Button>
                         </Grid>
 
-                        <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <ProgressRing x:Name="DashSecurityLoadingRing" IsActive="True" Width="60" Height="60" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <Image x:Name="DashSecurityStatusImage" Width="80" Height="80" Source="ms-appx:///Assets/PngImages/secure.png" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <!-- Row 1: Graphic Container -->
+                        <Grid x:Name="SecurityGraphicContainer" Grid.Row="1" Height="80" Width="140" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                            <Canvas x:Name="SecurityShieldCanvas" Width="70" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Grid>
 
-                        <StackPanel Grid.Row="2" Spacing="0" Margin="0,4,0,8">
-
+                        <!-- Row 2: Status Texts -->
+                        <StackPanel x:Name="SecurityStatusPanel" Grid.Row="2" Height="36" VerticalAlignment="Top" Spacing="4" Margin="0">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                                <TextBlock x:Name="TxtSecurityStatus"
-                                   helpers:Loc.Key="txt_scanning"
-                                   FontFamily="Jura Medium"
-                                   FontSize="13"
-                                   VerticalAlignment="Center"
-                                   Foreground="{ThemeResource MyDynamicAccentBrush}"
-                                   FontWeight="SemiBold"/>
-
-                                <Button x:Name="BtnDashViewIssues"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Padding="6,4"
-                                        MinHeight="0"
-                                        MinWidth="0"
-                                        VerticalAlignment="Center"
-                                        Visibility="Collapsed"
-                                        Click="BtnDashViewIssues_Click"
-                                        ToolTipService.ToolTip="{helpers:ResourceString Key=SecurityPage_ViewIssues}">
-
+                                <TextBlock x:Name="TxtSecurityStatus" helpers:Loc.Key="txt_scanning" FontFamily="Jura Medium" FontSize="13" VerticalAlignment="Center" Foreground="{ThemeResource MyDynamicAccentBrush}" FontWeight="SemiBold"/>
+                                <Button x:Name="BtnDashViewIssues" Background="Transparent" BorderThickness="0" Padding="6,4" MinHeight="0" MinWidth="0" VerticalAlignment="Center" Visibility="Collapsed" Click="BtnDashViewIssues_Click">
                                     <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
                                 </Button>
                             </StackPanel>
-
-                            <TextBlock x:Name="TxtSecurityLastRefreshed"
-                                       FontSize="11"
-                                       Foreground="{ThemeResource Brush_Inactive}"
-                                       Opacity="1"
-                                       Margin="0,2,0,0"
-                                       HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="TxtSecurityLastRefreshed" Text=" " FontSize="11" Foreground="{ThemeResource Brush_Inactive}" HorizontalAlignment="Center" FontFamily="Jura Medium"/>
                         </StackPanel>
 
-                        <Grid Grid.Row="3" Height="0" Margin="0" Visibility="Collapsed"/>
+                        <!-- Row 3: Expanded Section with Minicards -->
+                        <StackPanel x:Name="SecurityExpandedContent" Grid.Row="3" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,16,0,0" Spacing="12">
+                            <Grid ColumnDefinitions="*, *, *" ColumnSpacing="6">
+                                <Border Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Firewall" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtSecFirewall" Text="Active" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Defender" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtSecDefender" Text="Active" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="2" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="UAC" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="TxtSecUAC" Text="Enabled" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
 
-                        <Grid Grid.Row="4" VerticalAlignment="Bottom">
+                        <!-- Row 4: Refresh Bottom Action -->
+                        <Grid Grid.Row="4" VerticalAlignment="Bottom" Margin="0,8,0,0">
                             <Button x:Name="BtnRefreshSecurity" IsTabStop="False" HorizontalAlignment="Stretch" Click="BtnRefreshSecurity_Click" BorderThickness="0" FontFamily="Jura Medium">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal" Spacing="8">

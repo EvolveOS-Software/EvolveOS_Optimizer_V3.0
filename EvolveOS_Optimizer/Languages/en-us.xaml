@@ -437,6 +437,9 @@
     <sys:String x:Key="text_security_critical">Critical Issues</sys:String>
     <sys:String x:Key="text_security_warning">Warnings Found</sys:String>
     <sys:String x:Key="text_security_good">System is Secure</sys:String>
+    <sys:String x:Key="tooltip_ignore_warning">Click to ignore this warning</sys:String>
+    <sys:String x:Key="tooltip_restore_warning">Click to restore this warning</sys:String>
+    <sys:String x:Key="txt_ignored">Ignored</sys:String>
 
     <!-- System Health Card -->
     <sys:String x:Key="text_never_updated">Never updated</sys:String>

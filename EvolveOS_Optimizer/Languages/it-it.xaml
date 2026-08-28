@@ -460,6 +460,9 @@
     <sys:String x:Key="text_security_critical">Problemi critici</sys:String>
     <sys:String x:Key="text_security_warning">Avvisi trovati</sys:String>
     <sys:String x:Key="text_security_good">Il sistema è sicuro</sys:String>
+    <sys:String x:Key="tooltip_ignore_warning">Fai clic per ignorare questo avviso</sys:String>
+    <sys:String x:Key="tooltip_restore_warning">Fai clic per ripristinare questo avviso</sys:String>
+    <sys:String x:Key="txt_ignored">Ignorato</sys:String>
 
     <!-- System Health Card -->
     <sys:String x:Key="text_never_updated">Mai aggiornato</sys:String>

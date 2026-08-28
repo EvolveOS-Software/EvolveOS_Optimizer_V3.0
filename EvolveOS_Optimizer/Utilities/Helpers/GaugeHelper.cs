@@ -125,7 +125,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             Storyboard? pulseAnimation,
             Action<double, bool> updateAction)
         {
-            if (pulseAnimation != null) pulseAnimation.Stop();
+            try
+            {
+                if (pulseAnimation != null) pulseAnimation.Stop();
+            }
+            catch { /* Ignore if it fails to stop an already broken storyboard */ }
 
             double currentPercentage = 0;
             double animationDurationMs = 800;
@@ -144,7 +148,14 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
             if (pulseAnimation != null)
             {
-                pulseAnimation.Begin();
+                try
+                {
+                    pulseAnimation.Begin();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"⚠️ [GaugeHelper] Pulse animation failed to start: {ex.Message}");
+                }
             }
         }
 

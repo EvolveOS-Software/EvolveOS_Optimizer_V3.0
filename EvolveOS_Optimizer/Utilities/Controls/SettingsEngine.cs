@@ -114,6 +114,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["IsRamBoostCardExpanded"] = false,
             ["IsPrivacyCardExpanded"] = false,
             ["IsPerformanceCardExpanded"] = false,
+            ["IsHealthCardExpanded"] = false,
+            ["IsSecurityCardExpanded"] = false,
 
             ["IsPasswordGenHotkeyEnabled"] = false,
             ["PasswordGenHotkeyModifier"] = 1,
@@ -224,6 +226,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool IsRamBoostCardExpanded { get => (bool)_cachedSettings["IsRamBoostCardExpanded"]; set => ChangingParameters("IsRamBoostCardExpanded", value); }
         internal static bool IsPrivacyCardExpanded { get => (bool)_cachedSettings["IsPrivacyCardExpanded"]; set => ChangingParameters("IsPrivacyCardExpanded", value); }
         internal static bool IsPerformanceCardExpanded { get => (bool)_cachedSettings["IsPerformanceCardExpanded"]; set => ChangingParameters("IsPerformanceCardExpanded", value); }
+        internal static bool IsHealthCardExpanded { get => (bool)_cachedSettings["IsHealthCardExpanded"]; set => ChangingParameters("IsHealthCardExpanded", value); }
+        internal static bool IsSecurityCardExpanded { get => (bool)_cachedSettings["IsSecurityCardExpanded"]; set => ChangingParameters("IsSecurityCardExpanded", value); }
         internal static int Dashboard_LightingMode { get => (int)_cachedSettings["Dashboard_LightingMode"]; set => ChangingParameters("Dashboard_LightingMode", value); }
         internal static int Dashboard_AmbientIntensity { get => (int)_cachedSettings["Dashboard_AmbientIntensity"]; set => ChangingParameters("Dashboard_AmbientIntensity", value); }
         internal static int Dashboard_HoverRadius { get => (int)_cachedSettings["Dashboard_HoverRadius"]; set => ChangingParameters("Dashboard_HoverRadius", value); }
@@ -624,6 +628,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["RamMaxTemp"] = 80,
             ["MoboWarningTemp"] = 60,
             ["MoboMaxTemp"] = 80,
+
+            ["IgnoredSecurityIssues"] = string.Empty
         };
 
         private static readonly Dictionary<string, object> _cachedSettings = new Dictionary<string, object>(_defaultSettings);
@@ -697,6 +703,28 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static int MoboWarningTemp { get => (int)_cachedSettings["MoboWarningTemp"]; set => ChangingParameters("MoboWarningTemp", value); }
         internal static int MoboMaxTemp { get => (int)_cachedSettings["MoboMaxTemp"]; set => ChangingParameters("MoboMaxTemp", value); }
         #endregion
+
+        internal static HashSet<string> IgnoredSecurityIssues
+        {
+            get
+            {
+                if (_cachedSettings.TryGetValue("IgnoredSecurityIssues", out object? val) &&
+                    val is string pathsRaw &&
+                    !string.IsNullOrWhiteSpace(pathsRaw))
+                {
+                    return pathsRaw.Split(';', StringSplitOptions.RemoveEmptyEntries).ToHashSet(StringComparer.OrdinalIgnoreCase);
+                }
+                return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            }
+            set
+            {
+                string serialized = (value != null && value.Count > 0)
+                    ? string.Join(";", value.Where(p => !string.IsNullOrEmpty(p)).Distinct())
+                    : string.Empty;
+
+                ChangingParameters("IgnoredSecurityIssues", serialized);
+            }
+        }
 
         private static void ChangingParameters(string key, object? value)
         {

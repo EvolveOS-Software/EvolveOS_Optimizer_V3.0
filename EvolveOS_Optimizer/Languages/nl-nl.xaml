@@ -460,6 +460,9 @@
     <sys:String x:Key="text_security_critical">Problèmes critiques</sys:String>
     <sys:String x:Key="text_security_warning">Avertissements trouvés</sys:String>
     <sys:String x:Key="text_security_good">Le système est sécurisé</sys:String>
+    <sys:String x:Key="tooltip_ignore_warning">Klik om deze waarschuwing te negeren</sys:String>
+    <sys:String x:Key="tooltip_restore_warning">Klik om deze waarschuwing te herstellen</sys:String>
+    <sys:String x:Key="txt_ignored">Genegeerd</sys:String>
 
     <!-- System Health Card -->
     <sys:String x:Key="text_never_updated">Nooit bijgewerkt</sys:String>
