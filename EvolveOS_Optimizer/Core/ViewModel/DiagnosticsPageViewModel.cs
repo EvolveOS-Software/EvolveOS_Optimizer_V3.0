@@ -2426,6 +2426,9 @@ namespace EvolveOS_Optimizer.Core.ViewModel
         public event Action<List<string>>? ShowSecurityIssuesRequested;
         public event Action? CloseActiveDialogsRequested;
 
+        public event Action? SecurityScanStarted;
+        public event Action<bool, int>? SecurityScanCompleted;
+
         [RelayCommand]
         public void ViewSecurityIssues()
         {
@@ -3240,9 +3243,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _dispatcherQueue?.TryEnqueue(() =>
                 {
                     SecurityStatusText = ResourceString.GetString("text_scanning_system") ?? "Scanning...";
-                    SecurityStatusImageVisibility = Visibility.Collapsed;
-                    IsSecurityStatusLoadingRingActive = true;
-                    SecurityStatusLoadingRingVisibility = Visibility.Visible;
+                    SecurityScanStarted?.Invoke();
                 });
 
                 var results = await Task.Run(async () =>
@@ -3386,24 +3387,20 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
                     if (!isCoreProtected)
                     {
-                        SecurityStatusImageUri = "ms-appx:///Assets/PngImages/UnSecure.png";
                         SecurityStatusText = $"{issuesCount} {ResourceString.GetString("text_security_critical") ?? "Critical Issues"}";
                     }
                     else if (issuesCount > 0)
                     {
-                        SecurityStatusImageUri = "ms-appx:///Assets/PngImages/Secure.png";
                         SecurityStatusText = $"{issuesCount} {ResourceString.GetString("text_security_warning") ?? "Warnings Found"}";
                     }
                     else
                     {
-                        SecurityStatusImageUri = "ms-appx:///Assets/PngImages/Secure.png";
                         SecurityStatusText = ResourceString.GetString("text_security_good") ?? "System is Secure";
                     }
 
-                    SecurityStatusImageVisibility = Visibility.Visible;
-                    IsSecurityStatusLoadingRingActive = false;
-                    SecurityStatusLoadingRingVisibility = Visibility.Collapsed;
                     SecurityLastRefreshedText = $"{ResourceString.GetString("SecurityPage_LastRefreshed")}: {DateTime.Now:T}";
+
+                    SecurityScanCompleted?.Invoke(isCoreProtected, issuesCount);
                 });
             }
             catch (OperationCanceledException) { }
@@ -3413,11 +3410,7 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                 _dispatcherQueue?.TryEnqueue(() =>
                 {
                     SecurityStatusText = "Scan timed out or failed.";
-                    IsSecurityStatusLoadingRingActive = false;
-                    SecurityStatusLoadingRingVisibility = Visibility.Collapsed;
-
-                    SecurityStatusImageUri = "ms-appx:///Assets/PngImages/Warning.png";
-                    SecurityStatusImageVisibility = Visibility.Visible;
+                    SecurityScanCompleted?.Invoke(false, 1);
 
                     IsRdpToggleEnabled = true;
                     IsRaToggleEnabled = true;

@@ -1114,7 +1114,7 @@
                                     <FontIcon Glyph="&#xE946;" FontSize="13" Opacity="0.8"/>
                                 </Button>
                             </StackPanel>
-                            <TextBlock x:Name="TxtSecurityLastRefreshed" Text=" " FontSize="11" Foreground="{ThemeResource Brush_Inactive}" HorizontalAlignment="Center" FontFamily="Jura Medium"/>
+                            <TextBlock x:Name="TxtSecurityLastRefreshed" Text=" " FontSize="11" Foreground="{ThemeResource Brush_Inactive}" HorizontalAlignment="Center" FontFamily="Jura Medium" Margin="0,-4,0,0"/>
                         </StackPanel>
 
                         <!-- Row 3: Expanded Section with Minicards -->

@@ -206,6 +206,8 @@ namespace EvolveOS_Optimizer.Pages
                 RequestedPaneOnLoad = "";
             }
 
+            InitializeSecurityCard();
+
             if (ViewModel != null)
             {
                 ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
@@ -223,6 +225,8 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.OnRemoveProcessFromExclusionListCommandCompleted += OnRemoveProcessFromExclusionListCommandCompletedCallback;
                 ViewModel.OnOptimizeCommandCompleted += OnOptimizeCommandCompleted;
                 ViewModel.OpenDnsToolkitRequested += ViewModel_OpenDnsToolkitRequested;
+                ViewModel.SecurityScanStarted += InitializeSecurityCard;
+                ViewModel.SecurityScanCompleted += UpdateSecurityShieldState;
 
                 if (ViewModel.HardwareScannerVisibility == Visibility.Visible) HeartbeatStoryboard?.Begin();
                 if (ViewModel.ScanningVisibility == Visibility.Visible) SystemSonarStoryboard?.Begin();
@@ -294,6 +298,8 @@ namespace EvolveOS_Optimizer.Pages
                 ViewModel.OnRemoveProcessFromExclusionListCommandCompleted -= OnRemoveProcessFromExclusionListCommandCompletedCallback;
                 ViewModel.OnOptimizeCommandCompleted -= OnOptimizeCommandCompleted;
                 ViewModel.OpenDnsToolkitRequested -= ViewModel_OpenDnsToolkitRequested;
+                ViewModel.SecurityScanStarted -= InitializeSecurityCard;
+                ViewModel.SecurityScanCompleted -= UpdateSecurityShieldState;
             }
 
             ExternalPaneRequest = null;
@@ -472,6 +478,24 @@ namespace EvolveOS_Optimizer.Pages
             this.Bindings.StopTracking();
 
             base.OnNavigatedFrom(e);
+        }
+        #endregion
+
+        #region Security Shield Integration
+        private SecurityShieldHelper _shieldHelper = new();
+
+        private void InitializeSecurityCard()
+        {
+            if (SecurityShieldCanvas != null)
+            {
+                _shieldHelper.Initialize(SecurityShieldCanvas);
+                _shieldHelper.SetState(isScanning: true, isCoreProtected: true, issuesCount: 0);
+            }
+        }
+
+        private void UpdateSecurityShieldState(bool isCoreProtected, int issuesCount)
+        {
+            _shieldHelper.SetState(isScanning: false, isCoreProtected: isCoreProtected, issuesCount: issuesCount);
         }
         #endregion
 
