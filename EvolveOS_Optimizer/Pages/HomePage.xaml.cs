@@ -549,9 +549,10 @@ namespace EvolveOS_Optimizer.Pages
             {
                 container.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
 
-                if (cardName == "CardWeather" && DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
+                if (DashboardGridView.ItemsPanelRoot is DashboardFlowPanel panel)
                 {
                     panel.InvalidateMeasure();
+                    panel.InvalidateArrange();
                 }
             }
         }

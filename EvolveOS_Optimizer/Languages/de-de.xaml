@@ -650,6 +650,7 @@
     <sys:String x:Key="setting_mod_desc">Schreibt geänderte Seiten auf die Festplatte, um aktiven RAM freizugeben.</sys:String>
     <sys:String x:Key="setting_reg_title">Registrierungs-Cache optimieren</sys:String>
     <sys:String x:Key="setting_reg_desc">Gleicht den Speicher der Systemregistrierungsstruktur ab und gibt ihn frei.</sys:String>
+    <sys:String x:Key="btn_save">Speichern</sys:String>
 
     <!-- CODE-BEHIND: PRIVACY CARD -->
     <sys:String x:Key="text_privacy_critical">Datenschutzlecks gefunden</sys:String>

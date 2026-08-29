@@ -650,6 +650,7 @@
     <sys:String x:Key="setting_mod_desc">Spoelt gewijzigde pagina's naar de schijf om actief RAM vrij te maken.</sys:String>
     <sys:String x:Key="setting_reg_title">Registercache optimaliseren</sys:String>
     <sys:String x:Key="setting_reg_desc">Verzoent en maakt geheugen vrij voor de systeemregister-hive.</sys:String>
+    <sys:String x:Key="btn_save">Opslaan</sys:String>
 
     <!-- CODE-BEHIND: PRIVACY CARD -->
     <sys:String x:Key="text_privacy_critical">Privacylekken gevonden</sys:String>

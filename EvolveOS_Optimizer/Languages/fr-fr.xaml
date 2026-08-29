@@ -650,6 +650,7 @@
     <sys:String x:Key="setting_mod_desc">Vide les pages modifiées sur le disque pour libérer la RAM active.</sys:String>
     <sys:String x:Key="setting_reg_title">Optimiser le cache du registre</sys:String>
     <sys:String x:Key="setting_reg_desc">Réconcilie et libère la mémoire de la ruche du registre système.</sys:String>
+    <sys:String x:Key="btn_save">Enregistrer</sys:String>
 
     <!-- CODE-BEHIND: PRIVACY CARD -->
     <sys:String x:Key="text_privacy_critical">Fuites de confidentialité détectées</sys:String>

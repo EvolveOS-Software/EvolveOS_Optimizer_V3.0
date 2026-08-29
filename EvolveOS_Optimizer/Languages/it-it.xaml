@@ -654,6 +654,7 @@
     <sys:String x:Key="setting_mod_desc">Scarica le pagine modificate sul disco per liberare RAM attiva.</sys:String>
     <sys:String x:Key="setting_reg_title">Ottimizza cache di registro</sys:String>
     <sys:String x:Key="setting_reg_desc">Riconcilia e libera la memoria dell'hive del registro di sistema.</sys:String>
+    <sys:String x:Key="btn_save">Salva</sys:String>
 
     <!-- CODE-BEHIND: PRIVACY CARD -->
     <sys:String x:Key="text_privacy_critical">Problemi di privacy rilevati</sys:String>

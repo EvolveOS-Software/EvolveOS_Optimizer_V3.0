@@ -630,6 +630,7 @@
     <sys:String x:Key="setting_mod_desc">Flushes modified pages to disk to free active RAM.</sys:String>
     <sys:String x:Key="setting_reg_title">Optimize Registry Cache</sys:String>
     <sys:String x:Key="setting_reg_desc">Reconciles and frees system registry hive memory.</sys:String>
+    <sys:String x:Key="btn_save">Save</sys:String>
 
     <!-- Code-Behind: Privacy Card -->
     <sys:String x:Key="text_privacy_critical">Privacy Leaks Found</sys:String>
