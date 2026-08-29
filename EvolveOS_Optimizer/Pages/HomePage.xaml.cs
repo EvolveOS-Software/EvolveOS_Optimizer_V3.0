@@ -474,7 +474,8 @@ namespace EvolveOS_Optimizer.Pages
                 GamingModeButtonLabel.Text = ResourceString.GetString("gm_label_gaming");
                 GamingModeBtnText.Text = ResourceString.GetString("gm_btn_disable");
 
-                DashGamingStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/health_good.png"));
+                // Image temporary (WIP)
+                DashGamingStatusImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/PngImages/gamingmode_off.png"));
                 DashGamingStatusImage.Opacity = 1.0;
                 GamingSpinner.Visibility = Visibility.Visible;
                 GamingSpinner.IsActive = true;
@@ -636,6 +637,7 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnRefreshHealth, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenSecurityPage, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOptimizeMemory, InputSystemCursorShape.Arrow);
+            SetCustomCursor(ToggleAutoOptimize, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnExpandRamBoost, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRamBoostSettings, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOpenRamBoostPage, InputSystemCursorShape.Arrow);
@@ -681,7 +683,7 @@ namespace EvolveOS_Optimizer.Pages
 
         private void ResetDashboard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsEngine.DashboardCardOrder = "CardSecurity,CardPrivacy,CardPerformance,CardWeather,CardMaintenance,CardDns,CardRamBoost,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardDisk,CardNetwork,CardRam,CardGamingMode";
+            SettingsEngine.DashboardCardOrder = "CardSecurity,CardWeather,CardPrivacy,CardMaintenance,CardPerformance,CardCpuGraph,CardGpuGraph,CardRamGraph,CardNetworkGraph,CardCpu,CardGpu,CardDisk,CardNetwork,CardDns,CardRamBoost,CardRam,CardGamingMode";
             SettingsEngine.Dashboard_CardWeather = true;
             SettingsEngine.Dashboard_CardNetwork = true;
             SettingsEngine.Dashboard_CardRam = false;
