@@ -1,3 +1,6 @@
+// Copyright (c) 2026 EvolveOS Software
+// Licensed under the MIT License.
+
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
@@ -78,7 +81,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_CardCpu"] = true,
             ["Dashboard_CardGpu"] = true,
             ["Dashboard_CardDisk"] = true,
-            ["Dashboard_CardGamingMode"] = false,
+            ["Dashboard_CardGamingMode"] = true,
             ["Dashboard_CardDns"] = true,
             ["Dashboard_CardHealth"] = true,
             ["Dashboard_CardSecurity"] = true,
@@ -92,6 +95,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_GraphTimeframe"] = 0,
             ["Dashboard_AutoScanEnabled"] = false,
             ["Dashboard_AutoScanIntervalHours"] = 24,
+            ["Dashboard_GamingGraphicStyle"] = 0,
             ["AutoLoginSessionHours"] = 4,
 
             ["Dashboard_AutoRamOptimize"] = false,
@@ -118,6 +122,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["IsPerformanceCardExpanded"] = false,
             ["IsHealthCardExpanded"] = false,
             ["IsSecurityCardExpanded"] = false,
+            ["IsGamingModeCardExpanded"] = false,
 
             ["IsPasswordGenHotkeyEnabled"] = false,
             ["PasswordGenHotkeyModifier"] = 1,
@@ -214,6 +219,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static int Dashboard_GraphTimeframe { get => (int)_cachedSettings["Dashboard_GraphTimeframe"]; set => ChangingParameters("Dashboard_GraphTimeframe", value); }
         internal static bool Dashboard_AutoScanEnabled { get => (bool)_cachedSettings["Dashboard_AutoScanEnabled"]; set => ChangingParameters("Dashboard_AutoScanEnabled", value); }
         internal static int Dashboard_AutoScanIntervalHours { get => (int)_cachedSettings["Dashboard_AutoScanIntervalHours"]; set => ChangingParameters("Dashboard_AutoScanIntervalHours", value); }
+        internal static int Dashboard_GamingGraphicStyle { get => (int)_cachedSettings["Dashboard_GamingGraphicStyle"]; set => ChangingParameters("Dashboard_GamingGraphicStyle", value); }
         internal static bool Dashboard_AutoRamOptimize { get => (bool)_cachedSettings["Dashboard_AutoRamOptimize"]; set => ChangingParameters("Dashboard_AutoRamOptimize", value); }
         internal static int Dashboard_AutoRamThreshold { get => (int)_cachedSettings["Dashboard_AutoRamThreshold"]; set => ChangingParameters("Dashboard_AutoRamThreshold", value); }
         internal static bool Dashboard_BoostWorkingSets { get => (bool)_cachedSettings["Dashboard_BoostWorkingSets"]; set => ChangingParameters("Dashboard_BoostWorkingSets", value); }
@@ -232,6 +238,7 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool IsPerformanceCardExpanded { get => (bool)_cachedSettings["IsPerformanceCardExpanded"]; set => ChangingParameters("IsPerformanceCardExpanded", value); }
         internal static bool IsHealthCardExpanded { get => (bool)_cachedSettings["IsHealthCardExpanded"]; set => ChangingParameters("IsHealthCardExpanded", value); }
         internal static bool IsSecurityCardExpanded { get => (bool)_cachedSettings["IsSecurityCardExpanded"]; set => ChangingParameters("IsSecurityCardExpanded", value); }
+        internal static bool IsGamingModeCardExpanded { get => (bool)_cachedSettings["IsGamingModeCardExpanded"]; set => ChangingParameters("IsGamingModeCardExpanded", value); }
         internal static int Dashboard_LightingMode { get => (int)_cachedSettings["Dashboard_LightingMode"]; set => ChangingParameters("Dashboard_LightingMode", value); }
         internal static int Dashboard_AmbientIntensity { get => (int)_cachedSettings["Dashboard_AmbientIntensity"]; set => ChangingParameters("Dashboard_AmbientIntensity", value); }
         internal static int Dashboard_HoverRadius { get => (int)_cachedSettings["Dashboard_HoverRadius"]; set => ChangingParameters("Dashboard_HoverRadius", value); }

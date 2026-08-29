@@ -1,7 +1,5 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.IO;
 using System.Text;
@@ -15,6 +13,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 {
     public static class GamingModeHelper
     {
+        public static bool IsTestModeEnabled { get; set; } = false;
+
         private static readonly string BackupFilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "EvolveOS_Optimizer",
@@ -118,10 +118,32 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             public Dictionary<string, int>? GpuRegistryValues { get; set; }
         }
 
+        
         public static async Task<bool> ToggleGamingModeAsync(bool enable, IProgress<string>? progress = null)
         {
             try
             {
+                #region Test Mode
+
+                if (IsTestModeEnabled)
+                {
+                    progress?.Report($"[TEST MODE] {(enable ? "Initializing" : "Deactivating")} Gaming Mode...");
+                    await Task.Delay(800);
+
+                    progress?.Report($"[TEST MODE] {(enable ? "Simulating system optimizations..." : "Simulating configuration restoration...")}");
+                    await Task.Delay(1200);
+
+                    progress?.Report($"[TEST MODE] Generating fake logs...");
+                    await Task.Delay(800);
+
+                    progress?.Report($"[TEST MODE] {(enable ? "Engine Ready" : "System Restored")}");
+
+                    IsGamingModeActive = enable;
+                    return true;
+                }
+
+                #endregion
+
                 if (enable)
                 {
                     await EnableGamingModeAsync(progress);
@@ -141,6 +163,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 return false;
             }
         }
+        
 
         private static async Task EnableGamingModeAsync(IProgress<string>? progress)
         {
