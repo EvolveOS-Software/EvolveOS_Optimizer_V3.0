@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 
@@ -18,10 +17,13 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         private Path? _centerSymbolShadow;
         private Path? _centerSymbol;
 
-        private Storyboard? _scannerStoryboard;
         private RotateTransform? _borderRotateTransform;
 
         private DispatcherTimer? _edgeGlowTimer;
+        private bool _isScannerActive = false;
+        private double _scannerY = -25;
+        private double _scannerDirection = 1;
+        private readonly double _scannerSpeed = 1.75;
         #endregion
 
         #region Geometry
@@ -114,7 +116,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             };
             _canvas.Children.Add(_wireframe);
 
-            var scannerTransform = new TranslateTransform { Y = -25 };
+            _scannerY = -25;
+            _scannerDirection = 1;
+            var scannerTransform = new TranslateTransform { Y = _scannerY };
 
             _scanner = new Path
             {
@@ -158,20 +162,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             };
             _canvas.Children.Add(_centerSymbol);
 
-            _scannerStoryboard = new Storyboard { RepeatBehavior = RepeatBehavior.Forever };
-            var sweepAnimation = new DoubleAnimation
-            {
-                From = -25,
-                To = 80,
-                Duration = new Duration(TimeSpan.FromSeconds(1.2)),
-                AutoReverse = true,
-                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
-            };
-            Storyboard.SetTarget(sweepAnimation, scannerTransform);
-            Storyboard.SetTargetProperty(sweepAnimation, "Y");
-            _scannerStoryboard.Children.Add(sweepAnimation);
-            _canvas.Resources.Add("ScannerStory", _scannerStoryboard);
-
             _edgeGlowTimer?.Stop();
             _edgeGlowTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) }; // ~60 FPS
             _edgeGlowTimer.Tick += (s, e) =>
@@ -179,6 +169,22 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 if (_borderRotateTransform != null)
                 {
                     _borderRotateTransform.Angle = (_borderRotateTransform.Angle + 2.5) % 360;
+                }
+
+                if (_isScannerActive && _scanner?.Fill is LinearGradientBrush brush && brush.Transform is TranslateTransform trans)
+                {
+                    _scannerY += _scannerSpeed * _scannerDirection;
+                    if (_scannerY >= 80)
+                    {
+                        _scannerY = 80;
+                        _scannerDirection = -1;
+                    }
+                    else if (_scannerY <= -25)
+                    {
+                        _scannerY = -25;
+                        _scannerDirection = 1;
+                    }
+                    trans.Y = _scannerY;
                 }
             };
             _edgeGlowTimer.Start();
@@ -196,11 +202,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 _centerSymbol.Visibility = Visibility.Collapsed;
                 _centerSymbolShadow.Visibility = Visibility.Collapsed;
                 _scanner.Visibility = Visibility.Visible;
-                _scannerStoryboard?.Begin();
+
+                _isScannerActive = true;
                 return;
             }
 
-            _scannerStoryboard?.Stop();
+            _isScannerActive = false;
             _scanner.Visibility = Visibility.Collapsed;
             _centerSymbol.Visibility = Visibility.Visible;
             _centerSymbolShadow.Visibility = Visibility.Visible;
