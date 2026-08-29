@@ -48,6 +48,9 @@ namespace EvolveOS_Optimizer.Pages
         private bool _isCurrentPageActive = false;
         private bool _isInitialized = false;
 
+        private Storyboard? _ipShimmerStory;
+        private Storyboard? _localIpShimmerStory;
+
         private CancellationTokenSource? _networkMonitorCts;
 
         #endregion
@@ -1737,7 +1740,14 @@ namespace EvolveOS_Optimizer.Pages
                 if (result.IssuesCount > 0 || ignoredIssuesCount > 0)
                 {
                     BtnDashViewIssues.Visibility = Visibility.Visible;
-                    var flyout = new MenuFlyout();
+
+                    var existingFlyout = FlyoutBase.GetAttachedFlyout(BtnDashViewIssues) as MenuFlyout;
+                    if (existingFlyout != null)
+                    {
+                        existingFlyout.Items.Clear();
+                    }
+
+                    var flyout = existingFlyout ?? new MenuFlyout();
 
                     foreach (var issue in result.Issues)
                     {
@@ -1947,7 +1957,15 @@ namespace EvolveOS_Optimizer.Pages
                 if (result.IssuesCount > 0 && BtnPrivacyViewIssues != null)
                 {
                     BtnPrivacyViewIssues.Visibility = Visibility.Visible;
-                    var flyout = new MenuFlyout();
+
+                    var existingFlyout = FlyoutBase.GetAttachedFlyout(BtnPrivacyViewIssues) as MenuFlyout;
+                    if (existingFlyout != null)
+                    {
+                        existingFlyout.Items.Clear();
+                    }
+
+                    var flyout = existingFlyout ?? new MenuFlyout();
+
                     foreach (var issue in result.Issues)
                     {
                         var menuItem = new MenuFlyoutItem
@@ -3467,7 +3485,6 @@ namespace EvolveOS_Optimizer.Pages
             brush.RelativeTransform = transform;
 
             Storyboard storyboard = new Storyboard();
-
             DoubleAnimation animation = new DoubleAnimation
             {
                 From = -1.5,
@@ -3477,21 +3494,20 @@ namespace EvolveOS_Optimizer.Pages
                 AutoReverse = false
             };
 
-            if (transform != null)
+            Storyboard.SetTarget(animation, transform);
+            Storyboard.SetTargetProperty(animation, "X");
+            storyboard.Children.Add(animation);
+
+            try
             {
-                Storyboard.SetTarget(animation, transform);
-                Storyboard.SetTargetProperty(animation, "X");
+                storyboard.Begin();
 
-                storyboard.Children.Add(animation);
-
-                try
-                {
-                    storyboard.Begin();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Shimmer failed to start: {ex.Message}");
-                }
+                if (stopName.Contains("Local")) _localIpShimmerStory = storyboard;
+                else _ipShimmerStory = storyboard;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Shimmer failed to start: {ex.Message}");
             }
         }
         #endregion
@@ -3507,6 +3523,11 @@ namespace EvolveOS_Optimizer.Pages
             _networkMonitorCts?.Cancel();
 
             ViewModel?.PauseUpdates();
+
+            _ipShimmerStory?.Stop();
+            _ipShimmerStory = null;
+            _localIpShimmerStory?.Stop();
+            _localIpShimmerStory = null;
 
             if (!SettingsEngine.IsHighPerformanceModeEnabled)
             {
