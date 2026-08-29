@@ -105,6 +105,8 @@ namespace EvolveOS_Optimizer.Pages
                 LoadDashboardLayout();
                 DashboardDragCursor();
 
+                ConfigureBackgroundScanTimer();
+
                 if (DnsShieldCanvas != null)
                 {
                     _dnsShieldHelper.Initialize(DnsShieldCanvas);
@@ -200,6 +202,11 @@ namespace EvolveOS_Optimizer.Pages
                 }
             }
             catch { }
+        }
+
+        private void CustomizeLayoutDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            InitializeBackgroundScanSettings();
         }
         #endregion
 
@@ -3382,6 +3389,89 @@ namespace EvolveOS_Optimizer.Pages
             }
         }
 
+        #endregion
+
+        #region Background Health & Security Scan Engine
+        private DispatcherTimer? _backgroundScanTimer;
+
+        private void InitializeBackgroundScanSettings()
+        {
+            _isInternalToggle = true;
+            ToggleAutoScan.IsOn = SettingsEngine.Dashboard_AutoScanEnabled;
+            ScanIntervalPanel.Visibility = SettingsEngine.Dashboard_AutoScanEnabled ? Visibility.Visible : Visibility.Collapsed;
+
+            int hours = SettingsEngine.Dashboard_AutoScanIntervalHours;
+            ComboScanInterval.SelectedIndex = hours switch
+            {
+                4 => 0,
+                6 => 1,
+                12 => 2,
+                24 => 3,
+                _ => 3 // Default to 24 hours
+            };
+            _isInternalToggle = false;
+        }
+
+        private void ToggleAutoScan_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (_isInternalToggle) return;
+
+            SettingsEngine.Dashboard_AutoScanEnabled = ToggleAutoScan.IsOn;
+            ScanIntervalPanel.Visibility = ToggleAutoScan.IsOn ? Visibility.Visible : Visibility.Collapsed;
+
+            if (ToggleAutoScan.IsOn && ComboScanInterval.SelectedIndex == -1)
+            {
+                int hours = SettingsEngine.Dashboard_AutoScanIntervalHours > 0 ? SettingsEngine.Dashboard_AutoScanIntervalHours : 24;
+                ComboScanInterval.SelectedIndex = hours switch
+                {
+                    4 => 0,
+                    6 => 1,
+                    12 => 2,
+                    24 => 3,
+                    _ => 3
+                };
+            }
+
+            ConfigureBackgroundScanTimer();
+        }
+
+        private void ComboScanInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isInternalToggle || ComboScanInterval.SelectedItem is not ComboBoxItem item) return;
+
+            if (int.TryParse(item.Tag?.ToString(), out int hours))
+            {
+                SettingsEngine.Dashboard_AutoScanIntervalHours = hours;
+                ConfigureBackgroundScanTimer();
+            }
+        }
+
+        private void ConfigureBackgroundScanTimer()
+        {
+            _backgroundScanTimer?.Stop();
+            _backgroundScanTimer = null;
+
+            if (!SettingsEngine.Dashboard_AutoScanEnabled) return;
+
+            int hours = SettingsEngine.Dashboard_AutoScanIntervalHours > 0 ? SettingsEngine.Dashboard_AutoScanIntervalHours : 24;
+
+            _backgroundScanTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromHours(hours)
+            };
+
+            _backgroundScanTimer.Tick += async (s, e) =>
+            {
+                if (_isCurrentPageActive)
+                {
+                    Debug.WriteLine($"[Background Scan] Executing automated scan interval ({hours}h)...");
+                    await UpdateSystemHealthUIAsync();
+                    await UpdateSecurityUIAsync();
+                }
+            };
+
+            _backgroundScanTimer.Start();
+        }
         #endregion
 
         #region Admin & UI Helper Methods

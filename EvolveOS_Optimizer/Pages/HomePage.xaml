@@ -2058,7 +2058,8 @@
                Title="{helpers:ResourceString Key=text_customize_dashboard}"
                CornerRadius="8"
                IsTabStop="False"
-               MaxWidth="650">
+               MaxWidth="650"
+               Loaded="CustomizeLayoutDialog_Loaded">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -2141,6 +2142,29 @@
                                               OffContent="{helpers:ResourceString Key=txt_dont_save}"
                                               IsOn="{x:Bind ViewModel.SaveCardStates, Mode=TwoWay}"
                                               Margin="0,-4,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}"/>
+
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="{helpers:ResourceString Key=txt_automated_scans}" Style="{StaticResource BodyStrongTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <StackPanel Spacing="10">
+                                <ToggleSwitch x:Name="ToggleAutoScan"
+                                              Header="{helpers:ResourceString Key=txt_enable_background_scans}"
+                                              OffContent="{helpers:ResourceString Key=txt_off}"
+                                              OnContent="{helpers:ResourceString Key=txt_on}"
+                                              Toggled="ToggleAutoScan_Toggled"/>
+
+                                <StackPanel x:Name="ScanIntervalPanel" Spacing="4" Visibility="Collapsed" Margin="0,4,0,0">
+                                    <TextBlock Text="{helpers:ResourceString Key=txt_scan_interval}" Style="{StaticResource BodyTextBlockStyle}"/>
+                                    <ComboBox x:Name="ComboScanInterval" SelectionChanged="ComboScanInterval_SelectionChanged" Width="220">
+                                        <ComboBoxItem Content="{helpers:ResourceString Key=txt_every_4_hours}" Tag="4"/>
+                                        <ComboBoxItem Content="{helpers:ResourceString Key=txt_every_6_hours}" Tag="6"/>
+                                        <ComboBoxItem Content="{helpers:ResourceString Key=txt_every_12_hours}" Tag="12"/>
+                                        <ComboBoxItem Content="{helpers:ResourceString Key=txt_every_24_hours}" Tag="24"/>
+                                    </ComboBox>
+                                </StackPanel>
                             </StackPanel>
                         </StackPanel>
 

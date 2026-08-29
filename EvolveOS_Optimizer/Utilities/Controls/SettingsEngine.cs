@@ -90,6 +90,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_CardNetworkGraph"] = true,
             ["Dashboard_CardGpuGraph"] = true,
             ["Dashboard_GraphTimeframe"] = 0,
+            ["Dashboard_AutoScanEnabled"] = false,
+            ["Dashboard_AutoScanIntervalHours"] = 24,
             ["AutoLoginSessionHours"] = 4,
 
             ["Dashboard_AutoRamOptimize"] = false,
@@ -210,6 +212,8 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_CardNetworkGraph { get => (bool)_cachedSettings["Dashboard_CardNetworkGraph"]; set => ChangingParameters("Dashboard_CardNetworkGraph", value); }
         internal static bool Dashboard_CardGpuGraph { get => (bool)_cachedSettings["Dashboard_CardGpuGraph"]; set => ChangingParameters("Dashboard_CardGpuGraph", value); }
         internal static int Dashboard_GraphTimeframe { get => (int)_cachedSettings["Dashboard_GraphTimeframe"]; set => ChangingParameters("Dashboard_GraphTimeframe", value); }
+        internal static bool Dashboard_AutoScanEnabled { get => (bool)_cachedSettings["Dashboard_AutoScanEnabled"]; set => ChangingParameters("Dashboard_AutoScanEnabled", value); }
+        internal static int Dashboard_AutoScanIntervalHours { get => (int)_cachedSettings["Dashboard_AutoScanIntervalHours"]; set => ChangingParameters("Dashboard_AutoScanIntervalHours", value); }
         internal static bool Dashboard_AutoRamOptimize { get => (bool)_cachedSettings["Dashboard_AutoRamOptimize"]; set => ChangingParameters("Dashboard_AutoRamOptimize", value); }
         internal static int Dashboard_AutoRamThreshold { get => (int)_cachedSettings["Dashboard_AutoRamThreshold"]; set => ChangingParameters("Dashboard_AutoRamThreshold", value); }
         internal static bool Dashboard_BoostWorkingSets { get => (bool)_cachedSettings["Dashboard_BoostWorkingSets"]; set => ChangingParameters("Dashboard_BoostWorkingSets", value); }

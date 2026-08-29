@@ -639,7 +639,6 @@
     <sys:String x:Key="txt_ai_active">AI Active</sys:String>
     <sys:String x:Key="txt_leaks">Leaks</sys:String>
     <sys:String x:Key="txt_applying_fixes">Applying Fixes...</sys:String>
-    <sys:String x:Key="txt_restoring_defaults">Restoring Defaults...</sys:String>
 
     <!-- Code-Behind: Disk Card -->
     <sys:String x:Key="txt_cleaning">Cleaning...</sys:String>
@@ -707,6 +706,15 @@
     <sys:String x:Key="txt_issues">Issues</sys:String>
     <sys:String x:Key="txt_applying_optimizations">Applying Optimizations...</sys:String>
     <sys:String x:Key="txt_restoring_defaults">Restoring Defaults...</sys:String>
+
+    <!-- Automated Scans -->
+    <sys:String x:Key="txt_automated_scans">Automated Health &amp; Security Scans</sys:String>
+    <sys:String x:Key="txt_enable_background_scans">Enable Background Scans</sys:String>
+    <sys:String x:Key="txt_scan_interval">Scan Interval</sys:String>
+    <sys:String x:Key="txt_every_4_hours">Every 4 Hours</sys:String>
+    <sys:String x:Key="txt_every_6_hours">Every 6 Hours</sys:String>
+    <sys:String x:Key="txt_every_12_hours">Every 12 Hours</sys:String>
+    <sys:String x:Key="txt_every_24_hours">Every 24 Hours</sys:String>
     <!-- endregion HomePage -->
 
     <!-- region SecurityPage -->
