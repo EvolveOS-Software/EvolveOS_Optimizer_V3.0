@@ -1,23 +1,17 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using EvolveOS_Optimizer.Core.Base;
 using EvolveOS_Optimizer.Core.Interfaces;
 using EvolveOS_Optimizer.Core.Model;
 using EvolveOS_Optimizer.Utilities.Configuration;
 using EvolveOS_Optimizer.Utilities.Controls;
 using EvolveOS_Optimizer.Utilities.Helpers;
-using EvolveOS_Optimizer.Utilities.Maintenance;
 using EvolveOS_Optimizer.Utilities.Services;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
@@ -27,8 +21,6 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SkiaSharp;
-using Windows.UI;
-using Microsoft.UI.Xaml;
 
 namespace EvolveOS_Optimizer.Core.ViewModel
 {
@@ -243,7 +235,8 @@ namespace EvolveOS_Optimizer.Core.ViewModel
                     _maxDataPoints = value;
 
                     UpdateAxisLabels(value);
-                    ResetGraphBuffers();
+                    TrimGraphBuffers();
+                    // ResetGraphBuffers(); // Reset on timeframe change.
                 }
             }
         }
@@ -1476,13 +1469,31 @@ namespace EvolveOS_Optimizer.Core.ViewModel
             }
         }
 
-        private void ResetGraphBuffers()
+        // Reset on timeframe change.
+        /*private void ResetGraphBuffers()
         {
             CpuGraphValues.Clear();
             RamGraphValues.Clear();
             GpuGraphValues.Clear();
             NetDownGraphValues.Clear();
             NetUpGraphValues.Clear();
+        }*/
+
+        private void TrimGraphBuffers()
+        {
+            TrimSeries(CpuGraphValues);
+            TrimSeries(RamGraphValues);
+            TrimSeries(GpuGraphValues);
+            TrimSeries(NetDownGraphValues);
+            TrimSeries(NetUpGraphValues);
+        }
+
+        private void TrimSeries(ObservableCollection<ObservablePoint> series)
+        {
+            while (series.Count > _maxDataPoints)
+            {
+                series.RemoveAt(0);
+            }
         }
 
         private void UpdateAxisLabels(int totalSeconds)
