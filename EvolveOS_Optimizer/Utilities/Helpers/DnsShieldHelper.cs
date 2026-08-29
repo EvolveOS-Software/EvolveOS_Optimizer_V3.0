@@ -1,7 +1,6 @@
 // Copyright (c) 2026 EvolveOS Software
 // Licensed under the MIT License.
 
-using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 
@@ -14,14 +13,18 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         private Path? _shieldBase;
         private Path? _leftFacet;
         private Path? _networkWireframe;
+        private Path? _animatedCircuits;
         private Path? _scanner;
         private Path? _centerSymbolShadow;
         private Path? _centerSymbol;
 
-        private Storyboard? _scannerStoryboard;
         private RotateTransform? _borderRotateTransform;
 
         private DispatcherTimer? _edgeGlowTimer;
+        private bool _isScannerActive = false;
+        private double _scannerY = -25;
+        private double _scannerDirection = 1;
+        private readonly double _scannerSpeed = 1.75;
         #endregion
 
         #region Geometry
@@ -43,6 +46,35 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 Point3 = new Point(5, 20)
             });
             geo.Figures.Add(figure);
+            return geo;
+        }
+
+        private PathGeometry CreateCircuitGeometry()
+        {
+            var geo = new PathGeometry();
+
+            void AddTrace(Point[] points)
+            {
+                var fig = new PathFigure { StartPoint = points[0], IsClosed = false };
+                for (int i = 1; i < points.Length; i++) fig.Segments.Add(new LineSegment { Point = points[i] });
+                geo.Figures.Add(fig);
+            }
+
+            AddTrace(new[] { new Point(14, 22), new Point(16, 22), new Point(20, 26), new Point(20, 40) });
+            AddTrace(new[] { new Point(13, 35), new Point(18, 35), new Point(22, 39), new Point(22, 45) });
+            AddTrace(new[] { new Point(18, 55), new Point(21, 55), new Point(25, 50) });
+            AddTrace(new[] { new Point(13, 45), new Point(17, 45), new Point(21, 49), new Point(21, 58) });
+
+            AddTrace(new[] { new Point(55, 22), new Point(52, 22), new Point(48, 26), new Point(48, 40) });
+            AddTrace(new[] { new Point(56, 35), new Point(51, 35), new Point(47, 39), new Point(47, 45) });
+            AddTrace(new[] { new Point(50, 55), new Point(47, 55), new Point(43, 50) });
+            AddTrace(new[] { new Point(55, 45), new Point(51, 45), new Point(47, 49), new Point(47, 58) });
+
+            AddTrace(new[] { new Point(26, 12), new Point(26, 15), new Point(31, 20) });
+            AddTrace(new[] { new Point(44, 12), new Point(44, 15), new Point(39, 20) });
+            AddTrace(new[] { new Point(30, 63), new Point(30, 58), new Point(33, 55) });
+            AddTrace(new[] { new Point(40, 63), new Point(40, 58), new Point(37, 55) });
+
             return geo;
         }
         #endregion
@@ -117,7 +149,21 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             };
             _canvas.Children.Add(_networkWireframe);
 
-            var scannerTransform = new TranslateTransform { Y = -25 };
+            _animatedCircuits = new Path
+            {
+                Data = CreateCircuitGeometry(),
+                StrokeThickness = 1.0,
+                Opacity = 0.85,
+                StrokeDashArray = new DoubleCollection { 3, 5 },
+                StrokeDashCap = PenLineCap.Round,
+                StrokeLineJoin = PenLineJoin.Round,
+                StrokeDashOffset = 8
+            };
+            _canvas.Children.Add(_animatedCircuits);
+
+            _scannerY = -25;
+            _scannerDirection = 1;
+            var scannerTransform = new TranslateTransform { Y = _scannerY };
 
             _scanner = new Path
             {
@@ -161,20 +207,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             };
             _canvas.Children.Add(_centerSymbol);
 
-            _scannerStoryboard = new Storyboard { RepeatBehavior = RepeatBehavior.Forever };
-            var sweepAnimation = new DoubleAnimation
-            {
-                From = -25,
-                To = 80,
-                Duration = new Duration(TimeSpan.FromSeconds(0.9)),
-                AutoReverse = true,
-                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
-            };
-            Storyboard.SetTarget(sweepAnimation, scannerTransform);
-            Storyboard.SetTargetProperty(sweepAnimation, "Y");
-            _scannerStoryboard.Children.Add(sweepAnimation);
-            _canvas.Resources.Add("ScannerStory", _scannerStoryboard);
-
             _edgeGlowTimer?.Stop();
             _edgeGlowTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) }; // ~60 FPS
             _edgeGlowTimer.Tick += (s, e) =>
@@ -182,6 +214,31 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 if (_borderRotateTransform != null)
                 {
                     _borderRotateTransform.Angle = (_borderRotateTransform.Angle + 2.5) % 360;
+                }
+
+                if (_animatedCircuits != null)
+                {
+                    _animatedCircuits.StrokeDashOffset -= 0.16;
+                    if (_animatedCircuits.StrokeDashOffset <= 0)
+                    {
+                        _animatedCircuits.StrokeDashOffset += 8;
+                    }
+                }
+
+                if (_isScannerActive && _scanner?.Fill is LinearGradientBrush brush && brush.Transform is TranslateTransform trans)
+                {
+                    _scannerY += _scannerSpeed * _scannerDirection;
+                    if (_scannerY >= 80)
+                    {
+                        _scannerY = 80;
+                        _scannerDirection = -1;
+                    }
+                    else if (_scannerY <= -25)
+                    {
+                        _scannerY = -25;
+                        _scannerDirection = 1;
+                    }
+                    trans.Y = _scannerY;
                 }
             };
             _edgeGlowTimer.Start();
@@ -191,35 +248,39 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
         #region State Management
         public void SetState(bool isConnecting, bool isRunning)
         {
-            if (_centerSymbol == null || _centerSymbolShadow == null || _scanner == null) return;
+            if (_centerSymbol == null || _centerSymbolShadow == null || _scanner == null || _animatedCircuits == null) return;
 
             if (isConnecting)
             {
-                // Blue Scanning/Connecting State
                 SetColors(Color.FromArgb(255, 0, 140, 255), Color.FromArgb(255, 0, 230, 255));
                 _centerSymbol.Visibility = Visibility.Collapsed;
                 _centerSymbolShadow.Visibility = Visibility.Collapsed;
                 _scanner.Visibility = Visibility.Visible;
-                _scannerStoryboard?.Begin();
+
+                _animatedCircuits.Visibility = Visibility.Collapsed;
+
+                _isScannerActive = true;
                 return;
             }
 
-            _scannerStoryboard?.Stop();
+            _isScannerActive = false;
             _scanner.Visibility = Visibility.Collapsed;
             _centerSymbol.Visibility = Visibility.Visible;
             _centerSymbolShadow.Visibility = Visibility.Visible;
 
             if (isRunning)
             {
-                // Green Running/Secure State
                 SetSymbolGeometry(true);
                 SetColors(Color.FromArgb(255, 46, 139, 87), Color.FromArgb(255, 80, 240, 140));
+
+                _animatedCircuits.Visibility = Visibility.Visible;
             }
             else
             {
-                // Red Stopped/Disconnected State
                 SetSymbolGeometry(false);
                 SetColors(Color.FromArgb(255, 232, 17, 35), Color.FromArgb(255, 255, 80, 100));
+
+                _animatedCircuits.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -232,7 +293,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             {
                 if (isRunning)
                 {
-                    // Checkmark
                     var fig = new PathFigure { StartPoint = new Point(24, 42), IsClosed = false };
                     fig.Segments.Add(new LineSegment { Point = new Point(32, 50) });
                     fig.Segments.Add(new LineSegment { Point = new Point(46, 30) });
@@ -240,7 +300,6 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 }
                 else
                 {
-                    // X Mark
                     var fig1 = new PathFigure { StartPoint = new Point(26, 30), IsClosed = false };
                     fig1.Segments.Add(new LineSegment { Point = new Point(44, 48) });
 
@@ -277,6 +336,11 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             if (_networkWireframe != null)
             {
                 _networkWireframe.Stroke = new SolidColorBrush(baseColor);
+            }
+
+            if (_animatedCircuits != null)
+            {
+                _animatedCircuits.Stroke = new SolidColorBrush(brightSymbolColor);
             }
 
             if (_centerSymbol != null)
