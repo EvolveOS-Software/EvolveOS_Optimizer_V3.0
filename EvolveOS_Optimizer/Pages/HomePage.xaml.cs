@@ -116,6 +116,9 @@ namespace EvolveOS_Optimizer.Pages
 
                 ApplyLightingToCards();
                 InitializeSecurityCard();
+
+                GamingModeHelper.UpdateCustomWhitelist(SettingsEngine.GamingMode_ProcessWhitelist);
+
                 InitializeGamingCard();
 
                 if (MenuPlasmaCore != null && MenuNeonController != null)
@@ -652,7 +655,8 @@ namespace EvolveOS_Optimizer.Pages
             SetCustomCursor(BtnGamingMode, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnExpandGamingMode, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnGamingGraphicStyle, InputSystemCursorShape.Arrow);
-            SetCustomCursor(ChkTestMode, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnGamingSettings, InputSystemCursorShape.Arrow);
+            SetCustomCursor(BtnToggleConsoleView, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnExpandDisk, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnRunDiskCleanup, InputSystemCursorShape.Arrow);
             SetCustomCursor(BtnOptimizeDrive, InputSystemCursorShape.Arrow);
@@ -938,11 +942,105 @@ namespace EvolveOS_Optimizer.Pages
         }
         #endregion
 
-        #region Gaming Mode
+        #region Gaming Mode Card
 
         private GamingCoreHelper _gamingCoreHelper = new GamingCoreHelper();
         private GamingControllerHelper _gamingControllerHelper = new GamingControllerHelper();
         private int _currentGamingGraphic = SettingsEngine.Dashboard_GamingGraphicStyle;
+
+        private async void BtnGamingSettings_Click(object sender, RoutedEventArgs e)
+        {
+            var root = this.XamlRoot ?? this.Content?.XamlRoot;
+            if (root == null) return;
+
+            var panel = new StackPanel { Spacing = 12, Margin = new Thickness(0, 10, 0, 0) };
+
+            var headerTweaks = new TextBlock { Text = "Optimization Tweaks", FontWeight = FontWeights.SemiBold };
+            var chkMute = new CheckBox { Content = "Mute Notifications (Focus Assist)", IsChecked = SettingsEngine.GamingMode_MuteNotifications };
+            var chkRam = new CheckBox { Content = "Clear RAM Cache before launch", IsChecked = SettingsEngine.GamingMode_ClearRam };
+            var chkWinKey = new CheckBox { Content = "Disable Windows Key", IsChecked = SettingsEngine.GamingMode_DisableWinKey };
+            var chkExplorer = new CheckBox { Content = "Kill Explorer.exe (Extreme Performance)", IsChecked = SettingsEngine.GamingMode_KillExplorer };
+
+            var headerWhitelist = new TextBlock { Text = "Process Whitelist (Comma separated)", FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 12, 0, 0) };
+            var txtWhitelist = new TextBox
+            {
+                Text = SettingsEngine.GamingMode_ProcessWhitelist,
+                TextWrapping = TextWrapping.Wrap,
+                AcceptsReturn = true,
+                Height = 80
+            };
+
+            var headerDev = new TextBlock { Text = "Developer Options", FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 12, 0, 0) };
+            var chkTestMode = new CheckBox
+            {
+                Content = "Enable UI Test Mode (No System Tweaks)",
+                IsChecked = GamingModeHelper.IsTestModeEnabled
+                //Visibility = Visibility.Collapsed
+            };
+
+            chkTestMode.Checked += (s, args) => GamingModeHelper.IsTestModeEnabled = true;
+            chkTestMode.Unchecked += (s, args) => GamingModeHelper.IsTestModeEnabled = false;
+
+            panel.Children.Add(headerTweaks);
+            panel.Children.Add(chkMute);
+            panel.Children.Add(chkRam);
+            panel.Children.Add(chkWinKey);
+            panel.Children.Add(chkExplorer);
+            panel.Children.Add(headerWhitelist);
+            panel.Children.Add(txtWhitelist);
+            panel.Children.Add(headerDev);
+            panel.Children.Add(chkTestMode);
+
+            var dialog = new ContentDialog
+            {
+                XamlRoot = root,
+                Title = "Gaming Mode Configuration",
+                Content = new ScrollViewer { Content = panel, VerticalScrollBarVisibility = ScrollBarVisibility.Auto },
+                PrimaryButtonText = "Save",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out object style))
+            {
+                dialog.Style = (Style)style;
+            }
+
+            var result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                SettingsEngine.GamingMode_MuteNotifications = chkMute.IsChecked ?? false;
+                SettingsEngine.GamingMode_ClearRam = chkRam.IsChecked ?? false;
+                SettingsEngine.GamingMode_DisableWinKey = chkWinKey.IsChecked ?? false;
+                SettingsEngine.GamingMode_KillExplorer = chkExplorer.IsChecked ?? false;
+                SettingsEngine.GamingMode_ProcessWhitelist = txtWhitelist.Text;
+
+                GamingModeHelper.UpdateCustomWhitelist(txtWhitelist.Text);
+            }
+        }
+
+        private void BtnToggleConsoleView_Click(object sender, RoutedEventArgs e)
+        {
+            bool showingConsole = GamingConsoleBorder.Visibility == Visibility.Visible;
+
+            if (showingConsole)
+            {
+                GamingConsoleBorder.Visibility = Visibility.Collapsed;
+                GamingResultsGrid.Visibility = Visibility.Visible;
+                TxtGamingViewTitle.Text = "Optimization Results";
+                TxtToggleConsoleView.Text = "View Console";
+                IconToggleConsoleView.Glyph = "\uE70D"; // Chevron down
+            }
+            else
+            {
+                GamingConsoleBorder.Visibility = Visibility.Visible;
+                GamingResultsGrid.Visibility = Visibility.Collapsed;
+                TxtGamingViewTitle.Text = "Live Progress";
+                TxtToggleConsoleView.Text = "Hide Console";
+                IconToggleConsoleView.Glyph = "\uE70E"; // Chevron up
+            }
+        }
 
         private void GamingStyle_Click(object sender, RoutedEventArgs e)
         {
@@ -952,11 +1050,9 @@ namespace EvolveOS_Optimizer.Pages
                 MenuNeonController.IsChecked = (style == 1);
 
                 _currentGamingGraphic = style;
-
                 SettingsEngine.Dashboard_GamingGraphicStyle = style;
 
                 InitializeGamingCard();
-
                 RefreshGamingGraphicLayoutSize(GamingExpandedContent.Visibility == Visibility.Visible);
             }
         }
@@ -1061,6 +1157,11 @@ namespace EvolveOS_Optimizer.Pages
             if (_currentGamingGraphic == 0) _gamingCoreHelper.SetState(isOptimizing: true, isActive: false);
             else _gamingControllerHelper.SetState(isOptimizing: true, isActive: false);
 
+            GamingConsoleBorder.Visibility = Visibility.Visible;
+            GamingResultsGrid.Visibility = Visibility.Collapsed;
+            BtnToggleConsoleView.Visibility = Visibility.Collapsed;
+            TxtGamingViewTitle.Text = "Live Progress";
+
             var progressReporter = new Progress<string>(message =>
             {
                 _dispatcherQueue.TryEnqueue(() =>
@@ -1072,9 +1173,9 @@ namespace EvolveOS_Optimizer.Pages
 
             try
             {
-                bool success = await GamingModeHelper.ToggleGamingModeAsync(targetState, progressReporter);
+                var optResult = await GamingModeHelper.ToggleGamingModeAsync(targetState, progressReporter);
 
-                if (success)
+                if (optResult != null && optResult.Success)
                 {
                     GamingStatusLabel.Text = targetState
                         ? ResourceString.GetString("gm_mode_high_perf")
@@ -1088,11 +1189,29 @@ namespace EvolveOS_Optimizer.Pages
                     {
                         GamingModeButtonLabel.Text = ResourceString.GetString("gm_label_gaming");
                         GamingModeBtnText.Text = ResourceString.GetString("gm_btn_disable");
+
+                        TxtGmRamFreed.Text = $"{optResult.RamFreedMB} MB";
+                        TxtGmAppsClosed.Text = $"{optResult.AppsClosed}";
+                        TxtGmServices.Text = $"{optResult.ServicesSuspended}";
+                        TxtGmPing.Text = optResult.PingMs > 0 ? $"{optResult.PingMs} ms" : "-- ms";
+
+                        GamingConsoleBorder.Visibility = Visibility.Collapsed;
+                        GamingResultsGrid.Visibility = Visibility.Visible;
+                        TxtGamingViewTitle.Text = "Optimization Results";
+
+                        BtnToggleConsoleView.Visibility = Visibility.Visible;
+                        TxtToggleConsoleView.Text = "View Console";
+                        IconToggleConsoleView.Glyph = "\uE70D"; // Chevron down
                     }
                     else
                     {
                         GamingModeButtonLabel.Text = ResourceString.GetString("gm_label_normal");
                         GamingModeBtnText.Text = ResourceString.GetString("gm_btn_enable");
+
+                        GamingResultsGrid.Visibility = Visibility.Collapsed;
+                        GamingConsoleBorder.Visibility = Visibility.Visible;
+                        TxtGamingViewTitle.Text = "System Restored";
+                        BtnToggleConsoleView.Visibility = Visibility.Collapsed;
                     }
 
                     if (_currentGamingGraphic == 0) _gamingCoreHelper.SetState(isOptimizing: false, isActive: targetState);
@@ -1110,16 +1229,6 @@ namespace EvolveOS_Optimizer.Pages
             {
                 btn.IsEnabled = true;
             }
-        }
-
-        private void ChkTestMode_Checked(object sender, RoutedEventArgs e)
-        {
-            GamingModeHelper.IsTestModeEnabled = true;
-        }
-
-        private void ChkTestMode_Unchecked(object sender, RoutedEventArgs e)
-        {
-            GamingModeHelper.IsTestModeEnabled = false;
         }
 
         #endregion

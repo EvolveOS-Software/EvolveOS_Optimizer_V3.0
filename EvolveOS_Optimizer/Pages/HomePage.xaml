@@ -325,12 +325,18 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <FontIcon Glyph="&#xE7FC;" Foreground="{ThemeResource MyDynamicAccentBrush}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" helpers:Loc.Key="gm_card_title" FontFamily="Jura Medium" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
 
+                            <!-- Gaming Settings (Dialog) -->
+                            <Button x:Name="BtnGamingSettings" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="4" Margin="0,0,4,0" ToolTipService.ToolTip="Gaming Settings" Click="BtnGamingSettings_Click">
+                                <FontIcon Glyph="&#xE713;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            </Button>
+
                             <!-- Visual Style Selection Flyout -->
-                            <Button x:Name="BtnGamingGraphicStyle" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="4" Margin="0,0,4,0" ToolTipService.ToolTip="Change Visual Style">
+                            <Button x:Name="BtnGamingGraphicStyle" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="4" Margin="0,0,4,0" ToolTipService.ToolTip="Change Visual Style">
                                 <FontIcon Glyph="&#xE790;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                                 <Button.Flyout>
                                     <MenuFlyout>
@@ -341,7 +347,7 @@
                             </Button>
 
                             <!-- Expand Button -->
-                            <Button x:Name="BtnExpandGamingMode" Grid.Column="3" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandGamingMode_Click">
+                            <Button x:Name="BtnExpandGamingMode" Grid.Column="4" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnExpandGamingMode_Click">
                                 <FontIcon x:Name="IconExpandGamingMode" Glyph="&#xE70D;" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             </Button>
                         </Grid>
@@ -357,30 +363,61 @@
                             <TextBlock x:Name="GamingStatusLabel" helpers:Loc.Key="gm_mode_standard" FontSize="11" Foreground="{ThemeResource Brush_Inactive}" Opacity="1" HorizontalAlignment="Center" FontFamily="Jura Medium" Margin="0,-2,0,0"/>
                         </StackPanel>
 
-                        <!-- Row 3: Expanded Section with Console -->
+                        <!-- Row 3: Expanded Section with Console & Results -->
                         <StackPanel x:Name="GamingExpandedContent" Grid.Row="3" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,16,0,0">
 
-                            <!-- Test Mode: Development Purpose -->
-                            <CheckBox x:Name="ChkTestMode"
-                                      Visibility="Collapsed"
-                                      Content="Enable UI Test Mode (No System Tweaks)"
-                                      FontSize="12"
-                                      Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                      Checked="ChkTestMode_Checked"
-                                      Unchecked="ChkTestMode_Unchecked"/>
+                            <Grid Margin="0,0,0,8">
+                                <TextBlock x:Name="TxtGamingViewTitle" Text="Live Progress" FontSize="12" FontFamily="Jura Medium" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
+                                <Button x:Name="BtnToggleConsoleView" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Padding="4" Click="BtnToggleConsoleView_Click" Visibility="Collapsed">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock x:Name="TxtToggleConsoleView" Text="View Console" FontSize="10" VerticalAlignment="Center"/>
+                                        <FontIcon x:Name="IconToggleConsoleView" Glyph="&#xE70D;" FontSize="10" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
 
+                            <!-- Optimization Results (Mini Cards) -->
+                            <Grid x:Name="GamingResultsGrid" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="8" RowSpacing="8" Visibility="Collapsed">
+                                <Border Grid.Row="0" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="RAM Freed" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock x:Name="TxtGmRamFreed" Text="-- MB" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Row="0" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Apps Closed" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock x:Name="TxtGmAppsClosed" Text="--" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Row="1" Grid.Column="0" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Services Suspended" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock x:Name="TxtGmServices" Text="--" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Row="1" Grid.Column="1" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" Padding="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="Est. Latency" FontSize="10" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="Jura Medium"/>
+                                        <TextBlock x:Name="TxtGmPing" Text="-- ms" FontSize="13" FontWeight="Bold" FontFamily="Jura" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <!-- Live Console -->
                             <Border x:Name="GamingConsoleBorder" Height="140" Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="6" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
                                 <ScrollViewer x:Name="GamingProgressScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                     <TextBlock x:Name="GamingProgressText"
-                                   helpers:Loc.Key="gm_progress_idle"
-                                   FontSize="11"
-                                   FontFamily="Consolas"
-                                   TextWrapping="Wrap"
-                                   Padding="10"
-                                   Opacity="0.8"
-                                   Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                               helpers:Loc.Key="gm_progress_idle"
+                                               FontSize="11"
+                                               FontFamily="Consolas"
+                                               TextWrapping="Wrap"
+                                               Padding="10"
+                                               Opacity="0.8"
+                                               Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                 </ScrollViewer>
                             </Border>
+
                         </StackPanel>
 
                         <!-- Row 4: Refresh/Action Bottom -->

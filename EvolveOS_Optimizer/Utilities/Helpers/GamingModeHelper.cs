@@ -108,6 +108,44 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             "radeonsoftware", "amddvr", "lghub", "lghub_agent", "icue", "razer synapse", "rzsynapse"
         };
 
+        private static HashSet<string> CustomWhitelist = new(StringComparer.OrdinalIgnoreCase);
+
+        public class GamingOptimizationResult
+        {
+            public bool Success { get; set; }
+            public int AppsClosed { get; set; }
+            public int ServicesSuspended { get; set; }
+            public long RamFreedMB { get; set; }
+            public long PingMs { get; set; }
+        }
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        private struct MEMORYSTATUSEX
+        {
+            public uint dwLength;
+            public uint dwMemoryLoad;
+            public ulong ullTotalPhys;
+            public ulong ullAvailPhys;
+            public ulong ullTotalPageFile;
+            public ulong ullAvailPageFile;
+            public ulong ullTotalVirtual;
+            public ulong ullAvailVirtual;
+            public ulong ullAvailExtendedVirtual;
+        }
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+
+        private static ulong GetAvailablePhysicalMemoryMB()
+        {
+            var memStatus = new MEMORYSTATUSEX();
+            memStatus.dwLength = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+            if (GlobalMemoryStatusEx(ref memStatus))
+                return memStatus.ullAvailPhys / (1024 * 1024);
+            return 0;
+        }
+
         private class BackupStateModel
         {
             public Dictionary<string, int>? ServiceStates { get; set; }
@@ -118,9 +156,33 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             public Dictionary<string, int>? GpuRegistryValues { get; set; }
         }
 
-        
-        public static async Task<bool> ToggleGamingModeAsync(bool enable, IProgress<string>? progress = null)
+        public static void UpdateCustomWhitelist(string commaSeparatedList)
         {
+            CustomWhitelist.Clear();
+            if (string.IsNullOrWhiteSpace(commaSeparatedList)) return;
+
+            var items = commaSeparatedList.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var item in items)
+            {
+                string cleanName = item.Trim();
+
+                if (cleanName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                {
+                    cleanName = cleanName.Substring(0, cleanName.Length - 4);
+                }
+                CustomWhitelist.Add(cleanName);
+            }
+        }
+
+        private static bool IsProcessWhitelisted(string processName)
+        {
+            return GamingWhitelist.Contains(processName) || CustomWhitelist.Contains(processName);
+        }
+
+        public static async Task<GamingOptimizationResult> ToggleGamingModeAsync(bool enable, IProgress<string>? progress = null)
+        {
+            var result = new GamingOptimizationResult { Success = false };
+
             try
             {
                 #region Test Mode
@@ -139,34 +201,47 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                     progress?.Report($"[TEST MODE] {(enable ? "Engine Ready" : "System Restored")}");
 
                     IsGamingModeActive = enable;
-                    return true;
+
+                    return new GamingOptimizationResult
+                    {
+                        Success = true,
+                        AppsClosed = new Random().Next(5, 18),
+                        ServicesSuspended = 42,
+                        RamFreedMB = new Random().Next(800, 2400),
+                        PingMs = new Random().Next(12, 35)
+                    };
                 }
 
                 #endregion
 
                 if (enable)
                 {
-                    await EnableGamingModeAsync(progress);
+                    result = await EnableGamingModeAsync(progress);
+                    result.Success = true;
                     IsGamingModeActive = true;
                 }
                 else
                 {
                     await DisableGamingModeAsync(progress);
+                    result.Success = true;
                     IsGamingModeActive = false;
                 }
-                return true;
+                return result;
             }
             catch (Exception ex)
             {
                 ErrorLogging.LogDebug(new Exception($"[GamingMode] Error: {ex.Message}", ex));
                 progress?.Report("Error: " + ex.Message);
-                return false;
+                return result;
             }
         }
-        
 
-        private static async Task EnableGamingModeAsync(IProgress<string>? progress)
+        private static async Task<GamingOptimizationResult> EnableGamingModeAsync(IProgress<string>? progress)
         {
+            var result = new GamingOptimizationResult();
+
+            ulong ramBefore = GetAvailablePhysicalMemoryMB();
+
             progress?.Report(ResourceString.GetString("gm_progress_snapshot"));
             CaptureSystemState();
 
@@ -190,7 +265,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             await CommandExecutor.RunCommand(cmd1.ToString(), isPowerShell: false);
 
             progress?.Report(ResourceString.GetString("gm_progress_cleaning_apps"));
-            await Task.Run(() => SmartKillNonEssentialApps());
+
+            result.AppsClosed = await Task.Run(() => SmartKillNonEssentialApps());
 
             progress?.Report(ResourceString.GetString("gm_progress_gpu"));
             SetGpuMaxPerformance();
@@ -208,6 +284,8 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 cmd2.Append($"net stop \"{service}\" /y >nul 2>&1 & ");
             }
             await CommandExecutor.RunCommand(cmd2.ToString(), isPowerShell: false);
+
+            result.ServicesSuspended = ServicesToSuspend.Length;
 
             StringBuilder cmd3 = new StringBuilder("/c ");
 
@@ -276,6 +354,21 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
                 shouldRemoveWinOld: false,
                 shouldFlushDns: false
             );
+
+            ulong ramAfter = GetAvailablePhysicalMemoryMB();
+            long freed = (long)(ramAfter - ramBefore);
+            result.RamFreedMB = freed > 0 ? freed : 0;
+
+            try
+            {
+                using var ping = new System.Net.NetworkInformation.Ping();
+                var reply = await ping.SendPingAsync("8.8.8.8", 1500);
+                if (reply.Status == System.Net.NetworkInformation.IPStatus.Success)
+                    result.PingMs = reply.RoundtripTime;
+            }
+            catch { }
+
+            return result;
         }
 
         private static async Task DisableGamingModeAsync(IProgress<string>? progress)
@@ -397,8 +490,9 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             }
         }
 
-        private static void SmartKillNonEssentialApps()
+        private static int SmartKillNonEssentialApps()
         {
+            int killedCount = 0;
             int currentProcessId = Process.GetCurrentProcess().Id;
             string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
 
@@ -410,7 +504,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                     if (proc.SessionId == 0) continue;
 
-                    if (GamingWhitelist.Contains(proc.ProcessName)) continue;
+                    if (IsProcessWhitelisted(proc.ProcessName)) continue;
 
                     string? exePath = proc.MainModule?.FileName;
                     if (string.IsNullOrEmpty(exePath)) continue;
@@ -426,9 +520,12 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                     Debug.WriteLine($"[GamingMode] Terminating 3rd Party App: {proc.ProcessName}");
                     proc.Kill();
+                    killedCount++;
                 }
                 catch { /* Access Denied (Protected process) or already exited - skip safely */ }
             }
+
+            return killedCount;
         }
 
         private static void SetGpuMaxPerformance()
@@ -519,7 +616,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
 
                 foreach (var proc in Process.GetProcesses())
                 {
-                    if (GamingWhitelist.Contains(proc.ProcessName))
+                    if (IsProcessWhitelisted(proc.ProcessName))
                     {
                         try
                         {
@@ -552,7 +649,7 @@ namespace EvolveOS_Optimizer.Utilities.Helpers
             {
                 foreach (var proc in Process.GetProcesses())
                 {
-                    if (GamingWhitelist.Contains(proc.ProcessName))
+                    if (IsProcessWhitelisted(proc.ProcessName))
                     {
                         try
                         {

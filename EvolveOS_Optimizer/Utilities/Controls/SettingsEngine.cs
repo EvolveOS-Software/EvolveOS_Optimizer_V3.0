@@ -96,6 +96,12 @@ namespace EvolveOS_Optimizer.Utilities.Controls
             ["Dashboard_AutoScanEnabled"] = false,
             ["Dashboard_AutoScanIntervalHours"] = 24,
             ["Dashboard_GamingGraphicStyle"] = 0,
+            ["GamingMode_MuteNotifications"] = true,
+            ["GamingMode_ClearRam"] = true,
+            ["GamingMode_DisableWinKey"] = false,
+            ["GamingMode_KillExplorer"] = false,
+            ["GamingMode_ProcessWhitelist"] = "discord.exe, obs64.exe, spotify.exe",
+
             ["AutoLoginSessionHours"] = 4,
 
             ["Dashboard_AutoRamOptimize"] = false,
@@ -220,6 +226,11 @@ namespace EvolveOS_Optimizer.Utilities.Controls
         internal static bool Dashboard_AutoScanEnabled { get => (bool)_cachedSettings["Dashboard_AutoScanEnabled"]; set => ChangingParameters("Dashboard_AutoScanEnabled", value); }
         internal static int Dashboard_AutoScanIntervalHours { get => (int)_cachedSettings["Dashboard_AutoScanIntervalHours"]; set => ChangingParameters("Dashboard_AutoScanIntervalHours", value); }
         internal static int Dashboard_GamingGraphicStyle { get => (int)_cachedSettings["Dashboard_GamingGraphicStyle"]; set => ChangingParameters("Dashboard_GamingGraphicStyle", value); }
+        internal static bool GamingMode_MuteNotifications { get => (bool)_cachedSettings["GamingMode_MuteNotifications"]; set => ChangingParameters("GamingMode_MuteNotifications", value); }
+        internal static bool GamingMode_ClearRam { get => (bool)_cachedSettings["GamingMode_ClearRam"]; set => ChangingParameters("GamingMode_ClearRam", value); }
+        internal static bool GamingMode_DisableWinKey { get => (bool)_cachedSettings["GamingMode_DisableWinKey"]; set => ChangingParameters("GamingMode_DisableWinKey", value); }
+        internal static bool GamingMode_KillExplorer { get => (bool)_cachedSettings["GamingMode_KillExplorer"]; set => ChangingParameters("GamingMode_KillExplorer", value); }
+        internal static string GamingMode_ProcessWhitelist { get => (string)_cachedSettings["GamingMode_ProcessWhitelist"]; set => ChangingParameters("GamingMode_ProcessWhitelist", value); }
         internal static bool Dashboard_AutoRamOptimize { get => (bool)_cachedSettings["Dashboard_AutoRamOptimize"]; set => ChangingParameters("Dashboard_AutoRamOptimize", value); }
         internal static int Dashboard_AutoRamThreshold { get => (int)_cachedSettings["Dashboard_AutoRamThreshold"]; set => ChangingParameters("Dashboard_AutoRamThreshold", value); }
         internal static bool Dashboard_BoostWorkingSets { get => (bool)_cachedSettings["Dashboard_BoostWorkingSets"]; set => ChangingParameters("Dashboard_BoostWorkingSets", value); }
