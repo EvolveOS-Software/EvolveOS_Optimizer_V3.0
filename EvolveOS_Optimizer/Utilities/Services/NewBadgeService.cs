@@ -35,28 +35,51 @@ public class NewBadgeService : INewBadgeService
     public async Task InitializeAsync(IEnumerable<string?> allAddedInVersions)
     {
         var currentAppVersion = GetAppVersion();
-        var lastRunVersionStr = _prefs.GetPreference("LastRunVersion", "");
 
-        if (!TryParseVersion(lastRunVersionStr, out var lastRunVersion))
+        var uniqueVersions = new HashSet<Version>();
+        if (allAddedInVersions != null)
+        {
+            foreach (var raw in allAddedInVersions)
+            {
+                if (TryParseVersion(raw, out var parsed))
+                {
+                    uniqueVersions.Add(parsed);
+                }
+            }
+        }
+        uniqueVersions.Add(currentAppVersion);
+
+        var sortedVersions = uniqueVersions.OrderBy(v => v).ToList();
+        var currentIndex = sortedVersions.IndexOf(currentAppVersion);
+
+        // Calculate the 2-version rolling cutoff (Current version)
+        // Example: Calculate the 3-version rolling cutoff
+        // Change currentIndex to - 3);
+        var cutoffIndex = Math.Max(0, currentIndex - 2);
+        var twoVersionCutoff = sortedVersions[cutoffIndex];
+
+        var installBaselineStr = _prefs.GetPreference("InstallBaseline", "");
+        Version installBaseline;
+
+        if (!TryParseVersion(installBaselineStr, out installBaseline))
         {
             Version? highestInRegistry = GetHighestVersion(allAddedInVersions);
-
             if (highestInRegistry is not null)
             {
-                _baseline = new Version(highestInRegistry.Major, highestInRegistry.Minor, 0, 0);
+                installBaseline = new Version(highestInRegistry.Major, highestInRegistry.Minor, 0, 0);
             }
             else
             {
-                _baseline = currentAppVersion;
+                installBaseline = currentAppVersion;
             }
 
-            _logService.LogInformation($"[NewBadge] Fresh install detected. Baseline set to {_baseline}.");
+            await _prefs.SetPreferenceAsync("InstallBaseline", VersionToString(installBaseline)).ConfigureAwait(false);
+            _logService.LogInformation($"[NewBadge] Fresh install detected. InstallBaseline set to {installBaseline}.");
         }
-        else
-        {
-            _baseline = lastRunVersion;
-            _logService.LogInformation($"[NewBadge] Upgrade detected. Last run: {lastRunVersion}, Current: {currentAppVersion}. Baseline set to {_baseline}.");
-        }
+
+        _baseline = twoVersionCutoff > installBaseline ? twoVersionCutoff : installBaseline;
+
+        _logService.LogInformation($"[NewBadge] Current App: {currentAppVersion}. Rolling Cutoff: {twoVersionCutoff}. Active Baseline: {_baseline}.");
 
         await _prefs.SetPreferenceAsync("LastRunVersion", VersionToString(currentAppVersion)).ConfigureAwait(false);
 
@@ -71,12 +94,12 @@ public class NewBadgeService : INewBadgeService
         if (!TryParseVersion(addedInVersion, out var settingVersion))
             return false;
 
-        return settingVersion > _baseline;
+        return settingVersion >= _baseline;
     }
     #endregion
 
     #region Private Helpers
-    private static Version? GetHighestVersion(IEnumerable<string?> versions)
+    private static Version? GetHighestVersion(IEnumerable<string?>? versions)
     {
         Version? highest = null;
         if (versions is null) return null;
@@ -124,7 +147,7 @@ public class NewBadgeService : INewBadgeService
         return new Version(0, 0, 0);
     }
 
-    private static bool TryParseVersion(string versionStr, out Version parsed)
+    private static bool TryParseVersion(string? versionStr, out Version parsed)
     {
         if (string.IsNullOrWhiteSpace(versionStr))
         {
