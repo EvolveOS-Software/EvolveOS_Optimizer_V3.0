@@ -223,6 +223,50 @@ public static class TaskbarCustomizations
                 },
                 new SettingDefinition
                 {
+                    Id = "taskbar-size",
+                    IsSubjectivePreference = true,
+                    AddedInVersion = "1.2.5.418",
+                    Name = "Taskbar size",
+                    Description = "Change the overall size of the taskbar and its icons",
+                    GroupName = "Taskbar Behavior",
+                    InputType = InputType.Selection,
+                    Icon = "FontSize",
+                    IsWindows11Only = true,
+                    MinimumBuildNumber = 26200,
+                    MinimumBuildRevision = 9278,
+                    //RestartProcess = "Explorer", // Requires Explorer restart to resize the taskbar
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
+                            ValueName = "TaskbarSize",
+                            RecommendedValue = 0, // 0 = Default
+                            DefaultValue = 0,
+                            ValueType = RegistryValueKind.DWord,
+                        },
+                    },
+                    ComboBox = new ComboBoxMetadata
+                    {
+                        Options = new[]
+                        {
+                            new ComboBoxOption
+                            {
+                                DisplayName = "Default",
+                                ValueMappings = new Dictionary<string, object?> { ["TaskbarSize"] = 0 },
+                                IsRecommended = true,
+                                IsDefault = true,
+                            },
+                            new ComboBoxOption
+                            {
+                                DisplayName = "Small",
+                                ValueMappings = new Dictionary<string, object?> { ["TaskbarSize"] = 1 },
+                            }
+                        },
+                    },
+                },
+                new SettingDefinition
+                {
                     Id = "taskbar-auto-hide",
                     IsSubjectivePreference = true,
                     Name = "Automatically hide the taskbar",

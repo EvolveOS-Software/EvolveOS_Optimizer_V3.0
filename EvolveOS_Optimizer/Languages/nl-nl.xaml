@@ -5014,6 +5014,14 @@
     <sys:String x:Key="Setting_taskbar-position_Option_2">Rechts</sys:String>
     <sys:String x:Key="Setting_taskbar-position_Option_3">Onder</sys:String>
 
+    <!-- Taskbar Size -->
+    <sys:String x:Key="Setting_taskbar-size_Name">Taakbalkgrootte</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Description">Wijzig de algehele grootte van de taakbalk en bijbehorende pictogrammen</sys:String>
+
+    <!-- Taskbar Size Options -->
+    <sys:String x:Key="Setting_taskbar-size_Option_0">Standaard</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Option_1">Klein</sys:String>
+
     <sys:String x:Key="Setting_theme-mode-windows_Name">Kies uw modus</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Kies tussen de Lichte en Donkere modus voor Windows en apps</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_ConfirmTitle">Windows-thema wijzigen</sys:String>

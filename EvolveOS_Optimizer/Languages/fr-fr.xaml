@@ -5000,6 +5000,14 @@
     <sys:String x:Key="Setting_taskbar-position_Option_2">Droite</sys:String>
     <sys:String x:Key="Setting_taskbar-position_Option_3">Bas</sys:String>
 
+    <!-- Taskbar Size -->
+    <sys:String x:Key="Setting_taskbar-size_Name">Taille de la barre des tâches</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Description">Modifier la taille globale de la barre des tâches et de ses icônes</sys:String>
+
+    <!-- Taskbar Size Options -->
+    <sys:String x:Key="Setting_taskbar-size_Option_0">Par défaut</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Option_1">Petite</sys:String>
+
     <sys:String x:Key="Setting_theme-mode-windows_Name">Choisir votre mode</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Choisissez entre le mode clair et le mode sombre pour Windows et vos applications</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_ConfirmTitle">Changement de thème Windows</sys:String>

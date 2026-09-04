@@ -5011,6 +5011,14 @@
     <sys:String x:Key="Setting_taskbar-position_Option_2">Destra</sys:String>
     <sys:String x:Key="Setting_taskbar-position_Option_3">In basso</sys:String>
 
+    <!-- Taskbar Size -->
+    <sys:String x:Key="Setting_taskbar-size_Name">Dimensioni della barra delle applicazioni</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Description">Modifica le dimensioni generali della barra delle applicazioni e delle relative icone</sys:String>
+
+    <!-- Taskbar Size Options -->
+    <sys:String x:Key="Setting_taskbar-size_Option_0">Predefinito</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Option_1">Piccolo</sys:String>
+
     <sys:String x:Key="Setting_theme-mode-windows_Name">Scegli la modalità</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Scegli tra la modalità Chiara o Scura per Windows e le app</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_ConfirmTitle">Modifica del tema di Windows</sys:String>

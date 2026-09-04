@@ -4990,6 +4990,14 @@
     <sys:String x:Key="Setting_taskbar-position_Option_2">Rechts</sys:String>
     <sys:String x:Key="Setting_taskbar-position_Option_3">Unten</sys:String>
 
+    <!-- Taskbar Size -->
+    <sys:String x:Key="Setting_taskbar-size_Name">Größe der Taskleiste</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Description">Ändern Sie die Gesamtgröße der Taskleiste und ihrer Symbole</sys:String>
+
+    <!-- Taskbar Size Options -->
+    <sys:String x:Key="Setting_taskbar-size_Option_0">Standard</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Option_1">Klein</sys:String>
+
     <sys:String x:Key="Setting_theme-mode-windows_Name">Wählen Sie Ihren Modus</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Wählen Sie zwischen dem hellen und dem dunklen Modus für Windows und Apps</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_ConfirmTitle">Windows-Design ändern</sys:String>

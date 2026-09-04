@@ -5109,6 +5109,14 @@
     <sys:String x:Key="Setting_taskbar-position_Option_1">Top</sys:String>
     <sys:String x:Key="Setting_taskbar-position_Option_2">Right</sys:String>
     <sys:String x:Key="Setting_taskbar-position_Option_3">Bottom</sys:String>
+ 
+    <!-- Taskbar Size -->
+    <sys:String x:Key="Setting_taskbar-size_Name">Taskbar size</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Description">Change the overall size of the taskbar and its icons</sys:String>
+
+    <!-- Taskbar Size Options -->
+    <sys:String x:Key="Setting_taskbar-size_Option_0">Default</sys:String>
+    <sys:String x:Key="Setting_taskbar-size_Option_1">Small</sys:String>
 
     <sys:String x:Key="Setting_theme-mode-windows_Name">Choose your mode</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Choose between Light and Dark mode for Windows and apps</sys:String>
