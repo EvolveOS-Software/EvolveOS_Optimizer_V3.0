@@ -5004,6 +5004,16 @@
     <sys:String x:Key="Setting_taskbar-copilot_Name">Knop voor de preview van Copilot</sys:String>
     <sys:String x:Key="Setting_taskbar-copilot_Description">Toon of verberg de knop voor de preview van Copilot op de taakbalk</sys:String>
 
+    <!-- Taskbar Position -->
+    <sys:String x:Key="Setting_taskbar-position_Name">Taakbalkpositie</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Description">Kies waar de taakbalk op uw scherm wordt weergegeven</sys:String>
+
+    <!-- Taskbar Position Options -->
+    <sys:String x:Key="Setting_taskbar-position_Option_0">Links</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_1">Boven</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_2">Rechts</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_3">Onder</sys:String>
+
     <sys:String x:Key="Setting_theme-mode-windows_Name">Kies uw modus</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Kies tussen de Lichte en Donkere modus voor Windows en apps</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_ConfirmTitle">Windows-thema wijzigen</sys:String>

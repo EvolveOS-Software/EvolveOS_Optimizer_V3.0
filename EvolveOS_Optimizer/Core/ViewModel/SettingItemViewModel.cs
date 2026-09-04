@@ -152,9 +152,33 @@ public partial class SettingItemViewModel : BaseViewModel
 
     #region Point In Time Restore Properties
 
-    public bool IsPointInTimeDiskUsage => SettingId == "PointInTimeRestore_MaxStorage";
-    public bool IsPointInTimeSnapshots => SettingId == "PointInTimeRestore_Snapshots";
-    public bool IsCustomCard => IsPointInTimeDiskUsage || IsPointInTimeSnapshots;
+    [ObservableProperty]
+    public partial bool IsPointInTimeDiskUsage { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsPointInTimeSnapshots { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsTaskbarPositionCard { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsCustomCard { get; set; }
+
+    public bool IsTaskbarLeft => SelectedValue is int v && v == 0;
+    public bool IsTaskbarTop => SelectedValue is int v && v == 1;
+    public bool IsTaskbarRight => SelectedValue is int v && v == 2;
+    public bool IsTaskbarBottom => SelectedValue is int v && v == 3;
+
+    partial void OnSelectedValueChanged(object? value)
+    {
+        if (IsTaskbarPositionCard)
+        {
+            OnPropertyChanged(nameof(IsTaskbarLeft));
+            OnPropertyChanged(nameof(IsTaskbarTop));
+            OnPropertyChanged(nameof(IsTaskbarRight));
+            OnPropertyChanged(nameof(IsTaskbarBottom));
+        }
+    }
 
     private string _dynamicWmiText = "Current usage: 0 bytes";
     public string DynamicWmiText
@@ -216,6 +240,36 @@ public partial class SettingItemViewModel : BaseViewModel
         _localizationService.GetString("TechnicalDetails_OpenRegedit") ?? "Open in Registry Editor";
 
     public IRelayCommand<string> OpenRegeditCommand { get; }
+    #endregion
+
+    #region Current Wallpaper State
+
+    private string _currentWallpaper = string.Empty;
+    public string CurrentWallpaper
+    {
+        get => _currentWallpaper;
+        set => SetProperty(ref _currentWallpaper, value);
+    }
+
+    private void LoadCurrentWallpaper()
+    {
+        string path = @"C:\Windows\Web\Wallpaper\Windows\img0.jpg";
+        try
+        {
+            using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop");
+            if (key?.GetValue("Wallpaper") is string wallpaperPath)
+            {
+                if (System.IO.File.Exists(wallpaperPath))
+                {
+                    path = wallpaperPath;
+                }
+            }
+        }
+        catch { }
+
+        CurrentWallpaper = new Uri(path).AbsoluteUri;
+    }
+
     #endregion
 
     #region AI Explainer
@@ -772,7 +826,7 @@ public partial class SettingItemViewModel : BaseViewModel
 
     public bool EffectiveIsEnabled => IsEnabled && ParentIsEnabled;
     public bool IsToggleType => InputType == InputType.Toggle;
-    public bool IsSelectionType => InputType == InputType.Selection;
+    public bool IsSelectionType => InputType == InputType.Selection && !IsTaskbarPositionCard;
     public bool IsNumericType => InputType == InputType.NumericRange;
     public bool IsSliderType => InputType == InputType.NumericRange && SettingDefinition?.NumericRange?.UseSlider == true;
     public bool IsActionType => InputType == InputType.Action;
@@ -842,6 +896,12 @@ public partial class SettingItemViewModel : BaseViewModel
         SettingDefinition = config.SettingDefinition;
         ParentFeatureViewModel = config.ParentFeatureViewModel;
         SettingId = config.SettingId;
+
+        IsPointInTimeDiskUsage = SettingId == "PointInTimeRestore_MaxStorage";
+        IsPointInTimeSnapshots = SettingId == "PointInTimeRestore_Snapshots";
+        IsTaskbarPositionCard = SettingId == "taskbar-position";
+        IsCustomCard = IsPointInTimeDiskUsage || IsPointInTimeSnapshots || IsTaskbarPositionCard;
+
         Name = config.Name;
         Description = config.Description;
         ToggleWarningMessage = config.SettingDefinition?.Warning;
@@ -915,6 +975,11 @@ public partial class SettingItemViewModel : BaseViewModel
         _ = RefreshCompressionStatusDetailsAsync();
 
         LoadWmiData();
+
+        if (SettingId == "taskbar-position")
+        {
+            LoadCurrentWallpaper();
+        }
     }
     #endregion
 
@@ -1176,6 +1241,16 @@ public partial class SettingItemViewModel : BaseViewModel
         };
         return formatter;
     }
+
+    public IRelayCommand<string> SetTaskbarPositionCommand => _setTaskbarPositionCommand ??=
+        new CommunityToolkit.Mvvm.Input.RelayCommand<string>(positionIndex =>
+        {
+            if (int.TryParse(positionIndex, out int val))
+            {
+                ApplySelectionValue(val);
+            }
+        });
+    private CommunityToolkit.Mvvm.Input.RelayCommand<string>? _setTaskbarPositionCommand;
 
     #endregion
 

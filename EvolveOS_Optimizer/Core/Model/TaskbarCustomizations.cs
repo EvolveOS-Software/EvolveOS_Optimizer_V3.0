@@ -169,6 +169,60 @@ public static class TaskbarCustomizations
                 },
                 new SettingDefinition
                 {
+                    Id = "taskbar-position",
+                    IsSubjectivePreference = true,
+                    AddedInVersion = "1.2.5.418",
+                    Name = "Taskbar position",
+                    Description = "Choose where the taskbar is positioned on your screen",
+                    GroupName = "Taskbar Behavior",
+                    InputType = InputType.Selection,
+                    Icon = "DockBottom",
+                    IsWindows11Only = true,
+                    MinimumBuildNumber = 26200,
+                    MinimumBuildRevision = 9278,
+                    //RestartProcess = "Explorer",
+                    RegistrySettings = new List<RegistrySetting>
+                    {
+                        new RegistrySetting
+                        {
+                            KeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
+                            ValueName = "TaskbarLocation",
+                            RecommendedValue = 3, // 3 = Bottom
+                            DefaultValue = 3,
+                            ValueType = RegistryValueKind.DWord,
+                        },
+                    },
+                    ComboBox = new ComboBoxMetadata
+                    {
+                        Options = new[]
+                        {
+                            new ComboBoxOption
+                            {
+                                DisplayName = "Left",
+                                ValueMappings = new Dictionary<string, object?> { ["TaskbarLocation"] = 0 },
+                            },
+                            new ComboBoxOption
+                            {
+                                DisplayName = "Top",
+                                ValueMappings = new Dictionary<string, object?> { ["TaskbarLocation"] = 1 },
+                            },
+                            new ComboBoxOption
+                            {
+                                DisplayName = "Right",
+                                ValueMappings = new Dictionary<string, object?> { ["TaskbarLocation"] = 2 },
+                            },
+                            new ComboBoxOption
+                            {
+                                DisplayName = "Bottom",
+                                ValueMappings = new Dictionary<string, object?> { ["TaskbarLocation"] = 3 },
+                                IsRecommended = true,
+                                IsDefault = true,
+                            },
+                        },
+                    },
+                },
+                new SettingDefinition
+                {
                     Id = "taskbar-auto-hide",
                     IsSubjectivePreference = true,
                     Name = "Automatically hide the taskbar",

@@ -4980,6 +4980,16 @@
     <sys:String x:Key="Setting_taskbar-copilot_Name">Schaltfläche für die Copilot-Vorschau</sys:String>
     <sys:String x:Key="Setting_taskbar-copilot_Description">Blendet die Schaltfläche für die Copilot-Vorschau in der Taskleiste ein oder aus</sys:String>
 
+    <!-- Taskbar Position -->
+    <sys:String x:Key="Setting_taskbar-position_Name">Position der Taskleiste</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Description">Wählen Sie die Position der Taskleiste auf Ihrem Bildschirm</sys:String>
+
+    <!-- Taskbar Position Options -->
+    <sys:String x:Key="Setting_taskbar-position_Option_0">Links</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_1">Oben</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_2">Rechts</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_3">Unten</sys:String>
+
     <sys:String x:Key="Setting_theme-mode-windows_Name">Wählen Sie Ihren Modus</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Wählen Sie zwischen dem hellen und dem dunklen Modus für Windows und Apps</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_ConfirmTitle">Windows-Design ändern</sys:String>

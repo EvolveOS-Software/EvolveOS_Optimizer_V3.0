@@ -4990,6 +4990,16 @@
     <sys:String x:Key="Setting_taskbar-copilot_Name">Bouton Copilot Preview</sys:String>
     <sys:String x:Key="Setting_taskbar-copilot_Description">Afficher ou masquer le bouton Copilot Preview sur la barre des tâches</sys:String>
 
+    <!-- Taskbar Position -->
+    <sys:String x:Key="Setting_taskbar-position_Name">Position de la barre des tâches</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Description">Choisissez la position de la barre des tâches sur votre écran</sys:String>
+
+    <!-- Taskbar Position Options -->
+    <sys:String x:Key="Setting_taskbar-position_Option_0">Gauche</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_1">Haut</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_2">Droite</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_3">Bas</sys:String>
+
     <sys:String x:Key="Setting_theme-mode-windows_Name">Choisir votre mode</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Choisissez entre le mode clair et le mode sombre pour Windows et vos applications</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_ConfirmTitle">Changement de thème Windows</sys:String>

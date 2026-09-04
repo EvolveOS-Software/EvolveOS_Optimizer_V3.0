@@ -124,9 +124,6 @@
     <BitmapImage x:Key="Img_PowershellFile" UriSource="ms-appx:///Assets/ImageScriptsFiles/PowershellFile.png"/>
     <BitmapImage x:Key="Img_RegistryFile" UriSource="ms-appx:///Assets/ImageScriptsFiles/RegistryFile.png"/>
 
-    <BitmapImage x:Key="Img_DNS_Secure" UriSource="ms-appx:///Assets/PngImages/dns_secure.png"/>
-    <BitmapImage x:Key="Gaming_Mode_Off" UriSource="ms-appx:///Assets/PngImages/gamingmode_off.png"/>
-
     <BitmapImage x:Key="PayPal" UriSource="ms-appx:///Assets/PngImages/PayPal_Logo.svg"/>
 
 </ResourceDictionary>

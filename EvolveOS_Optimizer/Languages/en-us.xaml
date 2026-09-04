@@ -5100,6 +5100,16 @@
     <sys:String x:Key="Setting_taskbar-copilot_Name">Copilot Preview Button</sys:String>
     <sys:String x:Key="Setting_taskbar-copilot_Description">Show or hide the Copilot Preview button on the taskbar</sys:String>
 
+    <!-- Taskbar Position -->
+    <sys:String x:Key="Setting_taskbar-position_Name">Taskbar position</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Description">Choose where the taskbar is positioned on your screen</sys:String>
+
+    <!-- Taskbar Position Options -->
+    <sys:String x:Key="Setting_taskbar-position_Option_0">Left</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_1">Top</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_2">Right</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_3">Bottom</sys:String>
+
     <sys:String x:Key="Setting_theme-mode-windows_Name">Choose your mode</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Choose between Light and Dark mode for Windows and apps</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_ConfirmTitle">Windows Theme Change</sys:String>

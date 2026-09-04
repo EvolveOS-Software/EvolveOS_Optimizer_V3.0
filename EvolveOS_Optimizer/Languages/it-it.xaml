@@ -5001,6 +5001,16 @@
     <sys:String x:Key="Setting_taskbar-copilot_Name">Pulsante di anteprima di Copilot</sys:String>
     <sys:String x:Key="Setting_taskbar-copilot_Description">Mostra o nascondi il pulsante di anteprima di Copilot sulla barra delle applicazioni</sys:String>
 
+    <!-- Taskbar Position -->
+    <sys:String x:Key="Setting_taskbar-position_Name">Posizione della barra delle applicazioni</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Description">Scegli dove posizionare la barra delle applicazioni sullo schermo</sys:String>
+
+    <!-- Taskbar Position Options -->
+    <sys:String x:Key="Setting_taskbar-position_Option_0">Sinistra</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_1">In alto</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_2">Destra</sys:String>
+    <sys:String x:Key="Setting_taskbar-position_Option_3">In basso</sys:String>
+
     <sys:String x:Key="Setting_theme-mode-windows_Name">Scegli la modalità</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_Description">Scegli tra la modalità Chiara o Scura per Windows e le app</sys:String>
     <sys:String x:Key="Setting_theme-mode-windows_ConfirmTitle">Modifica del tema di Windows</sys:String>
