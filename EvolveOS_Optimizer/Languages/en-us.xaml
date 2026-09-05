@@ -146,6 +146,23 @@
     <sys:String x:Key="Nav_Settings">Settings</sys:String>
     <sys:String x:Key="Nav_Users">User Accounts</sys:String>
 
+    <sys:String x:Key="Nav_ProcessManager">Process Manager</sys:String>
+    <sys:String x:Key="Nav_ServiceManager">Service Manager</sys:String>
+    <sys:String x:Key="Nav_StartupManager">Startup Manager</sys:String>
+    <sys:String x:Key="Nav_SystemApps">System Apps</sys:String>
+    <sys:String x:Key="Nav_AppStore">App Store</sys:String>
+    <sys:String x:Key="Nav_Packages">Recommended Debloat</sys:String>
+    <sys:String x:Key="Nav_Explorer">File Explorer</sys:String>
+    <sys:String x:Key="Nav_StartMenu">Start Menu</sys:String>
+    <sys:String x:Key="Nav_Taskbar">Taskbar</sys:String>
+    <sys:String x:Key="Nav_WindowsTheme">Windows Theme</sys:String>
+    <sys:String x:Key="Nav_Sound">Sound</sys:String>
+    <sys:String x:Key="Nav_Update">Windows Update</sys:String>
+    <sys:String x:Key="Nav_Notification">Notifications</sys:String>
+    <sys:String x:Key="Nav_Power">Power</sys:String>
+    <sys:String x:Key="Nav_Gaming">Gaming</sys:String>
+    <sys:String x:Key="Nav_Advanced">Advanced</sys:String>
+
     <sys:String x:Key="Nav_ProfileBuilder">Profile Builder</sys:String>
 
     <sys:String x:Key="Tab_WinIsoBuilder">Windows ISO Builder</sys:String>

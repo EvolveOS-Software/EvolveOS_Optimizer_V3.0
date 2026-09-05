@@ -146,6 +146,23 @@
     <sys:String x:Key="Nav_Settings">Paramètres</sys:String>
     <sys:String x:Key="Nav_Users">Comptes d'utilisateurs</sys:String>
 
+    <sys:String x:Key="Nav_ProcessManager">Gestionnaire de processus</sys:String>
+    <sys:String x:Key="Nav_ServiceManager">Gestionnaire de services</sys:String>
+    <sys:String x:Key="Nav_StartupManager">Gestionnaire de démarrage</sys:String>
+    <sys:String x:Key="Nav_SystemApps">Applications système</sys:String>
+    <sys:String x:Key="Nav_AppStore">App Store</sys:String>
+    <sys:String x:Key="Nav_Packages">Debloat recommandé</sys:String>
+    <sys:String x:Key="Nav_Explorer">Explorateur de fichiers</sys:String>
+    <sys:String x:Key="Nav_StartMenu">Menu Démarrer</sys:String>
+    <sys:String x:Key="Nav_Taskbar">Barre des tâches</sys:String>
+    <sys:String x:Key="Nav_WindowsTheme">Thème Windows</sys:String>
+    <sys:String x:Key="Nav_Sound">Son</sys:String>
+    <sys:String x:Key="Nav_Update">Windows Update</sys:String>
+    <sys:String x:Key="Nav_Notification">Notifications</sys:String>
+    <sys:String x:Key="Nav_Power">Alimentation</sys:String>
+    <sys:String x:Key="Nav_Gaming">Jeux</sys:String>
+    <sys:String x:Key="Nav_Advanced">Avancé</sys:String>
+
     <sys:String x:Key="Nav_ProfileBuilder">Créateur de profil</sys:String>
 
     <sys:String x:Key="Tab_WinIsoBuilder">Créateur d'ISO Windows</sys:String>

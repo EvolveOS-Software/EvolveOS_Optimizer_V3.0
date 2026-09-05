@@ -81,14 +81,12 @@ namespace EvolveOS_Optimizer.Core.ViewModel
 
         #region Properties
 
-        public Visibility IsAdmin
+        public bool IsAdmin
         {
             get
             {
-                bool isAdminRole = new WindowsPrincipal(WindowsIdentity.GetCurrent())
+                return new WindowsPrincipal(WindowsIdentity.GetCurrent())
                     .IsInRole(WindowsBuiltInRole.Administrator);
-
-                return isAdminRole ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

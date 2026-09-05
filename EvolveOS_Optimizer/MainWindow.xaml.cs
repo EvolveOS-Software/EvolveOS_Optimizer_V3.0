@@ -674,49 +674,33 @@ namespace EvolveOS_Optimizer
             if (tag == "Diagnostics" && !string.IsNullOrEmpty(requestedPane))
             {
                 if (DiagnosticsPage.ExternalPaneRequest != null)
-                {
                     DiagnosticsPage.ExternalPaneRequest?.Invoke(requestedPane);
-                }
                 else
-                {
                     DiagnosticsPage.RequestedPaneOnLoad = requestedPane;
-                }
             }
 
             if (tag == "SystemManager" && !string.IsNullOrEmpty(requestedPane))
             {
                 if (SystemManagerPage.ExternalPaneRequest != null)
-                {
                     SystemManagerPage.ExternalPaneRequest?.Invoke(requestedPane);
-                }
                 else
-                {
                     SystemManagerPage.RequestedPaneOnLoad = requestedPane;
-                }
             }
 
             if (tag == "Optimize" && !string.IsNullOrEmpty(requestedPane))
             {
                 if (WinOptimizePage.ExternalSectionRequest != null)
-                {
                     WinOptimizePage.ExternalSectionRequest?.Invoke(requestedPane);
-                }
                 else
-                {
                     WinOptimizePage.RequestedSectionOnLoad = requestedPane;
-                }
             }
 
             if (tag == "Customize" && !string.IsNullOrEmpty(requestedPane))
             {
                 if (WinCustomizePage.ExternalSectionRequest != null)
-                {
                     WinCustomizePage.ExternalSectionRequest?.Invoke(requestedPane);
-                }
                 else
-                {
                     WinCustomizePage.RequestedSectionOnLoad = requestedPane;
-                }
             }
 
             if (this.RootGrid.DataContext is MainWinViewModel vm)
@@ -728,19 +712,7 @@ namespace EvolveOS_Optimizer
                 NavigateByTag(tag);
             }
 
-            if (tag == "Utilities")
-            {
-                BtnNavUtilities.IsChecked = true;
-            }
-            else if (tag == "Diagnostics") BtnNavDiagnostics.IsChecked = true;
-            else if (tag == "SystemManager") BtnNavSystemManager.IsChecked = true;
-            else if (tag == "Home") BtnNavHome.IsChecked = true;
-            else if (tag == "Software") BtnNavSoftware.IsChecked = true;
-            else if (tag == "SystemCleaner") BtnNavSystemCleaner.IsChecked = true;
-            else if (tag == "RegistryEditor") BtnNavRegEditor.IsChecked = true;
-            else if (tag == "ProfileBuilder" && BtnNavProfileBuilder != null) BtnNavProfileBuilder.IsChecked = true;
-            else if (tag == "Optimize" && BtnNavOptimize != null) BtnNavOptimize.IsChecked = true;
-            else if (tag == "Customize" && BtnNavCustomize != null) BtnNavCustomize.IsChecked = true;
+            SmartNav?.UpdateActiveTab(tag);
         }
 
         private void SidebarContainer_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -750,7 +722,7 @@ namespace EvolveOS_Optimizer
 
         private void SidebarContainer_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            SidebarContainer.Width = 75;
+            SidebarContainer.Width = 65;
         }
         #endregion
 

@@ -1,0 +1,487 @@
+<UserControl
+    x:Class="EvolveOS_Optimizer.UserControls.SmartNavigationBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:fluentIcons="using:FluentIcons.WinUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style x:Key="BtnNavigation" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="0,4,0,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid x:Name="RootGrid" Canvas.ZIndex="110" Background="Transparent" Height="40" HorizontalAlignment="Left" MinWidth="40">
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="-40" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                                            <DoubleAnimation Storyboard.TargetName="HoverPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0.2" Value="Collapsed"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.3">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                                            </ObjectAnimationUsingKeyFrames>
+
+                                            <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="HoverPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" To="0.85" Duration="0:0:0.1"/>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" To="0.85" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="CheckedPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource MyDynamicAccentBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Unchecked">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="CheckedPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForeground}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <Grid x:Name="InnerGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border x:Name="HoverPill" 
+                                        Grid.Column="0" 
+                                        Grid.ColumnSpan="2"
+                                        Margin="2,3,4,3"
+                                        CornerRadius="17" 
+                                        Opacity="0"
+                                        IsHitTestVisible="False"
+                                        Background="{ThemeResource SystemListLowColor}"/>
+
+                                <Border x:Name="CheckedPill" 
+                                        Grid.Column="0" 
+                                        Grid.ColumnSpan="2"
+                                        Margin="2,3,4,3"
+                                        CornerRadius="17" 
+                                        Opacity="0"
+                                        IsHitTestVisible="False"
+                                        Background="{ThemeResource SystemListLowColor}"/>
+
+                                <ContentPresenter x:Name="ContentPresenter" 
+                                                  Grid.Column="0"
+                                                  Content="{TemplateBinding Content}"
+                                                  Foreground="{TemplateBinding Foreground}"
+                                                  HorizontalAlignment="Center" 
+                                                  VerticalAlignment="Center"
+                                                  Margin="-3,0,0,0">
+                                    <ContentPresenter.RenderTransform>
+                                        <ScaleTransform x:Name="ScaleTransform" ScaleX="1" ScaleY="1" CenterX="20" CenterY="20"/>
+                                    </ContentPresenter.RenderTransform>
+                                </ContentPresenter>
+
+                                <TextBlock x:Name="NavTextBox" 
+                                           Grid.Column="1" 
+                                           Text="{TemplateBinding Tag}" 
+                                           Opacity="0"
+                                           Visibility="Collapsed"
+                                           IsHitTestVisible="False" 
+                                           VerticalAlignment="Center"
+                                           Margin="6,0,16,0"
+                                           FontSize="13" 
+                                           FontWeight="SemiBold">
+                                    <TextBlock.RenderTransform>
+                                        <TranslateTransform x:Name="TextTranslate" X="-40"/>
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RadialButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Background" Value="{ThemeResource SystemListLowColor}"/>
+            <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid RenderTransformOrigin="0.5,0.5">
+                            <Grid.RenderTransform>
+                                <ScaleTransform x:Name="ScaleTransform" ScaleX="1" ScaleY="1"/>
+                            </Grid.RenderTransform>
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.1"/>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundBorder" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource MyDynamicAccentBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" To="0.85" Duration="0:0:0.1"/>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" To="0.85" Duration="0:0:0.1"/>
+
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundBorder" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource MyDynamicAccentBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="White"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <Border x:Name="BackgroundBorder" 
+                                    Background="{TemplateBinding Background}" 
+                                    CornerRadius="{TemplateBinding CornerRadius}"/>
+
+                            <ContentPresenter x:Name="ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+       
+    </UserControl.Resources>
+
+    <Grid Width="Auto" HorizontalAlignment="Left" Background="Transparent" SizeChanged="OnControlSizeChanged" Loaded="OnControlLoaded" PointerWheelChanged="RadialMenuContainer_PointerWheelChanged">
+
+        <Grid x:Name="RadialMenuHitBox" 
+              Width="150" Height="200" 
+              Margin="27,0,0,0" 
+              Canvas.ZIndex="-1"
+              Translation="0,0,-10"
+              Background="Transparent"
+              HorizontalAlignment="Left" VerticalAlignment="Top"
+              Opacity="0" IsHitTestVisible="False"
+              PointerWheelChanged="RadialMenuContainer_PointerWheelChanged">
+
+            <Grid.Clip>
+                <RectangleGeometry Rect="28, -500, 150, 1000" />
+            </Grid.Clip>
+
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="RadialContainerTranslate" Y="0"/>
+            </Grid.RenderTransform>
+
+            <Canvas x:Name="RadialMenuWheel" Width="150" Height="200" RenderTransformOrigin="0,0.5">
+                <Canvas.RenderTransform>
+                    <RotateTransform x:Name="RadialContainerRotate" Angle="0"/>
+                </Canvas.RenderTransform>
+
+                <Button x:Name="SubBtn1" Style="{StaticResource RadialButtonStyle}" Canvas.Left="-20" Canvas.Top="80" Click="SubMenuBtn_Click">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <RotateTransform x:Name="Icon1Rotate"/>
+                        </Grid.RenderTransform>
+                    </Grid>
+                    <Button.RenderTransform>
+                        <TranslateTransform x:Name="SubBtn1Translate"/>
+                    </Button.RenderTransform>
+                </Button>
+
+                <Button x:Name="SubBtn2" Style="{StaticResource RadialButtonStyle}" Canvas.Left="-20" Canvas.Top="80" Click="SubMenuBtn_Click">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <RotateTransform x:Name="Icon2Rotate"/>
+                        </Grid.RenderTransform>
+                    </Grid>
+                    <Button.RenderTransform>
+                        <TranslateTransform x:Name="SubBtn2Translate"/>
+                    </Button.RenderTransform>
+                </Button>
+
+                <Button x:Name="SubBtn3" Style="{StaticResource RadialButtonStyle}" Canvas.Left="-20" Canvas.Top="80" Click="SubMenuBtn_Click">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <RotateTransform x:Name="Icon3Rotate"/>
+                        </Grid.RenderTransform>
+                    </Grid>
+                    <Button.RenderTransform>
+                        <TranslateTransform x:Name="SubBtn3Translate"/>
+                    </Button.RenderTransform>
+                </Button>
+
+                <Button x:Name="SubBtn4" Style="{StaticResource RadialButtonStyle}" Canvas.Left="-20" Canvas.Top="80" Click="SubMenuBtn_Click">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <RotateTransform x:Name="Icon4Rotate"/>
+                        </Grid.RenderTransform>
+                    </Grid>
+                    <Button.RenderTransform>
+                        <TranslateTransform x:Name="SubBtn4Translate"/>
+                    </Button.RenderTransform>
+                </Button>
+
+                <Button x:Name="SubBtn5" Style="{StaticResource RadialButtonStyle}" Canvas.Left="-20" Canvas.Top="80" Click="SubMenuBtn_Click">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <RotateTransform x:Name="Icon5Rotate"/>
+                        </Grid.RenderTransform>
+                    </Grid>
+                    <Button.RenderTransform>
+                        <TranslateTransform x:Name="SubBtn5Translate"/>
+                    </Button.RenderTransform>
+                </Button>
+
+                <Button x:Name="SubBtn6" Style="{StaticResource RadialButtonStyle}" Canvas.Left="-20" Canvas.Top="80" Click="SubMenuBtn_Click">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <RotateTransform x:Name="Icon6Rotate"/>
+                        </Grid.RenderTransform>
+                    </Grid>
+                    <Button.RenderTransform>
+                        <TranslateTransform x:Name="SubBtn6Translate"/>
+                    </Button.RenderTransform>
+                </Button>
+
+                <Button x:Name="SubBtn7" Style="{StaticResource RadialButtonStyle}" Canvas.Left="-20" Canvas.Top="80" Click="SubMenuBtn_Click">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <RotateTransform x:Name="Icon7Rotate"/>
+                        </Grid.RenderTransform>
+                    </Grid>
+                    <Button.RenderTransform>
+                        <TranslateTransform x:Name="SubBtn7Translate"/>
+                    </Button.RenderTransform>
+                </Button>
+            </Canvas>
+        </Grid>
+
+        <Border Width="55" HorizontalAlignment="Left" CornerRadius="10" Translation="0,0,8">
+            <Border.Shadow>
+                <ThemeShadow />
+            </Border.Shadow>
+            <Path x:Name="BackgroundPath" Fill="{ThemeResource LayerFillColorDefaultBrush}">
+                <Path.Data>
+                    <GeometryGroup FillRule="EvenOdd">
+                        <RectangleGeometry x:Name="BackgroundRect" Rect="0,0,55,1000" />
+
+                        <PathGeometry>
+                            <PathGeometry.Transform>
+                                <TranslateTransform x:Name="CutoutTransform" Y="10" />
+                            </PathGeometry.Transform>
+                            <PathFigure StartPoint="55,0" IsClosed="True">
+                                <BezierSegment Point1="55,12" Point2="40,15" Point3="27.5,15" />
+                                <ArcSegment Point="27.5,65" Size="25,25" SweepDirection="Counterclockwise" />
+                                <BezierSegment Point1="40,65" Point2="55,68" Point3="55,80" />
+                            </PathFigure>
+                        </PathGeometry>
+                    </GeometryGroup>
+                </Path.Data>
+            </Path>
+        </Border>
+
+        <StackPanel x:Name="NavStackPanel" Orientation="Vertical" Margin="7.5,20,0,15" HorizontalAlignment="Left" Canvas.ZIndex="20">
+
+            <RadioButton x:Name="BtnNavHome" Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="Home"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_Home'), Mode=OneTime}"
+                         IsChecked="True"
+                         Checked="OnNavButtonChecked">
+                <FontIcon Glyph="&#xE80F;" FontSize="20"/>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavDiagnostics" Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="Diagnostics"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_CommandCenter'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked">
+                <FontIcon Glyph="&#xF246;" FontSize="20"/>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavSystemManager"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="SystemManager"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_System_Manager'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked" RightTapped="OnNavButtonRightTapped">
+                <FontIcon Glyph="&#xE9D9;" FontSize="20"/>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavSystemCleaner"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="SystemCleaner"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_System_Cleaner'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked">
+                <FontIcon Glyph="&#xEA99;" FontSize="20"/>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavSoftware"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="Software"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_Software_Center'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked" RightTapped="OnNavButtonRightTapped">
+                <Viewbox Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <fluentIcons:SymbolIcon Symbol="AppGeneric" />
+                </Viewbox>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavGroupPolicy"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="GroupPolicy"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_GroupPolicy'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked" RightTapped="OnNavButtonRightTapped">
+                <FontIcon Glyph="&#xE9D5;" FontSize="20"/>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavRegEditor" Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="RegistryEditor"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_RegistryEditor'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked">
+                <FontIcon Glyph="&#xE74C;" FontSize="20"/>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavOptimize"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="Optimize"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_Optimize'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked" RightTapped="OnNavButtonRightTapped">
+                <Viewbox Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <PathIcon Data="{StaticResource OptimizeIconPath}"/>
+                </Viewbox>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavCustomize"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="Customize"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_Customize'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked" RightTapped="OnNavButtonRightTapped">
+                <Viewbox Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <PathIcon Data="{StaticResource CustomizeIconPath}"/>
+                </Viewbox>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavUtilities" Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="Utilities"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_Utilities'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked" RightTapped="OnNavButtonRightTapped">
+                <FontIcon Glyph="&#xEC7A;" FontSize="20"/>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavScripts"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="Scripts"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_Scripts'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked">
+                <FontIcon Glyph="&#xEA86;" FontSize="20"/>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavSettings"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="Settings"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_Settings'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked">
+                <Viewbox Width="20" Height="20" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <SymbolIcon Symbol="Setting" />
+                </Viewbox>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavProfileBuilder"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="ProfileBuilder"
+                         IsTabStop="False"
+                         Tag="{x:Bind GetText('Nav_ProfileBuilder'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked">
+                <Viewbox Width="24" Height="24" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <PathIcon Data="{StaticResource ProfileBuilderIconPath}"/>
+                </Viewbox>
+            </RadioButton>
+
+            <RadioButton x:Name="BtnNavUserAccounts"
+                         Style="{StaticResource BtnNavigation}"
+                         Command="{Binding ExecuteNavigateCommand}"
+                         CommandParameter="UserAccounts"
+                         IsTabStop="False"
+                         Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}"
+                         Tag="{x:Bind GetText('Nav_Users'), Mode=OneTime}"
+                         Checked="OnNavButtonChecked" RightTapped="OnNavButtonRightTapped">
+                <Viewbox Width="20" Height="20" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <SymbolIcon Symbol="People" />
+                </Viewbox>
+            </RadioButton>
+        </StackPanel>
+    </Grid>
+</UserControl>
