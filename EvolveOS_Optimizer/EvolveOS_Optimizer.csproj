@@ -16,6 +16,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <!-- DEFAULT: Standalone EXE Settings -->
     <PropertyGroup>
         <UseWinUI>true</UseWinUI>
         <EnableMsixTooling>true</EnableMsixTooling>
@@ -43,6 +44,19 @@
         <AppxBundle>Never</AppxBundle>
         <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
         <CsWinRTEnablePartialMethod>true</CsWinRTEnablePartialMethod>
+    </PropertyGroup>
+
+    <!-- OVERRIDE: Store MSIX Build Settings (Triggered by EvolveOS-MSIX profile) -->
+    <PropertyGroup Condition="'$(BuildMsix)' == 'true'">
+        <WindowsPackageType>MSIX</WindowsPackageType>
+        <PublishSingleFile>false</PublishSingleFile>
+        <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+        <IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
+        <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);AppPackages\**</DefaultItemExcludes>
     </PropertyGroup>
 
     <PropertyGroup>

@@ -1,7 +1,11 @@
 {
-  "profiles": {
-    "EvolveOS_Optimizer (Unpackaged)": {
-      "commandName": "Project"
+    "$schema": "https://json.schemastore.org/launchsettings.json",
+    "profiles": {
+        "EvolveOS_Optimizer (Package)": {
+            "commandName": "MsixPackage"
+        },
+        "EvolveOS_Optimizer (Unpackaged)": {
+            "commandName": "Project"
+        }
     }
-  }
 }
