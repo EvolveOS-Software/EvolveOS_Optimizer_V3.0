@@ -1,7 +1,5 @@
 // Copyright (c) 2026 EvolveOS Software
-//
-// Licensed under the MIT License. 
-// See the LICENSE file in the project root for more information.
+// Licensed under the MIT License.
 
 using System.IO;
 using System.Security;
@@ -13,7 +11,8 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 {
     public static class TokenManager
     {
-        private static readonly string TokenPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "auth.token");
+        private static readonly string AppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EvolveOS_Optimizer");
+        private static readonly string TokenPath = Path.Combine(AppDataFolder, "auth.token");
 
         public static SecureString GetMachineKey()
         {
@@ -38,6 +37,11 @@ namespace EvolveOS_Optimizer.Utilities.Managers
         {
             try
             {
+                if (!Directory.Exists(AppDataFolder))
+                {
+                    Directory.CreateDirectory(AppDataFolder);
+                }
+
                 using (SecureString machineKey = GetMachineKey())
                 {
                     string encryptedPassword = AesHelper.Encrypt(plainPassword, machineKey);
@@ -89,8 +93,7 @@ namespace EvolveOS_Optimizer.Utilities.Managers
 
         public static bool TokenExists()
         {
-            string tokenPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "auth.token");
-            return File.Exists(tokenPath);
+            return File.Exists(TokenPath);
         }
 
         public static void DeleteToken()
