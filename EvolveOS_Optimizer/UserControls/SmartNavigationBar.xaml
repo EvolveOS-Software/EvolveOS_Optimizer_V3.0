@@ -19,12 +19,26 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <Grid x:Name="RootGrid" Canvas.ZIndex="110" Background="Transparent" Height="40" HorizontalAlignment="Left" MinWidth="40">
+                        <Grid x:Name="RootGrid" Canvas.ZIndex="110" Background="Transparent" Height="40" HorizontalAlignment="Left" MinWidth="40" RenderTransformOrigin="0, 0.5">
+                            <Grid.RenderTransform>
+                                <ScaleTransform x:Name="RootScale" ScaleX="1" ScaleY="1"/>
+                            </Grid.RenderTransform>
 
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal">
                                         <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ElasticEase Oscillations="1" Springiness="5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ElasticEase Oscillations="1" Springiness="5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+
                                             <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="-40" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
 
@@ -39,6 +53,17 @@
 
                                     <VisualState x:Name="PointerOver">
                                         <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ElasticEase Oscillations="1" Springiness="5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ElasticEase Oscillations="1" Springiness="5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+
                                             <DoubleAnimation Storyboard.TargetName="TextTranslate" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.3">
                                                 <DoubleAnimation.EasingFunction>
                                                     <CubicEase EasingMode="EaseOut"/>
@@ -50,15 +75,13 @@
                                             </ObjectAnimationUsingKeyFrames>
 
                                             <DoubleAnimation Storyboard.TargetName="NavTextBox" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
-
                                             <DoubleAnimation Storyboard.TargetName="HoverPillContainer" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
 
-                                            <!-- Breathing effect (Begins after 2 seconds) -->
                                             <DoubleAnimation Storyboard.TargetName="HoverPillDarkOverlay" 
                                                              Storyboard.TargetProperty="Opacity" 
                                                              From="0.0" To="0.4" 
                                                              Duration="0:0:1.2" 
-                                                             BeginTime="0:0:2" 
+                                                             BeginTime="0:0:4" 
                                                              AutoReverse="True" 
                                                              RepeatBehavior="Forever">
                                                 <DoubleAnimation.EasingFunction>
@@ -70,8 +93,8 @@
 
                                     <VisualState x:Name="Pressed">
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" To="0.85" Duration="0:0:0.1"/>
-                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" To="0.85" Duration="0:0:0.1"/>
+                                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleX" To="0.9" Duration="0:0:0.1"/>
+                                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleY" To="0.9" Duration="0:0:0.1"/>
                                         </Storyboard>
                                     </VisualState>
                                 </VisualStateGroup>
@@ -79,7 +102,6 @@
                                 <VisualStateGroup x:Name="CheckStates">
                                     <VisualState x:Name="Checked">
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="CheckedPill" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource MyDynamicAccentBrush}"/>
                                             </ObjectAnimationUsingKeyFrames>
@@ -88,7 +110,6 @@
 
                                     <VisualState x:Name="Unchecked">
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="CheckedPill" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForeground}"/>
                                             </ObjectAnimationUsingKeyFrames>
@@ -120,25 +141,13 @@
                                             Background="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}"/>
                                 </Grid>
 
-                                <Border x:Name="CheckedPill" 
-                                        Grid.Column="0" 
-                                        Grid.ColumnSpan="2"
-                                        Margin="2,3,4,3"
-                                        CornerRadius="17" 
-                                        Opacity="0"
-                                        IsHitTestVisible="False"
-                                        Background="{ThemeResource SystemListLowColor}"/>
-
                                 <ContentPresenter x:Name="ContentPresenter" 
                                                   Grid.Column="0"
                                                   Content="{TemplateBinding Content}"
                                                   Foreground="{TemplateBinding Foreground}"
                                                   HorizontalAlignment="Center" 
                                                   VerticalAlignment="Center"
-                                                  Margin="-3,0,0,0">
-                                    <ContentPresenter.RenderTransform>
-                                        <ScaleTransform x:Name="ScaleTransform" ScaleX="1" ScaleY="1" CenterX="20" CenterY="20"/>
-                                    </ContentPresenter.RenderTransform>
+                                                  Margin="0">
                                 </ContentPresenter>
 
                                 <TextBlock x:Name="NavTextBox" 
@@ -180,12 +189,30 @@
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal">
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.1"/>
-                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.1"/>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ElasticEase Oscillations="1" Springiness="5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ElasticEase Oscillations="1" Springiness="5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="PointerOver">
                                         <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ElasticEase Oscillations="1" Springiness="5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ElasticEase Oscillations="1" Springiness="5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundBorder" Storyboard.TargetProperty="Background">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource MyDynamicAccentBrush}"/>
                                             </ObjectAnimationUsingKeyFrames>
@@ -224,8 +251,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-
     </UserControl.Resources>
 
     <Grid Width="Auto" HorizontalAlignment="Left" Background="Transparent" SizeChanged="OnControlSizeChanged" Loaded="OnControlLoaded" PointerWheelChanged="RadialMenuContainer_PointerWheelChanged">
@@ -355,6 +380,19 @@
                 </Path.Data>
             </Path>
         </Border>
+
+        <Grid x:Name="SlidingPillContainer" Margin="7.5,20,0,15" HorizontalAlignment="Left" Canvas.ZIndex="15" IsHitTestVisible="False">
+            <Border x:Name="ActiveSelectionPill"
+                    Width="34" Height="34"
+                    HorizontalAlignment="Left" VerticalAlignment="Top"
+                    Margin="3,3,0,0"
+                    CornerRadius="17"
+                    Background="{ThemeResource SystemListLowColor}">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="ActiveSelectionTranslate" Y="0"/>
+                </Border.RenderTransform>
+            </Border>
+        </Grid>
 
         <StackPanel x:Name="NavStackPanel" Orientation="Vertical" Margin="7.5,20,0,15" HorizontalAlignment="Left" Canvas.ZIndex="20">
 

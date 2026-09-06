@@ -11,6 +11,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Foundation;
+using System.Numerics;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Markup;
 
 namespace EvolveOS_Optimizer.UserControls
 {
@@ -73,35 +76,48 @@ namespace EvolveOS_Optimizer.UserControls
 
             try
             {
-                var transform = _selectedButton.TransformToVisual(this);
-                Point point = transform.TransformPoint(new Point(0, 0));
+                var transformToRoot = _selectedButton.TransformToVisual(this);
+                Point pointToRoot = transformToRoot.TransformPoint(new Point(0, 0));
+                double cutoutTargetY = pointToRoot.Y - 20;
 
-                double targetY = point.Y - 20;
+                var transformToNav = _selectedButton.TransformToVisual(NavStackPanel);
+                Point pointToNav = transformToNav.TransformPoint(new Point(0, 0));
+                double pillTargetY = pointToNav.Y;
 
                 if (animate)
                 {
-                    var anim = new DoubleAnimation
+                    var sb = new Storyboard();
+
+                    var animCutout = new DoubleAnimation
                     {
                         From = CutoutTransform.Y,
-                        To = targetY,
+                        To = cutoutTargetY,
                         Duration = new Duration(TimeSpan.FromMilliseconds(400)),
                         EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseOut },
                         EnableDependentAnimation = true
                     };
+                    Storyboard.SetTarget(animCutout, CutoutTransform);
+                    Storyboard.SetTargetProperty(animCutout, "Y");
+                    sb.Children.Add(animCutout);
 
-                    var sb = new Storyboard();
-                    Storyboard.SetTarget(anim, CutoutTransform);
-                    Storyboard.SetTargetProperty(anim, "Y");
+                    var animPill = new DoubleAnimation
+                    {
+                        From = ActiveSelectionTranslate.Y,
+                        To = pillTargetY,
+                        Duration = new Duration(TimeSpan.FromMilliseconds(400)),
+                        EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseOut },
+                        EnableDependentAnimation = true
+                    };
+                    Storyboard.SetTarget(animPill, ActiveSelectionTranslate);
+                    Storyboard.SetTargetProperty(animPill, "Y");
+                    sb.Children.Add(animPill);
 
-                    sb.Children.Add(anim);
                     sb.Begin();
                 }
                 else
                 {
-                    if (CutoutTransform != null)
-                    {
-                        CutoutTransform.Y = targetY;
-                    }
+                    if (CutoutTransform != null) CutoutTransform.Y = cutoutTargetY;
+                    if (ActiveSelectionTranslate != null) ActiveSelectionTranslate.Y = pillTargetY;
                 }
             }
             catch
@@ -109,6 +125,46 @@ namespace EvolveOS_Optimizer.UserControls
                 // Silently swallow early rendering exceptions
             }
         }
+
+        #region Pointer Events for Spring Physics
+
+        private void NavButton_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is UIElement element)
+            {
+                var visual = ElementCompositionPreview.GetElementVisual(element);
+                var compositor = visual.Compositor;
+                visual.CenterPoint = new Vector3((float)element.RenderSize.Width / 2, (float)element.RenderSize.Height / 2, 0f);
+
+                var spring = compositor.CreateSpringVector3Animation();
+                spring.Target = "Scale";
+                spring.FinalValue = new Vector3(0.85f, 0.85f, 1f);
+                spring.DampingRatio = 0.5f;
+                spring.Period = TimeSpan.FromMilliseconds(200);
+
+                visual.StartAnimation("Scale", spring);
+            }
+        }
+
+        private void NavButton_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is UIElement element)
+            {
+                var visual = ElementCompositionPreview.GetElementVisual(element);
+                var compositor = visual.Compositor;
+                visual.CenterPoint = new Vector3((float)element.RenderSize.Width / 2, (float)element.RenderSize.Height / 2, 0f);
+
+                var spring = compositor.CreateSpringVector3Animation();
+                spring.Target = "Scale";
+                spring.FinalValue = new Vector3(1f, 1f, 1f);
+                spring.DampingRatio = 0.4f;
+                spring.Period = TimeSpan.FromMilliseconds(400);
+
+                visual.StartAnimation("Scale", spring);
+            }
+        }
+
+        #endregion
 
         #region Radial Menu Spin Engine
 
@@ -407,7 +463,7 @@ namespace EvolveOS_Optimizer.UserControls
             {
                 try
                 {
-                    return Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Geometry), pathString) as Geometry;
+                    return XamlBindingHelper.ConvertValue(typeof(Geometry), pathString) as Geometry;
                 }
                 catch
                 {
